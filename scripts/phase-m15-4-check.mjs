@@ -1,0 +1,26 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const geo=read('assets/js/geographic-address.js');
+const html=read('index.html');
+const sw=read('service-worker.js');
+const pwa=read('assets/js/pwa.js');
+const pkg=JSON.parse(read('package.json'));
+const version=JSON.parse(read('version.json'));
+let passed=0,failed=0;
+function test(name,ok){if(ok){passed++;console.log(`PASS ${name}`)}else{failed++;console.error(`FAIL ${name}`)}}
+const sandbox={window:{},console};
+vm.runInNewContext(geo,sandbox,{filename:'geographic-address.js'});
+const G=sandbox.window.KYUMGeography;
+test('Arabic normalization ignores hamza/diacritics/tatweel',G.normalizeSearch('أَحْيَــاء')===G.normalizeSearch('احياء'));
+test('search ignores geographic حي prefix',G.normalizeSearch('حي الصفا')===G.normalizeSearch('الصفا'));
+test('search ignores منطقة prefix',G.normalizeSearch('منطقة مكة المكرمة')===G.normalizeSearch('مكة المكرمة')&&G.normalizeSearch('المنطقة الشرقية')===G.normalizeSearch('الشرقية'));
+test('prebuilt search index and ranked matching retained',geo.includes('buildSearchIndex()')&&geo.includes('scoreSearch(type, row, query)')&&geo.includes('b.score - a.score'));
+test('keyboard navigation supports arrows/home/end/enter/space/escape',geo.includes('["ArrowDown", "ArrowUp", "Home", "End"]')&&geo.includes('event.key === "Home"')&&geo.includes('event.key === "End"')&&geo.includes('event.key === "Enter" || event.key === " "')&&geo.includes('event.key === "Escape"'));
+test('ARIA active descendant follows keyboard focus',geo.includes('aria-activedescendant')&&geo.includes('focusin'));
+test('unified component remains the only geographic search owner',html.includes('geographic-address.js?v=18.53.3')&&geo.includes('createController')&&geo.includes('canonicalizeAddress'));
+test('version/cache advanced consistently',version.version==='18.53.3'&&version.build===185303&&pkg.version==='18.53.3'&&pwa.includes('CURRENT_VERSION = "18.53.3"')&&sw.includes('18-53-3-geographic-search-ux'));
+console.log(`\nM15.4 checks: ${passed} passed, ${failed} failed`);
+if(failed)process.exit(1);

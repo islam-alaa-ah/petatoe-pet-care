@@ -1,0 +1,29 @@
+{
+  "appId": "com.petatoe.petcare",
+  "appName": "PETATOE",
+  "webDir": "www",
+  "backgroundColor": "#071b26",
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "preferredContentMode": "mobile"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 900,
+      "launchAutoHide": true,
+      "launchFadeOutDuration": 250,
+      "backgroundColor": "#071b26",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#071b26",
+      "overlaysWebView": false
+    }
+  }
+}

@@ -1,0 +1,5 @@
+KYUM CRM Phase M13.12
+Version: 18.10.0
+Build: 181000
+Certification: PASS WITH DECLARED ONLINE-ONLY EXCLUSIONS
+Server limitation: physical deletions require full reconciliation until tombstones are approved.

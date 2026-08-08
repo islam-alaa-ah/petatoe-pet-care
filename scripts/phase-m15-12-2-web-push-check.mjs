@@ -1,0 +1,25 @@
+import fs from 'node:fs';
+const read=p=>fs.readFileSync(p,'utf8');
+let pass=0,fail=0;
+function ok(name,cond){if(cond){console.log('PASS',name);pass++}else{console.error('FAIL',name);fail++}}
+const svc=read('assets/js/notification-center-service.js');
+const ui=read('assets/js/notification-center.js');
+const sw=read('service-worker.js');
+const sql=read('supabase/migrations/phase_m15_12_2_web_push_external_notifications.sql');
+const fn=read('supabase/functions/notification-push-dispatch/index.ts');
+const html=read('index.html');
+ok('Push checkbox is persisted from matrix',ui.includes('data-field="push"')&&ui.includes('push:row.querySelector'));
+ok('Device Push enable/disable controls exist',html.includes('notificationEnablePushBtn')&&html.includes('notificationDisablePushBtn'));
+ok('Client subscribes through PushManager',svc.includes('pushManager.subscribe')&&svc.includes('notification_push_subscriptions'));
+ok('Push dispatch follows successful event emission',svc.includes('dispatchPending()')&&svc.includes("action:'dispatch'"));
+ok('Service worker handles push',sw.includes('addEventListener("push"')&&sw.includes('showNotification'));
+ok('Service worker handles notification click',sw.includes('notificationclick')&&sw.includes('notificationView'));
+ok('Subscription table exists in migration',sql.includes('notification_push_subscriptions'));
+ok('Durable Push outbox exists',sql.includes('notification_push_outbox'));
+ok('RPC uses dynamic event push setting',sql.includes('v_setting.push_enabled')&&sql.includes('notification_event_recipient_rules'));
+ok('Push-only events are supported',sql.includes('in_app_enabled,false)=false')&&sql.includes('push_enabled,false)=false'));
+ok('Edge function uses VAPID secrets',fn.includes('WEB_PUSH_VAPID_PUBLIC_KEY')&&fn.includes('WEB_PUSH_VAPID_PRIVATE_KEY'));
+ok('Expired subscriptions are disabled',fn.includes('statusCode === 404')&&fn.includes('statusCode === 410'));
+ok('No hardcoded admin or installation supervisor recipients',!fn.includes('super_admin')&&!fn.includes('customer_service')&&!sql.includes("recipient_type='super_admin'"));
+ok('Version updated to 18.53.21',read('version.json').includes('18.53.21')&&read('package.json').includes('18.53.21'));
+console.log(`M15.12.2 Web Push: ${pass}/${pass+fail} PASS`);process.exit(fail?1:0);

@@ -1,0 +1,271 @@
+/*
+ * Phase M13.23.5 — Tablet, Laptop & Wide Desktop Certification
+ * Final non-mobile responsive layer. Loaded after mobile certification.
+ * Scope: shell density, administration views, tables, forms and dialogs.
+ */
+
+@media (min-width: 768px) {
+  :root {
+    --kyum-desktop-content-max: 1760px;
+    --kyum-desktop-section-gap: clamp(16px, 1.5vw, 26px);
+  }
+
+  .app-shell,
+  .main-content,
+  .view-section {
+    min-width: 0;
+  }
+
+  .main-content {
+    width: 100%;
+    max-width: var(--kyum-desktop-content-max);
+    margin-inline: auto;
+  }
+
+  .view-section:not(.hidden) {
+    display: block;
+  }
+
+  .view-section > :where(.actions-row, .panel, .table-card, .section-title, .section-note) {
+    max-width: 100%;
+  }
+
+  :where(.actions-row, .panel-header, .filters-grid, .form-grid) {
+    min-width: 0;
+  }
+
+  :where(.actions-row, .panel-header) {
+    flex-wrap: wrap;
+  }
+
+  :where(.table-wrap, .table-card) {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  :where(.table-wrap, .table-card) > table {
+    max-width: none;
+  }
+
+  :where(.dialog-shell, .glass-dialog, dialog[open]) {
+    max-width: calc(100vw - 48px);
+    max-height: calc(100dvh - 48px);
+  }
+
+  /* Representatives and reference data */
+  #representativesView .representatives-list-toolbar,
+  #settingsView .reference-data-toolbar,
+  #settingsView .reference-customers-header,
+  #settingsView .reference-customers-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #representativesView .representatives-search,
+  #settingsView .reference-customers-search {
+    flex: 1 1 280px;
+    min-width: 220px;
+  }
+
+  #representativesView .representatives-import-actions,
+  #settingsView .reference-customers-actions {
+    flex: 0 1 auto;
+  }
+
+  #representativesView .representatives-table,
+  #settingsView .reference-customers-table {
+    min-width: 900px;
+  }
+
+  /* Users, permissions and audit log */
+  #usersView .users-filters,
+  #activityLogView .filters-grid,
+  #systemSettingsView .settings-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  #usersView .table-wrap table,
+  #activityLogView .table-wrap table,
+  #permissionsView .permissions-matrix {
+    min-width: 900px;
+  }
+
+  #permissionsView {
+    overflow-x: hidden;
+  }
+
+  #permissionsView .permissions-role-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #permissionsView .permissions-matrix {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  /* Backups, health and settings */
+  #backupsView .backup-overview-grid,
+  #backupsView .backup-counts-grid,
+  #systemHealthView .health-hero-grid,
+  #systemHealthView .health-metrics-grid,
+  #systemHealthView .health-details-grid,
+  #systemHealthView .diagnostics-summary-grid,
+  #systemHealthView .performance-summary-grid,
+  #systemHealthView .performance-details-grid,
+  #systemHealthView .smart-health-grid,
+  #aboutAppView .about-app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: clamp(12px, 1.3vw, 20px);
+  }
+
+  #backupsView .backup-action-card,
+  #systemHealthView .panel,
+  #aboutAppView .panel {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #systemHealthView .diagnostics-actions,
+  #aboutAppView .about-app-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  #systemHealthView :where(.health-table-panel, .sync-recovery-center-panel, .performance-monitor-panel) .table-wrap table {
+    min-width: 920px;
+  }
+
+  #systemSettingsView .settings-form-grid > .full-width {
+    grid-column: 1 / -1;
+  }
+
+  /* Dialog certification */
+  :where(#customerDialog, #followupDialog, #quotationDialog, #representativeDialog,
+    #userDialog, #referenceItemDialog, #customerDetailsDialog,
+    #customerImportDialog, #representativeImportDialog, #reportsExportDialog,
+    #employeeTargetsDialog, #dailyTargetsDialog, #dailyManagerNoteDialog,
+    #dailyAlertActionDialog, #customer360ExportDialog) {
+    width: min(960px, calc(100vw - 48px));
+    max-width: calc(100vw - 48px);
+    max-height: calc(100dvh - 48px);
+  }
+
+  :where(#customerDialog, #followupDialog, #quotationDialog, #representativeDialog,
+    #userDialog, #referenceItemDialog, #customerImportDialog,
+    #representativeImportDialog) .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  :where(.dialog-actions, .actions-row) > button {
+    flex-shrink: 0;
+  }
+}
+
+/* Tablet portrait and compact landscape */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --kyum-desktop-content-max: 100%;
+  }
+
+  .main-content {
+    padding-inline: clamp(14px, 2.4vw, 22px);
+  }
+
+  #usersView .users-filters,
+  #activityLogView .filters-grid,
+  #systemSettingsView .settings-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #representativesView .representatives-import-actions,
+  #settingsView .reference-customers-actions,
+  #systemHealthView .diagnostics-actions,
+  #aboutAppView .about-app-actions {
+    width: 100%;
+  }
+
+  #representativesView .representatives-import-actions > button,
+  #settingsView .reference-customers-actions > button {
+    flex: 1 1 180px;
+  }
+
+  #backupsView .backup-overview-grid,
+  #systemHealthView .health-hero-grid,
+  #systemHealthView .health-details-grid,
+  #aboutAppView .about-app-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Laptop and compact desktop */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .main-content {
+    padding-inline: clamp(18px, 2vw, 28px);
+  }
+
+  #backupsView .backup-overview-grid,
+  #systemHealthView .health-details-grid,
+  #aboutAppView .about-app-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Standard desktop */
+@media (min-width: 1400px) and (max-width: 1799px) {
+  .main-content {
+    max-width: min(1660px, calc(100vw - 48px));
+  }
+
+  #usersView .users-filters,
+  #activityLogView .filters-grid,
+  #systemSettingsView .settings-form-grid {
+    grid-template-columns: repeat(4, minmax(170px, 1fr));
+  }
+}
+
+/* Wide desktop: increase density while preserving readable line lengths. */
+@media (min-width: 1800px) {
+  :root {
+    --kyum-desktop-content-max: 1760px;
+  }
+
+  .main-content {
+    padding-inline: 30px;
+  }
+
+  #backupsView .backup-overview-grid,
+  #systemHealthView .health-details-grid,
+  #aboutAppView .about-app-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #systemHealthView .health-metrics-grid,
+  #systemHealthView .diagnostics-summary-grid,
+  #systemHealthView .performance-summary-grid,
+  #systemHealthView .smart-health-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}

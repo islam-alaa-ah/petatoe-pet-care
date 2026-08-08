@@ -1,0 +1,369 @@
+/*
+ * Phase M14.9.8.16.9 — Global Typography Scale & Responsive Layout Certification
+ * Loaded last so typography can be improved without replacing established screen layouts.
+ */
+
+:root {
+  --kyum-font-body: 16px;
+  --kyum-font-small: 14px;
+  --kyum-font-control: 15px;
+  --kyum-font-table: 14px;
+  --kyum-font-button: 15px;
+  --kyum-line-body: 1.7;
+  --kyum-control-min-height: 46px;
+}
+
+html {
+  font-size: var(--kyum-font-body);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body,
+input,
+select,
+textarea,
+button {
+  font-family: "Cairo", sans-serif;
+}
+
+body {
+  font-size: var(--kyum-font-body);
+  line-height: var(--kyum-line-body);
+  font-weight: 500;
+}
+
+/* Clear hierarchy: strong enough for readability without making all content visually identical. */
+h1, h2, h3, h4, h5, h6,
+.page-title,
+.section-title,
+.modal-title,
+.dialog-title,
+.panel-header h2,
+.panel-header h3,
+.card-title,
+strong,
+b {
+  font-weight: 700;
+}
+
+p,
+li,
+dd,
+dt,
+span,
+small,
+label {
+  overflow-wrap: anywhere;
+}
+
+label {
+  font-size: var(--kyum-font-control);
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+small,
+.section-note,
+.help-text,
+.field-help,
+.form-hint,
+.muted,
+.text-muted,
+.panel-header p,
+.performance-card-head span,
+.performance-metric span,
+.stat-card span,
+.simple-item span,
+.profile-item span,
+.timeline-card p {
+  font-size: var(--kyum-font-small);
+  line-height: 1.65;
+  font-weight: 500;
+}
+
+/* Form controls */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea,
+.input,
+.form-control,
+.search-input,
+.filter-control {
+  min-height: var(--kyum-control-min-height);
+  font-size: var(--kyum-font-control);
+  line-height: 1.55;
+  font-weight: 600;
+  padding-block: 10px;
+}
+
+textarea {
+  min-height: 112px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-size: var(--kyum-font-small);
+  font-weight: 500;
+  opacity: .82;
+}
+
+/* Buttons: allow two-line labels while protecting boundaries. */
+button,
+.btn,
+.primary-btn,
+.secondary-btn,
+.text-btn,
+.action-btn,
+.icon-text-btn,
+.modal-actions button,
+.dialog-actions button {
+  min-height: 44px;
+  font-size: var(--kyum-font-button);
+  line-height: 1.4;
+  font-weight: 700;
+  padding-block: 10px;
+  padding-inline: 16px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+  max-width: 100%;
+}
+
+.icon-btn,
+button[aria-label]:empty {
+  padding: 0;
+  min-width: 42px;
+  min-height: 42px;
+}
+
+/* Tables remain dense enough for reports, but more legible. */
+table {
+  font-size: var(--kyum-font-table);
+}
+
+th,
+td {
+  font-size: var(--kyum-font-table);
+  line-height: 1.6;
+  padding-block: 13px;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+th {
+  font-weight: 700;
+}
+
+td {
+  font-weight: 500;
+}
+
+.table-actions,
+.actions-cell,
+td:last-child {
+  min-width: max-content;
+}
+
+.table-actions,
+.actions-cell,
+.action-group,
+.inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.badge,
+.status-badge,
+.tag,
+.pill,
+.chip {
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 700;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Navigation and header */
+.nav-item,
+.nav-group-content .nav-item,
+.sidebar button,
+.mobile-drawer button,
+.mobile-bottom-nav button {
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.topbar h2,
+.page-header h1,
+.page-header h2 {
+  line-height: 1.25;
+}
+
+/* Cards and statistics */
+.stat-card strong,
+.followup-stat strong,
+.health-summary-card strong {
+  line-height: 1.25;
+}
+
+.card,
+.panel,
+.modal-content,
+.dialog-content,
+.modal-card {
+  min-width: 0;
+}
+
+/* Dialog certification: fixed header/footer + safe scroll body where these structures exist. */
+.modal-header,
+.dialog-header,
+.modal-footer,
+.dialog-footer {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.modal-body,
+.dialog-body,
+.modal-scroll-body {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.modal-actions,
+.dialog-actions,
+.modal-footer,
+.dialog-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Installation and complex workflow dialogs */
+.installation-scheduling-dialog,
+.installation-inline-dialog,
+.installation-completion-dialog,
+.installation-execution-dialog {
+  font-size: var(--kyum-font-body);
+}
+
+.installation-scheduling-dialog .visit-card,
+.installation-scheduling-dialog .service-row,
+.installation-inline-dialog .service-row {
+  min-width: 0;
+}
+
+.installation-scheduling-dialog .visit-card label,
+.installation-inline-dialog label {
+  font-size: 14px;
+}
+
+/* Avoid clipping in KPI/report cards and timelines. */
+.reports-kpi-grid article,
+.dashboard-stats article,
+.performance-card,
+.timeline-card,
+.activity-card,
+.daily-activity-item {
+  min-width: 0;
+}
+
+.activity-details,
+.timeline-card,
+.daily-activity-item,
+.report-cell,
+.report-value {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+
+/* Desktop/tablet */
+@media (min-width: 768px) {
+  .topbar h2 { font-size: 30px; }
+  .panel-header h2,
+  .section-header h2 { font-size: 22px; }
+  .panel-header h3,
+  .section-header h3 { font-size: 19px; }
+
+  .modal-content,
+  .dialog-content,
+  .modal-card {
+    max-width: min(96vw, 1560px);
+  }
+}
+
+/* Mobile keeps increased readability while preserving fit. */
+@media (max-width: 767px) {
+  :root {
+    --kyum-font-body: 15px;
+    --kyum-font-small: 13px;
+    --kyum-font-control: 16px; /* prevents iOS input zoom */
+    --kyum-font-table: 13px;
+    --kyum-font-button: 14px;
+    --kyum-control-min-height: 48px;
+  }
+
+  body { line-height: 1.65; }
+
+  button,
+  .btn,
+  .primary-btn,
+  .secondary-btn,
+  .action-btn {
+    min-height: 46px;
+    padding-inline: 13px;
+  }
+
+  .modal-actions > *,
+  .dialog-actions > *,
+  .modal-footer > *,
+  .dialog-footer > * {
+    flex: 1 1 135px;
+  }
+
+  th,
+  td {
+    padding-block: 11px;
+  }
+}
+
+/* PDF/print layouts are independent from the UI scale to prevent broken exports. */
+@media print {
+  :root {
+    --kyum-font-body: 11px;
+    --kyum-font-small: 9px;
+    --kyum-font-control: 10px;
+    --kyum-font-table: 9px;
+    --kyum-font-button: 10px;
+  }
+
+  body {
+    font-size: 11px !important;
+    line-height: 1.45 !important;
+    font-weight: 400 !important;
+  }
+
+  th,
+  td {
+    font-size: 9px !important;
+    line-height: 1.35 !important;
+    padding: 5px 6px !important;
+  }
+
+  button,
+  .btn,
+  .primary-btn,
+  .secondary-btn {
+    font-size: 10px !important;
+    min-height: 0 !important;
+  }
+}

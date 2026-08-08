@@ -1,0 +1,351 @@
+/*
+ * Phase M13.23.3 — Daily Operations & Reports Responsive Integration
+ * Responsive-only integration for Daily Operations, Daily Performance,
+ * Reports Overview and their reporting dialogs. No business logic changes.
+ */
+
+#dailyOperationsView,
+#dailyPerformanceReportView,
+#reportsOverviewView {
+  container-type: inline-size;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+#dailyOperationsView > *,
+#dailyPerformanceReportView > *,
+#reportsOverviewView > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Daily operations */
+#dailyOperationsView .daily-phone-lookup,
+#dailyOperationsView .daily-operations-header,
+#dailyOperationsView .daily-current-session-card,
+#dailyOperationsView .daily-manager-note,
+#dailyOperationsView .panel {
+  width: 100%;
+}
+
+#dailyOperationsView .daily-phone-lookup-form,
+#dailyOperationsView .daily-phone-lookup-controls,
+#dailyOperationsView .daily-targets-actions,
+#dailyOperationsView .daily-alerts-actions,
+#dailyOperationsView .daily-suggested-customers-header,
+#dailyOperationsView .daily-whatsapp-template-header,
+#dailyOperationsView .daily-whatsapp-template-actions {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+#dailyOperationsView .daily-phone-lookup-controls > input {
+  flex: 1 1 220px;
+}
+
+#dailyOperationsView .daily-operations-kpis {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+}
+
+#dailyOperationsView .daily-targets-grid,
+#dailyOperationsView .daily-alerts-summary,
+#dailyOperationsView .daily-suggested-progress-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+}
+
+#dailyOperationsView .daily-whatsapp-template-grid {
+  grid-template-columns: minmax(0, 2fr) minmax(220px, .8fr);
+}
+
+#dailyOperationsView .table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+#dailyOperationsView .daily-operations-table {
+  min-width: 760px;
+  max-width: none;
+}
+
+/* Daily performance */
+#dailyPerformanceReportView .daily-performance-header,
+#dailyPerformanceReportView .panel-header {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+#dailyPerformanceReportView .daily-performance-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#dailyPerformanceReportView .daily-performance-filters,
+#dailyPerformanceReportView .daily-activity-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr)) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+#dailyPerformanceReportView .daily-performance-filters > *,
+#dailyPerformanceReportView .daily-activity-filters > * {
+  min-width: 0;
+}
+
+#dailyPerformanceReportView .daily-performance-kpis {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+}
+
+#dailyPerformanceReportView .daily-performance-leaderboard {
+  min-width: 0;
+}
+
+#dailyPerformanceReportView .table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+#dailyPerformanceReportView :is(.daily-performance-table, .daily-attendance-table,
+  .daily-alerts-report-table, .daily-task-matrix-table) {
+  min-width: 820px;
+  max-width: none;
+}
+
+#dailyPerformanceReportView .daily-performance-report-selector {
+  width: min(100%, 520px);
+}
+
+#dailyPerformanceReportView .daily-performance-report-selector select {
+  width: 100%;
+}
+
+/* Reports center */
+#reportsOverviewView .reports-header-row,
+#reportsOverviewView .panel-header {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+#reportsOverviewView .reports-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#reportsOverviewView .reports-filter-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  align-items: end;
+  gap: 12px;
+}
+
+#reportsOverviewView .reports-filter-bar > * {
+  min-width: 0;
+}
+
+#reportsOverviewView .reports-kpi-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+}
+
+#reportsOverviewView .reports-dashboard-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#reportsOverviewView .reports-dashboard-grid > *,
+#reportsOverviewView .analytics-grid > * {
+  min-width: 0;
+}
+
+#reportsOverviewView .analytics-tabs,
+#reportsOverviewView .trend-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#reportsOverviewView .quotation-value-kpis {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#reportsOverviewView .table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+#reportsOverviewView .table-wrap > table {
+  min-width: 760px;
+  max-width: none;
+}
+
+/* Laptop and compact desktop */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  #dailyOperationsView .daily-whatsapp-template-grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(220px, .75fr);
+  }
+
+  #dailyPerformanceReportView .daily-performance-filters,
+  #dailyPerformanceReportView .daily-activity-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  }
+
+  #reportsOverviewView .reports-filter-bar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #dailyOperationsView .daily-whatsapp-template-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #dailyOperationsView .daily-operations-kpis,
+  #dailyOperationsView .daily-targets-grid,
+  #dailyOperationsView .daily-alerts-summary,
+  #dailyOperationsView .daily-suggested-progress-grid,
+  #dailyPerformanceReportView .daily-performance-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #dailyPerformanceReportView .daily-performance-filters,
+  #dailyPerformanceReportView .daily-activity-filters,
+  #reportsOverviewView .reports-filter-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #dailyPerformanceReportView .daily-performance-filters > button,
+  #dailyPerformanceReportView .daily-activity-filters > button {
+    justify-self: start;
+  }
+
+  #reportsOverviewView .reports-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #reportsOverviewView .quotation-value-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Mobile and touch landscape: keep the established mobile shell. */
+@media (max-width: 767px),
+  (pointer: coarse) and (max-device-width: 1024px),
+  (hover: none) and (max-device-width: 1024px) {
+  #dailyOperationsView,
+  #dailyPerformanceReportView,
+  #reportsOverviewView {
+    overflow-x: hidden;
+  }
+
+  #dailyOperationsView .daily-phone-lookup-controls,
+  #dailyOperationsView .daily-targets-actions,
+  #dailyOperationsView .daily-alerts-actions,
+  #dailyOperationsView .daily-whatsapp-template-actions,
+  #dailyPerformanceReportView .daily-performance-actions,
+  #reportsOverviewView .reports-actions {
+    width: 100%;
+  }
+
+  #dailyOperationsView .daily-phone-lookup-controls > *,
+  #dailyOperationsView .daily-targets-actions > *,
+  #dailyOperationsView .daily-alerts-actions > *,
+  #dailyOperationsView .daily-whatsapp-template-actions > *,
+  #dailyPerformanceReportView .daily-performance-actions > *,
+  #reportsOverviewView .reports-actions > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #dailyOperationsView .daily-whatsapp-template-grid,
+  #dailyPerformanceReportView .daily-performance-filters,
+  #dailyPerformanceReportView .daily-activity-filters,
+  #reportsOverviewView .reports-filter-bar,
+  #reportsOverviewView .reports-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #dailyPerformanceReportView .daily-performance-filters > button,
+  #dailyPerformanceReportView .daily-activity-filters > button,
+  #reportsOverviewView .reports-filter-bar > button {
+    width: 100%;
+  }
+
+  #dailyOperationsView .table-wrap,
+  #dailyPerformanceReportView .table-wrap,
+  #reportsOverviewView .table-wrap {
+    scroll-snap-type: x proximity;
+  }
+
+  #dailyOperationsView .panel:last-child,
+  #dailyPerformanceReportView .panel:last-child,
+  #reportsOverviewView .panel:last-child {
+    margin-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+
+  #reportsExportDialog,
+  #employeeTargetsDialog {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    margin: 8px;
+  }
+
+  #reportsExportDialog form,
+  #employeeTargetsDialog form {
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+@media (max-width: 480px) {
+  #dailyOperationsView .daily-operations-kpis,
+  #dailyOperationsView .daily-targets-grid,
+  #dailyOperationsView .daily-alerts-summary,
+  #dailyOperationsView .daily-suggested-progress-grid,
+  #dailyPerformanceReportView .daily-performance-kpis,
+  #reportsOverviewView .reports-kpi-grid,
+  #reportsOverviewView .quotation-value-kpis {
+    grid-template-columns: 1fr;
+  }
+
+  #dailyOperationsView .daily-phone-lookup-controls > button,
+  #dailyOperationsView .daily-targets-actions > button,
+  #dailyOperationsView .daily-alerts-actions > button,
+  #dailyOperationsView .daily-whatsapp-template-actions > button,
+  #dailyPerformanceReportView .daily-performance-actions > button,
+  #reportsOverviewView .reports-actions > button {
+    width: 100%;
+  }
+}
+
+/* Wide desktop: increase information density without over-stretching cards. */
+@media (min-width: 1600px) {
+  #dailyOperationsView .daily-operations-kpis,
+  #dailyPerformanceReportView .daily-performance-kpis {
+    grid-template-columns: repeat(5, minmax(190px, 1fr));
+  }
+
+  #reportsOverviewView .reports-kpi-grid {
+    grid-template-columns: repeat(6, minmax(190px, 1fr));
+  }
+
+  #reportsOverviewView .reports-dashboard-grid {
+    grid-template-columns: repeat(2, minmax(440px, 1fr));
+  }
+
+  #reportsOverviewView .top10-grid {
+    grid-template-columns: repeat(2, minmax(420px, 1fr));
+  }
+}

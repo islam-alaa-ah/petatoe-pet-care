@@ -1,0 +1,114 @@
+.installation-execution-view{--exec-gold:#d79a13;--exec-gold-soft:#f5c557;--exec-navy:#061a38;--exec-navy-2:#0a2852;--exec-surface:#fff;--exec-line:#e2e8f0;--exec-muted:#64748b;display:grid;gap:16px}
+.installation-execution-tabs{display:flex;justify-content:flex-start;align-items:center;gap:8px;justify-self:end;width:max-content;max-width:100%;padding:6px;border:1px solid var(--exec-line);background:var(--exec-surface);border-radius:14px;box-shadow:0 8px 24px rgba(15,23,42,.06);overflow:visible}
+.installation-execution-tab{min-height:40px;border:1px solid transparent;border-radius:10px;padding:0 16px;background:#f8fafc;color:#172033;font:inherit;font-size:.92rem;font-weight:850;cursor:pointer;position:relative;transition:.2s ease;white-space:nowrap}
+.installation-execution-tab.active{background:#fff;color:#8a5a00;border-color:var(--exec-gold);box-shadow:0 5px 14px rgba(215,154,19,.14)}.installation-execution-tab.active::after{display:none}
+.execution-tab-badge{display:inline-grid;place-items:center;min-width:22px;height:22px;margin-inline-start:7px;border-radius:999px;background:var(--exec-gold);color:#fff;font-size:.75rem}.execution-tab-badge.hidden{display:none}
+.installation-execution-toolbar{display:grid;grid-template-columns:minmax(170px,1fr) minmax(190px,1fr) minmax(190px,1fr) auto;gap:12px;align-items:end}.installation-execution-toolbar label{display:grid;gap:7px;font-weight:700}.installation-execution-toolbar select,.installation-execution-toolbar input{min-height:48px}
+.execution-refresh-btn,.execution-primary-action{min-height:48px;border:1px solid var(--exec-gold);border-radius:12px;padding:0 24px;background:linear-gradient(145deg,var(--exec-navy-2),var(--exec-navy));color:#fff!important;font:inherit;font-weight:900;box-shadow:0 8px 20px rgba(6,26,56,.22),inset 0 0 0 1px rgba(255,255,255,.05);cursor:pointer;transition:transform .16s ease,box-shadow .16s ease}
+.execution-refresh-btn:hover,.execution-primary-action:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(6,26,56,.3),0 0 0 2px rgba(215,154,19,.14)}
+.execution-primary-action:disabled{opacity:.5;cursor:not-allowed;transform:none}.execution-primary-action .execution-arrow{display:inline-grid;place-items:center;width:28px;height:28px;margin-inline-start:14px;border-radius:999px;background:linear-gradient(145deg,#f7d474,#b87800);color:var(--exec-navy)}
+.installation-execution-workspace{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr);gap:16px;align-items:start}.installation-execution-workspace-today{grid-template-columns:minmax(0,1fr)}.installation-execution-workspace-today .installation-today-list-panel{width:100%}.installation-panel-title{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding-bottom:14px;border-bottom:1px solid var(--exec-line)}.installation-panel-title h3{margin:0 0 5px}.installation-panel-title p{margin:0;color:var(--exec-muted)}.installation-panel-title>strong{display:grid;place-items:center;min-width:38px;height:38px;border-radius:12px;background:#fff7df;color:#9a6500}
+.installation-today-list{display:grid;gap:12px;margin-top:14px;max-height:68vh;overflow:auto;padding-inline-end:4px}.installation-today-card{border:1px solid var(--exec-line);border-radius:16px;padding:16px;background:#fff;box-shadow:0 7px 20px rgba(15,23,42,.055);display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,.55fr);gap:18px}.installation-today-card-main{display:grid;gap:8px}.installation-today-card-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.installation-time{font-weight:900;color:#a56c00}.installation-request-number{font-weight:900;color:#111827}.installation-customer-name{font-size:1.08rem;font-weight:900}.installation-card-muted{color:var(--exec-muted);font-size:.91rem}.installation-card-services{display:grid;gap:5px;padding:10px 0;margin:0;border-top:1px dashed var(--exec-line);border-bottom:1px dashed var(--exec-line)}.installation-card-services li{display:flex;justify-content:space-between;gap:10px}.installation-today-card-side{display:grid;align-content:space-between;gap:12px}.installation-metrics{display:grid;gap:7px;font-size:.9rem}.installation-card-actions{display:flex;gap:9px;align-items:center}.execution-secondary-action{min-height:43px;border:1px solid var(--exec-gold);border-radius:11px;padding:0 16px;background:#fff;color:var(--exec-navy);font:inherit;font-weight:800;cursor:pointer}.installation-current-preview{min-height:480px}.execution-empty-state{min-height:400px;display:grid;place-items:center;align-content:center;text-align:center;color:var(--exec-muted);gap:7px}.execution-empty-icon{font-size:4rem;color:#aec0dc}.execution-empty-state h4,.execution-empty-state p{margin:0}
+.execution-current-shell{display:grid;gap:16px}.execution-current-summary{display:grid;grid-template-columns:1.15fr .85fr;gap:0;overflow:hidden}.execution-current-summary>div{padding:22px}.execution-current-summary>div+div{border-inline-start:1px solid var(--exec-gold)}.execution-current-summary h2{margin:0 0 8px}.execution-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.execution-summary-item{display:grid;gap:4px}.execution-summary-item span{color:var(--exec-muted);font-size:.82rem}.execution-summary-item strong{font-size:1rem}.execution-map-btn{display:inline-flex;align-items:center;justify-content:center;min-height:45px;border:1px solid var(--exec-gold);border-radius:11px;padding:0 20px;background:linear-gradient(145deg,var(--exec-navy-2),var(--exec-navy));color:#fff;text-decoration:none;font-weight:900;box-shadow:0 7px 18px rgba(6,26,56,.22)}
+.execution-stepper{padding:22px}.execution-stepper h3{margin:0 0 24px}.execution-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.execution-step{position:relative;display:grid;justify-items:center;text-align:center;gap:8px}.execution-step:not(:last-child)::after{content:"";position:absolute;top:25px;inset-inline-start:calc(50% + 31px);width:calc(100% - 62px);border-top:1px dashed #d3a333}.execution-step-circle{z-index:1;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;border:1.5px solid var(--exec-gold);background:#fff;color:var(--exec-navy);font-weight:900}.execution-step.active .execution-step-circle{background:linear-gradient(145deg,var(--exec-navy-2),var(--exec-navy));color:#fff;box-shadow:0 0 0 4px rgba(215,154,19,.12)}.execution-step.done .execution-step-circle{background:#fff8e4;color:#946000}.execution-step-label{font-size:.83rem;font-weight:800}.execution-current-stage{display:grid;grid-template-columns:160px 1fr auto;gap:18px;align-items:center;padding:18px 22px}.execution-stage-icon{display:grid;place-items:center;width:68px;height:68px;border-radius:50%;border:1px solid var(--exec-gold);background:linear-gradient(145deg,var(--exec-navy-2),var(--exec-navy));color:#fff;font-size:1.5rem}.execution-current-stage h3,.execution-current-stage p{margin:0}.execution-current-stage p{color:var(--exec-muted);margin-top:5px}
+.execution-documentation{display:grid;gap:16px;padding:20px}.execution-documentation h3{margin:0}.execution-doc-grid{display:grid;grid-template-columns:.78fr 1.22fr;gap:16px}.execution-upload-box{min-height:168px;border:1.5px dashed #a9b7cc;border-radius:15px;display:grid;place-items:center;align-content:center;text-align:center;padding:18px;cursor:pointer;background:#fbfdff}.execution-upload-box input{display:none}.execution-upload-box strong{font-size:1.05rem}.execution-upload-box small{color:var(--exec-muted);margin-top:7px}.execution-photo-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.execution-photo-chip{padding:7px 10px;border-radius:9px;background:#eef3f9;font-size:.8rem}.execution-notes-box{display:grid;gap:7px}.execution-notes-box textarea{min-height:168px;resize:vertical}.execution-completion-note{padding:14px;border-radius:12px;background:#eef5ff;color:#315d9d;text-align:center}.execution-error{color:#b42318}
+html[data-theme="dark"] .installation-execution-view{--exec-surface:#0d1b31;--exec-line:#263750;--exec-muted:#aab8ca}.dark-mode .installation-execution-view{--exec-surface:#0d1b31;--exec-line:#263750;--exec-muted:#aab8ca}
+html[data-theme="dark"] .installation-execution-tab,.dark-mode .installation-execution-tab{background:#10213a;color:#dce6f5}html[data-theme="dark"] .installation-execution-tab.active,.dark-mode .installation-execution-tab.active{background:#0d1b31;color:#f0bc46}html[data-theme="dark"] .installation-today-card,.dark-mode .installation-today-card,html[data-theme="dark"] .execution-step-circle,.dark-mode .execution-step-circle{background:#10213a;color:#edf4ff}html[data-theme="dark"] .execution-secondary-action,.dark-mode .execution-secondary-action{background:#10213a;color:#fff}html[data-theme="dark"] .execution-upload-box,.dark-mode .execution-upload-box{background:#0b1729}
+@media(max-width:1050px){.installation-execution-workspace{grid-template-columns:1fr}.installation-current-preview{display:none}.execution-current-summary{grid-template-columns:1fr}.execution-current-summary>div+div{border-inline-start:0;border-top:1px solid var(--exec-gold)}.execution-current-stage{grid-template-columns:auto 1fr}.execution-current-stage .execution-primary-action{grid-column:1/-1}.execution-doc-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.installation-execution-toolbar{grid-template-columns:1fr 1fr}.execution-refresh-btn{grid-column:1/-1}.installation-today-card{grid-template-columns:1fr}.execution-steps{grid-template-columns:repeat(5,120px);overflow-x:auto;padding-bottom:8px}.execution-step:not(:last-child)::after{display:none}.execution-summary-grid{grid-template-columns:1fr}.execution-current-stage{grid-template-columns:1fr;text-align:center;justify-items:center}.installation-execution-tabs{position:sticky;top:0;z-index:4}}
+
+/* Phase M14.9.1.1 — Today tab focused layout and light-mode action contrast */
+html:not([data-theme="dark"]) .execution-primary-action,
+body:not(.dark-mode) .execution-primary-action{color:#fff!important;text-shadow:0 1px 1px rgba(0,0,0,.22)}
+html:not([data-theme="dark"]) .execution-primary-action .execution-arrow,
+body:not(.dark-mode) .execution-primary-action .execution-arrow{color:var(--exec-navy)!important;text-shadow:none}
+@media(max-width:760px){.installation-execution-tabs{justify-self:stretch;width:100%}.installation-execution-tab{flex:1;padding-inline:10px}}
+
+/* Phase M14.9.1.2 — force readable white labels inside navy execution controls */
+.execution-refresh-btn,
+.execution-refresh-btn:link,
+.execution-refresh-btn:visited,
+.execution-refresh-btn:hover,
+.execution-refresh-btn:focus,
+.execution-refresh-btn:active,
+.execution-primary-action,
+.execution-primary-action:link,
+.execution-primary-action:visited,
+.execution-primary-action:hover,
+.execution-primary-action:focus,
+.execution-primary-action:active,
+.execution-primary-action:disabled,
+button.execution-refresh-btn,
+button.execution-primary-action,
+html:not([data-theme="dark"]) button.execution-refresh-btn,
+html:not([data-theme="dark"]) button.execution-primary-action,
+body:not(.dark-mode) button.execution-refresh-btn,
+body:not(.dark-mode) button.execution-primary-action {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .28) !important;
+}
+
+.execution-refresh-btn *,
+.execution-primary-action * {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+}
+
+.execution-primary-action .execution-arrow {
+  color: var(--exec-navy) !important;
+  -webkit-text-fill-color: var(--exec-navy) !important;
+  text-shadow: none !important;
+}
+
+/* Phase M14.9.1.3 timeline timestamps and durations */
+.execution-step-wrap{display:contents}.execution-step-time{display:block;margin-top:6px;font-size:.75rem;font-weight:800;color:#a66f00}.execution-step-connector{display:flex;align-items:center;justify-content:center;min-width:52px;border-top:1px dashed #d7a41d;position:relative}.execution-step-connector span{position:absolute;top:-22px;white-space:nowrap;background:var(--surface,#fff);padding:2px 6px;border-radius:999px;font-size:.7rem;color:#8a6200;border:1px solid rgba(212,160,23,.35)}[data-theme="dark"] .execution-step-time{color:#f4c84c}[data-theme="dark"] .execution-step-connector span{background:#071a33;color:#f4c84c}
+
+
+/* Phase M14.9.1.6 — aligned execution timeline and active-stage association */
+.execution-stepper{overflow:hidden}
+.execution-steps{
+  display:grid;
+  grid-template-columns:minmax(92px,1fr) minmax(58px,.72fr) minmax(92px,1fr) minmax(58px,.72fr) minmax(92px,1fr) minmax(58px,.72fr) minmax(92px,1fr) minmax(58px,.72fr) minmax(92px,1fr);
+  align-items:start;
+  gap:0;
+  direction:rtl;
+}
+.execution-step{display:grid;grid-template-rows:58px auto 22px;justify-items:center;align-items:start;gap:7px;min-width:0;text-align:center;position:relative}
+.execution-step-circle{width:56px;height:56px;box-sizing:border-box;align-self:start}
+.execution-step-label{min-height:22px;display:flex;align-items:center;justify-content:center;line-height:1.35}
+.execution-step-time{min-height:20px;margin:0;font-size:.76rem;font-weight:850;color:#9a6700;direction:rtl;white-space:nowrap}
+.execution-step-time.is-empty{color:#94a3b8;font-weight:700}
+.execution-step-connector{align-self:start;height:56px;border:0;position:relative;display:flex;align-items:center;justify-content:center;min-width:0}
+.execution-step-connector::before{content:"";position:absolute;inset-inline:0;top:27px;border-top:1.5px dashed #d7a41d}
+.execution-step-connector span{top:10px;z-index:2;background:var(--exec-surface);box-shadow:0 0 0 5px var(--exec-surface);border-color:rgba(212,160,23,.45);font-weight:800}
+.execution-current-stage{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;padding:22px 24px;border:1px solid rgba(215,154,19,.4);overflow:visible}
+.execution-current-stage::before{content:"";position:absolute;inset-inline-start:calc((100% / 5) * var(--active-stage) + (100% / 10) - 11px);top:-12px;width:22px;height:22px;background:var(--exec-surface);border-top:1px solid rgba(215,154,19,.55);border-inline-start:1px solid rgba(215,154,19,.55);transform:rotate(45deg);z-index:0}
+.execution-stage-pointer{display:none}
+.execution-stage-icon{position:relative;z-index:1;flex:0 0 auto}
+.execution-stage-copy{position:relative;z-index:1;display:grid;gap:4px}
+.execution-stage-copy small{color:#9a6700;font-weight:900}
+.execution-stage-action{position:relative;z-index:1;display:flex;justify-content:flex-end;align-items:center}
+.execution-stage-action .execution-map-btn,.execution-stage-action .execution-primary-action{min-width:190px}
+html[data-theme="dark"] .execution-current-stage::before,.dark-mode .execution-current-stage::before{background:#0d1b31}
+html[data-theme="dark"] .execution-step-time.is-empty,.dark-mode .execution-step-time.is-empty{color:#728198}
+@media(max-width:900px){
+  .execution-steps{grid-template-columns:repeat(5,minmax(128px,1fr));gap:12px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x proximity}
+  .execution-step{scroll-snap-align:center}
+  .execution-step-connector{display:none}
+  .execution-current-stage::before{display:none}
+  .execution-current-stage{grid-template-columns:auto minmax(0,1fr)}
+  .execution-stage-action{grid-column:1/-1;justify-content:stretch}
+  .execution-stage-action .execution-map-btn,.execution-stage-action .execution-primary-action{width:100%;min-width:0}
+}
+@media(max-width:560px){
+  .execution-current-stage{grid-template-columns:1fr;text-align:center;justify-items:center;padding:20px 16px}
+  .execution-stage-action{width:100%}
+}
+
+/* Phase M14.9.8.16.3 — current request permission scope recovery */
+.execution-current-selector{display:grid;gap:14px;margin-bottom:16px}.execution-current-selector h3,.execution-current-selector p{margin:0}.execution-current-selector p{color:var(--text-muted,#64748b);margin-top:4px}.execution-current-selector-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.execution-current-selector-btn{display:grid;gap:4px;text-align:right;border:1px solid rgba(148,163,184,.35);border-radius:14px;background:rgba(248,250,252,.78);padding:12px 14px;cursor:pointer;color:inherit}.execution-current-selector-btn:hover,.execution-current-selector-btn.active{border-color:#2563eb;box-shadow:0 0 0 2px rgba(37,99,235,.12)}.execution-current-selector-btn span,.execution-current-selector-btn small{overflow-wrap:anywhere}.execution-current-selector-btn small{color:var(--text-muted,#64748b)}.execution-observer-note{margin-bottom:14px;padding:12px 14px;border:1px solid rgba(37,99,235,.22);border-radius:12px;background:rgba(219,234,254,.5);font-weight:700;color:#1e3a8a}.dark-mode .execution-current-selector-btn{background:rgba(15,23,42,.72)}.dark-mode .execution-observer-note{background:rgba(30,64,175,.2);color:#bfdbfe}@media(max-width:700px){.execution-current-selector-list{grid-template-columns:1fr}}
+
+
+/* Phase M14.9.8.16.9.3 — execution visit schedule data alignment */
+.installation-customer-phone{margin-top:6px;color:var(--text-color,#0f172a);font-weight:700;overflow-wrap:anywhere}.installation-customer-phone strong{font-weight:850}.installation-assignment-notes{display:grid;gap:5px;margin-top:12px;padding:11px 13px;border:1px solid rgba(217,154,19,.28);border-radius:12px;background:rgba(255,248,224,.62);line-height:1.65;overflow-wrap:anywhere}.installation-assignment-notes strong{color:#8a6200}.dark-mode .installation-customer-phone{color:#f8fafc}.dark-mode .installation-assignment-notes{background:rgba(120,84,0,.16);border-color:rgba(244,200,76,.28)}.dark-mode .installation-assignment-notes strong{color:#f4c84c}@media(max-width:700px){.installation-assignment-notes{padding:10px 11px}.installation-customer-phone{font-size:.95rem}}

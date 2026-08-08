@@ -1,0 +1,6 @@
+KYUM Enterprise Offline Architecture Compliance
+Policy: 1.0.0
+Registered domains: 16
+Data-access files scanned: 22
+WARN: assets/js/app.js: temporary direct UI data path remains (sales_representatives update; sales_representatives delete; generic reference delete; daily_alerts direct read)
+Result: PASS WITH 1 DOCUMENTED WARNING(S)

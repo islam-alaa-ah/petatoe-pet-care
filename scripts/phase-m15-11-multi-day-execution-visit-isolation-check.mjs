@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+const read=p=>fs.readFileSync(new URL('../'+p,import.meta.url),'utf8');
+const svc=read('assets/js/installations-service.js');
+const exec=read('assets/js/installation-execution.js');
+const comp=read('assets/js/installation-completion.js');
+const report=read('assets/js/installation-operations-reports.js');
+const sql=read('supabase/migrations/phase_m15_11_multi_day_execution_visit_isolation.sql');
+const tests=[];
+tests.push(['visit owns execution timestamps',sql.includes('add column if not exists on_route_at')&&sql.includes('add column if not exists completed_at')]);
+tests.push(['visit-specific selection RPC',sql.includes('select_installation_execution_visit')&&svc.includes("rpc('select_installation_execution_visit'")]);
+tests.push(['visit-specific map RPC',sql.includes('record_installation_visit_map_opened')&&svc.includes("rpc('record_installation_visit_map_opened'")]);
+tests.push(['visit-specific stage RPC',sql.includes('advance_installation_execution_visit_stage')&&svc.includes('advance_installation_execution_visit_stage')]);
+tests.push(['historical backfill matches Saudi execution date',sql.includes("at time zone 'Asia/Riyadh'")&&sql.includes('v.scheduled_date =')]);
+tests.push(['execution workspace reads visit timeline',svc.includes('selected_for_execution_at,selected_for_execution_by,on_route_at,map_opened_at,arrived_at,started_at,completed_at')]);
+tests.push(['execution row state comes from visit',svc.includes("onRouteAt:v.on_route_at||''")&&svc.includes("completedAt:v.completed_at||''")]);
+tests.push(['execution number isolates visits',svc.includes('executionNumber:`${base.requestNumber}-${String(Number(v.visit_no||0)).padStart(2')&&exec.includes('r.executionNumber||r.requestNumber')]);
+tests.push(['current request keyed by schedule entry',exec.includes('r.scheduleEntryId||r.id')&&exec.includes('selectExecutionRequest(r.id,r.visitId||null)')]);
+tests.push(['report timeline uses visit state',svc.includes('serviceLines,visit);')&&report.includes('order.executionNumber||order.requestNumber')]);
+tests.push(['completion confirmation targets visit',svc.includes('confirm_installation_execution_visit_quantities')&&comp.includes('visitId:quantityCurrent.visitId||null')]);
+tests.push(['existing future visit resumes parent request',sql.includes("status','existing_next_visit'")&&sql.includes("set status='مسند',scheduled_date=nextv.scheduled_date")]);
+let pass=0;for(const [name,ok] of tests){console.log(`${ok?'PASS':'FAIL'} ${name}`);if(ok)pass++;}
+console.log(`${pass}/${tests.length} PASS`);if(pass!==tests.length)process.exit(1);

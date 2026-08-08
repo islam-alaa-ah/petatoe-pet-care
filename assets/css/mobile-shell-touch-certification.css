@@ -1,0 +1,180 @@
+/* Phase M13.23.4 — Mobile Shell & Touch Certification
+   Final non-destructive guard layer for mobile portrait/landscape, safe areas,
+   touch targets, scroll ownership and shell stability. */
+
+:root {
+  --kyum-visual-viewport-height: 100dvh;
+  --kyum-safe-top: env(safe-area-inset-top, 0px);
+  --kyum-safe-right: env(safe-area-inset-right, 0px);
+  --kyum-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --kyum-safe-left: env(safe-area-inset-left, 0px);
+  --kyum-touch-target: 44px;
+}
+
+@media (max-width: 767px),
+       (pointer: coarse) and (max-device-width: 1024px),
+       (hover: none) and (max-device-width: 1024px) {
+  html,
+  body {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: var(--kyum-visual-viewport-height) !important;
+    overflow-x: clip !important;
+    overscroll-behavior-x: none;
+  }
+
+  body:not(.sidebar-menu-open):not(.mobile-dashboard-sheet-open):not(.mobile-customers-sheet-open):not(.mobile-reports-sheet-open) {
+    overflow-y: auto !important;
+    touch-action: pan-y pinch-zoom !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #appView.app-shell,
+  .main-content,
+  main,
+  .view-section {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #appHeader.topbar.mobile-header-stable {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: max(14px, var(--kyum-safe-left)) !important;
+    padding-right: max(14px, var(--kyum-safe-right)) !important;
+    contain: layout paint;
+  }
+
+  #sidebarMenuToggle,
+  #kyumScrollControl,
+  #appHeader .theme-toggle-button,
+  .mobile-nav-item,
+  .mobile-dashboard-action,
+  .mobile-daily-action,
+  .mobile-report-action,
+  button,
+  [role="button"] {
+    min-width: var(--kyum-touch-target);
+    min-height: var(--kyum-touch-target);
+  }
+
+  button,
+  [role="button"],
+  a,
+  input,
+  select,
+  textarea,
+  label {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  [role="button"],
+  a,
+  .mobile-nav-item {
+    touch-action: manipulation;
+  }
+
+  .mobile-bottom-nav {
+    right: max(12px, var(--kyum-safe-right)) !important;
+    left: max(12px, var(--kyum-safe-left)) !important;
+    bottom: max(10px, var(--kyum-safe-bottom)) !important;
+    max-width: calc(100vw - max(24px, var(--kyum-safe-left) + var(--kyum-safe-right) + 24px)) !important;
+    touch-action: pan-y !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;
+  }
+
+  .mobile-bottom-nav.is-live-tracking,
+  .mobile-bottom-nav.is-hold-navigating {
+    touch-action: none !important;
+  }
+
+  .mobile-nav-item {
+    min-width: 0;
+    min-height: var(--kyum-touch-target) !important;
+  }
+
+  .mobile-nav-active-indicator {
+    pointer-events: none !important;
+    will-change: transform, width;
+  }
+
+  .table-wrap,
+  .responsive-table,
+  [data-horizontal-scroll],
+  [class*="horizontal-scroll"],
+  .analytics-tabs,
+  .mobile-reports-jump-nav {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: visible;
+    touch-action: pan-x pan-y pinch-zoom !important;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  dialog[open],
+  .modal.is-open,
+  .dialog.is-open {
+    max-height: calc(var(--kyum-visual-viewport-height) - var(--kyum-safe-top) - var(--kyum-safe-bottom) - 20px) !important;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--primary, #2563eb) 72%, white) !important;
+    outline-offset: 2px !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+    }
+  }
+}
+
+@media (orientation: landscape) and (pointer: coarse) and (max-device-width: 1024px),
+       (orientation: landscape) and (hover: none) and (max-device-width: 1024px) {
+  html,
+  body,
+  #appView.app-shell {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #appView.app-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #mainSidebar {
+    position: fixed !important;
+    width: min(88vw, 360px) !important;
+    max-width: calc(100vw - var(--kyum-safe-left) - var(--kyum-safe-right) - 20px) !important;
+    top: calc(var(--kyum-stable-header-height, 76px) + var(--kyum-safe-top)) !important;
+    bottom: var(--kyum-safe-bottom) !important;
+    height: auto !important;
+    max-height: calc(var(--kyum-visual-viewport-height) - var(--kyum-stable-header-height, 76px) - var(--kyum-safe-top) - var(--kyum-safe-bottom)) !important;
+  }
+
+  .main-content {
+    margin-inline: 0 !important;
+    width: 100% !important;
+  }
+
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+}

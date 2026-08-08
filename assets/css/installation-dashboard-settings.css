@@ -1,0 +1,55 @@
+.installation-dashboard-header{align-items:center}.installation-dashboard-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);gap:18px}.installation-dashboard-grid>.panel{padding:20px}.installation-status-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.installation-status-summary>div,.installation-upcoming-list>div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px}.installation-upcoming-list{display:grid;gap:10px}.installation-upcoming-list small{display:block;color:var(--text-muted);margin-top:3px}.installation-settings-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:22px}.installation-settings-form label{display:grid;gap:7px}.installation-settings-check{display:flex!important;align-items:center;grid-column:1/-1}.installation-settings-actions{grid-column:1/-1;display:flex;justify-content:flex-end}@media(max-width:900px){.installation-dashboard-grid,.installation-settings-form{grid-template-columns:1fr}}@media(max-width:600px){.installation-status-summary{grid-template-columns:1fr}}
+
+/* Phase M14.8.4 — Installation settings single-view UX and sidebar scroll removal */
+.installations-nav-group .nav-group-content,
+.installations-nav-group:not(.is-collapsed) .nav-group-content{
+  max-height:none;
+  overflow:visible;
+  overscroll-behavior:auto;
+  scrollbar-width:none;
+  padding-bottom:6px;
+  padding-left:0;
+}
+.installations-nav-group .nav-group-content::-webkit-scrollbar{display:none}
+.installations-nav-group.is-collapsed .nav-group-content{max-height:0;overflow:hidden;padding-bottom:0}
+.installations-nav-group .nav-item{min-height:38px;line-height:1.35;white-space:normal}
+.installations-nav-group .nav-item[data-view="installationSettings"]{margin-top:4px;border-top:1px solid rgba(148,163,184,.18);border-radius:0 0 10px 10px}
+.installation-settings-view{display:grid;gap:16px;align-content:start}
+.installation-settings-view.hidden{display:none}
+.installation-settings-controller{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,460px);gap:24px;align-items:end;padding:22px}
+.installation-settings-heading{display:grid;gap:6px}
+.installation-settings-heading .section-title,.installation-settings-heading .section-note{margin:0}
+.installation-settings-filter{display:grid;gap:8px;font-weight:700}
+.installation-settings-filter span{font-size:13px;color:var(--text-muted)}
+.installation-settings-filter select{width:100%;min-height:48px}
+.installation-settings-single-view{display:block}
+.installation-settings-section{padding:0;overflow:hidden}
+.installation-settings-section.hidden{display:none!important}
+.installation-settings-section-header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px;border-bottom:1px solid var(--border)}
+.installation-settings-section-header>div{display:grid;gap:5px}
+.installation-settings-section-header h4,.installation-settings-section-header p{margin:0}
+.installation-settings-section-header h4{font-size:20px}
+.installation-settings-section-header p{color:var(--text-muted);font-size:13px}
+.installation-settings-section .table-wrap{margin:0;max-width:100%;overflow-x:auto;overflow-y:visible}
+.installation-settings-section table{min-width:720px;margin:0}
+.installation-settings-section td,.installation-settings-section th{vertical-align:middle}
+.installation-settings-actions-cell{display:flex;gap:8px;flex-wrap:wrap}
+.installation-status-pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;background:rgba(34,197,94,.12);color:#15803d}
+.installation-status-pill.is-inactive{background:rgba(100,116,139,.14);color:#64748b}
+.installation-reference-dialog .dialog-shell{width:min(680px,calc(100vw - 24px))}
+@media(max-width:900px){.installation-settings-controller{grid-template-columns:1fr;align-items:stretch}.installation-settings-section-header{align-items:flex-start;flex-direction:column}.installation-settings-section-header .primary-btn{width:100%}}
+@media(max-width:600px){.installation-settings-controller{padding:16px}.installation-settings-section-header{padding:16px}.installation-settings-section table{min-width:660px}}
+
+/* Phase M15.2 — canonical searchable Region -> City selector in installation reference data. */
+.installation-reference-dialog .installation-reference-geo-field{min-width:0}
+.installation-reference-dialog .installation-reference-geo-select{position:relative;width:100%;min-width:0}
+.installation-reference-dialog .installation-reference-geo-select .geo-searchable-input{width:100%;min-width:0;min-height:48px;padding-inline:46px 12px;font-weight:700;background:var(--surface,#fff);cursor:text;text-overflow:ellipsis}
+.installation-reference-dialog .installation-reference-geo-select .geo-searchable-toggle{position:absolute;inset-inline-start:7px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:transparent;border-radius:9px;font-size:19px;font-weight:800;z-index:2;cursor:pointer}
+.installation-reference-dialog .installation-reference-geo-select.is-disabled{opacity:.68}
+.installation-reference-dialog .installation-reference-geo-select .geo-searchable-options{position:absolute;z-index:12070;top:calc(100% + 7px);inset-inline:0;width:auto;max-width:100%;max-height:250px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;background:var(--surface,#fff);color:var(--text,#0f172a);border:1px solid rgba(37,99,235,.28);border-radius:12px;box-shadow:0 16px 42px rgba(15,23,42,.22);padding:7px;scrollbar-gutter:stable}
+.installation-reference-dialog .installation-reference-geo-select .geo-searchable-option{display:flex;width:100%;min-height:42px;align-items:center;border:0;background:transparent;border-radius:9px;padding:9px 11px;text-align:right;color:inherit;font:inherit;font-weight:700;cursor:pointer;white-space:normal;overflow-wrap:anywhere}
+.installation-reference-dialog .installation-reference-geo-select .geo-searchable-option:hover,.installation-reference-dialog .installation-reference-geo-select .geo-searchable-option:focus,.installation-reference-dialog .installation-reference-geo-select .geo-searchable-option.is-selected{outline:0;background:rgba(37,99,235,.12);color:#1d4ed8}
+.installation-reference-dialog .installation-reference-geo-select .geo-searchable-empty{padding:16px 10px;text-align:center;color:var(--text-muted,#64748b);font-weight:700}
+html[data-theme="dark"] .installation-reference-dialog .installation-reference-geo-select .geo-searchable-options{background:#0f1f35;color:#fff;border-color:rgba(96,165,250,.32);box-shadow:0 18px 48px rgba(0,0,0,.5)}
+html[data-theme="dark"] .installation-reference-dialog .installation-reference-geo-select .geo-searchable-option:hover,html[data-theme="dark"] .installation-reference-dialog .installation-reference-geo-select .geo-searchable-option:focus,html[data-theme="dark"] .installation-reference-dialog .installation-reference-geo-select .geo-searchable-option.is-selected{background:rgba(59,130,246,.22);color:#bfdbfe}
+@media(max-width:600px){.installation-reference-dialog .installation-reference-geo-select .geo-searchable-input{min-height:52px}.installation-reference-dialog .installation-reference-geo-select .geo-searchable-options{max-height:min(34vh,240px)}}

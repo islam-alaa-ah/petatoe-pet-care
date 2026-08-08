@@ -1,0 +1,22 @@
+import fs from "node:fs";
+const root = new URL("../", import.meta.url);
+const read = p => fs.readFileSync(new URL(p, root), "utf8");
+let pass=0, fail=0;
+function check(name, ok){ if(ok){console.log(`PASS ${name}`);pass++;} else {console.error(`FAIL ${name}`);fail++;} }
+const daily=read("assets/js/daily-activity-service.js");
+const app=read("assets/js/app.js");
+const html=read("index.html");
+const css=read("assets/css/style.css");
+const version=JSON.parse(read("version.json"));
+check("daily alerts use inner join", /daily_alerts!daily_alert_actions_alert_id_fkey!inner/.test(daily));
+check("riyadh day range used", /T00:00:00\+03:00/.test(daily) && /riyadhDayRange\(workDate\)/.test(daily));
+check("alert safety filter by workDate", /item\.alert\?\.work_date/.test(daily) && /String\(workDate/.test(daily));
+check("daily activity report forces fresh read", /DailyActivityService\.load\([\s\S]*?\{ force: true \}/.test(app));
+check("followups export buttons exist", /exportFollowupsPdfBtn/.test(html) && /sendFollowupsWhatsappPdfBtn/.test(html));
+check("quotations export buttons exist", /exportQuotationsPdfBtn/.test(html) && /sendQuotationsWhatsappPdfBtn/.test(html));
+check("followups PDF uses filteredFollowups", /function followupReportConfig\(\)[\s\S]*?filteredFollowups\(\)/.test(app));
+check("quotations PDF uses filteredQuotations", /function quotationReportConfig\(\)[\s\S]*?filteredQuotations\(\)/.test(app));
+check("PDF supports WhatsApp share", /runFilteredListPdf[\s\S]*?navigator\.share[\s\S]*?wa\.me/.test(app));
+check("mobile export action layout", /report-export-actions/.test(css) && /max-width:767px/.test(css));
+check("version bumped", version.version === "18.53.27");
+console.log(`M15.13 ${pass}/${pass+fail} PASS`); if(fail) process.exit(1);

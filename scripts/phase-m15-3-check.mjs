@@ -1,0 +1,26 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const html=read('index.html');
+const geo=read('assets/js/geographic-address.js');
+const app=read('assets/js/app.js');
+const install=read('assets/js/installations-module.js');
+const excel=read('assets/js/customer-excel-center.js');
+const svc=read('assets/js/installations-service.js');
+const settings=read('assets/js/installation-settings-management.js');
+const sw=read('service-worker.js');
+const pwa=read('assets/js/pwa.js');
+const version=JSON.parse(read('version.json'));
+let passed=0,failed=0;
+function test(name,ok){if(ok){passed++;console.log(`PASS ${name}`)}else{failed++;console.error(`FAIL ${name}`)}}
+test('shared geography module loaded before customer service',html.indexOf('geographic-address.js?v=18.53.2')>html.indexOf('supabase-client.js?v=18.53.2')&&html.indexOf('geographic-address.js?v=18.53.2')<html.indexOf('customers-service.js?v=18.53.2'));
+test('shared component owns catalog/cascade/validation',geo.includes('createController')&&geo.includes('canonicalizeAddress')&&geo.includes('validRegionCity')&&geo.includes('validDistrictCity'));
+test('customer add/edit uses unified controller',app.includes('ensureCustomerGeoController')&&app.includes('geoController.validate')&&app.includes('canonicalGeo.region')&&app.includes('canonicalGeo.district'));
+test('installation new/edit uses same component',install.includes('window.KYUMGeography.createController')&&install.includes("installationGeoController('new')")&&install.includes("installationGeoController('edit')")&&!install.includes('function normalizeInstallationGeoSearch'));
+test('excel import canonicalizes and rejects noncanonical chain',excel.includes('KYUMGeography.canonicalizeAddress')&&excel.includes('العنوان يجب أن يطابق المنطقة ثم المدينة ثم الحي من القوائم المعتمدة'));
+test('active-only geographic master remains enforced',geo.includes('.eq("is_active", true)')&&svc.includes(".eq('is_active',true)"));
+test('M15.2 neighborhood service validation retained',settings.includes('installationReferenceRegionSearch')&&settings.includes('installationReferenceCitySearch')&&svc.includes('المدينة المختارة لا تتبع المنطقة المحددة'));
+test('version and offline cache advanced',version.version==='18.53.2'&&version.build===185302&&pwa.includes('CURRENT_VERSION = "18.53.2"')&&sw.includes('18-53-2-unified-geographic-address-component')&&sw.includes('./assets/js/geographic-address.js'));
+console.log(`\nM15.3 checks: ${passed} passed, ${failed} failed`);
+if(failed)process.exit(1);

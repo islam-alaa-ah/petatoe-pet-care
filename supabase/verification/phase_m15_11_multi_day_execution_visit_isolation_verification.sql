@@ -1,0 +1,4 @@
+-- Phase M15.11 verification
+select column_name from information_schema.columns where table_schema='public' and table_name='installation_execution_visits' and column_name in ('selected_for_execution_at','on_route_at','map_opened_at','arrived_at','started_at','completed_at') order by column_name;
+select count(*) as cross_visit_timeline_collisions from public.installation_execution_visits a join public.installation_execution_visits b on b.installation_request_id=a.installation_request_id and b.id<>a.id where a.completed_at is not null and b.completed_at=a.completed_at;
+select installation_request_id,visit_no,scheduled_date,status,on_route_at,map_opened_at,arrived_at,started_at,completed_at from public.installation_execution_visits where installation_request_id in (select id from public.installation_requests where request_number='INS-2026-000021') order by visit_no;

@@ -1,0 +1,27 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const root=process.cwd();
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const checks=[];
+const ok=(name,cond)=>checks.push([name,!!cond]);
+const app=read('assets/js/app.js');
+const notify=read('assets/js/notification-center.js');
+const notifyCss=read('assets/css/notification-center.css');
+const mobileCss=read('assets/css/mobile.css');
+const pwa=read('assets/js/pwa.js');
+const sw=read('service-worker.js');
+const version=JSON.parse(read('version.json'));
+const pkg=JSON.parse(read('package.json'));
+const index=read('index.html');
+ok('Customer rows expose mobile field markers', app.includes('data-mobile-field="name"') && app.includes('data-mobile-field="phone"') && app.includes('data-mobile-field="actions"'));
+ok('Bell dropdown portals to body on mobile', notify.includes('document.body.appendChild(dropdown)') && notify.includes('notification-dropdown-mobile-portal'));
+ok('Portaled dropdown has fixed viewport CSS', notifyCss.includes('body > #notificationDropdown.notification-dropdown-mobile-portal'));
+ok('Canonical customer mobile card CSS exists', mobileCss.includes('Phase M15.13.7 — Canonical mobile customer cards'));
+ok('Version JSON is 18.53.34', version.version==='18.53.34' && version.build===185334);
+ok('Package version matches', pkg.version===version.version);
+ok('PWA runtime version matches', pwa.includes(`CURRENT_VERSION = "${version.version}"`));
+ok('Index cache tokens match', !index.includes('18.53.33') && index.includes('18.53.34'));
+ok('Service worker cache token bumped', sw.includes('18-53-34-mobile-bell-customer-card-m15-13-7'));
+let failed=0; for(const [name,pass] of checks){console.log(`${pass?'PASS':'FAIL'} - ${name}`); if(!pass)failed++;}
+if(failed)process.exit(1);
+console.log(`PASS ${checks.length}/${checks.length}`);

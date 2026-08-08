@@ -1,0 +1,48 @@
+{
+  "name": "petatoe-pet-care-mobile",
+  "version": "18.53.39",
+  "private": true,
+  "description": "Native Android/iOS packaging layer for PETATOE.",
+  "scripts": {
+    "native:prepare": "node scripts/prepare-native-web.mjs",
+    "native:add:android": "npm run native:prepare && npx cap add android",
+    "native:add:ios": "npm run native:prepare && npx cap add ios",
+    "native:sync": "npm run native:prepare && npx cap sync",
+    "native:open:android": "npx cap open android",
+    "native:open:ios": "npx cap open ios",
+    "native:doctor": "npx cap doctor",
+    "enterprise:offline:check": "node scripts/enterprise-offline-compliance-check.mjs",
+    "dashboard:offline:check": "node scripts/dashboard-offline-certification-check.mjs",
+    "offline:runtime:check": "node scripts/offline-runtime-reliability-check.mjs",
+    "offline:cache-first:check": "node scripts/cache-first-connectivity-check.mjs",
+    "offline:queue:check": "node scripts/sync-queue-recovery-check.mjs",
+    "enterprise:remaining-offline:check": "node scripts/remaining-modules-offline-check.mjs",
+    "enterprise:full-offline:check": "node scripts/full-enterprise-offline-certification-check.mjs",
+    "offline:write-completion:check": "node scripts/offline-write-completion-check.mjs",
+    "mobile:final-certification:check": "node scripts/mobile-final-enterprise-certification-check.mjs",
+    "permissions:role-agnostic:check": "node scripts/role-agnostic-permissions-check.mjs",
+    "permissions:visibility-consistency:check": "node scripts/permission-visibility-consistency-check.mjs",
+    "phase:m14.9.8.9:check": "node scripts/phase-m14-9-8-9-check.mjs",
+    "phase:m15.0.1:check": "node scripts/phase-m15-0-1-check.mjs",
+    "phase:m15.3:check": "node scripts/phase-m15-3-check.mjs",
+    "phase:m15.4:check": "node scripts/phase-m15-4-check.mjs",
+    "check:m15.5": "node scripts/phase-m15-5-check.mjs",
+    "check:m15.6": "node scripts/phase-m15-6-check.mjs",
+    "check:m15.7": "node scripts/phase-m15-7-check.mjs",
+    "check:m15.10": "node scripts/phase-m15-10-installation-summary-execution-timeline-check.mjs",
+    "check:m15.10.1": "node scripts/phase-m15-10-1-installation-summary-timeline-accuracy-check.mjs",
+    "check:s1": "node scripts/phase-s1-service-analytics-dashboard-check.mjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/browser": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "@capacitor/splash-screen": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
+  }
+}

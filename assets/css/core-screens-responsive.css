@@ -1,0 +1,252 @@
+/*
+ * Phase M13.23.2 — Core Screens Responsive Integration
+ * Targeted, regression-safe layout rules for Dashboard, Customers,
+ * Follow-ups and Quotations. Loaded after the shared foundation.
+ */
+
+/* Shared desktop/tablet guards */
+#dashboardView,
+#customersView,
+#followupsView,
+#quotationsView {
+  container-type: inline-size;
+}
+
+#dashboardView > *,
+#customersView > *,
+#followupsView > *,
+#quotationsView > * {
+  max-width: 100%;
+}
+
+#customersView .search-box,
+#customersView .customer-main-actions,
+#followupsView > .actions-row > div,
+#quotationsView > .actions-row > div {
+  min-width: 0;
+}
+
+#customersView .search-box input,
+#followupsView .followup-filters > *,
+#quotationsView .quotation-filters > * {
+  width: 100%;
+}
+
+#customersView .customer-main-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+#customersView .customer-main-actions > button {
+  flex: 0 1 auto;
+  white-space: nowrap;
+}
+
+#customersView .table-card,
+#followupsView .table-card,
+#quotationsView .table-card {
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+#customersView .table-card table,
+#followupsView .table-card table,
+#quotationsView .table-card table {
+  width: 100%;
+  min-width: 980px;
+}
+
+#customersView .table-pagination,
+#followupsView .table-pagination,
+#quotationsView .table-pagination {
+  width: 100%;
+  gap: 12px;
+}
+
+#customersView .table-pagination > div,
+#followupsView .table-pagination > div,
+#quotationsView .table-pagination > div {
+  flex-wrap: wrap;
+}
+
+/* Dashboard scales by available content width rather than device names. */
+#dashboardView .dashboard-filter-bar {
+  display: grid;
+  grid-template-columns: minmax(220px, .75fr) minmax(560px, 2fr);
+  align-items: start;
+  gap: clamp(14px, 1.6vw, 24px);
+}
+
+#dashboardView .dashboard-filters {
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+}
+
+#dashboardView .dashboard-stats {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 205px), 1fr));
+}
+
+#dashboardView .analytics-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#dashboardView .analytics-grid > .full-span-panel {
+  grid-column: 1 / -1;
+}
+
+#dashboardView .panel-header {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+#dashboardView .dashboard-representative-settings-btn {
+  flex: 0 0 auto;
+}
+
+/* Laptop and medium desktop */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  #dashboardView .dashboard-filter-bar {
+    grid-template-columns: 1fr;
+  }
+
+  #dashboardView .dashboard-filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #customersView > .actions-row {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(420px, auto);
+    align-items: center;
+  }
+
+  #followupsView > .actions-row,
+  #quotationsView > .actions-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  #customersView .filters-row,
+  #followupsView .followup-filters,
+  #quotationsView .quotation-filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Tablet and compact laptop */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #dashboardView .dashboard-filter-bar {
+    grid-template-columns: 1fr;
+  }
+
+  #dashboardView .dashboard-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #dashboardView .dashboard-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #dashboardView .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #customersView > .actions-row,
+  #followupsView > .actions-row,
+  #quotationsView > .actions-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  #customersView .customer-main-actions {
+    justify-content: stretch;
+  }
+
+  #customersView .customer-main-actions > button {
+    flex: 1 1 180px;
+  }
+
+  #followupsView > .actions-row > button,
+  #quotationsView > .actions-row > button {
+    justify-self: start;
+  }
+
+  #customersView .filters-row,
+  #followupsView .followup-filters,
+  #quotationsView .quotation-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #followupsView .followup-stats,
+  #quotationsView .followup-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile: preserve the established mobile shell and only add overflow guards. */
+@media (max-width: 767px),
+  (pointer: coarse) and (max-device-width: 1024px),
+  (hover: none) and (max-device-width: 1024px) {
+  #dashboardView .dashboard-filter-bar,
+  #dashboardView .dashboard-filters,
+  #customersView > .actions-row,
+  #followupsView > .actions-row,
+  #quotationsView > .actions-row {
+    max-width: 100%;
+  }
+
+  #dashboardView .dashboard-stats,
+  #dashboardView .analytics-grid {
+    min-width: 0;
+  }
+
+  #customersView .customer-main-actions > button,
+  #followupsView > .actions-row > button,
+  #quotationsView > .actions-row > button {
+    max-width: 100%;
+  }
+
+  #customersView .table-pagination,
+  #followupsView .table-pagination,
+  #quotationsView .table-pagination {
+    margin-bottom: calc(82px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 380px) {
+  #dashboardView .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  #customersView .customer-main-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  #customersView .customer-main-actions > button {
+    width: 100%;
+  }
+}
+
+/* Wide desktop: prevent stretched, hard-to-scan cards. */
+@media (min-width: 1600px) {
+  #dashboardView .dashboard-stats {
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+  }
+
+  #dashboardView .analytics-grid {
+    grid-template-columns: repeat(2, minmax(420px, 1fr));
+  }
+
+  #customersView > .actions-row {
+    display: grid;
+    grid-template-columns: minmax(360px, 1fr) auto;
+    align-items: center;
+  }
+}

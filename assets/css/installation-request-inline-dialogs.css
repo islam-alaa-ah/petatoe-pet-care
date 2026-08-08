@@ -1,0 +1,79 @@
+
+.installation-request-view-dialog,.installation-services-edit-dialog{width:min(980px,calc(100vw - 32px));}
+.installation-request-view-content{display:grid;gap:16px;max-height:68vh;overflow:auto;padding:4px;}
+.installation-request-view-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.installation-request-view-grid>div,.installation-view-services{padding:14px;border:1px solid var(--border-color,#d9e2ec);border-radius:14px;background:var(--surface-soft,#f8fafc);}
+.installation-request-view-grid span{display:block;color:var(--text-muted,#64748b);font-size:.82rem;margin-bottom:6px}.installation-request-view-grid strong{display:block;overflow-wrap:anywhere}
+.installation-view-services h4{margin:0 0 10px}.installation-view-service-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-color,#e2e8f0);align-items:center}.installation-view-service-row:last-child{border-bottom:0}
+.installation-inline-services-wrap{max-height:55vh}.installation-inline-services-table{width:100%;border-collapse:collapse}.installation-inline-services-table th,.installation-inline-services-table td{padding:10px;border-bottom:1px solid var(--border-color,#e2e8f0);vertical-align:middle}.installation-inline-services-table select,.installation-inline-services-table input{width:100%;min-width:110px}
+.installation-inline-services-footer{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-top:14px}.installation-inline-services-footer>div{display:grid;grid-template-columns:auto auto;gap:6px 16px;align-items:center}.installation-inline-services-footer strong{font-size:1.05rem}
+.installation-service-detail{display:grid;gap:2px}.installation-service-detail small{color:var(--text-muted,#64748b)}
+.installation-row-actions{display:flex;flex-wrap:wrap;gap:6px}.installation-unscheduled-actions{display:flex;flex-wrap:wrap;gap:6px;min-width:240px}
+.installation-assignment-services-section{border:1px solid var(--border-color,#d9e2ec);border-radius:14px;padding:14px;background:var(--surface-soft,#f8fafc)}.installation-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.installation-section-title h4{margin:0}.installation-assignment-service-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color,#e2e8f0)}.installation-assignment-service-row:last-child{border-bottom:0}.installation-assignment-total{display:flex;justify-content:space-between;padding-top:10px;font-weight:700}
+@media(max-width:760px){.installation-request-view-grid{grid-template-columns:1fr}.installation-view-service-row,.installation-assignment-service-row{grid-template-columns:1fr 1fr}.installation-inline-services-table thead{display:none}.installation-inline-services-table,.installation-inline-services-table tbody,.installation-inline-services-table tr,.installation-inline-services-table td{display:block;width:100%}.installation-inline-services-table tr{padding:12px;border:1px solid var(--border-color,#e2e8f0);border-radius:14px;margin-bottom:10px}.installation-inline-services-table td{border:0;padding:5px}.installation-inline-services-footer{align-items:stretch;flex-direction:column}}
+
+
+/* Phase M14.9.8.15.1 — request context and horizontal-overflow recovery */
+.installation-services-edit-dialog{width:min(1120px,calc(100vw - 32px));max-width:1120px}
+.installation-services-edit-dialog .dialog-shell{width:100%;max-width:100%;overflow:hidden}
+.installation-services-edit-context{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.installation-services-edit-context>div{min-width:0;padding:12px 14px;border:1px solid var(--border-color,#d9e2ec);border-radius:12px;background:var(--surface-soft,#f8fafc)}
+.installation-services-edit-context span{display:block;margin-bottom:5px;color:var(--text-muted,#64748b);font-size:.8rem}
+.installation-services-edit-context strong{display:block;min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.installation-context-location-link{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:5px 12px;border:1px solid var(--border-color,#cbd5e1);border-radius:9px;text-decoration:none;color:inherit;background:var(--surface,#fff)}
+.installation-inline-services-wrap{width:100%;max-width:100%;max-height:50vh;overflow-y:auto;overflow-x:hidden;border:1px solid var(--border-color,#e2e8f0);border-radius:12px}
+.installation-inline-services-table{width:100%;table-layout:fixed}
+.installation-inline-services-table th:nth-child(1),.installation-inline-services-table td:nth-child(1){width:38%}
+.installation-inline-services-table th:nth-child(2),.installation-inline-services-table td:nth-child(2){width:14%}
+.installation-inline-services-table th:nth-child(3),.installation-inline-services-table td:nth-child(3){width:18%}
+.installation-inline-services-table th:nth-child(4),.installation-inline-services-table td:nth-child(4){width:17%}
+.installation-inline-services-table th:nth-child(5),.installation-inline-services-table td:nth-child(5){width:13%}
+.installation-inline-services-table select,.installation-inline-services-table input{min-width:0;max-width:100%;box-sizing:border-box}
+.installation-inline-services-table output{display:block;white-space:normal;overflow-wrap:anywhere;font-weight:700}
+.installation-inline-services-table .inline-service-remove{width:100%;padding-inline:8px}
+.installation-inline-services-footer{padding-top:2px}
+.installation-services-edit-dialog .dialog-actions{position:sticky;bottom:0;background:var(--surface,#fff);z-index:2;padding-top:12px}
+@media(max-width:900px){.installation-services-edit-context{grid-template-columns:repeat(2,minmax(0,1fr))}.installation-services-edit-dialog{width:min(760px,calc(100vw - 24px))}}
+@media(max-width:760px){
+ .installation-services-edit-context{grid-template-columns:1fr 1fr}
+ .installation-inline-services-wrap{overflow:visible;max-height:none;border:0}
+ .installation-inline-services-table tr{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
+ .installation-inline-services-table td{display:flex!important;flex-direction:column;gap:5px;min-width:0}
+ .installation-inline-services-table td::before{content:attr(data-label);font-size:.78rem;color:var(--text-muted,#64748b);font-weight:700}
+ .installation-inline-services-table td:first-child{grid-column:1/-1}
+ .installation-inline-services-table td:last-child{grid-column:1/-1}
+ .installation-inline-services-table .inline-service-remove{width:auto;align-self:flex-start}
+}
+@media(max-width:520px){.installation-services-edit-dialog{width:calc(100vw - 16px)}.installation-services-edit-context{grid-template-columns:1fr}.installation-inline-services-table tr{grid-template-columns:1fr}.installation-inline-services-table td,.installation-inline-services-table td:first-child,.installation-inline-services-table td:last-child{grid-column:1}}
+
+
+/* Phase M14.9.8.15.2 — editable request context without clipped content */
+.installation-services-edit-context-form label{display:flex;flex-direction:column;min-width:0;gap:7px;padding:12px 14px;border:1px solid var(--border-color,#d9e2ec);border-radius:12px;background:var(--surface-soft,#f8fafc)}
+.installation-services-edit-context-form label>span{margin:0;color:var(--text-muted,#64748b);font-size:.82rem;font-weight:700;white-space:normal;overflow-wrap:anywhere}
+.installation-services-edit-context-form input,.installation-services-edit-context-form select{width:100%;min-width:0;max-width:100%;box-sizing:border-box;white-space:normal;text-overflow:clip}
+.installation-context-location-field{grid-column:span 2}
+.installation-context-location-control{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;min-width:0}
+.installation-context-location-control input{direction:ltr;text-align:left}
+.installation-context-location-link{white-space:nowrap}
+.installation-services-edit-dialog .dialog-header h3,.installation-services-edit-dialog .dialog-header p{white-space:normal;overflow-wrap:anywhere}
+@media(max-width:900px){.installation-context-location-field{grid-column:span 2}}
+@media(max-width:520px){.installation-context-location-field{grid-column:1}.installation-context-location-control{grid-template-columns:1fr}.installation-context-location-link{width:100%}}
+
+/* Phase M14.9.8.15.4 — unified save feedback */
+button.is-saving{cursor:wait;opacity:.82;pointer-events:none}
+button.is-saved{box-shadow:0 0 0 3px rgba(34,197,94,.16)}
+button.is-save-error{box-shadow:0 0 0 3px rgba(239,68,68,.14)}
+
+/* Phase M15.5 — scheduling request editor geographic hierarchy */
+.installation-services-edit-dialog .installation-geo-field{position:relative;overflow:visible}
+.installation-services-edit-dialog .installation-geo-select{position:relative;width:100%;min-width:0}
+.installation-services-edit-dialog .installation-geo-select .geo-searchable-input{width:100%;min-width:0;min-height:48px;padding-inline:46px 12px;font-weight:700;background:var(--surface,#fff);cursor:text;text-overflow:ellipsis}
+.installation-services-edit-dialog .installation-geo-select .geo-searchable-toggle{position:absolute;inset-inline-start:7px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:transparent;border-radius:9px;font-size:19px;font-weight:800;z-index:2;cursor:pointer}
+.installation-services-edit-dialog .installation-geo-select.is-disabled{opacity:.68}
+.installation-services-edit-dialog .installation-geo-select .geo-searchable-options{position:absolute;z-index:12060;top:calc(100% + 7px);inset-inline:0;width:auto;max-width:100%;max-height:240px;overflow-y:auto;overflow-x:hidden;background:var(--surface,#fff);color:var(--text,#0f172a);border:1px solid rgba(37,99,235,.28);border-radius:12px;box-shadow:0 16px 42px rgba(15,23,42,.22);padding:7px}
+.installation-services-edit-dialog .installation-geo-select .geo-searchable-option{display:flex;width:100%;min-height:42px;align-items:center;border:0;background:transparent;border-radius:9px;padding:9px 11px;text-align:right;color:inherit;font:inherit;font-weight:700;cursor:pointer;white-space:normal;overflow-wrap:anywhere}
+.installation-services-edit-dialog .installation-geo-select .geo-searchable-option:hover,.installation-services-edit-dialog .installation-geo-select .geo-searchable-option:focus,.installation-services-edit-dialog .installation-geo-select .geo-searchable-option.is-selected{outline:0;background:rgba(37,99,235,.12);color:#1d4ed8}
+.installation-services-edit-dialog .installation-geo-select .geo-searchable-empty{padding:16px 10px;text-align:center;color:var(--text-muted,#64748b);font-weight:700}
+html[data-theme="dark"] .installation-services-edit-dialog .installation-geo-select .geo-searchable-options{background:#0f1f35;color:#fff;border-color:rgba(96,165,250,.32)}
+html[data-theme="dark"] .installation-services-edit-dialog .installation-geo-select .geo-searchable-option:hover,html[data-theme="dark"] .installation-services-edit-dialog .installation-geo-select .geo-searchable-option:focus,html[data-theme="dark"] .installation-services-edit-dialog .installation-geo-select .geo-searchable-option.is-selected{background:rgba(59,130,246,.22);color:#bfdbfe}
+@media(max-width:520px){.installation-services-edit-dialog .installation-geo-select .geo-searchable-options{max-height:min(32vh,230px)}}

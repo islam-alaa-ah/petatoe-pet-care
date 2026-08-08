@@ -1,0 +1,71 @@
+.installation-requests-header{align-items:center;gap:16px}.installation-request-filters{display:grid;grid-template-columns:minmax(220px,2fr) repeat(3,minmax(150px,1fr)) auto;gap:12px;align-items:end;margin-bottom:16px}.installation-request-filters label,.installation-request-form-grid label{display:grid;gap:7px}.installation-request-filters input,.installation-request-filters select,.installation-request-form-grid input,.installation-request-form-grid select,.installation-request-form-grid textarea{width:100%}.installation-request-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}.installation-request-kpis article{display:grid;gap:8px}.installation-request-kpis strong{font-size:1.65rem}.installation-requests-table-wrap{max-width:100%;overflow:auto}.installation-requests-table{min-width:1180px}.installation-status-badge,.installation-priority-badge{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:4px 10px;border-radius:999px;font-size:.8rem;font-weight:700;background:var(--surface-soft,#eef2f7)}.installation-status-badge[data-status="مكتمل"]{background:#dcfce7;color:#166534}.installation-status-badge[data-status="قيد التنفيذ"],.installation-status-badge[data-status="في الطريق"]{background:#dbeafe;color:#1d4ed8}.installation-status-badge[data-status="متعذر"],.installation-status-badge[data-status="ملغي"]{background:#fee2e2;color:#991b1b}.installation-priority-badge[data-priority="عاجلة"]{background:#ffedd5;color:#9a3412}.installation-priority-badge[data-priority="حرجة"]{background:#fee2e2;color:#991b1b}.installation-request-dialog .dialog-shell{width:min(820px,calc(100vw - 32px));max-height:min(90dvh,900px);overflow:auto}.installation-request-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.installation-request-form-grid .full-span{grid-column:1/-1}.installation-row-actions{display:flex;gap:6px;white-space:nowrap}.installation-row-actions button{min-height:36px;padding-inline:10px}@media(max-width:1023px){.installation-request-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.installation-request-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:767px){.installation-requests-header{align-items:stretch}.installation-requests-header,.installation-request-filters{grid-template-columns:1fr;display:grid}.installation-request-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.installation-request-form-grid{grid-template-columns:1fr}.installation-request-form-grid .full-span{grid-column:auto}.installation-request-dialog .dialog-shell{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}}
+
+
+/* Phase M14.8.1 — separate new installation request screen */
+.installation-request-new-view{max-width:1200px;margin-inline:auto}
+.installation-request-page-form{padding:clamp(16px,2vw,28px)}
+.installation-request-page-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:20px}
+@media (max-width:767px){.installation-request-page-actions{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom));z-index:3;padding:12px;background:var(--surface,#fff);border-radius:16px;box-shadow:0 10px 30px rgba(15,23,42,.14)}.installation-request-page-actions>*{flex:1}}
+
+/* Phase M14.8.2 — installation request business workflow and multi-service form */
+.installation-request-workflow-form{display:grid;gap:18px}
+.installation-request-new-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+.installation-request-step-card{padding:0;overflow:hidden}
+.installation-step-header{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--border,#dbe2ea);background:var(--surface-soft,#f8fafc)}
+.installation-step-header h4{margin:0 0 4px;font-size:1.05rem}
+.installation-step-header p{margin:0;color:var(--text-muted,#64748b);font-size:.9rem}
+.installation-step-number{display:inline-flex;align-items:center;justify-content:center;flex:0 0 34px;height:34px;border-radius:10px;background:rgba(37,99,235,.12);color:#2563eb;font-weight:800}
+.installation-request-step-card>.installation-request-form-grid,.installation-request-step-card>.installation-notes-label{margin:20px}
+.installation-customer-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.installation-priority-grid{grid-template-columns:minmax(220px,360px);margin-top:16px!important}
+.required-mark{color:#dc2626}
+.installation-services-table-wrap{margin:20px 20px 0;overflow:auto;border:1px solid var(--border,#dbe2ea);border-radius:14px}
+.installation-services-table{width:100%;min-width:760px;border-collapse:collapse}
+.installation-services-table th,.installation-services-table td{padding:12px;border-bottom:1px solid var(--border,#e2e8f0);vertical-align:middle}
+.installation-services-table tbody tr:last-child td{border-bottom:0}
+.installation-services-table select,.installation-services-table input{width:100%;min-height:44px}
+.installation-service-line-total{font-weight:800;white-space:nowrap}
+.installation-services-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px}
+.installation-services-summary{display:grid;grid-template-columns:auto auto;gap:5px 14px;align-items:center;min-width:260px}
+.installation-services-summary span{color:var(--text-muted,#64748b);font-size:.85rem}
+.installation-services-summary strong{text-align:end;font-size:1rem}
+.installation-notes-label{display:grid;gap:8px}
+.installation-notes-label textarea{width:100%;resize:vertical;min-height:130px}
+.installation-status-badge[data-status="بانتظار المراجعة"]{background:#fef3c7;color:#92400e}
+@media(max-width:1023px){.installation-customer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.installation-customer-grid label:last-child{grid-column:1/-1}}
+@media(max-width:767px){.installation-request-new-heading{display:block}.installation-step-header{padding:14px}.installation-request-step-card>.installation-request-form-grid,.installation-request-step-card>.installation-notes-label{margin:14px}.installation-customer-grid,.installation-priority-grid{grid-template-columns:1fr}.installation-customer-grid label:last-child{grid-column:auto}.installation-services-table-wrap{margin:14px 14px 0}.installation-services-footer{align-items:stretch;flex-direction:column;padding:14px}.installation-services-summary{min-width:0}.installation-services-footer .secondary-btn{width:100%}}
+
+/* Phase M14.8.6 — customer Google Maps location */
+.installation-customer-grid .full-span{grid-column:1/-1}.field-hint{display:block;color:var(--text-muted,#64748b);font-size:.78rem;line-height:1.6}.optional-mark{color:var(--text-muted,#64748b);font-weight:500}
+
+/* Phase M14.9.7.5 — searchable installation customer combobox */
+.installation-customer-combobox{position:relative}.installation-customer-combobox>input[type="search"]{width:100%}.installation-customer-results{position:absolute;z-index:80;inset-inline:0;top:calc(100% + 6px);max-height:280px;overflow:auto;border:1px solid var(--border-color,#d9e0ea);border-radius:12px;background:var(--surface,#fff);box-shadow:0 16px 36px rgba(15,23,42,.16);padding:6px}.installation-customer-results.hidden{display:none}.installation-customer-result{display:grid;gap:3px;width:100%;padding:10px 12px;border:0;border-radius:9px;background:transparent;color:inherit;text-align:right;cursor:pointer}.installation-customer-result:hover,.installation-customer-result.is-active{background:rgba(37,99,235,.10)}.installation-customer-result strong{font-weight:800}.installation-customer-result span{font-size:.82rem;color:var(--text-muted,#64748b)}html[data-theme="dark"] .installation-customer-results{background:#132238;border-color:#33445f;box-shadow:0 16px 40px rgba(0,0,0,.35)}@media(max-width:767px){.installation-customer-results{position:fixed;inset-inline:16px;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);max-height:min(52dvh,420px)}}
+
+
+/* Phase M14.9.7.5.1 — customer options resilience and balanced layout */
+@media (min-width:1024px){
+  .installation-customer-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+  .installation-customer-search-wide{grid-column:auto}
+  .installation-customer-grid .full-span{grid-column:1/-1}
+}
+.installation-customer-search-field{align-content:start}
+.installation-customer-combobox{min-width:0}
+.installation-customer-combobox>input[type="search"]{min-height:48px}
+.installation-customer-results{max-width:100%;box-sizing:border-box}
+@media(max-width:767px){
+  .installation-customer-results{position:absolute;inset-inline:0;top:calc(100% + 6px);bottom:auto;max-height:min(42dvh,360px)}
+}
+
+/* Phase M15.5 — installation geographic hierarchy */
+.installation-request-new-view .installation-geo-field{position:relative;min-width:0;align-self:start}
+.installation-request-new-view .installation-geo-select{position:relative;width:100%;min-width:0}
+.installation-request-new-view .installation-geo-select .geo-searchable-input{width:100%;min-width:0;min-height:50px;padding-inline:48px 16px;font-weight:700;background:var(--surface,#fff);cursor:text;text-overflow:ellipsis}
+.installation-request-new-view .installation-geo-select .geo-searchable-toggle{position:absolute;inset-inline-start:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:transparent;border-radius:10px;font-size:20px;font-weight:800;z-index:2;cursor:pointer}
+.installation-request-new-view .installation-geo-select.is-disabled{opacity:.68}
+.installation-request-new-view .installation-geo-select .geo-searchable-options{position:absolute;z-index:12050;top:calc(100% + 8px);inset-inline:0;width:auto;max-width:100%;box-sizing:border-box;max-height:280px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;background:var(--surface,#fff);color:var(--text,#0f172a);border:1px solid rgba(37,99,235,.28);border-radius:14px;box-shadow:0 18px 48px rgba(15,23,42,.22);padding:8px;scrollbar-gutter:stable}
+.installation-request-new-view .installation-geo-select .geo-searchable-option{display:flex;width:100%;min-height:44px;align-items:center;justify-content:flex-start;border:0;background:transparent;border-radius:10px;padding:10px 12px;text-align:right;color:inherit;font:inherit;font-weight:700;line-height:1.45;cursor:pointer;white-space:normal;overflow-wrap:anywhere}
+.installation-request-new-view .installation-geo-select .geo-searchable-option:hover,.installation-request-new-view .installation-geo-select .geo-searchable-option:focus,.installation-request-new-view .installation-geo-select .geo-searchable-option.is-selected{outline:0;background:rgba(37,99,235,.12);color:#1d4ed8}
+.installation-request-new-view .installation-geo-select .geo-searchable-empty{padding:18px 12px;text-align:center;color:var(--text-muted,#64748b);font-weight:700}
+html[data-theme="dark"] .installation-request-new-view .installation-geo-select .geo-searchable-options{background:#0f1f35;color:#fff;border-color:rgba(96,165,250,.32);box-shadow:0 18px 48px rgba(0,0,0,.5)}
+html[data-theme="dark"] .installation-request-new-view .installation-geo-select .geo-searchable-option:hover,html[data-theme="dark"] .installation-request-new-view .installation-geo-select .geo-searchable-option:focus,html[data-theme="dark"] .installation-request-new-view .installation-geo-select .geo-searchable-option.is-selected{background:rgba(59,130,246,.22);color:#bfdbfe}
+@media(max-width:767px){.installation-request-new-view .installation-geo-select .geo-searchable-options{max-height:min(34vh,260px)}.installation-request-new-view .installation-geo-select .geo-searchable-input{min-height:52px}}

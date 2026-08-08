@@ -1,0 +1,785 @@
+(() => {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
+  const money = value => `SAR ${Number(value || 0).toFixed(2)}`;
+
+  let rows = [];
+  let opts = { customers: [], quotations: [], regions: [], cities: [], neighborhoods: [], serviceTypes: [] };
+  let optionsLoaded = false;
+  let editingRequestId = null;
+  const QUOTATION_PREFILL_KEY = "kyum:installation:quotation-prefill";
+  let quotationPrefillPromise = null;
+
+
+  function setSaveState(button,state,originalText){
+    if(!button)return;
+    if(state==='saving'){button.dataset.originalText=originalText||button.textContent;button.disabled=true;button.textContent='جاري الحفظ...';button.classList.add('is-saving');}
+    else if(state==='saved'){button.textContent='تم الحفظ';button.classList.remove('is-saving');button.classList.add('is-saved');}
+    else if(state==='error'){button.textContent='تعذر الحفظ';button.classList.remove('is-saving');button.classList.add('is-save-error');}
+    else{button.disabled=false;button.textContent=button.dataset.originalText||originalText||button.textContent;button.classList.remove('is-saving','is-saved','is-save-error');}
+  }
+  function status(node, message, type = "info") {
+    if (!node) return;
+    node.textContent = message;
+    node.className = `data-status ${type}`;
+  }
+
+  function clearStatus(node) {
+    if (!node) return;
+    node.textContent = "";
+    node.className = "data-status hidden";
+  }
+
+  function saveQuotationPrefillIntent(detail = {}) {
+    if (!detail.quotationId) return;
+    const payload = {
+      quotationId: String(detail.quotationId),
+      quotationNumber: String(detail.quotationNumber || ""),
+      customerId: detail.customerId ? String(detail.customerId) : "",
+      customerName: String(detail.customerName || ""),
+      customerPhone: String(detail.customerPhone || ""),
+      customerNumber: String(detail.customerNumber || ""),
+      customerCity: String(detail.customerCity || ""),
+      customerDistrict: String(detail.customerDistrict || ""),
+      customerOrderNumber: String(detail.customerOrderNumber || ""),
+      description: String(detail.description || ""),
+      notes: String(detail.notes || ""),
+      createdAt: Date.now()
+    };
+    try { sessionStorage.setItem(QUOTATION_PREFILL_KEY, JSON.stringify(payload)); } catch (_) {}
+  }
+
+  function instantCustomerLabel(intent = {}) {
+    return [intent.customerName, intent.customerPhone, intent.customerNumber].filter(Boolean).join(" — ");
+  }
+
+  function applyInstantQuotationPrefill(detail = null) {
+    const intent = detail?.quotationId ? detail : readQuotationPrefillIntent();
+    if (!intent?.quotationId || editingRequestId) return false;
+
+    saveQuotationPrefillIntent(intent);
+    const customerId = String(intent.customerId || "");
+    const customerInput = $("newInstallationCustomerSearch");
+    const customerHidden = $("newInstallationCustomerId");
+    if (customerHidden && customerId) customerHidden.value = customerId;
+    if (customerInput) {
+      customerInput.value = instantCustomerLabel(intent) || customerInput.value;
+      customerInput.setCustomValidity("");
+    }
+
+    const quotationSelect = $("newInstallationQuotationId");
+    if (quotationSelect) {
+      const currentLabel = intent.quotationNumber || "عرض السعر المحدد";
+      quotationSelect.innerHTML = `<option value="">بدون عرض سعر</option><option value="${esc(intent.quotationId)}" selected>${esc(currentLabel)}</option>`;
+      quotationSelect.value = String(intent.quotationId);
+    }
+
+    const orderInput = $("newInstallationCustomerOrderNumber");
+    if (orderInput && intent.customerOrderNumber) orderInput.value = intent.customerOrderNumber;
+
+    const notesInput = $("newInstallationNotes");
+    const prefillNotes = [intent.description, intent.notes].map(value => String(value || "").trim()).filter(Boolean).join("\n");
+    if (notesInput && prefillNotes && !notesInput.value.trim()) notesInput.value = prefillNotes;
+
+    const neighborhood = $("newInstallationNeighborhoodId");
+    if (neighborhood) {
+      neighborhood.dataset.pendingDistrict = String(intent.customerDistrict || "");
+      neighborhood.dataset.pendingCity = String(intent.customerCity || "");
+    }
+
+    $("newInstallationRequestHeading").textContent = `طلب تركيب من عرض السعر ${intent.quotationNumber || ""}`.trim();
+    $("newInstallationRequestNote").textContent = "تم عرض بيانات العميل والعرض فورًا، ويجري التحقق منها في الخلفية.";
+    status($("newInstallationRequestFormStatus"), "تم تعبئة البيانات الأساسية فورًا. جارٍ استكمال التحقق والقوائم المرجعية...", "info");
+    return true;
+  }
+
+  function readQuotationPrefillIntent() {
+    try {
+      const raw = sessionStorage.getItem(QUOTATION_PREFILL_KEY);
+      if (!raw) return null;
+      const payload = JSON.parse(raw);
+      if (!payload?.quotationId || Date.now() - Number(payload.createdAt || 0) > 30 * 60 * 1000) {
+        sessionStorage.removeItem(QUOTATION_PREFILL_KEY);
+        return null;
+      }
+      return payload;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function clearQuotationPrefillIntent() {
+    try { sessionStorage.removeItem(QUOTATION_PREFILL_KEY); } catch (_) {}
+  }
+
+  function normalizeArabicText(value) {
+    return String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
+  }
+
+  function matchNeighborhoodId(customer) {
+    const districtName=normalizeArabicText(customer?.district||"");
+    const cityName=normalizeArabicText(customer?.city||"");
+    const regionName=normalizeArabicText(customer?.region||"");
+    if(!districtName)return "";
+    const region=regionName?opts.regions.find(item=>normalizeArabicText(item.name)===regionName):null;
+    const city=cityName?opts.cities.find(item=>normalizeArabicText(item.name)===cityName&&(!region||String(item.region_id)===String(region.id))):null;
+    const exact=opts.neighborhoods.find(item=>normalizeArabicText(item.name)===districtName&&(!city||String(item.city_id)===String(city.id))&&(!region||String(item.region_id)===String(region.id)));
+    if(exact)return exact.id;
+    const candidates=opts.neighborhoods.filter(item=>normalizeArabicText(item.name)===districtName);
+    return candidates.length===1?candidates[0].id:"";
+  }
+
+  async function fetchQuotationPrefill(quotationId) {
+    if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
+    const { data, error } = await window.customerSupabase
+      .from("quotations")
+      .select(`
+        id, quotation_number, customer_order_number, customer_id, representative_id,
+        status, amount, description, notes, installation_request_id,
+        customer:customers(id, customer_number, customer_name, phone, region, city, district, representative_id)
+      `)
+      .eq("id", quotationId)
+      .maybeSingle();
+    if (error) throw new Error(`تعذر تحميل بيانات عرض السعر: ${error.message}`);
+    if (!data) throw new Error("عرض السعر غير موجود أو غير متاح لهذا المستخدم.");
+    if (data.status !== "مقبول") throw new Error("لا يمكن إنشاء طلب تركيب إلا من عرض سعر مقبول.");
+    if (data.installation_request_id) throw new Error("تم إنشاء طلب تركيب لهذا العرض بالفعل.");
+    return data;
+  }
+
+  async function applyQuotationPrefill(detail = null) {
+    const intent = detail?.quotationId ? detail : readQuotationPrefillIntent();
+    if (!intent?.quotationId || editingRequestId) return false;
+    if (quotationPrefillPromise) return quotationPrefillPromise;
+    quotationPrefillPromise = (async () => {
+      saveQuotationPrefillIntent(intent);
+      applyInstantQuotationPrefill(intent);
+      const [quotation] = await Promise.all([
+        fetchQuotationPrefill(intent.quotationId),
+        ensureOptions()
+      ]);
+      const customer = quotation.customer || opts.customers.find(item => item.id === quotation.customer_id);
+      if (!customer?.id) throw new Error("تعذر تحميل بيانات العميل المرتبط بعرض السعر.");
+
+      if (!opts.customers.some(item => item.id === customer.id)) opts.customers.push(customer);
+      if (!opts.quotations.some(item => item.id === quotation.id)) opts.quotations.push(quotation);
+
+      syncCustomerSearch(customer.id);
+      quotationOptions(customer.id, "newInstallationQuotationId", quotation.id);
+      const quotationSelect = $("newInstallationQuotationId");
+      if (quotationSelect) quotationSelect.value = quotation.id;
+
+      const orderInput = $("newInstallationCustomerOrderNumber");
+      if (orderInput) orderInput.value = quotation.customer_order_number || intent.customerOrderNumber || "";
+
+      neighborhoodOptions();
+      const neighborhoodId = matchNeighborhoodId(customer);
+      if (neighborhoodId) setInstallationGeoFromNeighborhood('new',neighborhoodId);
+
+      const notes = [quotation.description, quotation.notes].map(value => String(value || "").trim()).filter(Boolean).join("\n");
+      if (notes && $("newInstallationNotes") && !$("newInstallationNotes").value.trim()) $("newInstallationNotes").value = notes;
+
+      $("newInstallationRequestHeading").textContent = `طلب تركيب من عرض السعر ${quotation.quotation_number || ""}`.trim();
+      $("newInstallationRequestNote").textContent = "تم تحميل بيانات العميل وعرض السعر من Supabase. اختر الحي والخدمات المطلوبة ثم احفظ الطلب.";
+      status($("newInstallationRequestFormStatus"), "تم تحميل بيانات العميل وعرض السعر تلقائيًا.", "success");
+      clearQuotationPrefillIntent();
+      return true;
+    })().finally(() => { quotationPrefillPromise = null; });
+    return quotationPrefillPromise;
+  }
+
+
+  function customerLabel(customer) {
+    return [customer.customer_name, customer.phone, customer.customer_number].filter(Boolean).join(" — ");
+  }
+
+  function syncCustomerSearch(customerId = "") {
+    const hidden = $("newInstallationCustomerId");
+    const input = $("newInstallationCustomerSearch");
+    if (!hidden || !input) return;
+    const customer = opts.customers.find(item => item.id === customerId);
+    hidden.value = customer?.id || "";
+    input.value = customer ? customerLabel(customer) : "";
+    input.setCustomValidity(customer ? "" : (input.value ? "اختر العميل من نتائج البحث." : ""));
+  }
+
+  function renderCustomerResults(query = "") {
+    const box = $("newInstallationCustomerResults");
+    const input = $("newInstallationCustomerSearch");
+    if (!box || !input) return;
+    const q = String(query || "").trim().toLowerCase();
+    const matches = (opts.customers || []).filter(customer => !q || [customer.customer_name, customer.phone, customer.customer_number].join(" ").toLowerCase().includes(q)).slice(0, 50);
+    box.innerHTML = matches.length ? matches.map(customer => `<button type="button" class="installation-customer-result" role="option" data-installation-customer-id="${esc(customer.id)}"><strong>${esc(customer.customer_name || "عميل بدون اسم")}</strong><span>${esc(customer.phone || "بدون هاتف")} — ${esc(customer.customer_number || "بدون رقم عميل")}</span></button>`).join("") : '<div class="empty-cell">لا توجد نتائج مطابقة.</div>';
+    box.classList.remove("hidden");
+    input.setAttribute("aria-expanded", "true");
+  }
+
+  function closeCustomerResults() {
+    $("newInstallationCustomerResults")?.classList.add("hidden");
+    $("newInstallationCustomerSearch")?.setAttribute("aria-expanded", "false");
+  }
+
+  function reportOptionLoadWarnings(data) {
+    const errors = data?.errors || {};
+    const labels = { customers: "العملاء", quotations: "عروض الأسعار", regions: "المناطق", cities: "المدن", neighborhoods: "الأحياء", serviceTypes: "الخدمات" };
+    const failed = Object.keys(errors).map(key => labels[key] || key);
+    const target = $("newInstallationRequestFormStatus");
+    if (!failed.length) {
+      if (target?.dataset.optionWarning === "true") clearStatus(target);
+      if (target) delete target.dataset.optionWarning;
+      return;
+    }
+    if (target) {
+      target.dataset.optionWarning = "true";
+      status(target, `تعذر تحميل: ${failed.join("، ")}. بقية القوائم متاحة ويمكن إعادة المحاولة.`, "warning");
+    }
+  }
+
+  function customerOptions(selectId) {
+    const node = $(selectId);
+    if (!node) return;
+    node.innerHTML = '<option value="">اختر العميل</option>' + opts.customers.map(customer =>
+      `<option value="${esc(customer.id)}">${esc(customer.customer_name)} — ${esc(customer.phone || "بدون هاتف")}</option>`
+    ).join("");
+  }
+
+  function quotationOptions(customerId, selectId, includeQuotationId = "") {
+    const node = $(selectId);
+    if (!node) return;
+    const quotes = opts.quotations.filter(quotation => (!customerId || quotation.customer_id === customerId) && quotation.status === 'مقبول' && (!quotation.installation_request_id || String(quotation.id) === String(includeQuotationId)));
+    node.innerHTML = '<option value="">بدون عرض سعر</option>' + quotes.map(quotation =>
+      `<option value="${esc(quotation.id)}">${esc(quotation.quotation_number)}</option>`
+    ).join("");
+  }
+
+  const installationGeoControllers = new Map();
+  function installationGeoController(scope){
+    if(installationGeoControllers.has(scope))return installationGeoControllers.get(scope);
+    if(!window.KYUMGeography)throw new Error('مكوّن العنوان الجغرافي غير محمّل.');
+    const prefix=scope==='edit'?'installationServicesEdit':'newInstallation';
+    const controller=window.KYUMGeography.createController({
+      ids:{
+        region:{wrapper:prefix+'RegionCombobox',hidden:prefix+'RegionId',search:prefix+'RegionSearch',options:prefix+'RegionOptions'},
+        city:{wrapper:prefix+'CityCombobox',hidden:prefix+'CityId',search:prefix+'CitySearch',options:prefix+'CityOptions'},
+        district:{
+          wrapper:prefix+'DistrictCombobox',
+          hidden:scope==='edit'?'installationServicesEditNeighborhood':'newInstallationNeighborhoodId',
+          search:prefix+'DistrictSearch',
+          options:prefix+'DistrictOptions'
+        }
+      },
+      optionLimit:300,
+      boundAttribute:`installationGeo${scope[0].toUpperCase()+scope.slice(1)}UnifiedBound`
+    }).bind();
+    installationGeoControllers.set(scope,controller);
+    return controller;
+  }
+  function syncInstallationGeoCatalog(){
+    window.KYUMGeography?.setCatalog({regions:opts.regions||[],cities:opts.cities||[],neighborhoods:opts.neighborhoods||[]});
+  }
+  function setInstallationGeoFromNeighborhood(scope,neighborhoodId=''){
+    syncInstallationGeoCatalog();
+    return installationGeoController(scope).setValue({districtId:neighborhoodId});
+  }
+  function neighborhoodOptions(){
+    syncInstallationGeoCatalog();
+    installationGeoController('new');
+    installationGeoController('edit');
+  }
+
+  function serviceTypeOptions(selectedId = "") {
+    return '<option value="">اختر نوع الخدمة</option>' + opts.serviceTypes.map(item =>
+      `<option value="${esc(item.id)}" ${String(item.id) === String(selectedId) ? "selected" : ""}>${esc(item.name)}</option>`
+    ).join("");
+  }
+
+  function hydrateServiceRows() {
+    document.querySelectorAll("#newInstallationServicesBody .installation-service-entry").forEach(row => {
+      const select = row.querySelector(".installation-service-type");
+      if (!select) return;
+      const currentValue = select.value || select.dataset.pendingServiceTypeId || "";
+      select.innerHTML = serviceTypeOptions(currentValue);
+      if (currentValue && !opts.serviceTypes.some(item => String(item.id) === String(currentValue))) {
+        const legacyOption = document.createElement("option");
+        legacyOption.value = currentValue;
+        legacyOption.textContent = "خدمة محفوظة غير نشطة";
+        select.appendChild(legacyOption);
+      }
+      select.value = currentValue;
+      delete select.dataset.pendingServiceTypeId;
+    });
+  }
+
+  function filtered() {
+    const query = ($("installationRequestSearch")?.value || "").trim().toLowerCase();
+    const representative = $("installationRequestRepresentativeFilter")?.value || "";
+    const state = $("installationRequestStatusFilter")?.value || "";
+    const dateFrom = $("installationRequestDateFrom")?.value || "";
+    const dateTo = $("installationRequestDateTo")?.value || "";
+    return rows.filter(row =>
+      (!query || [row.requestNumber, row.customerOrderNumber, row.customerName, row.customerPhone, row.quotationNumber, row.services.map(service => service.serviceName).join(" ")].join(" ").toLowerCase().includes(query)) &&
+      (!representative || row.representativeId === representative) &&
+      (!state || row.status === state) &&
+      (!dateFrom || row.scheduledDate >= dateFrom) &&
+      (!dateTo || row.scheduledDate <= dateTo)
+    );
+  }
+
+  function render() {
+    const data = filtered();
+    const today = new Date().toISOString().slice(0, 10);
+    $("installationKpiTotal").textContent = rows.length;
+    $("installationKpiScheduled").textContent = rows.filter(row => ["مجدول", "مسند"].includes(row.status)).length;
+    $("installationKpiInProgress").textContent = rows.filter(row => ["في الطريق", "وصل إلى العميل", "قيد التنفيذ"].includes(row.status)).length;
+    $("installationKpiOverdue").textContent = rows.filter(row => row.scheduledDate && row.scheduledDate < today && !["مكتمل", "ملغي"].includes(row.status)).length;
+
+    $("installationRequestsBody").innerHTML = data.length ? data.map(row => {
+      const serviceSummary = row.services.length
+        ? row.services.map(service => `<div class="installation-service-detail"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><small>${service.quantity} × ${money(service.unitPrice)} = ${money(service.lineTotal ?? service.quantity*service.unitPrice)}</small></div>`).join("")
+        : "—";
+      return `<tr>
+        <td>${esc(row.requestNumber)}</td>
+        <td>${esc(row.customerOrderNumber || "—")}</td>
+        <td><strong>${esc(row.customerName)}</strong><br><small>${esc(row.customerPhone)}</small></td>
+        <td>${esc(row.quotationNumber || "بدون عرض سعر")}</td>
+        <td>${serviceSummary}</td>
+        <td>${money(row.totalServicesAmount)}</td>
+        <td>${esc([row.city, row.district].filter(Boolean).join(" - ") || row.installationAddress || "—")}</td>
+        <td>${esc(row.scheduledDate || "غير محدد")}</td>
+        <td>${esc(row.timeSlot || "—")}</td>
+        <td><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(row.status)}</span></td>
+        <td><span class="installation-priority-badge" data-priority="${esc(row.priority)}">${esc(row.priority)}</span></td>
+        <td>${esc(row.representativeName || "—")}</td>
+        <td><div class="installation-row-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">عرض</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">تعديل الخدمات</button><button class="danger-btn" data-install-delete="${row.id}" type="button">حذف</button></div></td>
+      </tr>`;
+    }).join("") : '<tr><td colspan="13" class="empty-cell">لا توجد طلبات مطابقة.</td></tr>';
+  }
+
+  async function ensureOptions(force = false) {
+    if (!force && optionsLoaded) {
+      hydrateServiceRows();
+      return;
+    }
+    opts = await window.InstallationsServiceSafe.options();
+    optionsLoaded = true;
+    customerOptions("installationCustomerId");
+    quotationOptions("", "installationQuotationId");
+    syncCustomerSearch("");
+    quotationOptions("", "newInstallationQuotationId");
+    neighborhoodOptions();
+    if(!$('newInstallationNeighborhoodId')?.value)setInstallationGeoFromNeighborhood('new','');
+    hydrateServiceRows();
+    reportOptionLoadWarnings(opts);
+  }
+
+  async function load() {
+    status($("installationRequestsStatus"), "جاري تحميل طلبات التركيبات...");
+    try {
+      [rows, opts] = await Promise.all([window.InstallationsServiceSafe.list(), window.InstallationsServiceSafe.options()]);
+      customerOptions("installationCustomerId");
+      reportOptionLoadWarnings(opts);
+      const repFilter = $("installationRequestRepresentativeFilter");
+      if (repFilter) {
+        const current = repFilter.value;
+        const reps = [...new Map(rows.filter(row => row.representativeId).map(row => [row.representativeId, row.representativeName || "مندوب بدون اسم"])).entries()];
+        repFilter.innerHTML = '<option value="">كل المندوبين المسموحين</option>' + reps.map(([id,name]) => `<option value="${esc(id)}">${esc(name)}</option>`).join('');
+        repFilter.value = reps.some(([id]) => id === current) ? current : "";
+      }
+      render();
+      clearStatus($("installationRequestsStatus"));
+    } catch (error) {
+      status($("installationRequestsStatus"), error.message, "error");
+      $("installationRequestsBody").innerHTML = '<tr><td colspan="13" class="empty-cell">تعذر تحميل البيانات.</td></tr>';
+    }
+  }
+
+  async function openEdit(row) {
+    if (!row) return;
+    try {
+      editingRequestId = row.id;
+      await ensureOptions(true);
+      const opened = window.KYUMNavigation?.open?.("installationRequestNew", { trustedNavigation: true });
+      if (opened === false) throw new Error("ليس لديك صلاحية فتح شاشة بيانات طلب التركيب.");
+
+      quotationOptions(row.customerId, "newInstallationQuotationId", row.quotationId || "");
+      neighborhoodOptions();
+
+      $("newInstallationRequestHeading").textContent = "تعديل طلب تركيب";
+      $("newInstallationRequestNote").textContent = `عدّل بيانات الطلب ${row.requestNumber} بنفس حقول الإدخال الأصلية دون تغيير بيانات الجدولة أو التنفيذ.`;
+      $("saveNewInstallationRequest").textContent = "حفظ التعديلات";
+      $("resetNewInstallationRequest").textContent = "استعادة البيانات";
+
+      syncCustomerSearch(row.customerId || "");
+      quotationOptions(row.customerId, "newInstallationQuotationId", row.quotationId || "");
+      $("newInstallationQuotationId").value = row.quotationId || "";
+      $("newInstallationCustomerOrderNumber").value = row.customerOrderNumber || "";
+      setInstallationGeoFromNeighborhood('new', row.neighborhoodId || '');
+      $("newInstallationCustomerMapUrl").value = row.customerMapUrl || "";
+      $("newInstallationPriority").value = row.priority || "عادية";
+      $("newInstallationNotes").value = row.notes || "";
+      $("newInstallationServicesBody").innerHTML = "";
+      (row.services?.length ? row.services : [{}]).forEach(addServiceRow);
+      recalculateServices();
+      clearStatus($("newInstallationRequestFormStatus"));
+    } catch (error) {
+      editingRequestId = null;
+      status($("installationRequestsStatus"), error.message, "error");
+    }
+  }
+
+  function addServiceRow(initial = {}) {
+    const body = $("newInstallationServicesBody");
+    if (!body) return;
+    const row = document.createElement("tr");
+    row.className = "installation-service-entry";
+    row.innerHTML = `
+      <td><select class="installation-service-type" required data-pending-service-type-id="${esc(initial.serviceTypeId || "")}">${serviceTypeOptions(initial.serviceTypeId || "")}</select></td>
+      <td><input class="installation-service-quantity" type="number" min="1" step="1" value="${esc(initial.quantity || 1)}" required></td>
+      <td><input class="installation-service-price" type="number" min="0" step="0.01" value="${esc(initial.unitPrice ?? 0)}" required></td>
+      <td><output class="installation-service-line-total">${money((initial.quantity || 1) * (initial.unitPrice || 0))}</output></td>
+      <td><button type="button" class="danger-btn installation-service-remove">حذف</button></td>`;
+    body.appendChild(row);
+    if (optionsLoaded) hydrateServiceRows();
+    recalculateServices();
+  }
+
+  function recalculateServices() {
+    let quantity = 0;
+    let total = 0;
+    document.querySelectorAll("#newInstallationServicesBody .installation-service-entry").forEach(row => {
+      const qty = Math.max(0, Number(row.querySelector(".installation-service-quantity")?.value || 0));
+      const price = Math.max(0, Number(row.querySelector(".installation-service-price")?.value || 0));
+      const lineTotal = qty * price;
+      quantity += qty;
+      total += lineTotal;
+      const output = row.querySelector(".installation-service-line-total");
+      if (output) output.textContent = money(lineTotal);
+    });
+    $("newInstallationTotalQuantity").textContent = String(quantity);
+    $("newInstallationGrandTotal").textContent = money(total);
+  }
+
+  function collectServices() {
+    return [...document.querySelectorAll("#newInstallationServicesBody .installation-service-entry")].map(row => ({
+      serviceTypeId: row.querySelector(".installation-service-type")?.value || "",
+      quantity: Number(row.querySelector(".installation-service-quantity")?.value || 0),
+      unitPrice: Number(row.querySelector(".installation-service-price")?.value || 0)
+    }));
+  }
+
+  function inlineServiceOptions(selected=""){return '<option value="">اختر الخدمة</option>'+opts.serviceTypes.map(item=>`<option value="${esc(item.id)}" ${item.id===selected?'selected':''}>${esc(item.name)}</option>`).join('')}
+  function renderRequestView(row){if(!row)return;$("installationRequestViewLabel").textContent=`${row.requestNumber} — ${row.customerName}`;const services=(row.services||[]).map(service=>`<div class="installation-view-service-row"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><span>${Number(service.quantity||0)} × ${money(service.unitPrice)}</span><span>${money(service.lineTotal??Number(service.quantity||0)*Number(service.unitPrice||0))}</span></div>`).join('')||'<p>لا توجد خدمات.</p>';$("installationRequestViewContent").innerHTML=`<div class="installation-request-view-grid"><div><span>رقم الطلب</span><strong>${esc(row.requestNumber)}</strong></div><div><span>اسم العميل</span><strong>${row.customerMasked===true?'بيانات العميل محجوبة':esc(row.customerName||'—')}</strong></div><div><span>رقم العميل</span><strong>${row.customerMasked===true?'محجوب':esc(row.customerPhone||'—')}</strong></div><div><span>رقم طلب العميل</span><strong>${esc(row.customerOrderNumber||'—')}</strong></div><div><span>عرض السعر</span><strong>${esc(row.quotationNumber||'بدون عرض سعر')}</strong></div><div><span>المندوب</span><strong>${esc(row.representativeName||'—')}</strong></div><div><span>الموقع</span><strong>${esc(row.installationAddress||'—')}</strong></div><div><span>الأولوية</span><strong>${esc(row.priority||'—')}</strong></div><div><span>الحالة</span><strong>${esc(row.status||'—')}</strong></div><div><span>موعد التركيب</span><strong>${esc(row.scheduledDate||'غير محدد')} ${row.scheduledTime?`— ${esc(row.scheduledTime)}`:''}</strong></div><div><span>إجمالي الخدمات</span><strong>${money(row.totalServicesAmount)}</strong></div><div><span>ملاحظات</span><strong>${esc(row.notes||'—')}</strong></div></div><section class="installation-view-services"><h4>الخدمات</h4>${services}</section>`;$("installationRequestViewDialog").showModal()}
+  function addInlineServiceRow(initial={}){const body=$("installationServicesEditBody");const tr=document.createElement('tr');tr.className='installation-inline-service-row';tr.innerHTML=`<td data-label="الخدمة"><select class="inline-service-type" required>${inlineServiceOptions(initial.serviceTypeId||initial.id||'')}</select></td><td data-label="العدد"><input class="inline-service-quantity" type="number" min="1" step="1" value="${esc(initial.quantity||1)}" required></td><td data-label="سعر الوحدة"><input class="inline-service-price" type="number" min="0" step="0.01" value="${esc(initial.unitPrice??0)}" required></td><td data-label="الإجمالي"><output class="inline-service-total">${money((initial.quantity||1)*(initial.unitPrice||0))}</output></td><td data-label="إجراء"><button class="danger-btn inline-service-remove" type="button">حذف</button></td>`;body.appendChild(tr);recalculateInlineServices()}
+  function recalculateInlineServices(){let q=0,t=0;document.querySelectorAll('#installationServicesEditBody .installation-inline-service-row').forEach(row=>{const qty=Math.max(0,Number(row.querySelector('.inline-service-quantity').value||0)),price=Math.max(0,Number(row.querySelector('.inline-service-price').value||0)),line=qty*price;q+=qty;t+=line;row.querySelector('.inline-service-total').textContent=money(line)});$("installationInlineTotalQuantity").textContent=String(q);$("installationInlineGrandTotal").textContent=money(t)}
+  function collectInlineServices(){return [...document.querySelectorAll('#installationServicesEditBody .installation-inline-service-row')].map(row=>({serviceTypeId:row.querySelector('.inline-service-type').value,quantity:Number(row.querySelector('.inline-service-quantity').value||0),unitPrice:Number(row.querySelector('.inline-service-price').value||0)}))}
+  function inlineNeighborhoodOptions(selected=""){return '<option value="">اختر الحي</option>'+opts.neighborhoods.map(item=>`<option value="${esc(item.id)}" ${String(item.id)===String(selected)?'selected':''}>${esc(item.name)}</option>`).join('')}
+  function inlineQuotationOptions(customerId,selected=""){const rows=opts.quotations.filter(item=>String(item.customer_id||'')===String(customerId||'')&&(item.status==='مقبول'||String(item.id)===String(selected)));return '<option value="">بدون عرض سعر</option>'+rows.map(item=>`<option value="${esc(item.id)}" ${String(item.id)===String(selected)?'selected':''}>${esc(item.quotation_number||'عرض سعر')}</option>`).join('')}
+  function syncInlineMapLink(){const input=$("installationServicesEditMapUrl"),link=$("installationServicesEditOpenMap");if(!input||!link)return;const value=String(input.value||'').trim();if(/^https:\/\//i.test(value)){link.href=value;link.classList.remove('hidden')}else{link.href='#';link.classList.add('hidden')}}
+  async function ensureInlineEditOptions(customerId){
+    const needsNeighborhoods=!opts.neighborhoods?.length,needsGeo=!opts.regions?.length||!opts.cities?.length,needsServices=!opts.serviceTypes?.length;
+    const hasCustomerQuotes=(opts.quotations||[]).some(item=>String(item.customer_id||'')===String(customerId||''));
+    if(!needsNeighborhoods&&!needsGeo&&!needsServices&&hasCustomerQuotes)return;
+    const data=await window.InstallationsServiceSafe.requestEditOptions(customerId);
+    if(data.regions?.length)opts.regions=data.regions;
+    if(data.cities?.length)opts.cities=data.cities;
+    if(needsNeighborhoods||data.neighborhoods?.length)opts.neighborhoods=data.neighborhoods||opts.neighborhoods||[];
+    if(needsServices)opts.serviceTypes=data.serviceTypes||[];
+    neighborhoodOptions();
+    const others=(opts.quotations||[]).filter(item=>String(item.customer_id||'')!==String(customerId||''));
+    opts.quotations=[...others,...(data.quotations||[])];
+  }
+  function renderServicesEditData(row){
+    $("installationServicesEditRequestId").value=row.id;
+    $("installationServicesEditLabel").textContent=`${row.requestNumber} — ${row.customerName}`;
+    setInstallationGeoFromNeighborhood('edit',row.neighborhoodId||'');
+    $("installationServicesEditMapUrl").value=row.customerMapUrl||'';
+    $("installationServicesEditCustomerOrder").value=row.customerOrderNumber||'';
+    const quotation=$("installationServicesEditQuotation");
+    quotation.innerHTML=inlineQuotationOptions(row.customerId,row.quotationId||'');
+    quotation.value=row.quotationId||'';
+    syncInlineMapLink();
+    $("installationServicesEditBody").innerHTML='';
+    (row.services?.length?row.services:[{}]).forEach(addInlineServiceRow);
+    clearStatus($("installationServicesEditStatus"));
+  }
+  async function openServicesEdit(input){
+    const id=input?.id||input;
+    if(!id)return;
+    const dialog=$("installationServicesEditDialog"),save=$("saveInstallationServicesEdit");
+    $("installationServicesEditRequestId").value=id;
+    $("installationServicesEditLabel").textContent='جاري تحميل بيانات الطلب...';
+    $("installationServicesEditBody").innerHTML='<tr><td colspan="5" class="empty-cell">جاري تحميل البيانات الحالية...</td></tr>';
+    save.disabled=true;clearStatus($("installationServicesEditStatus"));
+    if(!dialog.open)dialog.showModal();
+    try{
+      const row=await window.InstallationsServiceSafe.requestEditDetail(id);
+      await ensureInlineEditOptions(row.customerId);
+      renderServicesEditData(row);
+    }catch(error){
+      status($("installationServicesEditStatus"),error.message,'error');
+      $("installationServicesEditBody").innerHTML='<tr><td colspan="5" class="empty-cell">تعذر تحميل بيانات الطلب.</td></tr>';
+    }finally{save.disabled=false}
+  }
+  function currentRow(id){return rows.find(row=>row.id===id)}
+
+  function restoreEditForm() {
+    const row = rows.find(item => item.id === editingRequestId);
+    if (row) return openEdit(row);
+  }
+
+  function resetNewForm(options = {}) {
+    const form = $("newInstallationRequestForm");
+    if (!form) return;
+    if (editingRequestId && !options.exitEdit) return restoreEditForm();
+    editingRequestId = null;
+    form.reset();
+    quotationOptions("", "newInstallationQuotationId");
+    neighborhoodOptions();
+    setInstallationGeoFromNeighborhood('new','');
+    $("newInstallationServicesBody").innerHTML = "";
+    addServiceRow();
+    $("newInstallationRequestHeading").textContent = "طلب تركيب جديد";
+    $("newInstallationRequestNote").textContent = "سجّل بيانات العميل والخدمات المطلوبة. ينتقل الطلب بعد الحفظ إلى طلبات التركيبات بحالة بانتظار المراجعة.";
+    $("saveNewInstallationRequest").textContent = "حفظ الطلب";
+    $("resetNewInstallationRequest").textContent = "إعادة تعيين";
+    clearStatus($("newInstallationRequestFormStatus"));
+  }
+
+  function syncNewRequestPermissionState() {
+    const button = $("saveNewInstallationRequest");
+    if (!button) return false;
+    const isEditing = Boolean(editingRequestId);
+    const screenKey = isEditing ? "installationRequests" : "installationRequestNew";
+    const action = isEditing ? "edit" : "add";
+    const engine = window.PermissionEngine;
+    const loaded = engine?.isLoaded?.() === true || window.CustomerPermissions?.permissionsLoaded === true || window.CustomerPermissions?.currentRole?.() === "super_admin";
+    const allowed = loaded && (engine?.can?.(screenKey, action) === true || window.CustomerPermissions?.canScreen?.(screenKey, action) === true);
+
+    button.hidden = false;
+    button.classList.remove("hidden");
+    button.setAttribute("aria-hidden", "false");
+    button.disabled = !allowed;
+    button.setAttribute("aria-disabled", String(!allowed));
+    button.title = allowed ? "" : (loaded ? "لا توجد صلاحية حفظ طلب تركيب." : "جارٍ تحميل الصلاحيات...");
+
+    if (loaded && !allowed) {
+      status($("newInstallationRequestFormStatus"), isEditing
+        ? "لا توجد صلاحية تعديل طلبات التركيبات."
+        : "لا توجد صلاحية إضافة طلب تركيب. راجع صلاحيات شاشة طلب تركيب جديد.", "warning");
+    }
+    return allowed;
+  }
+
+  async function initializeNewView(options = {}) {
+    try {
+      const prefillIntent = readQuotationPrefillIntent();
+      const preservePrefill = Boolean(options.preservePrefill || prefillIntent?.quotationId);
+      if (!editingRequestId && !preservePrefill) resetNewForm({ exitEdit: true });
+      if (!editingRequestId && preservePrefill) applyInstantQuotationPrefill(prefillIntent);
+
+      await ensureOptions();
+      if (!editingRequestId) {
+        if (!preservePrefill) resetNewForm({ exitEdit: true });
+        else {
+          quotationOptions($("newInstallationCustomerId")?.value || prefillIntent?.customerId || "", "newInstallationQuotationId", prefillIntent?.quotationId || "");
+          neighborhoodOptions();
+          hydrateServiceRows();
+        }
+      } else {
+        quotationOptions($("newInstallationCustomerId")?.value || "", "newInstallationQuotationId");
+        neighborhoodOptions();
+        hydrateServiceRows();
+      }
+      if (!opts.serviceTypes.length) status($("newInstallationRequestFormStatus"), "لا توجد خدمات نشطة في البيانات المرجعية. أضف أنواع الخدمات أولًا قبل إنشاء الطلب.", "warning");
+      syncNewRequestPermissionState();
+    } catch (error) {
+      status($("newInstallationRequestFormStatus"), error.message, "error");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("kyum-installation-create-from-quotation", async event => {
+      const detail = event.detail || {};
+      editingRequestId = null;
+      saveQuotationPrefillIntent(detail);
+      applyInstantQuotationPrefill(detail);
+      await initializeNewView({ preservePrefill: true });
+      try { await applyQuotationPrefill(detail); } catch (error) { status($("newInstallationRequestFormStatus"), error.message, "error"); }
+    });
+
+    window.addEventListener("kyum-installation-edit-request", async event => {
+      const id = event.detail?.id;
+      if (!id) return;
+      if (!rows.length) await load();
+      const row = rows.find(item => item.id === id);
+      if (row) await openEdit(row);
+    });
+
+    window.addEventListener("kyum-permissions-refreshed", () => syncNewRequestPermissionState());
+    window.addEventListener("kyum-permission-engine-ready", () => syncNewRequestPermissionState());
+
+    window.addEventListener("kyum-view-changed", event => {
+      if (event.detail?.view === "installationRequests") load();
+      if (event.detail?.view === "installationRequestNew") {
+        const intent = readQuotationPrefillIntent();
+        if (intent) applyInstantQuotationPrefill(intent);
+        initializeNewView({ preservePrefill: Boolean(intent) }).then(() => applyQuotationPrefill(intent)).catch(error => status($("newInstallationRequestFormStatus"), error.message, "error"));
+      }
+    });
+
+    $("newInstallationCustomerSearch")?.addEventListener("focus", event => renderCustomerResults(event.target.value));
+    $("newInstallationCustomerSearch")?.addEventListener("input", event => {
+      $("newInstallationCustomerId").value = "";
+      event.target.setCustomValidity("");
+      renderCustomerResults(event.target.value);
+      quotationOptions("", "newInstallationQuotationId");
+    });
+    $("newInstallationCustomerResults")?.addEventListener("click", event => {
+      const option = event.target.closest("[data-installation-customer-id]");
+      if (!option) return;
+      syncCustomerSearch(option.dataset.installationCustomerId);
+      quotationOptions(option.dataset.installationCustomerId, "newInstallationQuotationId");
+      const selectedCustomer=opts.customers.find(item=>String(item.id)===String(option.dataset.installationCustomerId));
+      const matchedNeighborhood=matchNeighborhoodId(selectedCustomer);
+      if(matchedNeighborhood)setInstallationGeoFromNeighborhood('new',matchedNeighborhood);
+      else setInstallationGeoFromNeighborhood('new','');
+      closeCustomerResults();
+    });
+    document.addEventListener("click", event => {
+      if (!event.target.closest(".installation-customer-combobox")) closeCustomerResults();
+    });
+
+    ["installationRequestSearch", "installationRequestRepresentativeFilter", "installationRequestStatusFilter", "installationRequestDateFrom", "installationRequestDateTo"].forEach(id => $(id)?.addEventListener("input", render));
+    $("resetInstallationRequestFilters")?.addEventListener("click", () => {
+      ["installationRequestSearch", "installationRequestRepresentativeFilter", "installationRequestStatusFilter", "installationRequestDateFrom", "installationRequestDateTo"].forEach(id => { if ($(id)) $(id).value = ""; });
+      render();
+    });
+
+    $("addInstallationServiceRow")?.addEventListener("click", () => addServiceRow());
+    $("newInstallationServicesBody")?.addEventListener("input", event => {
+      const row = event.target.closest(".installation-service-entry");
+      if (event.target.matches(".installation-service-type")) {
+        const service = opts.serviceTypes.find(item => item.id === event.target.value);
+        if (service && row) row.querySelector(".installation-service-price").value = Number(service.default_price || 0).toFixed(2);
+      }
+      recalculateServices();
+    });
+    $("newInstallationServicesBody")?.addEventListener("click", event => {
+      const button = event.target.closest(".installation-service-remove");
+      if (!button) return;
+      const rows = $("newInstallationServicesBody").querySelectorAll(".installation-service-entry");
+      if (rows.length === 1) return status($("newInstallationRequestFormStatus"), "يجب أن يحتوي الطلب على خدمة واحدة على الأقل.", "error");
+      button.closest(".installation-service-entry").remove();
+      recalculateServices();
+    });
+
+    $("resetNewInstallationRequest")?.addEventListener("click", resetNewForm);
+
+    $("installationRequestsBody")?.addEventListener("click", async event => {
+      const viewButton = event.target.closest("[data-install-view]");
+      const servicesButton = event.target.closest("[data-install-services-edit]");
+      const deleteButton = event.target.closest("[data-install-delete]");
+      if (viewButton) renderRequestView(currentRow(viewButton.dataset.installView));
+      if (servicesButton) openServicesEdit(servicesButton.dataset.installServicesEdit);
+      if (deleteButton && confirm("هل تريد حذف طلب التركيب؟")) {
+        try {
+          await window.InstallationsServiceSafe.remove(deleteButton.dataset.installDelete);
+          await load();
+        } catch (error) {
+          status($("installationRequestsStatus"), error.message, "error");
+        }
+      }
+    });
+
+    $("closeInstallationRequestViewDialog")?.addEventListener("click",()=>$("installationRequestViewDialog").close());
+    $("closeInstallationRequestViewFooter")?.addEventListener("click",()=>$("installationRequestViewDialog").close());
+    document.addEventListener('click',event=>{if(!event.target.closest('.installation-geo-select'))closeAllInstallationGeo()});
+    $("installationServicesEditDialog")?.addEventListener('close',()=>closeAllInstallationGeo());
+    $("closeInstallationServicesEditDialog")?.addEventListener("click",()=>$("installationServicesEditDialog").close());
+    $("cancelInstallationServicesEdit")?.addEventListener("click",()=>$("installationServicesEditDialog").close());
+    $("addInstallationInlineService")?.addEventListener("click",()=>addInlineServiceRow());
+    $("installationServicesEditBody")?.addEventListener("input",event=>{const row=event.target.closest('.installation-inline-service-row');if(event.target.matches('.inline-service-type')){const service=opts.serviceTypes.find(item=>item.id===event.target.value);if(service&&row)row.querySelector('.inline-service-price').value=Number(service.default_price||0).toFixed(2)}recalculateInlineServices()});
+    $("installationServicesEditBody")?.addEventListener("click",event=>{const btn=event.target.closest('.inline-service-remove');if(!btn)return;const all=$("installationServicesEditBody").querySelectorAll('.installation-inline-service-row');if(all.length===1)return status($("installationServicesEditStatus"),'يجب أن يحتوي الطلب على خدمة واحدة على الأقل.','error');btn.closest('tr').remove();recalculateInlineServices()});
+    $("installationServicesEditMapUrl")?.addEventListener("input",syncInlineMapLink);
+    $("installationServicesEditForm")?.addEventListener("submit",async event=>{event.preventDefault();const services=collectInlineServices();if(!services.length||services.some(x=>!x.serviceTypeId||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unitPrice)||x.unitPrice<0))return status($("installationServicesEditStatus"),'راجع الخدمة والعدد والسعر في جميع البنود.','error');const geoValidation=installationGeoController('edit').validate({requireRegion:true,requireCity:true,requireDistrict:true});if(!geoValidation.valid){installationGeoController('edit').elements(geoValidation.field)?.search?.focus();return status($("installationServicesEditStatus"),geoValidation.message,'error')}const neighborhoodId=geoValidation.value.districtId;const btn=$("saveInstallationServicesEdit");setSaveState(btn,'saving','حفظ التعديلات');try{const requestId=$("installationServicesEditRequestId").value;await window.InstallationsServiceSafe.updateRequestContextServices(requestId,{neighborhoodId,customerMapUrl:$("installationServicesEditMapUrl").value,customerOrderNumber:$("installationServicesEditCustomerOrder").value,quotationId:$("installationServicesEditQuotation").value,services});const fresh=await window.InstallationsServiceSafe.requestEditDetail(requestId);const index=rows.findIndex(item=>item.id===requestId);if(index>=0)rows[index]=fresh;setSaveState(btn,'saved');window.dispatchEvent(new CustomEvent('kyum-installation-services-updated',{detail:{id:requestId,row:fresh}}));await new Promise(r=>setTimeout(r,350));$("installationServicesEditDialog").close();render();load().catch(()=>{})}catch(error){setSaveState(btn,'error');status($("installationServicesEditStatus"),error.message,'error');await new Promise(r=>setTimeout(r,900))}finally{setSaveState(btn,'idle','حفظ التعديلات')}});
+    window.addEventListener('kyum-installation-request-view',async event=>{const id=event.detail?.id,row=event.detail?.row||currentRow(id);if(row)return renderRequestView(row);if(!id)return;try{await load();renderRequestView(currentRow(id))}catch(error){status($("installationRequestsStatus"),error.message,'error')}});
+    window.addEventListener('kyum-installation-services-edit',event=>{const id=event.detail?.id;if(id)openServicesEdit(id)});
+    window.addEventListener('kyum-installation-services-updated',()=>load());
+
+    $("newInstallationRequestForm")?.addEventListener("submit", async event => {
+      event.preventDefault();
+      clearStatus($("newInstallationRequestFormStatus"));
+      if (!syncNewRequestPermissionState()) return;
+      const customer = opts.customers.find(item => item.id === $("newInstallationCustomerId").value);
+      const neighborhood = opts.neighborhoods.find(item => item.id === $("newInstallationNeighborhoodId").value);
+      const services = collectServices();
+      const payload = {
+        customerId: $("newInstallationCustomerId").value,
+        quotationId: $("newInstallationQuotationId").value || null,
+        representativeId: customer?.representative_id || null,
+        neighborhoodId: $("newInstallationNeighborhoodId").value,
+        installationAddress: neighborhood?.name || "",
+        customerOrderNumber: $("newInstallationCustomerOrderNumber").value.trim(),
+        customerMapUrl: $("newInstallationCustomerMapUrl").value.trim(),
+        priority: $("newInstallationPriority").value,
+        notes: $("newInstallationNotes").value.trim(),
+        services
+      };
+      if (!payload.customerId) return status($("newInstallationRequestFormStatus"), "اختر العميل.", "error");
+      const geoValidation = installationGeoController('new').validate({ requireRegion: true, requireCity: true, requireDistrict: true });
+      if (!geoValidation.valid) {
+        installationGeoController('new').elements(geoValidation.field)?.search?.focus();
+        return status($("newInstallationRequestFormStatus"), geoValidation.message, "error");
+      }
+      payload.neighborhoodId = geoValidation.value.districtId;
+      payload.installationAddress = geoValidation.value.district || payload.installationAddress;
+      if (!services.length || services.some(service => !service.serviceTypeId || !Number.isInteger(service.quantity) || service.quantity < 1 || !Number.isFinite(service.unitPrice) || service.unitPrice < 0)) {
+        return status($("newInstallationRequestFormStatus"), "راجع نوع الخدمة والعدد والسعر في جميع الخدمات.", "error");
+      }
+      const button = $("saveNewInstallationRequest");
+      setSaveState(button,"saving", editingRequestId ? "حفظ التعديلات" : "حفظ الطلب");
+      try {
+        if (editingRequestId) {
+          await window.InstallationsServiceSafe.updateRequest({ ...payload, id: editingRequestId });
+          const requestNumber = rows.find(item => item.id === editingRequestId)?.requestNumber || "";
+          status($("newInstallationRequestFormStatus"), `تم حفظ تعديلات الطلب ${requestNumber}.`, "success");
+          editingRequestId = null;
+          await load();
+          setSaveState(button,"saved");
+          await new Promise(r=>setTimeout(r,450));
+          window.KYUMNavigation?.open?.("installationRequests", { trustedNavigation: true });
+        } else {
+          const created = await window.InstallationsServiceSafe.createRequest(payload);
+          status($("newInstallationRequestFormStatus"), `تم إنشاء الطلب ${created.request_number || ""} وإرساله إلى طلبات التركيبات بانتظار المراجعة.`, "success");
+          setSaveState(button,"saved");
+          await new Promise(r=>setTimeout(r,450));
+          resetNewForm({ exitEdit: true });
+        }
+      } catch (error) {
+        setSaveState(button,"error");
+        status($("newInstallationRequestFormStatus"), error.message, "error");
+      } finally {
+        syncNewRequestPermissionState();
+      }
+    });
+
+    window.KYUMInstallationsModule = Object.freeze({
+      openFromQuotation(detail = {}) {
+        saveQuotationPrefillIntent(detail);
+        applyInstantQuotationPrefill(detail);
+        const opened = window.KYUMNavigation?.open?.("installationRequestNew", { trustedNavigation: true });
+        if (opened !== false) {
+          setTimeout(() => window.dispatchEvent(new CustomEvent("kyum-installation-create-from-quotation", { detail })), 0);
+        }
+        return opened;
+      },
+      applyQuotationPrefill,
+      openRequestView(id){renderRequestView(currentRow(id));},
+      openServicesEdit(id){return openServicesEdit(currentRow(id));}
+    });
+
+;
+  });
+})();

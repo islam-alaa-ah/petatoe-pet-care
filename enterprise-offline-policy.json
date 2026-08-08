@@ -1,0 +1,162 @@
+{
+  "policyVersion": "1.1.0",
+  "enforcementMode": "block-new-unregistered-data-paths",
+  "requiredArchitecture": [
+    "permission-check",
+    "service-layer",
+    "smart-cache-for-offline-readable-data",
+    "delta-sync-for-mutable-offline-readable-data",
+    "offline-queue-for-supported-create-update",
+    "user-and-scope-cache-isolation",
+    "cache-invalidation-after-online-write",
+    "runtime-and-static-certification"
+  ],
+  "domains": {
+    "customers": {
+      "file": "assets/js/customers-service.js",
+      "mode": "full_offline_create_update",
+      "status": "compliant"
+    },
+    "followups": {
+      "file": "assets/js/followups-service.js",
+      "mode": "full_offline_create_update",
+      "status": "compliant"
+    },
+    "quotations": {
+      "file": "assets/js/quotations-service.js",
+      "mode": "full_offline_create_update",
+      "status": "compliant"
+    },
+    "reference_data": {
+      "file": "assets/js/reference-data-service.js",
+      "mode": "offline_read_online_write",
+      "status": "compliant"
+    },
+    "daily_operations": {
+      "file": "assets/js/daily-operations-service.js",
+      "mode": "full_offline_create_update",
+      "status": "compliant"
+    },
+    "daily_alerts": {
+      "file": "assets/js/daily-alerts-service.js",
+      "mode": "offline_read_online_write",
+      "status": "compliant"
+    },
+    "daily_suggestions": {
+      "file": "assets/js/daily-suggestions-service.js",
+      "mode": "offline_read_online_write",
+      "status": "compliant"
+    },
+    "daily_activity": {
+      "file": "assets/js/daily-activity-service.js",
+      "mode": "offline_read_online_write",
+      "status": "compliant"
+    },
+    "daily_performance": {
+      "file": "assets/js/daily-performance-service.js",
+      "mode": "offline_read_derived",
+      "status": "compliant"
+    },
+    "users": {
+      "file": "assets/js/users-service.js",
+      "mode": "online_only_security_sensitive",
+      "status": "accepted_online_only"
+    },
+    "permissions": {
+      "file": "assets/js/permissions-service.js",
+      "mode": "online_only_security_sensitive",
+      "status": "accepted_online_only"
+    },
+    "system_settings": {
+      "file": "assets/js/system-settings-service.js",
+      "mode": "online_only_security_sensitive",
+      "status": "accepted_online_only"
+    },
+    "activity_log": {
+      "file": "assets/js/activity-service.js",
+      "mode": "online_only_audit",
+      "status": "accepted_online_only"
+    },
+    "backup": {
+      "file": "assets/js/backup-service.js",
+      "mode": "online_only_admin",
+      "status": "accepted_online_only"
+    },
+    "system_health": {
+      "file": "assets/js/system-health-service.js",
+      "mode": "online_only_diagnostics",
+      "status": "accepted_online_only"
+    },
+    "diagnostics": {
+      "file": "assets/js/diagnostics-service.js",
+      "mode": "online_only_diagnostics",
+      "status": "accepted_online_only"
+    },
+    "whatsapp_templates": {
+      "file": "assets/js/whatsapp-template-service.js",
+      "mode": "online_only_user_media_settings",
+      "status": "accepted_online_only"
+    },
+    "employee_report_settings": {
+      "file": "assets/js/employee-report-settings-service.js",
+      "mode": "online_only_admin_configuration",
+      "status": "accepted_online_only"
+    },
+    "installation_requests": {
+      "file": "assets/js/installations-service.js",
+      "mode": "online_only_operational_setup",
+      "status": "accepted_online_only"
+    },
+    "geographic_reference": {
+      "file": "assets/js/geographic-address.js",
+      "mode": "offline_read_online_refresh",
+      "status": "compliant"
+    }
+  },
+  "registeredDirectDataFiles": [
+    "assets/js/activity-service.js",
+    "assets/js/app.js",
+    "assets/js/auth-session.js",
+    "assets/js/backup-service.js",
+    "assets/js/customers-service.js",
+    "assets/js/daily-activity-service.js",
+    "assets/js/daily-alerts-service.js",
+    "assets/js/daily-operations-service.js",
+    "assets/js/daily-performance-service.js",
+    "assets/js/daily-suggestions-service.js",
+    "assets/js/diagnostics-service.js",
+    "assets/js/employee-report-settings-service.js",
+    "assets/js/followups-service.js",
+    "assets/js/geographic-address.js",
+    "assets/js/installations-service.js",
+    "assets/js/offline-queue.js",
+    "assets/js/offline-read-cache.js",
+    "assets/js/permissions-service.js",
+    "assets/js/quotations-service.js",
+    "assets/js/reference-data-service.js",
+    "assets/js/smart-cache.js",
+    "assets/js/supabase-client.js",
+    "assets/js/supabase-config.js",
+    "assets/js/sync-engine.js",
+    "assets/js/system-health-service.js",
+    "assets/js/system-settings-service.js",
+    "assets/js/users-service.js",
+    "assets/js/whatsapp-template-service.js"
+  ],
+  "temporaryDirectUiDebt": {
+    "assets/js/app.js": [
+      "sales_representatives update",
+      "sales_representatives delete",
+      "generic reference delete"
+    ]
+  },
+  "rulesForFutureFeatures": {
+    "newDataServiceMustBeRegistered": true,
+    "newOfflineReadableDomainMustUseSmartCache": true,
+    "newMutableOfflineReadableDomainMustUseDeltaSync": true,
+    "newOfflineCreateUpdateMustUseOfflineQueue": true,
+    "directSupabaseCallsFromUiAreForbidden": true,
+    "offlineDeleteRequiresExplicitDesignAndTombstoneStrategy": true,
+    "securitySensitiveAdminWritesRemainOnlineOnlyUnlessSeparatelyApproved": true
+  }
+}

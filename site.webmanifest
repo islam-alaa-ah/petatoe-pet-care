@@ -1,0 +1,65 @@
+{
+  "id": "./",
+  "name": "PETATOE",
+  "short_name": "PETATOE",
+  "description": "نظام PETATOE لإدارة العملاء والمتابعات وعروض الأسعار والتقارير.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#071b26",
+  "theme_color": "#0f172a",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "assets/images/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/maskable-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/images/maskable-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "العملاء",
+      "short_name": "العملاء",
+      "description": "فتح شاشة العملاء",
+      "url": "./?source=pwa&view=customers",
+      "icons": [{ "src": "assets/images/android-chrome-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "المتابعات",
+      "short_name": "المتابعات",
+      "description": "فتح شاشة المتابعات",
+      "url": "./?source=pwa&view=followups",
+      "icons": [{ "src": "assets/images/android-chrome-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "عروض الأسعار",
+      "short_name": "العروض",
+      "description": "فتح شاشة عروض الأسعار",
+      "url": "./?source=pwa&view=quotations",
+      "icons": [{ "src": "assets/images/android-chrome-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

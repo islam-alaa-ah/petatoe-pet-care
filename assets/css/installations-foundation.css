@@ -1,0 +1,115 @@
+/* Phase M14.1 — Installations Module Foundation */
+.installations-overview-view {
+  display: grid;
+  gap: clamp(14px, 1.5vw, 24px);
+}
+
+.installations-overview-view.hidden { display: none; }
+
+.installations-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(18px, 2vw, 30px);
+}
+
+.installations-hero p,
+.installation-module-card p,
+.installations-workflow-panel p {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  line-height: 1.75;
+}
+
+.installations-eyebrow {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: var(--primary);
+  font-size: .82rem;
+  font-weight: 800;
+}
+
+.installations-foundation-badge {
+  min-width: min(260px, 100%);
+  padding: 14px 18px;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+}
+
+.installations-foundation-badge strong,
+.installations-foundation-badge span { display: block; }
+.installations-foundation-badge span { margin-top: 4px; color: var(--text-muted); font-size: .82rem; }
+
+.installations-kpi-grid,
+.installations-module-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 1.2vw, 18px);
+}
+
+.installation-kpi-card { padding: 18px; min-width: 0; }
+.installation-kpi-card span,
+.installation-kpi-card small { display: block; color: var(--text-muted); }
+.installation-kpi-card strong { display: block; margin: 12px 0 4px; font-size: clamp(1.5rem, 2.2vw, 2.15rem); }
+.installation-kpi-card small { font-size: .78rem; line-height: 1.5; }
+
+.installations-module-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.installation-module-card { display: flex; gap: 14px; align-items: flex-start; padding: 18px; }
+.installation-module-card h4 { margin: 1px 0 0; font-size: 1rem; }
+.installation-module-index {
+  flex: 0 0 42px;
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.installations-workflow-panel { padding: clamp(18px, 2vw, 26px); }
+.installations-workflow {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.installations-workflow li {
+  min-height: 92px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 92%, var(--primary) 8%);
+}
+.installations-workflow li span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+}
+.installations-workflow li strong { font-size: .86rem; line-height: 1.45; }
+
+@media (max-width: 1199px) {
+  .installations-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .installations-module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 767px), (hover: none) and (pointer: coarse) and (max-width: 1024px) {
+  .installations-hero { align-items: stretch; flex-direction: column; }
+  .installations-foundation-badge { min-width: 0; }
+  .installations-kpi-grid,
+  .installations-module-grid { grid-template-columns: 1fr; }
+  .installation-module-card { min-height: 0; }
+  .installations-workflow { grid-template-columns: repeat(6, minmax(150px, 1fr)); padding-bottom: 6px; }
+}
