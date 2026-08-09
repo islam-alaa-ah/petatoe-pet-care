@@ -315,13 +315,13 @@
       db().from('installation_user_technician_bindings').select('installation_team_id,technician_name,team:installation_teams(id,name)').maybeSingle(),
       db().from('installation_data_access_profiles').select('access_mode').maybeSingle()
     ]);
-    if(bindingError&&bindingError.code!=='PGRST116')throw new Error('تعذر تحميل هوية فني المواعيد: '+bindingError.message);
+    if(bindingError&&bindingError.code!=='PGRST116')throw new Error('تعذر تحميل هوية الجرومر / السائق: '+bindingError.message);
     if(scopeError&&scopeError.code!=='PGRST116'&&scopeError.code!=='42P01')throw new Error('تعذر تحميل نطاق تنفيذ المواعيد: '+scopeError.message);
     const accessMode=role==='super_admin'?'all':String(scope?.access_mode||'own').trim().toLowerCase();
     const isTechnicianRole=role==='viewer';
     const technicianName=String(binding?.technician_name||'').trim();
     const teamId=String(binding?.installation_team_id||'').trim();
-    const lockIdentity=Boolean(isTechnicianRole&&accessMode==='own'&&technicianName&&teamId);
+    const lockIdentity=Boolean(isTechnicianRole&&accessMode==='own'&&teamId);
     return {
       role,
       accessMode,

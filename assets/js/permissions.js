@@ -5,7 +5,7 @@ window.CustomerPermissions = {
     sales_supervisor: "مشرف المبيعات",
     sales_representative: "مندوب مبيعات",
     customer_service: "مشرف التركيبات",
-    viewer: "فني تركيبات"
+    viewer: "جرومر / سائق"
   },
   roleOptions: ["super_admin","sales_manager","sales_supervisor","sales_representative","customer_service","viewer"],
   screenPermissions: new Map(),

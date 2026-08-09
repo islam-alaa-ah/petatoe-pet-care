@@ -1,0 +1,132 @@
+PETATOE P5.6 — Groomer / Driver Team-Only Appointment Scope
+
+Root Cause / Impact:
+- The stable viewer role was still modeled as an installation technician tied to representative + team + technician name.
+- Installation request scope still required representative visibility before team visibility.
+- The new business rule requires viewer to be a Groomer/Driver with team-only appointment visibility.
+
+=== node scripts/p5-6-groomer-driver-team-scope-check.mjs ===
+PASS - viewer visible label
+PASS - representative hidden for viewer
+PASS - viewer representative forced null
+PASS - viewer team required
+PASS - technician name input hidden
+PASS - team-only runtime identity
+PASS - viewer request scope bypasses representative
+PASS - viewer assignment scope uses team
+PASS - viewer representative cleanup
+PASS - viewer rep scope cleanup
+10/10 PASS
+
+=== node scripts/phase-m14-9-8-11-check.mjs ===
+PASS viewer label changed to groomer driver
+PASS technician binding fields exist
+PASS user service loads technician binding
+PASS user service saves team and technician
+PASS app submits technician binding
+PASS sql creates technician binding table
+PASS sql enforces exact assignment
+PASS execution RPCs enforce technician binding
+8/8 PASS
+
+=== npm run offline:runtime:check ===
+> petatoe-pet-care-mobile@18.54.14 offline:runtime:check
+> node scripts/offline-runtime-reliability-check.mjs
+
+PASS: All 77 local CSS/JS assets are registered in App Shell
+PASS: Version query strings are normalized with ignoreSearch
+PASS: Critical CDN libraries are registered in Vendor Cache
+PASS: App Shell installation is resilient and caches assets independently
+PASS: Release version is unified at 18.54.14
+PASS: All local CSS/JS version tokens are unified
+PASS: Previously omitted runtime scripts are now included
+
+Offline Runtime Reliability Certification: PASS
+
+=== npm run dashboard:offline:check ===
+> petatoe-pet-care-mobile@18.54.14 dashboard:offline:check
+> node scripts/dashboard-offline-certification-check.mjs
+
+PASS - dashboardData exists
+PASS - renderDashboard exists
+PASS - Dashboard has no direct Supabase access
+PASS - Dashboard consumes customers state
+PASS - Dashboard consumes followups state
+PASS - Dashboard consumes quotations state
+PASS - Smart Cache loads before application
+PASS - Smart Cache load order is valid
+PASS - Dashboard application version is unified
+Dashboard Offline Certification: PASS
+
+=== npm run offline:cache-first:check ===
+> petatoe-pet-care-mobile@18.54.14 offline:cache-first:check
+> node scripts/cache-first-connectivity-check.mjs
+
+PASS: Smart Cache supports unlimited stale fallback
+PASS: Customers reads stale cache at any age
+PASS: Customers scope has cached fallback
+PASS: Customers cache refresh does not depend only on navigator.onLine
+PASS: Customers exposes read freshness metadata
+PASS: Followups reads stale cache at any age
+PASS: Followups scope has cached fallback
+PASS: Followups cache refresh does not depend only on navigator.onLine
+PASS: Followups exposes read freshness metadata
+PASS: Quotations reads stale cache at any age
+PASS: Quotations scope has cached fallback
+PASS: Quotations cache refresh does not depend only on navigator.onLine
+PASS: Quotations exposes read freshness metadata
+PASS: UI shows last synchronization status
+PASS: Version unified
+
+15/15 PASS
+
+=== npm run offline:queue:check ===
+> petatoe-pet-care-mobile@18.54.14 offline:queue:check
+> node scripts/sync-queue-recovery-check.mjs
+
+PASS - Queue version M13.13
+PASS - Anonymous namespace blocked
+PASS - Offline session namespace used
+PASS - Interrupted processing recovery
+PASS - Operation dedupe key
+PASS - Idempotency key
+PASS - Retry API
+PASS - Discard API
+PASS - Conflict listing
+PASS - Conflict resolution
+PASS - Queue cleanup
+PASS - Diagnostics stats
+PASS - Version unified
+
+13 / 13 PASS
+
+=== npm run permissions:role-agnostic:check ===
+> petatoe-pet-care-mobile@18.54.14 permissions:role-agnostic:check
+> node scripts/role-agnostic-permissions-check.mjs
+
+PASS - canonical resolver registered
+PASS - customers use canonical scope
+PASS - followups use canonical scope
+PASS - quotations use canonical scope
+PASS - sales representative baseline removed
+PASS - legacy role action visibility removed
+PASS - import mapping canonical
+PASS - daily rows canonical scoped
+PASS - representative dropdown canonical scoped
+PASS - restrictive default scope
+PASS - resolver in html
+PASS - resolver in app shell
+12/12 PASS
+
+=== npm run permissions:visibility-consistency:check ===
+> petatoe-pet-care-mobile@18.54.14 permissions:visibility-consistency:check
+> node scripts/permission-visibility-consistency-check.mjs
+
+PASS - permissions refresh applies actions after authoritative load
+PASS - quotation add button has canonical permission metadata
+PASS - quotation renderer no longer races by manually hiding add button
+PASS - installation ownership is synchronized to customer representative
+PASS - requests view is not blocked by installation team scope
+
+5/5 checks passed.
+

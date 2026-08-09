@@ -1682,13 +1682,30 @@ function renderUsers() {
 }
 
 function syncInstallationTechnicianBindingFields() {
-  const isTechnicianRole = (document.getElementById("userRole")?.value || "") === "viewer";
+  const isTeamOperatorRole = (document.getElementById("userRole")?.value || "") === "viewer";
   const shell = document.getElementById("userInstallationTechnicianBinding");
-  shell?.classList.toggle("hidden", !isTechnicianRole);
+  shell?.classList.toggle("hidden", !isTeamOperatorRole);
+
+  const representativeField = document.getElementById("userRepresentative")?.closest("label");
+  representativeField?.classList.toggle("hidden", isTeamOperatorRole);
+
+  const dataAccessField = document.getElementById("userDataAccessMode")?.closest("label");
+  dataAccessField?.classList.toggle("hidden", isTeamOperatorRole);
+  document.getElementById("userAllowedRepresentativesLabel")?.classList.toggle("hidden", isTeamOperatorRole || (document.getElementById("userDataAccessMode")?.value || "") !== "selected");
+
+  const installationAccessField = document.getElementById("userInstallationAccessMode")?.closest("label");
+  installationAccessField?.classList.toggle("hidden", isTeamOperatorRole);
+  document.getElementById("userInstallationRepresentativesLabel")?.classList.toggle("hidden", isTeamOperatorRole || (document.getElementById("userInstallationAccessMode")?.value || "") !== "selected");
+
   const team = document.getElementById("userInstallationTeam");
-  const name = document.getElementById("userInstallationTechnicianName");
-  if (team) team.required = isTechnicianRole;
-  if (name) name.required = isTechnicianRole;
+  if (team) team.required = isTeamOperatorRole;
+
+  if (isTeamOperatorRole) {
+    if (document.getElementById("userRepresentative")) document.getElementById("userRepresentative").value = "";
+    if (document.getElementById("userDataAccessMode")) document.getElementById("userDataAccessMode").value = "selected";
+    if (document.getElementById("userInstallationAccessMode")) document.getElementById("userInstallationAccessMode").value = "own";
+    document.querySelectorAll('#userAllowedRepresentativesList input[type="checkbox"], #userInstallationRepresentativesList input[type="checkbox"]').forEach(input => { input.checked = false; });
+  }
 }
 
 function openUserDialog(user = null) {
@@ -1704,7 +1721,7 @@ function openUserDialog(user = null) {
   document.getElementById("userPasswordLabel").classList.toggle("hidden", Boolean(user));
   document.getElementById("userRole").value = user?.role || "viewer";
   document.getElementById("userInstallationTeam").value = user?.installation_technician_binding?.installation_team_id || "";
-  document.getElementById("userInstallationTechnicianName").value = user?.installation_technician_binding?.technician_name || "";
+  document.getElementById("userInstallationTechnicianName").value = user?.installation_technician_binding?.technician_name || user?.full_name || "";
   syncInstallationTechnicianBindingFields();
   document.getElementById("userRepresentative").value = user?.representative_id || "";
   document.getElementById("userDataAccessMode").value = user?.data_access_mode || (user?.representative_id ? "own" : "selected");
@@ -1742,21 +1759,24 @@ async function saveUserForm(event) {
       email: document.getElementById("userEmail").value,
       password: document.getElementById("userPassword").value,
       role: document.getElementById("userRole").value,
-      representativeId: document.getElementById("userRepresentative").value || null,
-      accessMode: document.getElementById("userDataAccessMode").value,
-      allowedRepresentativeIds: selectedAllowedRepresentativeIds(),
-      installationAccessMode: document.getElementById("userInstallationAccessMode").value,
-      allowedInstallationRepresentativeIds: selectedInstallationRepresentativeIds(),
+      representativeId: document.getElementById("userRole").value === "viewer" ? null : (document.getElementById("userRepresentative").value || null),
+      accessMode: document.getElementById("userRole").value === "viewer" ? "selected" : document.getElementById("userDataAccessMode").value,
+      allowedRepresentativeIds: document.getElementById("userRole").value === "viewer" ? [] : selectedAllowedRepresentativeIds(),
+      installationAccessMode: document.getElementById("userRole").value === "viewer" ? "own" : document.getElementById("userInstallationAccessMode").value,
+      allowedInstallationRepresentativeIds: document.getElementById("userRole").value === "viewer" ? [] : selectedInstallationRepresentativeIds(),
       installationTeamId: document.getElementById("userInstallationTeam").value || null,
-      installationTechnicianName: document.getElementById("userInstallationTechnicianName").value.trim(),
+      installationTechnicianName: document.getElementById("userRole").value === "viewer" ? document.getElementById("userFullName").value.trim() : document.getElementById("userInstallationTechnicianName").value.trim(),
       isActive: document.getElementById("userActive").value === "true",
       mustChangePassword: document.getElementById("userMustChangePassword").value === "true"
     };
-    if (payload.accessMode === "selected" && !payload.representativeId && payload.allowedRepresentativeIds.length === 0) {
+    if (payload.role !== "viewer" && payload.accessMode === "selected" && !payload.representativeId && payload.allowedRepresentativeIds.length === 0) {
       throw new Error("اختر مندوبًا مرتبطًا أو مندوبًا واحدًا على الأقل ضمن نطاق البيانات.");
     }
-    if (payload.installationAccessMode === "selected" && !payload.representativeId && payload.allowedInstallationRepresentativeIds.length === 0) {
-      throw new Error("اختر مندوبًا مرتبطًا أو مندوب تركيبات واحدًا على الأقل.");
+    if (payload.role !== "viewer" && payload.installationAccessMode === "selected" && !payload.representativeId && payload.allowedInstallationRepresentativeIds.length === 0) {
+      throw new Error("اختر مندوبًا مرتبطًا أو مندوب مواعيد واحدًا على الأقل.");
+    }
+    if (payload.role === "viewer" && !payload.installationTeamId) {
+      throw new Error("اختر فرقة المواعيد المرتبطة بالجرومر / السائق.");
     }
     if (editingUserId) await window.UsersService.updateUser(payload);
     else await window.UsersService.createUser(payload);

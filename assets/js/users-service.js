@@ -38,7 +38,7 @@
     if (representativesResult.error) throw new Error(`تعذر تحميل المندوبين المسموحين: ${representativesResult.error.message}`);
     if (installationProfilesResult.error) throw new Error(`تعذر تحميل نطاق التركيبات: ${installationProfilesResult.error.message}`);
     if (installationRepresentativesResult.error) throw new Error(`تعذر تحميل مندوبي التركيبات المسموحين: ${installationRepresentativesResult.error.message}`);
-    if (technicianBindingsResult.error && technicianBindingsResult.error.code !== "42P01") throw new Error(`تعذر تحميل ربط فني التركيبات: ${technicianBindingsResult.error.message}`);
+    if (technicianBindingsResult.error && technicianBindingsResult.error.code !== "42P01") throw new Error(`تعذر تحميل ربط الجرومر / السائق: ${technicianBindingsResult.error.message}`);
 
     const modeByUser = new Map((profilesResult.data || []).map(row => [row.user_id, row.access_mode]));
     const repsByUser = new Map();
@@ -120,16 +120,16 @@
       email: payload.email,
       password: payload.password,
       role: payload.role,
-      representative_id: payload.representativeId || null,
+      representative_id: payload.role === "viewer" ? null : (payload.representativeId || null),
       is_active: payload.isActive,
       must_change_password: payload.mustChangePassword,
-      access_mode: payload.accessMode,
-      allowed_representative_ids: payload.allowedRepresentativeIds || []
+      access_mode: payload.role === "viewer" ? "selected" : payload.accessMode,
+      allowed_representative_ids: payload.role === "viewer" ? [] : (payload.allowedRepresentativeIds || [])
     });
     if (!data?.success) throw new Error(data?.error || "تعذر إنشاء المستخدم.");
     const user = data.user;
     if (!user?.id) throw new Error("تم إنشاء الحساب بدون معرف مستخدم صالح.");
-    await saveInstallationDataAccess(user.id, payload.installationAccessMode, payload.allowedInstallationRepresentativeIds);
+    await saveInstallationDataAccess(user.id, payload.role === "viewer" ? "own" : payload.installationAccessMode, payload.role === "viewer" ? [] : payload.allowedInstallationRepresentativeIds);
     await saveInstallationTechnicianBinding(user.id, payload.role, payload.installationTeamId, payload.installationTechnicianName);
     return user;
   }
@@ -141,7 +141,7 @@
       .update({
         full_name: payload.fullName.trim(),
         role: payload.role,
-        representative_id: payload.representativeId || null,
+        representative_id: payload.role === "viewer" ? null : (payload.representativeId || null),
         is_active: payload.isActive,
         must_change_password: payload.mustChangePassword
       })
@@ -149,8 +149,8 @@
       .select()
       .single();
     if (error) throw new Error(`تعذر تعديل المستخدم: ${error.message}`);
-    await saveUserDataAccess(payload.id, payload.accessMode, payload.allowedRepresentativeIds);
-    await saveInstallationDataAccess(payload.id, payload.installationAccessMode, payload.allowedInstallationRepresentativeIds);
+    await saveUserDataAccess(payload.id, payload.role === "viewer" ? "selected" : payload.accessMode, payload.role === "viewer" ? [] : payload.allowedRepresentativeIds);
+    await saveInstallationDataAccess(payload.id, payload.role === "viewer" ? "own" : payload.installationAccessMode, payload.role === "viewer" ? [] : payload.allowedInstallationRepresentativeIds);
     await saveInstallationTechnicianBinding(payload.id, payload.role, payload.installationTeamId, payload.installationTechnicianName);
     await audit("update", payload.id, payload);
     return data;
@@ -244,22 +244,23 @@
     const isTechnicianRole = role === "viewer";
     if (!isTechnicianRole) {
       const { error } = await client().from("installation_user_technician_bindings").delete().eq("user_id", userId);
-      if (error && error.code !== "42P01") throw new Error(`تعذر حذف ربط فني التركيبات: ${error.message}`);
+      if (error && error.code !== "42P01") throw new Error(`تعذر حذف ربط الجرومر / السائق: ${error.message}`);
       return;
     }
-    if (!teamId || !normalizedName) throw new Error("اختر فرقة التركيبات واكتب اسم الفني المرتبط.");
+    if (!teamId) throw new Error("اختر فرقة المواعيد المرتبطة بالجرومر / السائق.");
+    const safeName = normalizedName || "team-operator";
     const { error } = await client().from("installation_user_technician_bindings").upsert({
       user_id: userId,
       installation_team_id: teamId,
-      technician_name: normalizedName,
-      normalized_technician_name: normalizedName.toLocaleLowerCase("ar").replace(/\s+/g, " "),
+      technician_name: safeName,
+      normalized_technician_name: safeName.toLocaleLowerCase("ar").replace(/\s+/g, " "),
       updated_at: new Date().toISOString()
     }, { onConflict: "user_id" });
-    if (error) throw new Error(`تعذر حفظ ربط فني التركيبات: ${error.message}`);
+    if (error) throw new Error(`تعذر حفظ ربط الجرومر / السائق: ${error.message}`);
     const { error: accessDeleteError } = await client().from("installation_team_access").delete().eq("user_id", userId);
     if (accessDeleteError) throw new Error(`تعذر تحديث نطاق فرقة الفني: ${accessDeleteError.message}`);
     const { error: accessInsertError } = await client().from("installation_team_access").insert({ user_id: userId, installation_team_id: teamId });
-    if (accessInsertError) throw new Error(`تعذر ربط المستخدم بفرقة التركيبات: ${accessInsertError.message}`);
+    if (accessInsertError) throw new Error(`تعذر ربط المستخدم بفرقة المواعيد: ${accessInsertError.message}`);
   }
 
   async function audit(action, entityId, newData) {

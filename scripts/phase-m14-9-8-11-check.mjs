@@ -7,7 +7,7 @@ const users=read('assets/js/users-service.js');
 const app=read('assets/js/app.js');
 const html=read('index.html');
 const sql=read('supabase/migrations/phase_m14_9_8_11_installation_technician_role_team_binding_scope.sql');
-assert('viewer label changed to technician',permissions.includes('viewer: "فني تركيبات"'));
+assert('viewer label changed to groomer driver',permissions.includes('viewer: "جرومر / سائق"'));
 assert('technician binding fields exist',html.includes('userInstallationTechnicianBinding')&&html.includes('userInstallationTeam')&&html.includes('userInstallationTechnicianName'));
 assert('user service loads technician binding',users.includes('installation_user_technician_bindings')&&users.includes('installation_technician_binding'));
 assert('user service saves team and technician',users.includes('saveInstallationTechnicianBinding')&&users.includes('installation_team_access'));

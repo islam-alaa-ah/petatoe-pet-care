@@ -1,0 +1,18 @@
+PETATOE P5.6 Deployment
+
+1) Merge the delivered files preserving paths.
+2) Run Supabase SQL:
+   supabase/migrations/p5_6_groomer_driver_team_only_scope.sql
+3) Verify with:
+   supabase/verification/p5_6_groomer_driver_team_only_scope_verification.sql
+4) P5.5 Edge Function remains cumulative. If manage-user was not deployed yet:
+   supabase functions deploy manage-user
+5) Hard refresh / update PWA to release 18.54.14.
+
+Manual test:
+- Edit/create role "جرومر / سائق".
+- Confirm no sales representative selection is required.
+- Select exactly one appointment team.
+- Login as that user.
+- Confirm only appointments assigned to that team are visible in execution.
+- Confirm appointments for other teams are not visible and cannot be opened by direct URL/action.
