@@ -1,15 +1,16 @@
-// PETATOE P4.1 — Customer Excel Actions Runtime Hotfix
-// Robust delegated handlers for the Customers Excel import/template buttons.
-// This script is intentionally isolated from app.js so the two actions remain
-// available even if an unrelated late app.js binding fails during startup.
+// PETATOE P4.2 — Customer Import Runtime Recovery
+// Bridges customer Excel controls directly to the canonical app functions.
+// This survives a missed DOM binding while preserving the existing import engine.
 (function () {
   "use strict";
 
   const XLSX_SRC = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
   let xlsxPromise = null;
 
-  function status(message, type) {
-    const node = document.getElementById("customersStatus");
+  const byId = id => document.getElementById(id);
+
+  function show(id, message, type) {
+    const node = byId(id);
     if (!node) return;
     node.textContent = message || "";
     node.classList.remove("hidden", "success", "error", "info", "warning");
@@ -19,150 +20,113 @@
   function loadXlsx() {
     if (window.XLSX) return Promise.resolve(window.XLSX);
     if (xlsxPromise) return xlsxPromise;
-
     xlsxPromise = new Promise((resolve, reject) => {
-      const existing = Array.from(document.scripts).find(script =>
-        String(script.src || "").includes("xlsx.full.min.js")
-      );
-
-      if (existing) {
-        const started = Date.now();
-        const wait = () => {
-          if (window.XLSX) return resolve(window.XLSX);
-          if (Date.now() - started > 8000) {
-            reject(new Error("تعذر تحميل مكتبة Excel. تحقق من الاتصال بالإنترنت ثم أعد المحاولة."));
-            return;
-          }
-          setTimeout(wait, 100);
-        };
-        wait();
-        return;
-      }
-
       const script = document.createElement("script");
       script.src = XLSX_SRC;
       script.async = true;
       script.onload = () => window.XLSX
         ? resolve(window.XLSX)
-        : reject(new Error("تم تحميل ملف Excel لكن المكتبة لم تبدأ بشكل صحيح."));
-      script.onerror = () => reject(new Error("تعذر تحميل مكتبة Excel. تحقق من الاتصال بالإنترنت ثم أعد المحاولة."));
+        : reject(new Error("مكتبة Excel لم تبدأ بشكل صحيح."));
+      script.onerror = () => reject(new Error("تعذر تحميل مكتبة Excel. تحقق من الاتصال بالإنترنت."));
       document.head.appendChild(script);
     }).finally(() => {
       if (!window.XLSX) xlsxPromise = null;
     });
-
     return xlsxPromise;
   }
 
-  function excelCenter() {
-    const center = window.CustomerExcelCenter;
-    if (!center) {
-      throw new Error("مركز Excel للعملاء غير محمل. نفذ Hard Refresh مرة واحدة ثم أعد المحاولة.");
+  function requireAppFunction(name) {
+    const fn = window[name];
+    if (typeof fn !== "function") {
+      throw new Error(`تعذر تحميل وظيفة ${name}. نفذ Hard Refresh ثم أعد المحاولة.`);
     }
-    return center;
+    return fn;
   }
 
-  function openImport() {
-    const dialog = document.getElementById("customerImportDialog");
-    if (!dialog) throw new Error("نافذة رفع العملاء غير موجودة في الصفحة الحالية.");
-
-    // Reset the native file field so selecting the same file twice still fires change.
-    const input = document.getElementById("customerImportFileInput");
-    if (input) input.value = "";
-
-    if (typeof dialog.showModal === "function") {
-      if (!dialog.open) dialog.showModal();
-    } else {
-      dialog.setAttribute("open", "");
-      dialog.classList.remove("hidden");
+  async function openImport() {
+    await loadXlsx();
+    // Use the canonical reset/open functions so the lexical app state is initialized.
+    if (typeof window.openCustomerImportDialog === "function") {
+      window.openCustomerImportDialog();
+      return;
     }
+    if (typeof window.resetCustomerImportDialog === "function") {
+      window.resetCustomerImportDialog();
+    }
+    const dialog = byId("customerImportDialog");
+    if (!dialog) throw new Error("نافذة استيراد العملاء غير موجودة.");
+    if (typeof dialog.showModal === "function" && !dialog.open) dialog.showModal();
+  }
 
-    // Preload XLSX after the dialog opens. The user can see the UI immediately.
-    loadXlsx().catch(error => {
-      const importStatus = document.getElementById("customerImportStatus");
-      if (importStatus) {
-        importStatus.textContent = error.message;
-        importStatus.classList.remove("hidden");
-        importStatus.classList.add("error");
-      }
-    });
+  async function previewFile(file) {
+    if (!file) return;
+    await loadXlsx();
+    const fn = requireAppFunction("previewCustomerImportFile");
+    await fn(file);
+  }
+
+  async function executeImport() {
+    const fn = requireAppFunction("executeCustomerImport");
+    await fn();
   }
 
   async function downloadTemplate() {
-    status("جاري تجهيز نموذج العملاء...", "info");
     await loadXlsx();
-    excelCenter().downloadTemplate();
-    status("تم تنزيل نموذج العملاء: code | name | address | mobile", "success");
+    if (!window.CustomerExcelCenter) throw new Error("مركز Excel للعملاء غير محمل.");
+    window.CustomerExcelCenter.downloadTemplate();
   }
 
-  function isTarget(target, id) {
-    return target && typeof target.closest === "function" && target.closest(`#${id}`);
+  function closest(target, id) {
+    return target && typeof target.closest === "function" ? target.closest(`#${id}`) : null;
   }
 
-  // Capture phase deliberately wins over any stale/broken legacy click binding.
+  // Capture-phase routing prevents stale handlers from competing with the canonical action.
   document.addEventListener("click", event => {
-    if (isTarget(event.target, "customersImportBtn") || isTarget(event.target, "referenceCustomersImportBtn")) {
+    if (closest(event.target, "customersImportBtn") || closest(event.target, "referenceCustomersImportBtn")) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      try {
-        openImport();
-      } catch (error) {
-        status(error instanceof Error ? error.message : "تعذر فتح نافذة رفع العملاء.", "error");
-      }
+      openImport().catch(error => show("referenceCustomersStatus", error.message || "تعذر فتح الاستيراد.", "error"));
       return;
     }
 
-    if (isTarget(event.target, "customersTemplateBtn") || isTarget(event.target, "referenceCustomersTemplateBtn")) {
+    if (closest(event.target, "customersTemplateBtn") || closest(event.target, "referenceCustomersTemplateBtn")) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      downloadTemplate().catch(error => {
-        status(error instanceof Error ? error.message : "تعذر تنزيل نموذج العملاء.", "error");
-      });
+      downloadTemplate()
+        .then(() => show("referenceCustomersStatus", "تم تنزيل نموذج العملاء.", "success"))
+        .catch(error => show("referenceCustomersStatus", error.message || "تعذر تنزيل النموذج.", "error"));
+      return;
     }
-  }, true);
 
-  // File chooser fallback: guarantees parsing is reachable even if the old binding
-  // was skipped due to an unrelated startup exception.
-  document.addEventListener("click", event => {
-    if (!isTarget(event.target, "customerImportChooseFileBtn")) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const input = document.getElementById("customerImportFileInput");
-    if (input) input.click();
+    if (closest(event.target, "customerImportChooseFileBtn")) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      byId("customerImportFileInput")?.click();
+      return;
+    }
+
+    if (closest(event.target, "customerImportExecuteBtn")) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      executeImport().catch(error => show("customerImportStatus", error.message || "تعذر تنفيذ الاستيراد.", "error"));
+    }
   }, true);
 
   document.addEventListener("change", event => {
     const input = event.target;
     if (!input || input.id !== "customerImportFileInput") return;
-    if (input.dataset.p4HotfixProcessing === "1") return;
-
     const file = input.files && input.files[0];
     if (!file) return;
 
-    // If app.js has its normal preview function bound, let its handler execute too.
-    // This fallback only reports library readiness and never writes to Supabase.
-    input.dataset.p4HotfixProcessing = "1";
-    loadXlsx()
-      .then(() => {
-        const fileName = document.getElementById("customerImportFileName");
-        if (fileName) fileName.textContent = file.name;
-      })
-      .catch(error => {
-        const importStatus = document.getElementById("customerImportStatus");
-        if (importStatus) {
-          importStatus.textContent = error.message;
-          importStatus.classList.remove("hidden");
-          importStatus.classList.add("error");
-        }
-      })
-      .finally(() => {
-        delete input.dataset.p4HotfixProcessing;
-      });
+    // Stop any stale duplicate change listener. The canonical preview function is invoked directly.
+    event.stopImmediatePropagation();
+    previewFile(file).catch(error => show("customerImportStatus", error.message || "تعذر قراءة ملف Excel.", "error"));
   }, true);
 
-  window.PETATOECustomerExcelActionsHotfix = Object.freeze({
+  window.PETATOECustomerImportRuntimeRecovery = Object.freeze({
     openImport,
-    downloadTemplate,
-    loadXlsx
+    previewFile,
+    executeImport,
+    downloadTemplate
   });
 })();

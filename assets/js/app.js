@@ -7703,10 +7703,10 @@ function renderCustomerImportPreview(preview) {
       return `
         <tr>
           <td>${row.sourceRow}</td>
+          <td>${escapeHtml(row.customerNumber || "-")}</td>
           <td>${escapeHtml(row.name || "-")}</td>
+          <td>${escapeHtml(row.address || "-")}</td>
           <td dir="ltr">${escapeHtml(row.phone || "-")}</td>
-          <td>${escapeHtml(row.type || "-")}</td>
-          <td>${escapeHtml(row.representative || "-")}</td>
           <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
           <td>${escapeHtml(row.statusNote || (row.errors.length ? row.errors.join(" — ") : "جاهز"))}</td>
         </tr>
@@ -8046,7 +8046,7 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
     document.getElementById("customerImportResult")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     showDataStatus(
       "customerImportStatus",
-      `اكتمل الاستيراد وتم تنفيذ الحفظ في Supabase: ${result.inserted} جديد، ${result.updated} تحديث، ${result.requestsInserted} طلب أو عقد، ${result.skipped + result.requestsSkipped} مكرر أو متجاهل، ${result.failed} فشل${override ? `، ${overrideRows.length} صف باعتماد استثنائي` : ""}.`,
+      `اكتمل الاستيراد وتم تنفيذ الحفظ في Supabase: ${Number(result.inserted || 0)} جديد، ${Number(result.updated || 0)} تحديث، ${Number(result.skipped || 0)} مكرر أو متجاهل، ${Number(result.failed || 0)} فشل${override ? `، ${overrideRows.length} صف باعتماد استثنائي` : ""}.`,
       result.failed ? "error" : "success"
     );
   } catch (error) {
