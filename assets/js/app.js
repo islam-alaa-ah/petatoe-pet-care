@@ -28,45 +28,7 @@ let representativeImportFailedRows = [];
 const REFERENCE_CUSTOMERS_PAGE_SIZE = 10;
 
 const seedCustomers = [
-  {
-    id: "C000001",
-    name: "شركة النور للتجارة",
-    type: "شركة",
-    phone: "0501234567",
-    city: "الرياض",
-    interests: ["مكيفات", "تبريد"],
-    representative: "أحمد محمد",
-    contactDate: "2026-07-10",
-    quotationNumber: "Q-2026-001",
-    noSaleReason: "القرار مؤجل",
-    notes: "متابعة العميل خلال الأسبوع القادم."
-  },
-  {
-    id: "C000002",
-    name: "مؤسسة الصفوة للحوم",
-    type: "شركة",
-    phone: "0557654321",
-    city: "جدة",
-    interests: ["ثلاجات لحوم"],
-    representative: "محمد علي",
-    contactDate: "2026-07-09",
-    quotationNumber: "Q-2026-002",
-    noSaleReason: "السعر مرتفع",
-    notes: "طلب مراجعة السعر."
-  },
-  {
-    id: "C000003",
-    name: "عبدالله سالم",
-    type: "فردي",
-    phone: "0531112233",
-    city: "الدمام",
-    interests: ["أجهزة منزلية"],
-    representative: "خالد حسن",
-    contactDate: "2026-07-08",
-    quotationNumber: "",
-    noSaleReason: "لم يتم التواصل بعد",
-    notes: ""
-  }
+  { id: "C000001", customerNumber: "CUST-001", name: "عميل تجريبي", address: "جدة", phone: "0500000000" }
 ];
 
 
@@ -174,12 +136,8 @@ let dailyManagerNote = null;
 let employeeReportSettings = [];
 let employeeTargetsDialogRows = [];
 let dailyOperationsLoading = false;
-let dailySuggestedCustomerType = "شركة";
 let dailySuggestedSuggestionRows = [];
-let dailySuggestedSuggestionProgress = {
-  "شركة": { active: 0, completed: 0, total: 0 },
-  "فردي": { active: 0, completed: 0, total: 0 }
-};
+let dailySuggestedSuggestionProgress = { active: 0, completed: 0, total: 0 };
 let dailySuggestedSuggestionsLoading = false;
 let dailySuggestedSuggestionsError = "";
 let pendingDailySuggestionCompletion = null;
@@ -382,31 +340,18 @@ async function findCustomerByPhone(phone, excludeId = null) {
 
 function customerPhoneOwnershipDetails(customer) {
   if (!customer) return null;
-  const representativeName = customer.representative?.full_name
-    || customer.representative_name
-    || customer.representative
-    || "";
   return {
     id: customer.id || "",
     name: customer.customer_name || customer.name || "عميل غير مسمى",
-    type: customer.customer_type || customer.type || "",
-    contactPersonName: customer.contact_person_name || customer.contactPersonName || "",
     phone: normalizePhone(customer.phone || ""),
-    representativeName: String(representativeName || "").trim(),
     canAccess: customer.can_access !== false && customer.outside_scope !== true
   };
 }
 
 function duplicateCustomerWarningMessage(customer, phone) {
-  const details = customerPhoneOwnershipDetails(customer);
-  if (!details) return "رقم الجوال مسجل بالفعل لعميل آخر.";
-  const representativeText = details.representativeName
-    ? ` ويتبع المندوب «${details.representativeName}».`
-    : "، ولكن لم يتم تعيين مندوب له حتى الآن.";
-  const scopeText = details.canAccess
-    ? ""
-    : " هذا العميل خارج نطاق البيانات المسموح لك بالوصول إليه. تواصل مع الإدارة أو المندوب المسؤول.";
-  return `لا يمكن إضافة العميل. رقم الجوال ${normalizePhone(phone)} مرتبط بالعميل «${details.name}»${representativeText}${scopeText}`;
+  const details=customerPhoneOwnershipDetails(customer);
+  if(!details)return "رقم الجوال مسجل بالفعل لعميل آخر.";
+  return `لا يمكن إضافة العميل. رقم الجوال ${normalizePhone(phone)} مرتبط بالعميل «${details.name}».`;
 }
 
 function nextCustomerId() {
@@ -531,11 +476,6 @@ function setQuotationCustomerSelection(customerId, { close = true } = {}) {
   input.value = customer ? quotationCustomerDisplay(customer) : "";
   input.dataset.selectedCustomerId = customer ? String(customer.id) : "";
   input.setCustomValidity(customer ? "" : "اختر العميل من نتائج البحث.");
-  if (customer) {
-    const representativeSelect = document.getElementById("quotationRepresentative");
-    const nextRepresentativeId = operationalDefaultRepresentativeId(customer.representativeId);
-    if (representativeSelect && nextRepresentativeId) representativeSelect.value = nextRepresentativeId;
-  }
   renderQuotationCustomerOptions("");
   if (close) closeQuotationCustomerOptions();
 }
@@ -1418,8 +1358,6 @@ async function ensureDashboardRepresentativeSettings(force = false) {
 function dashboardFilterState() {
   return {
     representative: document.getElementById("dashboardRepFilter")?.value || "",
-    type: document.getElementById("dashboardTypeFilter")?.value || "",
-    interest: document.getElementById("dashboardInterestFilter")?.value || "",
     from: document.getElementById("dashboardDateFrom")?.value || "",
     to: document.getElementById("dashboardDateTo")?.value || ""
   };
@@ -1431,152 +1369,31 @@ function dateInRange(value, from, to) {
 }
 
 function dashboardData() {
-  const filters = dashboardFilterState();
-  const hiddenRepresentativeNames = dashboardHiddenRepresentativeNames();
-
-  const filteredCustomers = customers.filter(customer =>
-    !hiddenRepresentativeNames.has(customer.representative)
-    && (!filters.representative || customer.representative === filters.representative)
-    && (!filters.type || customer.type === filters.type)
-    && (!filters.interest || customer.interests.includes(filters.interest))
-    && dateInRange(customer.contactDate, filters.from, filters.to)
-  );
-
-  const allowedCustomerIds = new Set(filteredCustomers.map(customer => customer.id));
-
-  const filteredFollowups = followups.filter(item =>
-    allowedCustomerIds.has(item.customerId)
-    && (!filters.representative || item.representative === filters.representative)
-    && dateInRange(item.contactDate, filters.from, filters.to)
-  );
-
-  const filteredQuotations = quotations.filter(item =>
-    allowedCustomerIds.has(item.customerId)
-    && (!filters.representative || item.representative === filters.representative)
-    && dateInRange(item.quotationDate, filters.from, filters.to)
-  );
-
-  return { filters, customers: filteredCustomers, followups: filteredFollowups, quotations: filteredQuotations };
+  const filters=dashboardFilterState();
+  const filteredCustomers=[...customers];
+  const filteredFollowups=followups.filter(item=>(!filters.representative||item.representative===filters.representative)&&dateInRange(item.contactDate,filters.from,filters.to));
+  const filteredQuotations=quotations.filter(item=>(!filters.representative||item.representative===filters.representative)&&dateInRange(item.quotationDate,filters.from,filters.to));
+  return {filters,customers:filteredCustomers,followups:filteredFollowups,quotations:filteredQuotations};
 }
 
 function renderDashboard() {
-  const settingsButton = document.getElementById("dashboardRepresentativeVisibilityBtn");
-  settingsButton?.classList.toggle("hidden", !window.EmployeeReportSettingsService?.canManage?.());
-  const data = dashboardData();
-  const filteredCustomers = data.customers;
-  const filteredFollowups = data.followups;
-  const filteredQuotations = data.quotations;
-
-  const companies = filteredCustomers.filter(c => c.type === "شركة").length;
-  const individuals = filteredCustomers.filter(c => c.type === "فردي").length;
-  const dueToday = filteredFollowups.filter(item => followupStatus(item) === "today").length;
-  const overdue = filteredFollowups.filter(item => followupStatus(item) === "overdue").length;
-  const accepted = filteredQuotations.filter(item => item.status === "مقبول");
-  const rejected = filteredQuotations.filter(item => item.status === "مرفوض");
-  const totalQuotationValue = filteredQuotations.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-  const acceptedValue = accepted.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-  const conversionRate = filteredQuotations.length
-    ? (accepted.length / filteredQuotations.length) * 100
-    : 0;
-
-  const stats = [
-    ["إجمالي العملاء", filteredCustomers.length],
-    ["عملاء الشركات", companies],
-    ["العملاء الأفراد", individuals],
-    ["إجمالي المتابعات", filteredFollowups.length],
-    ["متابعات اليوم", dueToday],
-    ["متابعات متأخرة", overdue],
-    ["عدد عقود العملاء", filteredQuotations.length],
-    ["قيمة العروض", formatCurrency(totalQuotationValue)],
-    ["العقود المقبولة", accepted.length],
-    ["قيمة المقبول", formatCurrency(acceptedValue)],
-    ["العقود المرفوضة", rejected.length],
-    ["نسبة التحويل", `${conversionRate.toFixed(1)}%`]
-  ];
-
-  document.getElementById("statsGrid").innerHTML = stats
-    .map(([label, value]) => `<article class="stat-card"><span>${label}</span><strong>${value}</strong></article>`)
-    .join("");
-
-  const periodText = data.filters.from || data.filters.to
-    ? `الفترة: ${data.filters.from ? formatDate(data.filters.from) : "البداية"} — ${data.filters.to ? formatDate(data.filters.to) : "اليوم"}`
-    : "الفترة: جميع البيانات";
-  document.getElementById("dashboardPeriodLabel").textContent = periodText;
-
-  renderRepresentativePerformance(data);
-  renderInterestAnalytics(filteredCustomers);
-  renderQuotationStatusAnalytics(filteredQuotations);
-  renderNoSaleReasonAnalytics(filteredCustomers, filteredQuotations);
-  renderActivityTrend(data);
-
-  const latest = [...filteredCustomers]
-    .sort((a, b) => String(b.contactDate).localeCompare(String(a.contactDate)))
-    .slice(0, 5);
-
-  document.getElementById("recentCustomers").innerHTML = latest.length
-    ? `<div class="simple-list">${latest.map(c => `
-        <div class="simple-item">
-          <div><strong>${escapeHtml(c.name)}</strong><span>${escapeHtml(c.phone)} · ${escapeHtml(c.representative)}</span></div>
-          <span>${formatDate(c.contactDate)}</span>
-        </div>`).join("")}</div>`
-    : `<div class="empty-state">لا توجد بيانات عملاء ضمن الفلاتر.</div>`;
-
-  const attention = filteredFollowups
-    .filter(item => ["today", "overdue"].includes(followupStatus(item)))
-    .sort((a, b) => String(a.nextFollowupDate).localeCompare(String(b.nextFollowupDate)))
-    .slice(0, 6);
-
-  document.getElementById("attentionFollowups").innerHTML = attention.length
-    ? `<div class="simple-list">${attention.map(item => {
-        const customer = customerById(item.customerId);
-        const status = followupStatus(item);
-        return `
-          <div class="attention-item ${status === "overdue" ? "overdue" : ""}">
-            <div>
-              <strong>${escapeHtml(customer?.name || "عميل غير معروف")}</strong>
-              <span>${escapeHtml(item.representative)} · ${escapeHtml(item.result)}</span>
-            </div>
-            <span>${statusLabel(status)} · ${formatDate(item.nextFollowupDate)}</span>
-          </div>`;
-      }).join("")}</div>`
-    : `<div class="empty-state">لا توجد متابعات تحتاج انتباهًا حاليًا.</div>`;
+  const settingsButton=document.getElementById("dashboardRepresentativeVisibilityBtn"); settingsButton?.classList.toggle("hidden",!window.EmployeeReportSettingsService?.canManage?.());
+  const data=dashboardData(),filteredCustomers=data.customers,filteredFollowups=data.followups,filteredQuotations=data.quotations;
+  const dueToday=filteredFollowups.filter(item=>followupStatus(item)==="today").length,overdue=filteredFollowups.filter(item=>followupStatus(item)==="overdue").length,accepted=filteredQuotations.filter(item=>item.status==="مقبول"),rejected=filteredQuotations.filter(item=>item.status==="مرفوض");
+  const totalQuotationValue=filteredQuotations.reduce((s,i)=>s+Number(i.amount||0),0),acceptedValue=accepted.reduce((s,i)=>s+Number(i.amount||0),0),conversionRate=filteredQuotations.length?(accepted.length/filteredQuotations.length)*100:0;
+  const stats=[["إجمالي العملاء",filteredCustomers.length],["إجمالي المتابعات",filteredFollowups.length],["متابعات اليوم",dueToday],["متابعات متأخرة",overdue],["عدد عقود العملاء",filteredQuotations.length],["قيمة العقود",formatCurrency(totalQuotationValue)],["العقود المقبولة",accepted.length],["قيمة المقبول",formatCurrency(acceptedValue)],["العقود المرفوضة",rejected.length],["نسبة التحويل",`${conversionRate.toFixed(1)}%`]];
+  document.getElementById("statsGrid").innerHTML=stats.map(([l,v])=>`<article class="stat-card"><span>${l}</span><strong>${v}</strong></article>`).join("");
+  const periodText=data.filters.from||data.filters.to?`الفترة: ${data.filters.from?formatDate(data.filters.from):"البداية"} — ${data.filters.to?formatDate(data.filters.to):"اليوم"}`:"الفترة: جميع البيانات"; document.getElementById("dashboardPeriodLabel").textContent=periodText;
+  renderRepresentativePerformance(data); renderQuotationStatusAnalytics(filteredQuotations); renderNoSaleReasonAnalytics([],filteredQuotations); renderActivityTrend(data);
+  const latest=[...filteredCustomers].sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||""))).slice(0,5);
+  document.getElementById("recentCustomers").innerHTML=latest.length?`<div class="simple-list">${latest.map(c=>`<div class="simple-item"><div><strong>${escapeHtml(c.name)}</strong><span>${escapeHtml(c.customerNumber||"—")} · ${escapeHtml(c.phone||"—")}</span></div><span>${escapeHtml(c.address||"—")}</span></div>`).join("")}</div>`:`<div class="empty-state">لا توجد بيانات عملاء.</div>`;
+  const attention=filteredFollowups.filter(item=>["today","overdue"].includes(followupStatus(item))).sort((a,b)=>String(a.nextFollowupDate).localeCompare(String(b.nextFollowupDate))).slice(0,6);
+  document.getElementById("attentionFollowups").innerHTML=attention.length?`<div class="simple-list">${attention.map(item=>{const c=customerById(item.customerId),status=followupStatus(item);return `<div class="attention-item ${status==="overdue"?"overdue":""}"><div><strong>${escapeHtml(c?.name||"عميل غير معروف")}</strong><span>${escapeHtml(item.representative)} · ${escapeHtml(item.result)}</span></div><span>${statusLabel(status)} · ${formatDate(item.nextFollowupDate)}</span></div>`;}).join("")}</div>`:`<div class="empty-state">لا توجد متابعات تحتاج انتباهًا حاليًا.</div>`;
 }
 
 function renderRepresentativePerformance(data) {
-  const rows = dashboardVisibleRepresentatives().map(rep => {
-    const repCustomers = data.customers.filter(c => c.representative === rep.name);
-    const repFollowups = data.followups.filter(f => f.representative === rep.name);
-    const repQuotations = data.quotations.filter(q => q.representative === rep.name);
-    const accepted = repQuotations.filter(q => q.status === "مقبول");
-    const conversion = repQuotations.length ? (accepted.length / repQuotations.length) * 100 : 0;
-    const quotationValue = repQuotations.reduce((sum, q) => sum + Number(q.amount || 0), 0);
-
-    return {
-      name: rep.name,
-      customers: repCustomers.length,
-      followups: repFollowups.length,
-      quotations: repQuotations.length,
-      quotationValue,
-      conversion
-    };
-  }).filter(row => row.customers || row.followups || row.quotations);
-
-  document.getElementById("representativePerformance").innerHTML = rows.length
-    ? rows.map(row => `
-      <article class="performance-card">
-        <div class="performance-card-head">
-          <strong>${escapeHtml(row.name)}</strong>
-          <span>نسبة التحويل ${row.conversion.toFixed(1)}%</span>
-        </div>
-        <div class="performance-metrics">
-          <div class="performance-metric"><span>العملاء</span><strong>${row.customers}</strong></div>
-          <div class="performance-metric"><span>المتابعات</span><strong>${row.followups}</strong></div>
-          <div class="performance-metric"><span>العروض</span><strong>${row.quotations}</strong></div>
-          <div class="performance-metric"><span>قيمة العروض</span><strong>${formatCurrency(row.quotationValue)}</strong></div>
-          <div class="performance-metric"><span>التحويل</span><strong>${row.conversion.toFixed(1)}%</strong></div>
-        </div>
-      </article>`).join("")
-    : `<div class="empty-state">لا توجد بيانات أداء ضمن الفلاتر.</div>`;
+  const rows=dashboardVisibleRepresentatives().map(rep=>{const f=data.followups.filter(x=>x.representative===rep.name),q=data.quotations.filter(x=>x.representative===rep.name),accepted=q.filter(x=>x.status==="مقبول"),conversion=q.length?(accepted.length/q.length)*100:0;return{name:rep.name,followups:f.length,quotations:q.length,quotationValue:q.reduce((s,x)=>s+Number(x.amount||0),0),conversion};}).filter(r=>r.followups||r.quotations);
+  document.getElementById("representativePerformance").innerHTML=rows.length?rows.map(r=>`<article class="performance-card"><div class="performance-card-head"><strong>${escapeHtml(r.name)}</strong><span>نسبة التحويل ${r.conversion.toFixed(1)}%</span></div><div class="performance-metrics"><div class="performance-metric"><span>المتابعات</span><strong>${r.followups}</strong></div><div class="performance-metric"><span>العقود</span><strong>${r.quotations}</strong></div><div class="performance-metric"><span>قيمة العقود</span><strong>${formatCurrency(r.quotationValue)}</strong></div><div class="performance-metric"><span>التحويل</span><strong>${r.conversion.toFixed(1)}%</strong></div></div></article>`).join(""):`<div class="empty-state">لا توجد بيانات أداء ضمن الفلاتر.</div>`;
 }
 
 function renderBarChart(containerId, rows) {
@@ -1595,14 +1412,7 @@ function renderBarChart(containerId, rows) {
     </div>`).join("");
 }
 
-function renderInterestAnalytics(filteredCustomers) {
-  const rows = interests.map(interest => ({
-    label: interest,
-    value: filteredCustomers.filter(c => c.interests.includes(interest)).length
-  })).filter(row => row.value > 0).sort((a, b) => b.value - a.value);
-
-  renderBarChart("interestAnalytics", rows);
-}
+function renderInterestAnalytics() {}
 
 function renderQuotationStatusAnalytics(filteredQuotations) {
   const statuses = ["قيد التنفيذ", "مقبول", "مرفوض"];
@@ -1614,28 +1424,9 @@ function renderQuotationStatusAnalytics(filteredQuotations) {
   renderBarChart("quotationStatusAnalytics", rows);
 }
 
-function renderNoSaleReasonAnalytics(filteredCustomers, filteredQuotations) {
-  const counts = new Map();
-
-  filteredCustomers.forEach(customer => {
-    const reason = customer.noSaleReason;
-    if (reason && reason !== "لم يتم التواصل بعد") {
-      counts.set(reason, (counts.get(reason) || 0) + 1);
-    }
-  });
-
-  filteredQuotations.forEach(quotation => {
-    const reason = quotation.rejectionReason;
-    if (quotation.status === "مرفوض" && reason) {
-      counts.set(reason, (counts.get(reason) || 0) + 1);
-    }
-  });
-
-  const rows = [...counts.entries()]
-    .map(([label, value]) => ({ label, value }))
-    .sort((a, b) => b.value - a.value);
-
-  renderBarChart("noSaleReasonAnalytics", rows);
+function renderNoSaleReasonAnalytics(_filteredCustomers, filteredQuotations) {
+  const counts=new Map(); filteredQuotations.forEach(q=>{const reason=q.rejectionReason;if(q.status==="مرفوض"&&reason)counts.set(reason,(counts.get(reason)||0)+1);});
+  const rows=[...counts.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value); renderBarChart("noSaleReasonAnalytics",rows);
 }
 
 function renderActivityTrend(data) {
@@ -3435,129 +3226,19 @@ async function loadCustomersFromSupabase(force = false) {
 }
 
 function filteredCustomers() {
-  const query = document.getElementById("customerSearch").value.trim().toLowerCase();
-  const type = document.getElementById("typeFilter").value;
-  const interest = document.getElementById("interestFilter").value;
-  const rep = document.getElementById("repFilter").value;
-
-  return customers.filter(customer => {
-    const searchable = [
-      customer.name,
-      customer.contactPersonName,
-      customer.representative,
-      customer.phone,
-      customer.city,
-      customer.quotationNumber
-    ].join(" ").toLowerCase();
-
-    return (!query || searchable.includes(query))
-      && (!type || customer.type === type)
-      && (!interest || customer.interests.includes(interest))
-      && (!rep || customer.representative === rep);
-  });
+  const query=(document.getElementById("customerSearch")?.value||"").trim().toLowerCase();
+  return customers.filter(customer => !query || [customer.customerNumber,customer.name,customer.address,customer.phone].join(" ").toLowerCase().includes(query));
 }
 
 function renderCustomers() {
-  const allRows = filteredCustomers();
-  const body = document.getElementById("customersTableBody");
-  const mobileCards = document.getElementById("customersMobileCards");
-  const pageCount = Math.max(1, Math.ceil(allRows.length / CUSTOMERS_PAGE_SIZE));
-
-  if (customersPage > pageCount) customersPage = pageCount;
-  const start = (customersPage - 1) * CUSTOMERS_PAGE_SIZE;
-  const rows = allRows.slice(start, start + CUSTOMERS_PAGE_SIZE);
-
-  const addButton = document.getElementById("addCustomerBtn");
-  addButton?.classList.toggle("hidden", !canManageCustomers("add"));
-
-  if (!rows.length) {
-    const emptyMessage = customersLoaded ? "لا توجد نتائج مطابقة." : "جاري تحميل بيانات العملاء...";
-    body.innerHTML = `<tr><td colspan="10" class="empty-state">${emptyMessage}</td></tr>`;
-    if (mobileCards) mobileCards.innerHTML = `<div class="customer-mobile-empty">${emptyMessage}</div>`;
-  } else {
-    body.innerHTML = rows.map(customer => `
-      <tr>
-        <td data-mobile-field="phone" data-mobile-label="رقم العميل">
-          <strong>${escapeHtml(customer.phone || "—")}</strong>
-          ${customer.customerNumber ? `<br><small>${escapeHtml(customer.customerNumber)}</small>` : ""}
-        </td>
-        <td data-mobile-field="name" data-mobile-label="اسم العميل">
-          <strong>${escapeHtml(customer.name)}</strong><br>
-          <small>${customer.city ? escapeHtml(customer.city) : ""}</small>
-        </td>
-        <td data-mobile-field="contact" data-mobile-label="اسم المسؤول">${customer.type === "شركة" ? escapeHtml(customer.contactPersonName || "—") : "—"}</td>
-        <td data-mobile-field="type" data-mobile-label="التصنيف"><span class="badge">${escapeHtml(customer.type)}</span></td>
-        <td data-mobile-field="interests" data-mobile-label="مجال الاهتمام">${customer.interests.map(item => `<span class="badge">${escapeHtml(item)}</span>`).join("") || "—"}</td>
-        <td data-mobile-field="representative" data-mobile-label="المندوب">${escapeHtml(customer.representative || "—")}</td>
-        <td data-mobile-field="date" data-mobile-label="تاريخ التواصل">${formatDate(customer.contactDate)}</td>
-        <td data-mobile-field="quotation" data-mobile-label="رقم العقد">${escapeHtml(customer.quotationNumber || "—")}</td>
-        <td data-mobile-field="reason" data-mobile-label="سبب عدم البيع">${escapeHtml(customer.noSaleReason || "—")}</td>
-        <td data-mobile-field="actions" data-mobile-label="الإجراءات">
-          <div class="row-actions">
-            <button class="edit-btn" data-details="${customer.id}">عرض</button>
-            ${canManageFollowups("add") ? `<button class="edit-btn" data-add-followup="${customer.id}">متابعة</button>` : ""}
-            ${canManageCustomers() ? `<button class="edit-btn" data-edit="${customer.id}">تعديل</button>` : ""}
-            ${canDeleteCustomers() ? `<button class="delete-btn" data-delete="${customer.id}">حذف</button>` : ""}
-          </div>
-        </td>
-      </tr>`).join("");
-
-    if (mobileCards) {
-      mobileCards.innerHTML = rows.map(customer => {
-        const interests = customer.interests.map(item => `<span class="badge">${escapeHtml(item)}</span>`).join("") || "—";
-        const city = customer.city ? escapeHtml(customer.city) : "—";
-        return `
-          <article class="customer-mobile-card" data-customer-id="${escapeHtml(customer.id)}">
-            <header class="customer-mobile-card-head">
-              <div>
-                <span class="customer-mobile-kicker">اسم العميل</span>
-                <strong class="customer-mobile-name">${escapeHtml(customer.name)}</strong>
-                <small class="customer-mobile-city">${city}</small>
-              </div>
-              <span class="customer-mobile-type badge">${escapeHtml(customer.type)}</span>
-            </header>
-
-            <div class="customer-mobile-phone-row">
-              <div>
-                <span>رقم العميل</span>
-                <strong>${escapeHtml(customer.phone || "—")}</strong>
-                ${customer.customerNumber ? `<small>${escapeHtml(customer.customerNumber)}</small>` : ""}
-              </div>
-              <div class="customer-mobile-quick-actions">
-                ${customer.phone ? `<a class="mobile-customer-call" href="tel:${escapeHtml(customer.phone)}" aria-label="اتصال بالعميل">اتصال</a>` : ""}
-                ${customer.phone ? `<a class="mobile-customer-whatsapp" href="https://wa.me/${normalizePhone(customer.phone)}" target="_blank" rel="noopener" aria-label="واتساب العميل">واتساب</a>` : ""}
-              </div>
-            </div>
-
-            <div class="customer-mobile-details">
-              <div><span>اسم المسؤول</span><strong>${customer.type === "شركة" ? escapeHtml(customer.contactPersonName || "—") : "—"}</strong></div>
-              <div><span>المندوب</span><strong>${escapeHtml(customer.representative || "—")}</strong></div>
-              <div><span>تاريخ التواصل</span><strong>${formatDate(customer.contactDate)}</strong></div>
-              <div><span>رقم العقد</span><strong>${escapeHtml(customer.quotationNumber || "—")}</strong></div>
-              <div class="customer-mobile-wide"><span>مجال الاهتمام</span><div class="customer-mobile-badges">${interests}</div></div>
-              <div class="customer-mobile-wide"><span>سبب عدم البيع</span><strong>${escapeHtml(customer.noSaleReason || "—")}</strong></div>
-            </div>
-
-            <footer class="customer-mobile-card-actions row-actions">
-              <button class="edit-btn" data-details="${customer.id}">عرض</button>
-              ${canManageFollowups("add") ? `<button class="edit-btn" data-add-followup="${customer.id}">متابعة</button>` : ""}
-              ${canManageCustomers() ? `<button class="edit-btn" data-edit="${customer.id}">تعديل</button>` : ""}
-              ${canDeleteCustomers() ? `<button class="delete-btn" data-delete="${customer.id}">حذف</button>` : ""}
-            </footer>
-          </article>`;
-      }).join("");
-    }
-  }
-
-  const info = document.getElementById("customersPaginationInfo");
-  const pageNumber = document.getElementById("customersPageNumber");
-  const prev = document.getElementById("customersPrevPage");
-  const next = document.getElementById("customersNextPage");
-
-  if (info) info.textContent = `${allRows.length} عميل`;
-  if (pageNumber) pageNumber.textContent = `${customersPage} / ${pageCount}`;
-  if (prev) prev.disabled = customersPage <= 1;
-  if (next) next.disabled = customersPage >= pageCount;
+  const allRows=filteredCustomers(); const body=document.getElementById("customersTableBody"); const mobileCards=document.getElementById("customersMobileCards");
+  const pageCount=Math.max(1,Math.ceil(allRows.length/CUSTOMERS_PAGE_SIZE)); if(customersPage>pageCount)customersPage=pageCount; const start=(customersPage-1)*CUSTOMERS_PAGE_SIZE; const rows=allRows.slice(start,start+CUSTOMERS_PAGE_SIZE);
+  document.getElementById("addCustomerBtn")?.classList.toggle("hidden",!canManageCustomers("add"));
+  const actions=c=>`<div class="row-actions"><button class="edit-btn" data-details="${c.id}">عرض</button>${canManageFollowups("add")?`<button class="edit-btn" data-add-followup="${c.id}">متابعة</button>`:""}${canManageCustomers()?`<button class="edit-btn" data-edit="${c.id}">تعديل</button>`:""}${canDeleteCustomers()?`<button class="delete-btn" data-delete="${c.id}">حذف</button>`:""}</div>`;
+  if(!rows.length){const m=customersLoaded?"لا توجد نتائج مطابقة.":"جاري تحميل بيانات العملاء..."; body.innerHTML=`<tr><td colspan="5" class="empty-state">${m}</td></tr>`; if(mobileCards)mobileCards.innerHTML=`<div class="customer-mobile-empty">${m}</div>`;}
+  else { body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.address||"—")}</td><td>${escapeHtml(c.phone||"—")}</td><td>${actions(c)}</td></tr>`).join("");
+    if(mobileCards)mobileCards.innerHTML=rows.map(c=>`<article class="customer-mobile-card"><header class="customer-mobile-card-head"><div><span class="customer-mobile-kicker">name</span><strong class="customer-mobile-name">${escapeHtml(c.name||"—")}</strong><small>${escapeHtml(c.customerNumber||"—")}</small></div></header><div class="customer-mobile-details"><div><span>address</span><strong>${escapeHtml(c.address||"—")}</strong></div><div><span>mobile</span><strong>${escapeHtml(c.phone||"—")}</strong></div></div><footer class="customer-mobile-card-actions row-actions">${actions(c)}</footer></article>`).join(""); }
+  const info=document.getElementById("customersPaginationInfo"),pn=document.getElementById("customersPageNumber"),prev=document.getElementById("customersPrevPage"),next=document.getElementById("customersNextPage"); if(info)info.textContent=`${allRows.length} عميل`; if(pn)pn.textContent=`${customersPage} / ${pageCount}`; if(prev)prev.disabled=customersPage<=1; if(next)next.disabled=customersPage>=pageCount;
 }
 
 function currentRole() {
@@ -3590,12 +3271,7 @@ function filteredRepresentativeRecords() {
   });
 }
 
-function representativeCustomerCount(rep) {
-  return customers.filter(customer =>
-    customer.representativeId === rep.id
-    || customer.representative === rep.full_name
-  ).length;
-}
+function representativeCustomerCount() { return 0; }
 
 function renderRepresentatives() {
   const body = document.getElementById("representativesTableBody");
@@ -3797,124 +3473,17 @@ function renderReferenceData() {
 }
 
 function filteredReferenceCustomers() {
-  const query = (document.getElementById("referenceCustomersSearch")?.value || "")
-    .trim()
-    .toLowerCase();
-  const type = document.getElementById("referenceCustomersTypeFilter")?.value || "";
-  const interest = document.getElementById("referenceCustomersInterestFilter")?.value || "";
-  const representative = document.getElementById("referenceCustomersRepFilter")?.value || "";
-
-  return customers.filter(customer => {
-    const searchable = [
-      customer.name,
-      customer.phone,
-      customer.contactPersonName,
-      customer.city,
-      customer.quotationNumber,
-      customer.representative
-    ].join(" ").toLowerCase();
-
-    return (!query || searchable.includes(query))
-      && (!type || customer.type === type)
-      && (!interest || customer.interests.includes(interest))
-      && (!representative || customer.representative === representative);
-  });
+  const query=(document.getElementById("referenceCustomersSearch")?.value||"").trim().toLowerCase();
+  return customers.filter(c=>!query||[c.customerNumber,c.name,c.address,c.phone].join(" ").toLowerCase().includes(query));
 }
 
-function syncReferenceCustomerFilters() {
-  const interestSelect = document.getElementById("referenceCustomersInterestFilter");
-  const representativeSelect = document.getElementById("referenceCustomersRepFilter");
-  const selectedInterest = interestSelect?.value || "";
-  const selectedRepresentative = representativeSelect?.value || "";
-
-  if (interestSelect) {
-    interestSelect.innerHTML = '<option value="">كل مجالات الاهتمام</option>'
-      + interests.map(item => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join("");
-    interestSelect.value = interests.includes(selectedInterest) ? selectedInterest : "";
-  }
-
-  if (representativeSelect) {
-    representativeSelect.innerHTML = '<option value="">كل المندوبين</option>'
-      + representatives.map(item => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join("");
-    representativeSelect.value = representatives.includes(selectedRepresentative)
-      ? selectedRepresentative
-      : "";
-  }
-}
+function syncReferenceCustomerFilters() {}
 
 function renderReferenceCustomers() {
-  const body = document.getElementById("referenceCustomersTableBody");
-  if (!body) return;
-
-  syncReferenceCustomerFilters();
-  const allRows = filteredReferenceCustomers();
-  const pageCount = Math.max(1, Math.ceil(allRows.length / REFERENCE_CUSTOMERS_PAGE_SIZE));
-  if (referenceCustomersPage > pageCount) referenceCustomersPage = pageCount;
-
-  const start = (referenceCustomersPage - 1) * REFERENCE_CUSTOMERS_PAGE_SIZE;
-  const rows = allRows.slice(start, start + REFERENCE_CUSTOMERS_PAGE_SIZE);
-
-  document.getElementById("referenceAddCustomerBtn")?.classList.toggle(
-    "hidden",
-    !canScreenAction("customers", "add")
-  );
-
-  document.querySelectorAll(".customer-export-action").forEach(button => {
-    button.classList.toggle(
-      "hidden",
-      !canScreenAction("customers", "export")
-    );
-  });
-
-  document.querySelectorAll(".customer-import-action").forEach(button => {
-    button.classList.toggle(
-      "hidden",
-      !canScreenAction("customers", "add")
-    );
-  });
-
-  if (!rows.length) {
-    body.innerHTML = `<tr><td colspan="10" class="empty-state">${
-      customersLoaded ? "لا توجد نتائج مطابقة." : "جاري تحميل بيانات العملاء..."
-    }</td></tr>`;
-  } else {
-    body.innerHTML = rows.map(customer => `
-      <tr>
-        <td><strong>${escapeHtml(customer.phone || "—")}</strong></td>
-        <td>
-          <strong>${escapeHtml(customer.name)}</strong>
-          ${customer.city ? `<br><small>${escapeHtml(customer.city)}</small>` : ""}
-        </td>
-        <td>${customer.type === "شركة" ? escapeHtml(customer.contactPersonName || "—") : "—"}</td>
-        <td><span class="badge">${escapeHtml(customer.type)}</span></td>
-        <td>${customer.interests.map(item => `<span class="badge">${escapeHtml(item)}</span>`).join("") || "—"}</td>
-        <td>${escapeHtml(customer.representative || "—")}</td>
-        <td>${formatDate(customer.contactDate)}</td>
-        <td>${escapeHtml(customer.quotationNumber || "—")}</td>
-        <td>${escapeHtml(customer.noSaleReason || "—")}</td>
-        <td>
-          <div class="row-actions">
-            <button class="edit-btn" type="button" data-reference-customer-details="${customer.id}">فتح</button>
-            ${canScreenAction("customers", "edit")
-              ? `<button class="edit-btn" type="button" data-reference-customer-edit="${customer.id}">تعديل</button>`
-              : ""}
-            ${canScreenAction("customers", "delete")
-              ? `<button class="delete-btn" type="button" data-reference-customer-delete="${customer.id}">حذف</button>`
-              : ""}
-          </div>
-        </td>
-      </tr>`).join("");
-  }
-
-  const info = document.getElementById("referenceCustomersPaginationInfo");
-  const pageNumber = document.getElementById("referenceCustomersPageNumber");
-  const prev = document.getElementById("referenceCustomersPrevPage");
-  const next = document.getElementById("referenceCustomersNextPage");
-
-  if (info) info.textContent = `${allRows.length} عميل`;
-  if (pageNumber) pageNumber.textContent = `${referenceCustomersPage} / ${pageCount}`;
-  if (prev) prev.disabled = referenceCustomersPage <= 1;
-  if (next) next.disabled = referenceCustomersPage >= pageCount;
+  const body=document.getElementById("referenceCustomersTableBody"); if(!body)return; const allRows=filteredReferenceCustomers(); const pageCount=Math.max(1,Math.ceil(allRows.length/REFERENCE_CUSTOMERS_PAGE_SIZE)); if(referenceCustomersPage>pageCount)referenceCustomersPage=pageCount; const start=(referenceCustomersPage-1)*REFERENCE_CUSTOMERS_PAGE_SIZE,rows=allRows.slice(start,start+REFERENCE_CUSTOMERS_PAGE_SIZE);
+  document.getElementById("referenceAddCustomerBtn")?.classList.toggle("hidden",!canScreenAction("customers","add")); document.querySelectorAll(".customer-export-action").forEach(b=>b.classList.toggle("hidden",!canScreenAction("customers","export"))); document.querySelectorAll(".customer-import-action").forEach(b=>b.classList.toggle("hidden",!canScreenAction("customers","add")));
+  if(!rows.length)body.innerHTML=`<tr><td colspan="5" class="empty-state">${customersLoaded?"لا توجد نتائج مطابقة.":"جاري تحميل بيانات العملاء..."}</td></tr>`; else body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.address||"—")}</td><td>${escapeHtml(c.phone||"—")}</td><td><div class="row-actions"><button class="edit-btn" type="button" data-reference-customer-details="${c.id}">فتح</button>${canScreenAction("customers","edit")?`<button class="edit-btn" type="button" data-reference-customer-edit="${c.id}">تعديل</button>`:""}${canScreenAction("customers","delete")?`<button class="delete-btn" type="button" data-reference-customer-delete="${c.id}">حذف</button>`:""}</div></td></tr>`).join("");
+  const info=document.getElementById("referenceCustomersPaginationInfo"),pn=document.getElementById("referenceCustomersPageNumber"),prev=document.getElementById("referenceCustomersPrevPage"),next=document.getElementById("referenceCustomersNextPage"); if(info)info.textContent=`${allRows.length} عميل`; if(pn)pn.textContent=`${referenceCustomersPage} / ${pageCount}`; if(prev)prev.disabled=referenceCustomersPage<=1; if(next)next.disabled=referenceCustomersPage>=pageCount;
 }
 
 function syncReferenceDataPanel() {
@@ -4074,80 +3643,12 @@ function syncCustomerContactPersonField() {
   }
 }
 
-async function openCustomerDialog(customer = null) {
-  const action = customer ? "edit" : "add";
-  if (!requireScreenAction("customers", action, `لا توجد صلاحية ${customer ? "تعديل" : "إضافة"} العملاء.`)) return;
-
-  const dialog = document.getElementById("customerDialog");
-  const form = document.getElementById("customerForm");
-  const submitButton = form?.querySelector('button[type="submit"]');
-  const title = document.getElementById("dialogTitle");
-  editingId = customer?.id || null;
-  title.textContent = customer ? "تعديل بيانات العميل" : "إضافة عميل جديد";
-  dialog?.showModal();
-  dialog?.classList.add("is-loading");
-  if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.textContent = "جاري تحميل البيانات...";
-  }
-
-  try {
-    const [referencesReady, districtResult, freshCustomer] = await Promise.all([
-      ensureOperationalReferenceData(),
-      loadCustomerDistrictCatalog().catch(error => {
-        console.warn("Customer district catalog unavailable:", error);
-        return [];
-      }),
-      customer?.id && window.CustomersService?.getCustomerById
-        ? window.CustomersService.getCustomerById(customer.id).catch(error => {
-            console.warn("Fresh customer hydration failed; using current row:", error);
-            return customer;
-          })
-        : Promise.resolve(customer)
-    ]);
-    if (!referencesReady) throw new Error("تعذر تحميل القوائم المرجعية المطلوبة.");
-
-    const record = freshCustomer || customer || null;
-    editingId = record?.id || null;
-    document.getElementById("customerId").value = record?.id || "";
-    document.getElementById("customerName").value = record?.name || "";
-    document.getElementById("customerType").value = record?.type || "شركة";
-    document.getElementById("customerContactPerson").value = record?.contactPersonName || "";
-    syncCustomerContactPersonField();
-    document.getElementById("customerPhone").value = record?.phone || "";
-    renderCustomerGeography({region:record?.region||"",city:record?.city||"",district:record?.district||""});
-    document.getElementById("customerRepresentative").value = operationalDefaultRepresentativeId(record?.representativeId);
-    document.getElementById("contactDate").value = record?.contactDate || new Date().toISOString().slice(0, 10);
-    document.getElementById("quotationNumber").value = record?.quotationNumber || "";
-    document.getElementById("noSaleReason").value = record?.noSaleReasonId || "";
-    document.getElementById("customerNotes").value = record?.notes || "";
-
-    const selectedIds = new Set((record?.interestIds || []).map(String));
-    const selectedNames = new Set((record?.interests || []).map(name => String(name || "").trim().toLowerCase()));
-    const interestSelect = document.getElementById("customerInterest");
-    [...interestSelect.options].forEach(option => {
-      option.selected = selectedIds.has(String(option.value))
-        || selectedNames.has(String(option.textContent || "").trim().toLowerCase());
-    });
-    interestSelect.setCustomValidity("");
-
-    const customerInterestSearch = document.getElementById("customerInterestSearch");
-    if (customerInterestSearch) customerInterestSearch.value = "";
-    setCustomerInterestDropdownOpen(false);
-    renderCustomerInterestDropdownOptions();
-    syncCustomerInterestCheckboxes();
-  } catch (error) {
-    console.error("Customer edit hydration failed:", error);
-    alert(error instanceof Error ? error.message : "تعذر تحميل بيانات العميل.");
-    dialog?.close();
-    editingId = null;
-  } finally {
-    dialog?.classList.remove("is-loading");
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = "حفظ العميل";
-    }
-  }
+async function openCustomerDialog(customer=null) {
+  const action=customer?"edit":"add"; if(!requireScreenAction("customers",action,`لا توجد صلاحية ${customer?"تعديل":"إضافة"} العملاء.`))return;
+  const dialog=document.getElementById("customerDialog"),form=document.getElementById("customerForm"),submitButton=form?.querySelector('button[type="submit"]'); editingId=customer?.id||null; document.getElementById("dialogTitle").textContent=customer?"تعديل بيانات العميل":"إضافة عميل جديد"; dialog?.showModal(); dialog?.classList.add("is-loading"); if(submitButton){submitButton.disabled=true;submitButton.textContent="جاري تحميل البيانات...";}
+  try { const record=customer?.id&&window.CustomersService?.getCustomerById?await window.CustomersService.getCustomerById(customer.id):customer; editingId=record?.id||null; document.getElementById("customerId").value=record?.id||""; document.getElementById("customerCode").value=record?.customerNumber||record?.code||""; document.getElementById("customerName").value=record?.name||""; document.getElementById("customerAddress").value=record?.address||""; document.getElementById("customerPhone").value=record?.phone||""; }
+  catch(error){console.error("Customer hydration failed",error);alert(error instanceof Error?error.message:"تعذر تحميل بيانات العميل.");dialog?.close();editingId=null;}
+  finally{dialog?.classList.remove("is-loading");if(submitButton){submitButton.disabled=false;submitButton.textContent="حفظ العميل";}}
 }
 
 function closeCustomerDialog() {
@@ -4159,109 +3660,11 @@ function closeCustomerDialog() {
 }
 
 async function handleCustomerSubmit(event) {
-  const action = editingId ? "edit" : "add";
-  if (!requireScreenAction("customers", action, "لا توجد صلاحية حفظ العملاء.")) return;
-  event.preventDefault();
-
-  if (!canManageCustomers()) {
-    alert("لا توجد صلاحية لتعديل بيانات العملاء.");
-    return;
-  }
-
-  const selectedInterestIds = [...document.getElementById("customerInterest").selectedOptions]
-    .map(option => option.value);
-
-  const interestSelect = document.getElementById("customerInterest");
-  if (!selectedInterestIds.length) {
-    interestSelect.setCustomValidity("اختر مجال اهتمام واحدًا على الأقل.");
-    setCustomerInterestDropdownOpen(true);
-    document.getElementById("customerInterestDropdownButton")?.focus();
-    return;
-  }
-  interestSelect.setCustomValidity("");
-
-  const customerType = document.getElementById("customerType").value;
-  const contactPersonInput = document.getElementById("customerContactPerson");
-  const contactPersonName = contactPersonInput.value.trim();
-
-  if (customerType === "شركة" && !contactPersonName) {
-    contactPersonInput.setCustomValidity("أدخل اسم المسؤول عن الشركة.");
-    contactPersonInput.reportValidity();
-    contactPersonInput.focus();
-    return;
-  }
-  contactPersonInput.setCustomValidity("");
-
-  const phoneInput = document.getElementById("customerPhone").value;
-  const normalizedPhone = normalizePhone(phoneInput);
-
-  if (!isValidSaudiMobile(normalizedPhone)) {
-    alert("أدخل رقم جوال سعودي صحيحًا بصيغة 05XXXXXXXX.");
-    document.getElementById("customerPhone").focus();
-    return;
-  }
-
-  try {
-    const duplicateCustomer = await findCustomerByPhone(normalizedPhone, editingId);
-    if (duplicateCustomer) {
-      alert(duplicateCustomerWarningMessage(duplicateCustomer, normalizedPhone));
-      document.getElementById("customerPhone").focus();
-      return;
-    }
-
-    const geoController = ensureCustomerGeoController();
-    const geoInputs = [
-      document.getElementById("customerRegionSearch")?.value,
-      document.getElementById("customerCitySearch")?.value,
-      document.getElementById("customerDistrictSearch")?.value
-    ].map(value => String(value || "").trim());
-    const hasGeography = geoInputs.some(Boolean);
-    const geoValidation = hasGeography
-      ? geoController.validate({ requireRegion: true, requireCity: true, requireDistrict: true })
-      : { valid: true, value: { region: "", city: "", district: "" } };
-    if (!geoValidation.valid) {
-      alert(geoValidation.message);
-      geoController.elements(geoValidation.field)?.search?.focus();
-      return;
-    }
-    const canonicalGeo = geoValidation.value;
-
-    const submitButton = event.submitter;
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.textContent = "جاري الحفظ...";
-    }
-
-    await window.CustomersService.saveCustomer({
-      id: editingId,
-      updatedAt: editingId ? (customers.find(item => String(item.id) === String(editingId))?.updatedAt || "") : "",
-      name: document.getElementById("customerName").value,
-      type: customerType,
-      contactPersonName: customerType === "شركة" ? contactPersonName : "",
-      phone: normalizedPhone,
-      region: canonicalGeo.region || "",
-      city: canonicalGeo.city || "",
-      district: canonicalGeo.district || "",
-      interestIds: selectedInterestIds,
-      representativeId: document.getElementById("customerRepresentative").value,
-      contactDate: document.getElementById("contactDate").value,
-      quotationNumber: document.getElementById("quotationNumber").value,
-      noSaleReasonId: document.getElementById("noSaleReason").value || null,
-      notes: document.getElementById("customerNotes").value
-    });
-
-    closeCustomerDialog();
-    customersLoaded = false;
-    await loadCustomersFromSupabase(true);
-  } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حفظ العميل.");
-  } finally {
-    const submitButton = event.submitter;
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = "حفظ العميل";
-    }
-  }
+  const action=editingId?"edit":"add"; if(!requireScreenAction("customers",action,"لا توجد صلاحية حفظ العملاء."))return; event.preventDefault();
+  if(!canManageCustomers()){alert("لا توجد صلاحية لتعديل بيانات العملاء.");return;}
+  const code=document.getElementById("customerCode")?.value.trim()||"",name=document.getElementById("customerName")?.value.trim()||"",address=document.getElementById("customerAddress")?.value.trim()||"",phone=normalizePhone(document.getElementById("customerPhone")?.value||"");
+  if(!code){alert("أدخل كود العميل.");document.getElementById("customerCode")?.focus();return;} if(!name){alert("أدخل اسم العميل.");document.getElementById("customerName")?.focus();return;} if(!isValidSaudiMobile(phone)){alert("أدخل رقم جوال سعودي صحيحًا بصيغة 05XXXXXXXX.");document.getElementById("customerPhone")?.focus();return;}
+  try{const dup=await findCustomerByPhone(phone,editingId);if(dup){alert(duplicateCustomerWarningMessage(dup,phone));return;}const btn=event.submitter;if(btn){btn.disabled=true;btn.textContent="جاري الحفظ...";}await window.CustomersService.saveCustomer({id:editingId,updatedAt:editingId?(customers.find(x=>String(x.id)===String(editingId))?.updatedAt||""):"",customerNumber:code,name,address,phone});closeCustomerDialog();customersLoaded=false;await loadCustomersFromSupabase(true);}catch(error){alert(error instanceof Error?error.message:"تعذر حفظ العميل.");}finally{const btn=event.submitter;if(btn){btn.disabled=false;btn.textContent="حفظ العميل";}}
 }
 
 async function deleteCustomer(id) {
@@ -4501,14 +3904,9 @@ async function handleFollowupSubmit(event) {
           followupId: savedFollowupId
         });
         if (completedCount || matchingSuggestion) {
-          const completedType = matchingSuggestion?.customer_type === "فردي" ? "فردي" : "شركة";
           dailySuggestedSuggestionRows = dailySuggestedSuggestionRows.filter(item => String(item.customer_id) !== String(customerId));
-          const progress = dailySuggestedSuggestionProgress[completedType] || { active: 0, completed: 0, total: 0 };
-          dailySuggestedSuggestionProgress[completedType] = {
-            ...progress,
-            active: Math.max(0, Number(progress.active || 0) - 1),
-            completed: Number(progress.completed || 0) + 1
-          };
+          const progress = dailySuggestedSuggestionProgress || { active: 0, completed: 0, total: 0 };
+          dailySuggestedSuggestionProgress = { ...progress, active: Math.max(0, Number(progress.active || 0) - 1), completed: Number(progress.completed || 0) + 1 };
           renderDailySuggestedCustomers();
         }
       } catch (error) {
@@ -4669,7 +4067,7 @@ function showCustomerDetails(customerId) {
   document.getElementById("customerDetailsTitle").textContent =
     `${customer.name} — Customer 360°`;
   document.getElementById("customerDetailsSubtitle").textContent =
-    `${customer.phone || "بدون جوال"} · ${customer.type || "غير محدد"} · ${customer.representative || "بدون مندوب"}`;
+    `${customer.customerNumber || "بدون كود"} · ${customer.phone || "بدون جوال"}`;
 
   const statusBadge = document.getElementById("customer360StatusBadge");
   statusBadge.textContent = view.status.label;
@@ -4682,17 +4080,10 @@ function showCustomerDetails(customerId) {
   followupButton.classList.toggle("hidden", !canManageFollowups("add"));
 
   const profile = [
-    ["رقم العميل", customer.customerNumber || customer.phone || "—"],
-    ["رقم الجوال", customer.phone || "—"],
-    ["التصنيف", customer.type || "—"],
-    ["اسم المسؤول", customer.type === "شركة" ? (customer.contactPersonName || "—") : "—"],
-    ["المنطقة", customer.region || "—"],
-    ["المدينة", customer.city || "—"],
-    ["الحي", customer.district || "—"],
-    ["المندوب", customer.representative || "—"],
-    ["تاريخ التواصل", formatDate(customer.contactDate)],
-    ["آخر عرض مسجل", customer.quotationNumber || "—"],
-    ["سبب عدم البيع", customer.noSaleReason || "—"]
+    ["code", customer.customerNumber || "—"],
+    ["name", customer.name || "—"],
+    ["address", customer.address || "—"],
+    ["mobile", customer.phone || "—"]
   ];
 
   const nextFollowup = view.followups.find(item =>
@@ -4800,16 +4191,6 @@ function showCustomerDetails(customerId) {
               `<div class="profile-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(String(value ?? "—"))}</strong></div>`
             ).join("")}
           </div>
-
-          <h4>مجالات الاهتمام</h4>
-          <div class="tag-list">
-            ${(customer.interests || []).length
-              ? customer.interests.map(item => `<span class="tag">${escapeHtml(item)}</span>`).join("")
-              : '<span class="customer360-empty-inline">لا توجد اهتمامات مسجلة.</span>'}
-          </div>
-
-          <h4>ملاحظات العميل</h4>
-          <div class="customer360-notes">${escapeHtml(customer.notes || "لا توجد ملاحظات مسجلة.")}</div>
         </article>
 
         <article class="customer360-section">
@@ -6618,9 +5999,7 @@ async function saveDailyWhatsAppTemplate() {
   }
 }
 
-function dailySuggestedCustomers(type = dailySuggestedCustomerType) {
-  return dailySuggestedSuggestionRows.filter(item => item.customer_type === type);
-}
+function dailySuggestedCustomers() { return dailySuggestedSuggestionRows; }
 
 function dailyWhatsAppNumber(phone) {
   const normalized = normalizePhone(phone);
@@ -6635,23 +6014,7 @@ function dailySuggestedProgressPercent(completed, target = 10) {
 }
 
 function renderDailySuggestedProgress() {
-  const company = dailySuggestedSuggestionProgress["شركة"] || {};
-  const individual = dailySuggestedSuggestionProgress["فردي"] || {};
-  const companyCompleted = Number(company.completed || 0);
-  const individualCompleted = Number(individual.completed || 0);
-  const overallCompleted = companyCompleted + individualCompleted;
-
-  const companyText = document.getElementById("dailySuggestedCompaniesProgress");
-  const individualText = document.getElementById("dailySuggestedIndividualsProgress");
-  const overallText = document.getElementById("dailySuggestedOverallProgress");
-  const companyBar = document.getElementById("dailySuggestedCompaniesProgressBar");
-  const individualBar = document.getElementById("dailySuggestedIndividualsProgressBar");
-
-  if (companyText) companyText.textContent = `${companyCompleted} / 10`;
-  if (individualText) individualText.textContent = `${individualCompleted} / 10`;
-  if (overallText) overallText.textContent = `${overallCompleted} / 20`;
-  if (companyBar) companyBar.style.width = `${dailySuggestedProgressPercent(companyCompleted)}%`;
-  if (individualBar) individualBar.style.width = `${dailySuggestedProgressPercent(individualCompleted)}%`;
+  const progress=dailySuggestedSuggestionProgress || {}; const completed=Number(progress.completed||0); const overall=document.getElementById("dailySuggestedOverallProgress"); if(overall)overall.textContent=`${completed} / 20`;
 }
 
 async function loadDailySuggestedCustomers(force = false) {
@@ -6680,62 +6043,11 @@ async function loadDailySuggestedCustomers(force = false) {
 }
 
 function renderDailySuggestedCustomers() {
-  const body = document.getElementById("dailySuggestedCustomersBody");
-  const summary = document.getElementById("dailySuggestedCustomersSummary");
-  const contactHeader = document.getElementById("dailySuggestedContactHeader");
-  if (!body) return;
-
-  const rows = dailySuggestedCustomers();
-  const isCompany = dailySuggestedCustomerType === "شركة";
-  const progress = dailySuggestedSuggestionProgress[dailySuggestedCustomerType] || {};
-  if (contactHeader) contactHeader.textContent = isCompany ? "المسؤول" : "رقم الجوال";
-
-  document.querySelectorAll("[data-daily-suggested-type]").forEach(button => {
-    const active = button.dataset.dailySuggestedType === dailySuggestedCustomerType;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-selected", String(active));
-  });
-
-  renderDailySuggestedProgress();
-
-  if (dailySuggestedSuggestionsLoading) {
-    if (summary) summary.textContent = "جارٍ تحميل قائمة اليوم...";
-    body.innerHTML = dailyEmptyRow(7, "جارٍ تحميل العملاء المقترحين...");
-    return;
-  }
-
-  if (dailySuggestedSuggestionsError) {
-    if (summary) summary.textContent = "تعذر تحميل قائمة اليوم";
-    body.innerHTML = `<tr><td colspan="7"><div class="daily-suggested-state is-error"><strong>تعذر تحميل القائمة</strong><small>${escapeHtml(dailySuggestedSuggestionsError)}</small><button type="button" class="secondary-btn compact-btn" data-daily-suggested-retry>إعادة المحاولة</button></div></td></tr>`;
-    return;
-  }
-
-  if (summary) {
-    summary.textContent = `${Number(progress.completed || 0)} تم التواصل معهم، و${rows.length} متاحون الآن`;
-  }
-
-  body.innerHTML = rows.length
-    ? rows.map((item, index) => {
-      const whatsappNumber = dailyWhatsAppNumber(item.phone);
-      const canAddFollowup = canManageFollowups("add");
-      return `
-        <tr>
-          <td>${index + 1}</td>
-          <td><strong>${escapeHtml(item.customer_name || "—")}</strong><br><small>${escapeHtml(item.customer_number || item.phone || "")}</small></td>
-          <td>${isCompany ? escapeHtml(item.contact_person_name || "—") : escapeHtml(item.phone || "—")}</td>
-          <td>${item.last_contact_date ? `${formatDate(item.last_contact_date)}<br><small>منذ ${dailyDaysOverdue(item.last_contact_date)} يوم</small>` : "لم يتم التواصل"}</td>
-          <td>${item.latest_quotation_number ? `<strong>${escapeHtml(item.latest_quotation_number)}</strong><br><small>${item.latest_quotation_date ? formatDate(item.latest_quotation_date) : ""}</small>` : "—"}</td>
-          <td>${escapeHtml(item.representative_name || "—")}</td>
-          <td>
-            <div class="daily-suggested-actions">
-              ${canAddFollowup ? `<button type="button" class="secondary-btn compact-btn" data-daily-suggested-followup="${escapeHtml(String(item.customer_id))}">إضافة متابعة</button>` : ""}
-              ${canAddFollowup ? `<button type="button" class="primary-btn compact-btn" data-daily-suggested-contacted="${escapeHtml(String(item.customer_id))}" data-daily-suggestion-id="${escapeHtml(String(item.suggestion_id))}">تم التواصل</button>` : ""}
-              ${whatsappNumber ? `<a class="daily-whatsapp-btn" href="${escapeHtml(window.WhatsAppTemplateService?.directUrl?.(whatsappNumber, dailyWhatsAppTemplateMessage()) || `https://wa.me/${whatsappNumber}`)}" target="_blank" rel="noopener noreferrer">واتساب</a>${dailyWhatsAppTemplate?.image_path ? `<button type="button" class="daily-whatsapp-share-btn" data-daily-whatsapp-share="${escapeHtml(whatsappNumber)}">صورة + رسالة</button>` : ""}` : ""}
-            </div>
-          </td>
-        </tr>`;
-    }).join("")
-    : `<tr><td colspan="7"><div class="daily-suggested-state"><strong>لا يوجد عملاء مقترح التواصل معهم حاليًا</strong><small>ابدأ بإضافة عملاء جدد أو استيرادهم من Excel، وسيقوم النظام بإنشاء قائمة اليوم تلقائيًا.</small><div><button type="button" class="primary-btn compact-btn" data-daily-suggested-add-customer>إضافة عميل</button><button type="button" class="secondary-btn compact-btn" data-daily-suggested-import>استيراد Excel</button></div></div></td></tr>`;
+  const body=document.getElementById("dailySuggestedCustomersBody"),summary=document.getElementById("dailySuggestedCustomersSummary"); if(!body)return; const rows=dailySuggestedCustomers(),progress=dailySuggestedSuggestionProgress||{}; renderDailySuggestedProgress();
+  if(dailySuggestedSuggestionsLoading){if(summary)summary.textContent="جارٍ تحميل قائمة اليوم...";body.innerHTML=dailyEmptyRow(7,"جارٍ تحميل العملاء المقترحين...");return;}
+  if(dailySuggestedSuggestionsError){if(summary)summary.textContent="تعذر تحميل قائمة اليوم";body.innerHTML=`<tr><td colspan="7"><div class="daily-suggested-state is-error"><strong>تعذر تحميل القائمة</strong><small>${escapeHtml(dailySuggestedSuggestionsError)}</small><button type="button" class="secondary-btn compact-btn" data-daily-suggested-retry>إعادة المحاولة</button></div></td></tr>`;return;}
+  if(summary)summary.textContent=`${Number(progress.completed||0)} تم التواصل معهم، و${rows.length} متاحون الآن`;
+  body.innerHTML=rows.length?rows.map((item,index)=>{const whatsappNumber=dailyWhatsAppNumber(item.phone),canAddFollowup=canManageFollowups("add");return `<tr><td>${index+1}</td><td><strong>${escapeHtml(item.customer_name||"—")}</strong><br><small>${escapeHtml(item.customer_number||"")}</small></td><td>${escapeHtml(item.phone||"—")}</td><td>${item.last_contact_date?formatDate(item.last_contact_date):"لم يتم التواصل"}</td><td>${item.latest_quotation_number?`<strong>${escapeHtml(item.latest_quotation_number)}</strong><br><small>${item.latest_quotation_date?formatDate(item.latest_quotation_date):""}</small>`:"—"}</td><td>${escapeHtml(item.representative_name||"—")}</td><td><div class="daily-suggested-actions">${canAddFollowup?`<button type="button" class="secondary-btn compact-btn" data-daily-suggested-followup="${escapeHtml(String(item.customer_id))}">إضافة متابعة</button><button type="button" class="primary-btn compact-btn" data-daily-suggested-contacted="${escapeHtml(String(item.customer_id))}" data-daily-suggestion-id="${escapeHtml(String(item.suggestion_id))}">تم التواصل</button>`:""}${whatsappNumber?`<a class="daily-whatsapp-btn" href="${escapeHtml(window.WhatsAppTemplateService?.directUrl?.(whatsappNumber,dailyWhatsAppTemplateMessage())||`https://wa.me/${whatsappNumber}`)}" target="_blank" rel="noopener noreferrer">واتساب</a>`:""}</div></td></tr>`;}).join(""):`<tr><td colspan="7"><div class="daily-suggested-state"><strong>لا يوجد عملاء مقترح التواصل معهم حاليًا</strong><small>أضف عملاء أو متابعات وسيتم تجهيز القائمة تلقائيًا.</small></div></td></tr>`;
 }
 
 function canViewDailySuggestionsTeam() {
@@ -6772,46 +6084,11 @@ async function loadDailySuggestedTeam(force = false) {
 }
 
 function renderDailySuggestedTeam() {
-  const panel = document.getElementById("dailySuggestedTeamPanel");
-  const body = document.getElementById("dailySuggestedTeamBody");
-  const summary = document.getElementById("dailySuggestedTeamSummary");
-  if (!panel || !body) return;
-
-  const allowed = canViewDailySuggestionsTeam();
-  panel.classList.toggle("hidden", !allowed);
-  if (!allowed) return;
-
-  if (dailySuggestedTeamLoading) {
-    if (summary) summary.textContent = "جارٍ تحميل أداء الفريق...";
-    body.innerHTML = dailyEmptyRow(8, "جارٍ تحميل أداء الفريق...");
-    return;
-  }
-
-  if (dailySuggestedTeamError) {
-    if (summary) summary.textContent = "تعذر تحميل أداء الفريق";
-    body.innerHTML = `<tr><td colspan="8"><div class="daily-suggested-state is-error"><strong>تعذر تحميل متابعة الفريق</strong><small>${escapeHtml(dailySuggestedTeamError)}</small><button type="button" class="secondary-btn compact-btn" data-daily-team-retry>إعادة المحاولة</button></div></td></tr>`;
-    return;
-  }
-
-  const completed = dailySuggestedTeamRows.reduce((sum, row) => sum + Number(row.total_completed || 0), 0);
-  const target = dailySuggestedTeamRows.length * 20;
-  if (summary) summary.textContent = `${dailySuggestedTeamRows.length} مستخدمين — ${completed} من ${target || 0} تواصل مكتمل`;
-
-  body.innerHTML = dailySuggestedTeamRows.length
-    ? dailySuggestedTeamRows.map(row => {
-      const percent = Math.max(0, Math.min(100, Number(row.completion_percent || 0)));
-      return `<tr>
-        <td><strong>${escapeHtml(row.user_name || row.user_email || "—")}</strong><br><small>${escapeHtml(row.representative_name || row.user_email || "")}</small></td>
-        <td>${escapeHtml(row.user_role || "—")}</td>
-        <td>${Number(row.company_completed || 0)} / 10</td>
-        <td>${Number(row.individual_completed || 0)} / 10</td>
-        <td>${Number(row.total_completed || 0)} / 20</td>
-        <td><div class="daily-team-progress"><span style="width:${percent}%"></span></div><small>${percent}%</small></td>
-        <td>${Number(row.total_active || 0)}</td>
-        <td>${row.last_completed_at ? formatDate(row.last_completed_at) : "—"}</td>
-      </tr>`;
-    }).join("")
-    : dailyEmptyRow(8, "لا توجد حسابات مبيعات نشطة لعرضها.");
+  const panel=document.getElementById("dailySuggestedTeamPanel"),body=document.getElementById("dailySuggestedTeamBody"),summary=document.getElementById("dailySuggestedTeamSummary"); if(!panel||!body)return; const allowed=canViewDailySuggestionsTeam(); panel.classList.toggle("hidden",!allowed); if(!allowed)return;
+  if(dailySuggestedTeamLoading){if(summary)summary.textContent="جارٍ تحميل أداء الفريق...";body.innerHTML=dailyEmptyRow(8,"جارٍ تحميل أداء الفريق...");return;}
+  if(dailySuggestedTeamError){if(summary)summary.textContent="تعذر تحميل أداء الفريق";body.innerHTML=`<tr><td colspan="8"><div class="daily-suggested-state is-error"><strong>تعذر تحميل متابعة الفريق</strong><small>${escapeHtml(dailySuggestedTeamError)}</small></div></td></tr>`;return;}
+  const completed=dailySuggestedTeamRows.reduce((s,r)=>s+Number(r.total_completed||0),0),target=dailySuggestedTeamRows.length*20;if(summary)summary.textContent=`${dailySuggestedTeamRows.length} مستخدمين — ${completed} من ${target||0} تواصل مكتمل`;
+  body.innerHTML=dailySuggestedTeamRows.length?dailySuggestedTeamRows.map(row=>{const percent=Math.max(0,Math.min(100,Number(row.completion_percent||0)));return `<tr><td><strong>${escapeHtml(row.user_name||row.user_email||"—")}</strong><br><small>${escapeHtml(row.representative_name||row.user_email||"")}</small></td><td>${escapeHtml(row.user_role||"—")}</td><td>${Number(row.total_active||0)}</td><td>${Number(row.total_completed||0)}</td><td>${Number(row.total_completed||0)} / 20</td><td><div class="daily-team-progress"><span style="width:${percent}%"></span></div><small>${percent}%</small></td><td>${Number(row.total_active||0)}</td><td>${row.last_completed_at?formatDate(row.last_completed_at):"—"}</td></tr>`;}).join(""):dailyEmptyRow(8,"لا توجد حسابات مبيعات نشطة لعرضها.");
 }
 
 function renderDailyOperations() {
@@ -6832,8 +6109,8 @@ function renderDailyOperations() {
   loadDailySuggestedCustomers();
   loadDailySuggestedTeam();
 
-  const todayCustomers = dailyScopedRows(customers).filter(item =>
-    dailyLocalDate(item.createdAt || item.contactDate) === today
+  const todayCustomers = customers.filter(item =>
+    dailyLocalDate(item.createdAt) === today
   );
   const todayFollowups = dailyScopedRows(followups).filter(item =>
     dailyLocalDate(item.contactDate || item.createdAt) === today
@@ -6878,11 +6155,11 @@ function renderDailyOperations() {
   customersBody.innerHTML = todayCustomers.length
     ? todayCustomers.map(row => `
       <tr>
-        <td><strong>${escapeHtml(row.name || "—")}</strong><br><small>${escapeHtml(row.phone || "")}</small></td>
-        <td>${escapeHtml(row.type || "—")}</td>
-        <td>${row.type === "شركة" ? escapeHtml(row.contactPersonName || "—") : "—"}</td>
-        <td>${escapeHtml(row.representative || "—")}</td>
-        <td>${dailyDateTime(row.createdAt || row.contactDate)}</td>
+        <td><strong>${escapeHtml(row.customerNumber || "—")}</strong></td>
+        <td>${escapeHtml(row.name || "—")}</td>
+        <td>${escapeHtml(row.address || "—")}</td>
+        <td>${escapeHtml(row.phone || "—")}</td>
+        <td>${dailyDateTime(row.createdAt)}</td>
       </tr>`).join("")
     : dailyEmptyRow(5, "لا يوجد عملاء جدد مضافون اليوم.");
 
@@ -7843,7 +7120,7 @@ document.addEventListener("click", event => {
 
 document.querySelector("[data-open-customers]").addEventListener("click", () => switchView("customers"));
 
-["dashboardRepFilter", "dashboardTypeFilter", "dashboardInterestFilter", "dashboardDateFrom", "dashboardDateTo"].forEach(id => {
+["dashboardRepFilter", "dashboardDateFrom", "dashboardDateTo"].forEach(id => {
   document.getElementById(id).addEventListener("change", () => {
     if (document.body.classList.contains("mobile-dashboard-sheet-open")) return;
     renderDashboard();
@@ -7854,8 +7131,8 @@ document.addEventListener("kyum-apply-dashboard-filters", () => renderDashboard(
 
 document.getElementById("resetDashboardFilters").addEventListener("click", () => {
   document.getElementById("dashboardRepFilter").value = "";
-  document.getElementById("dashboardTypeFilter").value = "";
-  document.getElementById("dashboardInterestFilter").value = "";
+  
+  
   document.getElementById("dashboardDateFrom").value = "";
   document.getElementById("dashboardDateTo").value = "";
   if (!document.body.classList.contains("mobile-dashboard-sheet-open")) renderDashboard();
@@ -8172,7 +7449,7 @@ document.getElementById("referenceDataSectionFilter")?.addEventListener(
   }
 );
 
-["referenceCustomersSearch", "referenceCustomersTypeFilter", "referenceCustomersInterestFilter", "referenceCustomersRepFilter"]
+["referenceCustomersSearch"]
   .forEach(id => {
     const element = document.getElementById(id);
     const eventName = element?.tagName === "INPUT" ? "input" : "change";
@@ -8396,18 +7673,8 @@ function renderCustomerImportPreview(preview) {
       sourceRow: row.sourceRow,
       customerNumber: row.customerNumber,
       name: row.name,
+      address: row.address,
       phone: row.phone,
-      type: row.type,
-      contactPersonName: row.contactPersonName,
-      region: row.region,
-      city: row.city,
-      district: row.district,
-      interests: row.interests,
-      representative: row.representative,
-      contactDate: row.contactDate,
-      quotationNumber: row.quotationNumber,
-      noSaleReason: row.noSaleReason,
-      notes: row.notes,
       message: row.errors.join(" — ")
     }));
   const failedExportBtn = document.getElementById("customerImportFailedExportBtn");
@@ -8497,18 +7764,8 @@ async function previewCustomerImportFile(file) {
   showDataStatus("customerImportStatus", "جاري قراءة الملف والتحقق من البيانات...", "info");
 
   try {
-    const [rows, importedRequests] = await Promise.all([
-      window.CustomerExcelCenter.parseImportFile(file),
-      window.CustomersService.listImportedRequestIdentities(),
-      loadCustomerDistrictCatalog()
-    ]);
-    const preview = window.CustomerExcelCenter.buildImportPreview(rows, {
-      customers,
-      importedRequests,
-      representatives: representativeRecords,
-      interests: interestRecords,
-      reasons: reasonRecords
-    });
+    const rows = await window.CustomerExcelCenter.parseImportFile(file);
+    const preview = window.CustomerExcelCenter.buildImportPreview(rows, { customers });
     renderCustomerImportPreview(preview);
     showDataStatus(
       "customerImportStatus",
@@ -8647,14 +7904,12 @@ function renderCustomerImportResult(result, { override = false, overrideRowsCoun
   const panel = document.getElementById("customerImportResult");
   if (!panel) return;
   const savedCustomers = Number(result?.inserted || 0) + Number(result?.updated || 0);
-  const savedRequests = Number(result?.requestsInserted || 0);
   const failed = Number(result?.failed || 0);
-  const skipped = Number(result?.skipped || 0) + Number(result?.requestsSkipped || 0);
+  const skipped = Number(result?.skipped || 0);
   panel.classList.remove("hidden");
   panel.innerHTML = `
     <strong>${failed ? "اكتمل الاستيراد مع ملاحظات" : "تم حفظ البيانات في Supabase بنجاح"}</strong>
     <span>العملاء المحفوظون أو المحدثون: ${savedCustomers}</span>
-    <span>الطلبات وعقود العملاء المحفوظة: ${savedRequests}</span>
     ${override ? `<span>الصفوف المعتمدة استثنائيًا: ${overrideRowsCount}</span>` : ""}
     <span>المكرر أو المتجاهل: ${skipped}</span>
     <span>فشل الحفظ: ${failed}</span>
@@ -8705,18 +7960,8 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
         sourceRow: row.sourceRow,
         customerNumber: row.customerNumber,
         name: row.name,
+        address: row.address,
         phone: row.phone,
-        type: row.type,
-        contactPersonName: row.contactPersonName,
-        region: row.region,
-        city: row.city,
-        district: row.district,
-        interests: row.interests,
-        representative: row.representative,
-        contactDate: row.contactDate,
-        quotationNumber: row.quotationNumber,
-        noSaleReason: row.noSaleReason,
-        notes: row.notes,
         message: row.errors.join(" — ")
       }));
     const progressPanel = document.getElementById("customerImportProgress");
@@ -8743,7 +7988,7 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
         if (progressRows) progressRows.textContent = `${current} / ${total}`;
         const successCount = Number(progressResults.inserted || 0)
           + Number(progressResults.updated || 0)
-          + Number(progressResults.requestsInserted || 0);
+;
         const failedCount = Number(progressResults.failed || 0);
         const progressSuccess = document.getElementById("customerImportProgressSuccess");
         if (progressSuccess) progressSuccess.textContent = String(successCount);

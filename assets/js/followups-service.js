@@ -278,48 +278,9 @@
   }
 
   async function updateCustomerSnapshot(record) {
-    const customerPatch = {
-      last_contact_date: record.contactDate || null
-    };
-
-    if (record.quotationNumber) {
-      customerPatch.quotation_number = record.quotationNumber.trim();
-    }
-
-    if (record.noSaleReasonId) {
-      customerPatch.no_sale_reason_id = record.noSaleReasonId;
-    }
-
-    await unwrap(
-      client()
-        .from("customers")
-        .update(customerPatch)
-        .eq("id", record.customerId),
-      "تم حفظ المتابعة ولكن تعذر تحديث آخر تواصل للعميل"
-    );
   }
 
   async function recalculateLastContact(customerId) {
-    const latest = await unwrap(
-      client()
-        .from("customer_followups")
-        .select("contact_date")
-        .eq("customer_id", customerId)
-        .order("contact_date", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(1),
-      "تعذر إعادة احتساب آخر تواصل"
-    );
-
-    await unwrap(
-      client()
-        .from("customers")
-        .update({
-          last_contact_date: latest?.[0]?.contact_date || null
-        })
-        .eq("id", customerId),
-      "تعذر تحديث آخر تواصل للعميل"
-    );
   }
 
   async function saveFollowupOnline(record) {

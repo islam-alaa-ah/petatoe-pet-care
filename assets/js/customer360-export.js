@@ -46,39 +46,28 @@
       ["PETATOE", "Customer 360°"],
       ["Generated At", new Date().toISOString()],
       [],
-      ["Customer", customer.name || ""],
-      ["Phone", customer.phone || ""],
-      ["Type", customer.type || ""],
-      ["Contact Person", customer.type === "شركة" ? (customer.contactPersonName || "") : ""],
-      ["Region", customer.region || ""],
-      ["City", customer.city || ""],
-      ["District", customer.district || ""],
-      ["Representative", customer.representative || ""],
+      ["code", customer.customerNumber || ""],
+      ["name", customer.name || ""],
+      ["address", customer.address || ""],
+      ["mobile", customer.phone || ""],
       ["Status", view.status.label],
       ["Health Score", `${view.risk.healthScore}%`],
       ["Risk Score", `${view.risk.score}%`],
       ["Priority", view.risk.priority.label],
       ["Last Contact", date(view.lastContactDate)],
       ["Inactivity Days", view.inactivityDays ?? ""],
-      ["Interests", (customer.interests || []).join("، ")],
-      ["No Sale Reason", customer.noSaleReason || ""],
-      ["Notes", customer.notes || ""],
       [],
       ["Follow-ups", view.totals.followups],
       ["Overdue Follow-ups", view.totals.overdueFollowups],
       ["Upcoming Follow-ups", view.totals.upcomingFollowups],
-      ["Quotations", view.totals.quotations],
-      ["Accepted Quotations", view.totals.acceptedQuotations],
-      ["Total Quotation Value", view.totals.totalQuotationValue],
+      ["Contracts", view.totals.quotations],
+      ["Accepted Contracts", view.totals.acceptedQuotations],
+      ["Total Contract Value", view.totals.totalQuotationValue],
       ["Accepted Value", view.totals.acceptedValue],
       ["Potential Value", view.risk.potentialValue],
       ["Conversion Rate", `${view.totals.conversionRate.toFixed(1)}%`],
       ["Engagement Score", `${view.risk.engagementScore}%`],
-      ["Response Rate", `${view.risk.responseRate.toFixed(1)}%`],
-      [],
-      ["Recommended Next Action", view.risk.nextAction.title],
-      ["Action Detail", view.risk.nextAction.detail],
-      ["Risk Reasons", view.risk.reasons.join(" | ")]
+      ["Response Rate", `${view.risk.responseRate.toFixed(1)}%`]
     ];
   }
 
@@ -117,7 +106,7 @@
         item.quotationDate || item.createdAt || "",
         item.status || "",
         Number(item.amount || 0),
-        item.representative || view.customer.representative || "",
+        item.representative || "",
         item.rejectionReason || item.noSaleReason || ""
       ])
     ];
@@ -206,7 +195,7 @@ footer{margin-top:20px;font-size:10px;color:#667085}
 </div>
 <div>
 <strong>${safe(customer.name)}</strong>
-<p class="muted">${safe(customer.phone || "—")} · ${safe(customer.representative || "—")}</p>
+<p class="muted">${safe(customer.customerNumber || "—")} · ${safe(customer.phone || "—")}</p>
 <p class="muted">${safe(new Date().toLocaleString("ar-SA"))}</p>
 </div>
 </header>
@@ -221,15 +210,10 @@ footer{margin-top:20px;font-size:10px;color:#667085}
 <div class="grid">
 <section class="section">
 <h2>البيانات الأساسية</h2>
-<p><b>التصنيف:</b> ${safe(customer.type || "—")}</p>
-<p><b>اسم المسؤول:</b> ${safe(customer.type === "شركة" ? (customer.contactPersonName || "—") : "—")}</p>
-<p><b>المنطقة:</b> ${safe(customer.region || "—")}</p>
-<p><b>المدينة:</b> ${safe(customer.city || "—")}</p>
-<p><b>الحي:</b> ${safe(customer.district || "—")}</p>
-<p><b>المندوب:</b> ${safe(customer.representative || "—")}</p>
-<p><b>الاهتمامات:</b> ${safe((customer.interests || []).join("، ") || "—")}</p>
-<p><b>سبب عدم البيع:</b> ${safe(customer.noSaleReason || "—")}</p>
-<p><b>الملاحظات:</b> ${safe(customer.notes || "—")}</p>
+<p><b>code:</b> ${safe(customer.customerNumber || "—")}</p>
+<p><b>name:</b> ${safe(customer.name || "—")}</p>
+<p><b>address:</b> ${safe(customer.address || "—")}</p>
+<p><b>mobile:</b> ${safe(customer.phone || "—")}</p>
 </section>
 
 <section class="section">

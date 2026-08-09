@@ -64,7 +64,6 @@
     const latestFollowup = latestByDate(customerFollowups, ["contactDate", "createdAt"]);
     const latestQuotation = latestByDate(customerQuotations, ["quotationDate", "createdAt"]);
     const lastContactDate = latestFollowup?.contactDate
-      || customer.contactDate
       || customer.lastContactDate
       || null;
 
@@ -120,9 +119,9 @@
         type: "customer",
         typeLabel: "بيانات العميل",
         title: "إنشاء ملف العميل",
-        detail: customer.notes || "تم إنشاء ملف العميل في النظام.",
-        date: customer.createdAt || customer.contactDate || null,
-        meta: customer.representative || "—",
+        detail: "تم إنشاء ملف العميل في النظام.",
+        date: customer.createdAt || null,
+        meta: "—",
         status: "info"
       },
       ...customerFollowups.map(item => ({
@@ -146,7 +145,7 @@
           item.rejectionReason || item.noSaleReason || null
         ].filter(Boolean).join(" · "),
         date: item.quotationDate || item.createdAt || null,
-        meta: item.representative || customer.representative || "—",
+        meta: item.representative || "—",
         status: item.status === "مقبول"
           ? "accepted"
           : item.status === "مرفوض" || item.status === "ملغي"
@@ -204,15 +203,7 @@
       riskReasons.push("لا توجد عروض أسعار مقبولة حتى الآن.");
     }
 
-    if (!customer.representative && !customer.representativeId) {
-      riskScore += 10;
-      riskReasons.push("لا يوجد مندوب مسؤول محدد.");
-    }
 
-    if (!Array.isArray(customer.interests) || !customer.interests.length) {
-      riskScore += 5;
-      riskReasons.push("اهتمامات العميل غير مكتملة.");
-    }
 
     riskScore = Math.min(100, Math.max(0, Math.round(riskScore)));
     const healthScore = 100 - riskScore;

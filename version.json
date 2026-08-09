@@ -1,13 +1,13 @@
 {
-  "version": "18.54.3",
-  "build": 185403,
+  "version": "18.54.4",
+  "build": 185404,
   "forceUpdate": true,
-  "releaseDate": "2026-08-09",
-  "title": "PETATOE Services Code & Tax-Inclusive Pricing — P3.2",
+  "releaseDate": "2026-08-10",
+  "title": "PETATOE Canonical Customer Master — P4",
   "notes": [
-    "تم إضافة كود فريد للخدمات في إعدادات المواعيد ورفع Excel.",
-    "تم عرض وإدخال سعر الخدمة شامل ضريبة 15% مع حفظ السعر الأساسي داخليًا لمنع احتساب الضريبة مرتين.",
-    "تم تحديث جدول الخدمات إلى: الكود، الخدمة، السعر شامل الضريبة، التكلفة، الحالة، الإجراءات."
+    "تم تبسيط سجل العميل إلى code و name و address و mobile فقط.",
+    "تم فصل بيانات العميل عن التصنيف والمندوب والعنوان الجغرافي والاهتمامات وبيانات المتابعة والعقود.",
+    "تم تحديث Excel وCustomer 360 والتقارير وشاشات المواعيد للحفاظ على التوافق دون كسر الوظائف."
   ],
-  "cacheToken": "petatoe-pwa-18-54-3-services-code-tax-inclusive"
+  "cacheToken": "petatoe-pwa-18-54-4-canonical-customer-master"
 }

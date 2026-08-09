@@ -310,51 +310,9 @@
   }
 
   async function updateCustomerSnapshot(record) {
-    const customerPatch = {
-      quotation_number: record.code.trim()
-    };
-
-    if (record.status === "مرفوض" && record.rejectionReasonId) {
-      customerPatch.no_sale_reason_id = record.rejectionReasonId;
-    }
-
-    await unwrap(
-      client()
-        .from("customers")
-        .update(customerPatch)
-        .eq("id", record.customerId),
-      "تم حفظ العقد ولكن تعذر تحديث بيانات العميل"
-    );
   }
 
   async function recalculateCustomerSnapshot(customerId) {
-    const latest = await unwrap(
-      client()
-        .from("quotations")
-        .select("quotation_number, status, rejection_reason_id")
-        .eq("customer_id", customerId)
-        .order("quotation_date", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(1),
-      "تعذر إعادة احتساب آخر عقد للعميل"
-    );
-
-    const latestQuotation = latest?.[0] || null;
-    const patch = {
-      quotation_number: latestQuotation?.quotation_number || null
-    };
-
-    if (latestQuotation?.status === "مرفوض" && latestQuotation.rejection_reason_id) {
-      patch.no_sale_reason_id = latestQuotation.rejection_reason_id;
-    }
-
-    await unwrap(
-      client()
-        .from("customers")
-        .update(patch)
-        .eq("id", customerId),
-      "تعذر تحديث آخر عقد للعميل"
-    );
   }
 
   async function saveQuotationOnline(record) {

@@ -34,25 +34,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.54.3" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.54.3" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.54.4" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.54.4" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
@@ -382,10 +382,6 @@
             <div>
               <h3 id="dailySuggestedCustomersTitle">العملاء المقترح التواصل معهم</h3>
             </div>
-            <div class="daily-suggested-type-tabs" role="tablist" aria-label="نوع العملاء المقترحين">
-              <button type="button" class="daily-suggested-type-tab active" data-daily-suggested-type="شركة" role="tab" aria-selected="true">الشركات</button>
-              <button type="button" class="daily-suggested-type-tab" data-daily-suggested-type="فردي" role="tab" aria-selected="false">الأفراد</button>
-            </div>
           </div>
           <section class="daily-whatsapp-template-card" aria-labelledby="dailyWhatsAppTemplateTitle">
             <div class="daily-whatsapp-template-header">
@@ -417,30 +413,14 @@
               <button id="dailyWhatsAppTemplateSaveBtn" class="primary-btn" type="button">حفظ الإعداد</button>
             </div>
           </section>
-          <div class="daily-suggested-progress-grid" aria-live="polite">
-            <article>
-              <span>الشركات</span>
-              <strong id="dailySuggestedCompaniesProgress">0 / 10</strong>
-              <div class="daily-suggested-progress-track"><i id="dailySuggestedCompaniesProgressBar"></i></div>
-            </article>
-            <article>
-              <span>الأفراد</span>
-              <strong id="dailySuggestedIndividualsProgress">0 / 10</strong>
-              <div class="daily-suggested-progress-track"><i id="dailySuggestedIndividualsProgressBar"></i></div>
-            </article>
-            <article class="daily-suggested-progress-total">
-              <span>إجمالي التواصل اليوم</span>
-              <strong id="dailySuggestedOverallProgress">0 / 20</strong>
-              <small id="dailySuggestedCustomersSummary">جارٍ تحميل قائمة اليوم...</small>
-            </article>
-          </div>
+          <div class="daily-suggested-progress-grid" aria-live="polite"><article class="daily-suggested-progress-total"><span>إجمالي التواصل اليوم</span><strong id="dailySuggestedOverallProgress">0 / 20</strong><small id="dailySuggestedCustomersSummary">جارٍ تحميل قائمة اليوم...</small></article></div>
           <div class="table-wrap daily-suggested-table-wrap">
             <table class="daily-operations-table daily-suggested-customers-table">
               <thead>
                 <tr>
                   <th>#</th>
                   <th>اسم العميل</th>
-                  <th id="dailySuggestedContactHeader">المسؤول</th>
+                  <th>رقم الجوال</th>
                   <th>آخر تواصل</th>
                   <th>آخر عقد</th>
                   <th>المندوب</th>
@@ -504,7 +484,7 @@
           </div>
           <div class="table-wrap">
             <table class="daily-operations-table">
-              <thead><tr><th>العميل</th><th>التصنيف</th><th>اسم المسؤول</th><th>المندوب</th><th>وقت الإضافة</th></tr></thead>
+              <thead><tr><th>code</th><th>name</th><th>address</th><th>mobile</th><th>وقت الإضافة</th></tr></thead>
               <tbody id="dailyCustomersBody"></tbody>
             </table>
           </div>
@@ -583,14 +563,6 @@
             <select id="dashboardRepFilter">
               <option value="">كل المندوبين</option>
             </select>
-            <select id="dashboardTypeFilter">
-              <option value="">كل أنواع العملاء</option>
-              <option value="شركة">شركة</option>
-              <option value="فردي">فردي</option>
-            </select>
-            <select id="dashboardInterestFilter">
-              <option value="">كل مجالات الاهتمام</option>
-            </select>
             <input id="dashboardDateFrom" type="date" aria-label="من تاريخ">
             <input id="dashboardDateTo" type="date" aria-label="إلى تاريخ">
             <button id="resetDashboardFilters" class="secondary-btn">إعادة تعيين</button>
@@ -610,16 +582,6 @@
               <button id="dashboardRepresentativeVisibilityBtn" class="secondary-btn dashboard-representative-settings-btn hidden" type="button">إعدادات ظهور المندوبين</button>
             </div>
             <div id="representativePerformance" class="performance-list"></div>
-          </article>
-
-          <article class="panel">
-            <div class="panel-header">
-              <div>
-                <h3>مجالات الاهتمام الأكثر طلبًا</h3>
-                <p>توزيع العملاء حسب النشاط المطلوب</p>
-              </div>
-            </div>
-            <div id="interestAnalytics" class="bar-chart"></div>
           </article>
 
           <article class="panel">
@@ -672,9 +634,7 @@
 
       <section id="customersView" class="view-section hidden">
         <div class="actions-row">
-          <div class="search-box">
-            <input id="customerSearch" type="search" placeholder="بحث برقم العميل أو الاسم أو المندوب...">
-          </div>
+          <div class="search-box"><input id="customerSearch" type="search" placeholder="بحث بالكود أو الاسم أو العنوان أو الجوال..."></div>
           <div class="customer-main-actions">
             <button id="customersImportBtn" class="secondary-btn customer-import-action" type="button">رفع عملاء Excel</button>
             <button id="customersTemplateBtn" class="secondary-btn customer-export-action" type="button">تنزيل نموذج Excel</button>
@@ -682,50 +642,14 @@
           </div>
         </div>
         <div id="customersStatus" class="data-status hidden"></div>
-
-        <div class="filters-row">
-          <select id="typeFilter">
-            <option value="">كل التصنيفات</option>
-            <option value="شركة">شركة</option>
-            <option value="فردي">فردي</option>
-          </select>
-          <select id="interestFilter">
-            <option value="">كل مجالات الاهتمام</option>
-          </select>
-          <select id="repFilter">
-            <option value="">كل المندوبين</option>
-          </select>
-        </div>
-
         <div id="customersMobileCards" class="customers-mobile-cards" aria-live="polite"></div>
-
-        <div class="table-card customers-desktop-table">
-          <table>
-            <thead>
-              <tr>
-                <th>رقم العميل (الجوال)</th>
-                <th>اسم العميل</th>
-                <th>اسم المسؤول</th>
-                <th>التصنيف</th>
-                <th>مجال الاهتمام</th>
-                <th>المندوب</th>
-                <th>تاريخ التواصل</th>
-                <th>رقم العقد</th>
-                <th>سبب عدم البيع</th>
-                <th>الإجراءات</th>
-              </tr>
-            </thead>
-            <tbody id="customersTableBody"></tbody>
-          </table>
-        </div>
-        <div class="table-pagination" id="customersPagination">
-          <span id="customersPaginationInfo">0 عميل</span>
-          <div>
-            <button id="customersPrevPage" class="secondary-btn compact-btn" type="button">السابق</button>
-            <span id="customersPageNumber">1</span>
-            <button id="customersNextPage" class="secondary-btn compact-btn" type="button">التالي</button>
-          </div>
-        </div>
+        <div class="table-card customers-desktop-table"><table>
+          <thead><tr><th>code</th><th>name</th><th>address</th><th>mobile</th><th>الإجراءات</th></tr></thead>
+          <tbody id="customersTableBody"></tbody>
+        </table></div>
+        <div class="table-pagination" id="customersPagination"><span id="customersPaginationInfo">0 عميل</span><div>
+          <button id="customersPrevPage" class="secondary-btn compact-btn" type="button">السابق</button><span id="customersPageNumber">1</span><button id="customersNextPage" class="secondary-btn compact-btn" type="button">التالي</button>
+        </div></div>
       </section>
 
 
@@ -958,7 +882,7 @@
             <div class="panel-header">
               <div>
                 <h3>أسباب عدم البيع</h3>
-                <p>إدارة وتعديل وتفعيل وحذف الأسباب المستخدمة في العملاء والعروض.</p>
+                <p>إدارة وتعديل وتفعيل وحذف أسباب الرفض المستخدمة في العقود والمتابعات.</p>
               </div>
               <button class="primary-btn compact-btn reference-manage-action" data-add-reference="reason">إضافة</button>
             </div>
@@ -966,11 +890,7 @@
           </article>
 
           <article class="panel reference-data-panel hidden reference-customers-panel" data-reference-panel="customers">
-            <div class="panel-header reference-customers-header">
-              <div>
-                <h3>العملاء</h3>
-                <p>عرض بيانات العملاء والبحث والفلترة والتعديل وفتح ملف العميل.</p>
-              </div>
+            <div class="panel-header reference-customers-header"><div><h3>العملاء</h3><p>سجل العميل الأساسي: code و name و address و mobile فقط.</p></div>
               <div class="reference-customers-actions">
                 <button id="referenceCustomersImportBtn" class="secondary-btn compact-btn customer-import-action" type="button">رفع Excel</button>
                 <button id="referenceCustomersExportBtn" class="secondary-btn compact-btn customer-export-action" type="button">تصدير Excel</button>
@@ -978,64 +898,15 @@
                 <button id="referenceAddCustomerBtn" class="primary-btn compact-btn customer-manage-action" type="button">إضافة عميل</button>
               </div>
             </div>
-
-            <div class="reference-customers-filters">
-              <label class="reference-customers-search">
-                بحث
-                <input id="referenceCustomersSearch" type="search" placeholder="اسم العميل، الجوال، المسؤول أو رقم العقد">
-              </label>
-              <label>
-                التصنيف
-                <select id="referenceCustomersTypeFilter">
-                  <option value="">كل التصنيفات</option>
-                  <option value="شركة">شركة</option>
-                  <option value="فردي">فردي</option>
-                </select>
-              </label>
-              <label>
-                مجال الاهتمام
-                <select id="referenceCustomersInterestFilter">
-                  <option value="">كل مجالات الاهتمام</option>
-                </select>
-              </label>
-              <label>
-                المندوب
-                <select id="referenceCustomersRepFilter">
-                  <option value="">كل المندوبين</option>
-                </select>
-              </label>
-            </div>
-
+            <div class="reference-customers-filters"><label class="reference-customers-search">بحث<input id="referenceCustomersSearch" type="search" placeholder="الكود أو الاسم أو العنوان أو الجوال"></label></div>
             <div id="referenceCustomersStatus" class="data-status hidden"></div>
-
-            <div class="table-card reference-customers-table-card">
-              <table class="reference-customers-table">
-                <thead>
-                  <tr>
-                    <th>رقم الجوال</th>
-                    <th>اسم العميل</th>
-                    <th>اسم المسؤول</th>
-                    <th>التصنيف</th>
-                    <th>مجال الاهتمام</th>
-                    <th>المندوب</th>
-                    <th>آخر تواصل</th>
-                    <th>العقد</th>
-                    <th>سبب عدم البيع</th>
-                    <th>الإجراءات</th>
-                  </tr>
-                </thead>
-                <tbody id="referenceCustomersTableBody"></tbody>
-              </table>
-            </div>
-
-            <div class="table-pagination" id="referenceCustomersPagination">
-              <span id="referenceCustomersPaginationInfo">0 عميل</span>
-              <div>
-                <button id="referenceCustomersPrevPage" class="secondary-btn compact-btn" type="button">السابق</button>
-                <span id="referenceCustomersPageNumber">1</span>
-                <button id="referenceCustomersNextPage" class="secondary-btn compact-btn" type="button">التالي</button>
-              </div>
-            </div>
+            <div class="table-card reference-customers-table-card"><table class="reference-customers-table">
+              <thead><tr><th>code</th><th>name</th><th>address</th><th>mobile</th><th>الإجراءات</th></tr></thead>
+              <tbody id="referenceCustomersTableBody"></tbody>
+            </table></div>
+            <div class="table-pagination" id="referenceCustomersPagination"><span id="referenceCustomersPaginationInfo">0 عميل</span><div>
+              <button id="referenceCustomersPrevPage" class="secondary-btn compact-btn" type="button">السابق</button><span id="referenceCustomersPageNumber">1</span><button id="referenceCustomersNextPage" class="secondary-btn compact-btn" type="button">التالي</button>
+            </div></div>
           </article>
         </div>
       </section>
@@ -2745,147 +2616,15 @@
 
   <dialog id="customerDialog">
     <form id="customerForm" method="dialog">
-      <div class="dialog-header">
-        <div>
-          <h3 id="dialogTitle">إضافة عميل جديد</h3>
-          <p>أدخل البيانات الأساسية للعميل</p>
-        </div>
-        <button id="closeDialogBtn" class="icon-btn" type="button">×</button>
-      </div>
-
+      <div class="dialog-header"><div><h3 id="dialogTitle">إضافة عميل جديد</h3><p>بيانات العميل الأساسية فقط.</p></div><button id="closeDialogBtn" class="icon-btn" type="button">×</button></div>
       <input id="customerId" type="hidden">
-
       <div class="form-grid">
-        <label>
-          اسم العميل
-          <input id="customerName" required>
-        </label>
-
-        <label>
-          تصنيف العميل
-          <select id="customerType" required>
-            <option value="شركة">شركة</option>
-            <option value="فردي">فردي</option>
-          </select>
-        </label>
-
-        <label id="customerContactPersonField">
-          اسم المسؤول
-          <input id="customerContactPerson" maxlength="150" autocomplete="name">
-          <small>تظهر هذه الخانة وتصبح إلزامية عند اختيار «شركة».</small>
-        </label>
-
-        <label>
-          رقم العميل (الجوال)
-          <input id="customerPhone" inputmode="tel" placeholder="05XXXXXXXX" required>
-          <small>رقم الجوال هو المرجع الأساسي للعميل ولا يمكن تكراره.</small>
-        </label>
-
-        <label class="customer-geo-field">
-          المنطقة
-          <div id="customerRegionCombobox" class="geo-searchable-select" data-geo-type="region">
-            <input id="customerRegion" type="hidden">
-            <input id="customerRegionSearch" class="geo-searchable-input" type="search" placeholder="ابحث واختر المنطقة" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="customerRegionOptions">
-            <button class="geo-searchable-toggle" type="button" aria-label="فتح قائمة المناطق">⌄</button>
-            <div id="customerRegionOptions" class="geo-searchable-options hidden" role="listbox"></div>
-          </div>
-        </label>
-
-        <label class="customer-geo-field">
-          المدينة
-          <div id="customerCityCombobox" class="geo-searchable-select is-disabled" data-geo-type="city">
-            <input id="customerCity" type="hidden">
-            <input id="customerCitySearch" class="geo-searchable-input" type="search" placeholder="اختر المنطقة أولًا" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="customerCityOptions" disabled>
-            <button class="geo-searchable-toggle" type="button" aria-label="فتح قائمة المدن" disabled>⌄</button>
-            <div id="customerCityOptions" class="geo-searchable-options hidden" role="listbox"></div>
-          </div>
-        </label>
-
-        <label class="customer-geo-field">
-          الحي
-          <div id="customerDistrictCombobox" class="geo-searchable-select is-disabled" data-geo-type="district">
-            <input id="customerDistrict" type="hidden">
-            <input id="customerDistrictSearch" class="geo-searchable-input" type="search" placeholder="اختر المدينة أولًا" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="customerDistrictOptions" disabled>
-            <button class="geo-searchable-toggle" type="button" aria-label="فتح قائمة الأحياء" disabled>⌄</button>
-            <div id="customerDistrictOptions" class="geo-searchable-options hidden" role="listbox"></div>
-          </div>
-          <small>القوائم مترابطة وقابلة للبحث: المنطقة ثم المدينة ثم الحي.</small>
-        </label>
-
-        <div class="full-width customer-interest-field">
-          <label for="customerInterestDropdownButton">مجال الاهتمام</label>
-
-          <div id="customerInterestDropdown" class="checkbox-dropdown">
-            <button
-              id="customerInterestDropdownButton"
-              class="checkbox-dropdown-trigger"
-              type="button"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-            >
-              <span id="customerInterestDropdownText">اختر مجال الاهتمام</span>
-              <span class="checkbox-dropdown-arrow" aria-hidden="true">⌄</span>
-            </button>
-
-            <div id="customerInterestDropdownMenu" class="checkbox-dropdown-menu hidden">
-              <div class="checkbox-dropdown-search-wrap">
-                <input
-                  id="customerInterestSearch"
-                  type="search"
-                  placeholder="ابحث في مجالات الاهتمام..."
-                  autocomplete="off"
-                >
-              </div>
-
-              <div class="checkbox-dropdown-toolbar">
-                <button id="customerInterestSelectAll" type="button">تحديد الكل</button>
-                <button id="customerInterestClearAll" type="button">إلغاء الكل</button>
-                <span id="customerInterestSelectedCount">تم اختيار 0</span>
-              </div>
-
-              <div
-                id="customerInterestOptions"
-                class="checkbox-dropdown-options"
-                role="listbox"
-                aria-multiselectable="true"
-              ></div>
-            </div>
-          </div>
-
-          <select id="customerInterest" class="native-multi-select-hidden" multiple tabindex="-1" aria-hidden="true"></select>
-          <small>يمكن اختيار مجال واحد أو أكثر من القائمة.</small>
-        </div>
-
-        <label>
-          المندوب المسؤول
-          <select id="customerRepresentative" required></select>
-        </label>
-
-        <label>
-          تاريخ التواصل
-          <input id="contactDate" type="date">
-        </label>
-
-        <label>
-          رقم العقد
-          <input id="quotationNumber">
-        </label>
-
-        <label>
-          سبب عدم البيع
-          <select id="noSaleReason"></select>
-        </label>
-
-        <label class="full-width">
-          ملاحظات
-          <textarea id="customerNotes" rows="4"></textarea>
-        </label>
+        <label>code<input id="customerCode" maxlength="80" required autocomplete="off"></label>
+        <label>name<input id="customerName" maxlength="200" required autocomplete="name"></label>
+        <label class="full-width">address<input id="customerAddress" maxlength="500" autocomplete="street-address"></label>
+        <label>mobile<input id="customerPhone" inputmode="tel" placeholder="05XXXXXXXX" maxlength="20" required autocomplete="tel"></label>
       </div>
-
-      <div class="dialog-actions">
-        <button id="cancelDialogBtn" type="button" class="secondary-btn">إلغاء</button>
-        <button type="submit" class="primary-btn">حفظ العميل</button>
-      </div>
+      <div class="dialog-actions"><button id="cancelDialogBtn" type="button" class="secondary-btn">إلغاء</button><button type="submit" class="primary-btn">حفظ العميل</button></div>
     </form>
   </dialog>
 
@@ -3403,10 +3142,10 @@
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.54.3"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.54.3"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.54.3"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.54.3"></script>
+  <script src="assets/js/performance-monitor.js?v=18.54.4"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.54.4"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.54.4"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.54.4"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -3522,10 +3261,10 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>اسم العميل</th>
-              <th>رقم الجوال</th>
-              <th>التصنيف</th>
-              <th>المندوب</th>
+              <th>code</th>
+              <th>name</th>
+              <th>address</th>
+              <th>mobile</th>
               <th>الحالة</th>
               <th>الملاحظات</th>
             </tr>
@@ -3806,61 +3545,61 @@
         </form>
       </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.54.3"></script>
-  <script src="assets/js/offline-session-store.js?v=18.54.3"></script>
-  <script src="assets/js/supabase-client.js?v=18.54.3"></script>
-  <script src="assets/js/geographic-address.js?v=18.54.3"></script>
-  <script src="assets/js/permissions.js?v=18.54.3"></script>
-  <script src="assets/js/permission-engine.js?v=18.54.3"></script>
-  <script src="assets/js/data-access-scope.js?v=18.54.3"></script>
-  <script src="assets/js/smart-cache.js?v=18.54.3"></script>
-  <script src="assets/js/sync-engine.js?v=18.54.3"></script>
-  <script src="assets/js/offline-queue.js?v=18.54.3"></script>
-  <script src="assets/js/permissions-service.js?v=18.54.3"></script>
-  <script src="assets/js/auth-session.js?v=18.54.3"></script>
-  <script src="assets/js/reference-data-service.js?v=18.54.3"></script>
-  <script src="assets/js/customers-service.js?v=18.54.3"></script>
-  <script src="assets/js/followups-service.js?v=18.54.3"></script>
-  <script src="assets/js/quotations-service.js?v=18.54.3"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.54.3"></script>
-  <script src="assets/js/users-service.js?v=18.54.3"></script>
-  <script src="assets/js/activity-service.js?v=18.54.3"></script>
-  <script src="assets/js/backup-service.js?v=18.54.3"></script>
-  <script src="assets/js/system-settings-service.js?v=18.54.3"></script>
-  <script src="assets/js/system-health-service.js?v=18.54.3"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.54.3"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.54.3"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.54.3"></script>
-  <script src="assets/js/installations-service.js?v=18.54.3"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.54.3"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.54.3"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.54.3"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.54.3"></script>
+  <script src="assets/js/supabase-config.js?v=18.54.4"></script>
+  <script src="assets/js/offline-session-store.js?v=18.54.4"></script>
+  <script src="assets/js/supabase-client.js?v=18.54.4"></script>
+  <script src="assets/js/geographic-address.js?v=18.54.4"></script>
+  <script src="assets/js/permissions.js?v=18.54.4"></script>
+  <script src="assets/js/permission-engine.js?v=18.54.4"></script>
+  <script src="assets/js/data-access-scope.js?v=18.54.4"></script>
+  <script src="assets/js/smart-cache.js?v=18.54.4"></script>
+  <script src="assets/js/sync-engine.js?v=18.54.4"></script>
+  <script src="assets/js/offline-queue.js?v=18.54.4"></script>
+  <script src="assets/js/permissions-service.js?v=18.54.4"></script>
+  <script src="assets/js/auth-session.js?v=18.54.4"></script>
+  <script src="assets/js/reference-data-service.js?v=18.54.4"></script>
+  <script src="assets/js/customers-service.js?v=18.54.4"></script>
+  <script src="assets/js/followups-service.js?v=18.54.4"></script>
+  <script src="assets/js/quotations-service.js?v=18.54.4"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.54.4"></script>
+  <script src="assets/js/users-service.js?v=18.54.4"></script>
+  <script src="assets/js/activity-service.js?v=18.54.4"></script>
+  <script src="assets/js/backup-service.js?v=18.54.4"></script>
+  <script src="assets/js/system-settings-service.js?v=18.54.4"></script>
+  <script src="assets/js/system-health-service.js?v=18.54.4"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.54.4"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.54.4"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.54.4"></script>
+  <script src="assets/js/installations-service.js?v=18.54.4"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.54.4"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.54.4"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.54.4"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.54.4"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.54.3"></script>
-  <script src="assets/js/export-center.js?v=18.54.3"></script>
-  <script src="assets/js/customer360-engine.js?v=18.54.3"></script>
-  <script src="assets/js/customer360-export.js?v=18.54.3"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.54.3"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.54.3"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.54.3"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.54.3"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.54.3"></script>
-  <script src="assets/js/notification-center-service.js?v=18.54.3"></script>
-  <script src="assets/js/app.js?v=18.54.3"></script>
-  <script src="assets/js/notification-center.js?v=18.54.3"></script>
-  <script src="assets/js/sales-invoices.js?v=18.54.3"></script>
-  <script src="assets/js/installations-module.js?v=18.54.3"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.54.3"></script>
-  <script src="assets/js/installation-execution.js?v=18.54.3"></script>
-  <script src="assets/js/installation-completion.js?v=18.54.3"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.54.3"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.54.3"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.54.3"></script>
-  <script src="assets/js/mobile.js?v=18.54.3"></script>
-  <script src="assets/js/pwa.js?v=18.54.3"></script>
-  <script src="assets/js/native.js?v=18.54.3"></script>
+  <script src="assets/js/reports-engine.js?v=18.54.4"></script>
+  <script src="assets/js/export-center.js?v=18.54.4"></script>
+  <script src="assets/js/customer360-engine.js?v=18.54.4"></script>
+  <script src="assets/js/customer360-export.js?v=18.54.4"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.54.4"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.54.4"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.54.4"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.54.4"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.54.4"></script>
+  <script src="assets/js/notification-center-service.js?v=18.54.4"></script>
+  <script src="assets/js/app.js?v=18.54.4"></script>
+  <script src="assets/js/notification-center.js?v=18.54.4"></script>
+  <script src="assets/js/sales-invoices.js?v=18.54.4"></script>
+  <script src="assets/js/installations-module.js?v=18.54.4"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.54.4"></script>
+  <script src="assets/js/installation-execution.js?v=18.54.4"></script>
+  <script src="assets/js/installation-completion.js?v=18.54.4"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.54.4"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.54.4"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.54.4"></script>
+  <script src="assets/js/mobile.js?v=18.54.4"></script>
+  <script src="assets/js/pwa.js?v=18.54.4"></script>
+  <script src="assets/js/native.js?v=18.54.4"></script>
 </body>
 </html>

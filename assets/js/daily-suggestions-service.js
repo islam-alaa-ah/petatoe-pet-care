@@ -51,28 +51,17 @@
 
     const { data: statusRows, error: statusError } = await supabase
       .from("daily_customer_suggestions")
-      .select("customer_type,status")
+      .select("status")
       .eq("user_id", userId)
       .eq("suggestion_date", suggestionDate);
     if (statusError) throw statusError;
-
-    const progress = {
-      "شركة": { active: 0, completed: 0, total: 0 },
-      "فردي": { active: 0, completed: 0, total: 0 }
-    };
-
+    const progress = { active: 0, completed: 0, total: 0 };
     (statusRows || []).forEach(row => {
-      const type = row.customer_type === "فردي" ? "فردي" : "شركة";
-      if (row.status === "completed") progress[type].completed += 1;
-      if (row.status === "active") progress[type].active += 1;
-      progress[type].total += 1;
+      if (row.status === "completed") progress.completed += 1;
+      if (row.status === "active") progress.active += 1;
+      progress.total += 1;
     });
-
-    return {
-      date: suggestionDate,
-      rows: Array.isArray(activeRows) ? activeRows : [],
-      progress
-    };
+    return { date: suggestionDate, rows: Array.isArray(activeRows) ? activeRows : [], progress };
   }
 
   async function load(options = {}) {
