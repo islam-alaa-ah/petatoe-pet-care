@@ -78,7 +78,18 @@
 
 
   async function invokeManageUser(body) {
-    const { data, error } = await client().functions.invoke("manage-user", { body });
+    const { data: sessionData, error: sessionError } = await client().auth.getSession();
+    if (sessionError || !sessionData?.session?.access_token) {
+      throw new Error("انتهت جلسة تسجيل الدخول. سجّل الدخول مرة أخرى ثم أعد المحاولة.");
+    }
+
+    let result;
+    try {
+      result = await client().functions.invoke("manage-user", { body });
+    } catch (networkError) {
+      throw new Error(`تعذر الاتصال بوظيفة إدارة المستخدمين manage-user. تأكد من نشر Edge Function ثم أعد المحاولة. (${networkError?.message || "NETWORK_ERROR"})`);
+    }
+    const { data, error } = result;
     if (!error) return data;
 
     let details = null;
@@ -92,7 +103,11 @@
       // Keep the original Functions error when the response body is unavailable.
     }
 
-    const message = details?.error || details?.message || error.message || "تعذر تنفيذ عملية المستخدم.";
+    const rawMessage = details?.error || details?.message || error.message || "تعذر تنفيذ عملية المستخدم.";
+    const isTransportFailure = /failed to send a request|failed to fetch|networkerror/i.test(String(rawMessage));
+    const message = isTransportFailure
+      ? "تعذر الوصول إلى Edge Function المسؤولة عن إدارة المستخدمين. يلزم التأكد من نشر manage-user على مشروع Supabase الحالي."
+      : rawMessage;
     const code = details?.code ? ` (${details.code})` : "";
     throw new Error(`${message}${code}`);
   }

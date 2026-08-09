@@ -55,9 +55,10 @@ function normalizeRole(value: unknown) {
   const role = String(value ?? "viewer").trim();
   const allowedRoles = new Set([
     "super_admin",
-    "admin",
+    "sales_manager",
     "sales_supervisor",
-    "auditor",
+    "sales_representative",
+    "customer_service",
     "viewer",
   ]);
   if (!allowedRoles.has(role)) {
@@ -163,11 +164,24 @@ Deno.serve(async (request) => {
       }
 
       const userId = created.user.id;
+      const representativeId = body.representative_id ?? body.representativeId ?? null;
+      const mustChangePassword = body.must_change_password ?? body.mustChangePassword ?? true;
+      const accessModeRaw = String(body.access_mode ?? body.accessMode ?? "own").trim();
+      const accessMode = ["own", "selected", "all"].includes(accessModeRaw) ? accessModeRaw : "own";
+      const allowedRepresentativeIds = Array.isArray(body.allowed_representative_ids ?? body.allowedRepresentativeIds)
+        ? [...new Set((body.allowed_representative_ids ?? body.allowedRepresentativeIds)
+          .map((value: unknown) => String(value ?? "").trim())
+          .filter(Boolean))]
+        : [];
+
       const profilePayload = {
         id: userId,
         full_name: fullName,
+        email,
         role,
+        representative_id: representativeId || null,
         is_active: Boolean(isActive),
+        must_change_password: Boolean(mustChangePassword),
       };
 
       const { error: upsertError } = await admin
@@ -181,6 +195,32 @@ Deno.serve(async (request) => {
           "PROFILE_CREATE_FAILED",
           `Auth user was rolled back: ${upsertError.message}`,
         );
+      }
+
+      const { error: accessProfileError } = await admin
+        .from("user_data_access_profiles")
+        .upsert({
+          user_id: userId,
+          access_mode: accessMode,
+          updated_by: callerData.user.id,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: "user_id" });
+
+      if (accessProfileError) {
+        await admin.from("user_profiles").delete().eq("id", userId);
+        await admin.auth.admin.deleteUser(userId);
+        throw new HttpError(400, "DATA_SCOPE_CREATE_FAILED", `Auth user was rolled back: ${accessProfileError.message}`);
+      }
+
+      if (accessMode === "selected" && allowedRepresentativeIds.length) {
+        const { error: allowedError } = await admin
+          .from("user_data_access_representatives")
+          .insert(allowedRepresentativeIds.map((representative_id) => ({ user_id: userId, representative_id })));
+        if (allowedError) {
+          await admin.from("user_profiles").delete().eq("id", userId);
+          await admin.auth.admin.deleteUser(userId);
+          throw new HttpError(400, "DATA_SCOPE_REPRESENTATIVES_FAILED", `Auth user was rolled back: ${allowedError.message}`);
+        }
       }
 
       await writeAudit(admin, {

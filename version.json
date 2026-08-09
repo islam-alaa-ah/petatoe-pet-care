@@ -1,14 +1,13 @@
 {
-  "version": "18.54.12",
-  "build": 185412,
+  "version": "18.54.13",
+  "build": 185413,
   "forceUpdate": true,
   "releaseDate": "2026-08-10",
-  "title": "PETATOE Daily Operations Runtime Cleanup — P5.4",
+  "title": "PETATOE User Creation Edge Function Recovery — P5.5",
   "notes": [
-    "تم إصلاح سبب رسالة تعذر تحميل المهام اليومية بعد حذف أقسام الأهداف والمهام.",
-    "تم حذف ملاحظة المدير اليومية من شاشة إدارة المهام اليومية.",
-    "تم إيقاف تحميل ملاحظة المدير من Runtime شاشة إدارة المهام اليومية.",
-    "تم حذف استدعاء renderDailyTargets الذي كان يحاول تحديث عناصر DOM تم حذفها في P5.3."
+    "تمت استعادة توافق manage-user مع أدوار البرنامج الحالية.",
+    "تم حفظ بيانات المستخدم ونطاق البيانات داخل عملية الإنشاء الآمنة على الخادم.",
+    "تم تحسين تشخيص فشل الاتصال بـ Edge Function بدل الرسالة العامة."
   ],
-  "cacheToken": "petatoe-pwa-18-54-12-daily-operations-runtime-cleanup-p5-4"
+  "cacheToken": "petatoe-pwa-18-54-13-user-creation-edge-function-recovery-p5-5"
 }

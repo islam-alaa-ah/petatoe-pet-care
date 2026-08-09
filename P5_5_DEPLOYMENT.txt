@@ -1,0 +1,12 @@
+P5.5 User Creation Edge Function Recovery
+
+ROOT CAUSE
+The latest baseline contains a regressed manage-user Edge Function. Its role whitelist accepts legacy roles (admin/auditor) while the application sends PETATOE roles including sales_manager, sales_representative and customer_service. The function also omits profile/data-scope fields that the UI sends.
+
+IMPORTANT DEPLOYMENT STEP
+Uploading the GitHub Pages files alone does NOT deploy Supabase Edge Functions.
+After merging these files, deploy the function to the same Supabase project used by the application:
+
+supabase functions deploy manage-user
+
+Then hard refresh and test Add User as an active super_admin.
