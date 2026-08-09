@@ -7986,11 +7986,21 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
     if (initialSuccess) initialSuccess.textContent = "0";
     const initialFailed = document.getElementById("customerImportProgressFailed");
     if (initialFailed) initialFailed.textContent = "0";
-    showDataStatus("customerImportStatus", `جاري استيراد 0 من ${importRows.length}...`, "info");
+    const initialProgressBar = document.getElementById("customerImportProgressBar");
+    if (initialProgressBar) initialProgressBar.style.width = "0%";
+    const initialProgressText = document.getElementById("customerImportProgressText");
+    if (initialProgressText) initialProgressText.textContent = "0%";
+    showDataStatus(
+      "customerImportStatus",
+      `بدء الرفع على دفعات بحد أقصى 200 عميل لكل دفعة — 0 من ${importRows.length} (0%)`,
+      "info"
+    );
+    progressPanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
     const result = await window.CustomersService.importCustomers(
       importRows,
       mode,
-      (current, total, _row, progressResults = {}) => {
+      (current, total, _row, progressResults = {}, batch = {}) => {
         const percent = total ? Math.round((current / total) * 100) : 0;
         const progressBar = document.getElementById("customerImportProgressBar");
         if (progressBar) progressBar.style.width = `${percent}%`;
@@ -7998,21 +8008,28 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
         if (progressText) progressText.textContent = `${percent}%`;
         const progressRows = document.getElementById("customerImportProgressRows");
         if (progressRows) progressRows.textContent = `${current} / ${total}`;
+
         const successCount = Number(progressResults.inserted || 0)
-          + Number(progressResults.updated || 0)
-;
+          + Number(progressResults.updated || 0);
         const failedCount = Number(progressResults.failed || 0);
+
         const progressSuccess = document.getElementById("customerImportProgressSuccess");
         if (progressSuccess) progressSuccess.textContent = String(successCount);
         const progressFailed = document.getElementById("customerImportProgressFailed");
         if (progressFailed) progressFailed.textContent = String(failedCount);
         const progressRemaining = document.getElementById("customerImportProgressRemaining");
         if (progressRemaining) progressRemaining.textContent = String(Math.max(0, total - current));
-        if (current === total || current % 25 === 0) {
-          showDataStatus("customerImportStatus", `جاري استيراد ${current} من ${total}...`, "info");
-        }
+
+        const batchLabel = batch.totalBatches
+          ? ` — الدفعة ${batch.batchIndex} من ${batch.totalBatches} (${batch.batchSize} عميل)`
+          : "";
+        showDataStatus(
+          "customerImportStatus",
+          `جاري الرفع: ${current} من ${total} — ${percent}%${batchLabel}`,
+          "info"
+        );
       },
-      { concurrency: 10, adminOverride: override }
+      { batchSize: 200, adminOverride: override }
     );
 
     customerImportFailedRows = [...customerImportFailedRows, ...(result.errors || [])];

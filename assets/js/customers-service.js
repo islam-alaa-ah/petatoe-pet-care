@@ -496,43 +496,65 @@
   async function importCustomers(rows, mode = "new_only", onProgress = null, options = {}) {
     requirePermission("customers", "add");
     if (mode === "upsert") requirePermission("customers", "edit");
-    const results = { inserted: 0, updated: 0, skipped: 0, failed: 0, errors: [] };
-    const { data: userData, error: userError } = await client().auth.getUser();
-    if (userError) throw new Error(`تعذر تحديد المستخدم الحالي: ${userError.message}`);
-    const userId = userData.user?.id || null;
 
-    let processed = 0;
-    for (const row of rows || []) {
-      try {
-        const existing = row.existingCustomer || (row.phone ? await findByPhone(row.phone) : null);
-        if (existing?.id && mode !== "upsert") {
-          results.skipped += 1;
-        } else {
-          await saveCustomer({
-            id: existing?.id || null,
-            customerNumber: row.customerNumber || row.code,
-            name: row.name,
-            address: row.address || "",
-            phone: row.phone || row.mobile
-          }, { userId });
-          if (existing?.id) results.updated += 1;
-          else results.inserted += 1;
-        }
-      } catch (error) {
-        results.failed += 1;
-        results.errors.push({
+    const inputRows = Array.isArray(rows) ? rows : [];
+    const batchSize = Math.min(200, Math.max(1, Number(options.batchSize || 200)));
+    const totalBatches = Math.ceil(inputRows.length / batchSize);
+    const results = { inserted: 0, updated: 0, skipped: 0, failed: 0, errors: [] };
+
+    for (let offset = 0, batchIndex = 0; offset < inputRows.length; offset += batchSize, batchIndex += 1) {
+      const batch = inputRows.slice(offset, offset + batchSize);
+      const payload = batch.map(row => ({
+        sourceRow: Number(row.sourceRow || 0) || null,
+        code: String(row.customerNumber || row.code || "").trim(),
+        name: String(row.name || "").trim(),
+        address: String(row.address || "").trim(),
+        mobile: String(row.phone || row.mobile || "").trim(),
+        existingCustomerId: row.existingCustomer?.id || null
+      }));
+
+      const { data, error } = await client().rpc("import_customers_batch", {
+        p_rows: payload,
+        p_mode: mode
+      });
+
+      if (error) {
+        results.failed += batch.length;
+        results.errors.push(...batch.map(row => ({
           sourceRow: row.sourceRow,
           customerNumber: row.customerNumber || row.code || "",
           name: row.name || "",
           address: row.address || "",
           phone: row.phone || row.mobile || "",
-          message: error instanceof Error ? error.message : String(error)
-        });
-      } finally {
-        processed += 1;
-        onProgress?.(processed, rows.length, row, results);
+          message: `فشل دفعة ${batchIndex + 1}/${totalBatches}: ${error.message}`
+        })));
+      } else {
+        results.inserted += Number(data?.inserted || 0);
+        results.updated += Number(data?.updated || 0);
+        results.skipped += Number(data?.skipped || 0);
+        results.failed += Number(data?.failed || 0);
+        if (Array.isArray(data?.errors)) results.errors.push(...data.errors);
       }
+
+      const processed = Math.min(offset + batch.length, inputRows.length);
+      onProgress?.(
+        processed,
+        inputRows.length,
+        batch[batch.length - 1] || null,
+        results,
+        {
+          batchIndex: batchIndex + 1,
+          totalBatches,
+          batchSize: batch.length
+        }
+      );
     }
+
+    await invalidateCustomerCache();
+    await window.KYUMCacheDependencyEngine?.invalidate?.("customers", {
+      action: "import",
+      source: "customers-service"
+    });
     return results;
   }
 
