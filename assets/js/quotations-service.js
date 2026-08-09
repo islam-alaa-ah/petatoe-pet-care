@@ -65,7 +65,7 @@
 
     if (error) {
       if (error.code === "23505") {
-        throw new Error("رقم عرض السعر مسجل بالفعل ولا يمكن تكراره.");
+        throw new Error("رقم العقد مسجل بالفعل ولا يمكن تكراره.");
       }
 
       if (error.code === "23503") {
@@ -171,7 +171,7 @@
       request = request.in("representative_id", scope.representativeIds);
     }
 
-    const rows = await unwrap(request, "تعذر تحميل عروض الأسعار");
+    const rows = await unwrap(request, "تعذر تحميل عقود العملاء");
     return (rows || []).map(normalizeQuotation);
   }
 
@@ -305,7 +305,7 @@
 
     if (excludeId) query = query.neq("id", excludeId);
 
-    const rows = await unwrap(query, "تعذر التحقق من رقم عرض السعر");
+    const rows = await unwrap(query, "تعذر التحقق من رقم العقد");
     return rows?.[0] || null;
   }
 
@@ -323,7 +323,7 @@
         .from("customers")
         .update(customerPatch)
         .eq("id", record.customerId),
-      "تم حفظ العرض ولكن تعذر تحديث بيانات العميل"
+      "تم حفظ العقد ولكن تعذر تحديث بيانات العميل"
     );
   }
 
@@ -336,7 +336,7 @@
         .order("quotation_date", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(1),
-      "تعذر إعادة احتساب آخر عرض سعر للعميل"
+      "تعذر إعادة احتساب آخر عقد للعميل"
     );
 
     const latestQuotation = latest?.[0] || null;
@@ -353,7 +353,7 @@
         .from("customers")
         .update(patch)
         .eq("id", customerId),
-      "تعذر تحديث آخر عرض سعر للعميل"
+      "تعذر تحديث آخر عقد للعميل"
     );
   }
 
@@ -390,7 +390,7 @@
           .eq("id", record.id)
           .select("id")
           .single(),
-        "تعذر تعديل عرض السعر"
+        "تعذر تعديل العقد"
       );
     } else {
       saved = await unwrap(
@@ -402,7 +402,7 @@
           })
           .select("id")
           .single(),
-        "تعذر إضافة عرض السعر"
+        "تعذر إضافة العقد"
       );
     }
 
@@ -432,11 +432,11 @@
       .select("id, updated_at")
       .eq("id", record.id)
       .maybeSingle();
-    if (error) throw new Error(`تعذر التحقق من تعارض عرض السعر: ${error.message}`);
+    if (error) throw new Error(`تعذر التحقق من تعارض العقد: ${error.message}`);
     const serverTime = Date.parse(data?.updated_at || "") || 0;
     const baseTime = Date.parse(baseUpdatedAt || "") || 0;
     if (serverTime && baseTime && serverTime > baseTime + 1000) {
-      throw new window.KYUMOfflineQueue.ConflictError("تم تعديل عرض السعر على الخادم بعد آخر مزامنة.", {
+      throw new window.KYUMOfflineQueue.ConflictError("تم تعديل العقد على الخادم بعد آخر مزامنة.", {
         entityId: record.id, serverUpdatedAt: data.updated_at, baseUpdatedAt
       });
     }
@@ -447,7 +447,7 @@
     const dependencies = [];
     if (String(record?.customerId || "").startsWith("local:")) {
       const parent = await window.KYUMOfflineQueue.findCreateOperationByLocalId(record.customerId);
-      if (!parent) throw new Error("تعذر ربط عرض السعر بالعميل المحلي المعلق.");
+      if (!parent) throw new Error("تعذر ربط العقد بالعميل المحلي المعلق.");
       dependencies.push(parent.id);
     }
     const queued = await window.KYUMOfflineQueue.enqueue({
@@ -476,7 +476,7 @@
   async function deleteQuotationOnline(record) {
     await unwrap(
       client().from("quotations").delete().eq("id", record.id),
-      "تعذر حذف عرض السعر"
+      "تعذر حذف العقد"
     );
     await recalculateCustomerSnapshot(record.customerId);
     await audit("delete", record.id, { quotation_number: record.code, customer_id: record.customerId });
@@ -535,7 +535,7 @@
     }
     if (String(record.customerId || "").startsWith("local:")) {
       const resolved = await helpers.resolveServerId(record.customerId, operation.namespace);
-      if (!resolved) throw new Error("لم تتم مزامنة العميل المرتبط بعرض السعر بعد.");
+      if (!resolved) throw new Error("لم تتم مزامنة العميل المرتبط بالعقد بعد.");
       record.customerId = resolved;
     }
     if (operation.action === "update") await assertQuotationNotConflicted(record, operation.baseUpdatedAt);

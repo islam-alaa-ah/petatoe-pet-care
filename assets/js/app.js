@@ -90,7 +90,7 @@ const seedFollowups = [
     contactDate: "2026-07-09",
     method: "واتساب",
     representative: "محمد علي",
-    result: "تم إرسال عرض سعر",
+    result: "تم إرسال عقد",
     quotationNumber: "Q-2026-002",
     noSaleReason: "السعر مرتفع",
     nextFollowupDate: "2026-07-12",
@@ -242,19 +242,19 @@ const pageMeta = {
   dashboard: ["لوحة التحكم", "ملخص بيانات العملاء والمتابعة"],
   customers: ["العملاء", "إدارة بيانات العملاء والبحث والتصفية"],
   followups: ["المتابعات", "سجل التواصل والمتابعات القادمة لكل عميل"],
-  quotations: ["عروض الأسعار", "إدارة عروض الأسعار وحالتها وقيمتها"],
-  salesInvoices: ["فواتير المبيعات", "سجل الفواتير المرتبطة بالعروض والتركيبات"],
+  quotations: ["عقود العملاء", "إدارة عقود العملاء وحالتها وقيمتها"],
+  salesInvoices: ["فواتير المبيعات", "سجل الفواتير المرتبطة بالعقود والمواعيد"],
   representatives: ["مندوبو المبيعات", "قائمة مسؤولي متابعة العملاء"],
   settings: ["البيانات المرجعية", "مجالات الاهتمام وأسباب عدم البيع"],
-  installationsOverview: ["إدارة التركيبات", "طلبات التركيب والجدولة والتنفيذ الميداني"],
-  installationSettings: ["إعدادات التركيبات", "إعدادات التشغيل والمهلة والقيم الافتراضية"],
-  installationRequestNew: ["طلب تركيب جديد", "إنشاء طلب تركيب بعرض سعر أو بدونه"],
-  installationRequests: ["طلبات التركيبات", "عرض ومتابعة وتعديل طلبات التركيب"],
-  installationSchedule: ["جدولة وتوزيع التركيبات", "تقويم التشغيل وإسناد الطلبات إلى الفنيين"],
-  installationExecution: ["تنفيذ التركيبات", "تحديث حالات الزيارات الميدانية وتوثيق التنفيذ"],
-  installationCompletion: ["تأكيد الانتهاء من التركيبات", "مراجعة واعتماد انتهاء التركيب وتحويل الطلب إلى فاتورة"],
+  installationsOverview: ["إدارة المواعيد", "المواعيد والجدولة والتنفيذ الميداني"],
+  installationSettings: ["إعدادات المواعيد", "إعدادات التشغيل والمهلة والقيم الافتراضية"],
+  installationRequestNew: ["إضافة موعد جديد", "إنشاء موعد بعقد أو بدونه"],
+  installationRequests: ["المواعيد", "عرض ومتابعة وتعديل المواعيد"],
+  installationSchedule: ["جدولة وتوزيع المواعيد", "تقويم التشغيل وإسناد الطلبات إلى الفنيين"],
+  installationExecution: ["تنفيذ المواعيد", "تحديث حالات الزيارات الميدانية وتوثيق التنفيذ"],
+  installationCompletion: ["تأكيد انتهاء المواعيد", "مراجعة واعتماد انتهاء الموعد وتحويله إلى فاتورة"],
   installationExceptions: ["الاستثناءات وإعادة الزيارة", "متابعة التعثر وجدولة الزيارات اللاحقة"],
-  installationReports: ["تقارير التركيبات", "تحليل الإنتاجية والالتزام وأسباب التعثر"],
+  installationReports: ["تقارير المواعيد", "تحليل الإنتاجية والالتزام وأسباب التعثر"],
   users: ["المستخدمون", "إدارة حسابات مستخدمي النظام"],
   permissions: ["الصلاحيات", "إدارة الأدوار وصلاحيات الوصول"],
   activityLog: ["سجل النشاط", "متابعة العمليات والتغييرات داخل النظام"],
@@ -1486,11 +1486,11 @@ function renderDashboard() {
     ["إجمالي المتابعات", filteredFollowups.length],
     ["متابعات اليوم", dueToday],
     ["متابعات متأخرة", overdue],
-    ["عدد عروض الأسعار", filteredQuotations.length],
+    ["عدد عقود العملاء", filteredQuotations.length],
     ["قيمة العروض", formatCurrency(totalQuotationValue)],
-    ["العروض المقبولة", accepted.length],
+    ["العقود المقبولة", accepted.length],
     ["قيمة المقبول", formatCurrency(acceptedValue)],
-    ["العروض المرفوضة", rejected.length],
+    ["العقود المرفوضة", rejected.length],
     ["نسبة التحويل", `${conversionRate.toFixed(1)}%`]
   ];
 
@@ -3490,7 +3490,7 @@ function renderCustomers() {
         <td data-mobile-field="interests" data-mobile-label="مجال الاهتمام">${customer.interests.map(item => `<span class="badge">${escapeHtml(item)}</span>`).join("") || "—"}</td>
         <td data-mobile-field="representative" data-mobile-label="المندوب">${escapeHtml(customer.representative || "—")}</td>
         <td data-mobile-field="date" data-mobile-label="تاريخ التواصل">${formatDate(customer.contactDate)}</td>
-        <td data-mobile-field="quotation" data-mobile-label="رقم عرض السعر">${escapeHtml(customer.quotationNumber || "—")}</td>
+        <td data-mobile-field="quotation" data-mobile-label="رقم العقد">${escapeHtml(customer.quotationNumber || "—")}</td>
         <td data-mobile-field="reason" data-mobile-label="سبب عدم البيع">${escapeHtml(customer.noSaleReason || "—")}</td>
         <td data-mobile-field="actions" data-mobile-label="الإجراءات">
           <div class="row-actions">
@@ -3533,7 +3533,7 @@ function renderCustomers() {
               <div><span>اسم المسؤول</span><strong>${customer.type === "شركة" ? escapeHtml(customer.contactPersonName || "—") : "—"}</strong></div>
               <div><span>المندوب</span><strong>${escapeHtml(customer.representative || "—")}</strong></div>
               <div><span>تاريخ التواصل</span><strong>${formatDate(customer.contactDate)}</strong></div>
-              <div><span>رقم عرض السعر</span><strong>${escapeHtml(customer.quotationNumber || "—")}</strong></div>
+              <div><span>رقم العقد</span><strong>${escapeHtml(customer.quotationNumber || "—")}</strong></div>
               <div class="customer-mobile-wide"><span>مجال الاهتمام</span><div class="customer-mobile-badges">${interests}</div></div>
               <div class="customer-mobile-wide"><span>سبب عدم البيع</span><strong>${escapeHtml(customer.noSaleReason || "—")}</strong></div>
             </div>
@@ -4731,7 +4731,7 @@ function showCustomerDetails(customerId) {
       <div class="customer360-kpis">
         ${customer360Metric("إجمالي المتابعات", view.totals.followups, `المتأخرة: ${view.totals.overdueFollowups}`)}
         ${customer360Metric("المتابعات القادمة", view.totals.upcomingFollowups, nextFollowup?.nextFollowupDate ? `القادم: ${formatDate(nextFollowup.nextFollowupDate)}` : "لا يوجد موعد قادم")}
-        ${customer360Metric("عروض الأسعار", view.totals.quotations, `المفتوحة: ${view.totals.openQuotations}`)}
+        ${customer360Metric("عقود العملاء", view.totals.quotations, `المفتوحة: ${view.totals.openQuotations}`)}
         ${customer360Metric("قيمة العروض", formatCurrency(view.totals.totalQuotationValue), `المقبول: ${formatCurrency(view.totals.acceptedValue)}`)}
         ${customer360Metric("نسبة التحويل", `${view.totals.conversionRate.toFixed(1)}%`, `${view.totals.acceptedQuotations} عروض مقبولة`)}
       </div>
@@ -4781,7 +4781,7 @@ function showCustomerDetails(customerId) {
       <div class="customer360-value-kpis">
         ${customer360Metric("قيمة العميل المقبولة", formatCurrency(view.totals.acceptedValue), view.risk.valueTier.label)}
         ${customer360Metric("القيمة المحتملة", formatCurrency(view.risk.potentialValue), `المفتوح: ${formatCurrency(view.risk.openValue)}`)}
-        ${customer360Metric("قيمة العروض المرفوضة", formatCurrency(view.risk.rejectedValue), "فرص تحتاج مراجعة")}
+        ${customer360Metric("قيمة العقود المرفوضة", formatCurrency(view.risk.rejectedValue), "فرص تحتاج مراجعة")}
         ${customer360Metric("مؤشر التفاعل", `${view.risk.engagementScore}%`, `استجابة: ${view.risk.responseRate.toFixed(1)}%`)}
       </div>
     </section>
@@ -4815,7 +4815,7 @@ function showCustomerDetails(customerId) {
         <article class="customer360-section">
           <div class="customer360-section-header">
             <div>
-              <h3>عروض الأسعار</h3>
+              <h3>عقود العملاء</h3>
               <p>جميع عروض السعر المرتبطة بالعميل.</p>
             </div>
             <span>${view.totals.quotations} عرض</span>
@@ -4896,7 +4896,7 @@ function showCustomerDetails(customerId) {
           <small>إجمالي المتابعات</small>
         </article>
         <article>
-          <span>عروض الأسعار</span>
+          <span>عقود العملاء</span>
           <strong>${view.quotations.length}</strong>
           <small>إجمالي العروض</small>
         </article>
@@ -4905,7 +4905,7 @@ function showCustomerDetails(customerId) {
       <div class="customer360-activity-filters">
         <button type="button" class="customer360-activity-filter active" data-customer360-filter="all">الكل</button>
         <button type="button" class="customer360-activity-filter" data-customer360-filter="followup">المتابعات</button>
-        <button type="button" class="customer360-activity-filter" data-customer360-filter="quotation">عروض الأسعار</button>
+        <button type="button" class="customer360-activity-filter" data-customer360-filter="quotation">عقود العملاء</button>
         <button type="button" class="customer360-activity-filter" data-customer360-filter="customer">بيانات العميل</button>
       </div>
 
@@ -4929,7 +4929,7 @@ function showCustomerDetails(customerId) {
               <span>${formatDate(item.contactDate || item.createdAt)}</span>
             </div>
             <p>${escapeHtml(item.method || "—")} · ${escapeHtml(item.representative || "—")}</p>
-            ${item.quotationNumber ? `<p>عرض السعر: ${escapeHtml(item.quotationNumber)}</p>` : ""}
+            ${item.quotationNumber ? `<p>العقد: ${escapeHtml(item.quotationNumber)}</p>` : ""}
             ${item.notes ? `<p>${escapeHtml(item.notes)}</p>` : ""}
             ${item.nextFollowupDate ? `<p>المتابعة القادمة: ${formatDate(item.nextFollowupDate)}</p>` : ""}
           </div>
@@ -5056,8 +5056,8 @@ function renderDailyPerformanceDetail() {
       subtitle: "العملاء الذين تمت إضافتهم خلال اليوم."
     },
     quotations: {
-      title: "عروض الأسعار",
-      subtitle: "عروض الأسعار التي تم إنشاؤها خلال اليوم."
+      title: "عقود العملاء",
+      subtitle: "عقود العملاء التي تم إنشاؤها خلال اليوم."
     },
     overdue: {
       title: "المتابعات المتأخرة",
@@ -5117,7 +5117,7 @@ function renderDailyPerformanceDetail() {
             ${[
               ["العملاء الجدد", item.customers.length, item.targets.customers, item.targetRates.customers],
               ["المتابعات", item.followups.length, item.targets.followups, item.targetRates.followups],
-              ["عروض الأسعار", item.quotations.length, item.targets.quotations, item.targetRates.quotations]
+              ["عقود العملاء", item.quotations.length, item.targets.quotations, item.targetRates.quotations]
             ].map(([label, actual, target, rate]) => `
               <div class="daily-performance-target-row">
                 <div><span>${label}</span><strong>${actual} / ${target}</strong></div>
@@ -5162,7 +5162,7 @@ function renderDailyPerformanceDetail() {
       rows: rows.flatMap(employee =>
         employee.quotations.map(item => ({ employee, item }))
       ),
-      headers: ["الموظف", "العميل", "رقم العرض", "الحالة", "القيمة"],
+      headers: ["الموظف", "العميل", "رقم العقد", "الحالة", "القيمة"],
       cells: ({ employee, item }) => [
         employee.name,
         item.customerName || "—",
@@ -5771,7 +5771,7 @@ function followupReportConfig() {
       {label:"طريقة التواصل",value:"method"},
       {label:"المندوب",value:r=>r.representative || "—"},
       {label:"نتيجة التواصل",value:r=>r.result || "—"},
-      {label:"عرض السعر",value:r=>r.quotationNumber || "—"},
+      {label:"العقد",value:r=>r.quotationNumber || "—"},
       {label:"المتابعة القادمة",value:r=>formatDate(r.nextFollowupDate)},
       {label:"الحالة",value:r=>statusLabel(followupStatus(r))}
     ]
@@ -5781,8 +5781,8 @@ function followupReportConfig() {
 function quotationReportConfig() {
   const rows = filteredQuotations();
   return {
-    title:"تقرير عروض الأسعار",
-    subtitle:"التقرير يعكس الفلاتر المحددة في شاشة عروض الأسعار",
+    title:"تقرير عقود العملاء",
+    subtitle:"التقرير يعكس الفلاتر المحددة في شاشة عقود العملاء",
     fileName:`kyum-quotations-${new Date().toISOString().slice(0,10)}`,
     rows,
     filters:[
@@ -5792,12 +5792,12 @@ function quotationReportConfig() {
       ["المندوب", filteredReportControlLabel("quotationRepFilter")]
     ],
     columns:[
-      {label:"رقم العرض",value:r=>r.code || "—"},
+      {label:"رقم العقد",value:r=>r.code || "—"},
       {label:"رقم طلب العميل",value:r=>r.customerOrderNumber || "—"},
       {label:"العميل",value:r=>customerById(r.customerId)?.name || r.customerName || "—"},
       {label:"رقم العميل",value:r=>customerById(r.customerId)?.phone || r.customerPhone || "—"},
       {label:"المندوب",value:r=>r.representative || "—"},
-      {label:"تاريخ العرض",value:r=>formatDate(r.quotationDate)},
+      {label:"تاريخ العقد",value:r=>formatDate(r.quotationDate)},
       {label:"القيمة",value:r=>formatCurrency(r.amount)},
       {label:"الحالة",value:r=>canonicalQuotationStatus(r.status)},
       {label:"تاريخ الانتهاء",value:r=>formatDate(r.expiryDate)},
@@ -5998,8 +5998,8 @@ function dailyActivityTypeLabel(type) {
     session: "الدخول والنشاط",
     customers: "العملاء",
     followups: "المتابعات",
-    quotations: "عروض الأسعار",
-    installations: "طلبات التركيبات",
+    quotations: "عقود العملاء",
+    installations: "المواعيد",
     invoices: "فواتير المبيعات",
     daily_tasks: "المهام اليومية",
     daily_alerts: "التنبيهات",
@@ -7038,7 +7038,7 @@ async function loadQuotationsFromSupabase(force = false) {
   if (!window.QuotationsService) return;
 
   quotationsLoading = true;
-  showDataStatus("quotationsStatus", navigator.onLine === false ? "جاري تحميل آخر بيانات عروض الأسعار المحفوظة..." : "جاري تحميل عروض الأسعار...", "info");
+  showDataStatus("quotationsStatus", navigator.onLine === false ? "جاري تحميل آخر بيانات عقود العملاء المحفوظة..." : "جاري تحميل عقود العملاء...", "info");
 
   try {
     quotations = await window.QuotationsService.listQuotations({ force });
@@ -7052,7 +7052,7 @@ async function loadQuotationsFromSupabase(force = false) {
     console.error("Quotation loading failed:", error);
     showDataStatus(
       "quotationsStatus",
-      error instanceof Error ? error.message : "تعذر تحميل عروض الأسعار.",
+      error instanceof Error ? error.message : "تعذر تحميل عقود العملاء.",
       "error"
     );
   } finally {
@@ -7101,9 +7101,9 @@ function renderQuotations() {
   document.getElementById("quotationStats").innerHTML = [
     ["إجمالي العروض", workflowRows.length],
     ["إجمالي القيمة", formatCurrency(totalValue)],
-    ["العروض المقبولة", accepted.length],
-    ["قيمة العروض المقبولة", formatCurrency(acceptedValue)],
-    ["العروض المرفوضة", rejected],
+    ["العقود المقبولة", accepted.length],
+    ["قيمة العقود المقبولة", formatCurrency(acceptedValue)],
+    ["العقود المرفوضة", rejected],
     ["نسبة التحويل", `${conversionRate.toFixed(1)}%`]
   ].map(([label, value]) =>
     `<article class="followup-stat"><span>${label}</span><strong>${value}</strong></article>`
@@ -7119,7 +7119,7 @@ function renderQuotations() {
 
   if (!rows.length) {
     body.innerHTML = `<tr><td colspan="10" class="empty-state">${
-      quotationsLoaded ? "لا توجد عروض أسعار مطابقة." : "جاري تحميل عروض الأسعار..."
+      quotationsLoaded ? "لا توجد عروض أسعار مطابقة." : "جاري تحميل عقود العملاء..."
     }</td></tr>`;
   } else {
     body.innerHTML = rows.map(item => {
@@ -7142,10 +7142,10 @@ function renderQuotations() {
           <td>${escapeHtml(item.rejectionReason || "—")}</td>
           <td>
             <div class="row-actions">
-              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("installationRequestNew", "add") ? `<button class="primary-btn compact-btn" data-create-installation-from-quotation="${item.id}">إنشاء طلب تركيب</button>` : ""}
+              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("installationRequestNew", "add") ? `<button class="primary-btn compact-btn" data-create-installation-from-quotation="${item.id}">إنشاء موعد</button>` : ""}
               ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("salesInvoices", "add") ? `<button class="secondary-btn compact-btn" data-create-invoice-from-quotation="${item.id}">تحويل إلى فاتورة</button>` : ""}
               ${item.salesInvoiceId && canScreenAction("salesInvoices", "view") ? `<button class="secondary-btn compact-btn" data-open-sales-invoice="${item.salesInvoiceId}">فتح الفاتورة</button>` : ""}
-              ${item.installationRequestId && canScreenAction("installationRequests", "view") ? `<button class="secondary-btn compact-btn" data-open-installation-request="${item.installationRequestId}">فتح طلب التركيب</button>` : ""}
+              ${item.installationRequestId && canScreenAction("installationRequests", "view") ? `<button class="secondary-btn compact-btn" data-open-installation-request="${item.installationRequestId}">فتح الموعد</button>` : ""}
               ${canManageQuotations("edit") ? `<button class="edit-btn" data-edit-quotation="${item.id}">تعديل</button>` : ""}
               ${canManageQuotations("delete") ? `<button class="delete-btn" data-delete-quotation="${item.id}">حذف</button>` : ""}
             </div>
@@ -7167,11 +7167,11 @@ function renderQuotations() {
 
 async function openQuotationDialog(quotation = null, customerId = null) {
   const action = quotation ? "edit" : "add";
-  if (!requireScreenAction("quotations", action, `لا توجد صلاحية ${quotation ? "تعديل" : "إضافة"} عروض الأسعار.`)) return;
+  if (!requireScreenAction("quotations", action, `لا توجد صلاحية ${quotation ? "تعديل" : "إضافة"} عقود العملاء.`)) return;
   if (!(await ensureOperationalReferenceData())) return;
   editingQuotationId = quotation?.id || null;
   document.getElementById("quotationDialogTitle").textContent =
-    quotation ? "تعديل عرض السعر" : "إضافة عرض سعر";
+    quotation ? "تعديل العقد" : "إضافة عقد";
 
   document.getElementById("quotationId").value = quotation?.id || "";
   document.getElementById("quotationCode").value = quotation?.code || nextQuotationCode();
@@ -7203,11 +7203,11 @@ function closeQuotationDialog() {
 
 async function handleQuotationSubmit(event) {
   const action = editingQuotationId ? "edit" : "add";
-  if (!requireScreenAction("quotations", action, "لا توجد صلاحية حفظ عروض الأسعار.")) return;
+  if (!requireScreenAction("quotations", action, "لا توجد صلاحية حفظ عقود العملاء.")) return;
   event.preventDefault();
 
   if (!canManageQuotations(action)) {
-    alert("لا توجد صلاحية لإدارة عروض الأسعار.");
+    alert("لا توجد صلاحية لإدارة عقود العملاء.");
     return;
   }
 
@@ -7219,7 +7219,7 @@ async function handleQuotationSubmit(event) {
   const amount = Number(document.getElementById("quotationAmount").value || 0);
 
   if (!code) {
-    alert("أدخل رقم عرض السعر.");
+    alert("أدخل رقم العقد.");
     document.getElementById("quotationCode").focus();
     return;
   }
@@ -7235,12 +7235,12 @@ async function handleQuotationSubmit(event) {
   }
 
   if (amount < 0) {
-    alert("قيمة عرض السعر لا يمكن أن تكون سالبة.");
+    alert("قيمة العقد لا يمكن أن تكون سالبة.");
     return;
   }
 
   if (status === "مرفوض" && !rejectionReasonId) {
-    alert("اختر سبب رفض عرض السعر.");
+    alert("اختر سبب رفض العقد.");
     document.getElementById("quotationRejectionReason").focus();
     return;
   }
@@ -7253,7 +7253,7 @@ async function handleQuotationSubmit(event) {
       : await window.QuotationsService.findByNumber(code, editingQuotationId);
 
     if (duplicate) {
-      alert(`رقم عرض السعر ${code} مسجل بالفعل ولا يمكن تكراره.`);
+      alert(`رقم العقد ${code} مسجل بالفعل ولا يمكن تكراره.`);
       document.getElementById("quotationCode").focus();
       return;
     }
@@ -7288,26 +7288,26 @@ async function handleQuotationSubmit(event) {
       loadCustomersFromSupabase(true)
     ]);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حفظ عرض السعر.");
+    alert(error instanceof Error ? error.message : "تعذر حفظ العقد.");
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
-      submitButton.textContent = "حفظ عرض السعر";
+      submitButton.textContent = "حفظ العقد";
     }
   }
 }
 
 async function deleteQuotation(id) {
-  if (!requireScreenAction("quotations", "delete", "لا توجد صلاحية حذف عروض الأسعار.")) return;
+  if (!requireScreenAction("quotations", "delete", "لا توجد صلاحية حذف عقود العملاء.")) return;
   if (!canManageQuotations("delete")) {
-    alert("لا توجد صلاحية لحذف عروض الأسعار.");
+    alert("لا توجد صلاحية لحذف عقود العملاء.");
     return;
   }
 
   const item = quotations.find(quotation => quotation.id === id);
   if (!item) return;
 
-  if (!confirm(`هل تريد حذف عرض السعر ${item.code}؟`)) return;
+  if (!confirm(`هل تريد حذف العقد ${item.code}؟`)) return;
 
   try {
     await window.QuotationsService.deleteQuotation(item);
@@ -7319,7 +7319,7 @@ async function deleteQuotation(id) {
       loadCustomersFromSupabase(true)
     ]);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حذف عرض السعر.");
+    alert(error instanceof Error ? error.message : "تعذر حذف العقد.");
   }
 }
 
@@ -8654,7 +8654,7 @@ function renderCustomerImportResult(result, { override = false, overrideRowsCoun
   panel.innerHTML = `
     <strong>${failed ? "اكتمل الاستيراد مع ملاحظات" : "تم حفظ البيانات في Supabase بنجاح"}</strong>
     <span>العملاء المحفوظون أو المحدثون: ${savedCustomers}</span>
-    <span>الطلبات وعروض الأسعار المحفوظة: ${savedRequests}</span>
+    <span>الطلبات وعقود العملاء المحفوظة: ${savedRequests}</span>
     ${override ? `<span>الصفوف المعتمدة استثنائيًا: ${overrideRowsCount}</span>` : ""}
     <span>المكرر أو المتجاهل: ${skipped}</span>
     <span>فشل الحفظ: ${failed}</span>
@@ -8801,7 +8801,7 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
     document.getElementById("customerImportResult")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     showDataStatus(
       "customerImportStatus",
-      `اكتمل الاستيراد وتم تنفيذ الحفظ في Supabase: ${result.inserted} جديد، ${result.updated} تحديث، ${result.requestsInserted} طلب أو عرض سعر، ${result.skipped + result.requestsSkipped} مكرر أو متجاهل، ${result.failed} فشل${override ? `، ${overrideRows.length} صف باعتماد استثنائي` : ""}.`,
+      `اكتمل الاستيراد وتم تنفيذ الحفظ في Supabase: ${result.inserted} جديد، ${result.updated} تحديث، ${result.requestsInserted} طلب أو عقد، ${result.skipped + result.requestsSkipped} مكرر أو متجاهل، ${result.failed} فشل${override ? `، ${overrideRows.length} صف باعتماد استثنائي` : ""}.`,
       result.failed ? "error" : "success"
     );
   } catch (error) {

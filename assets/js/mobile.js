@@ -365,7 +365,7 @@
 
   function decorateCustomerRows() {
     if (!customersView) return;
-    const labels = ["رقم العميل", "اسم العميل", "اسم المسؤول", "التصنيف", "مجال الاهتمام", "المندوب", "تاريخ التواصل", "رقم عرض السعر", "سبب عدم البيع", "الإجراءات"];
+    const labels = ["رقم العميل", "اسم العميل", "اسم المسؤول", "التصنيف", "مجال الاهتمام", "المندوب", "تاريخ التواصل", "رقم العقد", "سبب عدم البيع", "الإجراءات"];
     const fields = ["phone", "name", "contact", "type", "interests", "representative", "date", "quotation", "reason", "actions"];
     customersView.querySelectorAll("#customersTableBody tr").forEach(row => {
       const cells = [...row.children];
@@ -492,7 +492,7 @@
       jumpNav.className = "mobile-customer360-jumpnav";
       jumpNav.setAttribute("aria-label", "أقسام ملف العميل");
       const sections = [...content.querySelectorAll(".customer360-section")];
-      const wanted = ["البيانات الأساسية", "عروض الأسعار", "ملخص المتابعة", "سجل النشاط الموحد", "سجل المتابعات"];
+      const wanted = ["البيانات الأساسية", "عقود العملاء", "ملخص المتابعة", "سجل النشاط الموحد", "سجل المتابعات"];
       wanted.forEach(label => {
         const target = sections.find(section => section.querySelector("h3")?.textContent.trim() === label);
         if (!target) return;
@@ -550,7 +550,7 @@
     "طريقة التواصل",
     "المندوب",
     "نتيجة التواصل",
-    "عرض السعر",
+    "العقد",
     "المتابعة القادمة",
     "الحالة",
     "الإجراءات"
@@ -761,7 +761,7 @@
   const tableLabels = new Map([
     ["dailyFollowupsBody", ["العميل", "المندوب", "طريقة التواصل", "النتيجة", "المتابعة القادمة"]],
     ["dailyCustomersBody", ["العميل", "التصنيف", "اسم المسؤول", "المندوب", "وقت الإضافة"]],
-    ["dailyQuotationsBody", ["العميل", "المندوب", "رقم العرض", "الحالة", "القيمة"]],
+    ["dailyQuotationsBody", ["العميل", "المندوب", "رقم العقد", "الحالة", "القيمة"]],
     ["dailyOverdueBody", ["العميل", "المندوب", "الموعد", "التأخير", "النتيجة السابقة"]]
   ]);
 
@@ -894,7 +894,7 @@
   if (!view || !body || !filters) return;
 
   let observer;
-  const labels = ["رقم العرض", "العميل", "رقم العميل", "المندوب", "تاريخ العرض", "القيمة", "الحالة", "تاريخ الانتهاء", "سبب الرفض", "الإجراءات"];
+  const labels = ["رقم العقد", "العميل", "رقم العميل", "المندوب", "تاريخ العقد", "القيمة", "الحالة", "تاريخ الانتهاء", "سبب الرفض", "الإجراءات"];
 
   function normalizePhone(value) {
     const raw = String(value || "").trim();
@@ -918,21 +918,21 @@
   }
 
   function quotationText(data) {
-    return `عرض سعر ${data.code}\nالعميل: ${data.customer}\nالمندوب: ${data.representative}\nالتاريخ: ${data.date}\nالقيمة: ${data.amount}\nالحالة: ${data.status}\nتاريخ الانتهاء: ${data.expiry}`;
+    return `عقد ${data.code}\nالعميل: ${data.customer}\nالمندوب: ${data.representative}\nالتاريخ: ${data.date}\nالقيمة: ${data.amount}\nالحالة: ${data.status}\nتاريخ الانتهاء: ${data.expiry}`;
   }
 
   async function shareQuotation(data) {
     const text = quotationText(data);
     if (navigator.share) {
-      try { await navigator.share({ title: `عرض سعر ${data.code}`, text }); return; } catch (error) {
+      try { await navigator.share({ title: `عقد ${data.code}`, text }); return; } catch (error) {
         if (error?.name === "AbortError") return;
       }
     }
     try {
       await navigator.clipboard.writeText(text);
-      window.alert("تم نسخ بيانات عرض السعر.");
+      window.alert("تم نسخ بيانات العقد.");
     } catch {
-      window.prompt("انسخ بيانات عرض السعر:", text);
+      window.prompt("انسخ بيانات العقد:", text);
     }
   }
 
@@ -940,7 +940,7 @@
     const popup = window.open("", "_blank", "width=720,height=900");
     if (!popup) return;
     const escape = value => String(value ?? "").replace(/[&<>\"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
-    popup.document.write(`<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>عرض سعر ${escape(data.code)}</title><style>body{font-family:Arial,sans-serif;padding:32px;color:#172033}h1{font-size:24px;margin:0 0 24px}.card{border:1px solid #d8dee9;border-radius:16px;padding:20px}.row{display:grid;grid-template-columns:160px 1fr;gap:16px;padding:11px 0;border-bottom:1px solid #edf0f5}.row:last-child{border:0}.label{color:#667085;font-weight:700}@media print{body{padding:0}.card{border-color:#aaa}}</style></head><body><h1>عرض سعر ${escape(data.code)}</h1><div class="card"><div class="row"><span class="label">العميل</span><strong>${escape(data.customer)}</strong></div><div class="row"><span class="label">رقم العميل</span><strong>${escape(data.phone || "—")}</strong></div><div class="row"><span class="label">المندوب</span><strong>${escape(data.representative)}</strong></div><div class="row"><span class="label">تاريخ العرض</span><strong>${escape(data.date)}</strong></div><div class="row"><span class="label">القيمة</span><strong>${escape(data.amount)}</strong></div><div class="row"><span class="label">الحالة</span><strong>${escape(data.status)}</strong></div><div class="row"><span class="label">تاريخ الانتهاء</span><strong>${escape(data.expiry)}</strong></div><div class="row"><span class="label">سبب الرفض</span><strong>${escape(data.rejection)}</strong></div></div><script>window.onload=()=>window.print()<\/script></body></html>`);
+    popup.document.write(`<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>عقد ${escape(data.code)}</title><style>body{font-family:Arial,sans-serif;padding:32px;color:#172033}h1{font-size:24px;margin:0 0 24px}.card{border:1px solid #d8dee9;border-radius:16px;padding:20px}.row{display:grid;grid-template-columns:160px 1fr;gap:16px;padding:11px 0;border-bottom:1px solid #edf0f5}.row:last-child{border:0}.label{color:#667085;font-weight:700}@media print{body{padding:0}.card{border-color:#aaa}}</style></head><body><h1>عقد ${escape(data.code)}</h1><div class="card"><div class="row"><span class="label">العميل</span><strong>${escape(data.customer)}</strong></div><div class="row"><span class="label">رقم العميل</span><strong>${escape(data.phone || "—")}</strong></div><div class="row"><span class="label">المندوب</span><strong>${escape(data.representative)}</strong></div><div class="row"><span class="label">تاريخ العقد</span><strong>${escape(data.date)}</strong></div><div class="row"><span class="label">القيمة</span><strong>${escape(data.amount)}</strong></div><div class="row"><span class="label">الحالة</span><strong>${escape(data.status)}</strong></div><div class="row"><span class="label">تاريخ الانتهاء</span><strong>${escape(data.expiry)}</strong></div><div class="row"><span class="label">سبب الرفض</span><strong>${escape(data.rejection)}</strong></div></div><script>window.onload=()=>window.print()<\/script></body></html>`);
     popup.document.close();
   }
 
@@ -1016,13 +1016,13 @@
     if (view.querySelector(".mobile-quotations-toolbar")) return;
     const toolbar = document.createElement("div");
     toolbar.className = "mobile-quotations-toolbar";
-    toolbar.innerHTML = `<div><strong>عروض الأسعار</strong><small>ابحث وراجع وشارك العروض بسهولة</small></div><button type="button" data-mobile-quotations-filter aria-expanded="false">الفلاتر</button>`;
+    toolbar.innerHTML = `<div><strong>عقود العملاء</strong><small>ابحث وراجع وشارك العقود بسهولة</small></div><button type="button" data-mobile-quotations-filter aria-expanded="false">الفلاتر</button>`;
     view.querySelector(".actions-row")?.after(toolbar);
 
     filters.classList.add("mobile-quotations-filter-sheet");
     const sheetHeader = document.createElement("div");
     sheetHeader.className = "mobile-quotations-sheet-header";
-    sheetHeader.innerHTML = `<div><strong>فلترة عروض الأسعار</strong><small>البحث والحالة والمندوب</small></div><button type="button" aria-label="إغلاق">×</button>`;
+    sheetHeader.innerHTML = `<div><strong>فلترة عقود العملاء</strong><small>البحث والحالة والمندوب</small></div><button type="button" aria-label="إغلاق">×</button>`;
     filters.prepend(sheetHeader);
 
     if (!filters.querySelector("[data-mobile-quotations-apply]")) {

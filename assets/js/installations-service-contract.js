@@ -14,16 +14,16 @@
       const existing = document.querySelector('script[data-kyum-installations-service-recovery="true"]');
       if (existing) {
         existing.addEventListener('load', resolve, { once: true });
-        existing.addEventListener('error', () => reject(new Error('تعذر تحميل خدمة إدارة التركيبات.')), { once: true });
+        existing.addEventListener('error', () => reject(new Error('تعذر تحميل خدمة إدارة المواعيد.')), { once: true });
         return;
       }
 
       const script = document.createElement('script');
-      script.src = 'assets/js/installations-service.js?v=18.50.8-recovery';
+      script.src = 'assets/js/installations-service.js?v=18.54.0-recovery';
       script.async = false;
       script.dataset.kyumInstallationsServiceRecovery = 'true';
       script.addEventListener('load', resolve, { once: true });
-      script.addEventListener('error', () => reject(new Error('تعذر تحميل خدمة إدارة التركيبات.')), { once: true });
+      script.addEventListener('error', () => reject(new Error('تعذر تحميل خدمة إدارة المواعيد.')), { once: true });
       document.head.appendChild(script);
     });
   }
@@ -36,7 +36,7 @@
     if (!recoveryPromise) {
       recoveryPromise = loadFreshService().then(() => {
         if (!isValid(window.InstallationsService)) {
-          throw new Error('تعذر تهيئة خدمة بيانات إدارة التركيبات.');
+          throw new Error('تعذر تهيئة خدمة بيانات إدارة المواعيد.');
         }
         return window.InstallationsService;
       });
@@ -49,7 +49,7 @@
   window.getKYUMInstallationsService = async function (methodName) {
     const service = await resolveService();
     if (methodName && typeof service[methodName] !== 'function') {
-      throw new Error(`وظيفة خدمة التركيبات غير متاحة: ${methodName}`);
+      throw new Error(`وظيفة خدمة المواعيد غير متاحة: ${methodName}`);
     }
     return service;
   };

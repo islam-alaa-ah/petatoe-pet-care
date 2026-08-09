@@ -9,7 +9,7 @@ function status(active,label){return `<span class="installation-status-pill${act
 function actionButtons(type,row,active){return `<div class="installation-settings-actions-cell"><button class="secondary-btn" type="button" data-setting-edit="${type}" data-id="${row.id}">تعديل</button><button class="secondary-btn" type="button" data-setting-toggle="${type}" data-id="${row.id}" data-active="${active?'1':'0'}">${active?'إيقاف':'تفعيل'}</button><button class="danger-btn" type="button" data-setting-delete="${type}" data-id="${row.id}">حذف</button></div>`}
 function render(){
   $('installationServicesSettingsBody').innerHTML=cache.services.map(r=>`<tr><td>${esc(r.name)}</td><td>${money(r.default_price)}</td><td>${money(r.default_cost)}</td><td>${status(r.is_active!==false,r.is_active!==false?'نشطة':'متوقفة')}</td><td>${actionButtons('service',r,r.is_active!==false)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty-cell">لا توجد خدمات.</td></tr>';
-  $('installationTeamsSettingsBody').innerHTML=cache.teams.map(r=>{const active=r.status!=='غير نشطة';return `<tr><td>${esc(r.name)}</td><td>${esc(r.leader_name||'—')}</td><td>${esc(r.phone||'—')}</td><td>${esc(r.city||'—')}</td><td>${status(active,r.status||'متاحة')}</td><td>${actionButtons('team',r,active)}</td></tr>`}).join('')||'<tr><td colspan="6" class="empty-cell">لا توجد فرق تركيب.</td></tr>';
+  $('installationTeamsSettingsBody').innerHTML=cache.teams.map(r=>{const active=r.status!=='غير نشطة';return `<tr><td>${esc(r.name)}</td><td>${esc(r.leader_name||'—')}</td><td>${esc(r.phone||'—')}</td><td>${esc(r.city||'—')}</td><td>${status(active,r.status||'متاحة')}</td><td>${actionButtons('team',r,active)}</td></tr>`}).join('')||'<tr><td colspan="6" class="empty-cell">لا توجد فرق موعد.</td></tr>';
   $('installationNeighborhoodsSettingsBody').innerHTML=cache.neighborhoods.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.city||'—')}</td><td>${esc(r.region||'—')}</td><td>${status(r.is_active!==false,r.is_active!==false?'نشط':'متوقف')}</td><td>${actionButtons('neighborhood',r,r.is_active!==false)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty-cell">لا توجد أحياء.</td></tr>';
 }
 function currentSection(){const saved=sessionStorage.getItem(SECTION_KEY);return VALID_SECTIONS.has(saved)?saved:'services'}
@@ -23,7 +23,7 @@ function showSection(section,{persist=true}={}){
   const filter=$('installationSettingsSectionFilter');if(filter&&filter.value!==next)filter.value=next;
   if(persist)sessionStorage.setItem(SECTION_KEY,next);
 }
-async function load(){message('جاري تحميل إعدادات التركيبات...');try{cache=await window.InstallationsServiceSafe.settingsCatalog();render();message('')}catch(e){message(e.message||'تعذر تحميل الإعدادات.','error')}}
+async function load(){message('جاري تحميل إعدادات المواعيد...');try{cache=await window.InstallationsServiceSafe.settingsCatalog();render();message('')}catch(e){message(e.message||'تعذر تحميل الإعدادات.','error')}}
 let referenceGeoController=null;
 function syncReferenceGeoCatalog(){window.KYUMGeography?.setCatalog({regions:cache.regions||[],cities:cache.cities||[],neighborhoods:cache.neighborhoods||[]})}
 function ensureReferenceGeoController(){
@@ -74,7 +74,7 @@ function fields(type,row={}){
 function open(type,id=''){
   const list=type==='service'?cache.services:type==='team'?cache.teams:cache.neighborhoods,row=list.find(x=>x.id===id)||{};
   $('installationReferenceType').value=type;$('installationReferenceId').value=id;
-  $('installationReferenceDialogTitle').textContent=(id?'تعديل ':'إضافة ')+(type==='service'?'خدمة':type==='team'?'فرقة تركيب':'حي');
+  $('installationReferenceDialogTitle').textContent=(id?'تعديل ':'إضافة ')+(type==='service'?'خدمة':type==='team'?'فرقة موعد':'حي');
   $('installationReferenceFields').innerHTML=fields(type,row);
   if(type==='neighborhood')bindReferenceGeography(row);
   $('installationReferenceFormStatus').classList.add('hidden');

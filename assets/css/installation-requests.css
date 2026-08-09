@@ -69,3 +69,30 @@
 html[data-theme="dark"] .installation-request-new-view .installation-geo-select .geo-searchable-options{background:#0f1f35;color:#fff;border-color:rgba(96,165,250,.32);box-shadow:0 18px 48px rgba(0,0,0,.5)}
 html[data-theme="dark"] .installation-request-new-view .installation-geo-select .geo-searchable-option:hover,html[data-theme="dark"] .installation-request-new-view .installation-geo-select .geo-searchable-option:focus,html[data-theme="dark"] .installation-request-new-view .installation-geo-select .geo-searchable-option.is-selected{background:rgba(59,130,246,.22);color:#bfdbfe}
 @media(max-width:767px){.installation-request-new-view .installation-geo-select .geo-searchable-options{max-height:min(34vh,260px)}.installation-request-new-view .installation-geo-select .geo-searchable-input{min-height:52px}}
+
+/* PETATOE — Appointments / pets / collection redesign */
+.installation-neighborhood-field{position:relative;min-width:0;align-self:start}
+.installation-neighborhood-combobox{position:relative}
+.installation-neighborhood-combobox>input[type="search"]{width:100%;min-height:48px}
+.installation-neighborhood-results{position:absolute;z-index:12050;inset-inline:0;top:calc(100% + 6px);max-height:280px;overflow:auto;border:1px solid var(--border-color,#d9e0ea);border-radius:12px;background:var(--surface,#fff);box-shadow:0 16px 36px rgba(15,23,42,.16);padding:6px}
+.installation-neighborhood-results.hidden{display:none}
+.installation-neighborhood-result{display:flex;align-items:center;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:9px;background:transparent;color:inherit;text-align:right;cursor:pointer}
+.installation-neighborhood-result:hover,.installation-neighborhood-result:focus{outline:0;background:rgba(37,99,235,.10)}
+.installation-neighborhood-empty{padding:16px 12px;text-align:center;color:var(--text-muted,#64748b);font-weight:700}
+html[data-theme="dark"] .installation-neighborhood-results{background:#132238;border-color:#33445f;box-shadow:0 16px 40px rgba(0,0,0,.35)}
+.appointment-financial-footer{align-items:flex-start;flex-wrap:wrap}
+.appointment-discount-field{min-width:min(240px,100%)}
+.appointment-discount-field label{display:grid;gap:7px;font-weight:700}
+.appointment-discount-field input{min-height:44px;width:100%}
+.appointment-financial-summary{min-width:320px}
+.appointment-financial-summary strong:last-child{font-size:1.15rem;color:var(--primary,#2563eb)}
+.appointment-animals-wrap{padding:20px;display:grid;gap:14px}
+.appointment-animals-table-wrap{overflow:auto;border:1px solid var(--border,#dbe2ea);border-radius:14px}
+.appointment-animals-table{width:100%;min-width:900px;border-collapse:collapse}
+.appointment-animals-table th,.appointment-animals-table td{padding:12px;border-bottom:1px solid var(--border,#e2e8f0);vertical-align:middle}
+.appointment-animals-table tbody tr:last-child td{border-bottom:0}
+.appointment-animals-table input,.appointment-animals-table select{width:100%;min-height:44px}
+.appointment-collection-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.appointment-collection-grid input[readonly]{background:var(--surface-soft,#f8fafc);font-weight:800}
+@media(max-width:1023px){.appointment-collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.appointment-financial-summary{min-width:280px}}
+@media(max-width:767px){.appointment-animals-wrap{padding:14px}.appointment-collection-grid{grid-template-columns:1fr}.appointment-financial-footer{flex-direction:column}.appointment-financial-footer>*{width:100%}.appointment-financial-summary{min-width:0}.installation-neighborhood-results{max-height:min(42dvh,360px)}}

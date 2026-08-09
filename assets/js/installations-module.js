@@ -71,13 +71,11 @@
 
     const quotationSelect = $("newInstallationQuotationId");
     if (quotationSelect) {
-      const currentLabel = intent.quotationNumber || "عرض السعر المحدد";
-      quotationSelect.innerHTML = `<option value="">بدون عرض سعر</option><option value="${esc(intent.quotationId)}" selected>${esc(currentLabel)}</option>`;
+      const currentLabel = intent.quotationNumber || "العقد المحدد";
+      quotationSelect.innerHTML = `<option value="">بدون عقد</option><option value="${esc(intent.quotationId)}" selected>${esc(currentLabel)}</option>`;
       quotationSelect.value = String(intent.quotationId);
     }
 
-    const orderInput = $("newInstallationCustomerOrderNumber");
-    if (orderInput && intent.customerOrderNumber) orderInput.value = intent.customerOrderNumber;
 
     const notesInput = $("newInstallationNotes");
     const prefillNotes = [intent.description, intent.notes].map(value => String(value || "").trim()).filter(Boolean).join("\n");
@@ -89,8 +87,8 @@
       neighborhood.dataset.pendingCity = String(intent.customerCity || "");
     }
 
-    $("newInstallationRequestHeading").textContent = `طلب تركيب من عرض السعر ${intent.quotationNumber || ""}`.trim();
-    $("newInstallationRequestNote").textContent = "تم عرض بيانات العميل والعرض فورًا، ويجري التحقق منها في الخلفية.";
+    $("newInstallationRequestHeading").textContent = `موعد مرتبط بالعقد ${intent.quotationNumber || ""}`.trim();
+    $("newInstallationRequestNote").textContent = "تم عرض بيانات العميل والعقد فورًا، ويجري التحقق منها في الخلفية.";
     status($("newInstallationRequestFormStatus"), "تم تعبئة البيانات الأساسية فورًا. جارٍ استكمال التحقق والقوائم المرجعية...", "info");
     return true;
   }
@@ -142,10 +140,10 @@
       `)
       .eq("id", quotationId)
       .maybeSingle();
-    if (error) throw new Error(`تعذر تحميل بيانات عرض السعر: ${error.message}`);
-    if (!data) throw new Error("عرض السعر غير موجود أو غير متاح لهذا المستخدم.");
-    if (data.status !== "مقبول") throw new Error("لا يمكن إنشاء طلب تركيب إلا من عرض سعر مقبول.");
-    if (data.installation_request_id) throw new Error("تم إنشاء طلب تركيب لهذا العرض بالفعل.");
+    if (error) throw new Error(`تعذر تحميل بيانات العقد: ${error.message}`);
+    if (!data) throw new Error("العقد غير موجود أو غير متاح لهذا المستخدم.");
+    if (data.status !== "مقبول") throw new Error("لا يمكن إنشاء موعد إلا من عقد مقبول.");
+    if (data.installation_request_id) throw new Error("تم إنشاء موعد لهذا العقد بالفعل.");
     return data;
   }
 
@@ -161,7 +159,7 @@
         ensureOptions()
       ]);
       const customer = quotation.customer || opts.customers.find(item => item.id === quotation.customer_id);
-      if (!customer?.id) throw new Error("تعذر تحميل بيانات العميل المرتبط بعرض السعر.");
+      if (!customer?.id) throw new Error("تعذر تحميل بيانات العميل المرتبط بالعقد.");
 
       if (!opts.customers.some(item => item.id === customer.id)) opts.customers.push(customer);
       if (!opts.quotations.some(item => item.id === quotation.id)) opts.quotations.push(quotation);
@@ -171,8 +169,6 @@
       const quotationSelect = $("newInstallationQuotationId");
       if (quotationSelect) quotationSelect.value = quotation.id;
 
-      const orderInput = $("newInstallationCustomerOrderNumber");
-      if (orderInput) orderInput.value = quotation.customer_order_number || intent.customerOrderNumber || "";
 
       neighborhoodOptions();
       const neighborhoodId = matchNeighborhoodId(customer);
@@ -181,9 +177,9 @@
       const notes = [quotation.description, quotation.notes].map(value => String(value || "").trim()).filter(Boolean).join("\n");
       if (notes && $("newInstallationNotes") && !$("newInstallationNotes").value.trim()) $("newInstallationNotes").value = notes;
 
-      $("newInstallationRequestHeading").textContent = `طلب تركيب من عرض السعر ${quotation.quotation_number || ""}`.trim();
-      $("newInstallationRequestNote").textContent = "تم تحميل بيانات العميل وعرض السعر من Supabase. اختر الحي والخدمات المطلوبة ثم احفظ الطلب.";
-      status($("newInstallationRequestFormStatus"), "تم تحميل بيانات العميل وعرض السعر تلقائيًا.", "success");
+      $("newInstallationRequestHeading").textContent = `موعد مرتبط بالعقد ${quotation.quotation_number || ""}`.trim();
+      $("newInstallationRequestNote").textContent = "تم تحميل بيانات العميل والعقد من Supabase. اختر الحي والخدمات وبيانات الحيوان ثم احفظ الموعد.";
+      status($("newInstallationRequestFormStatus"), "تم تحميل بيانات العميل والعقد تلقائيًا.", "success");
       clearQuotationPrefillIntent();
       return true;
     })().finally(() => { quotationPrefillPromise = null; });
@@ -223,7 +219,7 @@
 
   function reportOptionLoadWarnings(data) {
     const errors = data?.errors || {};
-    const labels = { customers: "العملاء", quotations: "عروض الأسعار", regions: "المناطق", cities: "المدن", neighborhoods: "الأحياء", serviceTypes: "الخدمات" };
+    const labels = { customers: "العملاء", quotations: "عقود العملاء", regions: "المناطق", cities: "المدن", neighborhoods: "الأحياء", serviceTypes: "الخدمات" };
     const failed = Object.keys(errors).map(key => labels[key] || key);
     const target = $("newInstallationRequestFormStatus");
     if (!failed.length) {
@@ -249,29 +245,25 @@
     const node = $(selectId);
     if (!node) return;
     const quotes = opts.quotations.filter(quotation => (!customerId || quotation.customer_id === customerId) && quotation.status === 'مقبول' && (!quotation.installation_request_id || String(quotation.id) === String(includeQuotationId)));
-    node.innerHTML = '<option value="">بدون عرض سعر</option>' + quotes.map(quotation =>
+    node.innerHTML = '<option value="">بدون عقد</option>' + quotes.map(quotation =>
       `<option value="${esc(quotation.id)}">${esc(quotation.quotation_number)}</option>`
     ).join("");
   }
 
   const installationGeoControllers = new Map();
   function installationGeoController(scope){
+    if(scope==='new')return null;
     if(installationGeoControllers.has(scope))return installationGeoControllers.get(scope);
     if(!window.KYUMGeography)throw new Error('مكوّن العنوان الجغرافي غير محمّل.');
-    const prefix=scope==='edit'?'installationServicesEdit':'newInstallation';
+    const prefix='installationServicesEdit';
     const controller=window.KYUMGeography.createController({
       ids:{
         region:{wrapper:prefix+'RegionCombobox',hidden:prefix+'RegionId',search:prefix+'RegionSearch',options:prefix+'RegionOptions'},
         city:{wrapper:prefix+'CityCombobox',hidden:prefix+'CityId',search:prefix+'CitySearch',options:prefix+'CityOptions'},
-        district:{
-          wrapper:prefix+'DistrictCombobox',
-          hidden:scope==='edit'?'installationServicesEditNeighborhood':'newInstallationNeighborhoodId',
-          search:prefix+'DistrictSearch',
-          options:prefix+'DistrictOptions'
-        }
+        district:{wrapper:prefix+'DistrictCombobox',hidden:'installationServicesEditNeighborhood',search:prefix+'DistrictSearch',options:prefix+'DistrictOptions'}
       },
       optionLimit:300,
-      boundAttribute:`installationGeo${scope[0].toUpperCase()+scope.slice(1)}UnifiedBound`
+      boundAttribute:'installationGeoEditUnifiedBound'
     }).bind();
     installationGeoControllers.set(scope,controller);
     return controller;
@@ -279,14 +271,38 @@
   function syncInstallationGeoCatalog(){
     window.KYUMGeography?.setCatalog({regions:opts.regions||[],cities:opts.cities||[],neighborhoods:opts.neighborhoods||[]});
   }
+  function newNeighborhoodLabel(item){return String(item?.name||'').trim()}
+  function closeNewNeighborhoodResults(){
+    $('newInstallationNeighborhoodResults')?.classList.add('hidden');
+    $('newInstallationNeighborhoodSearch')?.setAttribute('aria-expanded','false');
+  }
+  function renderNewNeighborhoodResults(query=''){
+    const box=$('newInstallationNeighborhoodResults'),input=$('newInstallationNeighborhoodSearch');
+    if(!box||!input)return;
+    const q=normalizeArabicText(query);
+    const matches=(opts.neighborhoods||[]).filter(item=>!q||normalizeArabicText(item.name).includes(q)).slice(0,250);
+    box.innerHTML=matches.length?matches.map(item=>`<button type="button" class="installation-neighborhood-result" role="option" data-installation-neighborhood-id="${esc(item.id)}"><strong>${esc(newNeighborhoodLabel(item))}</strong></button>`).join(''):'<div class="installation-neighborhood-empty">لا توجد أحياء مطابقة.</div>';
+    box.classList.remove('hidden');input.setAttribute('aria-expanded','true');
+  }
+  function setNewNeighborhood(neighborhoodId=''){
+    const hidden=$('newInstallationNeighborhoodId'),input=$('newInstallationNeighborhoodSearch');
+    if(!hidden||!input)return;
+    const item=(opts.neighborhoods||[]).find(x=>String(x.id)===String(neighborhoodId));
+    hidden.value=item?.id||'';
+    input.value=item?newNeighborhoodLabel(item):'';
+    input.setCustomValidity('');
+    closeNewNeighborhoodResults();
+  }
   function setInstallationGeoFromNeighborhood(scope,neighborhoodId=''){
+    if(scope==='new'){setNewNeighborhood(neighborhoodId);return {districtId:neighborhoodId};}
     syncInstallationGeoCatalog();
     return installationGeoController(scope).setValue({districtId:neighborhoodId});
   }
   function neighborhoodOptions(){
     syncInstallationGeoCatalog();
-    installationGeoController('new');
     installationGeoController('edit');
+    const current=$('newInstallationNeighborhoodId')?.value||'';
+    if(current)setNewNeighborhood(current);
   }
 
   function serviceTypeOptions(selectedId = "") {
@@ -319,7 +335,7 @@
     const dateFrom = $("installationRequestDateFrom")?.value || "";
     const dateTo = $("installationRequestDateTo")?.value || "";
     return rows.filter(row =>
-      (!query || [row.requestNumber, row.customerOrderNumber, row.customerName, row.customerPhone, row.quotationNumber, row.services.map(service => service.serviceName).join(" ")].join(" ").toLowerCase().includes(query)) &&
+      (!query || [row.requestNumber, row.customerName, row.customerPhone, row.quotationNumber, row.services.map(service => service.serviceName).join(" ")].join(" ").toLowerCase().includes(query)) &&
       (!representative || row.representativeId === representative) &&
       (!state || row.status === state) &&
       (!dateFrom || row.scheduledDate >= dateFrom) &&
@@ -341,20 +357,18 @@
         : "—";
       return `<tr>
         <td>${esc(row.requestNumber)}</td>
-        <td>${esc(row.customerOrderNumber || "—")}</td>
         <td><strong>${esc(row.customerName)}</strong><br><small>${esc(row.customerPhone)}</small></td>
-        <td>${esc(row.quotationNumber || "بدون عرض سعر")}</td>
+        <td>${esc(row.quotationNumber || "بدون عقد")}</td>
         <td>${serviceSummary}</td>
-        <td>${money(row.totalServicesAmount)}</td>
-        <td>${esc([row.city, row.district].filter(Boolean).join(" - ") || row.installationAddress || "—")}</td>
+        <td>${money(row.finalAmount || row.totalServicesAmount)}</td>
+        <td>${esc(row.installationAddress || row.district || "—")}</td>
         <td>${esc(row.scheduledDate || "غير محدد")}</td>
         <td>${esc(row.timeSlot || "—")}</td>
         <td><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(row.status)}</span></td>
-        <td><span class="installation-priority-badge" data-priority="${esc(row.priority)}">${esc(row.priority)}</span></td>
         <td>${esc(row.representativeName || "—")}</td>
         <td><div class="installation-row-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">عرض</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">تعديل الخدمات</button><button class="danger-btn" data-install-delete="${row.id}" type="button">حذف</button></div></td>
       </tr>`;
-    }).join("") : '<tr><td colspan="13" class="empty-cell">لا توجد طلبات مطابقة.</td></tr>';
+    }).join("") : '<tr><td colspan="11" class="empty-cell">لا توجد مواعيد مطابقة.</td></tr>';
   }
 
   async function ensureOptions(force = false) {
@@ -375,7 +389,7 @@
   }
 
   async function load() {
-    status($("installationRequestsStatus"), "جاري تحميل طلبات التركيبات...");
+    status($("installationRequestsStatus"), "جاري تحميل المواعيد...");
     try {
       [rows, opts] = await Promise.all([window.InstallationsServiceSafe.list(), window.InstallationsServiceSafe.options()]);
       customerOptions("installationCustomerId");
@@ -391,7 +405,7 @@
       clearStatus($("installationRequestsStatus"));
     } catch (error) {
       status($("installationRequestsStatus"), error.message, "error");
-      $("installationRequestsBody").innerHTML = '<tr><td colspan="13" class="empty-cell">تعذر تحميل البيانات.</td></tr>';
+      $("installationRequestsBody").innerHTML = '<tr><td colspan="11" class="empty-cell">تعذر تحميل البيانات.</td></tr>';
     }
   }
 
@@ -400,27 +414,33 @@
     try {
       editingRequestId = row.id;
       await ensureOptions(true);
+      row = await window.InstallationsServiceSafe.requestEditDetail(row.id);
       const opened = window.KYUMNavigation?.open?.("installationRequestNew", { trustedNavigation: true });
-      if (opened === false) throw new Error("ليس لديك صلاحية فتح شاشة بيانات طلب التركيب.");
+      if (opened === false) throw new Error("ليس لديك صلاحية فتح شاشة بيانات الموعد.");
 
       quotationOptions(row.customerId, "newInstallationQuotationId", row.quotationId || "");
       neighborhoodOptions();
 
-      $("newInstallationRequestHeading").textContent = "تعديل طلب تركيب";
-      $("newInstallationRequestNote").textContent = `عدّل بيانات الطلب ${row.requestNumber} بنفس حقول الإدخال الأصلية دون تغيير بيانات الجدولة أو التنفيذ.`;
+      $("newInstallationRequestHeading").textContent = "تعديل الموعد";
+      $("newInstallationRequestNote").textContent = `عدّل بيانات الموعد ${row.requestNumber} دون تغيير بيانات الجدولة أو التنفيذ.`;
       $("saveNewInstallationRequest").textContent = "حفظ التعديلات";
       $("resetNewInstallationRequest").textContent = "استعادة البيانات";
 
       syncCustomerSearch(row.customerId || "");
       quotationOptions(row.customerId, "newInstallationQuotationId", row.quotationId || "");
       $("newInstallationQuotationId").value = row.quotationId || "";
-      $("newInstallationCustomerOrderNumber").value = row.customerOrderNumber || "";
       setInstallationGeoFromNeighborhood('new', row.neighborhoodId || '');
       $("newInstallationCustomerMapUrl").value = row.customerMapUrl || "";
-      $("newInstallationPriority").value = row.priority || "عادية";
       $("newInstallationNotes").value = row.notes || "";
+      $("newInstallationDiscount").value = Number(row.discountAmount || 0).toFixed(2);
       $("newInstallationServicesBody").innerHTML = "";
       (row.services?.length ? row.services : [{}]).forEach(addServiceRow);
+      $("newInstallationAnimalsBody").innerHTML = "";
+      (row.animals?.length ? row.animals : [{}]).forEach(addAnimalRow);
+      $("newInstallationAmountCollected").value = Number(row.collection?.amountCollected || 0).toFixed(2);
+      $("newInstallationCollectionStatus").value = row.collection?.collectionStatus || "غير محصل";
+      $("newInstallationPaymentMethod").value = row.collection?.paymentMethod || "";
+      $("newInstallationAppointmentStatus").value = row.collection?.appointmentStatus || row.status || "بانتظار المراجعة";
       recalculateServices();
       clearStatus($("newInstallationRequestFormStatus"));
     } catch (error) {
@@ -445,37 +465,114 @@
     recalculateServices();
   }
 
-  function recalculateServices() {
-    let quantity = 0;
-    let total = 0;
-    document.querySelectorAll("#newInstallationServicesBody .installation-service-entry").forEach(row => {
-      const qty = Math.max(0, Number(row.querySelector(".installation-service-quantity")?.value || 0));
-      const price = Math.max(0, Number(row.querySelector(".installation-service-price")?.value || 0));
-      const lineTotal = qty * price;
-      quantity += qty;
-      total += lineTotal;
-      const output = row.querySelector(".installation-service-line-total");
-      if (output) output.textContent = money(lineTotal);
+  function currentFinancials(){
+    let quantity=0,subtotal=0;
+    document.querySelectorAll('#newInstallationServicesBody .installation-service-entry').forEach(row=>{
+      const qty=Math.max(0,Number(row.querySelector('.installation-service-quantity')?.value||0));
+      const price=Math.max(0,Number(row.querySelector('.installation-service-price')?.value||0));
+      quantity+=qty;subtotal+=qty*price;
     });
-    $("newInstallationTotalQuantity").textContent = String(quantity);
-    $("newInstallationGrandTotal").textContent = money(total);
+    const requestedDiscount=Math.max(0,Number($('newInstallationDiscount')?.value||0));
+    const discount=Math.min(requestedDiscount,subtotal);
+    const taxable=Math.max(subtotal-discount,0);
+    const tax=Math.round(taxable*0.15*100)/100;
+    const final=Math.round((taxable+tax)*100)/100;
+    return {quantity,subtotal,discount,taxRate:15,tax,final};
+  }
+
+  function recalculateServices() {
+    document.querySelectorAll('#newInstallationServicesBody .installation-service-entry').forEach(row=>{
+      const qty=Math.max(0,Number(row.querySelector('.installation-service-quantity')?.value||0));
+      const price=Math.max(0,Number(row.querySelector('.installation-service-price')?.value||0));
+      const output=row.querySelector('.installation-service-line-total');
+      if(output)output.textContent=money(qty*price);
+    });
+    const totals=currentFinancials();
+    if($('newInstallationDiscount')&&Number($('newInstallationDiscount').value||0)>totals.subtotal)$('newInstallationDiscount').value=totals.discount.toFixed(2);
+    $('newInstallationTotalQuantity').textContent=String(totals.quantity);
+    $('newInstallationSubtotal').textContent=money(totals.subtotal);
+    $('newInstallationDiscountTotal').textContent=money(totals.discount);
+    $('newInstallationTaxAmount').textContent=money(totals.tax);
+    $('newInstallationGrandTotal').textContent=money(totals.final);
+    if($('newInstallationSessionValue'))$('newInstallationSessionValue').value=money(totals.final);
+    if($('newInstallationCollectionDiscount'))$('newInstallationCollectionDiscount').value=money(totals.discount);
+    return totals;
   }
 
   function collectServices() {
-    return [...document.querySelectorAll("#newInstallationServicesBody .installation-service-entry")].map(row => ({
-      serviceTypeId: row.querySelector(".installation-service-type")?.value || "",
-      quantity: Number(row.querySelector(".installation-service-quantity")?.value || 0),
-      unitPrice: Number(row.querySelector(".installation-service-price")?.value || 0)
+    return [...document.querySelectorAll('#newInstallationServicesBody .installation-service-entry')].map(row => ({
+      serviceTypeId: row.querySelector('.installation-service-type')?.value || '',
+      quantity: Number(row.querySelector('.installation-service-quantity')?.value || 0),
+      unitPrice: Number(row.querySelector('.installation-service-price')?.value || 0)
     }));
   }
 
+  function addAnimalRow(initial={}){
+    const body=$('newInstallationAnimalsBody');if(!body)return;
+    const row=document.createElement('tr');row.className='appointment-animal-entry';
+    row.innerHTML=`
+      <td><input class="appointment-animal-name" type="text" maxlength="120" value="${esc(initial.petName||'')}" placeholder="مثال: Max"></td>
+      <td><select class="appointment-animal-type"><option value="">اختر النوع</option><option value="كلب" ${initial.petType==='كلب'?'selected':''}>كلب</option><option value="قط" ${initial.petType==='قط'?'selected':''}>قط</option><option value="أخرى" ${initial.petType==='أخرى'?'selected':''}>أخرى</option></select></td>
+      <td><input class="appointment-animal-breed" type="text" maxlength="120" value="${esc(initial.breed||'')}" placeholder="السلالة"></td>
+      <td><select class="appointment-animal-size"><option value="">اختر الحجم</option><option value="صغير" ${initial.petSize==='صغير'?'selected':''}>صغير</option><option value="متوسط" ${initial.petSize==='متوسط'?'selected':''}>متوسط</option><option value="كبير" ${initial.petSize==='كبير'?'selected':''}>كبير</option></select></td>
+      <td><input class="appointment-animal-quantity" type="number" min="1" step="1" value="${esc(initial.quantity||1)}"></td>
+      <td><button type="button" class="danger-btn appointment-animal-remove">حذف</button></td>`;
+    body.appendChild(row);
+  }
+
+  function collectAnimals(){
+    return [...document.querySelectorAll('#newInstallationAnimalsBody .appointment-animal-entry')].map(row=>({
+      petName:String(row.querySelector('.appointment-animal-name')?.value||'').trim(),
+      petType:String(row.querySelector('.appointment-animal-type')?.value||'').trim(),
+      breed:String(row.querySelector('.appointment-animal-breed')?.value||'').trim(),
+      petSize:String(row.querySelector('.appointment-animal-size')?.value||'').trim(),
+      quantity:Math.max(1,Number(row.querySelector('.appointment-animal-quantity')?.value||1))
+    })).filter(item=>item.petName||item.petType||item.breed||item.petSize);
+  }
+
+  function collectCollection(){
+    const amount=Math.max(0,Number($('newInstallationAmountCollected')?.value||0));
+    return {
+      amountCollected:amount,
+      collectionStatus:$('newInstallationCollectionStatus')?.value||'غير محصل',
+      paymentMethod:$('newInstallationPaymentMethod')?.value||'',
+      appointmentStatus:$('newInstallationAppointmentStatus')?.value||'بانتظار المراجعة'
+    };
+  }
+
   function inlineServiceOptions(selected=""){return '<option value="">اختر الخدمة</option>'+opts.serviceTypes.map(item=>`<option value="${esc(item.id)}" ${item.id===selected?'selected':''}>${esc(item.name)}</option>`).join('')}
-  function renderRequestView(row){if(!row)return;$("installationRequestViewLabel").textContent=`${row.requestNumber} — ${row.customerName}`;const services=(row.services||[]).map(service=>`<div class="installation-view-service-row"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><span>${Number(service.quantity||0)} × ${money(service.unitPrice)}</span><span>${money(service.lineTotal??Number(service.quantity||0)*Number(service.unitPrice||0))}</span></div>`).join('')||'<p>لا توجد خدمات.</p>';$("installationRequestViewContent").innerHTML=`<div class="installation-request-view-grid"><div><span>رقم الطلب</span><strong>${esc(row.requestNumber)}</strong></div><div><span>اسم العميل</span><strong>${row.customerMasked===true?'بيانات العميل محجوبة':esc(row.customerName||'—')}</strong></div><div><span>رقم العميل</span><strong>${row.customerMasked===true?'محجوب':esc(row.customerPhone||'—')}</strong></div><div><span>رقم طلب العميل</span><strong>${esc(row.customerOrderNumber||'—')}</strong></div><div><span>عرض السعر</span><strong>${esc(row.quotationNumber||'بدون عرض سعر')}</strong></div><div><span>المندوب</span><strong>${esc(row.representativeName||'—')}</strong></div><div><span>الموقع</span><strong>${esc(row.installationAddress||'—')}</strong></div><div><span>الأولوية</span><strong>${esc(row.priority||'—')}</strong></div><div><span>الحالة</span><strong>${esc(row.status||'—')}</strong></div><div><span>موعد التركيب</span><strong>${esc(row.scheduledDate||'غير محدد')} ${row.scheduledTime?`— ${esc(row.scheduledTime)}`:''}</strong></div><div><span>إجمالي الخدمات</span><strong>${money(row.totalServicesAmount)}</strong></div><div><span>ملاحظات</span><strong>${esc(row.notes||'—')}</strong></div></div><section class="installation-view-services"><h4>الخدمات</h4>${services}</section>`;$("installationRequestViewDialog").showModal()}
+  function renderRequestView(row){
+    if(!row)return;
+    $("installationRequestViewLabel").textContent=`${row.requestNumber} — ${row.customerName}`;
+    const services=(row.services||[]).map(service=>`<div class="installation-view-service-row"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><span>${Number(service.quantity||0)} × ${money(service.unitPrice)}</span><span>${money(service.lineTotal??Number(service.quantity||0)*Number(service.unitPrice||0))}</span></div>`).join('')||'<p>لا توجد خدمات.</p>';
+    const animals=(row.animals||[]).map(animal=>`<div class="installation-view-service-row"><strong>${esc(animal.petName||'حيوان')}</strong><span>${esc([animal.petType,animal.breed,animal.petSize].filter(Boolean).join(' — ')||'—')}</span><span>العدد: ${Number(animal.quantity||1)}</span></div>`).join('')||'<p>لا توجد بيانات حيوان مسجلة.</p>';
+    const collection=row.collection||{};
+    $("installationRequestViewContent").innerHTML=`<div class="installation-request-view-grid">
+      <div><span>رقم الموعد</span><strong>${esc(row.requestNumber)}</strong></div>
+      <div><span>اسم العميل</span><strong>${row.customerMasked===true?'بيانات العميل محجوبة':esc(row.customerName||'—')}</strong></div>
+      <div><span>رقم العميل</span><strong>${row.customerMasked===true?'محجوب':esc(row.customerPhone||'—')}</strong></div>
+      <div><span>رقم العقد</span><strong>${esc(row.quotationNumber||'بدون عقد')}</strong></div>
+      <div><span>المندوب</span><strong>${esc(row.representativeName||'—')}</strong></div>
+      <div><span>الحي</span><strong>${esc(row.installationAddress||row.district||'—')}</strong></div>
+      <div><span>الحالة</span><strong>${esc(row.status||'—')}</strong></div>
+      <div><span>تاريخ الموعد</span><strong>${esc(row.scheduledDate||'غير محدد')} ${row.scheduledTime?`— ${esc(row.scheduledTime)}`:''}</strong></div>
+      <div><span>الإجمالي قبل الخصم</span><strong>${money(row.totalServicesAmount)}</strong></div>
+      <div><span>الخصم</span><strong>${money(row.discountAmount)}</strong></div>
+      <div><span>ضريبة 15%</span><strong>${money(row.taxAmount)}</strong></div>
+      <div><span>الإجمالي النهائي</span><strong>${money(row.finalAmount||row.totalServicesAmount)}</strong></div>
+      <div><span>المبلغ المحصل</span><strong>${money(collection.amountCollected||0)}</strong></div>
+      <div><span>حالة التحصيل</span><strong>${esc(collection.collectionStatus||'غير محصل')}</strong></div>
+      <div><span>طريقة الدفع</span><strong>${esc(collection.paymentMethod||'—')}</strong></div>
+      <div><span>ملاحظات</span><strong>${esc(row.notes||'—')}</strong></div>
+    </div><section class="installation-view-services"><h4>الخدمات</h4>${services}</section><section class="installation-view-services"><h4>بيانات الحيوان</h4>${animals}</section>`;
+    $("installationRequestViewDialog").showModal();
+  }
+
   function addInlineServiceRow(initial={}){const body=$("installationServicesEditBody");const tr=document.createElement('tr');tr.className='installation-inline-service-row';tr.innerHTML=`<td data-label="الخدمة"><select class="inline-service-type" required>${inlineServiceOptions(initial.serviceTypeId||initial.id||'')}</select></td><td data-label="العدد"><input class="inline-service-quantity" type="number" min="1" step="1" value="${esc(initial.quantity||1)}" required></td><td data-label="سعر الوحدة"><input class="inline-service-price" type="number" min="0" step="0.01" value="${esc(initial.unitPrice??0)}" required></td><td data-label="الإجمالي"><output class="inline-service-total">${money((initial.quantity||1)*(initial.unitPrice||0))}</output></td><td data-label="إجراء"><button class="danger-btn inline-service-remove" type="button">حذف</button></td>`;body.appendChild(tr);recalculateInlineServices()}
   function recalculateInlineServices(){let q=0,t=0;document.querySelectorAll('#installationServicesEditBody .installation-inline-service-row').forEach(row=>{const qty=Math.max(0,Number(row.querySelector('.inline-service-quantity').value||0)),price=Math.max(0,Number(row.querySelector('.inline-service-price').value||0)),line=qty*price;q+=qty;t+=line;row.querySelector('.inline-service-total').textContent=money(line)});$("installationInlineTotalQuantity").textContent=String(q);$("installationInlineGrandTotal").textContent=money(t)}
   function collectInlineServices(){return [...document.querySelectorAll('#installationServicesEditBody .installation-inline-service-row')].map(row=>({serviceTypeId:row.querySelector('.inline-service-type').value,quantity:Number(row.querySelector('.inline-service-quantity').value||0),unitPrice:Number(row.querySelector('.inline-service-price').value||0)}))}
   function inlineNeighborhoodOptions(selected=""){return '<option value="">اختر الحي</option>'+opts.neighborhoods.map(item=>`<option value="${esc(item.id)}" ${String(item.id)===String(selected)?'selected':''}>${esc(item.name)}</option>`).join('')}
-  function inlineQuotationOptions(customerId,selected=""){const rows=opts.quotations.filter(item=>String(item.customer_id||'')===String(customerId||'')&&(item.status==='مقبول'||String(item.id)===String(selected)));return '<option value="">بدون عرض سعر</option>'+rows.map(item=>`<option value="${esc(item.id)}" ${String(item.id)===String(selected)?'selected':''}>${esc(item.quotation_number||'عرض سعر')}</option>`).join('')}
+  function inlineQuotationOptions(customerId,selected=""){const rows=opts.quotations.filter(item=>String(item.customer_id||'')===String(customerId||'')&&(item.status==='مقبول'||String(item.id)===String(selected)));return '<option value="">بدون عقد</option>'+rows.map(item=>`<option value="${esc(item.id)}" ${String(item.id)===String(selected)?'selected':''}>${esc(item.quotation_number||'عقد')}</option>`).join('')}
   function syncInlineMapLink(){const input=$("installationServicesEditMapUrl"),link=$("installationServicesEditOpenMap");if(!input||!link)return;const value=String(input.value||'').trim();if(/^https:\/\//i.test(value)){link.href=value;link.classList.remove('hidden')}else{link.href='#';link.classList.add('hidden')}}
   async function ensureInlineEditOptions(customerId){
     const needsNeighborhoods=!opts.neighborhoods?.length,needsGeo=!opts.regions?.length||!opts.cities?.length,needsServices=!opts.serviceTypes?.length;
@@ -540,9 +637,17 @@
     setInstallationGeoFromNeighborhood('new','');
     $("newInstallationServicesBody").innerHTML = "";
     addServiceRow();
-    $("newInstallationRequestHeading").textContent = "طلب تركيب جديد";
-    $("newInstallationRequestNote").textContent = "سجّل بيانات العميل والخدمات المطلوبة. ينتقل الطلب بعد الحفظ إلى طلبات التركيبات بحالة بانتظار المراجعة.";
-    $("saveNewInstallationRequest").textContent = "حفظ الطلب";
+    $("newInstallationAnimalsBody").innerHTML = "";
+    addAnimalRow();
+    if($("newInstallationDiscount")) $("newInstallationDiscount").value = "0";
+    if($("newInstallationAmountCollected")) $("newInstallationAmountCollected").value = "0";
+    if($("newInstallationCollectionStatus")) $("newInstallationCollectionStatus").value = "غير محصل";
+    if($("newInstallationPaymentMethod")) $("newInstallationPaymentMethod").value = "";
+    if($("newInstallationAppointmentStatus")) $("newInstallationAppointmentStatus").value = "بانتظار المراجعة";
+    recalculateServices();
+    $("newInstallationRequestHeading").textContent = "إضافة موعد جديد";
+    $("newInstallationRequestNote").textContent = "سجّل بيانات العميل والخدمات والحيوان والتحصيل. ينتقل الموعد بعد الحفظ إلى المواعيد بحالة بانتظار المراجعة.";
+    $("saveNewInstallationRequest").textContent = "حفظ الموعد";
     $("resetNewInstallationRequest").textContent = "إعادة تعيين";
     clearStatus($("newInstallationRequestFormStatus"));
   }
@@ -562,12 +667,12 @@
     button.setAttribute("aria-hidden", "false");
     button.disabled = !allowed;
     button.setAttribute("aria-disabled", String(!allowed));
-    button.title = allowed ? "" : (loaded ? "لا توجد صلاحية حفظ طلب تركيب." : "جارٍ تحميل الصلاحيات...");
+    button.title = allowed ? "" : (loaded ? "لا توجد صلاحية حفظ الموعد." : "جارٍ تحميل الصلاحيات...");
 
     if (loaded && !allowed) {
       status($("newInstallationRequestFormStatus"), isEditing
-        ? "لا توجد صلاحية تعديل طلبات التركيبات."
-        : "لا توجد صلاحية إضافة طلب تركيب. راجع صلاحيات شاشة طلب تركيب جديد.", "warning");
+        ? "لا توجد صلاحية تعديل المواعيد."
+        : "لا توجد صلاحية إضافة موعد. راجع صلاحيات شاشة إضافة موعد جديد.", "warning");
     }
     return allowed;
   }
@@ -647,8 +752,21 @@
       else setInstallationGeoFromNeighborhood('new','');
       closeCustomerResults();
     });
+    $("newInstallationNeighborhoodSearch")?.addEventListener("focus",event=>renderNewNeighborhoodResults(event.target.value));
+    $("newInstallationNeighborhoodSearch")?.addEventListener("input",event=>{
+      $("newInstallationNeighborhoodId").value="";
+      event.target.setCustomValidity("");
+      renderNewNeighborhoodResults(event.target.value);
+    });
+    $("newInstallationNeighborhoodResults")?.addEventListener("click",event=>{
+      const option=event.target.closest("[data-installation-neighborhood-id]");
+      if(!option)return;
+      setNewNeighborhood(option.dataset.installationNeighborhoodId);
+    });
+
     document.addEventListener("click", event => {
       if (!event.target.closest(".installation-customer-combobox")) closeCustomerResults();
+      if (!event.target.closest(".installation-neighborhood-combobox")) closeNewNeighborhoodResults();
     });
 
     ["installationRequestSearch", "installationRequestRepresentativeFilter", "installationRequestStatusFilter", "installationRequestDateFrom", "installationRequestDateTo"].forEach(id => $(id)?.addEventListener("input", render));
@@ -674,6 +792,20 @@
       button.closest(".installation-service-entry").remove();
       recalculateServices();
     });
+    $("newInstallationDiscount")?.addEventListener("input",recalculateServices);
+    $("addInstallationAnimalRow")?.addEventListener("click",()=>addAnimalRow());
+    $("newInstallationAnimalsBody")?.addEventListener("click",event=>{
+      const button=event.target.closest(".appointment-animal-remove");
+      if(!button)return;
+      const all=$("newInstallationAnimalsBody").querySelectorAll(".appointment-animal-entry");
+      if(all.length===1){
+        all[0].querySelectorAll("input").forEach(input=>{ if(input.type==='number')input.value='1'; else input.value=''; });
+        all[0].querySelectorAll("select").forEach(select=>select.value='');
+        return;
+      }
+      button.closest(".appointment-animal-entry").remove();
+    });
+
 
     $("resetNewInstallationRequest")?.addEventListener("click", resetNewForm);
 
@@ -681,9 +813,9 @@
       const viewButton = event.target.closest("[data-install-view]");
       const servicesButton = event.target.closest("[data-install-services-edit]");
       const deleteButton = event.target.closest("[data-install-delete]");
-      if (viewButton) renderRequestView(currentRow(viewButton.dataset.installView));
+      if (viewButton) { try { renderRequestView(await window.InstallationsServiceSafe.requestEditDetail(viewButton.dataset.installView)); } catch(error) { status($("installationRequestsStatus"),error.message,"error"); } }
       if (servicesButton) openServicesEdit(servicesButton.dataset.installServicesEdit);
-      if (deleteButton && confirm("هل تريد حذف طلب التركيب؟")) {
+      if (deleteButton && confirm("هل تريد حذف الموعد؟")) {
         try {
           await window.InstallationsServiceSafe.remove(deleteButton.dataset.installDelete);
           await load();
@@ -704,7 +836,7 @@
     $("installationServicesEditBody")?.addEventListener("click",event=>{const btn=event.target.closest('.inline-service-remove');if(!btn)return;const all=$("installationServicesEditBody").querySelectorAll('.installation-inline-service-row');if(all.length===1)return status($("installationServicesEditStatus"),'يجب أن يحتوي الطلب على خدمة واحدة على الأقل.','error');btn.closest('tr').remove();recalculateInlineServices()});
     $("installationServicesEditMapUrl")?.addEventListener("input",syncInlineMapLink);
     $("installationServicesEditForm")?.addEventListener("submit",async event=>{event.preventDefault();const services=collectInlineServices();if(!services.length||services.some(x=>!x.serviceTypeId||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unitPrice)||x.unitPrice<0))return status($("installationServicesEditStatus"),'راجع الخدمة والعدد والسعر في جميع البنود.','error');const geoValidation=installationGeoController('edit').validate({requireRegion:true,requireCity:true,requireDistrict:true});if(!geoValidation.valid){installationGeoController('edit').elements(geoValidation.field)?.search?.focus();return status($("installationServicesEditStatus"),geoValidation.message,'error')}const neighborhoodId=geoValidation.value.districtId;const btn=$("saveInstallationServicesEdit");setSaveState(btn,'saving','حفظ التعديلات');try{const requestId=$("installationServicesEditRequestId").value;await window.InstallationsServiceSafe.updateRequestContextServices(requestId,{neighborhoodId,customerMapUrl:$("installationServicesEditMapUrl").value,customerOrderNumber:$("installationServicesEditCustomerOrder").value,quotationId:$("installationServicesEditQuotation").value,services});const fresh=await window.InstallationsServiceSafe.requestEditDetail(requestId);const index=rows.findIndex(item=>item.id===requestId);if(index>=0)rows[index]=fresh;setSaveState(btn,'saved');window.dispatchEvent(new CustomEvent('kyum-installation-services-updated',{detail:{id:requestId,row:fresh}}));await new Promise(r=>setTimeout(r,350));$("installationServicesEditDialog").close();render();load().catch(()=>{})}catch(error){setSaveState(btn,'error');status($("installationServicesEditStatus"),error.message,'error');await new Promise(r=>setTimeout(r,900))}finally{setSaveState(btn,'idle','حفظ التعديلات')}});
-    window.addEventListener('kyum-installation-request-view',async event=>{const id=event.detail?.id,row=event.detail?.row||currentRow(id);if(row)return renderRequestView(row);if(!id)return;try{await load();renderRequestView(currentRow(id))}catch(error){status($("installationRequestsStatus"),error.message,'error')}});
+    window.addEventListener('kyum-installation-request-view',async event=>{const id=event.detail?.id||event.detail?.row?.id;if(!id)return;try{renderRequestView(await window.InstallationsServiceSafe.requestEditDetail(id))}catch(error){status($("installationRequestsStatus"),error.message,'error')}});
     window.addEventListener('kyum-installation-services-edit',event=>{const id=event.detail?.id;if(id)openServicesEdit(id)});
     window.addEventListener('kyum-installation-services-updated',()=>load());
 
@@ -715,36 +847,40 @@
       const customer = opts.customers.find(item => item.id === $("newInstallationCustomerId").value);
       const neighborhood = opts.neighborhoods.find(item => item.id === $("newInstallationNeighborhoodId").value);
       const services = collectServices();
+      const animals = collectAnimals();
+      const financials = currentFinancials();
+      const collection = collectCollection();
       const payload = {
         customerId: $("newInstallationCustomerId").value,
         quotationId: $("newInstallationQuotationId").value || null,
         representativeId: customer?.representative_id || null,
         neighborhoodId: $("newInstallationNeighborhoodId").value,
         installationAddress: neighborhood?.name || "",
-        customerOrderNumber: $("newInstallationCustomerOrderNumber").value.trim(),
         customerMapUrl: $("newInstallationCustomerMapUrl").value.trim(),
-        priority: $("newInstallationPriority").value,
         notes: $("newInstallationNotes").value.trim(),
-        services
+        services,
+        discountAmount: financials.discount,
+        animals,
+        collection
       };
       if (!payload.customerId) return status($("newInstallationRequestFormStatus"), "اختر العميل.", "error");
-      const geoValidation = installationGeoController('new').validate({ requireRegion: true, requireCity: true, requireDistrict: true });
-      if (!geoValidation.valid) {
-        installationGeoController('new').elements(geoValidation.field)?.search?.focus();
-        return status($("newInstallationRequestFormStatus"), geoValidation.message, "error");
+      if (!payload.neighborhoodId || !neighborhood) {
+        $("newInstallationNeighborhoodSearch")?.focus();
+        return status($("newInstallationRequestFormStatus"), "اختر الحي.", "error");
       }
-      payload.neighborhoodId = geoValidation.value.districtId;
-      payload.installationAddress = geoValidation.value.district || payload.installationAddress;
       if (!services.length || services.some(service => !service.serviceTypeId || !Number.isInteger(service.quantity) || service.quantity < 1 || !Number.isFinite(service.unitPrice) || service.unitPrice < 0)) {
         return status($("newInstallationRequestFormStatus"), "راجع نوع الخدمة والعدد والسعر في جميع الخدمات.", "error");
       }
+      if (collection.amountCollected > financials.final) {
+        return status($("newInstallationRequestFormStatus"), "المبلغ المحصل لا يمكن أن يتجاوز قيمة الجلسة.", "error");
+      }
       const button = $("saveNewInstallationRequest");
-      setSaveState(button,"saving", editingRequestId ? "حفظ التعديلات" : "حفظ الطلب");
+      setSaveState(button,"saving", editingRequestId ? "حفظ التعديلات" : "حفظ الموعد");
       try {
         if (editingRequestId) {
           await window.InstallationsServiceSafe.updateRequest({ ...payload, id: editingRequestId });
           const requestNumber = rows.find(item => item.id === editingRequestId)?.requestNumber || "";
-          status($("newInstallationRequestFormStatus"), `تم حفظ تعديلات الطلب ${requestNumber}.`, "success");
+          status($("newInstallationRequestFormStatus"), `تم حفظ تعديلات الموعد ${requestNumber}.`, "success");
           editingRequestId = null;
           await load();
           setSaveState(button,"saved");
@@ -752,7 +888,7 @@
           window.KYUMNavigation?.open?.("installationRequests", { trustedNavigation: true });
         } else {
           const created = await window.InstallationsServiceSafe.createRequest(payload);
-          status($("newInstallationRequestFormStatus"), `تم إنشاء الطلب ${created.request_number || ""} وإرساله إلى طلبات التركيبات بانتظار المراجعة.`, "success");
+          status($("newInstallationRequestFormStatus"), `تم إنشاء الموعد ${created.request_number || ""} وإرساله إلى المواعيد بانتظار المراجعة.`, "success");
           setSaveState(button,"saved");
           await new Promise(r=>setTimeout(r,450));
           resetNewForm({ exitEdit: true });

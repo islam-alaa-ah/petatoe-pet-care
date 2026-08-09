@@ -4,7 +4,7 @@
   async function hasExecutionVisit(requestId){if(!requestId)return false;const {data,error}=await db().from('installation_execution_visits').select('id').eq('installation_request_id',requestId).limit(1);return !error&&Array.isArray(data)&&data.length>0}
   async function fetchPaged(factory,pageSize=500){const all=[];for(let start=0;;start+=pageSize){const {data,error}=await factory(start,start+pageSize-1);if(error)throw error;const page=data||[];all.push(...page);if(page.length<pageSize)break}return all}
   function requireAction(action,screen='installationRequests'){const p=window.CustomerPermissions;if(p?.requireAction && !p.requireAction(screen,action,{silent:true})) throw new Error('ليس لديك صلاحية لتنفيذ هذا الإجراء.');}
-  function normalize(row){return {id:row.id,requestNumber:row.request_number,customerOrderNumber:row.customer_order_number||'',customerId:row.customer_id,customerName:row.customer?.customer_name||'',customerPhone:row.customer?.phone||'',quotationId:row.quotation_id,quotationNumber:row.quotation?.quotation_number||'',representativeId:row.representative_id,representativeName:row.representative?.full_name||'',scheduledDate:row.scheduled_date||'',scheduledTime:row.scheduled_time||'',timeSlot:row.time_slot||'',status:row.status||'بانتظار المراجعة',priority:row.priority||'عادية',installationAddress:row.installation_address||'',customerMapUrl:row.customer_map_url||'',neighborhoodId:row.neighborhood_id||'',city:row.customer?.city||'',district:row.customer?.district||'',description:row.description||'',notes:row.notes||'',totalServicesCount:Number(row.total_services_count||0),totalServicesAmount:Number(row.total_services_amount||0),services:row.services||[],createdAt:row.created_at||'',updatedAt:row.updated_at||''}}
+  function normalize(row){return {id:row.id,requestNumber:row.request_number,customerOrderNumber:row.customer_order_number||'',customerId:row.customer_id,customerName:row.customer?.customer_name||'',customerPhone:row.customer?.phone||'',quotationId:row.quotation_id,quotationNumber:row.quotation?.quotation_number||'',representativeId:row.representative_id,representativeName:row.representative?.full_name||'',scheduledDate:row.scheduled_date||'',scheduledTime:row.scheduled_time||'',timeSlot:row.time_slot||'',status:row.status||'بانتظار المراجعة',priority:row.priority||'عادية',installationAddress:row.installation_address||'',customerMapUrl:row.customer_map_url||'',neighborhoodId:row.neighborhood_id||'',city:row.customer?.city||'',district:row.customer?.district||'',description:row.description||'',notes:row.notes||'',totalServicesCount:Number(row.total_services_count||0),totalServicesAmount:Number(row.total_services_amount||0),discountAmount:Number(row.discount_amount||0),taxRate:Number(row.tax_rate??15),taxAmount:Number(row.tax_amount||0),finalAmount:Number(row.final_amount||row.total_services_amount||0),services:row.services||[],animals:row.animals||[],collection:row.collection||null,createdAt:row.created_at||'',updatedAt:row.updated_at||''}}
   async function list(){requireAction('view');const [data,serviceRows]=await Promise.all([fetchPaged((from,to)=>db().from('installation_requests').select('*,customer:customers(id,customer_name,phone,address,city,district,representative_id),quotation:quotations!installation_requests_quotation_id_fkey(id,quotation_number),representative:sales_representatives(id,full_name)').order('created_at',{ascending:false}).range(from,to)),fetchPaged((from,to)=>db().from('installation_request_services').select('installation_request_id,quantity,unit_price,line_total,service:installation_service_types(id,name)').range(from,to),1000)]);const byRequest=new Map();serviceRows.forEach(x=>{const arr=byRequest.get(x.installation_request_id)||[];arr.push({serviceTypeId:x.service?.id||'',serviceName:x.service?.name||'',quantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0),lineTotal:Number(x.line_total||0)});byRequest.set(x.installation_request_id,arr)});return data.map(row=>normalize({...row,services:byRequest.get(row.id)||[]}))}
   async function loadInstallationCustomers(){
     try {
@@ -37,63 +37,63 @@
     return result;
   }
   async function validateNeighborhoodIntegrity(neighborhoodId){
-    if(!neighborhoodId)throw new Error('اختر الحي الخاص بطلب التركيب.');
-    const {data:neighborhood,error:neighborhoodError}=await db().from('installation_neighborhoods').select('id,region_id,city_id,name,is_active').eq('id',neighborhoodId).eq('is_active',true).maybeSingle();
-    if(neighborhoodError||!neighborhood)throw new Error('الحي المختار غير موجود أو غير نشط.');
-    if(!neighborhood.region_id||!neighborhood.city_id)throw new Error('بيانات الحي غير مكتملة: يجب ربط الحي بمنطقة ومدينة معتمدتين.');
-    const [{data:city,error:cityError},{data:region,error:regionError}]=await Promise.all([
-      db().from('installation_cities').select('id,region_id,name,is_active').eq('id',neighborhood.city_id).eq('is_active',true).maybeSingle(),
-      db().from('installation_regions').select('id,name,is_active').eq('id',neighborhood.region_id).eq('is_active',true).maybeSingle()
-    ]);
-    if(cityError||!city)throw new Error('مدينة الحي المختار غير موجودة أو غير نشطة.');
-    if(regionError||!region)throw new Error('منطقة الحي المختار غير موجودة أو غير نشطة.');
-    if(String(city.region_id)!==String(region.id))throw new Error('سلامة العنوان مرفوضة: المدينة لا تتبع المنطقة المرتبطة بالحي.');
-    if(String(neighborhood.city_id)!==String(city.id)||String(neighborhood.region_id)!==String(region.id))throw new Error('سلامة العنوان مرفوضة: الحي لا يتبع المدينة والمنطقة المعتمدتين.');
-    return {neighborhood,city,region};
+    if(!neighborhoodId)throw new Error('اختر الحي الخاص بالموعد.');
+    const {data:neighborhood,error}=await db().from('installation_neighborhoods').select('id,name,is_active').eq('id',neighborhoodId).eq('is_active',true).maybeSingle();
+    if(error||!neighborhood)throw new Error('الحي المختار غير موجود أو غير نشط.');
+    return {neighborhood};
   }
   function normalizeGoogleMapsUrl(value){const url=String(value||'').trim();if(!url)return '';let parsed;try{parsed=new URL(url)}catch(_){throw new Error('رابط موقع العميل غير صحيح. استخدم رابط مشاركة من Google Maps.')}const host=parsed.hostname.toLowerCase();const valid=(host==='maps.app.goo.gl'||host==='maps.google.com'||host==='www.google.com'||host==='google.com'||host==='goo.gl')&&(host!=='goo.gl'||parsed.pathname.toLowerCase().startsWith('/maps'));if(parsed.protocol!=='https:'||!valid)throw new Error('استخدم رابط Google Maps آمن يبدأ بـ https.');return parsed.toString()}
-  async function createRequest(payload){requireAction('add','installationRequestNew');if(!payload.customerId)throw new Error('اختر العميل.');if(payload.quotationId){const {data:quotation,error:quotationError}=await db().from('quotations').select('id,customer_id,status,installation_request_id').eq('id',payload.quotationId).maybeSingle();if(quotationError)throw new Error('تعذر التحقق من عرض السعر: '+quotationError.message);if(!quotation||quotation.customer_id!==payload.customerId)throw new Error('عرض السعر لا يخص العميل المحدد.');if(quotation.status!=='مقبول')throw new Error('لا يمكن إنشاء طلب تركيب إلا من عرض سعر مقبول.');if(quotation.installation_request_id)throw new Error('تم إنشاء طلب تركيب لهذا العرض بالفعل.');}const geo=await validateNeighborhoodIntegrity(payload.neighborhoodId);if(!Array.isArray(payload.services)||!payload.services.length)throw new Error('أضف خدمة واحدة على الأقل.');const services=payload.services.map(x=>({service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));if(services.some(x=>!x.service_type_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_price)||x.unit_price<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');const {data,error}=await db().rpc('create_installation_request_with_services',{p_customer_id:payload.customerId,p_quotation_id:payload.quotationId||null,p_representative_id:payload.representativeId||null,p_neighborhood_id:geo.neighborhood.id,p_priority:payload.priority||'عادية',p_installation_address:geo.neighborhood.name||payload.installationAddress||null,p_customer_order_number:payload.customerOrderNumber||null,p_customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,p_notes:payload.notes||null,p_services:services});if(error)throw new Error('تعذر إنشاء طلب التركيب: '+error.message);const created=Array.isArray(data)?data[0]:data;void notifyEvent('installation.request_created',created?.id||null,null,{source:'create_request'},created?.id||null);return created}
-  async function updateRequest(payload){
-    requireAction('edit','installationRequests');
-    if(!payload.id)throw new Error('معرّف طلب التركيب مطلوب.');
+  async function createRequest(payload){
+    requireAction('add','installationRequestNew');
     if(!payload.customerId)throw new Error('اختر العميل.');
-    if(!payload.neighborhoodId)throw new Error('اختر العنوان.');
+    if(payload.quotationId){
+      const {data:contract,error:contractError}=await db().from('quotations').select('id,customer_id,status,installation_request_id').eq('id',payload.quotationId).maybeSingle();
+      if(contractError)throw new Error('تعذر التحقق من العقد: '+contractError.message);
+      if(!contract||String(contract.customer_id)!==String(payload.customerId))throw new Error('العقد لا يخص العميل المحدد.');
+      if(contract.status!=='مقبول')throw new Error('لا يمكن إنشاء موعد إلا من عقد مقبول.');
+      if(contract.installation_request_id)throw new Error('تم إنشاء موعد لهذا العقد بالفعل.');
+    }
     const geo=await validateNeighborhoodIntegrity(payload.neighborhoodId);
     if(!Array.isArray(payload.services)||!payload.services.length)throw new Error('أضف خدمة واحدة على الأقل.');
     const services=payload.services.map(x=>({service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));
     if(services.some(x=>!x.service_type_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_price)||x.unit_price<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');
-    const {data,error}=await db().rpc('update_installation_request_with_services',{
-      p_request_id:payload.id,
-      p_customer_id:payload.customerId,
-      p_quotation_id:payload.quotationId||null,
-      p_representative_id:payload.representativeId||null,
-      p_neighborhood_id:geo.neighborhood.id,
-      p_priority:payload.priority||'عادية',
-      p_installation_address:geo.neighborhood.name||payload.installationAddress||null,
-      p_customer_order_number:payload.customerOrderNumber||null,
-      p_customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,
-      p_notes:payload.notes||null,
-      p_services:services
-    });
-    if(error)throw new Error('تعذر حفظ تعديلات طلب التركيب: '+error.message);
-    void notifyEvent('installation.request_updated',payload.id,null,{source:'request_edit'},'updated:'+new Date().toISOString().slice(0,16));
+    const animals=(payload.animals||[]).map(x=>({pet_name:x.petName||'',pet_type:x.petType||'',breed:x.breed||'',pet_size:x.petSize||'',quantity:Number(x.quantity||1)}));
+    const collection={amount_collected:Number(payload.collection?.amountCollected||0),collection_status:payload.collection?.collectionStatus||'غير محصل',payment_method:payload.collection?.paymentMethod||'',appointment_status:payload.collection?.appointmentStatus||'بانتظار المراجعة'};
+    const {data,error}=await db().rpc('create_petatoe_appointment',{p_customer_id:payload.customerId,p_contract_id:payload.quotationId||null,p_representative_id:payload.representativeId||null,p_neighborhood_id:geo.neighborhood.id,p_customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,p_notes:payload.notes||null,p_services:services,p_discount_amount:Number(payload.discountAmount||0),p_animals:animals,p_collection:collection});
+    if(error)throw new Error('تعذر إنشاء الموعد: '+error.message);
+    const created=Array.isArray(data)?data[0]:data;void notifyEvent('installation.request_created',created?.id||null,null,{source:'create_appointment'},created?.id||null);return created;
+  }
+
+  async function updateRequest(payload){
+    requireAction('edit','installationRequests');
+    if(!payload.id)throw new Error('معرّف الموعد مطلوب.');
+    if(!payload.customerId)throw new Error('اختر العميل.');
+    const geo=await validateNeighborhoodIntegrity(payload.neighborhoodId);
+    if(!Array.isArray(payload.services)||!payload.services.length)throw new Error('أضف خدمة واحدة على الأقل.');
+    const services=payload.services.map(x=>({service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));
+    if(services.some(x=>!x.service_type_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_price)||x.unit_price<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');
+    const animals=(payload.animals||[]).map(x=>({pet_name:x.petName||'',pet_type:x.petType||'',breed:x.breed||'',pet_size:x.petSize||'',quantity:Number(x.quantity||1)}));
+    const collection={amount_collected:Number(payload.collection?.amountCollected||0),collection_status:payload.collection?.collectionStatus||'غير محصل',payment_method:payload.collection?.paymentMethod||'',appointment_status:payload.collection?.appointmentStatus||'بانتظار المراجعة'};
+    const {data,error}=await db().rpc('update_petatoe_appointment',{p_request_id:payload.id,p_customer_id:payload.customerId,p_contract_id:payload.quotationId||null,p_representative_id:payload.representativeId||null,p_neighborhood_id:geo.neighborhood.id,p_customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,p_notes:payload.notes||null,p_services:services,p_discount_amount:Number(payload.discountAmount||0),p_animals:animals,p_collection:collection});
+    if(error)throw new Error('تعذر حفظ تعديلات الموعد: '+error.message);
+    void notifyEvent('installation.request_updated',payload.id,null,{source:'appointment_edit'},'updated:'+new Date().toISOString().slice(0,16));
     return Array.isArray(data)?data[0]:data;
   }
 
   async function updateRequestServices(requestId,services){
     const canRequests=window.CustomerPermissions?.canScreen?.('installationRequests','edit')===true;
     const canSchedule=window.CustomerPermissions?.canScreen?.('installationSchedule','edit')===true;
-    if(!canRequests&&!canSchedule)throw new Error('ليس لديك صلاحية تعديل خدمات طلبات التركيبات.');
-    if(!requestId)throw new Error('معرّف طلب التركيب مطلوب.');
+    if(!canRequests&&!canSchedule)throw new Error('ليس لديك صلاحية تعديل خدمات المواعيد.');
+    if(!requestId)throw new Error('معرّف الموعد مطلوب.');
     if(!Array.isArray(services)||!services.length)throw new Error('أضف خدمة واحدة على الأقل.');
     const normalized=services.map(x=>({service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));
     if(normalized.some(x=>!x.service_type_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_price)||x.unit_price<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');
     const {data:row,error:loadError}=await db().from('installation_requests').select('id,customer_id,quotation_id,representative_id,neighborhood_id,priority,installation_address,customer_order_number,customer_map_url,notes').eq('id',requestId).single();
-    if(loadError||!row)throw new Error('تعذر تحميل بيانات طلب التركيب قبل حفظ الخدمات: '+(loadError?.message||'الطلب غير موجود.'));
+    if(loadError||!row)throw new Error('تعذر تحميل بيانات الموعد قبل حفظ الخدمات: '+(loadError?.message||'الطلب غير موجود.'));
     const {data,error}=await db().rpc('update_installation_request_with_services',{
       p_request_id:row.id,p_customer_id:row.customer_id,p_quotation_id:row.quotation_id||null,p_representative_id:row.representative_id||null,p_neighborhood_id:row.neighborhood_id,p_priority:row.priority||'عادية',p_installation_address:row.installation_address||null,p_customer_order_number:row.customer_order_number||null,p_customer_map_url:row.customer_map_url||null,p_notes:row.notes||null,p_services:normalized
     });
-    if(error)throw new Error('تعذر حفظ خدمات طلب التركيب: '+error.message);
+    if(error)throw new Error('تعذر حفظ خدمات الموعد: '+error.message);
     return Array.isArray(data)?data[0]:data;
   }
 
@@ -101,15 +101,19 @@
   async function requestEditDetail(requestId){
     const canRequests=window.CustomerPermissions?.canScreen?.('installationRequests','view')===true;
     const canSchedule=window.CustomerPermissions?.canScreen?.('installationSchedule','view')===true;
-    if(!canRequests&&!canSchedule)throw new Error('ليس لديك صلاحية عرض طلبات التركيبات.');
-    if(!requestId)throw new Error('معرّف طلب التركيب مطلوب.');
-    const [{data:row,error:rowError},{data:serviceRows,error:serviceError}]=await Promise.all([
+    if(!canRequests&&!canSchedule)throw new Error('ليس لديك صلاحية عرض المواعيد.');
+    if(!requestId)throw new Error('معرّف الموعد مطلوب.');
+    const [{data:row,error:rowError},{data:serviceRows,error:serviceError},{data:animalRows,error:animalError},{data:collection,error:collectionError}]=await Promise.all([
       db().from('installation_requests').select('*,customer:customers(id,customer_name,phone,address,city,district,representative_id),quotation:quotations!installation_requests_quotation_id_fkey(id,quotation_number),representative:sales_representatives(id,full_name)').eq('id',requestId).single(),
-      db().from('installation_request_services').select('id,service_type_id,quantity,unit_price,line_total,service:installation_service_types(id,name)').eq('installation_request_id',requestId).order('created_at',{ascending:true})
+      db().from('installation_request_services').select('id,service_type_id,quantity,unit_price,line_total,service:installation_service_types(id,name)').eq('installation_request_id',requestId).order('created_at',{ascending:true}),
+      db().from('installation_request_animals').select('id,pet_name,pet_type,breed,pet_size,quantity,display_order').eq('installation_request_id',requestId).order('display_order'),
+      db().from('installation_request_collection').select('*').eq('installation_request_id',requestId).maybeSingle()
     ]);
-    if(rowError||!row)throw new Error('تعذر تحميل بيانات طلب التركيب: '+(rowError?.message||'الطلب غير موجود.'));
-    if(serviceError)throw new Error('تعذر تحميل خدمات طلب التركيب: '+serviceError.message);
-    return normalize({...row,services:(serviceRows||[]).map(x=>({id:x.id,serviceTypeId:x.service_type_id||x.service?.id||'',serviceName:x.service?.name||'',name:x.service?.name||'',quantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0),lineTotal:Number(x.line_total||0)}))});
+    if(rowError||!row)throw new Error('تعذر تحميل بيانات الموعد: '+(rowError?.message||'الموعد غير موجود.'));
+    if(serviceError)throw new Error('تعذر تحميل خدمات الموعد: '+serviceError.message);
+    if(animalError)throw new Error('تعذر تحميل بيانات الحيوان: '+animalError.message);
+    if(collectionError)throw new Error('تعذر تحميل بيانات التحصيل: '+collectionError.message);
+    return normalize({...row,services:(serviceRows||[]).map(x=>({id:x.id,serviceTypeId:x.service_type_id||x.service?.id||'',serviceName:x.service?.name||'',name:x.service?.name||'',quantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0),lineTotal:Number(x.line_total||0)})),animals:(animalRows||[]).map(x=>({id:x.id,petName:x.pet_name||'',petType:x.pet_type||'',breed:x.breed||'',petSize:x.pet_size||'',quantity:Number(x.quantity||1)})),collection:collection?{amountCollected:Number(collection.amount_collected||0),collectionStatus:collection.collection_status||'غير محصل',paymentMethod:collection.payment_method||'',appointmentStatus:collection.appointment_status||row.status||'بانتظار المراجعة'}:null});
   }
 
   async function requestEditOptions(customerId){
@@ -127,34 +131,34 @@
   async function updateRequestContextServices(requestId,payload={}){
     const canRequests=window.CustomerPermissions?.canScreen?.('installationRequests','edit')===true;
     const canSchedule=window.CustomerPermissions?.canScreen?.('installationSchedule','edit')===true;
-    if(!canRequests&&!canSchedule)throw new Error('ليس لديك صلاحية تعديل طلبات التركيبات.');
-    if(!requestId)throw new Error('معرّف طلب التركيب مطلوب.');
-    if(!payload.neighborhoodId)throw new Error('اختر الحي الخاص بطلب التركيب.');
+    if(!canRequests&&!canSchedule)throw new Error('ليس لديك صلاحية تعديل المواعيد.');
+    if(!requestId)throw new Error('معرّف الموعد مطلوب.');
+    if(!payload.neighborhoodId)throw new Error('اختر الحي الخاص بالموعد.');
     const geo=await validateNeighborhoodIntegrity(payload.neighborhoodId);
     if(!Array.isArray(payload.services)||!payload.services.length)throw new Error('أضف خدمة واحدة على الأقل.');
     const normalized=payload.services.map(x=>({service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));
     if(normalized.some(x=>!x.service_type_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_price)||x.unit_price<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');
     const {data:row,error:loadError}=await db().from('installation_requests').select('id,customer_id,quotation_id,representative_id,priority,installation_address,notes').eq('id',requestId).single();
-    if(loadError||!row)throw new Error('تعذر تحميل بيانات طلب التركيب قبل الحفظ: '+(loadError?.message||'الطلب غير موجود.'));
+    if(loadError||!row)throw new Error('تعذر تحميل بيانات الموعد قبل الحفظ: '+(loadError?.message||'الطلب غير موجود.'));
     const quotationId=payload.quotationId||null;
     if(quotationId){
       const {data:quotation,error:quotationError}=await db().from('quotations').select('id,customer_id,status,installation_request_id').eq('id',quotationId).maybeSingle();
-      if(quotationError)throw new Error('تعذر التحقق من عرض السعر: '+quotationError.message);
-      if(!quotation||String(quotation.customer_id)!==String(row.customer_id))throw new Error('عرض السعر لا يخص عميل طلب التركيب.');
-      if(quotation.status!=='مقبول')throw new Error('لا يمكن ربط طلب التركيب إلا بعرض سعر مقبول.');
-      if(quotation.installation_request_id&&String(quotation.installation_request_id)!==String(requestId))throw new Error('عرض السعر مرتبط بطلب تركيب آخر بالفعل.');
+      if(quotationError)throw new Error('تعذر التحقق من العقد: '+quotationError.message);
+      if(!quotation||String(quotation.customer_id)!==String(row.customer_id))throw new Error('العقد لا يخص عميل الموعد.');
+      if(quotation.status!=='مقبول')throw new Error('لا يمكن ربط الموعد إلا بعقد مقبول.');
+      if(quotation.installation_request_id&&String(quotation.installation_request_id)!==String(requestId))throw new Error('العقد مرتبط بموعد آخر بالفعل.');
     }
     const {data,error}=await db().rpc('update_installation_request_with_services',{
       p_request_id:row.id,p_customer_id:row.customer_id,p_quotation_id:quotationId,p_representative_id:row.representative_id||null,p_neighborhood_id:geo.neighborhood.id,p_priority:row.priority||'عادية',p_installation_address:geo.neighborhood.name||row.installation_address||null,p_customer_order_number:String(payload.customerOrderNumber||'').trim()||null,p_customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,p_notes:row.notes||null,p_services:normalized
     });
-    if(error)throw new Error('تعذر حفظ بيانات وخدمات طلب التركيب: '+error.message);
+    if(error)throw new Error('تعذر حفظ بيانات وخدمات الموعد: '+error.message);
     return Array.isArray(data)?data[0]:data;
   }
 
-  async function save(payload){requireAction(payload.id?'edit':'add',payload.id?'installationRequests':'installationRequestNew');if(!payload.id)return createRequest(payload);const record={customer_id:payload.customerId,quotation_id:payload.quotationId||null,representative_id:payload.representativeId||null,scheduled_date:payload.scheduledDate||null,time_slot:payload.timeSlot||null,status:payload.status,priority:payload.priority,installation_address:payload.installationAddress||null,customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,description:payload.description||null,notes:payload.notes||null};const {data,error}=await db().from('installation_requests').update(record).eq('id',payload.id).select('id').single();if(error)throw new Error('تعذر حفظ طلب التركيب: '+error.message);return data}
-  async function remove(id){requireAction('delete');const {error}=await db().from('installation_requests').delete().eq('id',id);if(error)throw new Error('تعذر حذف طلب التركيب: '+error.message)}
+  async function save(payload){requireAction(payload.id?'edit':'add',payload.id?'installationRequests':'installationRequestNew');if(!payload.id)return createRequest(payload);const record={customer_id:payload.customerId,quotation_id:payload.quotationId||null,representative_id:payload.representativeId||null,scheduled_date:payload.scheduledDate||null,time_slot:payload.timeSlot||null,status:payload.status,priority:payload.priority,installation_address:payload.installationAddress||null,customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,description:payload.description||null,notes:payload.notes||null};const {data,error}=await db().from('installation_requests').update(record).eq('id',payload.id).select('id').single();if(error)throw new Error('تعذر حفظ الموعد: '+error.message);return data}
+  async function remove(id){requireAction('delete');const {error}=await db().from('installation_requests').delete().eq('id',id);if(error)throw new Error('تعذر حذف الموعد: '+error.message)}
   async function technicians(){requireAction('view','installationSchedule');const {data,error}=await db().from('installation_technicians').select('*').order('full_name');if(error)throw new Error('تعذر تحميل الفنيين: '+error.message);return (data||[]).map(r=>({id:r.id,name:r.full_name,phone:r.phone||'',specialty:r.specialty||'',city:r.city||'',status:r.status||'متاح'}))}
-  async function scheduleTeams(){requireAction('view','installationSchedule');const {data,error}=await db().from('installation_teams').select('id,name,status').neq('status','غير نشطة').order('name');if(error)throw new Error('تعذر تحميل فرق التركيبات: '+error.message);return data||[]}
+  async function scheduleTeams(){requireAction('view','installationSchedule');const {data,error}=await db().from('installation_teams').select('id,name,status').neq('status','غير نشطة').order('name');if(error)throw new Error('تعذر تحميل فرق المواعيد: '+error.message);return data||[]}
   async function technicianNameSuggestions(){requireAction('view','installationSchedule');const {data,error}=await db().from('installation_technician_name_suggestions').select('name').eq('is_active',true).order('name');if(error)throw new Error('تعذر تحميل أسماء الفنيين المقترحة: '+error.message);return (data||[]).map(r=>r.name).filter(Boolean)}
   async function scheduleContextSnapshot(requestIds=[]){
     const ids=[...new Set((requestIds||[]).filter(Boolean))];
@@ -188,9 +192,9 @@
       db().from('installation_execution_visits').select('id,installation_request_id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status,team:installation_teams(id,name)').in('status',['بانتظار الجدولة','مجدولة','قيد التنفيذ','بانتظار التأكيد']).order('visit_no'),
       db().from('installation_execution_visit_services').select('visit_id,request_service_id,scheduled_quantity')
     ]);
-    if(error)throw new Error('تعذر تحميل الرؤية العامة لجدول التركيبات: '+error.message);
-    if(visitError&&visitError.code!=='42P01')throw new Error('تعذر تحميل زيارات التركيبات: '+visitError.message);
-    if(lineError&&lineError.code!=='42P01')throw new Error('تعذر تحميل كميات زيارات التركيبات: '+lineError.message);
+    if(error)throw new Error('تعذر تحميل الرؤية العامة لجدول المواعيد: '+error.message);
+    if(visitError&&visitError.code!=='42P01')throw new Error('تعذر تحميل زيارات المواعيد: '+visitError.message);
+    if(lineError&&lineError.code!=='42P01')throw new Error('تعذر تحميل كميات زيارات المواعيد: '+lineError.message);
     const rawRows=Array.isArray(data)?data:[];
     const contextMap=await scheduleContextSnapshot(rawRows.map(r=>r.id));
     const base=rawRows.map(r=>{
@@ -255,8 +259,8 @@
   async function scheduleDayLocks(dateFrom,dateTo){requireAction('view','installationSchedule');const {data,error}=await db().rpc('get_installation_schedule_day_locks',{p_date_from:dateFrom,p_date_to:dateTo});if(error)throw new Error('تعذر تحميل حالة أيام الجدولة: '+error.message);return (data||[]).map(r=>({date:r.schedule_date,isLocked:r.is_locked===true,lockedBy:r.locked_by_name||'',lockedAt:r.locked_at||''}))}
   async function setScheduleDayLock(scheduleDate,isLocked){requireAction('edit','installationSchedule');const {data,error}=await db().rpc('set_installation_schedule_day_lock',{p_schedule_date:scheduleDate,p_is_locked:!!isLocked});if(error)throw new Error('تعذر تحديث حالة يوم الجدولة: '+error.message);return data}
   async function technicianBookedTimes(scheduleDate,technicianName,excludeRequestId){requireAction('view','installationSchedule');if(!scheduleDate||!String(technicianName||'').trim())return [];const {data,error}=await db().rpc('get_installation_technician_booked_times',{p_schedule_date:scheduleDate,p_technician_name:String(technicianName).trim(),p_exclude_request_id:excludeRequestId||null});if(error)throw new Error('تعذر تحميل المواعيد المحجوزة للفني: '+error.message);return (data||[]).map(r=>({time:String(r.scheduled_time||'').slice(0,5),requestNumber:r.request_number||''}))}
-  async function cancelSchedule(requestId){requireAction('edit','installationSchedule');if(!requestId)throw new Error('معرّف طلب التركيب مطلوب.');const {data,error}=await db().rpc('cancel_installation_request_schedule',{p_request_id:requestId});if(error)throw new Error('تعذر إلغاء جدولة طلب التركيب: '+error.message);void notifyEvent('installation.schedule_cancelled',requestId,null,{source:'schedule_cancel'},'cancel:'+new Date().toISOString().slice(0,16));return data}
-  async function assign(payload){requireAction('edit','installationSchedule');const existed=await hasExecutionVisit(payload.id);const technicianName=String(payload.technicianName||'').trim();if(!payload.scheduledDate)throw new Error('تاريخ التركيب مطلوب.');if(!payload.scheduledTime)throw new Error('وقت التركيب مطلوب.');if(!/^([01]\d|2[01]):00$/.test(payload.scheduledTime)||Number(payload.scheduledTime.slice(0,2))<10)throw new Error('وقت التركيب يجب أن يكون من 10 صباحًا حتى 9 مساءً.');if(!technicianName)throw new Error('اسم الفني مطلوب.');const normalizedName=technicianName.toLocaleLowerCase('ar').replace(/\s+/g,' ').trim();const {error:suggestionError}=await db().from('installation_technician_name_suggestions').upsert({name:technicianName,normalized_name:normalizedName,is_active:true},{onConflict:'normalized_name'});if(suggestionError)throw new Error('تعذر حفظ اسم الفني في قائمة المقترحات: '+suggestionError.message);if(!payload.teamId)throw new Error('اختر فرقة التركيبات.');const [{data:locked,error:lockError},{data:booked,error:bookedError}]=await Promise.all([db().rpc('is_installation_schedule_day_locked',{p_schedule_date:payload.scheduledDate}),db().rpc('get_installation_technician_booked_times',{p_schedule_date:payload.scheduledDate,p_technician_name:technicianName,p_exclude_request_id:payload.id||null})]);if(lockError)throw new Error('تعذر التحقق من حالة يوم الجدولة: '+lockError.message);if(locked===true)throw new Error('هذا اليوم مغلق. افتح اليوم أولًا قبل الجدولة.');if(bookedError)throw new Error('تعذر التحقق من موعد الفني: '+bookedError.message);if((booked||[]).some(x=>String(x.scheduled_time||'').slice(0,5)===String(payload.scheduledTime).slice(0,5)))throw new Error('هذا الموعد محجوز للفني المحدد. اختر موعدًا آخر.');const {error}=await db().rpc('schedule_installation_request_visit',{p_request_id:payload.id,p_scheduled_date:payload.scheduledDate,p_scheduled_time:payload.scheduledTime,p_team_id:payload.teamId,p_technician_name:technicianName,p_assignment_notes:payload.assignmentNotes||null});if(error)throw new Error('تعذر حفظ الجدولة والإسناد: '+error.message);void notifyEvent(existed?'installation.rescheduled':'installation.scheduled',payload.id,null,{scheduledDate:payload.scheduledDate,scheduledTime:payload.scheduledTime,teamId:payload.teamId},payload.scheduledDate+'@'+payload.scheduledTime)}
+  async function cancelSchedule(requestId){requireAction('edit','installationSchedule');if(!requestId)throw new Error('معرّف الموعد مطلوب.');const {data,error}=await db().rpc('cancel_installation_request_schedule',{p_request_id:requestId});if(error)throw new Error('تعذر إلغاء جدولة الموعد: '+error.message);void notifyEvent('installation.schedule_cancelled',requestId,null,{source:'schedule_cancel'},'cancel:'+new Date().toISOString().slice(0,16));return data}
+  async function assign(payload){requireAction('edit','installationSchedule');const existed=await hasExecutionVisit(payload.id);const technicianName=String(payload.technicianName||'').trim();if(!payload.scheduledDate)throw new Error('تاريخ الموعد مطلوب.');if(!payload.scheduledTime)throw new Error('وقت الموعد مطلوب.');if(!/^([01]\d|2[01]):00$/.test(payload.scheduledTime)||Number(payload.scheduledTime.slice(0,2))<10)throw new Error('وقت الموعد يجب أن يكون من 10 صباحًا حتى 9 مساءً.');if(!technicianName)throw new Error('اسم الفني مطلوب.');const normalizedName=technicianName.toLocaleLowerCase('ar').replace(/\s+/g,' ').trim();const {error:suggestionError}=await db().from('installation_technician_name_suggestions').upsert({name:technicianName,normalized_name:normalizedName,is_active:true},{onConflict:'normalized_name'});if(suggestionError)throw new Error('تعذر حفظ اسم الفني في قائمة المقترحات: '+suggestionError.message);if(!payload.teamId)throw new Error('اختر فرقة المواعيد.');const [{data:locked,error:lockError},{data:booked,error:bookedError}]=await Promise.all([db().rpc('is_installation_schedule_day_locked',{p_schedule_date:payload.scheduledDate}),db().rpc('get_installation_technician_booked_times',{p_schedule_date:payload.scheduledDate,p_technician_name:technicianName,p_exclude_request_id:payload.id||null})]);if(lockError)throw new Error('تعذر التحقق من حالة يوم الجدولة: '+lockError.message);if(locked===true)throw new Error('هذا اليوم مغلق. افتح اليوم أولًا قبل الجدولة.');if(bookedError)throw new Error('تعذر التحقق من موعد الفني: '+bookedError.message);if((booked||[]).some(x=>String(x.scheduled_time||'').slice(0,5)===String(payload.scheduledTime).slice(0,5)))throw new Error('هذا الموعد محجوز للفني المحدد. اختر موعدًا آخر.');const {error}=await db().rpc('schedule_installation_request_visit',{p_request_id:payload.id,p_scheduled_date:payload.scheduledDate,p_scheduled_time:payload.scheduledTime,p_team_id:payload.teamId,p_technician_name:technicianName,p_assignment_notes:payload.assignmentNotes||null});if(error)throw new Error('تعذر حفظ الجدولة والإسناد: '+error.message);void notifyEvent(existed?'installation.rescheduled':'installation.scheduled',payload.id,null,{scheduledDate:payload.scheduledDate,scheduledTime:payload.scheduledTime,teamId:payload.teamId},payload.scheduledDate+'@'+payload.scheduledTime)}
   async function saveTechnician(payload){requireAction(payload.id?'edit':'add','installationSchedule');const record={full_name:payload.name,phone:payload.phone||null,specialty:payload.specialty||null,city:payload.city||null,status:payload.status||'متاح'};let q=payload.id?db().from('installation_technicians').update(record).eq('id',payload.id):db().from('installation_technicians').insert(record);const {error}=await q;if(error)throw new Error('تعذر حفظ بيانات الفني: '+error.message)}
   async function removeTechnician(id){requireAction('delete','installationSchedule');const {error}=await db().from('installation_technicians').delete().eq('id',id);if(error)throw new Error('تعذر حذف الفني: '+error.message)}
 
@@ -311,8 +315,8 @@
       db().from('installation_user_technician_bindings').select('installation_team_id,technician_name,team:installation_teams(id,name)').maybeSingle(),
       db().from('installation_data_access_profiles').select('access_mode').maybeSingle()
     ]);
-    if(bindingError&&bindingError.code!=='PGRST116')throw new Error('تعذر تحميل هوية فني التركيبات: '+bindingError.message);
-    if(scopeError&&scopeError.code!=='PGRST116'&&scopeError.code!=='42P01')throw new Error('تعذر تحميل نطاق تنفيذ التركيبات: '+scopeError.message);
+    if(bindingError&&bindingError.code!=='PGRST116')throw new Error('تعذر تحميل هوية فني المواعيد: '+bindingError.message);
+    if(scopeError&&scopeError.code!=='PGRST116'&&scopeError.code!=='42P01')throw new Error('تعذر تحميل نطاق تنفيذ المواعيد: '+scopeError.message);
     const accessMode=role==='super_admin'?'all':String(scope?.access_mode||'own').trim().toLowerCase();
     const isTechnicianRole=role==='viewer';
     const technicianName=String(binding?.technician_name||'').trim();
@@ -366,24 +370,24 @@
   }
   async function uploadCompletionFile(requestId,fileKind,file){
     if(!file)return null;
-    if(!['before','after','delivery_authorization'].includes(fileKind))throw new Error('نوع مرفق محضر التركيب غير مدعوم.');
+    if(!['before','after','delivery_authorization'].includes(fileKind))throw new Error('نوع مرفق محضر الموعد غير مدعوم.');
     if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('صيغة الصورة غير مدعومة. استخدم JPG أو PNG أو WEBP.');
     if(file.size<1||file.size>10485760)throw new Error('حجم الصورة يجب أن يكون بين 1 بايت و10 ميجابايت.');
     const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
     const path=`${requestId}/completion/${fileKind}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const {error:uploadError}=await db().storage.from('installation-evidence').upload(path,file,{contentType:file.type,upsert:false});
-    if(uploadError)throw new Error('تعذر رفع مرفق محضر التركيب: '+uploadError.message);
+    if(uploadError)throw new Error('تعذر رفع مرفق محضر الموعد: '+uploadError.message);
     const {error:recordError}=await db().from('installation_completion_files').insert({installation_request_id:requestId,file_kind:fileKind,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size});
     if(recordError){
       await db().storage.from('installation-evidence').remove([path]);
-      throw new Error('تعذر تسجيل مرفق محضر التركيب: '+recordError.message);
+      throw new Error('تعذر تسجيل مرفق محضر الموعد: '+recordError.message);
     }
     return path;
   }
   async function saveCompletion(payload){
     requireAction('edit','installationCompletion');
     requireAction('add','salesInvoices');
-    if(!payload?.id)throw new Error('معرّف طلب التركيب مطلوب.');
+    if(!payload?.id)throw new Error('معرّف الموعد مطلوب.');
     const workSummary=String(payload.workSummary||'').trim();
     const recipientName=String(payload.recipientName||'').trim();
     const invoiceNumber=String(payload.invoiceNumber||'').trim();
@@ -394,7 +398,7 @@
     if(!invoiceDate)throw new Error('تاريخ الفاتورة مطلوب.');
     const report={installation_request_id:payload.id,work_summary:workSummary,recipient_name:recipientName,invoice_number:invoiceNumber,invoice_date:invoiceDate,recipient_role:null,customer_notes:null,signed_at:null};
     const {error:reportError}=await db().from('installation_completion_reports').upsert(report,{onConflict:'installation_request_id'});
-    if(reportError)throw new Error('تعذر حفظ محضر إكمال التركيب: '+reportError.message);
+    if(reportError)throw new Error('تعذر حفظ محضر إكمال الموعد: '+reportError.message);
     const {error:invoiceSyncError}=await db().rpc('sync_sales_invoice_from_installation',{p_installation_request_id:payload.id});
     if(invoiceSyncError)throw new Error('تم حفظ المحضر لكن تعذر تسجيل فاتورة المبيعات: '+invoiceSyncError.message);
     const jobs=[];
@@ -405,8 +409,8 @@
     return true;
   }
   async function signedFileUrl(path,expiresIn=900){const {data,error}=await db().storage.from('installation-evidence').createSignedUrl(path,expiresIn);if(error)throw new Error('تعذر فتح المرفق: '+error.message);return data?.signedUrl||''}
-  async function exceptionList(){requireAction('view','installationExceptions');const [{data:requests,error:re},{data:revisits,error:ve}]=await Promise.all([db().from('installation_requests').select('*,customer:customers(id,customer_name,phone),technician:installation_technicians(id,full_name)').in('status',['مؤجل','متعذر']).order('last_status_changed_at',{ascending:false,nullsFirst:false}),db().from('installation_revisits').select('*').order('created_at',{ascending:false})]);if(re)throw new Error('تعذر تحميل استثناءات التركيبات: '+re.message);if(ve)throw new Error('تعذر تحميل إعادة الزيارات: '+ve.message);const map=new Map();(revisits||[]).forEach(v=>{if(!map.has(v.installation_request_id)||v.status==='مجدولة')map.set(v.installation_request_id,v)});return (requests||[]).map(r=>({id:r.id,requestNumber:r.request_number,customerName:r.customer?.customer_name||'',customerPhone:r.customer?.phone||'',technicianId:r.technician_id||'',technicianName:r.assigned_technician_name||r.technician?.full_name||'',scheduledDate:r.scheduled_date||'',status:r.status||'',failureReason:r.execution_failure_reason||'',executionNotes:r.execution_notes||'',activeRevisit:(()=>{const v=map.get(r.id);return v?{id:v.id,scheduledDate:v.scheduled_date||'',timeSlot:v.time_slot||'',technicianId:v.technician_id||'',actionType:v.action_type||'إعادة زيارة',notes:v.notes||'',status:v.status||'مجدولة'}:null})()}))}
-  async function saveRevisit(payload){requireAction('edit','installationExceptions');if(!payload.scheduledDate||!payload.technicianId)throw new Error('تاريخ إعادة الزيارة والفني مطلوبان.');const {data:existing,error:ee}=await db().from('installation_revisits').select('id').eq('installation_request_id',payload.requestId).eq('status','مجدولة').maybeSingle();if(ee)throw new Error('تعذر التحقق من إعادة الزيارة: '+ee.message);const record={installation_request_id:payload.requestId,scheduled_date:payload.scheduledDate,time_slot:payload.timeSlot,technician_id:payload.technicianId,action_type:payload.actionType||'إعادة زيارة',notes:payload.notes||null,status:'مجدولة'};let q=existing?.id?db().from('installation_revisits').update(record).eq('id',existing.id):db().from('installation_revisits').insert(record);const {error}=await q;if(error)throw new Error('تعذر حفظ إعادة الزيارة: '+error.message);const {error:ue}=await db().from('installation_requests').update({scheduled_date:payload.scheduledDate,time_slot:payload.timeSlot,technician_id:payload.technicianId,status:'مسند',assignment_notes:payload.notes||null}).eq('id',payload.requestId);if(ue)throw new Error('تم حفظ الزيارة لكن تعذر تحديث طلب التركيب: '+ue.message);void notifyEvent('installation.revisit_scheduled',payload.requestId,null,{scheduledDate:payload.scheduledDate,actionType:payload.actionType||'إعادة زيارة'},'revisit:'+payload.scheduledDate)}
+  async function exceptionList(){requireAction('view','installationExceptions');const [{data:requests,error:re},{data:revisits,error:ve}]=await Promise.all([db().from('installation_requests').select('*,customer:customers(id,customer_name,phone),technician:installation_technicians(id,full_name)').in('status',['مؤجل','متعذر']).order('last_status_changed_at',{ascending:false,nullsFirst:false}),db().from('installation_revisits').select('*').order('created_at',{ascending:false})]);if(re)throw new Error('تعذر تحميل استثناءات المواعيد: '+re.message);if(ve)throw new Error('تعذر تحميل إعادة الزيارات: '+ve.message);const map=new Map();(revisits||[]).forEach(v=>{if(!map.has(v.installation_request_id)||v.status==='مجدولة')map.set(v.installation_request_id,v)});return (requests||[]).map(r=>({id:r.id,requestNumber:r.request_number,customerName:r.customer?.customer_name||'',customerPhone:r.customer?.phone||'',technicianId:r.technician_id||'',technicianName:r.assigned_technician_name||r.technician?.full_name||'',scheduledDate:r.scheduled_date||'',status:r.status||'',failureReason:r.execution_failure_reason||'',executionNotes:r.execution_notes||'',activeRevisit:(()=>{const v=map.get(r.id);return v?{id:v.id,scheduledDate:v.scheduled_date||'',timeSlot:v.time_slot||'',technicianId:v.technician_id||'',actionType:v.action_type||'إعادة زيارة',notes:v.notes||'',status:v.status||'مجدولة'}:null})()}))}
+  async function saveRevisit(payload){requireAction('edit','installationExceptions');if(!payload.scheduledDate||!payload.technicianId)throw new Error('تاريخ إعادة الزيارة والفني مطلوبان.');const {data:existing,error:ee}=await db().from('installation_revisits').select('id').eq('installation_request_id',payload.requestId).eq('status','مجدولة').maybeSingle();if(ee)throw new Error('تعذر التحقق من إعادة الزيارة: '+ee.message);const record={installation_request_id:payload.requestId,scheduled_date:payload.scheduledDate,time_slot:payload.timeSlot,technician_id:payload.technicianId,action_type:payload.actionType||'إعادة زيارة',notes:payload.notes||null,status:'مجدولة'};let q=existing?.id?db().from('installation_revisits').update(record).eq('id',existing.id):db().from('installation_revisits').insert(record);const {error}=await q;if(error)throw new Error('تعذر حفظ إعادة الزيارة: '+error.message);const {error:ue}=await db().from('installation_requests').update({scheduled_date:payload.scheduledDate,time_slot:payload.timeSlot,technician_id:payload.technicianId,status:'مسند',assignment_notes:payload.notes||null}).eq('id',payload.requestId);if(ue)throw new Error('تم حفظ الزيارة لكن تعذر تحديث الموعد: '+ue.message);void notifyEvent('installation.revisit_scheduled',payload.requestId,null,{scheduledDate:payload.scheduledDate,actionType:payload.actionType||'إعادة زيارة'},'revisit:'+payload.scheduledDate)}
   async function operationalReport(filters={}){
     requireAction('view','installationReports');
     let q=db().from('installation_requests').select('id,request_number,status,scheduled_date,installation_team_id,technician_id,assigned_technician_name,representative_id,total_services_amount,started_at,completed_at,execution_failure_reason,customer:customers(id,customer_name),technician:installation_technicians(id,full_name),team:installation_teams(id,name),representative:sales_representatives(id,full_name)');
@@ -425,11 +429,11 @@
       db().from('sales_invoices').select('installation_request_id,invoice_number,invoice_amount,installation_expenses,invoice_date,status').eq('source_type','installation').neq('status','ملغاة'),
       db().from('installation_request_services').select('installation_request_id,quantity,line_total,service:installation_service_types(default_cost)')
     ]);
-    if(re)throw new Error('تعذر تحميل تقرير التركيبات: '+re.message);
+    if(re)throw new Error('تعذر تحميل تقرير المواعيد: '+re.message);
     if(ve)throw new Error('تعذر تحميل بيانات إعادة الزيارة: '+ve.message);
-    if(te||tme||rpe)throw new Error('تعذر تحميل قوائم تصفية تقارير التركيبات.');
+    if(te||tme||rpe)throw new Error('تعذر تحميل قوائم تصفية تقارير المواعيد.');
     if(ie)throw new Error('تعذر تحميل القيم المالية للفواتير: '+ie.message);
-    if(se)throw new Error('تعذر تحميل تكاليف خدمات التركيبات: '+se.message);
+    if(se)throw new Error('تعذر تحميل تكاليف خدمات المواعيد: '+se.message);
     const revisitCount=new Map();(revisits||[]).forEach(v=>revisitCount.set(v.installation_request_id,(revisitCount.get(v.installation_request_id)||0)+1));
     const invoiceMap=new Map();(invoices||[]).forEach(x=>invoiceMap.set(x.installation_request_id,x));
     const serviceAmount=new Map(),serviceCost=new Map(),serviceQuantity=new Map();(services||[]).forEach(x=>{serviceAmount.set(x.installation_request_id,(serviceAmount.get(x.installation_request_id)||0)+Number(x.line_total||0));serviceCost.set(x.installation_request_id,(serviceCost.get(x.installation_request_id)||0)+Number(x.quantity||0)*Number(x.service?.default_cost||0));serviceQuantity.set(x.installation_request_id,(serviceQuantity.get(x.installation_request_id)||0)+Number(x.quantity||0));});
@@ -457,9 +461,9 @@
       db().from('installation_teams').select('id,name').order('name'),
       db().from('sales_representatives').select('id,full_name').order('full_name')
     ]);
-    if(ve)throw new Error('تعذر تحميل زيارات ملخص التركيبات: '+ve.message);
-    if(sre)throw new Error('تعذر تحميل الطلبات المجدولة لملخص التركيبات: '+sre.message);
-    if(te||re)throw new Error('تعذر تحميل فلاتر ملخص التركيبات.');
+    if(ve)throw new Error('تعذر تحميل زيارات ملخص المواعيد: '+ve.message);
+    if(sre)throw new Error('تعذر تحميل الطلبات المجدولة لملخص المواعيد: '+sre.message);
+    if(te||re)throw new Error('تعذر تحميل فلاتر ملخص المواعيد.');
     const inScope=(row,representativeId,teamId)=>(!filters.representativeId||String(representativeId||'')===String(filters.representativeId))&&(!teamFilterApplied||selectedTeams.has(String(teamId||'')));
     const scopedVisits=(visits||[]).filter(v=>inScope(v,v.request?.representative_id,v.installation_team_id));
     const scopedRequests=(scheduledRequests||[]).filter(r=>inScope(r,r.representative_id,r.installation_team_id));
@@ -471,7 +475,7 @@
     let requestsWithVisits=new Set();
     if(candidateRequestIds.length){
       const {data:anyVisits,error:ave}=await db().from('installation_execution_visits').select('installation_request_id').in('installation_request_id',candidateRequestIds);
-      if(ave)throw new Error('تعذر التحقق من نوع جدولة طلبات ملخص التركيبات: '+ave.message);
+      if(ave)throw new Error('تعذر التحقق من نوع جدولة طلبات ملخص المواعيد: '+ave.message);
       requestsWithVisits=new Set((anyVisits||[]).map(v=>String(v.installation_request_id||'')).filter(Boolean));
     }
     const singleDayRequests=scopedRequests.filter(r=>!requestsWithVisits.has(String(r.id||'')));
@@ -483,10 +487,10 @@
     const requestServicesResult=requestIds.length?await db().from('installation_request_services').select('id,installation_request_id,quantity,unit_price,line_total,service:installation_service_types(id,name,default_price,default_cost)').in('installation_request_id',requestIds):{data:[],error:null};
     const {data:visitLines,error:vle}=visitLinesResult,{data:requestServices,error:rse}=requestServicesResult;
     if(vle)throw new Error('تعذر تحميل كميات خدمات الزيارات: '+vle.message);
-    if(rse)throw new Error('تعذر تحميل خدمات طلبات التركيبات: '+rse.message);
+    if(rse)throw new Error('تعذر تحميل خدمات المواعيد: '+rse.message);
     const neighborhoodIds=[...new Set([...scopedVisits.map(v=>v.request?.neighborhood_id),...singleDayRequests.map(r=>r.neighborhood_id)].filter(Boolean))];
     const neighborhoodsResult=neighborhoodIds.length?await db().from('installation_neighborhoods').select('id,name,city_id,region_id,city,region').in('id',neighborhoodIds):{data:[],error:null};
-    if(neighborhoodsResult.error)throw new Error('تعذر تحميل البيانات الجغرافية لملخص التركيبات: '+neighborhoodsResult.error.message);
+    if(neighborhoodsResult.error)throw new Error('تعذر تحميل البيانات الجغرافية لملخص المواعيد: '+neighborhoodsResult.error.message);
     const geoMap=new Map((neighborhoodsResult.data||[]).map(n=>[String(n.id),{neighborhoodId:n.id,neighborhoodName:n.name||'',cityId:n.city_id||'',cityName:n.city||'',regionId:n.region_id||'',regionName:n.region||''}]));
 
     const visitMap=new Map(scopedVisits.map(v=>[v.id,v])),serviceMap=new Map((requestServices||[]).map(x=>[x.id,x])),servicesByRequest=new Map(),grouped=new Map();
@@ -541,7 +545,7 @@
     return {rows,executionGroups,summary:{teams:rows.length,visits:scopedVisits.length+singleDayRequests.length,quantity:totalQuantity,value:totalValue,expenses:totalExpenses,profit:totalProfit,average:totalQuantity?totalValue/totalQuantity:0},teams:(teams||[]).map(x=>({id:x.id,name:x.name})),representatives:(reps||[]).map(x=>({id:x.id,name:x.full_name}))};
   }
 
-  async function settingsCatalog(){requireAction('view','installationSettings');const [services,teams,neighborhoods,regions,cities]=await Promise.all([db().from('installation_service_types').select('*').order('name'),db().from('installation_teams').select('*').order('name'),db().from('installation_neighborhoods').select('*').order('name'),db().from('installation_regions').select('id,name,is_active').order('name'),db().from('installation_cities').select('id,region_id,name,is_active').order('name')]);if(services.error)throw new Error('تعذر تحميل الخدمات: '+services.error.message);if(teams.error)throw new Error('تعذر تحميل فرق التركيبات: '+teams.error.message);if(neighborhoods.error)throw new Error('تعذر تحميل الأحياء: '+neighborhoods.error.message);if(regions.error||cities.error)throw new Error('تعذر تحميل المناطق والمدن. شغّل Migration المرحلة أولًا.');return {services:services.data||[],teams:teams.data||[],neighborhoods:neighborhoods.data||[],regions:regions.data||[],cities:cities.data||[]}}
+  async function settingsCatalog(){requireAction('view','installationSettings');const [services,teams,neighborhoods,regions,cities]=await Promise.all([db().from('installation_service_types').select('*').order('name'),db().from('installation_teams').select('*').order('name'),db().from('installation_neighborhoods').select('*').order('name'),db().from('installation_regions').select('id,name,is_active').order('name'),db().from('installation_cities').select('id,region_id,name,is_active').order('name')]);if(services.error)throw new Error('تعذر تحميل الخدمات: '+services.error.message);if(teams.error)throw new Error('تعذر تحميل فرق المواعيد: '+teams.error.message);if(neighborhoods.error)throw new Error('تعذر تحميل الأحياء: '+neighborhoods.error.message);if(regions.error||cities.error)throw new Error('تعذر تحميل المناطق والمدن. شغّل Migration المرحلة أولًا.');return {services:services.data||[],teams:teams.data||[],neighborhoods:neighborhoods.data||[],regions:regions.data||[],cities:cities.data||[]}}
   async function saveSettingItem(type,payload){
     requireAction(payload.id?'edit':'add','installationSettings');
     if(type==='neighborhood'){
@@ -565,8 +569,8 @@
   async function toggleSettingItem(type,id,isActive){requireAction('edit','installationSettings');const table=type==='service'?'installation_service_types':type==='neighborhood'?'installation_neighborhoods':'installation_teams';const record=type==='team'?{status:isActive?'متاحة':'غير نشطة'}:{is_active:!!isActive};const {error}=await db().from(table).update(record).eq('id',id);if(error)throw new Error('تعذر تحديث الحالة: '+error.message)}
   async function removeSettingItem(type,id){requireAction('delete','installationSettings');const table=type==='service'?'installation_service_types':type==='neighborhood'?'installation_neighborhoods':'installation_teams';const {error}=await db().from(table).delete().eq('id',id);if(error)throw new Error('تعذر حذف البيانات؛ قد تكون مرتبطة بطلبات قائمة. '+error.message)}
 
-  async function getSettings(){requireAction('view','installationSettings');const {data,error}=await db().from('installation_settings').select('*').eq('id',1).maybeSingle();if(error)throw new Error('تعذر تحميل إعدادات التركيبات: '+error.message);const r=data||{};return {morningLabel:r.morning_label||'صباحية',eveningLabel:r.evening_label||'مسائية',slaDays:Number(r.sla_days??1),defaultPriority:r.default_priority||'عادية',requireCompletionReport:r.require_completion_report!==false}}
-  async function saveSettings(payload){requireAction('edit','installationSettings');const record={id:1,morning_label:payload.morningLabel,evening_label:payload.eveningLabel,sla_days:payload.slaDays,default_priority:payload.defaultPriority,require_completion_report:!!payload.requireCompletionReport,updated_at:new Date().toISOString()};const {error}=await db().from('installation_settings').upsert(record,{onConflict:'id'});if(error)throw new Error('تعذر حفظ إعدادات التركيبات: '+error.message)}
+  async function getSettings(){requireAction('view','installationSettings');const {data,error}=await db().from('installation_settings').select('*').eq('id',1).maybeSingle();if(error)throw new Error('تعذر تحميل إعدادات المواعيد: '+error.message);const r=data||{};return {morningLabel:r.morning_label||'صباحية',eveningLabel:r.evening_label||'مسائية',slaDays:Number(r.sla_days??1),defaultPriority:r.default_priority||'عادية',requireCompletionReport:r.require_completion_report!==false}}
+  async function saveSettings(payload){requireAction('edit','installationSettings');const record={id:1,morning_label:payload.morningLabel,evening_label:payload.eveningLabel,sla_days:payload.slaDays,default_priority:payload.defaultPriority,require_completion_report:!!payload.requireCompletionReport,updated_at:new Date().toISOString()};const {error}=await db().from('installation_settings').upsert(record,{onConflict:'id'});if(error)throw new Error('تعذر حفظ إعدادات المواعيد: '+error.message)}
   window.InstallationsService={list,options,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,advanceExecution,completionList,confirmActualQuantities,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
   window.dispatchEvent(new CustomEvent('kyum-installations-service-ready'));
 })();
