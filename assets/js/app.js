@@ -7238,12 +7238,14 @@ document.getElementById("closeDialogBtn").addEventListener("click", closeCustome
 document.getElementById("cancelDialogBtn").addEventListener("click", closeCustomerDialog);
 document.getElementById("customerForm").addEventListener("submit", handleCustomerSubmit);
 
-["customerSearch", "typeFilter", "interestFilter", "repFilter"].forEach(id => {
-  document.getElementById(id).addEventListener("input", () => {
+["customerSearch"].forEach(id => {
+  const control = document.getElementById(id);
+  if (!control) return;
+  control.addEventListener("input", () => {
     customersPage = 1;
     renderCustomers();
   });
-  document.getElementById(id).addEventListener("change", () => {
+  control.addEventListener("change", () => {
     customersPage = 1;
     renderCustomers();
   });
@@ -7279,20 +7281,34 @@ document.addEventListener("kyum-apply-quotation-filters", () => {
   renderQuotations();
 });
 
-document.getElementById("customersTableBody").addEventListener("click", event => {
-  const editId = event.target.dataset.edit;
-  const deleteId = event.target.dataset.delete;
-  const detailsId = event.target.dataset.details;
-  const addFollowupCustomerId = event.target.dataset.addFollowup;
+document.getElementById("customersTableBody")?.addEventListener("click", event => {
+  const action = event.target.closest?.("[data-edit],[data-delete],[data-details],[data-add-followup]");
+  if (!action) return;
+
+  const editId = action.dataset.edit;
+  const deleteId = action.dataset.delete;
+  const detailsId = action.dataset.details;
+  const addFollowupCustomerId = action.dataset.addFollowup;
 
   if (editId) {
     const customer = customers.find(item => item.id === editId);
     if (customer) openCustomerDialog(customer);
+    return;
   }
 
-  if (deleteId) deleteCustomer(deleteId);
-  if (detailsId) showCustomerDetails(detailsId);
-  if (addFollowupCustomerId) openFollowupDialog(addFollowupCustomerId);
+  if (deleteId) {
+    deleteCustomer(deleteId);
+    return;
+  }
+
+  if (detailsId) {
+    showCustomerDetails(detailsId);
+    return;
+  }
+
+  if (addFollowupCustomerId) {
+    openFollowupDialog(addFollowupCustomerId);
+  }
 });
 
 document.getElementById("exportFollowupsPdfBtn")?.addEventListener("click", event => runFilteredListPdf(event.currentTarget, followupReportConfig, false));
