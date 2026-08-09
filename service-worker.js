@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-4-canonical-customer-master";
+const CACHE_VERSION = "petatoe-pwa-18-54-5-canonical-customer-master";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -55,6 +55,7 @@ const CORE_APP_SHELL = [
   "./assets/js/sales-invoices-service.js",
   "./assets/js/installations-service-contract.js",
   "./assets/js/app.js",
+  "./assets/js/customer-excel-actions-hotfix.js",
   "./assets/js/notification-center.js",
   "./assets/js/installations-module.js",
   "./assets/js/installation-scheduling.js",

@@ -19,7 +19,7 @@
       }
 
       const script = document.createElement('script');
-      script.src = 'assets/js/installations-service.js?v=18.54.4-recovery';
+      script.src = 'assets/js/installations-service.js?v=18.54.5-recovery';
       script.async = false;
       script.dataset.kyumInstallationsServiceRecovery = 'true';
       script.addEventListener('load', resolve, { once: true });
