@@ -5862,34 +5862,6 @@ function renderDailyTargets(actuals) {
     `الهدف: ${targets.quotationsTarget}`;
 }
 
-function managerNoteVisibleToCurrentUser() {
-  if (!dailyManagerNote) return true;
-  const auth = window.CustomerAuth?.getState?.();
-  const userId = auth?.user?.id;
-  const canManage = Boolean(window.CustomerPermissions?.canScreen?.("dailyOperationsSettings", "edit"));
-  if (canManage || dailyManagerNote.audienceScope === "all" || !dailyManagerNote.audienceScope) return true;
-  if (dailyManagerNote.audienceScope === "selected") return (dailyManagerNote.recipientUserIds || []).includes(userId);
-  if (dailyManagerNote.audienceScope === "report_participants") {
-    return currentEmployeeReportSetting()?.includeInDailyReports !== false;
-  }
-  return true;
-}
-
-function renderDailyManagerNote() {
-  const visible = managerNoteVisibleToCurrentUser();
-  const card = document.getElementById("dailyManagerNoteCard");
-  card?.classList.toggle("hidden", !visible);
-  document.getElementById("dailyManagerNoteTitle").textContent =
-    dailyManagerNote?.title || "لا توجد ملاحظة يومية.";
-  document.getElementById("dailyManagerNoteText").textContent =
-    dailyManagerNote?.noteText || "يمكن للإدارة إضافة توجيه يومي للفريق.";
-
-  const canManage = Boolean(window.CustomerPermissions?.canScreen?.("dailyOperationsSettings", "edit"));
-  document.getElementById("editDailyManagerNoteBtn")?.classList.toggle("hidden", !canManage);
-  document.getElementById("editDailyTargetsBtn")?.classList.toggle("hidden", !canManage);
-  document.getElementById("manageEmployeeTargetsBtn")?.classList.toggle("hidden", !canManage);
-}
-
 function dailyWhatsAppTemplateMessage() {
   return String(dailyWhatsAppTemplate?.message_text || "").trim();
 }
@@ -6095,8 +6067,6 @@ function renderDailyOperations() {
       day: "numeric"
     });
 
-  renderDailyChecklist(today, profile);
-  renderDailyManagerNote();
   renderDailySuggestedCustomers();
   loadDailySuggestedCustomers();
 
@@ -6123,12 +6093,6 @@ function renderDailyOperations() {
     todayQuotations.length;
   document.getElementById("dailyOverdueFollowupsCount").textContent =
     overdueFollowups.length;
-
-  renderDailyTargets({
-    customers: todayCustomers.length,
-    followups: todayFollowups.length,
-    quotations: todayQuotations.length
-  });
 
   const followupsBody = document.getElementById("dailyFollowupsBody");
   followupsBody.innerHTML = todayFollowups.length
@@ -6189,16 +6153,6 @@ async function loadDailyOperations(force = false) {
   );
 
   try {
-    if (force || !dailyManagerNote) {
-      [
-        dailyManagerNote,
-        employeeReportSettings
-      ] = await Promise.all([
-        window.DailyOperationsService.getManagerNote(undefined, { force }),
-        window.EmployeeReportSettingsService?.listForDate?.() || Promise.resolve([])
-      ]);
-    }
-
     await Promise.all([
       customersLoaded ? Promise.resolve() : loadCustomersFromSupabase(true),
       followupsLoaded ? Promise.resolve() : loadFollowupsFromSupabase(true),
@@ -6217,7 +6171,7 @@ async function loadDailyOperations(force = false) {
       "dailyOperationsStatus",
       isPermissionDenied
         ? "لا توجد صلاحية لعرض إدارة المهام اليومية."
-        : "تعذر تحميل المهام اليومية.",
+        : "تعذر تحميل بيانات مركز التشغيل اليومي.",
       "error"
     );
   } finally {
@@ -8544,7 +8498,6 @@ function syncManagerNoteRecipientsVisibility() {
   document.getElementById("dailyManagerNoteRecipientsWrap")?.classList.toggle("hidden", scope !== "selected");
 }
 
-document.getElementById("dailyManagerNoteAudienceScope")?.addEventListener("change", syncManagerNoteRecipientsVisibility);
 
 function renderEmployeeTargetsRows() {
   const body = document.getElementById("employeeTargetsBody");
@@ -8638,22 +8591,6 @@ document.getElementById("dailyTargetsForm")?.addEventListener("submit", async ev
   }
 });
 
-document.getElementById("dailyManagerNoteForm")?.addEventListener("submit", async event => {
-  event.preventDefault();
-  try {
-    dailyManagerNote = await window.DailyOperationsService.saveManagerNote({
-      title: document.getElementById("dailyManagerNoteTitleInput").value,
-      noteText: document.getElementById("dailyManagerNoteTextInput").value,
-      audienceScope: document.getElementById("dailyManagerNoteAudienceScope").value,
-      recipientUserIds: [...document.querySelectorAll('#dailyManagerNoteRecipients input:checked')].map(input => input.value)
-    });
-    closeDailyManagerNoteDialog();
-    renderDailyManagerNote();
-    showDataStatus("dailyOperationsStatus", "تم حفظ ملاحظة المدير.", "success");
-  } catch (error) {
-    showDataStatus("dailyOperationsStatus", error instanceof Error ? error.message : "تعذر حفظ الملاحظة.", "error");
-  }
-});
 
 document.getElementById("dailyOperationsView")?.addEventListener("click", event => {
   const view = event.target.closest("[data-daily-open-view]")?.dataset.dailyOpenView;
