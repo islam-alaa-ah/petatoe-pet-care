@@ -7882,21 +7882,17 @@ function openCustomerImportOverrideDialog() {
 
 async function finalizeCustomerImportOverrideAudit(auditId, result, overrideRowsCount, status = "completed") {
   if (!auditId) return;
-  const { data, error } = await window.customerSupabase.functions.invoke("verify-admin-import-override", {
-    body: {
-      action: "finalize",
-      auditId,
-      status,
-      insertedRows: Number(result?.inserted || 0),
-      updatedRows: Number(result?.updated || 0),
-      requestRows: Number(result?.requestsInserted || 0),
-      skippedRows: Number((result?.skipped || 0) + (result?.requestsSkipped || 0)),
-      failedRows: Number(result?.failed || 0),
-      overrideRows: Number(overrideRowsCount || 0)
-    }
+  const { data, error } = await window.customerSupabase.rpc("finalize_admin_import_override", {
+    p_audit_id: auditId,
+    p_status: status,
+    p_inserted_rows: Number(result?.inserted || 0),
+    p_updated_rows: Number(result?.updated || 0),
+    p_skipped_rows: Number(result?.skipped || 0),
+    p_failed_rows: Number(result?.failed || 0),
+    p_override_rows: Number(overrideRowsCount || 0)
   });
-  if (error || !data?.finalized) {
-    throw new Error(data?.error || error?.message || "تعذر إغلاق سجل الاعتماد الاستثنائي.");
+  if (error || data !== true) {
+    throw new Error(error?.message || "تعذر إغلاق سجل الاعتماد الاستثنائي.");
   }
 }
 
@@ -8093,19 +8089,43 @@ document.getElementById("customerImportOverrideForm")?.addEventListener("submit"
   try {
     const eligible = customerImportOverrideRows(customerImportPreview?.rows || []);
     const duplicates = (customerImportPreview?.rows || []).filter(customerImportIsDuplicate).length;
-    const { data, error } = await window.customerSupabase.functions.invoke("verify-admin-import-override", {
-      body: {
-        action: "verify",
-        password,
-        fileName: customerImportFile?.name || "",
-        totalRows: customerImportPreview?.summary?.total || 0,
-        overrideRows: eligible.length,
-        duplicateRows: duplicates
-      }
+
+    const { data: userData, error: userError } = await window.customerSupabase.auth.getUser();
+    if (userError || !userData?.user?.email) {
+      throw new Error(userError?.message || "تعذر تحديد بريد مدير النظام الحالي.");
+    }
+
+    const currentUserId = userData.user.id;
+    const currentEmail = userData.user.email;
+
+    const { data: reauthData, error: reauthError } = await window.customerSupabase.auth.signInWithPassword({
+      email: currentEmail,
+      password
     });
-    if (error) throw new Error(error.message || "تعذر التحقق من كلمة المرور.");
-    if (!data?.verified) throw new Error(data?.error || "فشل التحقق من مدير النظام.");
-    customerImportOverrideAuditId = data.auditId || null;
+
+    if (reauthError || !reauthData?.user) {
+      throw new Error("كلمة المرور غير صحيحة.");
+    }
+
+    if (reauthData.user.id !== currentUserId) {
+      throw new Error("تم رفض الاعتماد لأن جلسة المستخدم تغيرت أثناء التحقق.");
+    }
+
+    const { data: auditId, error: auditError } = await window.customerSupabase.rpc(
+      "begin_admin_import_override",
+      {
+        p_file_name: customerImportFile?.name || "",
+        p_total_rows: Number(customerImportPreview?.summary?.total || 0),
+        p_override_rows: Number(eligible.length || 0),
+        p_duplicate_rows: Number(duplicates || 0)
+      }
+    );
+
+    if (auditError || !auditId) {
+      throw new Error(auditError?.message || "تعذر إنشاء سجل الاعتماد الاستثنائي.");
+    }
+
+    customerImportOverrideAuditId = auditId;
     closeCustomerImportOverrideDialog();
     await executeCustomerImport({ override: true, auditId: customerImportOverrideAuditId });
   } catch (error) {

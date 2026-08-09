@@ -123,6 +123,32 @@
     previewFile(file).catch(error => show("customerImportStatus", error.message || "تعذر قراءة ملف Excel.", "error"));
   }, true);
 
+
+  // The exceptional-import controls also get a capture-phase bridge so a late
+  // unrelated app binding failure cannot make the password path unresponsive.
+  document.addEventListener("click", event => {
+    if (!closest(event.target, "customerImportOverrideBtn")) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    try {
+      requireAppFunction("openCustomerImportOverrideDialog")();
+    } catch (error) {
+      show("customerImportStatus", error.message || "تعذر فتح الاعتماد الاستثنائي.", "error");
+    }
+  }, true);
+
+  document.addEventListener("submit", event => {
+    const form = event.target;
+    if (!form || form.id !== "customerImportOverrideForm") return;
+    // app.js owns the secure re-authentication submit flow. Do not block it when
+    // its normal listener exists; this guard only surfaces a deterministic error
+    // if app.js failed before installing that listener.
+    if (typeof window.executeCustomerImport !== "function") {
+      event.preventDefault();
+      show("customerImportOverrideStatus", "تعذر تحميل محرك الاستيراد. نفذ Hard Refresh ثم أعد المحاولة.", "error");
+    }
+  }, true);
+
   window.PETATOECustomerImportRuntimeRecovery = Object.freeze({
     openImport,
     previewFile,
