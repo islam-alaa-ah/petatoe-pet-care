@@ -1,13 +1,13 @@
 {
-  "version": "18.54.2",
-  "build": 185402,
+  "version": "18.54.3",
+  "build": 185403,
   "forceUpdate": true,
   "releaseDate": "2026-08-09",
-  "title": "PETATOE PWA Refresh Loop Hotfix — P3.1",
+  "title": "PETATOE Services Code & Tax-Inclusive Pricing — P3.2",
   "notes": [
-    "تم توحيد إصدار Runtime مع version.json لمنع إعادة التحديث المتكررة.",
-    "تم تحديث Cache Token وملفات الواجهة إلى الإصدار 18.54.2.",
-    "لا يوجد تغيير في بيانات الموظفين أو السيارات أو فرق المواعيد."
+    "تم إضافة كود فريد للخدمات في إعدادات المواعيد ورفع Excel.",
+    "تم عرض وإدخال سعر الخدمة شامل ضريبة 15% مع حفظ السعر الأساسي داخليًا لمنع احتساب الضريبة مرتين.",
+    "تم تحديث جدول الخدمات إلى: الكود، الخدمة، السعر شامل الضريبة، التكلفة، الحالة، الإجراءات."
   ],
-  "cacheToken": "petatoe-pwa-18-54-2-pwa-refresh-loop-hotfix"
+  "cacheToken": "petatoe-pwa-18-54-3-services-code-tax-inclusive"
 }

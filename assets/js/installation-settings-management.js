@@ -7,6 +7,9 @@ let cache={services:[],teams:[],neighborhoods:[],regions:[],cities:[],employees:
 function db(){if(!window.customerSupabase)throw new Error('اتصال Supabase غير جاهز.');return window.customerSupabase}
 function message(text,type=''){const el=$('installationSettingsStatus');if(!el)return;el.textContent=text||'';el.classList.toggle('hidden',!text);el.dataset.type=type}
 function money(v){return new Intl.NumberFormat('ar-SA',{style:'currency',currency:'SAR',minimumFractionDigits:2}).format(Number(v||0))}
+function round2(v){return Math.round((Number(v||0)+Number.EPSILON)*100)/100}
+function vatInclusive(net){return round2(Number(net||0)*1.15)}
+function netFromVatInclusive(gross){return round2(Number(gross||0)/1.15)}
 function status(active,label){return `<span class="installation-status-pill${active?'':' is-inactive'}">${esc(label)}</span>`}
 function actionButtons(type,row,active){return `<div class="installation-settings-actions-cell"><button class="secondary-btn" type="button" data-setting-edit="${type}" data-id="${row.id}">تعديل</button><button class="secondary-btn" type="button" data-setting-toggle="${type}" data-id="${row.id}" data-active="${active?'1':'0'}">${active?'إيقاف':'تفعيل'}</button><button class="danger-btn" type="button" data-setting-delete="${type}" data-id="${row.id}">حذف</button></div>`}
 function teamParts(row){return {groomer:row.groomer_name||row.leader_name||'',driver:row.driver_name||'',car:row.car_name||''}}
@@ -15,7 +18,12 @@ function employeeLabel(row){return `${row.full_name}${row.phone?` — ${row.phon
 function carLabel(row){return `${row.name}${row.plate_number?` — ${row.plate_number}`:''}${row.is_active===false?' — غير نشطة':''}`}
 
 function render(){
-  $('installationServicesSettingsBody').innerHTML=cache.services.map(r=>`<tr><td>${esc(r.name)}</td><td>${money(r.default_price)}</td><td>${money(r.default_cost)}</td><td>${status(r.is_active!==false,r.is_active!==false?'نشطة':'متوقفة')}</td><td>${actionButtons('service',r,r.is_active!==false)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty-cell">لا توجد خدمات.</td></tr>';
+  const servicesBody=$('installationServicesSettingsBody');
+  if(servicesBody){
+    const servicesHead=servicesBody.closest('table')?.querySelector('thead tr');
+    if(servicesHead)servicesHead.innerHTML='<th>الكود</th><th>الخدمة</th><th>السعر شامل الضريبة</th><th>التكلفة</th><th>الحالة</th><th>الإجراءات</th>';
+    servicesBody.innerHTML=cache.services.map(r=>`<tr><td>${esc(r.service_code||'—')}</td><td>${esc(r.name)}</td><td>${money(vatInclusive(r.default_price))}</td><td>${money(r.default_cost)}</td><td>${status(r.is_active!==false,r.is_active!==false?'نشطة':'متوقفة')}</td><td>${actionButtons('service',r,r.is_active!==false)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty-cell">لا توجد خدمات.</td></tr>';
+  }
   const teamBody=$('installationTeamsSettingsBody');
   if(teamBody){
     const head=teamBody.closest('table')?.querySelector('thead tr');
@@ -50,7 +58,7 @@ function closeAllReferenceGeo(){['region','city','district'].forEach(type=>refer
 function bindReferenceGeography(row={}){const controller=ensureReferenceGeoController();controller.setValue({regionId:row.region_id||'',cityId:row.city_id||''});controller.setEnabled('city',Boolean(row.region_id),'ابحث واختر المدينة')}
 
 function fields(type,row={}){
-  if(type==='service')return `<label>اسم الخدمة<input name="name" required maxlength="120" value="${esc(row.name||'')}"></label><label>السعر<input name="price" type="number" min="0" step="0.01" required value="${Number(row.default_price||0)}"></label><label>التكلفة<input name="cost" type="number" min="0" step="0.01" required value="${Number(row.default_cost||0)}"></label><label>الحالة<select name="isActive"><option value="1" ${row.is_active!==false?'selected':''}>نشطة</option><option value="0" ${row.is_active===false?'selected':''}>متوقفة</option></select></label>`;
+  if(type==='service')return `<label>الكود<input name="serviceCode" required maxlength="60" value="${esc(row.service_code||'')}" placeholder="مثال: GRM-001"></label><label>اسم الخدمة<input name="name" required maxlength="120" value="${esc(row.name||'')}"></label><label>السعر شامل الضريبة<input name="priceInclusive" type="number" min="0" step="0.01" required value="${vatInclusive(row.default_price||0)}"></label><label>التكلفة<input name="cost" type="number" min="0" step="0.01" required value="${Number(row.default_cost||0)}"></label><label>الحالة<select name="isActive"><option value="1" ${row.is_active!==false?'selected':''}>نشطة</option><option value="0" ${row.is_active===false?'selected':''}>متوقفة</option></select></label><small class="field-hint">السعر المدخل شامل ضريبة القيمة المضافة 15%، ويُحفظ السعر الأساسي داخليًا لمنع احتساب الضريبة مرتين داخل الموعد.</small>`;
   if(type==='employee')return `<label>اسم الموظف<input name="fullName" required maxlength="120" value="${esc(row.full_name||'')}" placeholder="اسم الموظف"></label><label>الوظيفة<select name="employeeType" required><option value="جرومر" ${row.employee_type==='جرومر'?'selected':''}>جرومر</option><option value="سائق" ${row.employee_type==='سائق'?'selected':''}>سائق</option></select></label><label>رقم التواصل<input name="phone" maxlength="30" value="${esc(row.phone||'')}" placeholder="اختياري"></label><label>الحالة<select name="isActive"><option value="1" ${row.is_active!==false?'selected':''}>نشط</option><option value="0" ${row.is_active===false?'selected':''}>متوقف</option></select></label>`;
   if(type==='car')return `<label>اسم / كود السيارة<input name="name" required maxlength="120" value="${esc(row.name||'')}" placeholder="مثال: سيارة 1"></label><label>رقم اللوحة<input name="plateNumber" maxlength="60" value="${esc(row.plate_number||'')}" placeholder="اختياري"></label><label>الحالة<select name="isActive"><option value="1" ${row.is_active!==false?'selected':''}>نشطة</option><option value="0" ${row.is_active===false?'selected':''}>متوقفة</option></select></label>`;
   if(type==='team'){
@@ -96,6 +104,7 @@ async function saveCar(payload){
 async function submit(e){
   e.preventDefault();const fd=new FormData(e.currentTarget),type=$('installationReferenceType').value,payload=Object.fromEntries(fd.entries());payload.id=$('installationReferenceId').value;payload.isActive=payload.isActive!=='0';
   if(type==='neighborhood'){const controller=ensureReferenceGeoController();const validation=controller.validate({requireRegion:true,requireCity:true,requireDistrict:false});if(!validation.valid){const input=controller.elements(validation.field)?.search;input?.setCustomValidity(validation.message);input?.reportValidity();input?.focus();return}payload.regionId=validation.value.regionId;payload.cityId=validation.value.cityId;payload.region=validation.value.region||'';payload.city=validation.value.city||''}
+  if(type==='service'){payload.serviceCode=String(payload.serviceCode||'').trim();payload.price=netFromVatInclusive(payload.priceInclusive);if(!payload.serviceCode){const el=$('installationReferenceFormStatus');el.textContent='كود الخدمة مطلوب.';el.classList.remove('hidden');el.dataset.type='error';return}}
   try{if(type==='team')await saveTeam(payload);else if(type==='employee')await saveEmployee(payload);else if(type==='car')await saveCar(payload);else await window.InstallationsServiceSafe.saveSettingItem(type,payload);closeAllReferenceGeo();$('installationReferenceDialog').close();await load();message('تم حفظ البيانات بنجاح.','success')}catch(err){const el=$('installationReferenceFormStatus');el.textContent=err.message;el.classList.remove('hidden');el.dataset.type='error'}
 }
 
@@ -131,24 +140,26 @@ async function importServicesExcel(file){
     if(!rows.length)throw new Error('ملف Excel لا يحتوي على صفوف بيانات.');
     const seen=new Set(),prepared=[],errors=[];
     rows.forEach((r,i)=>{
+      const serviceCode=String(pick(r,['الكود','كود الخدمة','code','service code','service_code'])||'').trim();
       const name=String(pick(r,['اسم الخدمة','الخدمة','service','service name','name'])||'').trim();
-      const price=Number(pick(r,['السعر','سعر الخدمة','price','default price'])||0);
+      const inclusivePrice=Number(pick(r,['السعر شامل الضريبة','السعر شامل الضريبه','سعر شامل الضريبة','price incl vat','price including vat','inclusive price','السعر','سعر الخدمة'])||0);
       const cost=Number(pick(r,['التكلفة','تكلفة الخدمة','cost','default cost'])||0);
       const active=parseActive(pick(r,['الحالة','status','active','is active']));
-      const key=name.toLocaleLowerCase('ar');
+      const key=serviceCode.toLocaleLowerCase('en');
+      if(!serviceCode){errors.push(`صف ${i+2}: كود الخدمة مطلوب`);return}
       if(!name){errors.push(`صف ${i+2}: اسم الخدمة مطلوب`);return}
-      if(!Number.isFinite(price)||price<0||!Number.isFinite(cost)||cost<0){errors.push(`صف ${i+2}: السعر والتكلفة يجب أن يكونا أرقامًا موجبة أو صفرًا`);return}
-      if(seen.has(key)){errors.push(`صف ${i+2}: الخدمة مكررة داخل الملف (${name})`);return}
-      seen.add(key);prepared.push({name,price,cost,isActive:active});
+      if(!Number.isFinite(inclusivePrice)||inclusivePrice<0||!Number.isFinite(cost)||cost<0){errors.push(`صف ${i+2}: السعر شامل الضريبة والتكلفة يجب أن يكونا أرقامًا موجبة أو صفرًا`);return}
+      if(seen.has(key)){errors.push(`صف ${i+2}: كود الخدمة مكرر داخل الملف (${serviceCode})`);return}
+      seen.add(key);prepared.push({serviceCode,name,price:netFromVatInclusive(inclusivePrice),cost,isActive:active});
     });
     if(errors.length)throw new Error(`تعذر اعتماد الملف. ${errors.slice(0,5).join(' — ')}${errors.length>5?` — و${errors.length-5} أخطاء أخرى`:''}`);
     let done=0;
     for(const row of prepared){
-      const existing=cache.services.find(x=>String(x.name||'').trim().toLocaleLowerCase('ar')===row.name.toLocaleLowerCase('ar'));
+      const existing=cache.services.find(x=>String(x.service_code||'').trim().toLocaleLowerCase('en')===row.serviceCode.toLocaleLowerCase('en'));
       await window.InstallationsServiceSafe.saveSettingItem('service',{...row,id:existing?.id||''});
       done++;message(`جاري رفع الخدمات: ${done} / ${prepared.length}`);
     }
-    await load();message(`تم رفع ${prepared.length} خدمة من Excel بنجاح. الخدمات الموجودة تم تحديثها بدل تكرارها.`,'success');
+    await load();message(`تم رفع ${prepared.length} خدمة من Excel بنجاح. أكواد الخدمات الموجودة تم تحديثها بدل تكرارها.`,'success');
     const input=$('installationServicesExcelInput');if(input)input.value='';
   }catch(e){message(e.message||'تعذر استيراد الخدمات من Excel.','error')}
 }
