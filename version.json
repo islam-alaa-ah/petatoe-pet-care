@@ -1,13 +1,13 @@
 {
-  "version": "18.54.1",
-  "build": 185401,
+  "version": "18.54.2",
+  "build": 185402,
   "forceUpdate": true,
   "releaseDate": "2026-08-09",
-  "title": "PETATOE Appointment Settings Master Data — Phase P3",
+  "title": "PETATOE PWA Refresh Loop Hotfix — P3.1",
   "notes": [
-    "تمت إضافة أقسام الموظفين والسيارات داخل إعدادات المواعيد.",
-    "الموظفون مصنفون إلى جرومر أو سائق، والسيارات تُدار كبيانات مرجعية مستقلة.",
-    "فرق المواعيد أصبحت تربط جرومر + سائق + سيارة من البيانات المرجعية بدل الإدخال النصي."
+    "تم توحيد إصدار Runtime مع version.json لمنع إعادة التحديث المتكررة.",
+    "تم تحديث Cache Token وملفات الواجهة إلى الإصدار 18.54.2.",
+    "لا يوجد تغيير في بيانات الموظفين أو السيارات أو فرق المواعيد."
   ],
-  "cacheToken": "petatoe-pwa-18-54-1-appointment-employees-cars-teams"
+  "cacheToken": "petatoe-pwa-18-54-2-pwa-refresh-loop-hotfix"
 }
