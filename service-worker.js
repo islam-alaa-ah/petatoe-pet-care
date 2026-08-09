@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-10-runtime-recovery-p5-2";
+const CACHE_VERSION = "petatoe-pwa-18-54-11-daily-operations-simplification-p5-3";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

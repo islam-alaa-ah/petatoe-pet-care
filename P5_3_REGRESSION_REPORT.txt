@@ -1,0 +1,129 @@
+PETATOE P5.3 Daily Operations Simplification
+
+PASS - أهداف اليوم removed
+PASS - قائمة المهام اليومية removed
+PASS - متابعة إنجاز فريق المبيعات removed
+PASS - تنبيهات اليوم removed
+PASS - suggested customers retained
+PASS - followups retained
+PASS - new customers retained
+PASS - contracts retained
+PASS - overdue retained
+
+=== check:p5 ===
+> petatoe-pet-care-mobile@18.54.11 check:p5
+> node scripts/p5-runtime-regression-check.mjs
+
+PASS - package/version.json unified
+PASS - PWA/version.json unified
+PASS - service worker cache token unified
+PASS - daily task PostgREST relationship contract retained
+PASS - daily alerts PostgREST relationship contract retained
+PASS - appointment prefill no legacy customer geo select
+PASS - new appointment no customer representative ownership
+PASS - daily activity uses contracts terminology
+PASS - daily activity uses appointments terminology
+PASS - all known direct data modules registered
+10/10 PASS
+
+=== offline:runtime:check ===
+> petatoe-pet-care-mobile@18.54.11 offline:runtime:check
+> node scripts/offline-runtime-reliability-check.mjs
+
+PASS: All 77 local CSS/JS assets are registered in App Shell
+PASS: Version query strings are normalized with ignoreSearch
+PASS: Critical CDN libraries are registered in Vendor Cache
+PASS: App Shell installation is resilient and caches assets independently
+PASS: Release version is unified at 18.54.11
+PASS: All local CSS/JS version tokens are unified
+PASS: Previously omitted runtime scripts are now included
+
+Offline Runtime Reliability Certification: PASS
+
+=== dashboard:offline:check ===
+> petatoe-pet-care-mobile@18.54.11 dashboard:offline:check
+> node scripts/dashboard-offline-certification-check.mjs
+
+PASS - dashboardData exists
+PASS - renderDashboard exists
+PASS - Dashboard has no direct Supabase access
+PASS - Dashboard consumes customers state
+PASS - Dashboard consumes followups state
+PASS - Dashboard consumes quotations state
+PASS - Smart Cache loads before application
+PASS - Smart Cache load order is valid
+PASS - Dashboard application version is unified
+Dashboard Offline Certification: PASS
+
+=== offline:cache-first:check ===
+> petatoe-pet-care-mobile@18.54.11 offline:cache-first:check
+> node scripts/cache-first-connectivity-check.mjs
+
+PASS: Smart Cache supports unlimited stale fallback
+PASS: Customers reads stale cache at any age
+PASS: Customers scope has cached fallback
+PASS: Customers cache refresh does not depend only on navigator.onLine
+PASS: Customers exposes read freshness metadata
+PASS: Followups reads stale cache at any age
+PASS: Followups scope has cached fallback
+PASS: Followups cache refresh does not depend only on navigator.onLine
+PASS: Followups exposes read freshness metadata
+PASS: Quotations reads stale cache at any age
+PASS: Quotations scope has cached fallback
+PASS: Quotations cache refresh does not depend only on navigator.onLine
+PASS: Quotations exposes read freshness metadata
+PASS: UI shows last synchronization status
+PASS: Version unified
+
+15/15 PASS
+
+=== offline:queue:check ===
+> petatoe-pet-care-mobile@18.54.11 offline:queue:check
+> node scripts/sync-queue-recovery-check.mjs
+
+PASS - Queue version M13.13
+PASS - Anonymous namespace blocked
+PASS - Offline session namespace used
+PASS - Interrupted processing recovery
+PASS - Operation dedupe key
+PASS - Idempotency key
+PASS - Retry API
+PASS - Discard API
+PASS - Conflict listing
+PASS - Conflict resolution
+PASS - Queue cleanup
+PASS - Diagnostics stats
+PASS - Version unified
+
+13 / 13 PASS
+
+=== permissions:role-agnostic:check ===
+> petatoe-pet-care-mobile@18.54.11 permissions:role-agnostic:check
+> node scripts/role-agnostic-permissions-check.mjs
+
+PASS - canonical resolver registered
+PASS - customers use canonical scope
+PASS - followups use canonical scope
+PASS - quotations use canonical scope
+PASS - sales representative baseline removed
+PASS - legacy role action visibility removed
+PASS - import mapping canonical
+PASS - daily rows canonical scoped
+PASS - representative dropdown canonical scoped
+PASS - restrictive default scope
+PASS - resolver in html
+PASS - resolver in app shell
+12/12 PASS
+
+=== permissions:visibility-consistency:check ===
+> petatoe-pet-care-mobile@18.54.11 permissions:visibility-consistency:check
+> node scripts/permission-visibility-consistency-check.mjs
+
+PASS - permissions refresh applies actions after authoritative load
+PASS - quotation add button has canonical permission metadata
+PASS - quotation renderer no longer races by manually hiding add button
+PASS - installation ownership is synchronized to customer representative
+PASS - requests view is not blocked by installation team scope
+
+5/5 checks passed.
+

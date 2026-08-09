@@ -34,25 +34,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.54.10" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.54.10" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.54.11" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.54.11" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
@@ -330,52 +330,11 @@
         </div>
 
         <div class="daily-operations-kpis">
-          <article><span>إنجاز المهام</span><strong id="dailyTasksCompletionRate">0%</strong><small id="dailyTasksCompletionText">0 من 0</small></article>
-          <article><span>العملاء الجدد اليوم</span><strong id="dailyNewCustomersCount">0</strong><small id="dailyCustomersTargetText">الهدف: 0</small></article>
-          <article><span>المتابعات المنفذة اليوم</span><strong id="dailyCompletedFollowupsCount">0</strong><small id="dailyFollowupsTargetText">الهدف: 0</small></article>
-          <article><span>عقود العملاء اليوم</span><strong id="dailyQuotationsCount">0</strong><small id="dailyQuotationsTargetText">الهدف: 0</small></article>
+          <article><span>العملاء الجدد اليوم</span><strong id="dailyNewCustomersCount">0</strong></article>
+          <article><span>المتابعات المنفذة اليوم</span><strong id="dailyCompletedFollowupsCount">0</strong></article>
+          <article><span>عقود العملاء اليوم</span><strong id="dailyQuotationsCount">0</strong></article>
           <article class="attention"><span>المتابعات المتأخرة</span><strong id="dailyOverdueFollowupsCount">0</strong><small>تحتاج إجراءً فوريًا</small></article>
         </div>
-
-        <article class="panel daily-targets-panel">
-          <div class="panel-header">
-            <div>
-              <h3>أهداف اليوم</h3>
-              <p>مقارنة النشاط الفعلي بالأهداف اليومية المحددة.</p>
-            </div>
-            <div class="daily-targets-actions">
-              <button id="manageEmployeeTargetsBtn" class="secondary-btn compact-btn hidden" type="button">إدارة أهداف وتقارير الموظفين</button>
-              <button id="editDailyTargetsBtn" class="secondary-btn compact-btn hidden" type="button">تعديل الأهداف العامة</button>
-            </div>
-          </div>
-          <div class="daily-targets-grid">
-            <article>
-              <div><span>العملاء الجدد</span><strong id="dailyCustomersTargetValue">0 / 0</strong></div>
-              <div class="daily-target-progress"><span id="dailyCustomersTargetBar" style="width:0%"></span></div>
-            </article>
-            <article>
-              <div><span>المتابعات</span><strong id="dailyFollowupsTargetValue">0 / 0</strong></div>
-              <div class="daily-target-progress"><span id="dailyFollowupsTargetBar" style="width:0%"></span></div>
-            </article>
-            <article>
-              <div><span>عقود العملاء</span><strong id="dailyQuotationsTargetValue">0 / 0</strong></div>
-              <div class="daily-target-progress"><span id="dailyQuotationsTargetBar" style="width:0%"></span></div>
-            </article>
-          </div>
-        </article>
-
-        <article class="panel daily-checklist-panel">
-          <div class="panel-header">
-            <div>
-              <h3>قائمة المهام اليومية</h3>
-              <p>يتم تسجيل المنفذ ووقت التنفيذ تلقائيًا.</p>
-            </div>
-            <span id="dailyChecklistPermission" class="daily-permission-badge">عرض فقط</span>
-          </div>
-          <div id="dailyChecklist" class="daily-checklist">
-            <div class="empty-state">جاري تحميل المهام اليومية...</div>
-          </div>
-        </article>
 
         <article class="panel daily-suggested-customers-panel" aria-labelledby="dailySuggestedCustomersTitle">
           <div class="panel-header daily-suggested-customers-header">
@@ -428,32 +387,6 @@
                 </tr>
               </thead>
               <tbody id="dailySuggestedCustomersBody"></tbody>
-            </table>
-          </div>
-        </article>
-
-        <article id="dailySuggestedTeamPanel" class="panel daily-suggested-team-panel hidden" aria-labelledby="dailySuggestedTeamTitle">
-          <div class="panel-header daily-suggested-team-header">
-            <div>
-              <h3 id="dailySuggestedTeamTitle">متابعة إنجاز فريق المبيعات</h3>
-            </div>
-            <small id="dailySuggestedTeamSummary">جارٍ تحميل أداء الفريق...</small>
-          </div>
-          <div class="table-wrap daily-suggested-team-table-wrap">
-            <table class="daily-operations-table daily-suggested-team-table">
-              <thead>
-                <tr>
-                  <th>المستخدم</th>
-                  <th>الدور</th>
-                  <th>الشركات</th>
-                  <th>الأفراد</th>
-                  <th>الإجمالي</th>
-                  <th>نسبة الإنجاز</th>
-                  <th>المتبقي النشط</th>
-                  <th>آخر تواصل</th>
-                </tr>
-              </thead>
-              <tbody id="dailySuggestedTeamBody"></tbody>
             </table>
           </div>
         </article>
@@ -520,35 +453,6 @@
               <tbody id="dailyOverdueBody"></tbody>
             </table>
           </div>
-        </article>
-        <article class="panel daily-alerts-panel">
-          <div class="panel-header">
-            <div>
-              <h3>تنبيهات اليوم</h3>
-              <p>المهام غير المنفذة والمتابعات المتأخرة والأهداف غير المحققة.</p>
-            </div>
-            <div class="daily-alerts-actions">
-              <button id="refreshDailyAlertsBtn" class="secondary-btn compact-btn" type="button">تحديث التنبيهات</button>
-              <select id="dailyAlertsStatusFilter" aria-label="فلتر حالة التنبيه">
-                <option value="">كل الحالات</option>
-                <option value="open">مفتوح</option>
-                <option value="in_progress">قيد المعالجة</option>
-                <option value="escalated">مصعّد</option>
-                <option value="closed">مغلق</option>
-              </select>
-              <select id="dailyAlertsRepresentativeFilter" aria-label="فلتر مندوب التنبيه">
-                <option value="">كل المندوبين</option>
-              </select>
-            </div>
-          </div>
-          <div id="dailyAlertsStatus" class="data-status hidden"></div>
-          <div class="daily-alerts-summary">
-            <article><span>مفتوح</span><strong id="dailyAlertsOpenCount">0</strong></article>
-            <article><span>قيد المعالجة</span><strong id="dailyAlertsInProgressCount">0</strong></article>
-            <article><span>مصعّد</span><strong id="dailyAlertsEscalatedCount">0</strong></article>
-            <article><span>حرج</span><strong id="dailyAlertsCriticalCount">0</strong></article>
-          </div>
-          <div id="dailyAlertsList" class="daily-alerts-list"></div>
         </article>
 
       </section>
@@ -3142,10 +3046,10 @@
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.54.10"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.54.10"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.54.10"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.54.10"></script>
+  <script src="assets/js/performance-monitor.js?v=18.54.11"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.54.11"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.54.11"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.54.11"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -3545,62 +3449,62 @@
         </form>
       </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.54.10"></script>
-  <script src="assets/js/offline-session-store.js?v=18.54.10"></script>
-  <script src="assets/js/supabase-client.js?v=18.54.10"></script>
-  <script src="assets/js/geographic-address.js?v=18.54.10"></script>
-  <script src="assets/js/permissions.js?v=18.54.10"></script>
-  <script src="assets/js/permission-engine.js?v=18.54.10"></script>
-  <script src="assets/js/data-access-scope.js?v=18.54.10"></script>
-  <script src="assets/js/smart-cache.js?v=18.54.10"></script>
-  <script src="assets/js/sync-engine.js?v=18.54.10"></script>
-  <script src="assets/js/offline-queue.js?v=18.54.10"></script>
-  <script src="assets/js/permissions-service.js?v=18.54.10"></script>
-  <script src="assets/js/auth-session.js?v=18.54.10"></script>
-  <script src="assets/js/reference-data-service.js?v=18.54.10"></script>
-  <script src="assets/js/customers-service.js?v=18.54.10"></script>
-  <script src="assets/js/followups-service.js?v=18.54.10"></script>
-  <script src="assets/js/quotations-service.js?v=18.54.10"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.54.10"></script>
-  <script src="assets/js/users-service.js?v=18.54.10"></script>
-  <script src="assets/js/activity-service.js?v=18.54.10"></script>
-  <script src="assets/js/backup-service.js?v=18.54.10"></script>
-  <script src="assets/js/system-settings-service.js?v=18.54.10"></script>
-  <script src="assets/js/system-health-service.js?v=18.54.10"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.54.10"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.54.10"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.54.10"></script>
-  <script src="assets/js/installations-service.js?v=18.54.10"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.54.10"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.54.10"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.54.10"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.54.10"></script>
+  <script src="assets/js/supabase-config.js?v=18.54.11"></script>
+  <script src="assets/js/offline-session-store.js?v=18.54.11"></script>
+  <script src="assets/js/supabase-client.js?v=18.54.11"></script>
+  <script src="assets/js/geographic-address.js?v=18.54.11"></script>
+  <script src="assets/js/permissions.js?v=18.54.11"></script>
+  <script src="assets/js/permission-engine.js?v=18.54.11"></script>
+  <script src="assets/js/data-access-scope.js?v=18.54.11"></script>
+  <script src="assets/js/smart-cache.js?v=18.54.11"></script>
+  <script src="assets/js/sync-engine.js?v=18.54.11"></script>
+  <script src="assets/js/offline-queue.js?v=18.54.11"></script>
+  <script src="assets/js/permissions-service.js?v=18.54.11"></script>
+  <script src="assets/js/auth-session.js?v=18.54.11"></script>
+  <script src="assets/js/reference-data-service.js?v=18.54.11"></script>
+  <script src="assets/js/customers-service.js?v=18.54.11"></script>
+  <script src="assets/js/followups-service.js?v=18.54.11"></script>
+  <script src="assets/js/quotations-service.js?v=18.54.11"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.54.11"></script>
+  <script src="assets/js/users-service.js?v=18.54.11"></script>
+  <script src="assets/js/activity-service.js?v=18.54.11"></script>
+  <script src="assets/js/backup-service.js?v=18.54.11"></script>
+  <script src="assets/js/system-settings-service.js?v=18.54.11"></script>
+  <script src="assets/js/system-health-service.js?v=18.54.11"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.54.11"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.54.11"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.54.11"></script>
+  <script src="assets/js/installations-service.js?v=18.54.11"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.54.11"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.54.11"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.54.11"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.54.11"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.54.10"></script>
-  <script src="assets/js/export-center.js?v=18.54.10"></script>
-  <script src="assets/js/customer360-engine.js?v=18.54.10"></script>
-  <script src="assets/js/customer360-export.js?v=18.54.10"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.54.10"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.54.10"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.54.10"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.54.10"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.54.10"></script>
-  <script src="assets/js/notification-center-service.js?v=18.54.10"></script>
-  <script src="assets/js/app.js?v=18.54.10"></script>
-  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.54.10"></script>
-  <script src="assets/js/notification-center.js?v=18.54.10"></script>
-  <script src="assets/js/sales-invoices.js?v=18.54.10"></script>
-  <script src="assets/js/installations-module.js?v=18.54.10"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.54.10"></script>
-  <script src="assets/js/installation-execution.js?v=18.54.10"></script>
-  <script src="assets/js/installation-completion.js?v=18.54.10"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.54.10"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.54.10"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.54.10"></script>
-  <script src="assets/js/mobile.js?v=18.54.10"></script>
-  <script src="assets/js/pwa.js?v=18.54.10"></script>
-  <script src="assets/js/native.js?v=18.54.10"></script>
+  <script src="assets/js/reports-engine.js?v=18.54.11"></script>
+  <script src="assets/js/export-center.js?v=18.54.11"></script>
+  <script src="assets/js/customer360-engine.js?v=18.54.11"></script>
+  <script src="assets/js/customer360-export.js?v=18.54.11"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.54.11"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.54.11"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.54.11"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.54.11"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.54.11"></script>
+  <script src="assets/js/notification-center-service.js?v=18.54.11"></script>
+  <script src="assets/js/app.js?v=18.54.11"></script>
+  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.54.11"></script>
+  <script src="assets/js/notification-center.js?v=18.54.11"></script>
+  <script src="assets/js/sales-invoices.js?v=18.54.11"></script>
+  <script src="assets/js/installations-module.js?v=18.54.11"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.54.11"></script>
+  <script src="assets/js/installation-execution.js?v=18.54.11"></script>
+  <script src="assets/js/installation-completion.js?v=18.54.11"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.54.11"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.54.11"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.54.11"></script>
+  <script src="assets/js/mobile.js?v=18.54.11"></script>
+  <script src="assets/js/pwa.js?v=18.54.11"></script>
+  <script src="assets/js/native.js?v=18.54.11"></script>
 </body>
 </html>

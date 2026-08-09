@@ -1,14 +1,15 @@
 {
-  "version": "18.54.10",
-  "build": 185410,
+  "version": "18.54.11",
+  "build": 185411,
   "forceUpdate": true,
   "releaseDate": "2026-08-10",
-  "title": "PETATOE Daily Operations Runtime Recovery — P5.2",
+  "title": "PETATOE Daily Operations Simplification — P5.3",
   "notes": [
-    "تم استعادة علاقات Daily Operations المطلوبة بواسطة PostgREST في P5.1.",
-    "تم إزالة اعتماد إنشاء الموعد على حقول العميل القديمة بعد اعتماد code/name/address/mobile.",
-    "تم توحيد Version/Cache contracts وإغلاق مخالفات Enterprise Offline Policy المسجلة.",
-    "تم تحديث التسميات التشغيلية القديمة في سجل النشاط إلى عقود العملاء والمواعيد."
+    "تم حذف أهداف اليوم من شاشة إدارة المهام اليومية.",
+    "تم حذف قائمة المهام اليومية من شاشة إدارة المهام اليومية.",
+    "تم حذف متابعة إنجاز فريق المبيعات من شاشة إدارة المهام اليومية.",
+    "تم حذف تنبيهات اليوم من شاشة إدارة المهام اليومية.",
+    "تم إيقاف تحميل بيانات الأقسام المحذوفة من Runtime الشاشة مع الإبقاء على الخدمات الخلفية دون حذف."
   ],
-  "cacheToken": "petatoe-pwa-18-54-10-runtime-recovery-p5-2"
+  "cacheToken": "petatoe-pwa-18-54-11-daily-operations-simplification-p5-3"
 }

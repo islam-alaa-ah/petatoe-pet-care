@@ -940,17 +940,9 @@ window.addEventListener("kyum-cache-dependencies-invalidated", event => {
       const view = document.getElementById("dailyActivityReportView");
       if (view && !view.classList.contains("hidden")) loadDailyActivityReport?.(true);
     }
-    if (prefixes.some(prefix => prefix.startsWith("daily-alerts:"))) {
-      const alertsView = document.getElementById("dailyOperationsView");
-      if (alertsView && !alertsView.classList.contains("hidden")) loadDailyAlerts(true);
-    }
     if (prefixes.some(prefix => prefix.startsWith("daily-suggestions:"))) {
       const dailyView = document.getElementById("dailyOperationsView");
       if (dailyView && !dailyView.classList.contains("hidden")) loadDailySuggestedCustomers(true);
-    }
-    if (prefixes.some(prefix => prefix.startsWith("daily-suggestions-team:"))) {
-      const dailyView = document.getElementById("dailyOperationsView");
-      if (dailyView && !dailyView.classList.contains("hidden")) loadDailySuggestedTeam(true);
     }
     if (detail.entity === "customers" || detail.entity === "followups" || detail.entity === "quotations") {
       renderDashboard();
@@ -6107,7 +6099,6 @@ function renderDailyOperations() {
   renderDailyManagerNote();
   renderDailySuggestedCustomers();
   loadDailySuggestedCustomers();
-  loadDailySuggestedTeam();
 
   const todayCustomers = customers.filter(item =>
     dailyLocalDate(item.createdAt) === today
@@ -6198,17 +6189,11 @@ async function loadDailyOperations(force = false) {
   );
 
   try {
-    if (force || !dailyTaskDefinitions.length) {
+    if (force || !dailyManagerNote) {
       [
-        dailyTaskDefinitions,
-        dailyTaskRecords,
-        dailyOperationTargets,
         dailyManagerNote,
         employeeReportSettings
       ] = await Promise.all([
-        window.DailyOperationsService.listDefinitions({ force }),
-        window.DailyOperationsService.listForDate(undefined, { force }),
-        window.DailyOperationsService.getTargets(undefined, { force }),
         window.DailyOperationsService.getManagerNote(undefined, { force }),
         window.EmployeeReportSettingsService?.listForDate?.() || Promise.resolve([])
       ]);
@@ -6221,7 +6206,7 @@ async function loadDailyOperations(force = false) {
     ]);
 
     renderDailyOperations();
-    await Promise.all([loadDailyAlerts(force), loadDailyWhatsAppTemplate()]);
+    await loadDailyWhatsAppTemplate();
     await renderCurrentDailySession();
     showDataStatus("dailyOperationsStatus", "");
   } catch (error) {
