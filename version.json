@@ -1,13 +1,14 @@
 {
-  "version": "18.54.9",
-  "build": 185404,
+  "version": "18.54.10",
+  "build": 185410,
   "forceUpdate": true,
   "releaseDate": "2026-08-10",
-  "title": "PETATOE Canonical Customer Master — P4",
+  "title": "PETATOE Daily Operations Runtime Recovery — P5.2",
   "notes": [
-    "تم تبسيط سجل العميل إلى code و name و address و mobile فقط.",
-    "تم فصل بيانات العميل عن التصنيف والمندوب والعنوان الجغرافي والاهتمامات وبيانات المتابعة والعقود.",
-    "تم تحديث Excel وCustomer 360 والتقارير وشاشات المواعيد للحفاظ على التوافق دون كسر الوظائف."
+    "تم استعادة علاقات Daily Operations المطلوبة بواسطة PostgREST في P5.1.",
+    "تم إزالة اعتماد إنشاء الموعد على حقول العميل القديمة بعد اعتماد code/name/address/mobile.",
+    "تم توحيد Version/Cache contracts وإغلاق مخالفات Enterprise Offline Policy المسجلة.",
+    "تم تحديث التسميات التشغيلية القديمة في سجل النشاط إلى عقود العملاء والمواعيد."
   ],
-  "cacheToken": "petatoe-pwa-18-54-4-canonical-customer-master"
+  "cacheToken": "petatoe-pwa-18-54-10-runtime-recovery-p5-2"
 }

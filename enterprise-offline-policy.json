@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.1.0",
+  "policyVersion": "1.2.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -111,6 +111,41 @@
       "file": "assets/js/geographic-address.js",
       "mode": "offline_read_online_refresh",
       "status": "compliant"
+    },
+    "data_access_scope": {
+      "file": "assets/js/data-access-scope.js",
+      "mode": "online_only_security_sensitive",
+      "status": "accepted_online_only"
+    },
+    "installation_operations_reports": {
+      "file": "assets/js/installation-operations-reports.js",
+      "mode": "online_only_operational_reports",
+      "status": "accepted_online_only"
+    },
+    "installation_scheduling": {
+      "file": "assets/js/installation-scheduling.js",
+      "mode": "online_only_operational_setup",
+      "status": "accepted_online_only"
+    },
+    "installation_settings_management": {
+      "file": "assets/js/installation-settings-management.js",
+      "mode": "online_only_admin_configuration",
+      "status": "accepted_online_only"
+    },
+    "installations_module": {
+      "file": "assets/js/installations-module.js",
+      "mode": "online_only_operational_ui",
+      "status": "accepted_online_only"
+    },
+    "notification_center": {
+      "file": "assets/js/notification-center-service.js",
+      "mode": "online_only_user_notifications",
+      "status": "accepted_online_only"
+    },
+    "sales_invoices": {
+      "file": "assets/js/sales-invoices-service.js",
+      "mode": "online_only_financial_operations",
+      "status": "accepted_online_only"
     }
   },
   "registeredDirectDataFiles": [
@@ -124,16 +159,23 @@
     "assets/js/daily-operations-service.js",
     "assets/js/daily-performance-service.js",
     "assets/js/daily-suggestions-service.js",
+    "assets/js/data-access-scope.js",
     "assets/js/diagnostics-service.js",
     "assets/js/employee-report-settings-service.js",
     "assets/js/followups-service.js",
     "assets/js/geographic-address.js",
+    "assets/js/installation-operations-reports.js",
+    "assets/js/installation-scheduling.js",
+    "assets/js/installation-settings-management.js",
+    "assets/js/installations-module.js",
     "assets/js/installations-service.js",
+    "assets/js/notification-center-service.js",
     "assets/js/offline-queue.js",
     "assets/js/offline-read-cache.js",
     "assets/js/permissions-service.js",
     "assets/js/quotations-service.js",
     "assets/js/reference-data-service.js",
+    "assets/js/sales-invoices-service.js",
     "assets/js/smart-cache.js",
     "assets/js/supabase-client.js",
     "assets/js/supabase-config.js",

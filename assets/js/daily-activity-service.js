@@ -196,11 +196,10 @@
   }
 
   const entityLabels = {
-    customers: "العملاء", customer_followups: "المتابعات", quotations: "عروض الأسعار",
-    installation_requests: "طلبات التركيبات", sales_invoices: "فواتير المبيعات",
+    customers: "العملاء", customer_followups: "المتابعات", quotations: "عقود العملاء",
+    installation_requests: "المواعيد", sales_invoices: "فواتير المبيعات",
     daily_task_completions: "المهام اليومية", user_profiles: "المستخدمون",
-    role_screen_permissions: "الصلاحيات", interest_categories: "مجالات الاهتمام",
-    no_sale_reasons: "أسباب عدم البيع", sales_representatives: "مندوبي المبيعات"
+    role_screen_permissions: "الصلاحيات", sales_representatives: "مندوبي المبيعات"
   };
 
   function readableEntity(value) { return entityLabels[String(value || "").toLowerCase()] || "نشاط داخل البرنامج"; }

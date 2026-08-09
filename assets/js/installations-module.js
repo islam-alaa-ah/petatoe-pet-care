@@ -116,17 +116,11 @@
     return String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
   }
 
-  function matchNeighborhoodId(customer) {
-    const districtName=normalizeArabicText(customer?.district||"");
-    const cityName=normalizeArabicText(customer?.city||"");
-    const regionName=normalizeArabicText(customer?.region||"");
-    if(!districtName)return "";
-    const region=regionName?opts.regions.find(item=>normalizeArabicText(item.name)===regionName):null;
-    const city=cityName?opts.cities.find(item=>normalizeArabicText(item.name)===cityName&&(!region||String(item.region_id)===String(region.id))):null;
-    const exact=opts.neighborhoods.find(item=>normalizeArabicText(item.name)===districtName&&(!city||String(item.city_id)===String(city.id))&&(!region||String(item.region_id)===String(region.id)));
-    if(exact)return exact.id;
-    const candidates=opts.neighborhoods.filter(item=>normalizeArabicText(item.name)===districtName);
-    return candidates.length===1?candidates[0].id:"";
+  function matchNeighborhoodId() {
+    // P4 canonical customer master contains code/name/address/mobile only.
+    // Appointment neighborhood is operational appointment data and is never
+    // inherited from the customer record.
+    return "";
   }
 
   async function fetchQuotationPrefill(quotationId) {
@@ -136,7 +130,7 @@
       .select(`
         id, quotation_number, customer_order_number, customer_id, representative_id,
         status, amount, description, notes, installation_request_id,
-        customer:customers(id, customer_number, customer_name, phone, region, city, district, representative_id)
+        customer:customers(id, customer_number, customer_name, address, phone)
       `)
       .eq("id", quotationId)
       .maybeSingle();
@@ -171,8 +165,7 @@
 
 
       neighborhoodOptions();
-      const neighborhoodId = matchNeighborhoodId(customer);
-      if (neighborhoodId) setInstallationGeoFromNeighborhood('new',neighborhoodId);
+      setInstallationGeoFromNeighborhood('new', "");
 
       const notes = [quotation.description, quotation.notes].map(value => String(value || "").trim()).filter(Boolean).join("\n");
       if (notes && $("newInstallationNotes") && !$("newInstallationNotes").value.trim()) $("newInstallationNotes").value = notes;
@@ -746,10 +739,8 @@
       if (!option) return;
       syncCustomerSearch(option.dataset.installationCustomerId);
       quotationOptions(option.dataset.installationCustomerId, "newInstallationQuotationId");
-      const selectedCustomer=opts.customers.find(item=>String(item.id)===String(option.dataset.installationCustomerId));
-      const matchedNeighborhood=matchNeighborhoodId(selectedCustomer);
-      if(matchedNeighborhood)setInstallationGeoFromNeighborhood('new',matchedNeighborhood);
-      else setInstallationGeoFromNeighborhood('new','');
+      // Customer master no longer owns geographic appointment data.
+      setInstallationGeoFromNeighborhood('new','');
       closeCustomerResults();
     });
     $("newInstallationNeighborhoodSearch")?.addEventListener("focus",event=>renderNewNeighborhoodResults(event.target.value));
@@ -853,7 +844,7 @@
       const payload = {
         customerId: $("newInstallationCustomerId").value,
         quotationId: $("newInstallationQuotationId").value || null,
-        representativeId: customer?.representative_id || null,
+        representativeId: (opts.quotations.find(item => String(item.id) === String($("newInstallationQuotationId").value || ""))?.representative_id) || null,
         neighborhoodId: $("newInstallationNeighborhoodId").value,
         installationAddress: neighborhood?.name || "",
         customerMapUrl: $("newInstallationCustomerMapUrl").value.trim(),
