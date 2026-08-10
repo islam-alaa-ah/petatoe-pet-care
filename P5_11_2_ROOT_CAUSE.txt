@@ -1,0 +1,18 @@
+PETATOE P5.11.2 — Appointment RPC Dependency Recovery
+
+Observed error:
+function public.resolve_installation_request_representative(uuid, uuid) does not exist
+
+Root cause:
+The production Supabase schema is missing historical helper functions required by
+the restored appointment CREATE/UPDATE RPCs. P5.11.1 restored the caller functions
+but did not restore their complete dependency graph.
+
+Full direct dependency audit of appointment create/update/details found:
+- can_access_installation_representative(uuid)
+- resolve_installation_request_representative(uuid,uuid)
+- refresh_installation_request_totals(uuid)
+- can_access_installation_request_scope(uuid,uuid)
+
+This phase restores all four together, preserving the P5.6 team-only viewer scope.
+No frontend files are changed.
