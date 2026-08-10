@@ -1,11 +1,10 @@
-P51143 Deployment
+P51144 Deployment
 
-Merge files preserving paths and hard refresh/update PWA to 18.54.25.
-No Supabase SQL is required.
+Merge files preserving paths. No Supabase SQL required.
+Hard refresh/update PWA to 18.54.26.
 
-Manual test:
-1) Open المواعيد.
-2) A scheduled row must show 12/2/4/6/8/10 time in الفترة.
-3) الفرقة column must show the assigned appointment team.
-4) Top filter must list teams instead of representatives.
-5) Unscheduled rows may correctly show — until a team/time is assigned.
+Check:
+- Unscheduled table: no المندوب / الموعد columns.
+- Day card: السائق = team driver, الجرومر = team groomer.
+- Filter: الجرومر / كل الجرومر.
+- Re-scheduling still saves normally.

@@ -1,15 +1,14 @@
-P5.11.4.3 — Appointments Time + Team Columns
+P5.11.4.4 — Scheduling Driver/Groomer UI
 
-Scope: Appointments list screen only.
-Root causes:
-1) Column الفترة rendered legacy timeSlot, while scheduling now writes scheduled_time.
-2) Appointments list query did not join installation_teams, so team data was unavailable.
-3) UI/filter still used representative semantics from the old installation workflow.
+Scope: Scheduling screen only.
+Data source: installation_teams.groomer_name / driver_name already loaded by scheduleTeams().
+No SQL or database schema change.
 
-PASS - appointments header uses team
-PASS - appointments filter label uses team
-PASS - service loads team relation
-PASS - normalize exposes team
-PASS - period uses scheduledTime
-PASS - table uses teamName
-PASS - filter uses teamId
+PASS - unscheduled representative removed
+PASS - unscheduled appointment removed
+PASS - unscheduled colspan 7
+PASS - groomer filter
+PASS - driver from team
+PASS - groomer on card
+PASS - filter by groomer
+PASS - empty table colspan 7
