@@ -1,13 +1,14 @@
 {
-  "version": "18.54.15",
-  "build": 185415,
+  "version": "18.54.16",
+  "build": 185416,
   "forceUpdate": true,
   "releaseDate": "2026-08-10",
-  "title": "PETATOE Application Icon Integration — P5.7",
+  "title": "PETATOE Visible Brand Icons — P5.8",
   "notes": [
-    "تم اعتماد أيقونة PETATOE الجديدة للمتصفح وPWA وشاشة iPhone الرئيسية.",
-    "تم ربط مقاسات الأيقونات القياسية ونسخ Maskable داخل Web App Manifest.",
-    "تم تحديث Service Worker cache token لضمان استبدال الأيقونات القديمة بعد التحديث دون المساس بمنطق البرنامج."
+    "تم إظهار أيقونة PETATOE الفعلية في زر فتح القائمة الجانبية بدل حرف P.",
+    "تم إظهار أيقونة PETATOE أعلى القائمة الجانبية بدل النص فقط.",
+    "تم إظهار الأيقونة داخل إشعار تثبيت PWA بدل حرف P.",
+    "تم توحيد الأيقونة الظاهرة في الهيدر وشاشة الدخول ومعلومات التطبيق."
   ],
-  "cacheToken": "petatoe-pwa-18-54-15-application-icon-integration-p5-7"
+  "cacheToken": "petatoe-pwa-18-54-16-visible-brand-icons-p5-8"
 }

@@ -11419,3 +11419,77 @@ html[data-theme="dark"] .petatoe-brand-wordmark {
   font-weight:900;
   font-size:1.5rem;
 }
+
+
+/* PETATOE P5.8 — visible application icon integration.
+   Uses the same application icon across launcher, drawer, header and about card. */
+.petatoe-visible-app-icon,
+.petatoe-sidebar-brand-icon,
+.petatoe-header-brand-icon,
+.petatoe-about-app-icon {
+  display:block;
+  object-fit:cover;
+  object-position:center;
+  background:transparent;
+}
+
+.brand-mark.petatoe-visible-app-icon {
+  padding:0;
+  overflow:hidden;
+  color:transparent;
+  background:transparent;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+
+.petatoe-sidebar-brand-icon {
+  width:88px;
+  height:88px;
+  margin-inline:auto;
+  border-radius:22px;
+  box-shadow:0 14px 30px rgba(0,0,0,.24);
+}
+
+.sidebar-launcher-host {
+  justify-content:center;
+}
+
+.topbar-logo-banner .petatoe-header-brand-icon {
+  width:72px;
+  height:72px;
+  flex:0 0 72px;
+  border-radius:18px;
+  object-fit:cover;
+}
+
+.topbar-logo-banner {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.petatoe-about-app-icon {
+  padding:0 !important;
+  background:transparent !important;
+  color:transparent !important;
+}
+
+html[data-theme="light"] .petatoe-sidebar-brand-icon,
+html[data-theme="light"] .petatoe-header-brand-icon,
+html[data-theme="light"] .brand-mark.petatoe-visible-app-icon {
+  box-shadow:0 10px 24px rgba(15,23,42,.16);
+}
+
+@media (max-width:767px) {
+  .petatoe-sidebar-brand-icon {
+    width:76px;
+    height:76px;
+    border-radius:20px;
+  }
+
+  .topbar-logo-banner .petatoe-header-brand-icon {
+    width:58px;
+    height:58px;
+    flex-basis:58px;
+    border-radius:16px;
+  }
+}

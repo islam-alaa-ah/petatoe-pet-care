@@ -3964,3 +3964,17 @@ html.is-offline body::before {
   font-weight:900;
   font-size:1.15rem;
 }
+
+
+/* PETATOE P5.8 — install banner uses the actual app icon. */
+.pwa-install-icon {
+  background:transparent !important;
+  padding:0 !important;
+}
+.pwa-install-icon img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:inherit;
+}

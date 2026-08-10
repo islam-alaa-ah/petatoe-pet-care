@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const CURRENT_VERSION = "18.54.15";
+  const CURRENT_VERSION = "18.54.16";
   const VERSION_ENDPOINT = "./version.json";
   const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
   const isNative = Boolean(window.Capacitor?.isNativePlatform?.());
@@ -63,7 +63,7 @@
     banner.className = "pwa-install-banner";
     banner.hidden = true;
     banner.innerHTML = `
-      <div class="pwa-install-icon petatoe-pwa-letter" aria-hidden="true">P</div>
+      <div class="pwa-install-icon" aria-hidden="true"><img src="assets/images/icon-128x128.png" alt=""></div>
       <div class="pwa-install-copy"><strong>تثبيت PETATOE</strong><span>افتح النظام كتطبيق مستقل على هاتفك.</span></div>
       <button type="button" class="pwa-install-action" data-pwa-install>تثبيت</button>
       <button type="button" class="pwa-install-close" data-pwa-dismiss aria-label="إغلاق">×</button>`;
