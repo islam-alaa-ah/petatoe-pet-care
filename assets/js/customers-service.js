@@ -21,6 +21,8 @@
       name: row.customer_name || "",
       address: row.address || "",
       phone: row.phone || "",
+      googleMapsUrl: row.google_maps_url || "",
+      neighborhoodId: row.neighborhood_id || "",
       mobile: row.phone || "",
       createdAt: row.created_at || "",
       updatedAt: row.updated_at || ""
@@ -93,6 +95,8 @@
       customer_name,
       address,
       phone,
+      google_maps_url,
+      neighborhood_id,
       created_at,
       updated_at
     `;
@@ -296,6 +300,7 @@
     const phone = String(record.phone || record.mobile || "").trim();
     const code = String(record.customerNumber || record.code || "").trim();
     const address = String(record.address || "").trim();
+    const googleMapsUrl = String(record.googleMapsUrl || "").trim();
     if (!name) throw new Error("اسم العميل مطلوب.");
     if (!phone) throw new Error("رقم الجوال مطلوب.");
     if (!code) throw new Error("كود العميل مطلوب.");
@@ -304,6 +309,7 @@
       customer_number: code,
       customer_name: name,
       address: address || null,
+      google_maps_url: googleMapsUrl || null,
       phone
     };
 

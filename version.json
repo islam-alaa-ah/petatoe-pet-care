@@ -1,13 +1,13 @@
 {
-  "version": "18.54.17",
-  "build": 185417,
+  "version": "18.54.18",
+  "build": 185418,
   "forceUpdate": true,
   "releaseDate": "2026-08-10",
-  "title": "PETATOE Header Brand & Scroll Control — P5.9",
+  "title": "PETATOE Customer Location & Appointment Defaults — P5.10",
   "notes": [
-    "تم استبدال حرف P في زر الصعود والنزول بأيقونة PETATOE الفعلية مع الحفاظ على نفس وظيفة الضغطة الواحدة والضغطتين.",
-    "تم تحريك لوجو PETATOE في يسار الهيدر ناحية الحافة اليسرى على شاشات Desktop فقط.",
-    "تم الحفاظ على تخطيط Tablet وMobile دون تغيير موضع عناصر الهيدر الأخرى."
+    "إضافة موقع Google Maps إلى بيانات العميل وعرضه في جدول العملاء.",
+    "تحميل الحي وموقع Google Maps المحفوظين تلقائيًا عند اختيار العميل في موعد جديد، وحفظهما في بيانات العميل عند أول إدخال إذا كانا غير مسجلين.",
+    "تحميل بيانات الحيوان وبيانات الدفع/التحصيل تلقائيًا من آخر موعد للعميل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-17-header-brand-scroll-p5-9"
+  "cacheToken": "petatoe-pwa-18-54-18-customer-location-defaults-p5-10"
 }

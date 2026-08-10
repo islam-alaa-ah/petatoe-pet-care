@@ -1,0 +1,25 @@
+Phase P5.10 — Customer Location & Appointment Defaults
+Baseline: petatoe-pet-care-main (59) + cumulative Phase P5.9 files
+Version: 18.54.18
+
+Scope
+- Customer master: Google Maps URL column + edit/add field.
+- New appointment: prefill customer neighborhood + Google Maps URL.
+- First appointment location entry: persist missing neighborhood/map back to customer master.
+- New appointment: prefill animals and payment/collection fields from customer's latest appointment.
+
+Database
+- Adds customers.google_maps_url.
+- Adds customers.neighborhood_id FK to installation_neighborhoods.
+- Safe backfill only when existing address maps to exactly one active neighborhood.
+- Adds security-definer RPCs for location defaults and latest appointment defaults.
+
+Regression checks
+- JS syntax checks passed: app.js, customers-service.js, installations-service.js, installations-module.js.
+- Existing appointment create/update RPC signatures unchanged.
+- Existing customer required fields and unique-phone logic unchanged.
+- Existing P5.9 header/icon changes preserved.
+- Mobile customer cards also expose Google Maps link.
+
+Deployment requirement
+Run supabase/migrations/phase_p5_10_customer_location_appointment_defaults.sql in Supabase before testing the new behavior.

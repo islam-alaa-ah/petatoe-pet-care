@@ -159,6 +159,7 @@
       if (!opts.quotations.some(item => item.id === quotation.id)) opts.quotations.push(quotation);
 
       syncCustomerSearch(customer.id);
+      await applyCustomerAppointmentDefaults(customer.id);
       quotationOptions(customer.id, "newInstallationQuotationId", quotation.id);
       const quotationSelect = $("newInstallationQuotationId");
       if (quotationSelect) quotationSelect.value = quotation.id;
@@ -179,6 +180,26 @@
     return quotationPrefillPromise;
   }
 
+
+
+  async function applyCustomerAppointmentDefaults(customerId){
+    if(!customerId||editingRequestId)return;
+    const customer=opts.customers.find(item=>String(item.id)===String(customerId));
+    try{
+      const defaults=await window.InstallationsServiceSafe.customerAppointmentDefaults(customerId);
+      const neighborhoodId=customer?.neighborhood_id||defaults?.neighborhoodId||'';
+      const mapUrl=customer?.google_maps_url||defaults?.customerMapUrl||'';
+      if(neighborhoodId)setInstallationGeoFromNeighborhood('new',neighborhoodId); else setInstallationGeoFromNeighborhood('new','');
+      if($('newInstallationCustomerMapUrl'))$('newInstallationCustomerMapUrl').value=mapUrl;
+      if(defaults?.animals?.length){$('newInstallationAnimalsBody').innerHTML='';defaults.animals.forEach(addAnimalRow);}
+      if(defaults?.collection){
+        if($('newInstallationAmountCollected'))$('newInstallationAmountCollected').value=Number(defaults.collection.amountCollected||0).toFixed(2);
+        if($('newInstallationCollectionStatus'))$('newInstallationCollectionStatus').value=defaults.collection.collectionStatus||'غير محصل';
+        if($('newInstallationPaymentMethod'))$('newInstallationPaymentMethod').value=defaults.collection.paymentMethod||'';
+        if($('newInstallationAppointmentStatus'))$('newInstallationAppointmentStatus').value=defaults.collection.appointmentStatus||'بانتظار المراجعة';
+      }
+    }catch(error){console.warn('[Appointments] Customer defaults prefill skipped:',error);}
+  }
 
   function customerLabel(customer) {
     return [customer.customer_name, customer.phone, customer.customer_number].filter(Boolean).join(" — ");
@@ -739,8 +760,7 @@
       if (!option) return;
       syncCustomerSearch(option.dataset.installationCustomerId);
       quotationOptions(option.dataset.installationCustomerId, "newInstallationQuotationId");
-      // Customer master no longer owns geographic appointment data.
-      setInstallationGeoFromNeighborhood('new','');
+      void applyCustomerAppointmentDefaults(option.dataset.installationCustomerId);
       closeCustomerResults();
     });
     $("newInstallationNeighborhoodSearch")?.addEventListener("focus",event=>renderNewNeighborhoodResults(event.target.value));

@@ -36,25 +36,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.54.17" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.54.17" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.54.18" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.54.18" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
@@ -541,7 +541,7 @@
         <div id="customersStatus" class="data-status hidden"></div>
         <div id="customersMobileCards" class="customers-mobile-cards" aria-live="polite"></div>
         <div class="table-card customers-desktop-table"><table>
-          <thead><tr><th>code</th><th>name</th><th>address</th><th>mobile</th><th>الإجراءات</th></tr></thead>
+          <thead><tr><th>code</th><th>name</th><th>address</th><th>mobile</th><th>موقع Google Maps</th><th>الإجراءات</th></tr></thead>
           <tbody id="customersTableBody"></tbody>
         </table></div>
         <div class="table-pagination" id="customersPagination"><span id="customersPaginationInfo">0 عميل</span><div>
@@ -798,7 +798,7 @@
             <div class="reference-customers-filters"><label class="reference-customers-search">بحث<input id="referenceCustomersSearch" type="search" placeholder="الكود أو الاسم أو العنوان أو الجوال"></label></div>
             <div id="referenceCustomersStatus" class="data-status hidden"></div>
             <div class="table-card reference-customers-table-card"><table class="reference-customers-table">
-              <thead><tr><th>code</th><th>name</th><th>address</th><th>mobile</th><th>الإجراءات</th></tr></thead>
+              <thead><tr><th>code</th><th>name</th><th>address</th><th>mobile</th><th>موقع Google Maps</th><th>الإجراءات</th></tr></thead>
               <tbody id="referenceCustomersTableBody"></tbody>
             </table></div>
             <div class="table-pagination" id="referenceCustomersPagination"><span id="referenceCustomersPaginationInfo">0 عميل</span><div>
@@ -2519,6 +2519,7 @@
         <label>code<input id="customerCode" maxlength="80" required autocomplete="off"></label>
         <label>name<input id="customerName" maxlength="200" required autocomplete="name"></label>
         <label class="full-width">address<input id="customerAddress" maxlength="500" autocomplete="street-address"></label>
+        <label class="full-width">موقع Google Maps<input id="customerGoogleMapsUrl" type="url" maxlength="1000" placeholder="https://maps.app.goo.gl/..." autocomplete="url"></label>
         <label>mobile<input id="customerPhone" inputmode="tel" placeholder="05XXXXXXXX" maxlength="20" required autocomplete="tel"></label>
       </div>
       <div class="dialog-actions"><button id="cancelDialogBtn" type="button" class="secondary-btn">إلغاء</button><button type="submit" class="primary-btn">حفظ العميل</button></div>
@@ -3011,10 +3012,10 @@
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.54.17"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.54.17"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.54.17"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.54.17"></script>
+  <script src="assets/js/performance-monitor.js?v=18.54.18"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.54.18"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.54.18"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.54.18"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -3414,62 +3415,62 @@
         </form>
       </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.54.17"></script>
-  <script src="assets/js/offline-session-store.js?v=18.54.17"></script>
-  <script src="assets/js/supabase-client.js?v=18.54.17"></script>
-  <script src="assets/js/geographic-address.js?v=18.54.17"></script>
-  <script src="assets/js/permissions.js?v=18.54.17"></script>
-  <script src="assets/js/permission-engine.js?v=18.54.17"></script>
-  <script src="assets/js/data-access-scope.js?v=18.54.17"></script>
-  <script src="assets/js/smart-cache.js?v=18.54.17"></script>
-  <script src="assets/js/sync-engine.js?v=18.54.17"></script>
-  <script src="assets/js/offline-queue.js?v=18.54.17"></script>
-  <script src="assets/js/permissions-service.js?v=18.54.17"></script>
-  <script src="assets/js/auth-session.js?v=18.54.17"></script>
-  <script src="assets/js/reference-data-service.js?v=18.54.17"></script>
-  <script src="assets/js/customers-service.js?v=18.54.17"></script>
-  <script src="assets/js/followups-service.js?v=18.54.17"></script>
-  <script src="assets/js/quotations-service.js?v=18.54.17"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.54.17"></script>
-  <script src="assets/js/users-service.js?v=18.54.17"></script>
-  <script src="assets/js/activity-service.js?v=18.54.17"></script>
-  <script src="assets/js/backup-service.js?v=18.54.17"></script>
-  <script src="assets/js/system-settings-service.js?v=18.54.17"></script>
-  <script src="assets/js/system-health-service.js?v=18.54.17"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.54.17"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.54.17"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.54.17"></script>
-  <script src="assets/js/installations-service.js?v=18.54.17"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.54.17"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.54.17"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.54.17"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.54.17"></script>
+  <script src="assets/js/supabase-config.js?v=18.54.18"></script>
+  <script src="assets/js/offline-session-store.js?v=18.54.18"></script>
+  <script src="assets/js/supabase-client.js?v=18.54.18"></script>
+  <script src="assets/js/geographic-address.js?v=18.54.18"></script>
+  <script src="assets/js/permissions.js?v=18.54.18"></script>
+  <script src="assets/js/permission-engine.js?v=18.54.18"></script>
+  <script src="assets/js/data-access-scope.js?v=18.54.18"></script>
+  <script src="assets/js/smart-cache.js?v=18.54.18"></script>
+  <script src="assets/js/sync-engine.js?v=18.54.18"></script>
+  <script src="assets/js/offline-queue.js?v=18.54.18"></script>
+  <script src="assets/js/permissions-service.js?v=18.54.18"></script>
+  <script src="assets/js/auth-session.js?v=18.54.18"></script>
+  <script src="assets/js/reference-data-service.js?v=18.54.18"></script>
+  <script src="assets/js/customers-service.js?v=18.54.18"></script>
+  <script src="assets/js/followups-service.js?v=18.54.18"></script>
+  <script src="assets/js/quotations-service.js?v=18.54.18"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.54.18"></script>
+  <script src="assets/js/users-service.js?v=18.54.18"></script>
+  <script src="assets/js/activity-service.js?v=18.54.18"></script>
+  <script src="assets/js/backup-service.js?v=18.54.18"></script>
+  <script src="assets/js/system-settings-service.js?v=18.54.18"></script>
+  <script src="assets/js/system-health-service.js?v=18.54.18"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.54.18"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.54.18"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.54.18"></script>
+  <script src="assets/js/installations-service.js?v=18.54.18"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.54.18"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.54.18"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.54.18"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.54.18"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.54.17"></script>
-  <script src="assets/js/export-center.js?v=18.54.17"></script>
-  <script src="assets/js/customer360-engine.js?v=18.54.17"></script>
-  <script src="assets/js/customer360-export.js?v=18.54.17"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.54.17"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.54.17"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.54.17"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.54.17"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.54.17"></script>
-  <script src="assets/js/notification-center-service.js?v=18.54.17"></script>
-  <script src="assets/js/app.js?v=18.54.17"></script>
-  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.54.17"></script>
-  <script src="assets/js/notification-center.js?v=18.54.17"></script>
-  <script src="assets/js/sales-invoices.js?v=18.54.17"></script>
-  <script src="assets/js/installations-module.js?v=18.54.17"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.54.17"></script>
-  <script src="assets/js/installation-execution.js?v=18.54.17"></script>
-  <script src="assets/js/installation-completion.js?v=18.54.17"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.54.17"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.54.17"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.54.17"></script>
-  <script src="assets/js/mobile.js?v=18.54.17"></script>
-  <script src="assets/js/pwa.js?v=18.54.17"></script>
-  <script src="assets/js/native.js?v=18.54.17"></script>
+  <script src="assets/js/reports-engine.js?v=18.54.18"></script>
+  <script src="assets/js/export-center.js?v=18.54.18"></script>
+  <script src="assets/js/customer360-engine.js?v=18.54.18"></script>
+  <script src="assets/js/customer360-export.js?v=18.54.18"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.54.18"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.54.18"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.54.18"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.54.18"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.54.18"></script>
+  <script src="assets/js/notification-center-service.js?v=18.54.18"></script>
+  <script src="assets/js/app.js?v=18.54.18"></script>
+  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.54.18"></script>
+  <script src="assets/js/notification-center.js?v=18.54.18"></script>
+  <script src="assets/js/sales-invoices.js?v=18.54.18"></script>
+  <script src="assets/js/installations-module.js?v=18.54.18"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.54.18"></script>
+  <script src="assets/js/installation-execution.js?v=18.54.18"></script>
+  <script src="assets/js/installation-completion.js?v=18.54.18"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.54.18"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.54.18"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.54.18"></script>
+  <script src="assets/js/mobile.js?v=18.54.18"></script>
+  <script src="assets/js/pwa.js?v=18.54.18"></script>
+  <script src="assets/js/native.js?v=18.54.18"></script>
 </body>
 </html>

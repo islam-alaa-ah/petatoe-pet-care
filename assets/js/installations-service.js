@@ -8,14 +8,22 @@
   async function list(){requireAction('view');const [data,serviceRows]=await Promise.all([fetchPaged((from,to)=>db().from('installation_requests').select('*,customer:customers(id,customer_number,customer_name,phone,address),quotation:quotations!installation_requests_quotation_id_fkey(id,quotation_number),representative:sales_representatives(id,full_name)').order('created_at',{ascending:false}).range(from,to)),fetchPaged((from,to)=>db().from('installation_request_services').select('installation_request_id,quantity,unit_price,line_total,service:installation_service_types(id,name)').range(from,to),1000)]);const byRequest=new Map();serviceRows.forEach(x=>{const arr=byRequest.get(x.installation_request_id)||[];arr.push({serviceTypeId:x.service?.id||'',serviceName:x.service?.name||'',quantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0),lineTotal:Number(x.line_total||0)});byRequest.set(x.installation_request_id,arr)});return data.map(row=>normalize({...row,services:byRequest.get(row.id)||[]}))}
   async function loadInstallationCustomers(){
     try {
-      return await fetchPaged((from,to)=>db().from('customers').select('id,customer_number,customer_name,phone,address').order('customer_name').range(from,to));
+      return await fetchPaged((from,to)=>db().from('customers').select('id,customer_number,customer_name,phone,address,google_maps_url,neighborhood_id').order('customer_name').range(from,to));
     } catch (error) {
       const message=String(error?.message||'').toLowerCase();
       const schemaMismatch=message.includes('customer_number')&&(message.includes('column')||message.includes('schema cache')||message.includes('does not exist'));
       if(!schemaMismatch) throw error;
-      const rows=await fetchPaged((from,to)=>db().from('customers').select('id,customer_number,customer_name,phone,address').order('customer_name').range(from,to));
+      const rows=await fetchPaged((from,to)=>db().from('customers').select('id,customer_number,customer_name,phone,address,google_maps_url,neighborhood_id').order('customer_name').range(from,to));
       return rows.map(row=>({...row,customer_number:''}));
     }
+  }
+
+  async function customerAppointmentDefaults(customerId){
+    if(!customerId)return null;
+    const {data,error}=await db().rpc('get_customer_appointment_defaults',{p_customer_id:customerId});
+    if(error)throw new Error('تعذر تحميل آخر بيانات العميل: '+error.message);
+    const x=data||{};
+    return {neighborhoodId:x.neighborhood_id||'',customerMapUrl:x.google_maps_url||'',address:x.address||'',animals:(x.animals||[]).map(a=>({petName:a.pet_name||'',petType:a.pet_type||'',breed:a.breed||'',petSize:a.pet_size||'',quantity:Number(a.quantity||1)})),collection:x.collection&&Object.keys(x.collection).length?{amountCollected:Number(x.collection.amount_collected||0),collectionStatus:x.collection.collection_status||'غير محصل',paymentMethod:x.collection.payment_method||'',appointmentStatus:x.collection.appointment_status||'بانتظار المراجعة'}:null};
   }
   async function options(){
     const tasks={
@@ -61,6 +69,8 @@
     const collection={amount_collected:Number(payload.collection?.amountCollected||0),collection_status:payload.collection?.collectionStatus||'غير محصل',payment_method:payload.collection?.paymentMethod||'',appointment_status:payload.collection?.appointmentStatus||'بانتظار المراجعة'};
     const {data,error}=await db().rpc('create_petatoe_appointment',{p_customer_id:payload.customerId,p_contract_id:payload.quotationId||null,p_representative_id:payload.representativeId||null,p_neighborhood_id:geo.neighborhood.id,p_customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,p_notes:payload.notes||null,p_services:services,p_discount_amount:Number(payload.discountAmount||0),p_animals:animals,p_collection:collection});
     if(error)throw new Error('تعذر إنشاء الموعد: '+error.message);
+    const {error:customerDefaultsError}=await db().rpc('save_customer_appointment_location_defaults',{p_customer_id:payload.customerId,p_neighborhood_id:geo.neighborhood.id,p_google_maps_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null});
+    if(customerDefaultsError)console.warn('[Appointments] Customer location defaults were not persisted:',customerDefaultsError.message);
     const created=Array.isArray(data)?data[0]:data;void notifyEvent('installation.request_created',created?.id||null,null,{source:'create_appointment'},created?.id||null);return created;
   }
 
@@ -76,6 +86,8 @@
     const collection={amount_collected:Number(payload.collection?.amountCollected||0),collection_status:payload.collection?.collectionStatus||'غير محصل',payment_method:payload.collection?.paymentMethod||'',appointment_status:payload.collection?.appointmentStatus||'بانتظار المراجعة'};
     const {data,error}=await db().rpc('update_petatoe_appointment',{p_request_id:payload.id,p_customer_id:payload.customerId,p_contract_id:payload.quotationId||null,p_representative_id:payload.representativeId||null,p_neighborhood_id:geo.neighborhood.id,p_customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,p_notes:payload.notes||null,p_services:services,p_discount_amount:Number(payload.discountAmount||0),p_animals:animals,p_collection:collection});
     if(error)throw new Error('تعذر حفظ تعديلات الموعد: '+error.message);
+    const {error:customerDefaultsError}=await db().rpc('save_customer_appointment_location_defaults',{p_customer_id:payload.customerId,p_neighborhood_id:geo.neighborhood.id,p_google_maps_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null});
+    if(customerDefaultsError)console.warn('[Appointments] Customer location defaults were not persisted:',customerDefaultsError.message);
     void notifyEvent('installation.request_updated',payload.id,null,{source:'appointment_edit'},'updated:'+new Date().toISOString().slice(0,16));
     return Array.isArray(data)?data[0]:data;
   }
@@ -571,6 +583,6 @@
 
   async function getSettings(){requireAction('view','installationSettings');const {data,error}=await db().from('installation_settings').select('*').eq('id',1).maybeSingle();if(error)throw new Error('تعذر تحميل إعدادات المواعيد: '+error.message);const r=data||{};return {morningLabel:r.morning_label||'صباحية',eveningLabel:r.evening_label||'مسائية',slaDays:Number(r.sla_days??1),defaultPriority:r.default_priority||'عادية',requireCompletionReport:r.require_completion_report!==false}}
   async function saveSettings(payload){requireAction('edit','installationSettings');const record={id:1,morning_label:payload.morningLabel,evening_label:payload.eveningLabel,sla_days:payload.slaDays,default_priority:payload.defaultPriority,require_completion_report:!!payload.requireCompletionReport,updated_at:new Date().toISOString()};const {error}=await db().from('installation_settings').upsert(record,{onConflict:'id'});if(error)throw new Error('تعذر حفظ إعدادات المواعيد: '+error.message)}
-  window.InstallationsService={list,options,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,advanceExecution,completionList,confirmActualQuantities,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
+  window.InstallationsService={list,options,customerAppointmentDefaults,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,advanceExecution,completionList,confirmActualQuantities,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
   window.dispatchEvent(new CustomEvent('kyum-installations-service-ready'));
 })();
