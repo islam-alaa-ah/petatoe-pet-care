@@ -1,0 +1,28 @@
+PETATOE P5.11 Deployment
+
+1. Merge the delivered files preserving their original paths.
+2. Run in Supabase SQL Editor:
+   supabase/migrations/phase_p5_11_appointment_cycle_deep_recovery.sql
+3. Send back the two verification result sets printed at the bottom of the migration.
+4. Then run (recommended):
+   supabase/verification/phase_p5_11_appointment_cycle_deep_verification.sql
+5. Hard Refresh / update PWA to 18.54.21.
+
+Manual acceptance sequence:
+A. Add Appointment
+   - select customer -> neighborhood + Google Maps populate
+   - pets/payment defaults populate if previous appointment exists
+   - save -> no ambiguous id error
+B. Appointment list
+   - new appointment appears with services and financial totals
+C. Scheduling
+   - only 12, 2, 4, 6, 8, 10 PM available
+   - selecting team auto-fills its groomer
+   - save single-day visit
+   - test multi-day distribution if applicable
+D. Groomer/Driver execution user
+   - sees only linked team's appointments
+   - selects current visit
+   - Start route -> open map -> Arrived -> Start work -> Complete
+E. Completion
+   - completed visit reaches confirmation/completion flow without reappearing as unscheduled incorrectly

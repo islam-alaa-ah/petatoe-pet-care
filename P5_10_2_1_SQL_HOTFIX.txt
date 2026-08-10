@@ -1,0 +1,22 @@
+PETATOE P5.10.2.1 — Customer Neighborhood SQL Hotfix
+
+Root cause:
+PostgreSQL in the current Supabase environment does not provide min(uuid).
+The P5.10.2 migration used min(n.id) in TWO places:
+1) resolve_petatoe_customer_neighborhood(...)
+2) the bulk customer neighborhood backfill CTE
+
+Fix:
+Both were replaced with:
+(array_agg(n.id order by n.id::text))[1]
+
+Because P5.10.2 was wrapped in BEGIN/COMMIT and failed before COMMIT,
+the failed execution was rolled back. You can safely run the corrected
+migration file from the beginning.
+
+Run:
+supabase/migrations/phase_p5_10_2_customer_neighborhood_prefill_deep_recovery.sql
+
+Then send back:
+1) unresolved_customer_neighborhoods
+2) the sample unresolved rows, if any

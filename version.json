@@ -1,15 +1,15 @@
 {
-  "version": "18.54.20",
-  "build": 185420,
+  "version": "18.54.21",
+  "build": 185421,
   "forceUpdate": true,
-  "releaseDate": "2026-08-10",
-  "title": "PETATOE Customer Neighborhood Deep Recovery — P5.10.2",
+  "releaseDate": "2026-08-11",
+  "title": "PETATOE Appointment Cycle Deep Recovery — P5.11",
   "notes": [
-    "تم فصل تحميل موقع وحي العميل عن بيانات آخر موعد.",
-    "تم تقوية مطابقة أسماء الأحياء العربية.",
-    "تم منع سباق الطلبات عند تغيير العميل.",
-    "تم إصلاح fallback تحميل بيانات العملاء.",
-    "تم إضافة Migration لربط neighborhood_id للعملاء القابلين للمطابقة."
+    "تم إصلاح خطأ id ambiguous في إنشاء وتعديل الموعد.",
+    "تم تثبيت مواعيد الجدولة على 12 ظهرًا و2 و4 و6 و8 و10 مساءً.",
+    "تم ربط اسم الجرومر في الجدولة تلقائيًا بفرقة المواعيد.",
+    "تم إضافة حراسة قاعدة بيانات لمواعيد الجدولة الثابتة.",
+    "تم فحص دورة الموعد من الإنشاء حتى الجدولة والتنفيذ."
   ],
-  "cacheToken": "petatoe-pwa-18-54-20-customer-neighborhood-deep-recovery-p5-10-2"
+  "cacheToken": "petatoe-pwa-18-54-21-appointment-cycle-deep-recovery-p5-11"
 }

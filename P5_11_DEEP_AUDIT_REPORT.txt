@@ -1,0 +1,68 @@
+PETATOE P5.11 — Appointment Cycle Deep Audit & Recovery
+Baseline: petatoe-pet-care-main (61).zip / 18.54.20
+Target: 18.54.21
+
+AUDIT SCOPE
+- Add Appointment / Edit Appointment
+- Customer / contract / neighborhood / Google Maps / pets / collection handoff
+- Appointment request + services persistence
+- Scheduling / multi-day scheduling / day locks
+- Team (groomer + driver + car) binding
+- Execution selection / map / stages
+- Completion handoff compatibility
+
+CONFIRMED ROOT CAUSES / DEFECTS FOUND
+1) CREATE APPOINTMENT — BLOCKER
+   create_petatoe_appointment RETURNS TABLE(id uuid, request_number text).
+   PL/pgSQL therefore has an output variable named "id".
+   The function used: where id=p_neighborhood_id.
+   This is ambiguous between the output variable and installation_neighborhoods.id and produces:
+   column reference "id" is ambiguous.
+
+2) UPDATE APPOINTMENT — SAME LATENT BLOCKER
+   update_petatoe_appointment used the same unqualified neighborhood id expression.
+   It would fail through the same path when editing an appointment.
+
+3) SCHEDULING SLOT CONTRACT DRIFT
+   Current UI/runtime still exposed 10:00 through 21:00 hourly slots.
+   PETATOE canonical slots are 12:00 / 14:00 / 16:00 / 18:00 / 20:00 / 22:00.
+
+4) 22:00 WAS IMPOSSIBLE IN SINGLE-DAY VALIDATION
+   installations-service.js accepted hours only through 21:00, so the final 10 PM slot could not be saved.
+
+5) MULTI-DAY SCHEDULING USED LEGACY 10:00 DEFAULTS AND HAD NO CANONICAL SLOT CHECK
+   New multi-day visit seeds could start at 10:00 and the client did not restrict all visits to PETATOE slots.
+
+6) TEAM MASTER / SCHEDULING INTEGRATION DRIFT
+   Appointment teams are already groomer + driver + car, but scheduleTeams() only loaded id/name/status.
+   Scheduling continued to require a manually typed technician name instead of using the groomer attached to the team.
+
+7) DATABASE HAD NO PETATOE-SPECIFIC FIXED-SLOT GUARD
+   Client defects or old clients could still write non-canonical schedule times.
+
+EXECUTION AUDIT RESULT
+- The canonical visit execution path is still present:
+  select_installation_execution_visit -> record_installation_visit_map_opened -> advance_installation_execution_visit_stage.
+- P5.6 viewer (Groomer / Driver) team-only scope remains present and was not replaced.
+- No execution-stage business logic was refactored in P5.11.
+- A database verification script is included to detect orphan requests/services/visits, missing team bindings,
+  invalid schedule slots, and impossible execution timestamp states.
+
+IMPLEMENTED RECOVERY
+- Rebuilt create_petatoe_appointment and update_petatoe_appointment with qualified n.id / n.name references.
+- Hardened save_petatoe_appointment_details with qualified installation_requests references.
+- Fixed single-day and multi-day scheduling to the six canonical slots.
+- Added 22:00 support.
+- Loaded groomer/driver/car metadata with teams and auto-filled the groomer for scheduling compatibility.
+- Added DB trigger guards for installation_requests and installation_execution_visits scheduled_time.
+- Added deep SQL verification for the full appointment chain.
+
+AUTOMATED REGRESSION
+- P5.11 Appointment Cycle: 12/12 PASS
+- Offline Runtime Reliability: PASS
+- Dashboard Offline: PASS
+- Cache First: 15/15 PASS
+- Sync Queue: 13/13 PASS
+- Role-Agnostic Permissions: 12/12 PASS
+- Permission Visibility Consistency: 5/5 PASS
+- JS syntax checks: PASS

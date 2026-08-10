@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-20-customer-neighborhood-deep-recovery-p5-10-2";
+const CACHE_VERSION = "petatoe-pwa-18-54-21-appointment-cycle-deep-recovery-p5-11";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
