@@ -1,12 +1,15 @@
-P5.11.4.2 — Scheduling Date Picker
+P5.11.4.3 — Appointments Time + Team Columns
 
-Scope: UI-only scheduling date control.
-Root cause: installationAssignmentDate was rendered as a <select> and populated with one option per day.
-Fix: native type=date calendar input, preserving old allowed date range and day-lock validation.
+Scope: Appointments list screen only.
+Root causes:
+1) Column الفترة rendered legacy timeSlot, while scheduling now writes scheduled_time.
+2) Appointments list query did not join installation_teams, so team data was unavailable.
+3) UI/filter still used representative semantics from the old installation workflow.
 
-PASS - date input exists
-PASS - old select removed
-PASS - min/max calendar range preserved
-PASS - locked day immediate rejection
-PASS - save-time lock protection retained
-PASS - canonical time slots untouched
+PASS - appointments header uses team
+PASS - appointments filter label uses team
+PASS - service loads team relation
+PASS - normalize exposes team
+PASS - period uses scheduledTime
+PASS - table uses teamName
+PASS - filter uses teamId

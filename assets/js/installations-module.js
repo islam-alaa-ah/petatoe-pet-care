@@ -365,15 +365,26 @@
     });
   }
 
+  function formatAppointmentTime(value) {
+    if (!value) return "—";
+    const parts = String(value).slice(0,5).split(":");
+    const hour = Number(parts[0]);
+    const minute = parts[1] || "00";
+    if (!Number.isFinite(hour)) return String(value);
+    if (hour === 12) return `12:${minute} ظهرًا`;
+    if (hour < 12) return `${hour}:${minute} صباحًا`;
+    return `${hour - 12}:${minute} مساءً`;
+  }
+
   function filtered() {
     const query = ($("installationRequestSearch")?.value || "").trim().toLowerCase();
-    const representative = $("installationRequestRepresentativeFilter")?.value || "";
+    const team = $("installationRequestRepresentativeFilter")?.value || "";
     const state = $("installationRequestStatusFilter")?.value || "";
     const dateFrom = $("installationRequestDateFrom")?.value || "";
     const dateTo = $("installationRequestDateTo")?.value || "";
     return rows.filter(row =>
       (!query || [row.requestNumber, row.customerName, row.customerPhone, row.quotationNumber, row.services.map(service => service.serviceName).join(" ")].join(" ").toLowerCase().includes(query)) &&
-      (!representative || row.representativeId === representative) &&
+      (!team || row.teamId === team) &&
       (!state || row.status === state) &&
       (!dateFrom || row.scheduledDate >= dateFrom) &&
       (!dateTo || row.scheduledDate <= dateTo)
@@ -400,9 +411,9 @@
         <td>${money(row.finalAmount || row.totalServicesAmount)}</td>
         <td>${esc(row.installationAddress || row.district || "—")}</td>
         <td>${esc(row.scheduledDate || "غير محدد")}</td>
-        <td>${esc(row.timeSlot || "—")}</td>
+        <td>${esc(row.scheduledTime ? formatAppointmentTime(row.scheduledTime) : (row.timeSlot || "—"))}</td>
         <td><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(row.status)}</span></td>
-        <td>${esc(row.representativeName || "—")}</td>
+        <td>${esc(row.teamName || "—")}</td>
         <td><div class="installation-row-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">عرض</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">تعديل الخدمات</button><button class="danger-btn" data-install-delete="${row.id}" type="button">حذف</button></div></td>
       </tr>`;
     }).join("") : '<tr><td colspan="11" class="empty-cell">لا توجد مواعيد مطابقة.</td></tr>';
@@ -431,12 +442,12 @@
       [rows, opts] = await Promise.all([window.InstallationsServiceSafe.list(), window.InstallationsServiceSafe.options()]);
       customerOptions("installationCustomerId");
       reportOptionLoadWarnings(opts);
-      const repFilter = $("installationRequestRepresentativeFilter");
-      if (repFilter) {
-        const current = repFilter.value;
-        const reps = [...new Map(rows.filter(row => row.representativeId).map(row => [row.representativeId, row.representativeName || "مندوب بدون اسم"])).entries()];
-        repFilter.innerHTML = '<option value="">كل المندوبين المسموحين</option>' + reps.map(([id,name]) => `<option value="${esc(id)}">${esc(name)}</option>`).join('');
-        repFilter.value = reps.some(([id]) => id === current) ? current : "";
+      const teamFilter = $("installationRequestRepresentativeFilter");
+      if (teamFilter) {
+        const current = teamFilter.value;
+        const teams = [...new Map(rows.filter(row => row.teamId).map(row => [row.teamId, row.teamName || "فرقة بدون اسم"])).entries()];
+        teamFilter.innerHTML = '<option value="">كل الفرق</option>' + teams.map(([id,name]) => `<option value="${esc(id)}">${esc(name)}</option>`).join('');
+        teamFilter.value = teams.some(([id]) => id === current) ? current : "";
       }
       render();
       clearStatus($("installationRequestsStatus"));

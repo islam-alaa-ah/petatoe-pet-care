@@ -1,11 +1,11 @@
-P51142 Deployment
+P51143 Deployment
 
-Merge files preserving paths, then hard refresh/update PWA to 18.54.24.
-No Supabase SQL is required for this phase.
+Merge files preserving paths and hard refresh/update PWA to 18.54.25.
+No Supabase SQL is required.
 
-Manual check:
-1) Open Scheduling and open an appointment.
-2) تاريخ الموعد must be a calendar/date picker.
-3) Pick an open date and save.
-4) A locked date must be rejected.
-5) Time/team/groomer scheduling must remain unchanged.
+Manual test:
+1) Open المواعيد.
+2) A scheduled row must show 12/2/4/6/8/10 time in الفترة.
+3) الفرقة column must show the assigned appointment team.
+4) Top filter must list teams instead of representatives.
+5) Unscheduled rows may correctly show — until a team/time is assigned.
