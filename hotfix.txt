@@ -1,0 +1,19 @@
+P5.11.4.1 — Schedule RPC Return-Type Hotfix
+
+Observed error:
+ERROR 42P13: cannot change return type of existing function
+HINT: Use DROP FUNCTION get_installation_schedule_global() first.
+
+Root cause:
+Production has an older no-argument get_installation_schedule_global() with a
+different return type. PostgreSQL cannot CREATE OR REPLACE across return types.
+
+Fix:
+The migration does NOT use DROP ... CASCADE.
+If the existing return type is not jsonb, it renames the old function to a
+timestamped legacy name, preserving any database dependencies bound to its OID.
+Then it creates the canonical PETATOE get_installation_schedule_global() returning jsonb.
+
+Important:
+The previous P5114 SQL was wrapped in BEGIN/COMMIT and failed before COMMIT, so
+that failed execution was rolled back. Run p51141.sql from the beginning.

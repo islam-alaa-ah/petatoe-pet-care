@@ -1,17 +1,19 @@
-P5114 Deployment
+P51141 Deployment
 
-1) Merge the frontend files preserving paths.
-2) Run Supabase SQL:
-   supabase/migrations/p5114.sql
-3) In Verification 1 every column must be PASS.
-4) In Verification 2 all booleans must be true.
-5) In Verification 3 all booleans must be true.
-6) Hard refresh/update PWA to 18.54.22.
+1) Merge delivered frontend files preserving paths (safe even if P5114 frontend was already merged).
+2) Run:
+   supabase/migrations/p51141.sql
+3) Run/inspect:
+   supabase/verification/verify.sql
 
-Acceptance flow:
-A) Create appointment with neighborhood + Google Maps + service + pet/payment data.
-B) Save must succeed.
-C) App must open Scheduling automatically.
-D) New appointment must be visible there with status waiting review / unscheduled.
-E) Assign team + one of 12/14/16/18/20/22.
-F) Login as Groomer/Driver of that team and confirm only that team's appointment appears in Execution.
+Expected:
+- get_installation_schedule_global exists
+- return_type = jsonb
+- authenticated_can_execute = true
+- schedule_global_returns_jsonb = true
+- schedule_save_exists = true
+- create_appointment_exists = true
+
+Then test:
+Create Appointment -> Save -> automatic Scheduling screen -> appointment visible ->
+assign team + slot -> Groomer/Driver sees only own team's appointment -> Execution.
