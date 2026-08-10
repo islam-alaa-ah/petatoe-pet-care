@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-23-p51141-schedule-rpc-return-hotfix";
+const CACHE_VERSION = "petatoe-pwa-18-54-24-p51142-calendar-date-picker";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

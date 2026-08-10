@@ -1,19 +1,11 @@
-P51141 Deployment
+P51142 Deployment
 
-1) Merge delivered frontend files preserving paths (safe even if P5114 frontend was already merged).
-2) Run:
-   supabase/migrations/p51141.sql
-3) Run/inspect:
-   supabase/verification/verify.sql
+Merge files preserving paths, then hard refresh/update PWA to 18.54.24.
+No Supabase SQL is required for this phase.
 
-Expected:
-- get_installation_schedule_global exists
-- return_type = jsonb
-- authenticated_can_execute = true
-- schedule_global_returns_jsonb = true
-- schedule_save_exists = true
-- create_appointment_exists = true
-
-Then test:
-Create Appointment -> Save -> automatic Scheduling screen -> appointment visible ->
-assign team + slot -> Groomer/Driver sees only own team's appointment -> Execution.
+Manual check:
+1) Open Scheduling and open an appointment.
+2) تاريخ الموعد must be a calendar/date picker.
+3) Pick an open date and save.
+4) A locked date must be rejected.
+5) Time/team/groomer scheduling must remain unchanged.
