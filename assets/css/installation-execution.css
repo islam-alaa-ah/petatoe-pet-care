@@ -112,3 +112,10 @@ html[data-theme="dark"] .execution-step-time.is-empty,.dark-mode .execution-step
 
 /* Phase M14.9.8.16.9.3 — execution visit schedule data alignment */
 .installation-customer-phone{margin-top:6px;color:var(--text-color,#0f172a);font-weight:700;overflow-wrap:anywhere}.installation-customer-phone strong{font-weight:850}.installation-assignment-notes{display:grid;gap:5px;margin-top:12px;padding:11px 13px;border:1px solid rgba(217,154,19,.28);border-radius:12px;background:rgba(255,248,224,.62);line-height:1.65;overflow-wrap:anywhere}.installation-assignment-notes strong{color:#8a6200}.dark-mode .installation-customer-phone{color:#f8fafc}.dark-mode .installation-assignment-notes{background:rgba(120,84,0,.16);border-color:rgba(244,200,76,.28)}.dark-mode .installation-assignment-notes strong{color:#f4c84c}@media(max-width:700px){.installation-assignment-notes{padding:10px 11px}.installation-customer-phone{font-size:.95rem}}
+
+
+.execution-location-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.execution-return-schedule-btn{display:inline-flex;align-items:center;justify-content:center;min-height:45px;border:1px solid #c64040;border-radius:11px;padding:0 18px;background:#fff4f4;color:#a62828;font-weight:900;cursor:pointer}
+.execution-return-schedule-btn:hover{background:#ffe9e9}
+.execution-return-schedule-btn:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:760px){.execution-location-actions{display:grid;grid-template-columns:1fr}.execution-location-actions .execution-map-btn,.execution-return-schedule-btn{width:100%}}

@@ -1,10 +1,14 @@
-P51144 Deployment
+P51145 Deployment
 
-Merge files preserving paths. No Supabase SQL required.
-Hard refresh/update PWA to 18.54.26.
+1) Merge modified files preserving paths.
+2) Run Supabase SQL: supabase/migrations/p51145.sql
+3) Hard refresh/update PWA to 18.54.27.
 
-Check:
-- Unscheduled table: no المندوب / الموعد columns.
-- Day card: السائق = team driver, الجرومر = team groomer.
-- Filter: الجرومر / كل الجرومر.
-- Re-scheduling still saves normally.
+Manual acceptance:
+- طلبات اليوم: filter label = الجرومر / كل الجرومر.
+- Today card: no representative; shows الجرومر + السائق + الفرقة.
+- Current order: shows الفرقة + الجرومر + السائق.
+- Super Admin / Sales Manager: sees 'إلغاء وإعادة إلى شاشة الجدولة' beside Google Maps.
+- Groomer/Driver: must NOT see that button.
+- Before execution starts: button returns request to scheduling queue.
+- After any execution stage starts: backend rejects return-to-scheduling.

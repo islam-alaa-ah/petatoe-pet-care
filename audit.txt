@@ -1,14 +1,81 @@
-P5.11.4.4 — Scheduling Driver/Groomer UI
+P5.11.4.5 — Execution Groomer / Driver + Return Scheduling
 
-Scope: Scheduling screen only.
-Data source: installation_teams.groomer_name / driver_name already loaded by scheduleTeams().
-No SQL or database schema change.
+Root Cause / Scope:
+- Execution UI still carried legacy technician/representative terminology.
+- Execution queries loaded only team name, not team groomer/driver master data.
+- No privileged workflow existed to undo a selected-but-not-started execution and return it to scheduling.
 
-PASS - unscheduled representative removed
-PASS - unscheduled appointment removed
-PASS - unscheduled colspan 7
-PASS - groomer filter
-PASS - driver from team
-PASS - groomer on card
-PASS - filter by groomer
-PASS - empty table colspan 7
+Safety:
+- Return-to-scheduling is UI-visible only for super_admin/sales_manager.
+- Backend RPC independently enforces the same role rule.
+- Once any execution step has started, rollback is blocked to preserve audit history.
+
+PASS - execution filter says groomer
+PASS - today card removed representative
+PASS - today card has groomer
+PASS - today card has driver
+PASS - team relation includes groomer driver
+PASS - manager-only button UI
+PASS - manager-only role contract
+PASS - backend manager-only role
+PASS - backend protects started execution
+PASS - return button next to map actions
+
+npm run offline:runtime:check
+> petatoe-pet-care-mobile@18.54.27 offline:runtime:check
+> node scripts/offline-runtime-reliability-check.mjs
+
+PASS: All 77 local CSS/JS assets are registered in App Shell
+PASS: Version query strings are normalized with ignoreSearch
+PASS: Critical CDN libraries are registered in Vendor Cache
+PASS: App Shell installation is resilient and caches assets independently
+PASS: Release version is unified at 18.54.27
+PASS: All local CSS/JS version tokens are unified
+PASS: Previously omitted runtime scripts are now included
+
+Offline Runtime Reliability Certification: PASS
+
+npm run dashboard:offline:check
+> petatoe-pet-care-mobile@18.54.27 dashboard:offline:check
+> node scripts/dashboard-offline-certification-check.mjs
+
+PASS - dashboardData exists
+PASS - renderDashboard exists
+PASS - Dashboard has no direct Supabase access
+PASS - Dashboard consumes customers state
+PASS - Dashboard consumes followups state
+PASS - Dashboard consumes quotations state
+PASS - Smart Cache loads before application
+PASS - Smart Cache load order is valid
+PASS - Dashboard application version is unified
+Dashboard Offline Certification: PASS
+
+npm run permissions:role-agnostic:check
+> petatoe-pet-care-mobile@18.54.27 permissions:role-agnostic:check
+> node scripts/role-agnostic-permissions-check.mjs
+
+PASS - canonical resolver registered
+PASS - customers use canonical scope
+PASS - followups use canonical scope
+PASS - quotations use canonical scope
+PASS - sales representative baseline removed
+PASS - legacy role action visibility removed
+PASS - import mapping canonical
+PASS - daily rows canonical scoped
+PASS - representative dropdown canonical scoped
+PASS - restrictive default scope
+PASS - resolver in html
+PASS - resolver in app shell
+12/12 PASS
+
+npm run permissions:visibility-consistency:check
+> petatoe-pet-care-mobile@18.54.27 permissions:visibility-consistency:check
+> node scripts/permission-visibility-consistency-check.mjs
+
+PASS - permissions refresh applies actions after authoritative load
+PASS - quotation add button has canonical permission metadata
+PASS - quotation renderer no longer races by manually hiding add button
+PASS - installation ownership is synchronized to customer representative
+PASS - requests view is not blocked by installation team scope
+
+5/5 checks passed.
