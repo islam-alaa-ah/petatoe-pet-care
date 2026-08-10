@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-14-groomer-driver-team-scope-p5-6";
+const CACHE_VERSION = "petatoe-pwa-18-54-15-application-icon-integration-p5-7";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -101,6 +101,20 @@ const OPTIONAL_APP_SHELL = [
   "./assets/images/favicon-32x32.png",
   "./assets/images/maskable-icon-192x192.png",
   "./assets/images/maskable-icon-512x512.png",
+  "./assets/images/icon-64x64.png",
+  "./assets/images/icon-72x72.png",
+  "./assets/images/icon-96x96.png",
+  "./assets/images/icon-128x128.png",
+  "./assets/images/icon-144x144.png",
+  "./assets/images/icon-152x152.png",
+  "./assets/images/icon-180x180.png",
+  "./assets/images/icon-192x192.png",
+  "./assets/images/icon-256x256.png",
+  "./assets/images/icon-384x384.png",
+  "./assets/images/icon-512x512.png",
+  "./assets/images/icon-1024x1024.png",
+  "./assets/images/favicon-48x48.png",
+  "./assets/images/petatoe-app-icon.svg",
   "./assets/images/pwa-splash-landscape.png",
   "./assets/images/pwa-splash-portrait.png",
   "./assets/images/kyum-header-logo.png"

@@ -1,15 +1,13 @@
 {
-  "version": "18.54.14",
-  "build": 185414,
+  "version": "18.54.15",
+  "build": 185415,
   "forceUpdate": true,
   "releaseDate": "2026-08-10",
-  "title": "PETATOE Groomer / Driver Team Scope — P5.6",
+  "title": "PETATOE Application Icon Integration — P5.7",
   "notes": [
-    "تم تغيير الاسم الظاهر لدور فني التركيبات إلى جرومر / سائق مع الإبقاء على المفتاح الداخلي viewer للتوافق.",
-    "تم إلغاء ربط مندوب المبيعات لدور جرومر / سائق.",
-    "أصبح جرومر / سائق مرتبطًا بفرقة مواعيد واحدة ويشاهد مواعيد هذه الفرقة فقط.",
-    "تم إلغاء شرط تطابق اسم الفني من صلاحية الوصول؛ حدود الوصول أصبحت بالفرقة فقط.",
-    "تم تنظيف نطاقات مندوبي المبيعات القديمة لهذا الدور دون تغيير بقية الأدوار."
+    "تم اعتماد أيقونة PETATOE الجديدة للمتصفح وPWA وشاشة iPhone الرئيسية.",
+    "تم ربط مقاسات الأيقونات القياسية ونسخ Maskable داخل Web App Manifest.",
+    "تم تحديث Service Worker cache token لضمان استبدال الأيقونات القديمة بعد التحديث دون المساس بمنطق البرنامج."
   ],
-  "cacheToken": "petatoe-pwa-18-54-14-groomer-driver-team-scope-p5-6"
+  "cacheToken": "petatoe-pwa-18-54-15-application-icon-integration-p5-7"
 }
