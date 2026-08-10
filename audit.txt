@@ -1,0 +1,18 @@
+PETATOE P5.11.3 — Representative Optional Appointment Scope Recovery
+
+Root Cause:
+The legacy installation workflow assumed representative_id was mandatory.
+PETATOE customer master no longer requires a sales representative, so:
+1) resolve_installation_request_representative() rejected valid customers with no representative.
+2) can_access_installation_request_scope() rejected representative_id=NULL for non-viewer users.
+3) the INSERT policy required representative access even when representative_id was NULL.
+4) update_installation_request_with_services() incorrectly treated an existing request
+   with representative_id=NULL as if the request did not exist.
+
+Business behavior after this phase:
+- If a customer/contract/user has a valid representative, it is preserved.
+- If no representative exists, authorized operations/admin staff can create and process the appointment.
+- Sales representatives do NOT gain visibility to unowned NULL-representative appointments.
+- Groomer / Driver remains team-only.
+- Scheduling/execution continue to use team scope after assignment.
+- No customer, contract, service, animal, collection, neighborhood, map, schedule, or execution data is rewritten.
