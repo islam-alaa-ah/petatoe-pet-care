@@ -1,0 +1,18 @@
+PETATOE P5.11.1 — Root Cause
+
+Observed runtime error:
+function public.create_installation_request_with_services(
+  uuid, uuid, uuid, uuid, unknown, text, unknown, text, text, jsonb
+) does not exist
+
+Confirmed cause:
+P5.11 repaired the PETATOE wrapper create_petatoe_appointment(), but the live
+database did not have the canonical underlying 10-argument
+create_installation_request_with_services() signature that the wrapper calls.
+
+Additional hardening:
+The wrapper literals 'عادية' and NULL are explicitly cast to text, preventing
+PostgreSQL from trying to resolve them as unknown types if old overloads remain.
+
+The update base RPC is restored in the same hotfix so the next step in the
+appointment lifecycle does not fail for the same schema-drift reason.
