@@ -1,13 +1,13 @@
 {
-  "version": "18.54.18",
-  "build": 185418,
+  "version": "18.54.19",
+  "build": 185419,
   "forceUpdate": true,
   "releaseDate": "2026-08-10",
-  "title": "PETATOE Customer Location & Appointment Defaults — P5.10",
+  "title": "PETATOE Customer Neighborhood Prefill Hotfix — P5.10.1",
   "notes": [
-    "إضافة موقع Google Maps إلى بيانات العميل وعرضه في جدول العملاء.",
-    "تحميل الحي وموقع Google Maps المحفوظين تلقائيًا عند اختيار العميل في موعد جديد، وحفظهما في بيانات العميل عند أول إدخال إذا كانا غير مسجلين.",
-    "تحميل بيانات الحيوان وبيانات الدفع/التحصيل تلقائيًا من آخر موعد للعميل."
+    "تم إصلاح تحميل حي العميل تلقائيًا عند اختياره في إضافة موعد.",
+    "تم منع مسح الحي بعد تحميل بيانات العميل من العقد.",
+    "إذا كان الحي موجودًا كنص في address فقط ويطابق حيًا نشطًا واحدًا، يتم ربطه تلقائيًا وحفظ neighborhood_id للعميل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-18-customer-location-defaults-p5-10"
+  "cacheToken": "petatoe-pwa-18-54-19-customer-neighborhood-prefill-hotfix-p5-10-1"
 }

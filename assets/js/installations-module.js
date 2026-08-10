@@ -166,7 +166,7 @@
 
 
       neighborhoodOptions();
-      setInstallationGeoFromNeighborhood('new', "");
+      // P5.10.1: keep the neighborhood loaded from the customer defaults.
 
       const notes = [quotation.description, quotation.notes].map(value => String(value || "").trim()).filter(Boolean).join("\n");
       if (notes && $("newInstallationNotes") && !$("newInstallationNotes").value.trim()) $("newInstallationNotes").value = notes;
@@ -182,14 +182,43 @@
 
 
 
+  function resolveCustomerNeighborhoodId(customer,defaults){
+    const explicitId=customer?.neighborhood_id||defaults?.neighborhoodId||'';
+    if(explicitId && (opts.neighborhoods||[]).some(item=>String(item.id)===String(explicitId)))return explicitId;
+
+    const candidates=[customer?.address,defaults?.address]
+      .map(value=>normalizeArabicText(value))
+      .filter(Boolean);
+
+    for(const candidate of candidates){
+      const exact=(opts.neighborhoods||[]).filter(item=>normalizeArabicText(item?.name)===candidate);
+      if(exact.length===1)return exact[0].id;
+    }
+    return '';
+  }
+
   async function applyCustomerAppointmentDefaults(customerId){
     if(!customerId||editingRequestId)return;
     const customer=opts.customers.find(item=>String(item.id)===String(customerId));
     try{
       const defaults=await window.InstallationsServiceSafe.customerAppointmentDefaults(customerId);
-      const neighborhoodId=customer?.neighborhood_id||defaults?.neighborhoodId||'';
+      const neighborhoodId=resolveCustomerNeighborhoodId(customer,defaults);
       const mapUrl=customer?.google_maps_url||defaults?.customerMapUrl||'';
-      if(neighborhoodId)setInstallationGeoFromNeighborhood('new',neighborhoodId); else setInstallationGeoFromNeighborhood('new','');
+
+      if(neighborhoodId){
+        setInstallationGeoFromNeighborhood('new',neighborhoodId);
+        if(!customer?.neighborhood_id){
+          try{
+            await window.InstallationsServiceSafe.saveCustomerLocationDefaults?.(customerId,neighborhoodId,mapUrl);
+            if(customer)customer.neighborhood_id=neighborhoodId;
+          }catch(error){
+            console.warn('[Appointments] Customer neighborhood backfill skipped:',error);
+          }
+        }
+      }else{
+        setInstallationGeoFromNeighborhood('new','');
+      }
+
       if($('newInstallationCustomerMapUrl'))$('newInstallationCustomerMapUrl').value=mapUrl;
       if(defaults?.animals?.length){$('newInstallationAnimalsBody').innerHTML='';defaults.animals.forEach(addAnimalRow);}
       if(defaults?.collection){
