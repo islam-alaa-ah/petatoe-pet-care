@@ -11493,3 +11493,32 @@ html[data-theme="light"] .brand-mark.petatoe-visible-app-icon {
     border-radius:16px;
   }
 }
+
+
+/* PETATOE P5.9 — branded scroll control + desktop header edge alignment.
+   Visual-only override: preserves existing scroll behavior and responsive layout. */
+.kyum-scroll-control .petatoe-scroll-control-icon {
+  display: block;
+  width: 42px;
+  height: 42px;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 13px;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+
+@media (min-width: 1181px) {
+  .topbar-logo-banner {
+    margin-left: -18px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .kyum-scroll-control .petatoe-scroll-control-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+}

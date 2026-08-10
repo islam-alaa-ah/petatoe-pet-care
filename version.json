@@ -1,14 +1,13 @@
 {
-  "version": "18.54.16",
-  "build": 185416,
+  "version": "18.54.17",
+  "build": 185417,
   "forceUpdate": true,
   "releaseDate": "2026-08-10",
-  "title": "PETATOE Visible Brand Icons — P5.8",
+  "title": "PETATOE Header Brand & Scroll Control — P5.9",
   "notes": [
-    "تم إظهار أيقونة PETATOE الفعلية في زر فتح القائمة الجانبية بدل حرف P.",
-    "تم إظهار أيقونة PETATOE أعلى القائمة الجانبية بدل النص فقط.",
-    "تم إظهار الأيقونة داخل إشعار تثبيت PWA بدل حرف P.",
-    "تم توحيد الأيقونة الظاهرة في الهيدر وشاشة الدخول ومعلومات التطبيق."
+    "تم استبدال حرف P في زر الصعود والنزول بأيقونة PETATOE الفعلية مع الحفاظ على نفس وظيفة الضغطة الواحدة والضغطتين.",
+    "تم تحريك لوجو PETATOE في يسار الهيدر ناحية الحافة اليسرى على شاشات Desktop فقط.",
+    "تم الحفاظ على تخطيط Tablet وMobile دون تغيير موضع عناصر الهيدر الأخرى."
   ],
-  "cacheToken": "petatoe-pwa-18-54-16-visible-brand-icons-p5-8"
+  "cacheToken": "petatoe-pwa-18-54-17-header-brand-scroll-p5-9"
 }

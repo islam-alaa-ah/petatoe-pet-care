@@ -1,0 +1,26 @@
+PETATOE P5.9 — Header Brand & Scroll Control
+
+Root Cause
+- The scroll control still rendered the legacy text marker "P" in index.html even though P5.8 introduced the real PETATOE icon elsewhere.
+- The desktop header brand occupied the left grid area correctly, but the header/container padding left visible unused space before the logo.
+
+Scope
+- Replace only the scroll-control visual marker with the existing PETATOE app icon.
+- Move the left desktop header logo 18px toward the physical left edge.
+- Preserve scroll behavior, header grid, sidebar behavior, tablet/mobile layout, and all business logic.
+
+Modified Files
+- index.html
+- assets/css/style.css
+- assets/js/pwa.js
+- service-worker.js
+- package.json
+- version.json
+
+Regression Audit
+- assets/js/app.js syntax: PASS (unchanged; scroll single-click top / double-click bottom logic preserved)
+- assets/js/pwa.js syntax: PASS
+- Scroll-control id and event binding: PRESERVED
+- Tablet/mobile header positioning: PRESERVED (desktop movement applies only >=1181px)
+- Existing PETATOE icon asset reused; no new image asset introduced
+- Cache/version advanced from 18.54.16 to 18.54.17
