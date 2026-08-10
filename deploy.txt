@@ -1,23 +1,17 @@
-PETATOE P5.11.3 Deployment
+P5114 Deployment
 
-1) Run:
-   supabase/migrations/phase_p5_11_3_representative_optional_appointment_scope_recovery.sql
+1) Merge the frontend files preserving paths.
+2) Run Supabase SQL:
+   supabase/migrations/p5114.sql
+3) In Verification 1 every column must be PASS.
+4) In Verification 2 all booleans must be true.
+5) In Verification 3 all booleans must be true.
+6) Hard refresh/update PWA to 18.54.22.
 
-2) Verification A:
-   All listed functions must exist and authenticated_can_execute must be true where applicable.
-
-3) Verification C:
-   orphan_customers = 0
-   orphan_contracts = 0
-   orphan_neighborhoods = 0
-   orphan_teams = 0
-
-4) Functional acceptance:
-   A. Create an appointment for a customer with no representative.
-   B. Confirm it moves to appointment requests/review.
-   C. Schedule it to a team and one of the canonical slots.
-   D. Login as Groomer / Driver of that team.
-   E. Confirm only that team's appointment is visible.
-   F. Start execution and confirm the lifecycle progresses normally.
-
-No frontend deployment is required for P5.11.3.
+Acceptance flow:
+A) Create appointment with neighborhood + Google Maps + service + pet/payment data.
+B) Save must succeed.
+C) App must open Scheduling automatically.
+D) New appointment must be visible there with status waiting review / unscheduled.
+E) Assign team + one of 12/14/16/18/20/22.
+F) Login as Groomer/Driver of that team and confirm only that team's appointment appears in Execution.

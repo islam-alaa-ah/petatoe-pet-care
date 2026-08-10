@@ -1,15 +1,15 @@
 {
-  "version": "18.54.21",
-  "build": 185421,
+  "version": "18.54.22",
+  "build": 185422,
   "forceUpdate": true,
   "releaseDate": "2026-08-11",
-  "title": "PETATOE Appointment Cycle Deep Recovery — P5.11",
+  "title": "PETATOE Appointment Save & Scheduling Handoff — P5.11.4",
   "notes": [
-    "تم إصلاح خطأ id ambiguous في إنشاء وتعديل الموعد.",
-    "تم تثبيت مواعيد الجدولة على 12 ظهرًا و2 و4 و6 و8 و10 مساءً.",
-    "تم ربط اسم الجرومر في الجدولة تلقائيًا بفرقة المواعيد.",
-    "تم إضافة حراسة قاعدة بيانات لمواعيد الجدولة الثابتة.",
-    "تم فحص دورة الموعد من الإنشاء حتى الجدولة والتنفيذ."
+    "تم استرجاع customer_map_url وباقي عقد Schema الخاص بحفظ الموعد.",
+    "تم فصل صلاحية الجدولة عن وجود مندوب مبيعات باستخدام canonical appointment scope.",
+    "تم تثبيت مواعيد الجدولة على 12/2/4/6/8/10.",
+    "بعد إنشاء الموعد بنجاح يتم فتح شاشة الجدولة مباشرة.",
+    "تم الحفاظ على نطاق جرومر / سائق حسب الفرقة فقط."
   ],
-  "cacheToken": "petatoe-pwa-18-54-21-appointment-cycle-deep-recovery-p5-11"
+  "cacheToken": "petatoe-pwa-18-54-22-p5114-save-schedule-handoff"
 }

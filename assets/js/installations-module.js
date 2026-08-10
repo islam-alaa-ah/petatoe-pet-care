@@ -924,10 +924,11 @@
           window.KYUMNavigation?.open?.("installationRequests", { trustedNavigation: true });
         } else {
           const created = await window.InstallationsServiceSafe.createRequest(payload);
-          status($("newInstallationRequestFormStatus"), `تم إنشاء الموعد ${created.request_number || ""} وإرساله إلى المواعيد بانتظار المراجعة.`, "success");
+          status($("newInstallationRequestFormStatus"), `تم إنشاء الموعد ${created.request_number || ""} ونقله إلى شاشة الجدولة بانتظار المراجعة.`, "success");
           setSaveState(button,"saved");
           await new Promise(r=>setTimeout(r,450));
           resetNewForm({ exitEdit: true });
+          window.KYUMNavigation?.open?.("installationSchedule", { trustedNavigation: true });
         }
       } catch (error) {
         setSaveState(button,"error");
