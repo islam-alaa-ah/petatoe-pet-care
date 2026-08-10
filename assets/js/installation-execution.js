@@ -90,12 +90,14 @@ async function startRequest(entryId){const r=rows.find(x=>(x.scheduleEntryId||x.
 async function advance(nextStatus){if(!current)return;const btn=document.querySelector('[data-execution-next]');if(btn)btn.disabled=true;try{const notes=$('installationExecutionNotes')?.value.trim()||'';await window.InstallationsServiceSafe.advanceExecution({id:current.id,visitId:current.visitId||null,nextStatus,notes,photos:nextStatus==='مكتمل'?selectedFiles:[]});selectedFiles=[];await load();if(nextStatus==='مكتمل'){window.KYUMNavigation?.open?.('installationCompletion',{trustedNavigation:true});document.querySelector('[data-view="installationCompletion"]')?.click()}else switchTab('current')}catch(e){setStatus($('installationExecutionCurrentStatus'),e.message,'error')}finally{if(btn)btn.disabled=false}}
 async function returnExecutionToSchedule(requestId){
   if(!requestId||executionIdentity?.canReturnToSchedule!==true)return;
-  const ok=window.confirm('سيتم إلغاء الإسناد الحالي وإعادة الموعد إلى شاشة الجدولة. هل تريد المتابعة؟');
+  const reason=String(window.prompt('اكتب سبب إلغاء الجدولة وإعادة الموعد إلى شاشة الجدولة:','')||'').trim();
+  if(!reason)return;
+  const ok=window.confirm('سيتم حفظ سبب إعادة الجدولة ومرحلة التنفيذ الحالية في تقارير المواعيد، ثم إعادة الطلب إلى شاشة الجدولة. هل تريد المتابعة؟');
   if(!ok)return;
   const btn=document.querySelector('[data-return-to-schedule]');
   if(btn)btn.disabled=true;
   try{
-    await window.InstallationsServiceSafe.returnExecutionToSchedule(requestId);
+    await window.InstallationsServiceSafe.returnExecutionToSchedule(requestId,reason);
     selectedFiles=[];selectedCurrentId='';current=null;
     await load();
     switchTab('today');

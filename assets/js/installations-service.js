@@ -356,13 +356,15 @@
   }
   async function selectExecutionRequest(id,visitId){requireAction('edit','installationExecution');const {error}=await db().rpc('select_installation_execution_visit',{p_request_id:id,p_visit_id:visitId||null});if(error)throw new Error('تعذر اختيار زيارة التنفيذ الحالية: '+error.message);void notifyEvent('installation.execution_selected',id,visitId||null,{source:'execution_selection'},'selected:'+String(visitId||id))}
   async function recordMapOpened(id,visitId){requireAction('edit','installationExecution');if(visitId){const {error}=await db().rpc('record_installation_visit_map_opened',{p_request_id:id,p_visit_id:visitId});if(error)throw new Error('تعذر تسجيل فتح موقع العميل: '+error.message);void notifyEvent('installation.map_opened',id,visitId,{source:'execution'},'map:'+visitId);return}const {error}=await db().rpc('record_installation_map_opened',{p_request_id:id});if(error)throw new Error('تعذر تسجيل فتح موقع العميل: '+error.message);void notifyEvent('installation.map_opened',id,null,{source:'execution'},'map:'+id)}
-  async function returnExecutionToSchedule(id){
+  async function returnExecutionToSchedule(id,reason){
     const role=String(window.CustomerPermissions?.currentRole?.()||window.CustomerAuth?.getState?.().profile?.role||'').trim();
     if(!['super_admin','sales_manager'].includes(role))throw new Error('إلغاء الطلب وإعادته للجدولة متاح للسوبر أدمن ومدير المبيعات فقط.');
     if(!id)throw new Error('معرّف الموعد مطلوب.');
-    const {data,error}=await db().rpc('return_installation_execution_to_schedule',{p_request_id:id});
+    reason=String(reason||'').trim();
+    if(!reason)throw new Error('سبب إعادة الجدولة مطلوب.');
+    const {data,error}=await db().rpc('return_installation_execution_to_schedule',{p_request_id:id,p_reason:reason});
     if(error)throw new Error('تعذر إلغاء الطلب وإعادته إلى الجدولة: '+error.message);
-    void notifyEvent('installation.execution_returned_to_schedule',id,null,{source:'current_execution'},'return-schedule:'+id);
+    void notifyEvent('installation.execution_returned_to_schedule',id,null,{source:'current_execution',reason,stage:data?.stage||''},'return-schedule:'+id+':'+Date.now());
     return data;
   }
   async function uploadExecutionFile(requestId,file){if(!file)return null;if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('صيغة الصورة غير مدعومة.');if(file.size>10485760)throw new Error('حجم الصورة يجب ألا يتجاوز 10 ميجابايت.');const ext=(file.name.split('.').pop()||'jpg').toLowerCase(),path=`${requestId}/execution/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;const {error:up}=await db().storage.from('installation-evidence').upload(path,file,{contentType:file.type,upsert:false});if(up)throw new Error('تعذر رفع صورة التنفيذ: '+up.message);const {error}=await db().from('installation_execution_files').insert({installation_request_id:requestId,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size});if(error)throw new Error('تعذر تسجيل صورة التنفيذ: '+error.message);return path}
@@ -485,18 +487,34 @@
     const requestSelect='id,request_number,neighborhood_id,scheduled_date,scheduled_time,installation_team_id,assigned_technician_name,representative_id,status,total_services_amount,on_route_at,map_opened_at,arrived_at,started_at,completed_at,customer:customers(id,customer_name,phone),team:installation_teams(id,name),representative:sales_representatives(id,full_name)';
     const applyDateFilter=q=>{if(filters.date)return q.eq('scheduled_date',filters.date);if(filters.dateFrom)q=q.gte('scheduled_date',filters.dateFrom);if(filters.dateTo)q=q.lte('scheduled_date',filters.dateTo);return q};
     const fetchPaged=async(table,select)=>{const out=[],pageSize=1000;for(let from=0;;from+=pageSize){let q=applyDateFilter(db().from(table).select(select)).order('scheduled_date',{ascending:true}).range(from,from+pageSize-1);const {data,error}=await q;if(error)return {data:out,error};const page=data||[];out.push(...page);if(page.length<pageSize)break}return {data:out,error:null}};
-    const [{data:visits,error:ve},{data:scheduledRequests,error:sre},{data:teams,error:te},{data:reps,error:re}]=await Promise.all([
+    const auditDateFilter=q=>{
+      if(filters.date){const d=new Date(`${filters.date}T00:00:00`),n=new Date(d);n.setDate(n.getDate()+1);return q.gte('occurred_at',d.toISOString()).lt('occurred_at',n.toISOString())}
+      if(filters.dateFrom)q=q.gte('occurred_at',`${filters.dateFrom}T00:00:00`);
+      if(filters.dateTo){const d=new Date(`${filters.dateTo}T00:00:00`);d.setDate(d.getDate()+1);q=q.lt('occurred_at',d.toISOString())}
+      return q
+    };
+    const [{data:visits,error:ve},{data:scheduledRequests,error:sre},{data:teams,error:te},{data:reps,error:re},{data:rescheduleEvents,error:rseAudit}]=await Promise.all([
       fetchPaged('installation_execution_visits',visitSelect),
       fetchPaged('installation_requests',requestSelect),
       db().from('installation_teams').select('id,name').order('name'),
-      db().from('sales_representatives').select('id,full_name').order('full_name')
+      db().from('sales_representatives').select('id,full_name').order('full_name'),
+      auditDateFilter(db().from('installation_reschedule_events').select('id,installation_request_id,execution_visit_id,occurred_at,reason,execution_stage,previous_status,previous_scheduled_date,previous_scheduled_time,previous_team_id,previous_team_name,previous_groomer_name,previous_driver_name,request_number,customer_name,performed_by_name,previous_representative_id')).order('occurred_at',{ascending:false})
     ]);
     if(ve)throw new Error('تعذر تحميل زيارات ملخص المواعيد: '+ve.message);
     if(sre)throw new Error('تعذر تحميل الطلبات المجدولة لملخص المواعيد: '+sre.message);
+    if(rseAudit)throw new Error('تعذر تحميل سجل إعادة الجدولة اليومي: '+rseAudit.message);
     if(te||re)throw new Error('تعذر تحميل فلاتر ملخص المواعيد.');
     const inScope=(row,representativeId,teamId)=>(!filters.representativeId||String(representativeId||'')===String(filters.representativeId))&&(!teamFilterApplied||selectedTeams.has(String(teamId||'')));
     const scopedVisits=(visits||[]).filter(v=>inScope(v,v.request?.representative_id,v.installation_team_id));
     const scopedRequests=(scheduledRequests||[]).filter(r=>inScope(r,r.representative_id,r.installation_team_id));
+    const scopedRescheduleEvents=(rescheduleEvents||[]).filter(e=>inScope(e,e.previous_representative_id,e.previous_team_id)).map(e=>({
+      id:e.id,requestId:e.installation_request_id||'',visitId:e.execution_visit_id||'',occurredAt:e.occurred_at||'',
+      reason:e.reason||'',stage:e.execution_stage||'غير محدد',previousStatus:e.previous_status||'',
+      previousScheduledDate:e.previous_scheduled_date||'',previousScheduledTime:String(e.previous_scheduled_time||'').slice(0,5),
+      teamId:e.previous_team_id||'',teamName:e.previous_team_name||'غير مسند',
+      groomerName:e.previous_groomer_name||'غير محدد',driverName:e.previous_driver_name||'غير محدد',
+      requestNumber:e.request_number||'',customerName:e.customer_name||'',performedBy:e.performed_by_name||''
+    }));
 
     // A request scheduled through the multi-day workflow must be represented by its visit rows only.
     // Check all candidate single-day request IDs for any execution visit, not only visits on the selected date,
@@ -509,7 +527,7 @@
       requestsWithVisits=new Set((anyVisits||[]).map(v=>String(v.installation_request_id||'')).filter(Boolean));
     }
     const singleDayRequests=scopedRequests.filter(r=>!requestsWithVisits.has(String(r.id||'')));
-    if(!scopedVisits.length&&!singleDayRequests.length)return {rows:[],executionGroups:[],summary:{teams:0,visits:0,quantity:0,value:0,expenses:0,profit:0,average:0},teams:(teams||[]).map(x=>({id:x.id,name:x.name})),representatives:(reps||[]).map(x=>({id:x.id,name:x.full_name}))};
+    if(!scopedVisits.length&&!singleDayRequests.length)return {rows:[],executionGroups:[],rescheduleEvents:scopedRescheduleEvents,summary:{teams:0,visits:0,quantity:0,value:0,expenses:0,profit:0,average:0},teams:(teams||[]).map(x=>({id:x.id,name:x.name})),representatives:(reps||[]).map(x=>({id:x.id,name:x.full_name}))};
 
     const visitIds=scopedVisits.map(v=>v.id).filter(Boolean);
     const requestIds=[...new Set([...scopedVisits.map(v=>v.installation_request_id),...singleDayRequests.map(r=>r.id)].filter(Boolean))];
@@ -572,7 +590,7 @@
     }
     const executionGroups=[...executionGrouped.values()].map(group=>({...group,orders:group.orders.sort((a,b)=>String(a.scheduledTime||'').localeCompare(String(b.scheduledTime||''))||String(a.requestNumber||'').localeCompare(String(b.requestNumber||''),'ar'))})).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
     const totalQuantity=rows.reduce((a,x)=>a+x.quantity,0),totalValue=rows.reduce((a,x)=>a+x.value,0),totalExpenses=rows.reduce((a,x)=>a+x.expenses,0),totalProfit=totalValue-totalExpenses;
-    return {rows,executionGroups,summary:{teams:rows.length,visits:scopedVisits.length+singleDayRequests.length,quantity:totalQuantity,value:totalValue,expenses:totalExpenses,profit:totalProfit,average:totalQuantity?totalValue/totalQuantity:0},teams:(teams||[]).map(x=>({id:x.id,name:x.name})),representatives:(reps||[]).map(x=>({id:x.id,name:x.full_name}))};
+    return {rows,executionGroups,rescheduleEvents:scopedRescheduleEvents,summary:{teams:rows.length,visits:scopedVisits.length+singleDayRequests.length,quantity:totalQuantity,value:totalValue,expenses:totalExpenses,profit:totalProfit,average:totalQuantity?totalValue/totalQuantity:0},teams:(teams||[]).map(x=>({id:x.id,name:x.name})),representatives:(reps||[]).map(x=>({id:x.id,name:x.full_name}))};
   }
 
   async function settingsCatalog(){requireAction('view','installationSettings');const [services,teams,neighborhoods,regions,cities]=await Promise.all([db().from('installation_service_types').select('*').order('name'),db().from('installation_teams').select('*').order('name'),db().from('installation_neighborhoods').select('*').order('name'),db().from('installation_regions').select('id,name,is_active').order('name'),db().from('installation_cities').select('id,region_id,name,is_active').order('name')]);if(services.error)throw new Error('تعذر تحميل الخدمات: '+services.error.message);if(teams.error)throw new Error('تعذر تحميل فرق المواعيد: '+teams.error.message);if(neighborhoods.error)throw new Error('تعذر تحميل الأحياء: '+neighborhoods.error.message);if(regions.error||cities.error)throw new Error('تعذر تحميل المناطق والمدن. شغّل Migration المرحلة أولًا.');return {services:services.data||[],teams:teams.data||[],neighborhoods:neighborhoods.data||[],regions:regions.data||[],cities:cities.data||[]}}

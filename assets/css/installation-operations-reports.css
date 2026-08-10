@@ -182,3 +182,13 @@
 .installation-service-comparison-title{display:flex;align-items:center;gap:12px;padding-bottom:12px;margin-bottom:4px;border-bottom:1px dashed color-mix(in srgb,var(--primary-color) 28%,var(--border-color))}.installation-service-comparison-title>span{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#0f4c9a;color:#fff;font-weight:900;font-size:.76rem}.installation-service-comparison-title h4,.installation-service-comparison-title p{margin:0}.installation-service-comparison-title p{margin-top:3px;color:var(--text-muted);font-size:.8rem}
 @media(max-width:900px){.installation-service-section{padding:15px}.installation-service-section-title{align-items:flex-start;display:grid}.installation-service-section-title p{text-align:start}.installation-service-operational-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.installation-service-section{padding:12px;border-radius:16px}.installation-service-financial-kpis,.installation-service-operational-kpis,.installation-service-geographic-kpis{grid-template-columns:1fr}}
+
+.installation-summary-reschedule-section{margin-top:24px;display:grid;gap:14px}
+.installation-summary-reschedule-events{display:grid;gap:12px}
+.installation-summary-reschedule-event{border:1px solid #efb2b2;border-radius:14px;background:color-mix(in srgb,var(--surface-color) 94%,#fff1f1 6%);padding:14px 16px;display:grid;gap:12px}
+.installation-summary-reschedule-head{display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #f0d0d0;padding-bottom:10px}
+.installation-summary-reschedule-head strong{font-size:1rem}.installation-summary-reschedule-head span{font-weight:800}.installation-summary-reschedule-head time{margin-inline-start:auto;color:var(--text-muted);font-size:.84rem}
+.installation-summary-reschedule-grid{display:grid;grid-template-columns:repeat(3,minmax(180px,1fr));gap:8px 16px;font-size:.9rem}
+.installation-summary-reschedule-reason{border-inline-start:4px solid #c64040;background:#fff7f7;border-radius:8px;padding:10px 12px}
+@media(max-width:900px){.installation-summary-reschedule-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.installation-summary-reschedule-grid{grid-template-columns:1fr}.installation-summary-reschedule-head time{margin-inline-start:0;width:100%}}
