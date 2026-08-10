@@ -1,0 +1,1 @@
+select c.customer_number code,c.customer_name name,c.address,c.neighborhood_id,n.name neighborhood_name,case when c.neighborhood_id is not null then 'PASS' else 'CHECK' end status from public.customers c left join public.installation_neighborhoods n on n.id=c.neighborhood_id where nullif(btrim(coalesce(c.address,'')),'') is not null order by c.customer_number limit 500;

@@ -11,6 +11,7 @@
   let editingRequestId = null;
   const QUOTATION_PREFILL_KEY = "kyum:installation:quotation-prefill";
   let quotationPrefillPromise = null;
+  let customerDefaultsSelectionToken = 0;
 
 
   function setSaveState(button,state,originalText){
@@ -113,13 +114,19 @@
   }
 
   function normalizeArabicText(value) {
-    return String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
+    return String(value || "").normalize("NFKC").replace(/[ًٌٍَُِّْـ]/g, "").replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/[،,؛;:()[\]{}]/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
   }
-
-  function matchNeighborhoodId() {
-    // P4 canonical customer master contains code/name/address/mobile only.
-    // Appointment neighborhood is operational appointment data and is never
-    // inherited from the customer record.
+  function normalizeNeighborhoodKey(value) {
+    return normalizeArabicText(value).replace(/^حي\s+/u, "").replace(/\s+(?:مدينه\s+)?جده$/u, "").replace(/\s+/g, " ").trim();
+  }
+  function matchNeighborhoodId(customer, defaults = null) {
+    const explicitId = customer?.neighborhood_id || defaults?.neighborhoodId || "";
+    if (explicitId && (opts.neighborhoods || []).some(item => String(item.id) === String(explicitId))) return explicitId;
+    const keys = [customer?.address, defaults?.address].map(normalizeNeighborhoodKey).filter(Boolean);
+    for (const key of keys) {
+      const exact = (opts.neighborhoods || []).filter(item => normalizeNeighborhoodKey(item?.name) === key);
+      if (exact.length === 1) return exact[0].id;
+    }
     return "";
   }
 
@@ -182,43 +189,26 @@
 
 
 
-  function resolveCustomerNeighborhoodId(customer,defaults){
-    const explicitId=customer?.neighborhood_id||defaults?.neighborhoodId||'';
-    if(explicitId && (opts.neighborhoods||[]).some(item=>String(item.id)===String(explicitId)))return explicitId;
-
-    const candidates=[customer?.address,defaults?.address]
-      .map(value=>normalizeArabicText(value))
-      .filter(Boolean);
-
-    for(const candidate of candidates){
-      const exact=(opts.neighborhoods||[]).filter(item=>normalizeArabicText(item?.name)===candidate);
-      if(exact.length===1)return exact[0].id;
-    }
-    return '';
-  }
-
   async function applyCustomerAppointmentDefaults(customerId){
     if(!customerId||editingRequestId)return;
+    const token=++customerDefaultsSelectionToken;
     const customer=opts.customers.find(item=>String(item.id)===String(customerId));
+    if(!customer)return;
+    const localNeighborhoodId=matchNeighborhoodId(customer);
+    const localMapUrl=String(customer?.google_maps_url||'').trim();
+    setInstallationGeoFromNeighborhood('new',localNeighborhoodId||'');
+    if($('newInstallationCustomerMapUrl'))$('newInstallationCustomerMapUrl').value=localMapUrl;
     try{
       const defaults=await window.InstallationsServiceSafe.customerAppointmentDefaults(customerId);
-      const neighborhoodId=resolveCustomerNeighborhoodId(customer,defaults);
-      const mapUrl=customer?.google_maps_url||defaults?.customerMapUrl||'';
-
+      if(token!==customerDefaultsSelectionToken || String($('newInstallationCustomerId')?.value||'')!==String(customerId))return;
+      const neighborhoodId=matchNeighborhoodId(customer,defaults)||localNeighborhoodId;
+      const mapUrl=localMapUrl||defaults?.customerMapUrl||'';
       if(neighborhoodId){
         setInstallationGeoFromNeighborhood('new',neighborhoodId);
         if(!customer?.neighborhood_id){
-          try{
-            await window.InstallationsServiceSafe.saveCustomerLocationDefaults?.(customerId,neighborhoodId,mapUrl);
-            if(customer)customer.neighborhood_id=neighborhoodId;
-          }catch(error){
-            console.warn('[Appointments] Customer neighborhood backfill skipped:',error);
-          }
+          try{await window.InstallationsServiceSafe.saveCustomerLocationDefaults?.(customerId,neighborhoodId,mapUrl);customer.neighborhood_id=neighborhoodId;}catch(error){console.warn('[Appointments] Customer neighborhood backfill skipped:',error);}
         }
-      }else{
-        setInstallationGeoFromNeighborhood('new','');
       }
-
       if($('newInstallationCustomerMapUrl'))$('newInstallationCustomerMapUrl').value=mapUrl;
       if(defaults?.animals?.length){$('newInstallationAnimalsBody').innerHTML='';defaults.animals.forEach(addAnimalRow);}
       if(defaults?.collection){
@@ -227,7 +217,11 @@
         if($('newInstallationPaymentMethod'))$('newInstallationPaymentMethod').value=defaults.collection.paymentMethod||'';
         if($('newInstallationAppointmentStatus'))$('newInstallationAppointmentStatus').value=defaults.collection.appointmentStatus||'بانتظار المراجعة';
       }
-    }catch(error){console.warn('[Appointments] Customer defaults prefill skipped:',error);}
+    }catch(error){
+      console.warn('[Appointments] Historical customer defaults prefill skipped:',error);
+      const target=$('newInstallationRequestFormStatus');
+      if(target)status(target,'تم تحميل بيانات موقع العميل، لكن تعذر تحميل بيانات آخر موعد: '+(error?.message||'خطأ غير معروف.'),'warning');
+    }
   }
 
   function customerLabel(customer) {
@@ -779,18 +773,20 @@
 
     $("newInstallationCustomerSearch")?.addEventListener("focus", event => renderCustomerResults(event.target.value));
     $("newInstallationCustomerSearch")?.addEventListener("input", event => {
+      customerDefaultsSelectionToken++;
       $("newInstallationCustomerId").value = "";
       event.target.setCustomValidity("");
       renderCustomerResults(event.target.value);
       quotationOptions("", "newInstallationQuotationId");
     });
-    $("newInstallationCustomerResults")?.addEventListener("click", event => {
+    $("newInstallationCustomerResults")?.addEventListener("click", async event => {
       const option = event.target.closest("[data-installation-customer-id]");
       if (!option) return;
-      syncCustomerSearch(option.dataset.installationCustomerId);
-      quotationOptions(option.dataset.installationCustomerId, "newInstallationQuotationId");
-      void applyCustomerAppointmentDefaults(option.dataset.installationCustomerId);
+      const customerId=option.dataset.installationCustomerId;
+      syncCustomerSearch(customerId);
+      quotationOptions(customerId, "newInstallationQuotationId");
       closeCustomerResults();
+      await applyCustomerAppointmentDefaults(customerId);
     });
     $("newInstallationNeighborhoodSearch")?.addEventListener("focus",event=>renderNewNeighborhoodResults(event.target.value));
     $("newInstallationNeighborhoodSearch")?.addEventListener("input",event=>{

@@ -1,0 +1,4 @@
+1) Merge files preserving paths.
+2) Run supabase/migrations/phase_p5_10_2_customer_neighborhood_prefill_deep_recovery.sql
+3) Review unresolved_customer_neighborhoods and sample rows.
+4) Hard refresh/update PWA to 18.54.20.

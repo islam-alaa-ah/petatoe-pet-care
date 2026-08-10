@@ -1,0 +1,122 @@
+PETATOE P5.10.2 — Customer Neighborhood Prefill Deep Recovery
+
+Confirmed causes:
+1) Customer location rendering was coupled to historical defaults RPC.
+2) Arabic matching was too strict.
+3) Fire-and-forget async prefill allowed stale results.
+4) Customer loader fallback repeated the same select.
+5) Legacy customers may have address text but NULL neighborhood_id.
+6) Animal/payment history shared the same failure domain as location.
+
+PASS - location prefill before RPC
+PASS - strong Arabic matcher
+PASS - async race guard
+PASS - customer click awaits
+PASS - schema-safe customer loader
+PASS - animals retained
+PASS - collection retained
+PASS - map retained
+PASS - old weak resolver removed
+PASS - fire-and-forget removed
+
+=== npm run offline:runtime:check ===
+> petatoe-pet-care-mobile@18.54.20 offline:runtime:check
+> node scripts/offline-runtime-reliability-check.mjs
+
+PASS: All 77 local CSS/JS assets are registered in App Shell
+PASS: Version query strings are normalized with ignoreSearch
+PASS: Critical CDN libraries are registered in Vendor Cache
+PASS: App Shell installation is resilient and caches assets independently
+PASS: Release version is unified at 18.54.20
+PASS: All local CSS/JS version tokens are unified
+PASS: Previously omitted runtime scripts are now included
+
+Offline Runtime Reliability Certification: PASS
+
+=== npm run dashboard:offline:check ===
+> petatoe-pet-care-mobile@18.54.20 dashboard:offline:check
+> node scripts/dashboard-offline-certification-check.mjs
+
+PASS - dashboardData exists
+PASS - renderDashboard exists
+PASS - Dashboard has no direct Supabase access
+PASS - Dashboard consumes customers state
+PASS - Dashboard consumes followups state
+PASS - Dashboard consumes quotations state
+PASS - Smart Cache loads before application
+PASS - Smart Cache load order is valid
+PASS - Dashboard application version is unified
+Dashboard Offline Certification: PASS
+
+=== npm run offline:cache-first:check ===
+> petatoe-pet-care-mobile@18.54.20 offline:cache-first:check
+> node scripts/cache-first-connectivity-check.mjs
+
+PASS: Smart Cache supports unlimited stale fallback
+PASS: Customers reads stale cache at any age
+PASS: Customers scope has cached fallback
+PASS: Customers cache refresh does not depend only on navigator.onLine
+PASS: Customers exposes read freshness metadata
+PASS: Followups reads stale cache at any age
+PASS: Followups scope has cached fallback
+PASS: Followups cache refresh does not depend only on navigator.onLine
+PASS: Followups exposes read freshness metadata
+PASS: Quotations reads stale cache at any age
+PASS: Quotations scope has cached fallback
+PASS: Quotations cache refresh does not depend only on navigator.onLine
+PASS: Quotations exposes read freshness metadata
+PASS: UI shows last synchronization status
+PASS: Version unified
+
+15/15 PASS
+
+=== npm run offline:queue:check ===
+> petatoe-pet-care-mobile@18.54.20 offline:queue:check
+> node scripts/sync-queue-recovery-check.mjs
+
+PASS - Queue version M13.13
+PASS - Anonymous namespace blocked
+PASS - Offline session namespace used
+PASS - Interrupted processing recovery
+PASS - Operation dedupe key
+PASS - Idempotency key
+PASS - Retry API
+PASS - Discard API
+PASS - Conflict listing
+PASS - Conflict resolution
+PASS - Queue cleanup
+PASS - Diagnostics stats
+PASS - Version unified
+
+13 / 13 PASS
+
+=== npm run permissions:role-agnostic:check ===
+> petatoe-pet-care-mobile@18.54.20 permissions:role-agnostic:check
+> node scripts/role-agnostic-permissions-check.mjs
+
+PASS - canonical resolver registered
+PASS - customers use canonical scope
+PASS - followups use canonical scope
+PASS - quotations use canonical scope
+PASS - sales representative baseline removed
+PASS - legacy role action visibility removed
+PASS - import mapping canonical
+PASS - daily rows canonical scoped
+PASS - representative dropdown canonical scoped
+PASS - restrictive default scope
+PASS - resolver in html
+PASS - resolver in app shell
+12/12 PASS
+
+=== npm run permissions:visibility-consistency:check ===
+> petatoe-pet-care-mobile@18.54.20 permissions:visibility-consistency:check
+> node scripts/permission-visibility-consistency-check.mjs
+
+PASS - permissions refresh applies actions after authoritative load
+PASS - quotation add button has canonical permission metadata
+PASS - quotation renderer no longer races by manually hiding add button
+PASS - installation ownership is synchronized to customer representative
+PASS - requests view is not blocked by installation team scope
+
+5/5 checks passed.
+
