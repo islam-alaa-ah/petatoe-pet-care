@@ -57,9 +57,10 @@ async function sha256(value: unknown) {
     .join("");
 }
 
-async function requireSuperAdmin(
+async function requireBackupPermission(
   admin: ReturnType<typeof createClient>,
   request: Request,
+  action: string,
 ) {
   const authorization = request.headers.get("Authorization");
   if (!authorization?.startsWith("Bearer ")) {
@@ -78,8 +79,37 @@ async function requireSuperAdmin(
     .eq("id", callerData.user.id)
     .single();
 
-  if (profileError || !profile?.is_active || profile.role !== "super_admin") {
-    throw new HttpError(403, "FORBIDDEN", "Super Admin only.");
+  if (profileError || !profile?.is_active) {
+    throw new HttpError(403, "FORBIDDEN", "Active user profile is required.");
+  }
+
+  if (profile.role === "super_admin") return callerData.user;
+
+  const permissionAction = action === "export" ? "export"
+    : action === "validate" ? "view"
+    : action === "restore_dry_run" || action === "restore" ? "edit"
+    : "";
+  const permissionField = permissionAction === "export" ? "can_export"
+    : permissionAction === "edit" ? "can_edit"
+    : permissionAction === "view" ? "can_view"
+    : "";
+
+  if (!permissionField) {
+    throw new HttpError(400, "UNSUPPORTED_ACTION", "Unsupported backup action.");
+  }
+
+  const { data: permissionRow, error: permissionError } = await admin
+    .from("role_screen_permissions")
+    .select(`screen_key,${permissionField},screen:app_screens!inner(is_active)`)
+    .eq("role", profile.role)
+    .eq("screen_key", "backups")
+    .maybeSingle();
+
+  const screenActive = Array.isArray(permissionRow?.screen)
+    ? permissionRow.screen.some((screen: any) => screen?.is_active === true)
+    : (permissionRow?.screen as any)?.is_active === true;
+  if (permissionError || !permissionRow?.[permissionField] || !screenActive) {
+    throw new HttpError(403, "FORBIDDEN", `Missing backups.${permissionAction} permission.`);
   }
 
   return callerData.user;
@@ -290,9 +320,9 @@ Deno.serve(async (request) => {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    const caller = await requireSuperAdmin(admin, request);
     const body = await request.json().catch(() => ({}));
     const action = String(body.action ?? "").trim();
+    const caller = await requireBackupPermission(admin, request, action);
 
     if (action === "export") {
       const manifest = await loadManifest(admin);

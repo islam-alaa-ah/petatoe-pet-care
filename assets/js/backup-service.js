@@ -19,7 +19,7 @@
   }
 
   async function createBackup() {
-    requirePermission("backup", "export");
+    requirePermission("backups", "export");
     return invoke({ action: "export" });
   }
 
@@ -28,12 +28,12 @@
   }
 
   async function dryRunRestore(backup) {
-    requirePermission("backup", "edit");
+    requirePermission("backups", "edit");
     return invoke({ action: "restore_dry_run", backup });
   }
 
   async function restoreBackup(backup, confirmation) {
-    requirePermission("backup", "edit");
+    requirePermission("backups", "edit");
     return invoke({ action: "restore", backup, confirmation });
   }
 

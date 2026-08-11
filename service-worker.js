@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-29-p51147-customer-cache-self-heal";
+const CACHE_VERSION = "petatoe-pwa-18-54-30-p51148-permission-matrix-authority";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

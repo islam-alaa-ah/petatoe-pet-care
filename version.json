@@ -1,13 +1,13 @@
 {
-  "version": "18.54.29",
-  "build": 185429,
+  "version": "18.54.30",
+  "build": 185430,
   "forceUpdate": true,
   "releaseDate": "2026-08-12",
-  "title": "PETATOE Customer Cache Self-Heal — P5.11.4.7",
+  "title": "PETATOE Permission Matrix Authority — P5.11.4.8",
   "notes": [
-    "يتم التحقق تلقائيًا من اكتمال ذاكرة العملاء المحلية وإصلاحها عند اكتشاف اختلاف مع الخادم.",
-    "يحافظ الإصلاح على Cache-first وOffline-first ولا يعتمد على navigator.onLine كبوابة وحيدة للتحديث.",
-    "بعد استيراد العملاء يتم الآن مسح ذاكرة العملاء وحالة Delta Sync معًا لضمان إعادة بناء Snapshot كاملة."
+    "أصبحت صلاحيات إدارة المستخدمين والنسخ الاحتياطي ومراقبة النظام تُطبق من مصفوفة الصلاحيات حتى طبقات Edge Functions وRLS/RPC.",
+    "تم توحيد صلاحيات نطاقات بيانات المستخدمين مع users.view وusers.edit بدون تغيير قواعد نطاق البيانات نفسها.",
+    "تم تحديث أسماء عقود العملاء وشاشات إدارة المواعيد داخل شاشة الصلاحيات مع الحفاظ على مفاتيح screen_key الحالية."
   ],
-  "cacheToken": "petatoe-pwa-18-54-29-p51147-customer-cache-self-heal"
+  "cacheToken": "petatoe-pwa-18-54-30-p51148-permission-matrix-authority"
 }

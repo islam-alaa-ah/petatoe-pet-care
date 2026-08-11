@@ -118,12 +118,30 @@ Deno.serve(async (request) => {
       .eq("id", callerData.user.id)
       .single();
 
-    if (profileError || !callerProfile?.is_active || callerProfile.role !== "super_admin") {
-      throw new HttpError(403, "FORBIDDEN", "Super Admin only.");
+    if (profileError || !callerProfile?.is_active) {
+      throw new HttpError(403, "FORBIDDEN", "Active user profile is required.");
     }
 
     const body = await request.json().catch(() => ({}));
     const action = String(body.action ?? "").trim();
+
+    const permissionAction = action === "create" ? "add" : action === "reset_password" ? "edit" : "";
+    if (permissionAction && callerProfile.role !== "super_admin") {
+      const permissionField = permissionAction === "add" ? "can_add" : "can_edit";
+      const { data: permissionRow, error: permissionError } = await admin
+        .from("role_screen_permissions")
+        .select(`screen_key,${permissionField},screen:app_screens!inner(is_active)`)
+        .eq("role", callerProfile.role)
+        .eq("screen_key", "users")
+        .maybeSingle();
+
+      const screenActive = Array.isArray(permissionRow?.screen)
+        ? permissionRow.screen.some((screen: any) => screen?.is_active === true)
+        : (permissionRow?.screen as any)?.is_active === true;
+      if (permissionError || !permissionRow?.[permissionField] || !screenActive) {
+        throw new HttpError(403, "FORBIDDEN", `Missing users.${permissionAction} permission.`);
+      }
+    }
 
     if (action === "create") {
       const email = normalizeEmail(body.email);

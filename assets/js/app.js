@@ -1895,8 +1895,10 @@ function renderActivity() {
   body.innerHTML = rows.length ? rows.map(item => `<tr><td>${escapeHtml(item.user?.full_name || item.user?.email || "مستخدم محذوف")}</td><td><span class="badge">${escapeHtml(item.action)}</span></td><td>${escapeHtml(item.entity_type)}</td><td class="activity-details">${escapeHtml(JSON.stringify(item.new_data || {}))}</td><td>${new Date(item.created_at).toLocaleString("ar-SA-u-ca-gregory")}</td></tr>`).join("") : `<tr><td colspan="5" class="empty-state">لا توجد عمليات مطابقة.</td></tr>`;
 }
 
-function canManageBackupAndSettings() {
-  return currentRole() === "super_admin";
+function canScreenAction(screenKey, action = "view") {
+  return window.PermissionEngine?.can?.(screenKey, action)
+    ?? window.CustomerPermissions?.canScreen?.(screenKey, action)
+    ?? false;
 }
 
 function downloadJsonFile(fileName, payload) {
@@ -1918,10 +1920,7 @@ function backupOperationLabel(value) {
 }
 
 async function exportBackup() {
-  if (!canManageBackupAndSettings()) {
-    alert("النسخ الاحتياطي متاح لمدير النظام فقط.");
-    return;
-  }
+  if (!requireScreenAction("backups", "export", "لا توجد صلاحية تصدير النسخ الاحتياطية.")) return;
 
   const buttons = [
     document.getElementById("createBackupBtn"),
@@ -1972,7 +1971,7 @@ async function inspectBackupFile(file) {
     const result = await window.BackupService.validateBackup(payload);
 
     selectedBackupPayload = payload;
-    document.getElementById("restoreBackupBtn").disabled = !canManageBackupAndSettings();
+    document.getElementById("restoreBackupBtn").disabled = !canScreenAction("backups", "edit");
     document.getElementById("backupInspectionPanel").classList.remove("hidden");
     document.getElementById("backupInspectionSummary").textContent =
       `الملف صالح — الإصدار ${result.version} — إجمالي ${result.total_records} سجل.`;
@@ -2109,10 +2108,7 @@ async function loadSystemSettings(force = false) {
 async function saveSystemSettings(event) {
   event?.preventDefault();
 
-  if (!canManageBackupAndSettings()) {
-    alert("تعديل إعدادات النظام متاح لمدير النظام فقط.");
-    return;
-  }
+  if (!requireScreenAction("systemSettings", "edit", "لا توجد صلاحية تعديل إعدادات النظام.")) return;
 
   const button = document.getElementById("saveSystemSettingsBtn");
   button.disabled = true;
@@ -2307,8 +2303,8 @@ function calculateHealthScore(snapshot) {
 async function loadSystemHealth(force = false) {
   if (systemHealthLoading || (!force && systemHealthSnapshot)) return;
   if (!window.SystemHealthService) return;
-  if (currentRole() !== "super_admin") {
-    showDataStatus("systemHealthStatus", "مراقبة النظام متاحة لمدير النظام فقط.", "error");
+  if (!canScreenAction("systemHealth", "view")) {
+    showDataStatus("systemHealthStatus", "لا توجد صلاحية عرض مراقبة النظام.", "error");
     return;
   }
 
@@ -6035,7 +6031,7 @@ function renderDailySuggestedCustomers() {
 }
 
 function canViewDailySuggestionsTeam() {
-  return ["super_admin", "sales_manager"].includes(currentRole());
+  return canScreenAction("dailyOperations", "export") || canScreenAction("dailyOperationsSettings", "view");
 }
 
 async function loadDailySuggestedTeam(force = false) {
