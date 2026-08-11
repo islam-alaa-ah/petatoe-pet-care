@@ -1,13 +1,13 @@
 {
-  "version": "18.54.35",
-  "build": 185435,
+  "version": "18.54.36",
+  "build": 185436,
   "forceUpdate": true,
   "releaseDate": "2026-08-12",
-  "title": "PETATOE Execution Slot Capacity Lock Recovery — P5.11.4.10.3",
+  "title": "PETATOE Customer Neighborhood Search — P5.11.4.10.4",
   "notes": [
-    "الحفاظ على حجز كل Slots الأصلية للموعد المجمع أثناء التنفيذ ومنع إعادة حجزها لطلب آخر.",
-    "توحيد فحص التوفر على مستوى الفرقة والجرومر مع منع التعارض أيضًا داخل RPC الحفظ.",
-    "إظهار عدد المواعيد ونطاق الوقت للمجموعة في شاشة التنفيذ، مثل 3 مواعيد من 4:00 إلى 8:00."
+    "تحويل عنوان العميل في إضافة/تعديل العميل إلى قائمة أحياء قابلة للبحث من Supabase.",
+    "حفظ neighborhood_id مع اسم الحي لضمان ربط العميل بالمصدر الجغرافي الموحد.",
+    "التحقق من أن الحي المختار موجود ونشط قبل حفظ العميل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-35-p5114103-execution-slot-capacity-lock-recovery"
+  "cacheToken": "petatoe-pwa-18-54-36-p5114104-customer-neighborhood-search"
 }

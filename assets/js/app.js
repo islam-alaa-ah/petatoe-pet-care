@@ -1011,10 +1011,107 @@ function ensureCustomerGeoController(){
 function renderCustomerGeography(current={}){return ensureCustomerGeoController().setValue(current)}
 function renderCustomerDistrictOptions(currentValue=''){return renderCustomerGeography({district:currentValue})}
 function bindCustomerGeographyCascade(){return ensureCustomerGeoController()}
+function normalizeCustomerNeighborhoodSearch(value="") {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u064B-\u065F\u0670]/g, "")
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .replace(/\s+/g, " ");
+}
+function customerNeighborhoodElements(){
+  return {
+    wrapper:document.getElementById("customerNeighborhoodCombobox"),
+    hidden:document.getElementById("customerNeighborhoodId"),
+    search:document.getElementById("customerAddress"),
+    toggle:document.getElementById("customerNeighborhoodToggle"),
+    options:document.getElementById("customerNeighborhoodOptions")
+  };
+}
+function closeCustomerNeighborhoodOptions(){
+  const {wrapper,search,options}=customerNeighborhoodElements();
+  if(!wrapper||!search||!options)return;
+  wrapper.dataset.open="false";
+  search.setAttribute("aria-expanded","false");
+  options.classList.add("hidden");
+}
+function renderCustomerNeighborhoodOptions(query=""){
+  const {hidden,options}=customerNeighborhoodElements();
+  if(!options)return;
+  const q=normalizeCustomerNeighborhoodSearch(query);
+  const matches=(customerDistrictCatalog||[])
+    .filter(row=>row?.is_active!==false)
+    .filter(row=>!q||normalizeCustomerNeighborhoodSearch(row?.name).includes(q))
+    .slice(0,250);
+  options.replaceChildren();
+  if(!matches.length){
+    const empty=document.createElement("div");
+    empty.className="geo-searchable-empty";
+    empty.textContent="لا توجد نتائج مطابقة.";
+    options.appendChild(empty);
+    return;
+  }
+  matches.forEach(row=>{
+    const button=document.createElement("button");
+    button.type="button";
+    button.className=`geo-searchable-option${String(hidden?.value||"")===String(row.id)?" is-selected":""}`;
+    button.setAttribute("role","option");
+    button.setAttribute("aria-selected",String(String(hidden?.value||"")===String(row.id)));
+    button.dataset.customerNeighborhoodId=String(row.id);
+    button.textContent=String(row.name||"");
+    options.appendChild(button);
+  });
+}
+function openCustomerNeighborhoodOptions(){
+  const {wrapper,search,options}=customerNeighborhoodElements();
+  if(!wrapper||!search||!options||search.disabled)return;
+  renderCustomerNeighborhoodOptions(search.value);
+  wrapper.dataset.open="true";
+  search.setAttribute("aria-expanded","true");
+  options.classList.remove("hidden");
+}
+function setCustomerNeighborhood(neighborhoodId="", fallbackAddress=""){
+  const {hidden,search}=customerNeighborhoodElements();
+  if(!hidden||!search)return null;
+  const row=(customerDistrictCatalog||[]).find(item=>String(item.id)===String(neighborhoodId))
+    ||(!neighborhoodId&&fallbackAddress?(customerDistrictCatalog||[]).find(item=>normalizeCustomerNeighborhoodSearch(item.name)===normalizeCustomerNeighborhoodSearch(fallbackAddress)):null);
+  hidden.value=row?String(row.id):"";
+  search.value=row?String(row.name||""):String(fallbackAddress||"");
+  search.dataset.selectedId=row?String(row.id):"";
+  search.setCustomValidity("");
+  return row||null;
+}
+function bindCustomerNeighborhoodSearch(){
+  const {wrapper,hidden,search,toggle,options}=customerNeighborhoodElements();
+  if(!wrapper||!hidden||!search||!options||wrapper.dataset.customerNeighborhoodBound)return;
+  wrapper.dataset.customerNeighborhoodBound="1";
+  search.addEventListener("focus",openCustomerNeighborhoodOptions);
+  search.addEventListener("input",()=>{
+    hidden.value="";
+    search.dataset.selectedId="";
+    search.setCustomValidity("");
+    openCustomerNeighborhoodOptions();
+  });
+  toggle?.addEventListener("click",()=>{
+    if(options.classList.contains("hidden"))openCustomerNeighborhoodOptions();else closeCustomerNeighborhoodOptions();
+  });
+  options.addEventListener("click",event=>{
+    const button=event.target.closest("[data-customer-neighborhood-id]");
+    if(!button)return;
+    setCustomerNeighborhood(button.dataset.customerNeighborhoodId||"");
+    closeCustomerNeighborhoodOptions();
+    search.focus();
+  });
+  document.addEventListener("pointerdown",event=>{if(!wrapper.contains(event.target))closeCustomerNeighborhoodOptions();});
+}
+
 async function loadCustomerDistrictCatalog(force=false){
   if(!force&&customerDistrictCatalogLoaded)return customerDistrictCatalog;
   if(customerDistrictCatalogPromise)return customerDistrictCatalogPromise;
-  if(!window.customerSupabase){bindCustomerGeographyCascade();return customerDistrictCatalog}
+  if(!window.customerSupabase){bindCustomerGeographyCascade();bindCustomerNeighborhoodSearch();return customerDistrictCatalog}
   customerDistrictCatalogPromise=(async()=>{
     const geo=await window.KYUMGeography.loadCatalog(force);
     customerRegionCatalog=geo.regions;
@@ -3654,7 +3751,18 @@ function syncCustomerContactPersonField() {
 async function openCustomerDialog(customer=null) {
   const action=customer?"edit":"add"; if(!requireScreenAction("customers",action,`لا توجد صلاحية ${customer?"تعديل":"إضافة"} العملاء.`))return;
   const dialog=document.getElementById("customerDialog"),form=document.getElementById("customerForm"),submitButton=form?.querySelector('button[type="submit"]'); editingId=customer?.id||null; document.getElementById("dialogTitle").textContent=customer?"تعديل بيانات العميل":"إضافة عميل جديد"; dialog?.showModal(); dialog?.classList.add("is-loading"); if(submitButton){submitButton.disabled=true;submitButton.textContent="جاري تحميل البيانات...";}
-  try { const record=customer?.id&&window.CustomersService?.getCustomerById?await window.CustomersService.getCustomerById(customer.id):customer; editingId=record?.id||null; document.getElementById("customerId").value=record?.id||""; document.getElementById("customerCode").value=record?.customerNumber||record?.code||""; document.getElementById("customerName").value=record?.name||""; document.getElementById("customerAddress").value=record?.address||""; document.getElementById("customerPhone").value=record?.phone||""; document.getElementById("customerGoogleMapsUrl").value=record?.googleMapsUrl||""; }
+  try {
+    const record=customer?.id&&window.CustomersService?.getCustomerById?await window.CustomersService.getCustomerById(customer.id):customer;
+    editingId=record?.id||null;
+    document.getElementById("customerId").value=record?.id||"";
+    document.getElementById("customerCode").value=record?.customerNumber||record?.code||"";
+    document.getElementById("customerName").value=record?.name||"";
+    document.getElementById("customerPhone").value=record?.phone||"";
+    document.getElementById("customerGoogleMapsUrl").value=record?.googleMapsUrl||"";
+    await loadCustomerDistrictCatalog(false);
+    bindCustomerNeighborhoodSearch();
+    setCustomerNeighborhood(record?.neighborhoodId||"",record?.address||"");
+  }
   catch(error){console.error("Customer hydration failed",error);alert(error instanceof Error?error.message:"تعذر تحميل بيانات العميل.");dialog?.close();editingId=null;}
   finally{dialog?.classList.remove("is-loading");if(submitButton){submitButton.disabled=false;submitButton.textContent="حفظ العميل";}}
 }
@@ -3670,9 +3778,10 @@ function closeCustomerDialog() {
 async function handleCustomerSubmit(event) {
   const action=editingId?"edit":"add"; if(!requireScreenAction("customers",action,"لا توجد صلاحية حفظ العملاء."))return; event.preventDefault();
   if(!canManageCustomers()){alert("لا توجد صلاحية لتعديل بيانات العملاء.");return;}
-  const code=document.getElementById("customerCode")?.value.trim()||"",name=document.getElementById("customerName")?.value.trim()||"",address=document.getElementById("customerAddress")?.value.trim()||"",googleMapsUrl=document.getElementById("customerGoogleMapsUrl")?.value.trim()||"",phone=normalizePhone(document.getElementById("customerPhone")?.value||"");
+  const code=document.getElementById("customerCode")?.value.trim()||"",name=document.getElementById("customerName")?.value.trim()||"",address=document.getElementById("customerAddress")?.value.trim()||"",neighborhoodId=document.getElementById("customerNeighborhoodId")?.value||"",googleMapsUrl=document.getElementById("customerGoogleMapsUrl")?.value.trim()||"",phone=normalizePhone(document.getElementById("customerPhone")?.value||"");
+  if(!neighborhoodId){const addressInput=document.getElementById("customerAddress");addressInput?.setCustomValidity("اختر الحي من القائمة.");addressInput?.reportValidity();return;}
   if(!code){alert("أدخل كود العميل.");document.getElementById("customerCode")?.focus();return;} if(!name){alert("أدخل اسم العميل.");document.getElementById("customerName")?.focus();return;} if(!isValidSaudiMobile(phone)){alert("أدخل رقم جوال سعودي صحيحًا بصيغة 05XXXXXXXX.");document.getElementById("customerPhone")?.focus();return;}
-  try{const dup=await findCustomerByPhone(phone,editingId);if(dup){alert(duplicateCustomerWarningMessage(dup,phone));return;}const btn=event.submitter;if(btn){btn.disabled=true;btn.textContent="جاري الحفظ...";}await window.CustomersService.saveCustomer({id:editingId,updatedAt:editingId?(customers.find(x=>String(x.id)===String(editingId))?.updatedAt||""):"",customerNumber:code,name,address,googleMapsUrl,phone});closeCustomerDialog();customersLoaded=false;await loadCustomersFromSupabase(true);}catch(error){alert(error instanceof Error?error.message:"تعذر حفظ العميل.");}finally{const btn=event.submitter;if(btn){btn.disabled=false;btn.textContent="حفظ العميل";}}
+  try{const dup=await findCustomerByPhone(phone,editingId);if(dup){alert(duplicateCustomerWarningMessage(dup,phone));return;}const btn=event.submitter;if(btn){btn.disabled=true;btn.textContent="جاري الحفظ...";}await window.CustomersService.saveCustomer({id:editingId,updatedAt:editingId?(customers.find(x=>String(x.id)===String(editingId))?.updatedAt||""):"",customerNumber:code,name,address,neighborhoodId,googleMapsUrl,phone});closeCustomerDialog();customersLoaded=false;await loadCustomersFromSupabase(true);}catch(error){alert(error instanceof Error?error.message:"تعذر حفظ العميل.");}finally{const btn=event.submitter;if(btn){btn.disabled=false;btn.textContent="حفظ العميل";}}
 }
 
 async function deleteCustomer(id) {

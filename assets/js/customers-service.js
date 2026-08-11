@@ -325,15 +325,24 @@
     const phone = String(record.phone || record.mobile || "").trim();
     const code = String(record.customerNumber || record.code || "").trim();
     const address = String(record.address || "").trim();
+    const neighborhoodId = String(record.neighborhoodId || record.neighborhood_id || "").trim();
     const googleMapsUrl = String(record.googleMapsUrl || "").trim();
     if (!name) throw new Error("اسم العميل مطلوب.");
     if (!phone) throw new Error("رقم الجوال مطلوب.");
     if (!code) throw new Error("كود العميل مطلوب.");
+    if (!neighborhoodId) throw new Error("اختر الحي من قائمة الأحياء.");
+
+    const neighborhood = await unwrap(
+      client().from("installation_neighborhoods").select("id,name,is_active").eq("id", neighborhoodId).eq("is_active", true).maybeSingle(),
+      "تعذر التحقق من الحي المختار"
+    );
+    if (!neighborhood?.id) throw new Error("الحي المختار غير موجود أو غير نشط.");
 
     const payload = {
       customer_number: code,
       customer_name: name,
-      address: address || null,
+      address: String(neighborhood.name || address || "").trim() || null,
+      neighborhood_id: neighborhood.id,
       google_maps_url: googleMapsUrl || null,
       phone
     };
@@ -355,6 +364,7 @@
       customer_number: payload.customer_number,
       customer_name: payload.customer_name,
       address: payload.address,
+      neighborhood_id: payload.neighborhood_id,
       phone: payload.phone
     }, userId);
 
