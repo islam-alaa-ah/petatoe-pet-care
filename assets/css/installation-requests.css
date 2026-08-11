@@ -81,9 +81,9 @@ html[data-theme="dark"] .installation-request-new-view .installation-geo-select 
 .installation-neighborhood-empty{padding:16px 12px;text-align:center;color:var(--text-muted,#64748b);font-weight:700}
 html[data-theme="dark"] .installation-neighborhood-results{background:#132238;border-color:#33445f;box-shadow:0 16px 40px rgba(0,0,0,.35)}
 .appointment-financial-footer{align-items:flex-start;flex-wrap:wrap}
-.appointment-discount-field{min-width:min(240px,100%)}
+.appointment-discount-field{min-width:min(320px,100%);display:grid;grid-template-columns:minmax(140px,.8fr) minmax(160px,1fr);gap:12px;align-items:end}
 .appointment-discount-field label{display:grid;gap:7px;font-weight:700}
-.appointment-discount-field input{min-height:44px;width:100%}
+.appointment-discount-field input,.appointment-discount-field select{min-height:44px;width:100%;box-sizing:border-box}
 .appointment-financial-summary{min-width:320px}
 .appointment-financial-summary strong:last-child{font-size:1.15rem;color:var(--primary,#2563eb)}
 .appointment-animals-wrap{padding:20px;display:grid;gap:14px}
@@ -96,3 +96,5 @@ html[data-theme="dark"] .installation-neighborhood-results{background:#132238;bo
 .appointment-collection-grid input[readonly]{background:var(--surface-soft,#f8fafc);font-weight:800}
 @media(max-width:1023px){.appointment-collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.appointment-financial-summary{min-width:280px}}
 @media(max-width:767px){.appointment-animals-wrap{padding:14px}.appointment-collection-grid{grid-template-columns:1fr}.appointment-financial-footer{flex-direction:column}.appointment-financial-footer>*{width:100%}.appointment-financial-summary{min-width:0}.installation-neighborhood-results{max-height:min(42dvh,360px)}}
+
+@media(max-width:700px){.appointment-discount-field{grid-template-columns:1fr;width:100%}}

@@ -1,13 +1,13 @@
 {
-  "version": "18.54.31",
-  "build": 185431,
+  "version": "18.54.32",
+  "build": 185432,
   "forceUpdate": true,
   "releaseDate": "2026-08-12",
-  "title": "PETATOE Permission Matrix Full Authority Recovery — P5.11.4.9",
+  "title": "PETATOE Appointment Financials & Multi-Schedule Recovery — P5.11.4.10",
   "notes": [
-    "أصبح نطاق المواعيد own/selected/all هو المرجع التشغيلي للأدوار غير الجرومر والسائق بدون قيد فرقة إضافي يخالف صلاحية الشاشة.",
-    "ظل الجرومر والسائق مقيدين بالفرقة المرتبطة بهم كما هو Business Rule المعتمد.",
-    "أصبح حفظ نطاق بيانات المستخدم ونطاق المواعيد ذرّيًا عبر RPCs محمية بصلاحية users.edit لمنع تعارضات RLS والحفظ الجزئي."
+    "أصبح الخصم في الموعد قيمة أو نسبة ويطبق بعد احتساب ضريبة القيمة المضافة 15% على إجمالي الخدمات.",
+    "أصبحت تواريخ تقسيم الموعد Calendar محلية بدون تحويل UTC، ويظهر الموعد في نفس اليوم المختار.",
+    "تدعم الخطة عدة مواعيد في نفس اليوم لنفس الفرقة بأوقات مختلفة، وتحفظ جميع المواعيد المختارة مع منع التعارض الحقيقي فقط."
   ],
-  "cacheToken": "petatoe-pwa-18-54-31-p51149-permission-full-authority"
+  "cacheToken": "petatoe-pwa-18-54-32-p511410-appointment-financials-multi-schedule"
 }

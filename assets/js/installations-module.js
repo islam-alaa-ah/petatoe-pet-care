@@ -480,7 +480,8 @@
       setInstallationGeoFromNeighborhood('new', row.neighborhoodId || '');
       $("newInstallationCustomerMapUrl").value = row.customerMapUrl || "";
       $("newInstallationNotes").value = row.notes || "";
-      $("newInstallationDiscount").value = Number(row.discountAmount || 0).toFixed(2);
+      $("newInstallationDiscountType").value = row.discountType || "amount";
+      $("newInstallationDiscount").value = Number(row.discountValue ?? row.discountAmount ?? 0).toFixed(2);
       $("newInstallationServicesBody").innerHTML = "";
       (row.services?.length ? row.services : [{}]).forEach(addServiceRow);
       $("newInstallationAnimalsBody").innerHTML = "";
@@ -520,12 +521,14 @@
       const price=Math.max(0,Number(row.querySelector('.installation-service-price')?.value||0));
       quantity+=qty;subtotal+=qty*price;
     });
+    const discountType=$('newInstallationDiscountType')?.value==='percentage'?'percentage':'amount';
     const requestedDiscount=Math.max(0,Number($('newInstallationDiscount')?.value||0));
-    const discount=Math.min(requestedDiscount,subtotal);
-    const taxable=Math.max(subtotal-discount,0);
-    const tax=Math.round(taxable*0.15*100)/100;
-    const final=Math.round((taxable+tax)*100)/100;
-    return {quantity,subtotal,discount,taxRate:15,tax,final};
+    const tax=Math.round(subtotal*0.15*100)/100;
+    const gross=Math.round((subtotal+tax)*100)/100;
+    const discountValue=discountType==='percentage'?Math.min(requestedDiscount,100):requestedDiscount;
+    const discount=Math.min(discountType==='percentage'?Math.round(gross*discountValue/100*100)/100:discountValue,gross);
+    const final=Math.round((gross-discount)*100)/100;
+    return {quantity,subtotal,taxRate:15,tax,gross,discountType,discountValue,discount,final};
   }
 
   function recalculateServices() {
@@ -536,7 +539,15 @@
       if(output)output.textContent=money(qty*price);
     });
     const totals=currentFinancials();
-    if($('newInstallationDiscount')&&Number($('newInstallationDiscount').value||0)>totals.subtotal)$('newInstallationDiscount').value=totals.discount.toFixed(2);
+    const discountInput=$('newInstallationDiscount');
+    const discountLabel=$('newInstallationDiscountLabel');
+    if(discountInput){
+      discountInput.max=totals.discountType==='percentage'?'100':String(totals.gross.toFixed(2));
+      discountInput.step=totals.discountType==='percentage'?'0.01':'0.01';
+      if(totals.discountType==='percentage'&&Number(discountInput.value||0)>100)discountInput.value='100';
+      if(totals.discountType==='amount'&&Number(discountInput.value||0)>totals.gross)discountInput.value=totals.gross.toFixed(2);
+    }
+    if(discountLabel)discountLabel.textContent=totals.discountType==='percentage'?'نسبة الخصم (%)':'قيمة الخصم (SAR)';
     $('newInstallationTotalQuantity').textContent=String(totals.quantity);
     $('newInstallationSubtotal').textContent=money(totals.subtotal);
     $('newInstallationDiscountTotal').textContent=money(totals.discount);
@@ -687,6 +698,7 @@
     addServiceRow();
     $("newInstallationAnimalsBody").innerHTML = "";
     addAnimalRow();
+    if($("newInstallationDiscountType")) $("newInstallationDiscountType").value = "amount";
     if($("newInstallationDiscount")) $("newInstallationDiscount").value = "0";
     if($("newInstallationAmountCollected")) $("newInstallationAmountCollected").value = "0";
     if($("newInstallationCollectionStatus")) $("newInstallationCollectionStatus").value = "غير محصل";
@@ -840,6 +852,7 @@
       recalculateServices();
     });
     $("newInstallationDiscount")?.addEventListener("input",recalculateServices);
+    $("newInstallationDiscountType")?.addEventListener("change",recalculateServices);
     $("addInstallationAnimalRow")?.addEventListener("click",()=>addAnimalRow());
     $("newInstallationAnimalsBody")?.addEventListener("click",event=>{
       const button=event.target.closest(".appointment-animal-remove");
@@ -906,6 +919,8 @@
         customerMapUrl: $("newInstallationCustomerMapUrl").value.trim(),
         notes: $("newInstallationNotes").value.trim(),
         services,
+        discountType: financials.discountType,
+        discountValue: financials.discountValue,
         discountAmount: financials.discount,
         animals,
         collection
