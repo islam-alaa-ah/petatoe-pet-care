@@ -1,13 +1,13 @@
 {
-  "version": "18.54.33",
-  "build": 185433,
+  "version": "18.54.34",
+  "build": 185434,
   "forceUpdate": true,
   "releaseDate": "2026-08-12",
-  "title": "PETATOE Execution Visit Summary RPC Recovery — P5.11.4.10.1",
+  "title": "PETATOE Same-Day Execution Group Recovery — P5.11.4.10.2",
   "notes": [
-    "استعادة RPC ملخص كميات زيارة التنفيذ المطلوبة في شاشة تأكيد انتهاء المواعيد.",
-    "إعادة تحميل PostgREST schema cache بعد تطبيق Migration لمنع خطأ Could not find the function.",
-    "لا تغيير في منطق تنفيذ أو تأكيد الموعد؛ الإصلاح يعالج Database migration drift فقط."
+    "تجميع مواعيد نفس الطلب ونفس الفرقة ونفس اليوم في دورة تنفيذ واحدة مع بقاء كل Slot محفوظًا في الجدولة.",
+    "تجميع كميات الخدمات على مستوى زيارة التنفيذ اليومية وإصلاح خطأ الخدمة ليست ضمن زيارة التنفيذ الحالية.",
+    "تأكيد الكميات والفاتورة يعملان مرة واحدة للمجموعة اليومية دون كسر الزيارات في الأيام المختلفة."
   ],
-  "cacheToken": "petatoe-pwa-18-54-33-p5114101-execution-visit-summary-rpc-recovery"
+  "cacheToken": "petatoe-pwa-18-54-34-p5114102-same-day-execution-group-recovery"
 }
