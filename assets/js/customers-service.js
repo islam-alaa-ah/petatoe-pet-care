@@ -82,10 +82,14 @@
     });
   }
 
-  async function invalidateCustomerCache() {
-    if (!window.KYUMSmartCache) return;
-    const namespace = await currentCustomerNamespace();
-    await window.KYUMSmartCache.removePrefix("customers:", { namespace });
+  async function invalidateCustomerCache(options = {}) {
+    const namespace = options.namespace || await currentCustomerNamespace();
+    if (window.KYUMSmartCache) {
+      await window.KYUMSmartCache.removePrefix("customers:", { namespace });
+    }
+    if (options.clearSyncState && window.KYUMSyncEngine?.clearState) {
+      window.KYUMSyncEngine.clearState(namespace, "customers", scopeCacheKey());
+    }
   }
 
   function customersSelectQuery() {
@@ -109,6 +113,15 @@
       try { await window.KYUMDataAccessScope.resolve({ domain: "customers" }); } catch (_) {}
     }
     return { mode: "all", representativeIds: [] };
+  }
+
+  async function fetchCustomerServerCount(scope) {
+    if (scope.mode === "none") return 0;
+    const { count, error } = await client()
+      .from("customers")
+      .select("id", { count: "exact", head: true });
+    if (error) throw new Error(`تعذر التحقق من عدد العملاء: ${error.message}`);
+    return Number.isFinite(Number(count)) ? Number(count) : null;
   }
 
   async function fetchCustomersFromNetwork(scope, options = {}) {
@@ -144,6 +157,17 @@
     if (customerRefreshes.has(cacheKey)) return customerRefreshes.get(cacheKey);
 
     const refresh = (async () => {
+      let forceFull = false;
+      try {
+        const serverCount = await fetchCustomerServerCount(scope);
+        if (serverCount != null && serverCount !== previousRows.length) {
+          forceFull = true;
+          window.KYUMSyncEngine?.clearState?.(namespace, "customers", cacheKey);
+        }
+      } catch (error) {
+        console.warn("Customer cache count verification skipped:", error);
+      }
+
       const result = window.KYUMSyncEngine
         ? await window.KYUMSyncEngine.sync({
             entity: "customers",
@@ -152,7 +176,8 @@
             cachedRows: previousRows,
             fetchFull: () => fetchCustomersFromNetwork(scope),
             fetchDelta: since => fetchCustomersFromNetwork(scope, { updatedSince: since }),
-            sortRows: sortCustomers
+            sortRows: sortCustomers,
+            forceFull
           })
         : { rows: await fetchCustomersFromNetwork(scope), mode: "full" };
       const rows = result.rows;
@@ -160,7 +185,7 @@
       const previousHash = window.KYUMSmartCache?.hashValue?.(previousRows);
       const nextHash = window.KYUMSmartCache?.hashValue?.(rows);
       if (previousHash !== nextHash) {
-        emitCustomerCacheUpdate(rows, `network-${result.mode}`, cacheKey);
+        emitCustomerCacheUpdate(rows, forceFull ? "network-self-heal" : `network-${result.mode}`, cacheKey);
       }
       return rows;
     })();
@@ -556,7 +581,7 @@
       );
     }
 
-    await invalidateCustomerCache();
+    await invalidateCustomerCache({ clearSyncState: true });
     await window.KYUMCacheDependencyEngine?.invalidate?.("customers", {
       action: "import",
       source: "customers-service"
