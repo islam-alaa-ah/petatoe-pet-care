@@ -157,74 +157,27 @@
   }
 
   async function saveUserDataAccess(userId, accessMode = "own", allowedRepresentativeIds = []) {
+    requirePermission("users", "edit");
     const normalizedMode = ["own", "selected", "all"].includes(accessMode) ? accessMode : "own";
     const uniqueIds = [...new Set((allowedRepresentativeIds || []).filter(Boolean))];
-    const { data: authData } = await client().auth.getUser();
-
-    const { error: profileError } = await client()
-      .from("user_data_access_profiles")
-      .upsert({
-        user_id: userId,
-        access_mode: normalizedMode,
-        updated_by: authData.user?.id || null,
-        updated_at: new Date().toISOString()
-      }, { onConflict: "user_id" });
-    if (profileError) throw new Error(`تعذر حفظ نطاق البيانات: ${profileError.message}`);
-
-    const { error: deleteError } = await client()
-      .from("user_data_access_representatives")
-      .delete()
-      .eq("user_id", userId);
-    if (deleteError) throw new Error(`تعذر تحديث قائمة المندوبين المسموحين: ${deleteError.message}`);
-
-    if (normalizedMode === "selected" && uniqueIds.length) {
-      const { error: insertError } = await client()
-        .from("user_data_access_representatives")
-        .insert(uniqueIds.map(representativeId => ({ user_id: userId, representative_id: representativeId })));
-      if (insertError) throw new Error(`تعذر حفظ المندوبين المسموحين: ${insertError.message}`);
-    }
-
-    const [{ data: savedProfile, error: verifyProfileError }, { data: savedRepresentatives, error: verifyRepsError }] = await Promise.all([
-      client().from("user_data_access_profiles").select("access_mode").eq("user_id", userId).single(),
-      client().from("user_data_access_representatives").select("representative_id").eq("user_id", userId)
-    ]);
-    if (verifyProfileError || savedProfile?.access_mode !== normalizedMode) {
-      throw new Error("تم إرسال نطاق البيانات لكن تعذر التحقق من حفظه.");
-    }
-    if (verifyRepsError) throw new Error(`تعذر التحقق من المندوبين المسموحين: ${verifyRepsError.message}`);
-    const savedIds = (savedRepresentatives || []).map(row => row.representative_id).sort();
-    const expectedIds = normalizedMode === "selected" ? [...uniqueIds].sort() : [];
-    if (JSON.stringify(savedIds) !== JSON.stringify(expectedIds)) {
-      throw new Error("لم تُحفظ قائمة المندوبين المسموحين بالكامل.");
-    }
+    const { error } = await client().rpc("save_user_data_access_scope", {
+      p_user_id: userId,
+      p_access_mode: normalizedMode,
+      p_representative_ids: normalizedMode === "selected" ? uniqueIds : []
+    });
+    if (error) throw new Error(`تعذر حفظ نطاق البيانات: ${error.message}`);
   }
 
   async function saveInstallationDataAccess(userId, accessMode = "own", allowedRepresentativeIds = []) {
+    requirePermission("users", "edit");
     const normalizedMode = ["own", "selected", "all"].includes(accessMode) ? accessMode : "own";
     const uniqueIds = [...new Set((allowedRepresentativeIds || []).filter(Boolean))];
-    const { data: authData } = await client().auth.getUser();
-    const { error: profileError } = await client().from("installation_data_access_profiles").upsert({ user_id:userId, access_mode:normalizedMode, updated_by:authData.user?.id||null, updated_at:new Date().toISOString() }, { onConflict:"user_id" });
-    if (profileError) throw new Error(`تعذر حفظ نطاق التركيبات: ${profileError.message}`);
-    const { error: deleteError } = await client().from("installation_data_access_representatives").delete().eq("user_id", userId);
-    if (deleteError) throw new Error(`تعذر تحديث مندوبي التركيبات: ${deleteError.message}`);
-    if (normalizedMode === "selected" && uniqueIds.length) {
-      const { error } = await client().from("installation_data_access_representatives").insert(uniqueIds.map(representativeId => ({user_id:userId,representative_id:representativeId})));
-      if (error) throw new Error(`تعذر حفظ مندوبي التركيبات: ${error.message}`);
-    }
-
-    const [{ data: savedProfile, error: verifyProfileError }, { data: savedRepresentatives, error: verifyRepsError }] = await Promise.all([
-      client().from("installation_data_access_profiles").select("access_mode").eq("user_id", userId).single(),
-      client().from("installation_data_access_representatives").select("representative_id").eq("user_id", userId)
-    ]);
-    if (verifyProfileError || savedProfile?.access_mode !== normalizedMode) {
-      throw new Error("تم إرسال نطاق التركيبات لكن تعذر التحقق من حفظه.");
-    }
-    if (verifyRepsError) throw new Error(`تعذر التحقق من مندوبي التركيبات: ${verifyRepsError.message}`);
-    const savedIds = (savedRepresentatives || []).map(row => row.representative_id).sort();
-    const expectedIds = normalizedMode === "selected" ? [...uniqueIds].sort() : [];
-    if (JSON.stringify(savedIds) !== JSON.stringify(expectedIds)) {
-      throw new Error("لم تُحفظ قائمة مندوبي التركيبات المسموحين بالكامل.");
-    }
+    const { error } = await client().rpc("save_installation_data_access_scope", {
+      p_user_id: userId,
+      p_access_mode: normalizedMode,
+      p_representative_ids: normalizedMode === "selected" ? uniqueIds : []
+    });
+    if (error) throw new Error(`تعذر حفظ نطاق المواعيد: ${error.message}`);
   }
 
   async function resetPassword(userId, password) {

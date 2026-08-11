@@ -1,13 +1,13 @@
 {
-  "version": "18.54.30",
-  "build": 185430,
+  "version": "18.54.31",
+  "build": 185431,
   "forceUpdate": true,
   "releaseDate": "2026-08-12",
-  "title": "PETATOE Permission Matrix Authority — P5.11.4.8",
+  "title": "PETATOE Permission Matrix Full Authority Recovery — P5.11.4.9",
   "notes": [
-    "أصبحت صلاحيات إدارة المستخدمين والنسخ الاحتياطي ومراقبة النظام تُطبق من مصفوفة الصلاحيات حتى طبقات Edge Functions وRLS/RPC.",
-    "تم توحيد صلاحيات نطاقات بيانات المستخدمين مع users.view وusers.edit بدون تغيير قواعد نطاق البيانات نفسها.",
-    "تم تحديث أسماء عقود العملاء وشاشات إدارة المواعيد داخل شاشة الصلاحيات مع الحفاظ على مفاتيح screen_key الحالية."
+    "أصبح نطاق المواعيد own/selected/all هو المرجع التشغيلي للأدوار غير الجرومر والسائق بدون قيد فرقة إضافي يخالف صلاحية الشاشة.",
+    "ظل الجرومر والسائق مقيدين بالفرقة المرتبطة بهم كما هو Business Rule المعتمد.",
+    "أصبح حفظ نطاق بيانات المستخدم ونطاق المواعيد ذرّيًا عبر RPCs محمية بصلاحية users.edit لمنع تعارضات RLS والحفظ الجزئي."
   ],
-  "cacheToken": "petatoe-pwa-18-54-30-p51148-permission-matrix-authority"
+  "cacheToken": "petatoe-pwa-18-54-31-p51149-permission-full-authority"
 }
