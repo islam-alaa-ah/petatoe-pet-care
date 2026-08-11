@@ -1,13 +1,13 @@
 {
-  "version": "18.54.32",
-  "build": 185432,
+  "version": "18.54.33",
+  "build": 185433,
   "forceUpdate": true,
   "releaseDate": "2026-08-12",
-  "title": "PETATOE Appointment Financials & Multi-Schedule Recovery — P5.11.4.10",
+  "title": "PETATOE Execution Visit Summary RPC Recovery — P5.11.4.10.1",
   "notes": [
-    "أصبح الخصم في الموعد قيمة أو نسبة ويطبق بعد احتساب ضريبة القيمة المضافة 15% على إجمالي الخدمات.",
-    "أصبحت تواريخ تقسيم الموعد Calendar محلية بدون تحويل UTC، ويظهر الموعد في نفس اليوم المختار.",
-    "تدعم الخطة عدة مواعيد في نفس اليوم لنفس الفرقة بأوقات مختلفة، وتحفظ جميع المواعيد المختارة مع منع التعارض الحقيقي فقط."
+    "استعادة RPC ملخص كميات زيارة التنفيذ المطلوبة في شاشة تأكيد انتهاء المواعيد.",
+    "إعادة تحميل PostgREST schema cache بعد تطبيق Migration لمنع خطأ Could not find the function.",
+    "لا تغيير في منطق تنفيذ أو تأكيد الموعد؛ الإصلاح يعالج Database migration drift فقط."
   ],
-  "cacheToken": "petatoe-pwa-18-54-32-p511410-appointment-financials-multi-schedule"
+  "cacheToken": "petatoe-pwa-18-54-33-p5114101-execution-visit-summary-rpc-recovery"
 }

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-32-p511410-appointment-financials-multi-schedule";
+const CACHE_VERSION = "petatoe-pwa-18-54-33-p5114101-execution-visit-summary-rpc-recovery";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
