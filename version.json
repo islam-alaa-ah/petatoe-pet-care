@@ -1,13 +1,13 @@
 {
-  "version": "18.54.44",
-  "build": 185444,
+  "version": "18.54.45",
+  "build": 185445,
   "forceUpdate": true,
   "releaseDate": "2026-08-13",
-  "title": "PETATOE Daily Suggestions Unified Cycle Recovery — P5.11.5.1",
+  "title": "PETATOE Midnight Neon Navigation Shell — P5.11.7",
   "notes": [
-    "إلغاء تقسيم العملاء المقترحين إلى شركات وأفراد واعتماد قائمة موحدة من 20 عميلًا.",
-    "منع تكرار العميل في قائمة المقترحين قبل ظهور جميع العملاء مرة واحدة وبدء دورة جديدة تلقائيًا بعد اكتمال الدورة.",
-    "تحديث إدارة المهام فور حفظ المتابعة بحيث يختفي العميل من المقترحات ويظهر مباشرة ضمن المتابعات المنفذة اليوم."
+    "إعادة تصميم الهيدر بهوية PETATOE الكحلية مع الأزرق الكهربائي والذهبي مع الحفاظ على وظائف العنوان والحساب والإشعارات والثيم.",
+    "إعادة تصميم القائمة الجانبية وحالة الموبايل مع Brand lockup وحالات Active/Hover وتفاصيل Neon متوافقة مع Light/Dark.",
+    "الحفاظ على نفس مفاتيح التنقل والصلاحيات وسلوك فتح/إغلاق القائمة دون تغيير Business Logic أو Mobile Bottom Navigation."
   ],
-  "cacheToken": "petatoe-pwa-18-54-44-p51151-daily-suggestions-unified-cycle"
+  "cacheToken": "petatoe-pwa-18-54-45-p5117-midnight-neon-navigation-shell"
 }

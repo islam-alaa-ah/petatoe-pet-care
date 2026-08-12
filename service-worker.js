@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-44-p51151-daily-suggestions-unified-cycle";
+const CACHE_VERSION = "petatoe-pwa-18-54-45-p5117-midnight-neon-navigation-shell";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -31,6 +31,7 @@ const CORE_APP_SHELL = [
   "./assets/css/sales-invoices.css",
   "./assets/css/global-typography-certification.css",
   "./assets/css/notification-center.css",
+  "./assets/css/petatoe-navigation-shell.css",
   "./assets/js/offline-session-store.js",
   "./assets/js/supabase-client.js",
   "./assets/js/geographic-address.js",

@@ -75,7 +75,7 @@
       brand = document.createElement("div");
       brand.className = "mobile-app-brand";
       brand.setAttribute("aria-label", "PETATOE");
-      brand.innerHTML = `<span><strong>KYUM</strong><small>CRM</small></span>`;
+      brand.innerHTML = `<span><strong>PETATOE</strong><small>Enterprise CRM</small></span>`;
       title?.insertAdjacentElement("beforebegin", brand);
     }
 

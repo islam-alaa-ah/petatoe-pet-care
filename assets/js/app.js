@@ -6763,6 +6763,19 @@ function initializeDynamicSidebar() {
   });
 
   backdrop?.addEventListener("click", () => setSidebarOpen(false));
+  document.getElementById("sidebarCloseBtn")?.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    setSidebarOpen(false);
+  });
+
+  const headerUserName = document.getElementById("currentUserName");
+  const sidebarUserName = document.getElementById("sidebarCurrentUserName");
+  if (headerUserName && sidebarUserName) {
+    const syncSidebarUserName = () => { sidebarUserName.textContent = headerUserName.textContent || "مستخدم"; };
+    syncSidebarUserName();
+    new MutationObserver(syncSidebarUserName).observe(headerUserName, { childList: true, characterData: true, subtree: true });
+  }
 
   document.addEventListener("keydown", event => {
     if (event.key === "Escape" && launcher.getAttribute("aria-expanded") === "true") {
