@@ -791,3 +791,9 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
     min-width:0;
   }
 }
+
+/* P5.11.6.3 — customer map action placement and execution-style consistency */
+.installation-location-stack{display:grid;gap:8px;justify-items:start}
+.installation-day-customer .installation-map-primary-action,.installation-location-stack .installation-map-primary-action{margin-top:6px;width:max-content;max-width:100%}
+.installation-map-primary-action{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap}
+@media(max-width:760px){.installation-day-customer .installation-map-primary-action,.installation-location-stack .installation-map-primary-action{width:100%}}

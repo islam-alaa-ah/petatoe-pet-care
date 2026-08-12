@@ -311,6 +311,9 @@
     installationGeoControllers.set(scope,controller);
     return controller;
   }
+  function closeAllInstallationGeo(){
+    installationGeoControllers.forEach(controller=>['region','city','district'].forEach(type=>controller?.close?.(type)));
+  }
   function syncInstallationGeoCatalog(){
     window.KYUMGeography?.setCatalog({regions:opts.regions||[],cities:opts.cities||[],neighborhoods:opts.neighborhoods||[]});
   }

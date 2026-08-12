@@ -1,12 +1,13 @@
 {
-  "version": "18.54.40",
-  "build": 185440,
+  "version": "18.54.41",
+  "build": 185441,
   "forceUpdate": true,
   "releaseDate": "2026-08-13",
-  "title": "PETATOE Execution Gross Total Runtime Hotfix — P5.11.6.2",
+  "title": "PETATOE Customer Map Action Placement — P5.11.6.3",
   "notes": [
-    "إصلاح توقف تحميل طلبات اليوم في شاشة تنفيذ المواعيد بسبب مرجع grossTotal غير معرّف داخل Runtime.",
-    "الحفاظ على عرض إجمالي الخدمات شامل ضريبة القيمة المضافة 15% بدون تغيير منطق التنفيذ أو الجدولة."
+    "إظهار زر فتح موقع العميل مباشرة أسفل الحي/العنوان في الجدولة وتفاصيل اليوم وطلبات التنفيذ.",
+    "توحيد تصميم زر فتح موقع العميل مع زر بدء التنفيذ في جميع مواضع دورة المواعيد.",
+    "إصلاح ReferenceError الخاص بـ closeAllInstallationGeo داخل Runtime إدارة المواعيد."
   ],
-  "cacheToken": "petatoe-pwa-18-54-40-p51162-execution-gross-total-runtime-hotfix"
+  "cacheToken": "petatoe-pwa-18-54-41-p51163-map-action-placement-hotfix"
 }

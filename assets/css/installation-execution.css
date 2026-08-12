@@ -119,3 +119,8 @@ html[data-theme="dark"] .execution-step-time.is-empty,.dark-mode .execution-step
 .execution-return-schedule-btn:hover{background:#ffe9e9}
 .execution-return-schedule-btn:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:760px){.execution-location-actions{display:grid;grid-template-columns:1fr}.execution-location-actions .execution-map-btn,.execution-return-schedule-btn{width:100%}}
+
+/* P5.11.6.3 — reuse primary execution design for customer map actions */
+.installation-map-primary-action{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap;width:max-content;max-width:100%;margin-top:8px}
+.installation-today-card-main>.installation-map-primary-action{justify-self:start}
+@media(max-width:760px){.installation-today-card-main>.installation-map-primary-action{width:100%}}
