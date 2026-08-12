@@ -1,14 +1,13 @@
 {
-  "version": "18.54.42",
-  "build": 185442,
+  "version": "18.54.43",
+  "build": 185443,
   "forceUpdate": true,
   "releaseDate": "2026-08-13",
-  "title": "PETATOE Appointment Theme & Schedule View Recovery — P5.11.6.4",
+  "title": "PETATOE Schedule View Direct Dialog Hotfix — P5.11.6.5",
   "notes": [
-    "إصلاح زر عرض في شاشة الجدولة وربطه مباشرة بتحميل وعرض بيانات الموعد.",
-    "تثبيت تصميم زر فتح موقع العميل في Light/Dark خارج نطاق شاشة التنفيذ.",
-    "توحيد متغيرات ألوان شاشات المواعيد وDialogs مع مصدر الثيم canonical.",
-    "إصلاح تباين حقول وخلفيات نافذة تعديل خدمات الموعد في الوضع الداكن والفاتح."
+    "إصلاح زر عرض في شاشة جدولة وتوزيع المواعيد بمسار مستقل مباشر لا يعتمد على تهيئة KYUMInstallationsModule.",
+    "تحميل أحدث بيانات الموعد مباشرة ثم تعبئة وفتح نافذة عرض بيانات الموعد من شاشة الجدولة.",
+    "منع propagation لنقرة زر العرض حتى لا تتداخل مع أحداث التقويم أو عناصر الصفحة."
   ],
-  "cacheToken": "petatoe-pwa-18-54-42-p51164-appointment-theme-schedule-view"
+  "cacheToken": "petatoe-pwa-18-54-43-p51165-schedule-view-direct-dialog"
 }

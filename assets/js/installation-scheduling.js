@@ -13,6 +13,36 @@
   function vat(value){return Math.round(Number(value||0)*1.15*100)/100}
   function grossTotal(r){return Number(r?.grossServicesAmount??(Number(r?.totalServicesAmount||0)+Number(r?.taxAmount||0)))}
   function mapBtn(r,cls='execution-primary-action installation-map-primary-action'){const url=String(r?.customerMapUrl||'').trim();return url?`<a class="${cls}" href="${esc(url)}" target="_blank" rel="noopener noreferrer">فتح موقع العميل <span class="execution-arrow">◀</span></a>`:''}
+  async function openRequestViewDirect(requestId){
+    if(!requestId)throw new Error('معرّف الموعد مطلوب.');
+    const row=await window.InstallationsServiceSafe.requestEditDetail(requestId);
+    const label=$('installationRequestViewLabel'),content=$('installationRequestViewContent'),dialog=$('installationRequestViewDialog');
+    if(!label||!content||!dialog)throw new Error('نافذة عرض بيانات الموعد غير متاحة في الصفحة.');
+    label.textContent=`${row.requestNumber||'—'} — ${row.customerName||'—'}`;
+    const services=(row.services||[]).map(service=>`<div class="installation-view-service-row"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><span>${Number(service.quantity||0)} × ${money(vat(service.unitPrice))}</span><span>${money(vat(service.lineTotal??Number(service.quantity||0)*Number(service.unitPrice||0)))}</span></div>`).join('')||'<p>لا توجد خدمات.</p>';
+    const animals=(row.animals||[]).map(animal=>`<div class="installation-view-service-row"><strong>${esc(animal.petName||'حيوان')}</strong><span>${esc([animal.petType,animal.breed,animal.petSize].filter(Boolean).join(' — ')||'—')}</span><span>العدد: ${Number(animal.quantity||1)}</span></div>`).join('')||'<p>لا توجد بيانات حيوان مسجلة.</p>';
+    const collection=row.collection||{};
+    content.innerHTML=`<div class="installation-request-view-grid">
+      <div><span>رقم الموعد</span><strong>${esc(row.requestNumber||'—')}</strong></div>
+      <div><span>اسم العميل</span><strong>${row.customerMasked===true?'بيانات العميل محجوبة':esc(row.customerName||'—')}</strong></div>
+      <div><span>رقم العميل</span><strong>${row.customerMasked===true?'محجوب':esc(row.customerPhone||'—')}</strong></div>
+      <div><span>رقم العقد</span><strong>${esc(row.quotationNumber||'بدون عقد')}</strong></div>
+      <div><span>المندوب</span><strong>${esc(row.representativeName||'—')}</strong></div>
+      <div><span>الحي</span><strong>${esc(row.installationAddress||row.district||'—')}</strong></div>
+      <div><span>الحالة</span><strong>${esc(row.status||'—')}</strong></div>
+      <div><span>تاريخ الموعد</span><strong>${esc(row.scheduledDate||'غير محدد')} ${row.scheduledTime?`— ${esc(row.scheduledTime)}`:''}</strong></div>
+      <div><span>الإجمالي شامل الضريبة قبل الخصم</span><strong>${money(grossTotal(row))}</strong></div>
+      <div><span>الخصم</span><strong>${money(row.discountAmount)}</strong></div>
+      <div><span>ضريبة 15%</span><strong>${money(row.taxAmount)}</strong></div>
+      <div><span>الإجمالي النهائي</span><strong>${money(row.finalAmount||grossTotal(row))}</strong></div>
+      <div><span>المبلغ المحصل</span><strong>${money(collection.amountCollected||0)}</strong></div>
+      <div><span>حالة التحصيل</span><strong>${esc(collection.collectionStatus||'غير محصل')}</strong></div>
+      <div><span>طريقة الدفع</span><strong>${esc(collection.paymentMethod||'—')}</strong></div>
+      <div><span>ملاحظات</span><strong>${esc(row.notes||'—')}</strong></div>
+    </div><section class="installation-view-services"><h4>الخدمات</h4>${services}</section><section class="installation-view-services"><h4>بيانات الحيوان</h4>${animals}</section>`;
+    if(!dialog.open)dialog.showModal();
+    return true;
+  }
   function teamGroomerName(teamId){return teams.find(t=>String(t.id)===String(teamId))?.groomerName||''}
   function teamDriverName(teamId){return teams.find(t=>String(t.id)===String(teamId))?.driverName||''}
   function requestGroomerName(r){return teamGroomerName(r?.teamId)||String(r?.technicianName||'').trim()}
@@ -125,9 +155,11 @@
     window.addEventListener('kyum-view-changed',e=>{if(e.detail?.view==='installationSchedule')load()});
     $('refreshInstallationScheduleBtn')?.addEventListener('click',load);$('installationSchedulePrevBtn')?.addEventListener('click',async()=>{month.setMonth(month.getMonth()-1);await loadDayLocks();renderCalendar()});$('installationScheduleNextBtn')?.addEventListener('click',async()=>{month.setMonth(month.getMonth()+1);await loadDayLocks();renderCalendar()});$('installationScheduleTodayBtn')?.addEventListener('click',async()=>{month=new Date();month.setDate(1);await loadDayLocks();renderCalendar()});['installationScheduleTechnicianFilter','installationScheduleStatusFilter'].forEach(id=>$(id)?.addEventListener('change',renderCalendar));
     document.addEventListener('click',async e=>{const lock=e.target.closest('[data-toggle-day-lock]');if(lock){e.preventDefault();e.stopPropagation();if(!canToggleDayLock())return;const date=lock.dataset.toggleDayLock,info=lockInfo(date);try{await window.InstallationsServiceSafe.setScheduleDayLock(date,!info.isLocked);await loadDayLocks();renderCalendar()}catch(err){status($('installationScheduleStatus'),err.message,'error')}return}const day=e.target.closest('[data-calendar-day]');if(day){openDayDetails(day.dataset.calendarDay);return}const view=e.target.closest('[data-view-request]'),edit=e.target.closest('[data-edit-request-services]'),b=e.target.closest('[data-schedule-request]');if(view){
+      e.preventDefault();
+      e.stopPropagation();
       try{
-        if(window.KYUMInstallationsModule?.openRequestView)await window.KYUMInstallationsModule.openRequestView(view.dataset.viewRequest);
-        else window.dispatchEvent(new CustomEvent('kyum-installation-request-view',{detail:{id:view.dataset.viewRequest,row:requests.find(x=>x.id===view.dataset.viewRequest)}}));
+        clear($('installationScheduleStatus'));
+        await openRequestViewDirect(view.dataset.viewRequest);
       }catch(err){status($('installationScheduleStatus'),err?.message||'تعذر عرض بيانات الموعد.','error')}
       return
     }if(edit&&!edit.disabled){window.dispatchEvent(new CustomEvent('kyum-installation-services-edit',{detail:{id:edit.dataset.editRequestServices,row:requests.find(x=>x.id===edit.dataset.editRequestServices)}}));return}if(b){const r=requests.find(x=>x.id===b.dataset.scheduleRequest);if(r)await openAssignment(r,e.target.closest('[data-date]')?.dataset.date)}});
