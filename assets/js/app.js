@@ -136,6 +136,7 @@ let dailyManagerNote = null;
 let employeeReportSettings = [];
 let employeeTargetsDialogRows = [];
 let dailyOperationsLoading = false;
+let dailyOperationsCrmSnapshot = null;
 let dailySuggestedSuggestionRows = [];
 let dailySuggestedSuggestionProgress = { active: 0, completed: 0, total: 0 };
 let dailySuggestedSuggestionsLoading = false;
@@ -5443,11 +5444,7 @@ function dailyDateTime(value) {
 }
 
 function dailyScopedRows(rows) {
-  const profile = window.CustomerAuth?.getState?.().profile;
-  const scope = window.KYUMDataAccessScope?.current?.(profile?.id);
-  return window.KYUMDataAccessScope?.filterRows
-    ? window.KYUMDataAccessScope.filterRows(rows, scope, "representativeId")
-    : (rows || []);
+  return rows || [];
 }
 
 function dailyEmptyRow(columns, text) {
@@ -6195,16 +6192,21 @@ function renderDailyOperations() {
   renderDailySuggestedCustomers();
   loadDailySuggestedCustomers();
 
-  const todayCustomers = customers.filter(item =>
+  const dailyCrm = dailyOperationsCrmSnapshot || { customers: [], followups: [], quotations: [] };
+  const dailyCustomers = dailyCrm.customers || [];
+  const dailyFollowups = dailyCrm.followups || [];
+  const dailyQuotations = dailyCrm.quotations || [];
+
+  const todayCustomers = dailyCustomers.filter(item =>
     dailyLocalDate(item.createdAt) === today
   );
-  const todayFollowups = dailyScopedRows(followups).filter(item =>
+  const todayFollowups = dailyScopedRows(dailyFollowups).filter(item =>
     dailyLocalDate(item.contactDate || item.createdAt) === today
   );
-  const todayQuotations = dailyScopedRows(quotations).filter(item =>
+  const todayQuotations = dailyScopedRows(dailyQuotations).filter(item =>
     dailyLocalDate(item.quotationDate || item.createdAt) === today
   );
-  const overdueFollowups = dailyScopedRows(followups).filter(item =>
+  const overdueFollowups = dailyScopedRows(dailyFollowups).filter(item =>
     !item.completed
     && item.nextFollowupDate
     && dailyLocalDate(item.nextFollowupDate) < today
@@ -6278,11 +6280,10 @@ async function loadDailyOperations(force = false) {
   );
 
   try {
-    await Promise.all([
-      customersLoaded ? Promise.resolve() : loadCustomersFromSupabase(true),
-      followupsLoaded ? Promise.resolve() : loadFollowupsFromSupabase(true),
-      quotationsLoaded ? Promise.resolve() : loadQuotationsFromSupabase(true)
-    ]);
+    dailyOperationsCrmSnapshot = await window.DailyOperationsService.listPermissionOwnedCrmData(
+      dailyLocalDate(),
+      { screenKey: "dailyOperations", force }
+    );
 
     renderDailyOperations();
     await loadDailyWhatsAppTemplate();

@@ -119,6 +119,58 @@
     } : null;
   }
 
+
+  function canReadPermissionOwnedDailyData(screenKey = "dailyOperations") {
+    const permissions = window.CustomerPermissions;
+    if (!permissions?.canScreen) return false;
+    if (screenKey === "dailyPerformanceReport") {
+      return Boolean(permissions.canScreen("dailyPerformanceReport", "view"));
+    }
+    return Boolean(permissions.canScreen("dailyOperations", "view"));
+  }
+
+  async function fetchPermissionOwnedCrmData(workDate, screenKey = "dailyOperations") {
+    if (!canReadPermissionOwnedDailyData(screenKey)) {
+      throw new Error(`Permission denied: ${screenKey}.view`);
+    }
+    const { data, error } = await client().rpc("get_daily_permission_owned_crm_snapshot", {
+      p_work_date: workDate
+    });
+    if (error) throw new Error(`تعذر تحميل بيانات التشغيل اليومية: ${error.message}`);
+    const payload = data && typeof data === "object" ? data : {};
+    return {
+      workDate: payload.workDate || workDate,
+      customers: Array.isArray(payload.customers) ? payload.customers : [],
+      followups: Array.isArray(payload.followups) ? payload.followups : [],
+      quotations: Array.isArray(payload.quotations) ? payload.quotations : []
+    };
+  }
+
+  async function listPermissionOwnedCrmData(workDate = todayIso(), options = {}) {
+    const screenKey = options.screenKey === "dailyPerformanceReport"
+      ? "dailyPerformanceReport"
+      : "dailyOperations";
+    if (!canReadPermissionOwnedDailyData(screenKey)) {
+      throw new Error(`Permission denied: ${screenKey}.view`);
+    }
+    const type = `permission-crm:${screenKey}`;
+    const cached = !options.force ? await readCache(type, workDate) : null;
+    if (cached?.hit && cached.data && typeof cached.data === "object") {
+      if (window.customerSupabase) {
+        refreshSingle(type, workDate, cached.data, date => fetchPermissionOwnedCrmData(date, screenKey)).catch(() => {});
+      }
+      return cached.data;
+    }
+    try {
+      const data = await fetchPermissionOwnedCrmData(workDate, screenKey);
+      await writeCache(type, workDate, data);
+      return data;
+    } catch (error) {
+      if (cached?.data) return cached.data;
+      throw error;
+    }
+  }
+
   async function fetchDefinitions() {
     const { data, error } = await client()
       .from("daily_task_definitions")
@@ -549,6 +601,7 @@
     getTargets,
     saveTargets,
     getManagerNote,
-    saveManagerNote
+    saveManagerNote,
+    listPermissionOwnedCrmData
   });
 })();

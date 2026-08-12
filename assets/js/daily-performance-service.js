@@ -98,11 +98,7 @@
   }
 
   function assignedTo(row, employee) {
-    return Boolean(
-      (employee.representativeId && row.representativeId === employee.representativeId)
-      || (employee.representativeName && row.representative === employee.representativeName)
-      || (employee.userId && row.createdBy === employee.userId)
-    );
+    return Boolean(employee.userId && row.createdBy === employee.userId);
   }
 
   function buildEmployees(users, representatives) {
@@ -129,19 +125,6 @@
       });
     });
 
-    representatives.forEach(rep => {
-      if (usedRepresentativeIds.has(rep.id)) return;
-      employees.push({
-        key: `rep:${rep.id}`,
-        userId: null,
-        representativeId: rep.id,
-        representativeName: rep.full_name || "",
-        name: rep.full_name || "مندوب بدون اسم",
-        code: rep.representative_code || "",
-        role: "sales_representative",
-        active: rep.is_active !== false
-      });
-    });
 
     return employees.filter(item => item.active);
   }
@@ -182,11 +165,7 @@
         const completion = taskCompletions.find(item =>
           item.task_key === definition.task_key
           && (
-            (employee.userId && item.user_id === employee.userId)
-            || (
-              employee.representativeId
-              && item.representative_id === employee.representativeId
-            )
+            employee.userId && item.user_id === employee.userId
           )
         );
 
@@ -337,6 +316,14 @@
   }
 
   async function loadReportOnline(workDate, existingData) {
+    let permissionOwnedData = existingData || {};
+    if (window.DailyOperationsService?.listPermissionOwnedCrmData) {
+      permissionOwnedData = await window.DailyOperationsService.listPermissionOwnedCrmData(workDate, {
+        screenKey: "dailyPerformanceReport",
+        force: true
+      });
+    }
+
     const [
       definitions,
       taskCompletions,
@@ -364,9 +351,9 @@
       users,
       representatives,
       employeeSettings,
-      customers: existingData.customers || [],
-      followups: existingData.followups || [],
-      quotations: existingData.quotations || []
+      customers: permissionOwnedData.customers || [],
+      followups: permissionOwnedData.followups || [],
+      quotations: permissionOwnedData.quotations || []
     });
   }
 

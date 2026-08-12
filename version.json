@@ -1,13 +1,14 @@
 {
-  "version": "18.54.37",
-  "build": 185437,
+  "version": "18.54.38",
+  "build": 185438,
   "forceUpdate": true,
-  "releaseDate": "2026-08-12",
-  "title": "PETATOE Geography Schema Compatibility Recovery — P5.11.4.10.4.1",
+  "releaseDate": "2026-08-13",
+  "title": "PETATOE Daily Operations Permission-Owned Visibility — P5.11.5",
   "notes": [
-    "إزالة الاعتماد Runtime على أعمدة national_address_* الاختيارية من تحميل الكتالوج الجغرافي.",
-    "الحفاظ على مصدر المناطق والمدن والأحياء الموحد من Supabase باستخدام الأعمدة الأساسية الفعلية فقط.",
-    "استعادة قائمة بحث الأحياء في إضافة وتعديل العميل بدون Migration لقاعدة البيانات."
+    "فصل رؤية إدارة المهام اليومية وتقرير الأداء والتنبيهات عن نطاق المندوب مع الإبقاء على representative_id كبيانات مرجعية.",
+    "إضافة مسار RPC مخصص يعرض بيانات العملاء والمتابعات والعقود داخل إدارة المهام والتقرير وفق صلاحية الشاشة بدون توسيع RLS لشاشات CRM الأصلية.",
+    "ربط احتساب أداء الموظفين والتنبيهات اليومية بالمستخدم المنفذ created_by/user_id بدل ربطها بالمندوب.",
+    "إزالة اشتراط ربط حساب المستخدم بالمندوب لتوليد قائمة العملاء المقترح التواصل معهم."
   ],
-  "cacheToken": "petatoe-pwa-18-54-37-p51141041-geography-schema-compatibility"
+  "cacheToken": "petatoe-pwa-18-54-38-p5115-daily-permission-owned-visibility"
 }
