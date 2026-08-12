@@ -1,3 +1,24 @@
+/* P5.11.6.4 — appointment module canonical theme aliases */
+.installations-overview-view,
+.installation-request-new-view,
+.installation-requests-view,
+.installation-schedule-view,
+.installation-execution-view,
+.installation-completion-view,
+.installation-operations-view,
+.installation-settings-view,
+.installation-request-view-dialog,
+.installation-services-edit-dialog,
+.installation-assignment-dialog,
+.installation-day-details-dialog{
+  --surface-soft:var(--surface-2);
+  --surface-color:var(--surface);
+  --border-color:var(--border);
+  --text-color:var(--text);
+  --text-muted:var(--muted);
+  --primary-color:var(--primary);
+}
+
 /* Phase M14.1 — Installations Module Foundation */
 .installations-overview-view {
   display: grid;

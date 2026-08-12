@@ -992,8 +992,14 @@
         return opened;
       },
       applyQuotationPrefill,
-      openRequestView(id){renderRequestView(currentRow(id));},
-      openServicesEdit(id){return openServicesEdit(currentRow(id));}
+      async openRequestView(id){
+        const requestId=id?.id||id;
+        if(!requestId)return false;
+        const row=await window.InstallationsServiceSafe.requestEditDetail(requestId);
+        renderRequestView(row);
+        return true;
+      },
+      openServicesEdit(id){return openServicesEdit(id)}
     });
 
 ;

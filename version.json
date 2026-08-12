@@ -1,13 +1,14 @@
 {
-  "version": "18.54.41",
-  "build": 185441,
+  "version": "18.54.42",
+  "build": 185442,
   "forceUpdate": true,
   "releaseDate": "2026-08-13",
-  "title": "PETATOE Customer Map Action Placement — P5.11.6.3",
+  "title": "PETATOE Appointment Theme & Schedule View Recovery — P5.11.6.4",
   "notes": [
-    "إظهار زر فتح موقع العميل مباشرة أسفل الحي/العنوان في الجدولة وتفاصيل اليوم وطلبات التنفيذ.",
-    "توحيد تصميم زر فتح موقع العميل مع زر بدء التنفيذ في جميع مواضع دورة المواعيد.",
-    "إصلاح ReferenceError الخاص بـ closeAllInstallationGeo داخل Runtime إدارة المواعيد."
+    "إصلاح زر عرض في شاشة الجدولة وربطه مباشرة بتحميل وعرض بيانات الموعد.",
+    "تثبيت تصميم زر فتح موقع العميل في Light/Dark خارج نطاق شاشة التنفيذ.",
+    "توحيد متغيرات ألوان شاشات المواعيد وDialogs مع مصدر الثيم canonical.",
+    "إصلاح تباين حقول وخلفيات نافذة تعديل خدمات الموعد في الوضع الداكن والفاتح."
   ],
-  "cacheToken": "petatoe-pwa-18-54-41-p51163-map-action-placement-hotfix"
+  "cacheToken": "petatoe-pwa-18-54-42-p51164-appointment-theme-schedule-view"
 }

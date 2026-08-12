@@ -124,3 +124,46 @@ html[data-theme="dark"] .execution-step-time.is-empty,.dark-mode .execution-step
 .installation-map-primary-action{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap;width:max-content;max-width:100%;margin-top:8px}
 .installation-today-card-main>.installation-map-primary-action{justify-self:start}
 @media(max-width:760px){.installation-today-card-main>.installation-map-primary-action{width:100%}}
+
+
+/* P5.11.6.4 — standalone customer-map action contrast in light/dark surfaces */
+.installation-map-primary-action,
+.installation-map-primary-action:link,
+.installation-map-primary-action:visited,
+.installation-map-primary-action:hover,
+.installation-map-primary-action:focus,
+.installation-map-primary-action:active{
+  --map-action-navy:#061a38;
+  --map-action-navy-2:#0a2852;
+  --map-action-gold:#d79a13;
+  min-height:48px;
+  border:1px solid var(--map-action-gold)!important;
+  border-radius:12px;
+  padding:0 22px;
+  background:linear-gradient(145deg,var(--map-action-navy-2),var(--map-action-navy))!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  text-shadow:0 1px 1px rgba(0,0,0,.28)!important;
+  box-shadow:0 8px 20px rgba(6,26,56,.22),inset 0 0 0 1px rgba(255,255,255,.05)!important;
+  text-decoration:none!important;
+}
+.installation-map-primary-action:hover,
+.installation-map-primary-action:focus-visible{
+  transform:translateY(-1px);
+  box-shadow:0 10px 24px rgba(6,26,56,.30),0 0 0 2px rgba(215,154,19,.14)!important;
+  outline:none;
+}
+.installation-map-primary-action .execution-arrow{
+  background:linear-gradient(145deg,#f7d474,#b87800)!important;
+  color:#061a38!important;
+  -webkit-text-fill-color:#061a38!important;
+  text-shadow:none!important;
+}
+html[data-theme="dark"] .installation-map-primary-action,
+.dark-mode .installation-map-primary-action{
+  --map-action-navy:#07182f;
+  --map-action-navy-2:#0b2a53;
+  --map-action-gold:#e2ad31;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
