@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-36-p5114104-customer-neighborhood-search";
+const CACHE_VERSION = "petatoe-pwa-18-54-37-p51141041-geography-schema-compatibility";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

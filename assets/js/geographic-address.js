@@ -169,9 +169,9 @@
     if (networkRefreshPromise) return networkRefreshPromise;
     networkRefreshPromise = (async () => {
       const [regions, cities, districts] = await Promise.all([
-        fetchAll("installation_regions", "id,name,is_active,national_address_region_id"),
-        fetchAll("installation_cities", "id,region_id,name,is_active,national_address_city_id"),
-        fetchAll("installation_neighborhoods", "id,region_id,city_id,name,city,region,is_active,national_address_district_id")
+        fetchAll("installation_regions", "id,name,is_active"),
+        fetchAll("installation_cities", "id,region_id,name,is_active"),
+        fetchAll("installation_neighborhoods", "id,region_id,city_id,name,city,region,is_active")
       ]);
       const next = { regions, cities, districts };
       applyCatalog(next, "network");

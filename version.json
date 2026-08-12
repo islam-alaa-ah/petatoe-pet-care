@@ -1,13 +1,13 @@
 {
-  "version": "18.54.36",
-  "build": 185436,
+  "version": "18.54.37",
+  "build": 185437,
   "forceUpdate": true,
   "releaseDate": "2026-08-12",
-  "title": "PETATOE Customer Neighborhood Search — P5.11.4.10.4",
+  "title": "PETATOE Geography Schema Compatibility Recovery — P5.11.4.10.4.1",
   "notes": [
-    "تحويل عنوان العميل في إضافة/تعديل العميل إلى قائمة أحياء قابلة للبحث من Supabase.",
-    "حفظ neighborhood_id مع اسم الحي لضمان ربط العميل بالمصدر الجغرافي الموحد.",
-    "التحقق من أن الحي المختار موجود ونشط قبل حفظ العميل."
+    "إزالة الاعتماد Runtime على أعمدة national_address_* الاختيارية من تحميل الكتالوج الجغرافي.",
+    "الحفاظ على مصدر المناطق والمدن والأحياء الموحد من Supabase باستخدام الأعمدة الأساسية الفعلية فقط.",
+    "استعادة قائمة بحث الأحياء في إضافة وتعديل العميل بدون Migration لقاعدة البيانات."
   ],
-  "cacheToken": "petatoe-pwa-18-54-36-p5114104-customer-neighborhood-search"
+  "cacheToken": "petatoe-pwa-18-54-37-p51141041-geography-schema-compatibility"
 }
