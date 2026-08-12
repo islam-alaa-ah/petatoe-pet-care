@@ -4042,8 +4042,10 @@ async function handleFollowupSubmit(event) {
       loadCustomersFromSupabase(true)
     ]);
     if (!document.getElementById("dailyOperationsView")?.classList.contains("hidden")) {
-      await loadDailySuggestedCustomers(true);
-      renderDailyOperations();
+      // Refresh the permission-owned snapshot as well as suggestions so the
+      // completed customer disappears from Suggestions and the saved follow-up
+      // appears immediately in "المتابعات المنفذة اليوم".
+      await loadDailyOperations(true);
     }
     if (suggestionCompletionError) {
       alert(`تم حفظ المتابعة، ولكن تعذر تحديث قائمة العملاء المقترحين: ${suggestionCompletionError.message || "خطأ غير معروف"}`);
@@ -6095,7 +6097,7 @@ function dailyWhatsAppNumber(phone) {
     : normalized.replace(/^\+/, "");
 }
 
-function dailySuggestedProgressPercent(completed, target = 10) {
+function dailySuggestedProgressPercent(completed, target = 20) {
   return Math.max(0, Math.min(100, Math.round((Number(completed || 0) / target) * 100)));
 }
 
@@ -9015,13 +9017,6 @@ document.getElementById("dailyOperationsView")?.addEventListener("click", async 
 
   if (event.target.closest("[data-daily-suggested-import]")) {
     document.getElementById("importCustomersBtn")?.click();
-    return;
-  }
-
-  const typeButton = event.target.closest("[data-daily-suggested-type]");
-  if (typeButton) {
-    dailySuggestedCustomerType = typeButton.dataset.dailySuggestedType === "فردي" ? "فردي" : "شركة";
-    renderDailySuggestedCustomers();
     return;
   }
 

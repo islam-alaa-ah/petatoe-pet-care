@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-43-p51165-schedule-view-direct-dialog";
+const CACHE_VERSION = "petatoe-pwa-18-54-44-p51151-daily-suggestions-unified-cycle";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
