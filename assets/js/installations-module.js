@@ -210,7 +210,13 @@
         }
       }
       if($('newInstallationCustomerMapUrl'))$('newInstallationCustomerMapUrl').value=mapUrl;
+      if(defaults?.quotationId){quotationOptions(customerId,'newInstallationQuotationId',defaults.quotationId);$('newInstallationQuotationId').value=defaults.quotationId;}
+      if(defaults?.services?.length){$('newInstallationServicesBody').innerHTML='';defaults.services.forEach(addServiceRow);}
+      if($('newInstallationDiscountType'))$('newInstallationDiscountType').value=defaults?.discountType||'amount';
+      if($('newInstallationDiscount'))$('newInstallationDiscount').value=Number(defaults?.discountValue||0).toFixed(2);
+      if($('newInstallationNotes'))$('newInstallationNotes').value=defaults?.notes||'';
       if(defaults?.animals?.length){$('newInstallationAnimalsBody').innerHTML='';defaults.animals.forEach(addAnimalRow);}
+      recalculateServices();
       if(defaults?.collection){
         if($('newInstallationAmountCollected'))$('newInstallationAmountCollected').value=Number(defaults.collection.amountCollected||0).toFixed(2);
         if($('newInstallationCollectionStatus'))$('newInstallationCollectionStatus').value=defaults.collection.collectionStatus||'غير محصل';
@@ -401,7 +407,7 @@
 
     $("installationRequestsBody").innerHTML = data.length ? data.map(row => {
       const serviceSummary = row.services.length
-        ? row.services.map(service => `<div class="installation-service-detail"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><small>${service.quantity} × ${money(service.unitPrice)} = ${money(service.lineTotal ?? service.quantity*service.unitPrice)}</small></div>`).join("")
+        ? row.services.map(service => `<div class="installation-service-detail"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><small>${service.quantity} × ${money(vatAmount(service.unitPrice))} = ${money(vatServiceLine(service))}</small></div>`).join("")
         : "—";
       return `<tr>
         <td>${esc(row.requestNumber)}</td>
@@ -566,13 +572,15 @@
     }));
   }
 
+  function breedOptions(petType,selected=''){const rows=(opts.breeds||[]).filter(x=>x.pet_type===petType&&x.is_active!==false);const has=rows.some(x=>x.name===selected);return '<option value="">اختر السلالة</option>'+(!has&&selected?`<option value="${esc(selected)}" selected>${esc(selected)} — محفوظ سابقًا</option>`:'')+rows.map(x=>`<option value="${esc(x.name)}" ${x.name===selected?'selected':''}>${esc(x.name)}</option>`).join('')}
+  function syncBreedSelect(row,selected=''){const type=row.querySelector('.appointment-animal-type')?.value||'';const sel=row.querySelector('.appointment-animal-breed');if(sel)sel.innerHTML=breedOptions(type,selected||sel.value)}
   function addAnimalRow(initial={}){
     const body=$('newInstallationAnimalsBody');if(!body)return;
     const row=document.createElement('tr');row.className='appointment-animal-entry';
     row.innerHTML=`
       <td><input class="appointment-animal-name" type="text" maxlength="120" value="${esc(initial.petName||'')}" placeholder="مثال: Max"></td>
       <td><select class="appointment-animal-type"><option value="">اختر النوع</option><option value="كلب" ${initial.petType==='كلب'?'selected':''}>كلب</option><option value="قط" ${initial.petType==='قط'?'selected':''}>قط</option><option value="أخرى" ${initial.petType==='أخرى'?'selected':''}>أخرى</option></select></td>
-      <td><input class="appointment-animal-breed" type="text" maxlength="120" value="${esc(initial.breed||'')}" placeholder="السلالة"></td>
+      <td><select class="appointment-animal-breed">${breedOptions(initial.petType||'',initial.breed||'')}</select></td>
       <td><select class="appointment-animal-size"><option value="">اختر الحجم</option><option value="صغير" ${initial.petSize==='صغير'?'selected':''}>صغير</option><option value="متوسط" ${initial.petSize==='متوسط'?'selected':''}>متوسط</option><option value="كبير" ${initial.petSize==='كبير'?'selected':''}>كبير</option></select></td>
       <td><input class="appointment-animal-quantity" type="number" min="1" step="1" value="${esc(initial.quantity||1)}"></td>
       <td><button type="button" class="danger-btn appointment-animal-remove">حذف</button></td>`;
@@ -603,7 +611,7 @@
   function renderRequestView(row){
     if(!row)return;
     $("installationRequestViewLabel").textContent=`${row.requestNumber} — ${row.customerName}`;
-    const services=(row.services||[]).map(service=>`<div class="installation-view-service-row"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><span>${Number(service.quantity||0)} × ${money(service.unitPrice)}</span><span>${money(service.lineTotal??Number(service.quantity||0)*Number(service.unitPrice||0))}</span></div>`).join('')||'<p>لا توجد خدمات.</p>';
+    const services=(row.services||[]).map(service=>`<div class="installation-view-service-row"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><span>${Number(service.quantity||0)} × ${money(vatAmount(service.unitPrice))}</span><span>${money(vatServiceLine(service))}</span></div>`).join('')||'<p>لا توجد خدمات.</p>';
     const animals=(row.animals||[]).map(animal=>`<div class="installation-view-service-row"><strong>${esc(animal.petName||'حيوان')}</strong><span>${esc([animal.petType,animal.breed,animal.petSize].filter(Boolean).join(' — ')||'—')}</span><span>العدد: ${Number(animal.quantity||1)}</span></div>`).join('')||'<p>لا توجد بيانات حيوان مسجلة.</p>';
     const collection=row.collection||{};
     $("installationRequestViewContent").innerHTML=`<div class="installation-request-view-grid">
@@ -615,7 +623,7 @@
       <div><span>الحي</span><strong>${esc(row.installationAddress||row.district||'—')}</strong></div>
       <div><span>الحالة</span><strong>${esc(row.status||'—')}</strong></div>
       <div><span>تاريخ الموعد</span><strong>${esc(row.scheduledDate||'غير محدد')} ${row.scheduledTime?`— ${esc(row.scheduledTime)}`:''}</strong></div>
-      <div><span>الإجمالي قبل الخصم</span><strong>${money(row.totalServicesAmount)}</strong></div>
+      <div><span>الإجمالي شامل الضريبة قبل الخصم</span><strong>${money(Number(row.totalServicesAmount||0)+Number(row.taxAmount||0))}</strong></div>
       <div><span>الخصم</span><strong>${money(row.discountAmount)}</strong></div>
       <div><span>ضريبة 15%</span><strong>${money(row.taxAmount)}</strong></div>
       <div><span>الإجمالي النهائي</span><strong>${money(row.finalAmount||row.totalServicesAmount)}</strong></div>
@@ -801,6 +809,11 @@
       event.target.setCustomValidity("");
       renderCustomerResults(event.target.value);
       quotationOptions("", "newInstallationQuotationId");
+      const digits=String(event.target.value||'').replace(/\D/g,'');
+      if(digits.length>=9){
+        const matches=opts.customers.filter(c=>String(c.phone||'').replace(/\D/g,'')===digits);
+        if(matches.length===1){const customerId=matches[0].id;syncCustomerSearch(customerId);quotationOptions(customerId,'newInstallationQuotationId');closeCustomerResults();applyCustomerAppointmentDefaults(customerId).catch(error=>status($("newInstallationRequestFormStatus"),error.message,'error'));}
+      }
     });
     $("newInstallationCustomerResults")?.addEventListener("click", async event => {
       const option = event.target.closest("[data-installation-customer-id]");
@@ -854,6 +867,7 @@
     $("newInstallationDiscount")?.addEventListener("input",recalculateServices);
     $("newInstallationDiscountType")?.addEventListener("change",recalculateServices);
     $("addInstallationAnimalRow")?.addEventListener("click",()=>addAnimalRow());
+    $("newInstallationAnimalsBody")?.addEventListener("change",event=>{if(event.target.matches('.appointment-animal-type'))syncBreedSelect(event.target.closest('.appointment-animal-entry'));});
     $("newInstallationAnimalsBody")?.addEventListener("click",event=>{
       const button=event.target.closest(".appointment-animal-remove");
       if(!button)return;

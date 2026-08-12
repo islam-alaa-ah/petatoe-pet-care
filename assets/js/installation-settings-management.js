@@ -1,8 +1,8 @@
 (function(){'use strict';
 const $=id=>document.getElementById(id), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SECTION_KEY='kyum-installation-settings-section';
-const VALID_SECTIONS=new Set(['services','teams','neighborhoods','employees','cars']);
-let cache={services:[],teams:[],neighborhoods:[],regions:[],cities:[],employees:[],cars:[]};
+const VALID_SECTIONS=new Set(['services','teams','neighborhoods','employees','cars','breeds']);
+let cache={services:[],teams:[],neighborhoods:[],regions:[],cities:[],employees:[],cars:[],breeds:[]};
 
 function db(){if(!window.customerSupabase)throw new Error('اتصال Supabase غير جاهز.');return window.customerSupabase}
 function message(text,type=''){const el=$('installationSettingsStatus');if(!el)return;el.textContent=text||'';el.classList.toggle('hidden',!text);el.dataset.type=type}
@@ -35,19 +35,22 @@ function render(){
   if(employeeBody)employeeBody.innerHTML=cache.employees.map(r=>`<tr><td>${esc(r.full_name)}</td><td>${esc(r.employee_type)}</td><td>${esc(r.phone||'—')}</td><td>${status(r.is_active!==false,r.is_active!==false?'نشط':'متوقف')}</td><td>${actionButtons('employee',r,r.is_active!==false)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty-cell">لا يوجد موظفون.</td></tr>';
   const carBody=$('appointmentCarsSettingsBody');
   if(carBody)carBody.innerHTML=cache.cars.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.plate_number||'—')}</td><td>${status(r.is_active!==false,r.is_active!==false?'نشطة':'متوقفة')}</td><td>${actionButtons('car',r,r.is_active!==false)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty-cell">لا توجد سيارات.</td></tr>';
+  const breedBody=$('appointmentBreedsSettingsBody');
+  if(breedBody)breedBody.innerHTML=cache.breeds.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.pet_type)}</td><td>${status(r.is_active!==false,r.is_active!==false?'نشطة':'متوقفة')}</td><td>${actionButtons('breed',r,r.is_active!==false)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty-cell">لا توجد سلالات.</td></tr>';
 }
 function currentSection(){const saved=sessionStorage.getItem(SECTION_KEY);return VALID_SECTIONS.has(saved)?saved:'services'}
 function showSection(section,{persist=true}={}){const next=VALID_SECTIONS.has(section)?section:'services';document.querySelectorAll('[data-installation-settings-panel]').forEach(panel=>{const visible=panel.dataset.installationSettingsPanel===next;panel.classList.toggle('hidden',!visible);panel.setAttribute('aria-hidden',visible?'false':'true')});const filter=$('installationSettingsSectionFilter');if(filter&&filter.value!==next)filter.value=next;if(persist)sessionStorage.setItem(SECTION_KEY,next)}
 async function load(){
   message('جاري تحميل إعدادات المواعيد...');
   try{
-    const [base,employeesRes,carsRes]=await Promise.all([
+    const [base,employeesRes,carsRes,breedsRes]=await Promise.all([
       window.InstallationsServiceSafe.settingsCatalog(),
       db().from('appointment_employees').select('*').order('employee_type').order('full_name'),
-      db().from('appointment_cars').select('*').order('name')
+      db().from('appointment_cars').select('*').order('name'),
+      db().from('appointment_pet_breeds').select('*').order('pet_type').order('name')
     ]);
-    if(employeesRes.error||carsRes.error){const err=employeesRes.error||carsRes.error;if(/appointment_employees|appointment_cars/i.test(err.message||''))throw new Error('شغّل Migration الموظفين والسيارات أولًا ثم أعد تحميل الصفحة.');throw err}
-    cache={...base,employees:employeesRes.data||[],cars:carsRes.data||[]};render();message('');
+    if(employeesRes.error||carsRes.error||breedsRes.error){const err=employeesRes.error||carsRes.error||breedsRes.error;if(/appointment_employees|appointment_cars/i.test(err.message||''))throw new Error('شغّل Migration الموظفين والسيارات أولًا ثم أعد تحميل الصفحة.');throw err}
+    cache={...base,employees:employeesRes.data||[],cars:carsRes.data||[],breeds:breedsRes.data||[]};render();message('');
   }catch(e){message(e.message||'تعذر تحميل الإعدادات.','error')}
 }
 
@@ -60,6 +63,7 @@ function bindReferenceGeography(row={}){const controller=ensureReferenceGeoContr
 function fields(type,row={}){
   if(type==='service')return `<label>الكود<input name="serviceCode" required maxlength="60" value="${esc(row.service_code||'')}" placeholder="مثال: GRM-001"></label><label>اسم الخدمة<input name="name" required maxlength="120" value="${esc(row.name||'')}"></label><label>السعر شامل الضريبة<input name="priceInclusive" type="number" min="0" step="0.01" required value="${vatInclusive(row.default_price||0)}"></label><label>التكلفة<input name="cost" type="number" min="0" step="0.01" required value="${Number(row.default_cost||0)}"></label><label>الحالة<select name="isActive"><option value="1" ${row.is_active!==false?'selected':''}>نشطة</option><option value="0" ${row.is_active===false?'selected':''}>متوقفة</option></select></label><small class="field-hint">السعر المدخل شامل ضريبة القيمة المضافة 15%، ويُحفظ السعر الأساسي داخليًا لمنع احتساب الضريبة مرتين داخل الموعد.</small>`;
   if(type==='employee')return `<label>اسم الموظف<input name="fullName" required maxlength="120" value="${esc(row.full_name||'')}" placeholder="اسم الموظف"></label><label>الوظيفة<select name="employeeType" required><option value="جرومر" ${row.employee_type==='جرومر'?'selected':''}>جرومر</option><option value="سائق" ${row.employee_type==='سائق'?'selected':''}>سائق</option></select></label><label>رقم التواصل<input name="phone" maxlength="30" value="${esc(row.phone||'')}" placeholder="اختياري"></label><label>الحالة<select name="isActive"><option value="1" ${row.is_active!==false?'selected':''}>نشط</option><option value="0" ${row.is_active===false?'selected':''}>متوقف</option></select></label>`;
+  if(type==='breed')return `<label>اسم السلالة<input name="name" required maxlength="120" value="${esc(row.name||'')}" placeholder="اسم السلالة"></label><label>نوع الحيوان<select name="petType" required><option value="كلب" ${row.pet_type==='كلب'?'selected':''}>كلب</option><option value="قط" ${row.pet_type==='قط'?'selected':''}>قط</option><option value="أخرى" ${row.pet_type==='أخرى'?'selected':''}>أخرى</option></select></label><label>الحالة<select name="isActive"><option value="1" ${row.is_active!==false?'selected':''}>نشطة</option><option value="0" ${row.is_active===false?'selected':''}>متوقفة</option></select></label>`;
   if(type==='car')return `<label>اسم / كود السيارة<input name="name" required maxlength="120" value="${esc(row.name||'')}" placeholder="مثال: سيارة 1"></label><label>رقم اللوحة<input name="plateNumber" maxlength="60" value="${esc(row.plate_number||'')}" placeholder="اختياري"></label><label>الحالة<select name="isActive"><option value="1" ${row.is_active!==false?'selected':''}>نشطة</option><option value="0" ${row.is_active===false?'selected':''}>متوقفة</option></select></label>`;
   if(type==='team'){
     const groomerId=row.groomer_employee_id||cache.employees.find(x=>x.employee_type==='جرومر'&&x.full_name===teamParts(row).groomer)?.id||'';
@@ -74,8 +78,8 @@ function fields(type,row={}){
   <label class="installation-reference-geo-field">المدينة<div id="installationReferenceCityCombobox" class="geo-searchable-select installation-reference-geo-select is-disabled" data-reference-geo-type="city"><input id="installationReferenceCityId" name="cityId" type="hidden"><input id="installationReferenceCitySearch" class="geo-searchable-input" type="search" placeholder="اختر المنطقة أولًا" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="installationReferenceCityOptions" disabled><button class="geo-searchable-toggle" type="button" aria-label="فتح قائمة المدن" disabled>⌄</button><div id="installationReferenceCityOptions" class="geo-searchable-options hidden" role="listbox"></div></div><small class="field-hint">اختيار المدينة مرتبط بالمنطقة النشطة فقط.</small></label>
   <label>الحالة<select name="isActive"><option value="1" ${row.is_active!==false?'selected':''}>نشط</option><option value="0" ${row.is_active===false?'selected':''}>متوقف</option></select></label>`;
 }
-function listForType(type){return type==='service'?cache.services:type==='team'?cache.teams:type==='employee'?cache.employees:type==='car'?cache.cars:cache.neighborhoods}
-function typeTitle(type){return type==='service'?'خدمة':type==='team'?'فريق موعد':type==='employee'?'موظف':type==='car'?'سيارة':'حي'}
+function listForType(type){return type==='service'?cache.services:type==='team'?cache.teams:type==='employee'?cache.employees:type==='car'?cache.cars:type==='breed'?cache.breeds:cache.neighborhoods}
+function typeTitle(type){return type==='service'?'خدمة':type==='team'?'فريق موعد':type==='employee'?'موظف':type==='car'?'سيارة':type==='breed'?'سلالة':'حي'}
 function open(type,id=''){const list=listForType(type),row=list.find(x=>x.id===id)||{};$('installationReferenceType').value=type;$('installationReferenceId').value=id;$('installationReferenceDialogTitle').textContent=(id?'تعديل ':'إضافة ')+typeTitle(type);$('installationReferenceFields').innerHTML=fields(type,row);if(type==='neighborhood')bindReferenceGeography(row);$('installationReferenceFormStatus').classList.add('hidden');$('installationReferenceDialog').showModal()}
 
 async function saveTeam(payload){
@@ -177,6 +181,7 @@ function bind(){
   $('addInstallationNeighborhoodBtn')?.addEventListener('click',()=>open('neighborhood'));
   $('addAppointmentEmployeeBtn')?.addEventListener('click',()=>open('employee'));
   $('addAppointmentCarBtn')?.addEventListener('click',()=>open('car'));
+  $('addAppointmentBreedBtn')?.addEventListener('click',()=>open('breed'));
   $('installationReferenceForm')?.addEventListener('submit',submit);
   $('closeInstallationReferenceDialog')?.addEventListener('click',()=>{closeAllReferenceGeo();$('installationReferenceDialog').close()});
   $('cancelInstallationReferenceDialog')?.addEventListener('click',()=>{closeAllReferenceGeo();$('installationReferenceDialog').close()});
