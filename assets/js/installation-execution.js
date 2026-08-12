@@ -8,6 +8,7 @@ let rows=[], current=null, activeTab='today', selectedFiles=[], executionIdentit
 function setStatus(el,msg,type=''){if(!el)return;el.textContent=msg||'';el.className=`data-status${msg?'':' hidden'}${type?` ${type}`:''}`}
 function fmtTime(v){if(!v)return'غير محدد';try{return new Date(`2000-01-01T${v}`).toLocaleTimeString('ar-SA-u-ca-gregory',{hour:'numeric',minute:'2-digit'})}catch{return v}}
 function money(v){return `SAR ${Number(v||0).toFixed(2)}`}
+function grossTotal(r){return Number(r?.grossServicesAmount??(Number(r?.totalServicesAmount||0)+Number(r?.taxAmount||0)))}
 function executionScheduleLabel(r){const slots=Array.isArray(r.slotTimes)?r.slotTimes.filter(Boolean):[];if(slots.length>1){const sorted=[...new Set(slots)].sort();return `${sorted.length} مواعيد — من ${fmtTime(sorted[0])} إلى ${fmtTime(sorted[sorted.length-1])}`;}return fmtTime(r.scheduledTime)}
 function normalizeStatus(v){return String(v||'مسند').trim()}
 function hasExecutionProgress(r){return Boolean(r.onRouteAt||r.mapOpenedAt||r.arrivedAt||r.startedAt||r.completedAt)||['في الطريق','وصل إلى العميل','قيد التنفيذ','مكتمل'].includes(normalizeStatus(r.status))}
