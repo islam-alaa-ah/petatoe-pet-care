@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-54-p511711-mobile-light-shell";
+const CACHE_VERSION = "petatoe-pwa-18-54-55-p511712-mobile-sidebar-footer-clearance";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

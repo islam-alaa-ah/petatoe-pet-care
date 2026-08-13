@@ -770,7 +770,7 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   #appHeader .notification-bell-btn,#appHeader .theme-toggle-button{width:42px!important;height:42px!important;flex-basis:42px!important;border-radius:13px!important}
   #appHeader .notification-bell-btn svg,#appHeader .theme-toggle-button svg{width:20px!important;height:20px!important}
 
-  #mainSidebar.sidebar{width:min(90vw,330px)!important;padding:calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom))!important;border-radius:26px 0 0 26px!important}
+  #mainSidebar.sidebar{width:min(90vw,330px)!important;padding:calc(10px + env(safe-area-inset-top)) 12px calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 30px)!important;border-radius:26px 0 0 26px!important;box-sizing:border-box!important}
   #mainSidebar .sidebar-launcher-host{min-height:96px!important;height:auto!important;margin-bottom:4px!important;padding:5px 5px 10px!important;pointer-events:auto!important}
   #mainSidebar .petatoe-sidebar-brand-icon{width:56px!important;height:56px!important;flex-basis:56px!important;border-radius:16px!important}
   .petatoe-sidebar-brand-copy strong{font-size:16px}.petatoe-sidebar-brand-copy span{font-size:9px}
@@ -778,7 +778,7 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   #mainSidebar .nav-group-toggle{min-height:48px!important;padding:8px 10px!important;border-radius:14px!important;font-size:12.5px!important}
   #mainSidebar .nav-group-content{margin-inline-start:9px!important;padding-inline-start:10px!important}
   #mainSidebar .nav-group-content .nav-item{min-height:41px!important;padding:8px 14px 8px 24px!important;font-size:12px!important}
-  #mainSidebar .mobile-sidebar-footer{padding-bottom:max(5px,env(safe-area-inset-bottom))!important}
+  #mainSidebar .mobile-sidebar-footer{padding-bottom:6px!important;margin-bottom:0!important}
 }
 
 @media (max-width:430px){
