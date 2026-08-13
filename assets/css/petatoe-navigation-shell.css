@@ -749,3 +749,61 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
 @media (prefers-reduced-motion:reduce){
   #appHeader.topbar,#mainSidebar.sidebar,#mainSidebar .nav-group-content,#mainSidebar .nav-item,#mainSidebar .nav-group-toggle{transition:none!important}
 }
+
+/* PETATOE P5.11.7.3 — approved header proportion lock (reference mockup, search omitted) */
+@media (min-width:1381px){
+  #appHeader.topbar{
+    grid-template-columns:340px 76px minmax(430px,1fr) 500px!important;
+    grid-template-areas:"brand menu title actions"!important;
+    gap:30px!important;
+    min-height:184px!important;
+    padding:25px 44px 40px!important;
+    border-radius:0 0 44px 44px!important;
+    background:
+      radial-gradient(ellipse at 50% 111%,rgba(38,104,255,.18),transparent 38%),
+      linear-gradient(110deg,#020817 0%,#06172d 49%,#020817 100%)!important;
+  }
+  #appHeader.topbar::before{
+    left:14%!important;
+    right:14%!important;
+    bottom:-96px!important;
+    height:126px!important;
+    border-top-color:#357fff!important;
+    filter:drop-shadow(0 -1px 4px rgba(61,143,255,.96)) drop-shadow(0 -3px 12px rgba(36,91,255,.62))!important;
+  }
+  #appHeader.topbar::after{inset:18px 20px 27px!important}
+  #appHeader .topbar-watermark{bottom:17px!important}
+
+  #appHeader .topbar-brand{gap:20px!important;padding-right:38px!important}
+  #appHeader .topbar-logo-banner .petatoe-header-brand-icon{
+    width:108px!important;height:108px!important;flex-basis:108px!important;border-radius:28px!important;
+  }
+  .petatoe-header-brand-copy{gap:11px!important}
+  .petatoe-header-brand-copy strong{font-size:31px!important;letter-spacing:.04em!important}
+  .petatoe-header-brand-copy span{font-size:18px!important;color:#e7b64b!important}
+
+  #appHeader .sidebar-menu-launcher{
+    width:72px!important;height:72px!important;min-width:72px!important;border-radius:22px!important;
+  }
+  #appHeader .petatoe-menu-icon{width:31px!important;height:31px!important}
+
+  #appHeader .topbar-title{width:min(100%,720px)!important;padding:0 12px!important}
+  #appHeader .topbar-title h2{font-size:46px!important;line-height:1.03!important}
+  #appHeader .topbar-title p{margin-top:11px!important;font-size:16px!important}
+
+  #appHeader .topbar-user-actions{gap:16px!important;justify-self:end!important;width:auto!important}
+  #appHeader .notification-bell-btn,
+  #appHeader .theme-toggle-button{
+    width:68px!important;height:68px!important;flex-basis:68px!important;border-radius:21px!important;
+  }
+  #appHeader .notification-bell-btn svg,
+  #appHeader .theme-toggle-button svg{width:28px!important;height:28px!important}
+  #appHeader .compact-user-chip{
+    width:286px!important;min-width:286px!important;height:82px!important;min-height:82px!important;
+    grid-template-columns:minmax(0,1fr) 62px 20px!important;
+    padding:9px 14px 9px 20px!important;border-radius:24px!important;
+  }
+  #appHeader .compact-user-chip .avatar{width:62px!important;height:62px!important;flex-basis:62px!important}
+  #appHeader .compact-user-chip strong{font-size:18px!important}
+  #appHeader .compact-user-chip .petatoe-header-user-role{font-size:13px!important}
+}
