@@ -978,3 +978,209 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
   /* User dropdown remains operational although the desktop trigger is icon-only. */
   #appHeader .header-user-dropdown{left:0!important;right:auto!important;min-width:190px!important}
 }
+
+/* ============================================================
+   P5.11.7.8 — MOBILE ONLY header layout recovery
+   Scope lock: phone/touch header only. Desktop >= 768px is untouched.
+   Canonical row: Menu | Scroll logo | centered PETATOE brand | Theme.
+   ============================================================ */
+@media (max-width:767px),
+       (pointer:coarse) and (max-device-width:1024px),
+       (hover:none) and (max-device-width:1024px){
+  :root{--pet-mobile-header-h:78px}
+
+  #appHeader.topbar,
+  #appHeader.topbar.is-scrolled,
+  #appHeader.topbar.mobile-header-stable{
+    position:fixed!important;
+    inset:0 0 auto 0!important;
+    z-index:1200!important;
+    display:block!important;
+    width:100vw!important;
+    max-width:100vw!important;
+    min-height:calc(var(--pet-mobile-header-h) + env(safe-area-inset-top))!important;
+    height:calc(var(--pet-mobile-header-h) + env(safe-area-inset-top))!important;
+    margin:0!important;
+    padding:env(safe-area-inset-top) 10px 0!important;
+    overflow:hidden!important;
+    border-radius:0 0 20px 20px!important;
+    transform:none!important;
+    contain:layout style!important;
+  }
+
+  .main-content{
+    padding-top:calc(var(--pet-mobile-header-h) + env(safe-area-inset-top) + 12px)!important;
+  }
+
+  /* Desktop title/brand/user menu never participate in the mobile row. */
+  #appHeader .topbar-title,
+  #appHeader .topbar-brand,
+  #appHeader .topbar-watermark,
+  #appHeader .header-user-menu,
+  #appHeader .notification-bell-wrap{
+    display:none!important;
+  }
+
+  #appHeader .topbar-user-actions{
+    display:contents!important;
+    width:auto!important;
+    min-width:0!important;
+  }
+
+  /* One canonical control size and baseline for all visible mobile controls. */
+  #appHeader #sidebarMenuToggle,
+  #appHeader #kyumScrollControl.mobile-floating-logo,
+  #appHeader #themeToggleButton,
+  #appHeader #themeToggleButton.is-visible{
+    position:absolute!important;
+    top:calc(env(safe-area-inset-top) + 14px)!important;
+    width:44px!important;
+    height:44px!important;
+    min-width:44px!important;
+    min-height:44px!important;
+    max-width:44px!important;
+    max-height:44px!important;
+    margin:0!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:14px!important;
+    transform:none!important;
+    opacity:1!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+
+  #appHeader #sidebarMenuToggle{
+    left:max(10px,env(safe-area-inset-left))!important;
+    right:auto!important;
+    z-index:6!important;
+  }
+
+  #appHeader #kyumScrollControl.mobile-floating-logo{
+    left:calc(max(10px,env(safe-area-inset-left)) + 51px)!important;
+    right:auto!important;
+    z-index:6!important;
+    padding:5px!important;
+  }
+
+  #appHeader #kyumScrollControl.mobile-floating-logo .petatoe-scroll-control-icon{
+    width:32px!important;
+    height:32px!important;
+    min-width:32px!important;
+    min-height:32px!important;
+    max-width:32px!important;
+    max-height:32px!important;
+    border-radius:10px!important;
+    object-fit:contain!important;
+  }
+
+  #appHeader #themeToggleButton,
+  #appHeader #themeToggleButton.is-visible{
+    right:max(10px,env(safe-area-inset-right))!important;
+    left:auto!important;
+    z-index:6!important;
+  }
+
+  #appHeader #sidebarMenuToggle .petatoe-menu-icon,
+  #appHeader #sidebarMenuToggle .mobile-menu-icon,
+  #appHeader #themeToggleButton .theme-icon{
+    width:20px!important;
+    height:20px!important;
+    min-width:20px!important;
+    min-height:20px!important;
+    max-width:20px!important;
+    max-height:20px!important;
+  }
+
+  /* Mobile brand is independent from the desktop brand and cannot wrap awkwardly. */
+  #appHeader .mobile-app-brand{
+    position:absolute!important;
+    z-index:5!important;
+    top:calc(env(safe-area-inset-top) + 13px)!important;
+    left:50%!important;
+    right:auto!important;
+    width:auto!important;
+    max-width:42vw!important;
+    height:46px!important;
+    transform:translateX(-50%)!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    pointer-events:none!important;
+    color:#fff!important;
+    text-align:center!important;
+  }
+
+  #appHeader .mobile-app-brand span{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:3px!important;
+    align-items:center!important;
+    justify-items:center!important;
+    line-height:1!important;
+  }
+
+  #appHeader .mobile-app-brand strong{
+    display:block!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    color:#fff!important;
+    font-size:16px!important;
+    font-weight:900!important;
+    letter-spacing:.055em!important;
+  }
+
+  #appHeader .mobile-app-brand small{
+    display:block!important;
+    color:#e7b64b!important;
+    font-size:8.5px!important;
+    font-weight:800!important;
+    letter-spacing:.11em!important;
+    white-space:nowrap!important;
+  }
+
+  /* Mobile-specific neon geometry: compact and fully contained. */
+  #appHeader .petatoe-header-gold-rail{
+    top:8px!important;
+    bottom:10px!important;
+    width:10px!important;
+  }
+  #appHeader .petatoe-header-gold-rail--left{left:5px!important}
+  #appHeader .petatoe-header-gold-rail--right{right:5px!important}
+  #appHeader .petatoe-header-reference-top-arc{
+    top:5px!important;
+    left:15px!important;
+    right:15px!important;
+    width:calc(100% - 30px)!important;
+    height:3px!important;
+  }
+  #appHeader .petatoe-header-reference-arc{
+    bottom:-2px!important;
+    left:9px!important;
+    right:9px!important;
+    width:calc(100% - 18px)!important;
+    height:24px!important;
+  }
+}
+
+@media (max-width:380px){
+  #appHeader .mobile-app-brand{max-width:34vw!important}
+  #appHeader .mobile-app-brand strong{font-size:14px!important}
+  #appHeader .mobile-app-brand small{font-size:7.5px!important}
+  #appHeader #sidebarMenuToggle,
+  #appHeader #kyumScrollControl.mobile-floating-logo,
+  #appHeader #themeToggleButton,
+  #appHeader #themeToggleButton.is-visible{
+    width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;max-width:40px!important;max-height:40px!important;
+    top:calc(env(safe-area-inset-top) + 16px)!important;
+  }
+  #appHeader #kyumScrollControl.mobile-floating-logo{
+    left:calc(max(8px,env(safe-area-inset-left)) + 46px)!important;
+  }
+  #appHeader #sidebarMenuToggle{left:max(8px,env(safe-area-inset-left))!important}
+  #appHeader #themeToggleButton,#appHeader #themeToggleButton.is-visible{right:max(8px,env(safe-area-inset-right))!important}
+  #appHeader #kyumScrollControl.mobile-floating-logo .petatoe-scroll-control-icon{width:29px!important;height:29px!important;min-width:29px!important;min-height:29px!important;max-width:29px!important;max-height:29px!important}
+}
