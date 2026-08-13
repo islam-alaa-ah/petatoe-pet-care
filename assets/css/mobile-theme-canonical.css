@@ -286,3 +286,269 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
     max-width: 100%;
   }
 }
+
+
+/* P5.11.8 — Mobile Content & Dialogs Enterprise Certification
+   MOBILE-ONLY canonical content/dialog contract. Desktop/tablet desktop rules are untouched. */
+@media (max-width: 767px),
+       (pointer: coarse) and (max-device-width: 767px),
+       (hover: none) and (max-device-width: 767px),
+       (orientation: landscape) and (pointer: coarse) and (max-device-width: 1024px) and (max-height: 520px) {
+  :root{
+    --petatoe-mobile-content-gap:12px;
+    --petatoe-mobile-card-radius:18px;
+    --petatoe-mobile-dialog-radius:22px;
+    --petatoe-mobile-bottom-clearance:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 28px);
+  }
+
+  /* Content ownership: one readable column, no accidental desktop-width leakage. */
+  .main-content,
+  .view-section,
+  .view-section > *,
+  .content-card,
+  .table-card,
+  .filter-card,
+  .report-card,
+  .metric-card,
+  .chart-card,
+  .panel,
+  .settings-panel{
+    box-sizing:border-box!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  .view-section{
+    overflow-x:hidden!important;
+    padding-inline:max(10px,env(safe-area-inset-left,0px)) max(10px,env(safe-area-inset-right,0px))!important;
+    padding-bottom:var(--petatoe-mobile-bottom-clearance)!important;
+  }
+
+  .content-card,
+  .filter-card,
+  .report-card,
+  .metric-card,
+  .chart-card,
+  .table-card,
+  .panel,
+  .settings-panel{
+    border-radius:var(--petatoe-mobile-card-radius)!important;
+  }
+
+  /* Action/filter groups stay touch-friendly and never overflow the viewport. */
+  .actions-row,
+  .filters-row,
+  .followup-filters,
+  .quotation-filters,
+  .dashboard-filters,
+  .report-filters,
+  .settings-filters,
+  .form-actions,
+  .toolbar-actions,
+  .customer-main-actions{
+    min-width:0!important;
+    max-width:100%!important;
+    gap:10px!important;
+  }
+
+  .filters-row,
+  .followup-filters,
+  .quotation-filters,
+  .dashboard-filters,
+  .report-filters,
+  .settings-filters{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+
+  .actions-row,
+  .form-actions,
+  .toolbar-actions,
+  .customer-main-actions{
+    flex-wrap:wrap!important;
+  }
+
+  .actions-row > *,
+  .filters-row > *,
+  .followup-filters > *,
+  .quotation-filters > *,
+  .dashboard-filters > *,
+  .report-filters > *,
+  .settings-filters > *,
+  .customer-main-actions > *{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  /* Mobile fields: keep native zoom disabled on iOS without shrinking controls. */
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  .searchable-select-trigger{
+    min-height:46px!important;
+    font-size:16px!important;
+    border-radius:12px!important;
+  }
+
+  textarea{min-height:96px!important;resize:vertical}
+
+  /* Tables remain usable instead of forcing the whole screen horizontally. */
+  .table-card,
+  .table-wrap,
+  .responsive-table{
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    overscroll-behavior-inline:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+
+  .table-card table,
+  .table-wrap table,
+  .responsive-table table{
+    max-width:none!important;
+  }
+
+  /* Generic mobile dialog contract: shell stays fixed, only body scrolls. */
+  dialog[open],
+  .dialog.is-open,
+  .modal.is-open{
+    box-sizing:border-box!important;
+    width:min(100% - 12px,620px)!important;
+    max-width:calc(100vw - 12px)!important;
+    height:min(calc(var(--kyum-visual-viewport-height,100dvh) - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)),760px)!important;
+    max-height:calc(var(--kyum-visual-viewport-height,100dvh) - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+    margin:auto!important;
+    padding:0!important;
+    border-radius:var(--petatoe-mobile-dialog-radius)!important;
+    overflow:hidden!important;
+    overscroll-behavior:contain!important;
+  }
+
+  dialog[open] > form,
+  dialog[open] > .dialog-shell,
+  .dialog.is-open > .dialog-shell,
+  .modal.is-open > .modal-card,
+  .modal.is-open > .dialog-card{
+    box-sizing:border-box!important;
+    display:grid!important;
+    grid-template-rows:auto minmax(0,1fr) auto!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+    overflow:hidden!important;
+  }
+
+  .dialog-header,
+  .modal-header,
+  dialog[open] > form > .dialog-header{
+    position:relative!important;
+    inset:auto!important;
+    z-index:5!important;
+    min-width:0!important;
+    padding:14px 16px 12px!important;
+    border-bottom:1px solid var(--kyum-mobile-border)!important;
+  }
+
+  .dialog-body,
+  .dialog-content,
+  .modal-body,
+  .dialog-scroll,
+  dialog[open] .form-grid{
+    min-width:0!important;
+    min-height:0!important;
+    max-width:100%!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding:14px 16px 24px!important;
+    scroll-padding-bottom:84px!important;
+  }
+
+  .dialog-actions,
+  .dialog-footer,
+  .modal-footer{
+    position:relative!important;
+    inset:auto!important;
+    z-index:6!important;
+    display:grid!important;
+    grid-template-columns:repeat(auto-fit,minmax(min(138px,100%),1fr))!important;
+    gap:10px!important;
+    margin:0!important;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))!important;
+    border-top:1px solid var(--kyum-mobile-border)!important;
+    box-shadow:0 -10px 26px rgba(15,23,42,.08)!important;
+  }
+
+  .dialog-actions > button,
+  .dialog-footer > button,
+  .modal-footer > button{
+    width:100%!important;
+    min-width:0!important;
+    min-height:48px!important;
+    margin:0!important;
+  }
+
+  /* Known form/dialog bodies that historically used desktop grids. */
+  #customerDialog .form-grid,
+  #followupDialog .form-grid,
+  #quotationDialog .form-grid,
+  #userDialog .form-grid,
+  #representativeDialog .form-grid,
+  #referenceItemDialog .form-grid,
+  #dailyTargetsDialog .form-grid,
+  #employeeTargetsDialog .form-grid,
+  #installationAssignmentDialog .form-grid,
+  #installationCompletionDialog .form-grid,
+  #installationRevisitDialog .form-grid,
+  #installationReferenceDialog .form-grid,
+  #installationQuantityConfirmationDialog .form-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+
+  #customerDialog .form-grid > *,
+  #followupDialog .form-grid > *,
+  #quotationDialog .form-grid > *,
+  #userDialog .form-grid > *,
+  #representativeDialog .form-grid > *,
+  #referenceItemDialog .form-grid > *,
+  #dailyTargetsDialog .form-grid > *,
+  #employeeTargetsDialog .form-grid > *,
+  #installationAssignmentDialog .form-grid > *,
+  #installationCompletionDialog .form-grid > *,
+  #installationRevisitDialog .form-grid > *,
+  #installationReferenceDialog .form-grid > *,
+  #installationQuantityConfirmationDialog .form-grid > *{
+    grid-column:1!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  /* Prevent the bottom navigation from covering the last interactive content. */
+  #customersView .table-pagination,
+  #followupsView .table-pagination,
+  #quotationsView .table-pagination,
+  #installationRequestsView,
+  #installationScheduleView,
+  #installationExecutionView,
+  #installationCompletionView,
+  #dailyOperationsView,
+  #reportsOverviewView,
+  #dailyPerformanceReportView{
+    scroll-padding-bottom:var(--petatoe-mobile-bottom-clearance)!important;
+  }
+}
+
+@media (max-width:380px){
+  dialog[open],.dialog.is-open,.modal.is-open{
+    width:calc(100% - 8px)!important;
+    max-width:calc(100vw - 8px)!important;
+    border-radius:18px!important;
+  }
+  .dialog-header,.modal-header,
+  .dialog-body,.dialog-content,.modal-body,.dialog-scroll,dialog[open] .form-grid,
+  .dialog-actions,.dialog-footer,.modal-footer{
+    padding-inline:12px!important;
+  }
+}
