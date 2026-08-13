@@ -803,3 +803,138 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
 @media (prefers-reduced-motion:reduce){
   #appHeader.topbar,#mainSidebar.sidebar,#mainSidebar .nav-group-content,#mainSidebar .nav-item,#mainSidebar .nav-group-toggle{transition:none!important}
 }
+
+
+/* ============================================================
+   P5.11.7.6 — DESKTOP ONLY approved header control distribution
+   Visual contract: Brand | circular user | notifications | theme | centered title | menu at far right.
+   Tablet/mobile remain untouched.
+   ============================================================ */
+@media (min-width:1051px){
+  #appHeader.topbar{
+    grid-template-columns:286px 190px minmax(360px,1fr) 70px!important;
+    grid-template-areas:"brand actions title menu"!important;
+    column-gap:22px!important;
+  }
+
+  /* Keep the title visually centered across the full desktop header. */
+  #appHeader .topbar-title{
+    position:absolute!important;
+    left:50%!important;
+    top:50%!important;
+    transform:translate(-50%,-50%)!important;
+    width:min(620px,38vw)!important;
+    justify-self:auto!important;
+    margin-top:-3px!important;
+    pointer-events:none!important;
+  }
+
+  /* Menu lives alone at the far right, as in the approved reference. */
+  #appHeader .sidebar-menu-launcher{
+    grid-area:menu!important;
+    justify-self:end!important;
+    align-self:center!important;
+    width:58px!important;
+    height:58px!important;
+    min-width:58px!important;
+    min-height:58px!important;
+    max-width:58px!important;
+    max-height:58px!important;
+    flex-basis:58px!important;
+    border-radius:18px!important;
+  }
+  #appHeader .petatoe-menu-icon{
+    width:24px!important;
+    height:24px!important;
+    min-width:24px!important;
+    min-height:24px!important;
+    max-width:24px!important;
+    max-height:24px!important;
+    flex-basis:24px!important;
+  }
+
+  /* Controls sit immediately after the PETATOE brand on desktop. */
+  #appHeader .topbar-user-actions{
+    grid-area:actions!important;
+    justify-self:start!important;
+    justify-content:flex-start!important;
+    align-items:center!important;
+    gap:10px!important;
+    direction:ltr!important;
+    width:auto!important;
+    min-width:0!important;
+  }
+  #appHeader .header-user-menu{order:1!important;display:block!important;position:relative!important}
+  #appHeader .notification-bell-wrap{order:2!important}
+  #appHeader .theme-toggle-button{order:3!important}
+
+  /* User control is icon-only and perfectly circular on desktop. */
+  #appHeader .compact-user-chip{
+    width:58px!important;
+    min-width:58px!important;
+    max-width:58px!important;
+    height:58px!important;
+    min-height:58px!important;
+    max-height:58px!important;
+    padding:0!important;
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-areas:"avatar"!important;
+    place-items:center!important;
+    gap:0!important;
+    border:0!important;
+    border-radius:50%!important;
+    background:radial-gradient(circle at 50% 45%,rgba(17,45,82,.96),rgba(3,13,27,.99) 72%)!important;
+    box-shadow:0 0 0 1px rgba(230,183,77,.88),0 0 0 3px rgba(32,116,255,.18),0 0 15px rgba(33,119,255,.30),0 8px 20px rgba(0,0,0,.26)!important;
+    overflow:visible!important;
+  }
+  #appHeader .compact-user-chip:hover,
+  #appHeader .compact-user-chip[aria-expanded="true"]{
+    border:0!important;
+    background:radial-gradient(circle at 50% 45%,rgba(21,58,106,.98),rgba(3,14,29,.99) 72%)!important;
+    box-shadow:0 0 0 1px var(--pet-nav-gold-soft),0 0 0 3px rgba(37,132,255,.24),0 0 20px rgba(34,133,255,.40),0 9px 22px rgba(0,0,0,.30)!important;
+  }
+  #appHeader .compact-user-chip .petatoe-header-user-copy,
+  #appHeader .compact-user-chip .user-menu-chevron{display:none!important}
+  #appHeader .compact-user-chip .avatar{
+    grid-area:avatar!important;
+    width:48px!important;
+    height:48px!important;
+    min-width:48px!important;
+    min-height:48px!important;
+    max-width:48px!important;
+    max-height:48px!important;
+    flex-basis:48px!important;
+    border:0!important;
+    box-shadow:none!important;
+    background:
+      radial-gradient(circle at 50% 31%,#62a3ff 0 16%,#297cff 17% 23%,transparent 24%),
+      radial-gradient(ellipse at 50% 79%,#2479ff 0 27%,#0b4fc2 28% 40%,transparent 41%),
+      radial-gradient(circle at 50% 50%,#102f5d 0 63%,#06162d 64% 100%)!important;
+  }
+
+  /* Match the approved reference sizing of the two square controls. */
+  #appHeader .notification-bell-btn,
+  #appHeader .theme-toggle-button{
+    width:58px!important;
+    height:58px!important;
+    min-width:58px!important;
+    min-height:58px!important;
+    max-width:58px!important;
+    max-height:58px!important;
+    flex-basis:58px!important;
+    border-radius:18px!important;
+  }
+  #appHeader .notification-bell-btn > svg,
+  #appHeader .theme-toggle-button .theme-icon{
+    width:23px!important;
+    height:23px!important;
+    min-width:23px!important;
+    min-height:23px!important;
+    max-width:23px!important;
+    max-height:23px!important;
+  }
+
+  /* User dropdown remains operational although the desktop trigger is icon-only. */
+  #appHeader .header-user-dropdown{left:0!important;right:auto!important;min-width:190px!important}
+}
