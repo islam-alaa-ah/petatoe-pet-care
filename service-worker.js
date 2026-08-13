@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-57-p5119-mobile-cards-filter-popovers";
+const CACHE_VERSION = "petatoe-pwa-18-54-58-p51110-mobile-responsive-certification";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

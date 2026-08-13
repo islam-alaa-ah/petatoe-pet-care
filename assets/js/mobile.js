@@ -1375,6 +1375,100 @@
   MEDIA.addEventListener?.("change", initialize);
 })();
 
+
+/* P5.11.10 — Mobile Responsive Certification: tables, matrices, charts and safe-area recovery. */
+(() => {
+  "use strict";
+  const MEDIA = window.matchMedia("(max-width: 767px), (orientation:landscape) and (pointer:coarse) and (max-device-width:1024px) and (max-height:520px)");
+  const CARD_TABLE_SELECTORS = [
+    "#installationReportsView .installation-report-panel table",
+    "#installationSettingsView .installation-settings-section .table-wrap table",
+    "#installationScheduleView .table-wrap table"
+  ];
+  const PERMISSION_LABELS = ["عرض","إضافة","تعديل","حذف","تصدير"];
+  const NOTIFICATION_LABELS = ["الحدث","تفعيل الحدث","داخل البرنامج","Push","صاحب الطلب","إرسال للدور المحدد"];
+
+  function headerLabels(table){
+    return [...table.querySelectorAll("thead th")].map(th => (th.textContent || "").replace(/\s+/g," ").trim());
+  }
+  function annotateSimpleTable(table){
+    const labels=headerLabels(table);
+    if(!labels.length)return;
+    table.classList.add("petatoe-mobile-card-table");
+    table.querySelectorAll("tbody tr").forEach(row=>{
+      const cells=[...row.children];
+      if(cells.length===1 && Number(cells[0].getAttribute("colspan")||1)>1){
+        cells[0].dataset.mobileLabel="";
+        cells[0].classList.add("petatoe-mobile-empty-cell");
+        return;
+      }
+      let offset=0;
+      if(table.classList.contains("installation-summary-table")){
+        const teamCell=row.querySelector(".installation-summary-team-cell");
+        if(teamCell){
+          row.dataset.mobileGroup=(teamCell.textContent||"").trim();
+        } else {
+          const previous=row.previousElementSibling?.dataset.mobileGroup;
+          if(previous)row.dataset.mobileGroup=previous;
+          offset=1;
+        }
+      }
+      cells.forEach((cell,index)=>{
+        const label=labels[index+offset]||labels[index]||"";
+        cell.dataset.mobileLabel=label;
+      });
+    });
+  }
+  function annotateTables(){
+    CARD_TABLE_SELECTORS.forEach(sel=>document.querySelectorAll(sel).forEach(annotateSimpleTable));
+  }
+  function enhancePermissions(){
+    document.querySelectorAll('#permissionsView .permission-row[data-screen-key]').forEach(row=>{
+      [...row.querySelectorAll(':scope > input[type="checkbox"]')].forEach((input,index)=>{
+        if(input.parentElement?.classList.contains('mobile-permission-toggle'))return;
+        const label=document.createElement('label');
+        label.className='mobile-permission-toggle';
+        const text=document.createElement('span');
+        text.textContent=PERMISSION_LABELS[index]||'صلاحية';
+        row.insertBefore(label,input);
+        label.append(text,input);
+      });
+    });
+  }
+  function restorePermissions(){
+    document.querySelectorAll('#permissionsView .mobile-permission-toggle').forEach(label=>{
+      const input=label.querySelector('input');
+      if(input) label.parentElement?.insertBefore(input,label);
+      label.remove();
+    });
+  }
+  function enhanceNotifications(){
+    const table=document.querySelector('#notificationCenterView .notification-matrix');
+    if(!table)return;
+    table.classList.add('petatoe-mobile-notification-cards');
+    table.querySelectorAll('tbody tr').forEach(row=>{
+      [...row.children].forEach((cell,index)=>cell.dataset.mobileLabel=NOTIFICATION_LABELS[index]||'');
+    });
+  }
+  function cleanupDesktop(){
+    document.querySelectorAll('.petatoe-mobile-card-table').forEach(table=>table.classList.remove('petatoe-mobile-card-table'));
+    document.querySelectorAll('.petatoe-mobile-notification-cards').forEach(table=>table.classList.remove('petatoe-mobile-notification-cards'));
+    restorePermissions();
+  }
+  function enhance(){
+    if(!MEDIA.matches){cleanupDesktop();return;}
+    annotateTables();
+    enhancePermissions();
+    enhanceNotifications();
+  }
+  let raf=0;
+  const schedule=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(enhance)};
+  const observer=new MutationObserver(schedule);
+  observer.observe(document.querySelector('main')||document.body,{subtree:true,childList:true});
+  enhance();
+  MEDIA.addEventListener?.('change',enhance);
+})();
+
 /* Phase M12.1 — Keep mobile views anchored to the viewport */
 (() => {
   "use strict";

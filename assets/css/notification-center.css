@@ -165,7 +165,7 @@ html[data-theme="dark"] .notification-unread-badge{border-color:#071a2e}
 @media(max-width:760px){
   .notification-role-filter{grid-template-columns:1fr;grid-template-areas:"label" "select" "note";gap:8px}
   .notification-role-filter-note{font-size:12px}
-  .notification-matrix{min-width:820px}
+  .notification-matrix{min-width:0;width:100%}
 }
 
 

@@ -1087,18 +1087,18 @@
 
   #reportsOverviewView .mobile-reports-filter-sheet{
     position:fixed;
-    inset-inline:0;
-    bottom:0;
+    inset-inline:12px;
+    bottom:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 12px);
     z-index:1101;
     display:grid;
     grid-template-columns:1fr;
     gap:10px;
-    max-height:min(78dvh,620px);
+    max-height:min(68dvh,calc(100dvh - 170px));
     margin:0;
     padding:16px 16px calc(18px + env(safe-area-inset-bottom));
     overflow-y:auto;
     border:0;
-    border-radius:24px 24px 0 0;
+    border-radius:22px;
     background:var(--surface,#fff);
     box-shadow:0 -20px 50px rgba(15,23,42,.25);
     transform:translateY(110%);
@@ -1158,9 +1158,11 @@
   #reportsOverviewView .top10-list{min-width:0;overflow-wrap:anywhere}
 
   #reportsOverviewView .reports-monthly-trend,
-  #reportsOverviewView .reports-yearly-trend{min-width:560px}
+  #reportsOverviewView .reports-yearly-trend{width:max-content;min-width:100%;max-width:none}
+  #reportsOverviewView .monthly-column,
+  #reportsOverviewView .yearly-trend-column{flex:0 0 54px;min-width:54px}
   #reportsOverviewView .panel:has(.reports-monthly-trend),
-  #reportsOverviewView .trend-12m-panel{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #reportsOverviewView .trend-12m-panel{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain;scrollbar-width:thin}
   #reportsOverviewView .trend-legend{position:sticky;inset-inline-start:0;width:max-content;min-width:100%;gap:10px;font-size:10px}
 
   #reportsOverviewView .table-wrap{overflow:visible}
@@ -1226,7 +1228,7 @@
   .mobile-admin-nav button{flex:0 0 auto;min-height:35px;padding:7px 11px;border:1px solid var(--border-color,rgba(148,163,184,.25));border-radius:999px;background:transparent;color:var(--muted-text,#64748b);font:inherit;font-size:10px;font-weight:800}
   .mobile-admin-nav button.active{border-color:var(--primary,#6366f1);background:color-mix(in srgb,var(--primary,#6366f1) 14%,transparent);color:var(--primary,#6366f1)}
 
-  .mobile-admin-filter-sheet{position:fixed!important;inset-inline:0!important;bottom:0!important;z-index:1151!important;display:grid!important;grid-template-columns:1fr!important;gap:10px!important;max-height:min(76dvh,600px);margin:0!important;padding:16px 16px calc(18px + env(safe-area-inset-bottom))!important;overflow-y:auto;border:0!important;border-radius:24px 24px 0 0!important;background:var(--surface,#fff)!important;box-shadow:0 -20px 50px rgba(15,23,42,.25)!important;transform:translateY(110%);transition:transform .24s ease}
+  .mobile-admin-filter-sheet{position:fixed!important;inset-inline:12px!important;bottom:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 12px)!important;z-index:1151!important;display:grid!important;grid-template-columns:1fr!important;gap:10px!important;max-height:min(68dvh,calc(100dvh - 170px));margin:0!important;padding:16px!important;overflow-y:auto;border:0!important;border-radius:22px!important;background:var(--surface,#fff)!important;box-shadow:0 -20px 50px rgba(15,23,42,.25)!important;transform:translateY(calc(100% + var(--mobile-nav-height,78px) + 40px));transition:transform .24s ease}
   .mobile-admin-filters-open .mobile-admin-filter-sheet{transform:translateY(0)}
   .mobile-admin-filter-sheet label{display:grid!important;gap:6px!important;width:100%!important;font-size:11px!important;font-weight:800}
   .mobile-admin-filter-sheet input,.mobile-admin-filter-sheet select,.mobile-admin-filter-sheet button{width:100%;min-height:45px}
