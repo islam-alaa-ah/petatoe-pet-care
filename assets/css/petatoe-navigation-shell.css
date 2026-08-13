@@ -92,14 +92,14 @@
 #appHeader .petatoe-header-reference-top-arc{
   position:absolute!important;
   z-index:2!important;
-  left:24px!important;
-  right:24px!important;
-  top:-1px!important;
-  width:calc(100% - 48px)!important;
-  height:43px!important;
+  left:39px!important;
+  right:39px!important;
+  top:13px!important;
+  width:calc(100% - 78px)!important;
+  height:4px!important;
   overflow:visible!important;
   pointer-events:none!important;
-  filter:drop-shadow(0 0 3px rgba(255,255,255,.50)) drop-shadow(0 0 6px rgba(52,151,255,.96)) drop-shadow(0 0 14px rgba(35,93,255,.68))!important;
+  filter:drop-shadow(0 0 2px rgba(255,255,255,.62)) drop-shadow(0 0 6px rgba(52,151,255,.98)) drop-shadow(0 0 13px rgba(35,93,255,.72))!important;
 }
 #appHeader .petatoe-header-reference-top-arc path{
   fill:none!important;
@@ -396,8 +396,8 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   #appHeader .topbar-title h2{font-size:27px!important}
   #appHeader .topbar-title p{font-size:11px!important;margin-top:6px!important}
   #appHeader .compact-user-chip{width:176px!important;min-width:176px!important;max-width:176px!important}
-  #appHeader .petatoe-header-reference-top-arc,#appHeader .petatoe-header-reference-arc{left:18px!important;right:18px!important;width:calc(100% - 36px)!important}
-  #appHeader .petatoe-header-reference-top-arc{height:34px!important}
+  #appHeader .petatoe-header-reference-arc{left:18px!important;right:18px!important;width:calc(100% - 36px)!important}
+  #appHeader .petatoe-header-reference-top-arc{left:31px!important;right:31px!important;top:7px!important;width:calc(100% - 62px)!important;height:4px!important}
   #appHeader .petatoe-header-reference-arc{height:34px!important}
 }
 @media (max-width:767px), (pointer:coarse) and (max-device-width:1024px), (hover:none) and (max-device-width:1024px){
@@ -406,7 +406,7 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   #appHeader .petatoe-header-gold-rail{top:7px!important;bottom:12px!important;width:12px!important}
   #appHeader .petatoe-header-gold-rail--left{left:5px!important;border-width:2px!important;border-right:0!important}
   #appHeader .petatoe-header-gold-rail--right{right:5px!important;border-width:2px!important;border-left:0!important}
-  #appHeader .petatoe-header-reference-top-arc{top:-1px!important;height:23px!important;left:10px!important;right:10px!important;width:calc(100% - 20px)!important}
+  #appHeader .petatoe-header-reference-top-arc{top:5px!important;height:4px!important;left:17px!important;right:17px!important;width:calc(100% - 34px)!important}
   #appHeader .petatoe-header-reference-arc{bottom:-2px!important;height:25px!important;left:10px!important;right:10px!important;width:calc(100% - 20px)!important}
   #appHeader .topbar-title{padding:0 3px!important;text-align:right!important;justify-self:stretch!important}
   #appHeader .topbar-title h2{font-size:18px!important;line-height:1.15!important}
