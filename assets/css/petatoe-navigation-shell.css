@@ -87,23 +87,45 @@
   border-radius:0 22px 22px 0!important;
 }
 
+
+/* P5.11.7.4 — upper neon contour follows the header curvature and visually meets the side rails. */
+#appHeader .petatoe-header-reference-top-arc{
+  position:absolute!important;
+  z-index:2!important;
+  left:24px!important;
+  right:24px!important;
+  top:-1px!important;
+  width:calc(100% - 48px)!important;
+  height:43px!important;
+  overflow:visible!important;
+  pointer-events:none!important;
+  filter:drop-shadow(0 0 3px rgba(255,255,255,.50)) drop-shadow(0 0 6px rgba(52,151,255,.96)) drop-shadow(0 0 14px rgba(35,93,255,.68))!important;
+}
+#appHeader .petatoe-header-reference-top-arc path{
+  fill:none!important;
+  stroke:#3b96ff!important;
+  stroke-width:2.6!important;
+  vector-effect:non-scaling-stroke!important;
+  stroke-linecap:round!important;
+}
+
 /* The exact bottom electric-blue reference arc is a real SVG element, not a pseudo layer. */
 #appHeader .petatoe-header-reference-arc{
   position:absolute!important;
   z-index:2!important;
-  left:8%!important;
-  right:8%!important;
+  left:24px!important;
+  right:24px!important;
   bottom:-1px!important;
-  width:84%!important;
+  width:calc(100% - 48px)!important;
   height:42px!important;
   overflow:visible!important;
   pointer-events:none!important;
-  filter:drop-shadow(0 0 4px rgba(46,132,255,.92)) drop-shadow(0 0 10px rgba(38,95,255,.54))!important;
+  filter:drop-shadow(0 0 3px rgba(255,255,255,.58)) drop-shadow(0 0 6px rgba(52,151,255,.98)) drop-shadow(0 0 14px rgba(35,93,255,.72))!important;
 }
 #appHeader .petatoe-header-reference-arc path{
   fill:none!important;
-  stroke:#338cff!important;
-  stroke-width:2.3!important;
+  stroke:#3b96ff!important;
+  stroke-width:2.6!important;
   vector-effect:non-scaling-stroke!important;
   stroke-linecap:round!important;
 }
@@ -374,7 +396,9 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   #appHeader .topbar-title h2{font-size:27px!important}
   #appHeader .topbar-title p{font-size:11px!important;margin-top:6px!important}
   #appHeader .compact-user-chip{width:176px!important;min-width:176px!important;max-width:176px!important}
-  #appHeader .petatoe-header-reference-arc{left:5%!important;right:5%!important;width:90%!important;height:34px!important}
+  #appHeader .petatoe-header-reference-top-arc,#appHeader .petatoe-header-reference-arc{left:18px!important;right:18px!important;width:calc(100% - 36px)!important}
+  #appHeader .petatoe-header-reference-top-arc{height:34px!important}
+  #appHeader .petatoe-header-reference-arc{height:34px!important}
 }
 @media (max-width:767px), (pointer:coarse) and (max-device-width:1024px), (hover:none) and (max-device-width:1024px){
   #appHeader.topbar{grid-template-columns:44px minmax(0,1fr) auto!important;grid-template-areas:"menu title actions"!important;min-height:82px!important;margin:-10px -10px 16px!important;padding:calc(8px + env(safe-area-inset-top)) 9px 14px!important;column-gap:7px!important;border-radius:18px 18px 21px 21px!important}
@@ -382,7 +406,8 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   #appHeader .petatoe-header-gold-rail{top:7px!important;bottom:12px!important;width:12px!important}
   #appHeader .petatoe-header-gold-rail--left{left:5px!important;border-width:2px!important;border-right:0!important}
   #appHeader .petatoe-header-gold-rail--right{right:5px!important;border-width:2px!important;border-left:0!important}
-  #appHeader .petatoe-header-reference-arc{bottom:-2px!important;height:25px!important;left:8%!important;right:8%!important;width:84%!important}
+  #appHeader .petatoe-header-reference-top-arc{top:-1px!important;height:23px!important;left:10px!important;right:10px!important;width:calc(100% - 20px)!important}
+  #appHeader .petatoe-header-reference-arc{bottom:-2px!important;height:25px!important;left:10px!important;right:10px!important;width:calc(100% - 20px)!important}
   #appHeader .topbar-title{padding:0 3px!important;text-align:right!important;justify-self:stretch!important}
   #appHeader .topbar-title h2{font-size:18px!important;line-height:1.15!important}
   #appHeader .topbar-title p{display:block!important;margin-top:2px!important;font-size:8.5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
