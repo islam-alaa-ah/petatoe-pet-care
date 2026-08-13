@@ -6770,11 +6770,15 @@ function initializeDynamicSidebar() {
   });
 
   const headerUserName = document.getElementById("currentUserName");
+  const headerUserRole = document.getElementById("currentUserRoleLabel");
   const sidebarUserName = document.getElementById("sidebarCurrentUserName");
   if (headerUserName && sidebarUserName) {
-    const syncSidebarUserName = () => { sidebarUserName.textContent = headerUserName.textContent || "مستخدم"; };
-    syncSidebarUserName();
-    new MutationObserver(syncSidebarUserName).observe(headerUserName, { childList: true, characterData: true, subtree: true });
+    const syncHeaderIdentity = () => {
+      sidebarUserName.textContent = headerUserName.textContent || "مستخدم";
+      if (headerUserRole) headerUserRole.textContent = roleLabel(currentRole()) || "مستخدم النظام";
+    };
+    syncHeaderIdentity();
+    new MutationObserver(syncHeaderIdentity).observe(headerUserName, { childList: true, characterData: true, subtree: true });
   }
 
   document.addEventListener("keydown", event => {

@@ -1,218 +1,248 @@
-/* PETATOE P5.11.7 — Midnight Neon navigation shell
-   Visual shell only: header, off-canvas sidebar and mobile drawer. */
+/* PETATOE P5.11.7.2 — Reference-faithful Midnight Neon header
+   Clean replacement for the previous header shell; no stacked visual layer. */
 :root{
-  --pet-nav-midnight:#050b16;
-  --pet-nav-navy:#07162a;
-  --pet-nav-navy-2:#0b1d35;
-  --pet-nav-blue:#2388ff;
-  --pet-nav-cyan:#00d4ff;
-  --pet-nav-gold:#e7b64b;
-  --pet-nav-gold-soft:#ffd77b;
-  --pet-nav-text:#f7fbff;
-  --pet-nav-muted:#91a6c0;
-  --pet-nav-line:rgba(78,166,255,.22);
-  --pet-nav-glass:rgba(9,25,47,.76);
-  --pet-nav-shadow:0 22px 54px rgba(1,8,20,.34);
+  --pet-nav-midnight:#020814;
+  --pet-nav-navy:#06162a;
+  --pet-nav-navy-2:#0a1c34;
+  --pet-nav-blue:#2d86ff;
+  --pet-nav-cyan:#12c9ff;
+  --pet-nav-gold:#e6b74d;
+  --pet-nav-gold-soft:#ffd978;
+  --pet-nav-text:#f8fbff;
+  --pet-nav-muted:#8ea2bd;
+  --pet-nav-line:rgba(67,151,255,.24);
+  --pet-nav-glass:rgba(5,18,36,.82);
+  --pet-nav-shadow:0 22px 52px rgba(0,7,19,.34);
 }
 
 .sr-only{
-  position:absolute!important;
-  width:1px!important;
-  height:1px!important;
-  padding:0!important;
-  margin:-1px!important;
-  overflow:hidden!important;
-  clip:rect(0,0,0,0)!important;
-  white-space:nowrap!important;
-  border:0!important;
+  position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;
+  overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;
 }
 
 /* =========================
-   Premium header
+   Reference-faithful header
    ========================= */
 #appHeader.topbar{
-  --header-gold:var(--pet-nav-gold);
   position:sticky!important;
   top:0!important;
   z-index:1035!important;
-  isolation:isolate;
+  isolation:isolate!important;
   display:grid!important;
-  grid-template-columns:190px 50px minmax(300px,1fr) auto!important;
+  grid-template-columns:300px 68px minmax(360px,1fr) auto!important;
   grid-template-areas:"brand menu title actions"!important;
   align-items:center!important;
-  gap:12px!important;
-  min-height:100px!important;
-  margin:-26px -26px 28px!important;
-  padding:12px 20px 16px!important;
+  gap:26px!important;
+  min-height:168px!important;
+  margin:-26px -26px 34px!important;
+  padding:24px 34px 36px!important;
   overflow:hidden!important;
-  border:1px solid rgba(51,150,255,.24)!important;
-  border-top:0!important;
-  border-radius:0 0 32px 32px!important;
   color:var(--pet-nav-text)!important;
+  border:1px solid rgba(54,130,220,.24)!important;
+  border-top:0!important;
+  border-radius:0 0 42px 42px!important;
   background:
-    radial-gradient(circle at 8% 18%,rgba(0,212,255,.15),transparent 23%),
-    radial-gradient(circle at 86% 12%,rgba(35,136,255,.13),transparent 25%),
-    linear-gradient(118deg,#04101f 0%,#07182c 48%,#061427 100%)!important;
-  box-shadow:
-    0 18px 44px rgba(2,12,27,.26),
-    inset 0 -1px 0 rgba(255,255,255,.035)!important;
-  backdrop-filter:blur(18px) saturate(135%);
-  -webkit-backdrop-filter:blur(18px) saturate(135%);
+    radial-gradient(ellipse at 50% 118%,rgba(37,116,255,.14),transparent 40%),
+    radial-gradient(circle at 8% 20%,rgba(33,111,255,.06),transparent 24%),
+    linear-gradient(112deg,#020a17 0%,#06162a 48%,#020a16 100%)!important;
+  box-shadow:0 26px 52px rgba(0,8,23,.32),inset 0 1px 0 rgba(255,255,255,.02)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
 }
 
+/* electric-blue lower arc */
 #appHeader.topbar::before{
   content:""!important;
   position:absolute!important;
-  z-index:-1!important;
-  inset:auto -4% -88px -4%!important;
-  height:126px!important;
-  border:2px solid transparent!important;
-  border-top-color:var(--pet-nav-cyan)!important;
-  border-radius:50%!important;
+  z-index:1!important;
+  left:-2%!important;
+  right:-2%!important;
+  bottom:-94px!important;
+  height:124px!important;
+  border:3px solid transparent!important;
+  border-top-color:#3a8cff!important;
+  border-radius:50% 50% 0 0 / 100% 100% 0 0!important;
   background:none!important;
-  opacity:.9!important;
-  filter:drop-shadow(0 -1px 6px rgba(0,212,255,.9)) drop-shadow(0 -2px 18px rgba(35,136,255,.42));
+  opacity:1!important;
+  filter:drop-shadow(0 -1px 5px rgba(42,132,255,.95)) drop-shadow(0 -3px 14px rgba(30,92,255,.56))!important;
   pointer-events:none!important;
 }
 
+/* gold side ornaments, matching the approved mockup */
 #appHeader.topbar::after{
   content:""!important;
   position:absolute!important;
-  z-index:4!important;
-  inset:0!important;
-  height:auto!important;
-  border-radius:inherit!important;
+  z-index:2!important;
+  inset:17px 18px 24px!important;
+  border-radius:28px!important;
   background:
-    linear-gradient(90deg,var(--pet-nav-gold),transparent 7%) top left/24% 2px no-repeat,
-    linear-gradient(270deg,var(--pet-nav-gold),transparent 7%) top right/24% 2px no-repeat,
-    linear-gradient(180deg,var(--pet-nav-gold),transparent 22%) top left/2px 58% no-repeat,
-    linear-gradient(180deg,var(--pet-nav-gold),transparent 22%) top right/2px 58% no-repeat!important;
-  box-shadow:none!important;
-  opacity:.86!important;
+    linear-gradient(180deg,rgba(255,220,123,.98),rgba(205,143,38,.66) 52%,transparent 87%) left top/4px 78% no-repeat,
+    linear-gradient(180deg,rgba(255,220,123,.98),rgba(205,143,38,.66) 52%,transparent 87%) right top/4px 78% no-repeat,
+    linear-gradient(90deg,rgba(255,220,123,.94),transparent 75%) left top/56px 3px no-repeat,
+    linear-gradient(270deg,rgba(255,220,123,.94),transparent 75%) right top/56px 3px no-repeat!important;
+  opacity:.95!important;
   pointer-events:none!important;
 }
 
-#appHeader.topbar.is-scrolled{
-  min-height:92px!important;
-  padding-top:10px!important;
-  padding-bottom:15px!important;
-  border-color:rgba(51,150,255,.28)!important;
-  background:
-    radial-gradient(circle at 8% 18%,rgba(0,212,255,.13),transparent 23%),
-    linear-gradient(118deg,rgba(4,16,31,.94),rgba(7,24,44,.92) 48%,rgba(6,20,39,.95))!important;
-  box-shadow:0 18px 48px rgba(1,8,20,.38)!important;
+#appHeader .topbar-watermark{
+  display:block!important;
+  position:absolute!important;
+  z-index:3!important;
+  left:50%!important;
+  bottom:17px!important;
+  width:76px!important;
+  height:12px!important;
+  transform:translateX(-50%)!important;
+  pointer-events:none!important;
+  overflow:visible!important;
+}
+#appHeader .topbar-watermark > span{display:none!important}
+#appHeader .topbar-watermark::before{
+  content:"";
+  position:absolute;
+  left:50%;top:50%;
+  width:9px;height:9px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:#e6f5ff;
+  box-shadow:0 0 5px #fff,0 0 13px #45a7ff,0 0 28px #246cff,0 0 42px rgba(36,108,255,.78);
+}
+#appHeader .topbar-watermark::after{
+  content:"";
+  position:absolute;
+  left:50%;top:50%;
+  width:74px;height:2px;
+  transform:translate(-50%,-50%);
+  background:linear-gradient(90deg,transparent,#2e79ff 34%,#dff7ff 50%,#2e79ff 66%,transparent);
+  filter:drop-shadow(0 0 5px #308cff);
 }
 
+#appHeader.topbar.is-scrolled{
+  min-height:154px!important;
+  padding-top:20px!important;
+  padding-bottom:32px!important;
+  background:linear-gradient(112deg,rgba(2,10,23,.97),rgba(6,22,42,.97) 48%,rgba(2,10,22,.98))!important;
+  box-shadow:0 24px 50px rgba(0,7,19,.38)!important;
+}
+
+/* Brand is intentionally unboxed: icon + PETATOE + subtitle + separator */
 #appHeader .topbar-brand{
   grid-area:brand!important;
-  min-width:0!important;
-  width:auto!important;
-  margin:0!important;
-  padding:6px 12px 6px 7px!important;
-  border:1px solid rgba(231,182,75,.18)!important;
-  border-radius:17px!important;
-  background:rgba(3,12,25,.42)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+  position:relative!important;
   display:flex!important;
   align-items:center!important;
   justify-content:flex-start!important;
-  gap:11px!important;
+  gap:18px!important;
+  min-width:0!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0 34px 0 0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
 }
-
+#appHeader .topbar-brand::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:10%;
+  width:1px;
+  height:80%;
+  background:linear-gradient(transparent,rgba(137,168,202,.24) 20%,rgba(137,168,202,.24) 80%,transparent);
+}
 #appHeader .topbar-logo-banner .petatoe-header-brand-icon{
-  width:56px!important;
-  height:56px!important;
-  flex:0 0 56px!important;
-  border-radius:15px!important;
+  width:92px!important;
+  height:92px!important;
+  flex:0 0 92px!important;
+  padding:3px!important;
+  border-radius:24px!important;
   object-fit:contain!important;
-  box-shadow:
-    0 0 0 1px rgba(231,182,75,.45),
-    0 0 16px rgba(35,136,255,.42),
-    0 8px 20px rgba(0,0,0,.3)!important;
+  background:#071326!important;
+  border:1px solid rgba(255,218,111,.72)!important;
+  box-shadow:0 0 0 2px rgba(31,115,255,.5),0 0 20px rgba(42,124,255,.48),0 0 15px rgba(227,169,57,.26),0 12px 24px rgba(0,0,0,.34)!important;
 }
-
 .petatoe-header-brand-copy{
-  display:grid;
-  gap:4px;
-  min-width:0;
-  line-height:1.05;
-  direction:ltr;
-  text-align:left;
+  display:grid!important;
+  gap:9px!important;
+  min-width:0!important;
+  line-height:1!important;
+  direction:ltr!important;
+  text-align:left!important;
 }
 .petatoe-header-brand-copy strong{
-  color:#fff;
-  font-size:16px;
-  font-weight:900;
-  letter-spacing:.055em;
+  color:#fff!important;
+  font-size:28px!important;
+  font-weight:900!important;
+  letter-spacing:.035em!important;
+  text-shadow:0 2px 12px rgba(0,0,0,.2)!important;
 }
 .petatoe-header-brand-copy span{
-  color:var(--pet-nav-gold-soft);
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:.04em;
+  color:var(--pet-nav-gold-soft)!important;
+  font-size:17px!important;
+  font-weight:700!important;
+  letter-spacing:.015em!important;
 }
 
 #appHeader .sidebar-menu-launcher{
   grid-area:menu!important;
   position:relative!important;
   inset:auto!important;
-  min-width:0!important;
-  width:48px!important;
-  height:48px!important;
+  width:64px!important;
+  height:64px!important;
+  min-width:64px!important;
   padding:0!important;
   margin:0!important;
   display:grid!important;
   place-items:center!important;
-  color:#74baff!important;
-  border:1px solid rgba(51,150,255,.34)!important;
-  border-radius:15px!important;
-  background:linear-gradient(145deg,rgba(10,31,58,.96),rgba(5,18,36,.94))!important;
-  box-shadow:
-    0 0 0 1px rgba(0,212,255,.04),
-    0 9px 22px rgba(0,0,0,.24),
-    inset 0 1px 0 rgba(255,255,255,.04)!important;
+  color:#6eb8ff!important;
+  border:1px solid rgba(56,134,232,.38)!important;
+  border-radius:20px!important;
+  background:linear-gradient(145deg,#071b35,#041326)!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.035)!important;
 }
 #appHeader .sidebar-menu-launcher:hover,
 #appHeader .sidebar-menu-launcher[aria-expanded="true"]{
-  color:#c9efff!important;
-  border-color:rgba(0,212,255,.72)!important;
-  background:linear-gradient(145deg,#0b284b,#06182f)!important;
-  box-shadow:0 0 18px rgba(0,212,255,.25),inset 0 1px 0 rgba(255,255,255,.05)!important;
+  color:#d8f4ff!important;
+  border-color:rgba(40,147,255,.72)!important;
+  background:linear-gradient(145deg,#0b294f,#05172c)!important;
+  box-shadow:0 0 22px rgba(31,127,255,.28),0 10px 26px rgba(0,0,0,.26)!important;
   transform:translateY(-1px)!important;
 }
-.petatoe-menu-icon{width:22px!important;height:22px!important;display:block!important;flex:0 0 22px!important}
+#appHeader .petatoe-menu-icon{width:29px!important;height:29px!important;display:block!important;flex:0 0 29px!important}
 
 #appHeader .topbar-title{
   grid-area:title!important;
   justify-self:center!important;
-  width:min(100%,720px)!important;
-  padding:0 18px!important;
+  width:min(100%,760px)!important;
+  padding:0 24px!important;
   text-align:center!important;
 }
 #appHeader .topbar-title h2{
   margin:0!important;
   color:#fff!important;
-  font-size:clamp(28px,2.45vw,42px)!important;
+  font-size:clamp(34px,2.75vw,50px)!important;
   font-weight:900!important;
+  line-height:1.05!important;
   letter-spacing:-.025em!important;
-  text-shadow:0 4px 18px rgba(0,0,0,.22)!important;
+  text-shadow:0 5px 18px rgba(0,0,0,.27)!important;
 }
 #appHeader .topbar-title p{
-  margin:7px 0 0!important;
-  color:#9fb2ca!important;
-  font-size:clamp(11px,1vw,14px)!important;
+  margin:12px 0 0!important;
+  color:#91a5bf!important;
+  font-size:clamp(13px,1.05vw,17px)!important;
   font-weight:600!important;
 }
 #appHeader .topbar-title p::after{
-  content:"";
-  display:inline-block;
-  width:6px;
-  height:6px;
-  margin-inline-start:8px;
-  border-radius:50%;
-  background:var(--pet-nav-gold);
-  box-shadow:0 0 9px rgba(231,182,75,.65);
-  vertical-align:middle;
+  content:""!important;
+  display:inline-block!important;
+  width:9px!important;
+  height:9px!important;
+  margin-inline-start:10px!important;
+  border-radius:50%!important;
+  background:var(--pet-nav-gold)!important;
+  box-shadow:0 0 10px rgba(231,182,75,.72)!important;
+  vertical-align:middle!important;
 }
 
 #appHeader .topbar-user-actions{
@@ -220,73 +250,125 @@
   display:flex!important;
   align-items:center!important;
   justify-content:flex-end!important;
-  gap:8px!important;
+  gap:14px!important;
   min-width:0!important;
+  direction:ltr!important;
 }
-
 #appHeader .notification-bell-btn,
-#appHeader .theme-toggle-button,
-#appHeader .kyum-scroll-control,
-#appHeader .kyum-scroll-control.is-visible{
-  width:48px!important;
-  height:48px!important;
-  flex:0 0 48px!important;
-  padding:5px!important;
-  border:1px solid rgba(51,150,255,.27)!important;
-  border-radius:15px!important;
-  color:#74baff!important;
-  background:linear-gradient(145deg,rgba(11,31,57,.91),rgba(6,19,37,.9))!important;
-  box-shadow:0 9px 22px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.035)!important;
-  backdrop-filter:blur(12px)!important;
-  -webkit-backdrop-filter:blur(12px)!important;
+#appHeader .theme-toggle-button{
+  width:64px!important;
+  height:64px!important;
+  flex:0 0 64px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(58,133,230,.28)!important;
+  border-radius:20px!important;
+  color:#72b7ff!important;
+  background:linear-gradient(145deg,#071a32,#041224)!important;
+  box-shadow:0 10px 26px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.028)!important;
 }
+#appHeader .notification-bell-btn svg,
+#appHeader .theme-toggle-button svg{width:27px!important;height:27px!important;max-width:27px!important;max-height:27px!important}
 #appHeader .notification-bell-btn:hover,
-#appHeader .theme-toggle-button:hover,
-#appHeader .kyum-scroll-control:hover{
-  color:#d8f6ff!important;
-  border-color:rgba(0,212,255,.58)!important;
-  box-shadow:0 0 16px rgba(0,212,255,.18),0 10px 24px rgba(0,0,0,.25)!important;
+#appHeader .theme-toggle-button:hover{
+  color:#e0f6ff!important;
+  border-color:rgba(50,147,255,.62)!important;
+  box-shadow:0 0 20px rgba(37,132,255,.2),0 10px 26px rgba(0,0,0,.24)!important;
 }
-#appHeader .theme-toggle-button{color:var(--pet-nav-gold)!important}
-#appHeader .kyum-scroll-control img{width:36px!important;height:36px!important;max-width:36px!important;max-height:36px!important;object-fit:contain!important;border-radius:11px!important}
+#appHeader .theme-toggle-button{color:#d9e3ee!important}
+#appHeader .theme-toggle-button .theme-icon-sun{color:#d9e3ee!important}
+#appHeader .theme-toggle-button .theme-icon-moon{color:#7cbcff!important}
+#appHeader .notification-unread-badge{
+  top:-9px!important;right:-8px!important;
+  min-width:25px!important;height:25px!important;
+  padding:0 6px!important;
+  display:grid!important;place-items:center!important;
+  color:#1a1104!important;
+  border:2px solid #071426!important;
+  background:var(--pet-nav-gold)!important;
+  font-weight:900!important;
+}
 
+/* The legacy scroll/logo control is deliberately removed from the header visual shell.
+   Theme switching remains on the dedicated theme button. */
+#appHeader .kyum-scroll-control{display:none!important}
+
+#appHeader .header-user-menu{order:4!important}
+#appHeader .notification-bell-wrap{order:2!important}
+#appHeader .theme-toggle-button{order:3!important}
 #appHeader .compact-user-chip{
-  min-width:172px!important;
-  min-height:48px!important;
-  height:48px!important;
-  padding:5px 9px!important;
-  gap:9px!important;
+  width:274px!important;
+  min-width:274px!important;
+  height:76px!important;
+  min-height:76px!important;
+  padding:9px 13px 9px 18px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 58px 20px!important;
+  grid-template-areas:"copy avatar chevron"!important;
+  align-items:center!important;
+  gap:12px!important;
   color:#fff!important;
-  border:1px solid rgba(231,182,75,.22)!important;
-  border-radius:15px!important;
-  background:rgba(5,16,31,.58)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+  border:1px solid rgba(121,154,194,.23)!important;
+  border-radius:22px!important;
+  background:linear-gradient(145deg,rgba(5,16,31,.98),rgba(2,10,21,.96))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 10px 24px rgba(0,0,0,.2)!important;
+  direction:ltr!important;
+}
+#appHeader .compact-user-chip .petatoe-header-user-copy{
+  grid-area:copy!important;
+  display:grid!important;
+  gap:6px!important;
+  min-width:0!important;
+  text-align:left!important;
+}
+#appHeader .compact-user-chip strong{
+  color:#fff!important;
+  font-size:17px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#appHeader .compact-user-chip .petatoe-header-user-role{
+  color:var(--pet-nav-gold-soft)!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1!important;
 }
 #appHeader .compact-user-chip .avatar{
-  width:34px!important;
-  height:34px!important;
-  flex:0 0 34px!important;
-  color:#07162a!important;
-  background:linear-gradient(145deg,#dff2ff,#a9cdfb)!important;
-  border:1px solid rgba(255,255,255,.62)!important;
-  box-shadow:0 0 0 2px rgba(35,136,255,.14)!important;
+  grid-area:avatar!important;
+  width:58px!important;
+  height:58px!important;
+  flex:0 0 58px!important;
+  display:grid!important;
+  place-items:center!important;
+  color:#d9ecff!important;
+  font-size:0!important;
+  border:2px solid var(--pet-nav-gold)!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(circle at 50% 34%,#6da8ff 0 17%,transparent 18%),
+    radial-gradient(ellipse at 50% 78%,#287aff 0 28%,#0d397e 29% 42%,transparent 43%),
+    radial-gradient(circle at 50% 50%,#0d315f,#07182f 68%)!important;
+  box-shadow:0 0 0 2px rgba(38,124,255,.28),0 0 17px rgba(48,126,255,.28)!important;
 }
-#appHeader .compact-user-chip strong{color:#fff!important;font-size:13px!important}
-#appHeader .user-menu-chevron{color:var(--pet-nav-gold)!important}
+#appHeader .compact-user-chip .user-menu-chevron{
+  grid-area:chevron!important;
+  width:19px!important;height:19px!important;
+  color:var(--pet-nav-gold-soft)!important;
+}
+
 #appHeader .header-user-dropdown,
 #appHeader .notification-dropdown{
   color:var(--pet-nav-text)!important;
-  border-color:rgba(51,150,255,.24)!important;
-  background:#09182c!important;
-  box-shadow:0 22px 54px rgba(1,8,20,.44)!important;
+  border-color:rgba(66,142,232,.26)!important;
+  background:#071528!important;
+  box-shadow:0 22px 54px rgba(1,8,20,.48)!important;
 }
 #appHeader .notification-item.unread{background:rgba(35,136,255,.10)!important}
-#appHeader .notification-dropdown-head,
-#appHeader .notification-item{border-color:rgba(91,141,196,.16)!important}
+#appHeader .notification-dropdown-head,#appHeader .notification-item{border-color:rgba(91,141,196,.16)!important}
 
-#appHeader .topbar-watermark{display:none!important}
-
-/* Header identity stays dark in both light and dark modes. */
 html[data-theme="light"] #appHeader.topbar,
 html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
 
@@ -609,50 +691,46 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
 /* =========================
    Tablet / mobile shell
    ========================= */
-@media (max-width:1180px){
-  #appHeader.topbar{
-    grid-template-columns:170px 48px minmax(220px,1fr) auto!important;
-    grid-template-areas:"brand menu title actions"!important;
-    min-height:102px!important;
-    gap:11px!important;
-    padding-inline:18px!important;
-  }
-  #appHeader .topbar-logo-banner .petatoe-header-brand-icon{width:52px!important;height:52px!important;flex-basis:52px!important}
-  .petatoe-header-brand-copy strong{font-size:15px}
-  #appHeader .compact-user-chip{min-width:155px!important}
+@media (max-width:1380px){
+  #appHeader.topbar{grid-template-columns:250px 58px minmax(300px,1fr) auto!important;gap:18px!important;min-height:150px!important;padding:20px 26px 34px!important}
+  #appHeader .topbar-logo-banner .petatoe-header-brand-icon{width:76px!important;height:76px!important;flex-basis:76px!important;border-radius:21px!important}
+  .petatoe-header-brand-copy strong{font-size:23px!important}.petatoe-header-brand-copy span{font-size:14px!important}
+  #appHeader .sidebar-menu-launcher{width:58px!important;height:58px!important;min-width:58px!important;border-radius:18px!important}
+  #appHeader .compact-user-chip{width:225px!important;min-width:225px!important;height:68px!important;min-height:68px!important;grid-template-columns:minmax(0,1fr) 50px 18px!important}
+  #appHeader .compact-user-chip .avatar{width:50px!important;height:50px!important;flex-basis:50px!important}
+  #appHeader .notification-bell-btn,#appHeader .theme-toggle-button{width:58px!important;height:58px!important;flex-basis:58px!important;border-radius:18px!important}
+}
+
+@media (max-width:1050px){
+  #appHeader.topbar{grid-template-columns:58px minmax(0,1fr) auto!important;grid-template-areas:"menu title actions"!important;min-height:118px!important;margin:-20px -20px 24px!important;padding:18px 20px 28px!important;border-radius:0 0 30px 30px!important}
+  #appHeader .topbar-brand{display:none!important}
+  #appHeader .topbar-title h2{font-size:31px!important}
+  #appHeader .topbar-title p{font-size:12px!important;margin-top:8px!important}
+  #appHeader .compact-user-chip{width:190px!important;min-width:190px!important}
+  #appHeader.topbar::before{bottom:-101px!important}
 }
 
 @media (max-width:767px), (pointer:coarse) and (max-device-width:1024px), (hover:none) and (max-device-width:1024px){
-  #appHeader.topbar{
-    grid-template-columns:48px minmax(0,1fr) auto!important;
-    grid-template-areas:"menu title actions"!important;
-    min-height:86px!important;
-    margin:-16px -16px 16px!important;
-    padding:calc(8px + env(safe-area-inset-top)) 10px 10px!important;
-    gap:8px!important;
-    border-radius:0 0 20px 20px!important;
-  }
+  #appHeader.topbar{grid-template-columns:46px minmax(0,1fr) auto!important;grid-template-areas:"menu title actions"!important;min-height:84px!important;margin:-16px -16px 16px!important;padding:calc(8px + env(safe-area-inset-top)) 10px 13px!important;gap:8px!important;border-radius:0 0 22px 22px!important}
   #appHeader.topbar.is-scrolled{min-height:78px!important;padding-top:calc(6px + env(safe-area-inset-top))!important}
-  #appHeader.topbar::before{bottom:-104px!important}
-  #appHeader .topbar-brand{display:none!important}
-  #appHeader .topbar-title{padding:0 6px!important;text-align:right!important;justify-self:stretch!important}
-  #appHeader .topbar-title h2{font-size:19px!important;line-height:1.25!important}
-  #appHeader .topbar-title p{display:block!important;margin-top:3px!important;font-size:9px!important;white-space:nowrap!important}
-  #appHeader .topbar-title p::after{width:4px;height:4px;margin-inline-start:5px}
-  #appHeader .sidebar-menu-launcher{width:46px!important;height:46px!important;border-radius:14px!important}
+  #appHeader.topbar::after{inset:7px 6px 12px!important;border-radius:18px!important;background:linear-gradient(180deg,rgba(255,220,123,.82),transparent 80%) left top/2px 70% no-repeat,linear-gradient(180deg,rgba(255,220,123,.82),transparent 80%) right top/2px 70% no-repeat!important}
+  #appHeader.topbar::before{bottom:-108px!important;border-top-width:2px!important}
+  #appHeader .topbar-watermark{bottom:6px!important;transform:translateX(-50%) scale(.68)!important}
+  #appHeader .topbar-title{padding:0 5px!important;text-align:right!important;justify-self:stretch!important}
+  #appHeader .topbar-title h2{font-size:19px!important;line-height:1.2!important}
+  #appHeader .topbar-title p{display:block!important;margin-top:3px!important;font-size:9px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #appHeader .topbar-title p::after{width:4px!important;height:4px!important;margin-inline-start:5px!important}
+  #appHeader .sidebar-menu-launcher{width:46px!important;height:46px!important;min-width:46px!important;border-radius:14px!important}
+  #appHeader .petatoe-menu-icon{width:21px!important;height:21px!important}
   #appHeader .topbar-user-actions{gap:5px!important}
-  #appHeader .header-user-menu,#appHeader .kyum-scroll-control{display:none!important}
+  #appHeader .header-user-menu{display:none!important}
   #appHeader .notification-bell-btn,#appHeader .theme-toggle-button{width:42px!important;height:42px!important;flex-basis:42px!important;border-radius:13px!important}
+  #appHeader .notification-bell-btn svg,#appHeader .theme-toggle-button svg{width:20px!important;height:20px!important}
 
-  #mainSidebar.sidebar{
-    width:min(90vw,330px)!important;
-    padding:calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom))!important;
-    border-radius:26px 0 0 26px!important;
-  }
+  #mainSidebar.sidebar{width:min(90vw,330px)!important;padding:calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom))!important;border-radius:26px 0 0 26px!important}
   #mainSidebar .sidebar-launcher-host{min-height:96px!important;height:auto!important;margin-bottom:4px!important;padding:5px 5px 10px!important;pointer-events:auto!important}
   #mainSidebar .petatoe-sidebar-brand-icon{width:56px!important;height:56px!important;flex-basis:56px!important;border-radius:16px!important}
-  .petatoe-sidebar-brand-copy strong{font-size:16px}
-  .petatoe-sidebar-brand-copy span{font-size:9px}
+  .petatoe-sidebar-brand-copy strong{font-size:16px}.petatoe-sidebar-brand-copy span{font-size:9px}
   #mainSidebar .sidebar-nav{gap:7px!important;padding:3px 2px 9px!important}
   #mainSidebar .nav-group-toggle{min-height:48px!important;padding:8px 10px!important;border-radius:14px!important;font-size:12.5px!important}
   #mainSidebar .nav-group-content{margin-inline-start:9px!important;padding-inline-start:10px!important}
@@ -662,7 +740,7 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
 
 @media (max-width:430px){
   #appHeader .topbar-title p{display:none!important}
-  #appHeader.topbar{grid-template-columns:46px minmax(0,1fr) auto!important;min-height:76px!important}
+  #appHeader.topbar{grid-template-columns:44px minmax(0,1fr) auto!important;min-height:76px!important}
   #appHeader .topbar-title h2{font-size:17px!important}
   #appHeader .notification-bell-btn{display:none!important}
   #mainSidebar.sidebar{width:min(92vw,330px)!important}

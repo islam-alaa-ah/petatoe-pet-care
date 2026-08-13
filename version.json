@@ -1,13 +1,13 @@
 {
-  "version": "18.54.46",
+  "version": "18.54.47",
   "build": 185446,
   "forceUpdate": true,
   "releaseDate": "2026-08-13",
-  "title": "PETATOE Navigation Sizing & Alignment Recovery — P5.11.7.1",
+  "title": "PETATOE Reference Header Replacement — P5.11.7.2",
   "notes": [
     "تثبيت أحجام ومواقع أزرار وأيقونات الهيدر ضمن مقاسات موحدة لمنع تغير الأحجام بسبب قواعد CSS القديمة.",
     "تصحيح Footer القائمة الجانبية وتثبيت أيقونة تسجيل الخروج ومنع تمدد SVG خارج حجمه.",
     "تحسين تناسق Brand lockup وأيقونات المجموعات وحساب المستخدم على Desktop وTablet وMobile دون تغيير التنقل أو الصلاحيات."
   ],
-  "cacheToken": "petatoe-pwa-18-54-46-p51171-navigation-sizing-alignment-recovery"
+  "cacheToken": "petatoe-pwa-18-54-47-p51172-reference-header-replacement"
 }
