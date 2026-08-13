@@ -376,7 +376,6 @@
 }
 #appHeader .notification-item.unread{background:rgba(35,136,255,.10)!important}
 #appHeader .notification-dropdown-head,#appHeader .notification-item{border-color:rgba(91,141,196,.16)!important}
-html[data-theme="light"] #appHeader.topbar,
 html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
 
 /* Responsive reference scaling — same design, smaller proportions. */
@@ -731,16 +730,6 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   -webkit-backdrop-filter:blur(7px)!important;
 }
 
-/* The PETATOE sidebar keeps its branded dark identity in light mode too. */
-html[data-theme="light"] #mainSidebar.sidebar{color:var(--pet-nav-text)!important;background:radial-gradient(circle at 60% -3%,rgba(0,212,255,.12),transparent 22%),linear-gradient(180deg,#061326 0%,#07162a 52%,#050d1b 100%)!important}
-html[data-theme="light"] #mainSidebar .sidebar-launcher-host,
-html[data-theme="light"] #mainSidebar .mobile-sidebar-footer{border-color:rgba(51,150,255,.16)!important;background:transparent!important}
-html[data-theme="light"] #mainSidebar .nav-group-toggle{color:#d9e9fb!important;border-color:rgba(82,127,180,.15)!important;background:rgba(13,31,55,.55)!important}
-html[data-theme="light"] #mainSidebar .nav-group-toggle[aria-expanded="true"]{color:#fff!important;border-color:rgba(35,136,255,.42)!important;background:linear-gradient(90deg,rgba(16,49,88,.83),rgba(7,26,50,.78))!important}
-html[data-theme="light"] #mainSidebar .nav-group-content .nav-item{color:#aabbd0!important;background:transparent!important}
-html[data-theme="light"] #mainSidebar .nav-group-content .nav-item:hover{color:#e9f5ff!important;background:rgba(35,136,255,.07)!important}
-html[data-theme="light"] #mainSidebar .nav-group-content .nav-item.active{color:#fff!important;background:linear-gradient(90deg,rgba(14,57,103,.9),rgba(7,27,53,.92))!important}
-html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!important;background:rgba(255,83,97,.055)!important;border-color:rgba(255,99,109,.18)!important}
 
 /* =========================
    Tablet / mobile shell
@@ -1183,4 +1172,188 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
   #appHeader #sidebarMenuToggle{left:max(8px,env(safe-area-inset-left))!important}
   #appHeader #themeToggleButton,#appHeader #themeToggleButton.is-visible{right:max(8px,env(safe-area-inset-right))!important}
   #appHeader #kyumScrollControl.mobile-floating-logo .petatoe-scroll-control-icon{width:29px!important;height:29px!important;min-width:29px!important;min-height:29px!important;max-width:29px!important;max-height:29px!important}
+}
+
+/* ============================================================
+   P5.11.7.11 — CANONICAL MOBILE LIGHT SHELL
+   Single Light Mode visual contract for Mobile Header + Drawer.
+   Dark mode and desktop contracts remain unchanged.
+   ============================================================ */
+@media (max-width:767px),
+       (pointer:coarse) and (max-device-width:1024px),
+       (hover:none) and (max-device-width:1024px){
+  html[data-theme="light"] body::before{
+    background:#eef4fb!important;
+  }
+
+  html[data-theme="light"] #appHeader.topbar,
+  html[data-theme="light"] #appHeader.topbar.is-scrolled,
+  html[data-theme="light"] #appHeader.topbar.mobile-header-stable{
+    color:#0b2448!important;
+    border-color:rgba(62,132,224,.22)!important;
+    background:
+      radial-gradient(circle at 50% 118%,rgba(63,139,255,.11),transparent 40%),
+      linear-gradient(180deg,#ffffff 0%,#f7fbff 60%,#eef5fc 100%)!important;
+    box-shadow:0 12px 28px rgba(20,49,86,.14),0 0 0 1px rgba(112,166,231,.08)!important;
+  }
+
+  html[data-theme="light"] #appHeader #sidebarMenuToggle,
+  html[data-theme="light"] #appHeader #kyumScrollControl.mobile-floating-logo,
+  html[data-theme="light"] #appHeader #themeToggleButton,
+  html[data-theme="light"] #appHeader #themeToggleButton.is-visible{
+    color:#103464!important;
+    border:1px solid #cddff3!important;
+    background:linear-gradient(180deg,#ffffff,#f5f9fe)!important;
+    box-shadow:0 7px 18px rgba(25,73,130,.10),inset 0 1px 0 rgba(255,255,255,.96)!important;
+  }
+  html[data-theme="light"] #appHeader #sidebarMenuToggle .petatoe-menu-icon,
+  html[data-theme="light"] #appHeader #sidebarMenuToggle .mobile-menu-icon,
+  html[data-theme="light"] #appHeader #themeToggleButton .theme-icon{
+    color:#17457d!important;
+    stroke:#17457d!important;
+  }
+  html[data-theme="light"] #appHeader #kyumScrollControl.mobile-floating-logo{
+    border-color:rgba(211,162,53,.66)!important;
+    box-shadow:0 0 0 1px rgba(62,137,255,.18),0 6px 18px rgba(25,73,130,.11),0 0 10px rgba(48,132,255,.16)!important;
+  }
+  html[data-theme="light"] #appHeader .mobile-app-brand{
+    color:#0a2247!important;
+  }
+  html[data-theme="light"] #appHeader .mobile-app-brand strong{
+    color:#0a2247!important;
+    text-shadow:none!important;
+  }
+  html[data-theme="light"] #appHeader .mobile-app-brand small{
+    color:#c58b18!important;
+    text-shadow:none!important;
+  }
+  html[data-theme="light"] #appHeader .petatoe-header-reference-top-arc path,
+  html[data-theme="light"] #appHeader .petatoe-header-reference-arc path{
+    stroke:#2f83ff!important;
+  }
+  html[data-theme="light"] #appHeader .petatoe-header-reference-top-arc,
+  html[data-theme="light"] #appHeader .petatoe-header-reference-arc{
+    filter:drop-shadow(0 0 2px rgba(255,255,255,.82)) drop-shadow(0 0 5px rgba(47,131,255,.76)) drop-shadow(0 0 11px rgba(47,131,255,.28))!important;
+  }
+  html[data-theme="light"] #appHeader .petatoe-header-gold-rail{
+    border-color:#d6a33b!important;
+    filter:drop-shadow(0 0 4px rgba(214,163,59,.28))!important;
+  }
+
+  html[data-theme="light"] #mainSidebar.sidebar{
+    color:#102a50!important;
+    border-color:#b8d4f3!important;
+    background:
+      radial-gradient(circle at 78% -4%,rgba(47,131,255,.10),transparent 24%),
+      linear-gradient(180deg,#fbfdff 0%,#f7faff 46%,#f2f7fd 100%)!important;
+    box-shadow:-22px 0 56px rgba(17,47,84,.18),inset 1px 0 0 rgba(255,255,255,.88)!important;
+  }
+  html[data-theme="light"] #mainSidebar.sidebar::before{
+    background:linear-gradient(180deg,transparent,#3b8cff 18%,#2775e8 69%,#d7a63e 96%)!important;
+    box-shadow:0 0 11px rgba(47,131,255,.42)!important;
+  }
+  html[data-theme="light"] #mainSidebar .sidebar-launcher-host{
+    border-bottom-color:#d8e5f3!important;
+    background:transparent!important;
+  }
+  html[data-theme="light"] #mainSidebar .petatoe-sidebar-brand-copy strong{color:#0a2247!important}
+  html[data-theme="light"] #mainSidebar .petatoe-sidebar-brand-copy span{color:#c58b18!important}
+  html[data-theme="light"] #mainSidebar .petatoe-sidebar-brand-icon{
+    box-shadow:0 0 0 1px rgba(210,157,46,.52),0 0 14px rgba(47,131,255,.22),0 8px 18px rgba(27,61,104,.14)!important;
+  }
+  html[data-theme="light"] #mainSidebar .petatoe-sidebar-close{
+    color:#163d72!important;
+    border-color:rgba(210,157,46,.62)!important;
+    background:#ffffff!important;
+    box-shadow:0 5px 14px rgba(23,63,111,.08)!important;
+  }
+  html[data-theme="light"] #mainSidebar .petatoe-sidebar-close:hover{
+    color:#0d2d5a!important;
+    border-color:#d29d2e!important;
+    background:#f8fbff!important;
+  }
+  html[data-theme="light"] #mainSidebar .sidebar-nav{
+    scrollbar-color:rgba(47,131,255,.45) transparent!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-toggle{
+    color:#16345f!important;
+    border-color:#d6e3f1!important;
+    background:rgba(255,255,255,.92)!important;
+    box-shadow:0 5px 14px rgba(22,61,108,.055),inset 0 1px 0 rgba(255,255,255,.96)!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-toggle:hover{
+    color:#0d2d5a!important;
+    border-color:#a9ccf6!important;
+    background:#f4f9ff!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-toggle[aria-expanded="true"]{
+    color:#0c3470!important;
+    border-color:#65a4f5!important;
+    background:linear-gradient(90deg,#edf6ff,#f8fbff)!important;
+    box-shadow:0 0 13px rgba(47,131,255,.12),inset 0 1px 0 #fff!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-icon,
+  html[data-theme="light"] #mainSidebar .nav-group-toggle[aria-expanded="true"] .nav-group-icon{
+    color:#297cf0!important;
+    filter:drop-shadow(0 0 4px rgba(47,131,255,.18))!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-chevron{color:#b77d14!important}
+  html[data-theme="light"] #mainSidebar .nav-group-content{
+    border-inline-start-color:#c7daf0!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item{
+    color:#405774!important;
+    border-color:transparent!important;
+    background:transparent!important;
+    text-shadow:none!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item::before{
+    background:#91a8c1!important;
+    box-shadow:none!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item:hover{
+    color:#154d92!important;
+    border-color:#c8dcf4!important;
+    background:#f2f7fe!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item.active{
+    color:#0b3d7d!important;
+    border-color:#62a3f6!important;
+    background:linear-gradient(90deg,#e9f4ff,#f8fbff)!important;
+    box-shadow:0 0 13px rgba(47,131,255,.12),inset 0 1px 0 #fff!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item.active::before{
+    background:#2f83ff!important;
+    box-shadow:0 0 8px rgba(47,131,255,.44)!important;
+  }
+  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item.active::after{
+    background:linear-gradient(#f0c45b,#c99124)!important;
+    box-shadow:0 0 6px rgba(207,151,40,.30)!important;
+  }
+  html[data-theme="light"] #mainSidebar .mobile-sidebar-footer{
+    border-top-color:#d6e3f1!important;
+    background:transparent!important;
+  }
+  html[data-theme="light"] #mainSidebar .petatoe-sidebar-account{
+    border-color:rgba(211,162,53,.52)!important;
+    background:#ffffff!important;
+    box-shadow:0 6px 16px rgba(23,63,111,.07),inset 0 1px 0 #fff!important;
+  }
+  html[data-theme="light"] #mainSidebar .petatoe-sidebar-account-copy strong{color:#102a50!important}
+  html[data-theme="light"] #mainSidebar .petatoe-sidebar-account-copy small{color:#73839a!important}
+  html[data-theme="light"] #mainSidebar .petatoe-sidebar-avatar{
+    color:#0d315f!important;
+    border-color:rgba(211,162,53,.64)!important;
+    background:linear-gradient(145deg,#e7f2ff,#bcdcff)!important;
+  }
+  html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{
+    color:#a82727!important;
+    border-color:#f2c4c7!important;
+    background:#fff7f7!important;
+  }
+  html[data-theme="light"] .sidebar-backdrop{
+    background:rgba(17,36,61,.30)!important;
+    backdrop-filter:blur(5px)!important;
+    -webkit-backdrop-filter:blur(5px)!important;
+  }
 }

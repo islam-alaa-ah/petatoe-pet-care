@@ -435,6 +435,37 @@
     padding-bottom:calc(var(--mobile-nav-height) + env(safe-area-inset-bottom,0px) + 30px)!important;
   }
 
+  /* P5.11.7.11 — Light branch of the same canonical bottom-navigation contract. */
+  html[data-theme="light"] .mobile-bottom-nav{
+    border-color:#79aef1!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.985),rgba(244,249,255,.98))!important;
+    box-shadow:0 -1px 0 rgba(255,255,255,.92),0 0 0 1px rgba(80,143,220,.10),0 0 18px rgba(47,131,255,.14),0 14px 32px rgba(29,65,109,.16),inset 0 1px 0 #fff!important;
+    backdrop-filter:blur(18px) saturate(130%)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(130%)!important;
+  }
+  html[data-theme="light"] .mobile-bottom-nav::before{
+    background:linear-gradient(180deg,transparent 20%,rgba(210,158,48,.94) 45%,rgba(210,158,48,.94) 78%,transparent 94%) left center/2px 72% no-repeat,linear-gradient(180deg,transparent 20%,rgba(210,158,48,.94) 45%,rgba(210,158,48,.94) 78%,transparent 94%) right center/2px 72% no-repeat!important;
+    filter:drop-shadow(0 0 4px rgba(210,158,48,.28))!important;
+  }
+  html[data-theme="light"] .mobile-bottom-nav::after{
+    background:linear-gradient(90deg,transparent,rgba(47,131,255,.70) 12%,rgba(91,164,255,.94) 50%,rgba(47,131,255,.70) 88%,transparent)!important;
+    box-shadow:0 0 6px rgba(47,131,255,.46),0 0 12px rgba(47,131,255,.20)!important;
+  }
+  html[data-theme="light"] .mobile-nav-active-indicator{
+    border-color:#5798ec!important;
+    background:radial-gradient(circle at 50% 100%,rgba(47,131,255,.12),transparent 55%),linear-gradient(180deg,#ffffff,#edf6ff)!important;
+    box-shadow:0 0 0 1px rgba(90,158,241,.10),0 0 12px rgba(47,131,255,.20),0 8px 18px rgba(30,73,123,.12),inset 0 1px 0 #fff!important;
+  }
+  html[data-theme="light"] .mobile-nav-item{color:#73849a!important}
+  html[data-theme="light"] .mobile-nav-item.is-active,
+  html[data-theme="light"] .mobile-nav-item[aria-current="page"]{color:#15375f!important}
+  html[data-theme="light"] .mobile-nav-item.is-active svg,
+  html[data-theme="light"] .mobile-nav-item[aria-current="page"] svg{
+    color:#2f83ff!important;
+    filter:drop-shadow(0 0 4px rgba(47,131,255,.30))!important;
+  }
+  html[data-theme="light"] .mobile-nav-item.is-press-preview{color:#0d2f5a!important}
+
   @media (max-width:390px){
     :root{--mobile-nav-height:72px!important}
     .mobile-bottom-nav{left:max(8px,env(safe-area-inset-left,0px))!important;right:max(8px,env(safe-area-inset-right,0px))!important;padding:6px!important;border-radius:25px!important}

@@ -1525,12 +1525,7 @@ html.is-offline body::before {
     padding-top:calc(7px + var(--mobile-safe-top));
     padding-bottom:7px;
   }
-  html:not([data-theme="dark"]) #appHeader.topbar{
-    background:color-mix(in srgb,#fff 97%,var(--primary) 3%);
-    box-shadow:0 8px 22px rgba(15,23,42,.12);
-  }
-
-  /* All views must clear the fixed mobile navigation. */
+/* All views must clear the fixed mobile navigation. */
   .view-section{min-width:0;max-width:100%;padding-bottom:calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 24px)}
   .panel,.table-card,.table-wrap{max-width:100%;min-width:0}
   .table-wrap{overscroll-behavior-inline:contain}
@@ -1615,15 +1610,7 @@ html.is-offline body::before {
     min-height:calc(82px + env(safe-area-inset-top))!important;
     border-radius:0 0 22px 22px!important;
   }
-
-  html:not([data-theme="dark"]) #appHeader.topbar,
-  html:not([data-theme="dark"]) #appHeader.topbar.is-scrolled{
-    background:#062238!important;
-    color:#fff!important;
-  }
-  html:not([data-theme="dark"]) #appHeader .mobile-app-brand{color:#fff!important}
-
-  .main-content{
+.main-content{
     padding-right:10px!important;
     padding-left:10px!important;
     padding-bottom:calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 24px)!important;
@@ -1939,19 +1926,6 @@ html.is-offline body::before {
     opacity:1!important;
     box-shadow:0 0 0 4px rgba(99,102,241,.12)!important;
   }
-
-  html[data-theme="light"] #mainSidebar.sidebar{
-    background:#f8fafc!important;
-  }
-  html[data-theme="light"] #mainSidebar .sidebar-launcher-host .sidebar-menu-launcher,
-  html[data-theme="light"] #mainSidebar .nav-group-toggle{
-    background:#fff!important;
-    border-color:#dbe3ef!important;
-  }
-  html[data-theme="light"] #mainSidebar .nav-group-toggle[aria-expanded="true"]{
-    background:#eef2ff!important;
-    border-color:#c7d2fe!important;
-  }
 }
 
 
@@ -2062,103 +2036,6 @@ html.is-offline body::before {
   }
 }
 
-/* Phase M8.2.2 — Mobile Light Mode Menu Contrast Fix */
-@media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
-  html[data-theme="light"] #mainSidebar.sidebar{
-    background:#f8fafc!important;
-    color:#0f172a!important;
-    border-left:1px solid #dbe3ef!important;
-    box-shadow:-24px 0 60px rgba(15,23,42,.18)!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .sidebar-launcher-host{
-    border-bottom-color:#d8e1ed!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .sidebar-launcher-host .sidebar-menu-launcher{
-    background:#ffffff!important;
-    color:#0f172a!important;
-    border:1px solid #cfd9e7!important;
-    box-shadow:0 8px 22px rgba(15,23,42,.08)!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .sidebar-menu-launcher .brand-mark.small{
-    color:#ffffff!important;
-    background:linear-gradient(145deg,#0f766e,#2563eb)!important;
-    border-color:rgba(37,99,235,.26)!important;
-    opacity:1!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .sidebar-menu-launcher-text,
-  html[data-theme="light"] #mainSidebar .sidebar-menu-launcher-text strong{
-    color:#0f172a!important;
-    opacity:1!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .sidebar-menu-launcher-text small{
-    color:#64748b!important;
-    opacity:1!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .nav-group-toggle{
-    background:#ffffff!important;
-    color:#172033!important;
-    border-color:#d5deea!important;
-    box-shadow:0 4px 14px rgba(15,23,42,.045)!important;
-    opacity:1!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .nav-group-toggle > span,
-  html[data-theme="light"] #mainSidebar .nav-group-toggle .nav-chevron,
-  html[data-theme="light"] #mainSidebar .nav-group-toggle svg,
-  html[data-theme="light"] #mainSidebar .nav-group-toggle path{
-    color:#172033!important;
-    stroke:currentColor!important;
-    opacity:1!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .nav-group-toggle[aria-expanded="true"]{
-    background:#eef2ff!important;
-    color:#1e3a8a!important;
-    border-color:#bfcdfc!important;
-    box-shadow:0 5px 16px rgba(37,99,235,.09)!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .nav-group-toggle[aria-expanded="true"] > span,
-  html[data-theme="light"] #mainSidebar .nav-group-toggle[aria-expanded="true"] .nav-chevron{
-    color:#1e3a8a!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item{
-    color:#334155!important;
-    background:#ffffff!important;
-    border-color:#e2e8f0!important;
-    opacity:1!important;
-    text-shadow:none!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item::before{
-    background:#64748b!important;
-    opacity:.72!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item:hover,
-  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item.active{
-    color:#1d4ed8!important;
-    background:#eaf1ff!important;
-    border-color:#bfd0fa!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .nav-group-content .nav-item.active::before{
-    background:#2563eb!important;
-    opacity:1!important;
-    box-shadow:0 0 0 4px rgba(37,99,235,.12)!important;
-  }
-
-  html[data-theme="light"] .sidebar-backdrop{
-    background:rgba(15,23,42,.42)!important;
-  }
-}
 
 /* KYUM CRM Mobile — Enterprise Header & Glass Bottom Navigation Enhancement */
 @media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
@@ -2684,16 +2561,6 @@ html.is-offline body::before {
   #mainSidebar .mobile-sidebar-logout:active{
     transform:scale(.985)!important;
   }
-
-  html[data-theme="light"] #mainSidebar .mobile-sidebar-footer{
-    border-top-color:#dbe3ef!important;
-  }
-
-  html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{
-    color:#b91c1c!important;
-    background:#fff1f2!important;
-    border-color:#fecdd3!important;
-  }
 }
 
 @media (min-width: 768px){
@@ -2895,14 +2762,7 @@ html.is-offline body::before {
     object-fit: contain !important;
     filter: drop-shadow(0 12px 24px rgba(0,0,0,.22)) !important;
   }
-
-  html[data-theme="light"] #mainSidebar .sidebar-launcher-host {
-    background: #ffffff !important;
-    border-color: #dbe3ef !important;
-    box-shadow: 0 10px 28px rgba(15,23,42,.08) !important;
-  }
-
-  /* Keep the mobile shell stretched across the full landscape viewport. */
+/* Keep the mobile shell stretched across the full landscape viewport. */
   .app-shell,
   .main-content,
   .view-section {

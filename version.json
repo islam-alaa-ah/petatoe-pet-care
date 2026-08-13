@@ -1,14 +1,14 @@
 {
-  "version": "18.54.53",
-  "build": 185453,
+  "version": "18.54.54",
+  "build": 185454,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Midnight Neon Mobile Bottom Navigation — P5.11.7.10",
+  "title": "PETATOE Mobile Light Shell Replacement — P5.11.7.11",
   "notes": [
-    "استبدال تصميم شريط التنقل السفلي القديم على الموبايل بتصميم PETATOE Midnight Neon Navy / Electric Blue / Gold بدون تراكب تصميم فوق التصميم القديم.",
-    "الحفاظ على نفس ترتيب الأيقونات ووظائف التنقل والسحب الأفقي الانسيابي مع بقاء مؤشر العنصر النشط متحركًا تحت الإصبع.",
-    "تثبيت الشريط مكانيًا وإلغاء أي Compact/translate أثناء التمرير الرأسي مع الحفاظ على Safe Area في iPhone.",
-    "التعديل Mobile-only ولا يغير Desktop أو Tablet أو Business Logic."
+    "إلغاء قواعد Light Mode القديمة المتعارضة الخاصة بهيدر الموبايل والقائمة الجانبية وبناء Contract واحد جديد للـLight Mode فقط.",
+    "تحويل هيدر الموبايل في Light Mode إلى Ice White / Navy / Electric Blue / Gold مع الحفاظ على نفس المقاسات والترتيب والوظائف الحالية.",
+    "إعادة بناء القائمة الجانبية في Light Mode بخلفية Ice White وعناصر Navy/Blue وحالة Active زرقاء مع Accent ذهبي بدون المساس بالـDark Mode.",
+    "إضافة Light branch داخل نفس Contract شريط التنقل السفلي الحالي مع الحفاظ على Gesture والPosition Lock وعدم تغيير Dark Mode أو Desktop."
   ],
-  "cacheToken": "petatoe-pwa-18-54-53-p511710-midnight-neon-bottom-nav"
+  "cacheToken": "petatoe-pwa-18-54-54-p511711-mobile-light-shell"
 }
