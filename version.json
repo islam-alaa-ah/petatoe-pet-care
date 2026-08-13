@@ -1,13 +1,14 @@
 {
-  "version": "18.54.52",
-  "build": 185452,
+  "version": "18.54.53",
+  "build": 185453,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Bottom Navigation Gesture & Position Lock — P5.11.7.9",
+  "title": "PETATOE Midnight Neon Mobile Bottom Navigation — P5.11.7.10",
   "notes": [
-    "إعادة تفعيل السحب الأفقي الانسيابي داخل شريط التنقل السفلي على الموبايل مع إبقاء التمرير الرأسي للصفحة طبيعيًا.",
-    "إلغاء حركة Compact/translate أثناء Scroll حتى يظل البار مثبتًا في موضعه ولا يهرب أو يتغير حجمه أثناء الصعود والنزول.",
-    "التعديل Mobile-only ولا يغير تصميم البار أو ترتيب الأيقونات أو نسخة Desktop."
+    "استبدال تصميم شريط التنقل السفلي القديم على الموبايل بتصميم PETATOE Midnight Neon Navy / Electric Blue / Gold بدون تراكب تصميم فوق التصميم القديم.",
+    "الحفاظ على نفس ترتيب الأيقونات ووظائف التنقل والسحب الأفقي الانسيابي مع بقاء مؤشر العنصر النشط متحركًا تحت الإصبع.",
+    "تثبيت الشريط مكانيًا وإلغاء أي Compact/translate أثناء التمرير الرأسي مع الحفاظ على Safe Area في iPhone.",
+    "التعديل Mobile-only ولا يغير Desktop أو Tablet أو Business Logic."
   ],
-  "cacheToken": "petatoe-pwa-18-54-52-p51179-mobile-bottom-nav-gesture-lock"
+  "cacheToken": "petatoe-pwa-18-54-53-p511710-midnight-neon-bottom-nav"
 }
