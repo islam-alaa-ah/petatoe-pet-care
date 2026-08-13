@@ -428,9 +428,9 @@
   }
 
   #dailyOperationsView .mobile-daily-toolbar {
-    position: sticky;
-    top: calc(58px + env(safe-area-inset-top));
-    z-index: 18;
+    position: relative;
+    top: auto;
+    z-index: 1;
     display: grid;
     gap: 10px;
     margin: -2px -2px 14px;
@@ -504,9 +504,10 @@
   }
 
   #dailyOperationsView .mobile-daily-jump-nav {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
     gap: 8px;
-    overflow-x: auto;
+    overflow: visible;
     padding: 1px 1px 4px;
     scrollbar-width: none;
   }
@@ -514,7 +515,7 @@
   #dailyOperationsView .mobile-daily-jump-nav::-webkit-scrollbar { display: none; }
 
   #dailyOperationsView .mobile-daily-jump-nav button {
-    flex: 0 0 auto;
+    min-width: 0;
     min-height: 36px;
     border-radius: 999px;
     border: 1px solid var(--border-color, rgba(148,163,184,.28));

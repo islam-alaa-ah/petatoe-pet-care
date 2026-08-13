@@ -98,3 +98,6 @@ html[data-theme="dark"] .installation-neighborhood-results{background:#132238;bo
 @media(max-width:767px){.appointment-animals-wrap{padding:14px}.appointment-collection-grid{grid-template-columns:1fr}.appointment-financial-footer{flex-direction:column}.appointment-financial-footer>*{width:100%}.appointment-financial-summary{min-width:0}.installation-neighborhood-results{max-height:min(42dvh,360px)}}
 
 @media(max-width:700px){.appointment-discount-field{grid-template-columns:1fr;width:100%}}
+
+/* P5.11.9 — mobile appointment cards host stays inert on desktop. */
+.installation-requests-mobile-cards{display:none}

@@ -287,268 +287,100 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   }
 }
 
-
-/* P5.11.8 — Mobile Content & Dialogs Enterprise Certification
-   MOBILE-ONLY canonical content/dialog contract. Desktop/tablet desktop rules are untouched. */
-@media (max-width: 767px),
-       (pointer: coarse) and (max-device-width: 767px),
-       (hover: none) and (max-device-width: 767px),
-       (orientation: landscape) and (pointer: coarse) and (max-device-width: 1024px) and (max-height: 520px) {
+/* P5.11.9 — Mobile Content, Cards, Tables & Filter Popover Certification
+   MOBILE-ONLY canonical contract. Desktop and normal tablet layouts are deliberately untouched. */
+@media (max-width:767px),
+       (pointer:coarse) and (max-device-width:767px),
+       (hover:none) and (max-device-width:767px),
+       (orientation:landscape) and (pointer:coarse) and (max-device-width:1024px) and (max-height:520px){
   :root{
     --petatoe-mobile-content-gap:12px;
     --petatoe-mobile-card-radius:18px;
     --petatoe-mobile-dialog-radius:22px;
-    --petatoe-mobile-bottom-clearance:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 28px);
+    --petatoe-mobile-bottom-clearance:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 30px);
+    --petatoe-mobile-popover-bottom:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 14px);
   }
 
-  /* Content ownership: one readable column, no accidental desktop-width leakage. */
-  .main-content,
-  .view-section,
-  .view-section > *,
-  .content-card,
-  .table-card,
-  .filter-card,
-  .report-card,
-  .metric-card,
-  .chart-card,
-  .panel,
-  .settings-panel{
-    box-sizing:border-box!important;
-    min-width:0!important;
-    max-width:100%!important;
-  }
+  .main-content,.view-section,.view-section>*{box-sizing:border-box!important;min-width:0!important;max-width:100%!important}
+  .view-section{overflow-x:hidden!important;padding-inline:max(10px,env(safe-area-inset-left,0px)) max(10px,env(safe-area-inset-right,0px))!important;padding-bottom:var(--petatoe-mobile-bottom-clearance)!important;scroll-padding-bottom:var(--petatoe-mobile-bottom-clearance)!important}
+  .content-card,.filter-card,.report-card,.metric-card,.chart-card,.table-card,.panel,.settings-panel{box-sizing:border-box!important;min-width:0!important;max-width:100%!important;border-radius:var(--petatoe-mobile-card-radius)!important}
 
-  .view-section{
-    overflow-x:hidden!important;
-    padding-inline:max(10px,env(safe-area-inset-left,0px)) max(10px,env(safe-area-inset-right,0px))!important;
-    padding-bottom:var(--petatoe-mobile-bottom-clearance)!important;
-  }
+  /* Daily Operations: toolbar participates in normal document flow; never overlaps phone search. */
+  #dailyOperationsView .mobile-daily-toolbar{position:relative!important;top:auto!important;inset:auto!important;z-index:1!important;width:100%!important;margin:0 0 14px!important;padding:14px!important;overflow:hidden!important}
+  #dailyOperationsView .mobile-daily-toolbar-head{display:block!important}
+  #dailyOperationsView .mobile-daily-progress{display:grid!important;grid-template-columns:minmax(0,1fr) 56px!important;align-items:center!important;gap:12px!important}
+  #dailyOperationsView .mobile-daily-progress-copy{grid-column:1!important;grid-row:1!important;text-align:right!important}
+  #dailyOperationsView .mobile-daily-progress-ring{grid-column:2!important;grid-row:1!important;width:56px!important;height:56px!important}
+  #dailyOperationsView .mobile-daily-toolbar-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;margin-top:12px!important}
+  #dailyOperationsView .mobile-daily-toolbar-actions button{width:100%!important;min-width:0!important;min-height:46px!important}
+  #dailyOperationsView .mobile-daily-jump-nav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;overflow:visible!important;margin-top:10px!important;padding:0!important}
+  #dailyOperationsView .mobile-daily-jump-nav button{width:100%!important;min-width:0!important;min-height:38px!important;padding:7px 5px!important;white-space:normal!important;font-size:11px!important;line-height:1.25!important}
+  #dailyOperationsView .daily-phone-lookup{position:relative!important;z-index:1!important;margin-top:0!important;clear:both!important}
 
-  .content-card,
-  .filter-card,
-  .report-card,
-  .metric-card,
-  .chart-card,
-  .table-card,
-  .panel,
-  .settings-panel{
-    border-radius:var(--petatoe-mobile-card-radius)!important;
-  }
+  /* Daily Operations reporting tables are true stacked record cards on mobile. */
+  #dailyOperationsView .table-wrap{overflow:visible!important;max-width:100%!important}
+  #dailyOperationsView .daily-operations-table,#dailyOperationsView .daily-operations-table tbody,#dailyOperationsView .daily-operations-table tr,#dailyOperationsView .daily-operations-table td{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important}
+  #dailyOperationsView .daily-operations-table thead{display:none!important}
+  #dailyOperationsView .daily-operations-table tbody{display:grid!important;gap:12px!important}
+  #dailyOperationsView .daily-operations-table tr{box-sizing:border-box!important;padding:14px!important;border:1px solid var(--kyum-mobile-border)!important;border-radius:16px!important;background:var(--kyum-mobile-surface)!important;box-shadow:0 8px 22px rgba(0,0,0,.08)!important;overflow:hidden!important}
+  #dailyOperationsView .daily-operations-table td{box-sizing:border-box!important;display:grid!important;grid-template-columns:minmax(88px,34%) minmax(0,1fr)!important;gap:10px!important;align-items:start!important;padding:8px 0!important;border:0!important;border-bottom:1px solid color-mix(in srgb,var(--kyum-mobile-border) 68%,transparent)!important;text-align:right!important;white-space:normal!important;overflow:visible!important;overflow-wrap:anywhere!important;word-break:break-word!important}
+  #dailyOperationsView .daily-operations-table td:last-child{border-bottom:0!important;padding-bottom:0!important}
+  #dailyOperationsView .daily-operations-table td::before{content:attr(data-mobile-label)!important;color:var(--kyum-mobile-muted)!important;font-size:11px!important;font-weight:800!important;line-height:1.45!important}
+  #dailyOperationsView .daily-operations-table td:first-child{display:block!important;padding-top:0!important;padding-bottom:11px!important;margin-bottom:2px!important;border-bottom:1px solid var(--kyum-mobile-border)!important;font-size:15px!important}
+  #dailyOperationsView .daily-operations-table td:first-child::before{display:none!important}
+  #dailyOperationsView .daily-operations-table td.empty-state,#dailyOperationsView .daily-operations-table td.empty-cell{display:block!important;min-height:78px!important;padding:22px 12px!important;text-align:center!important;border:0!important;color:var(--kyum-mobile-muted)!important;white-space:normal!important}
+  #dailyOperationsView .daily-operations-table td.empty-state::before,#dailyOperationsView .daily-operations-table td.empty-cell::before{display:none!important}
+  #dailyOperationsView .daily-section-panel .panel-header{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+  #dailyOperationsView .daily-section-panel .panel-header .text-btn{width:100%!important;min-height:44px!important;margin:0!important}
 
-  /* Action/filter groups stay touch-friendly and never overflow the viewport. */
-  .actions-row,
-  .filters-row,
-  .followup-filters,
-  .quotation-filters,
-  .dashboard-filters,
-  .report-filters,
-  .settings-filters,
-  .form-actions,
-  .toolbar-actions,
-  .customer-main-actions{
-    min-width:0!important;
-    max-width:100%!important;
-    gap:10px!important;
-  }
+  /* Appointment list: desktop table is replaced by dedicated mobile cards. */
+  #installationRequestsView .installation-requests-table-wrap{display:none!important}
+  #installationRequestsView .installation-requests-mobile-cards{display:grid!important;gap:12px!important;width:100%!important;margin-top:12px!important}
+  .installation-request-mobile-card{display:grid!important;gap:0!important;min-width:0!important;width:100%!important;overflow:hidden!important;border:1px solid var(--kyum-mobile-border)!important;border-radius:18px!important;background:var(--kyum-mobile-surface)!important;box-shadow:var(--kyum-mobile-shadow)!important}
+  .installation-request-mobile-head{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:10px!important;padding:14px!important;border-bottom:1px solid var(--kyum-mobile-border)!important}
+  .installation-request-mobile-head>div{display:grid!important;gap:3px!important;min-width:0!important}.installation-request-mobile-head small{color:var(--kyum-mobile-muted)!important}.installation-request-mobile-head strong{font-size:16px!important;overflow-wrap:anywhere!important}
+  .installation-request-mobile-customer{display:grid!important;gap:5px!important;padding:14px!important;border-bottom:1px solid var(--kyum-mobile-border)!important}.installation-request-mobile-customer strong{font-size:18px!important}.installation-request-mobile-customer a{direction:ltr!important;text-align:right!important;color:#4a97ff!important;text-decoration:none!important;font-weight:800!important}.installation-request-mobile-customer small{color:var(--kyum-mobile-muted)!important;overflow-wrap:anywhere!important}
+  .installation-request-mobile-meta{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;padding:14px!important;border-bottom:1px solid var(--kyum-mobile-border)!important}.installation-request-mobile-meta>div{display:grid!important;gap:4px!important;min-width:0!important}.installation-request-mobile-meta span{font-size:10px!important;color:var(--kyum-mobile-muted)!important;font-weight:800!important}.installation-request-mobile-meta strong{font-size:12px!important;line-height:1.5!important;overflow-wrap:anywhere!important}
+  .installation-request-mobile-services{display:grid!important;gap:8px!important;padding:14px!important;border-bottom:1px solid var(--kyum-mobile-border)!important}.installation-request-mobile-services>span{font-size:11px!important;color:var(--kyum-mobile-muted)!important;font-weight:900!important}.installation-mobile-service{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:3px 8px!important;padding:9px 10px!important;border-radius:12px!important;background:var(--kyum-mobile-surface-alt)!important}.installation-mobile-service strong{grid-column:1/-1!important}.installation-mobile-service small{color:var(--kyum-mobile-muted)!important}.installation-mobile-service b{font-size:12px!important}.installation-mobile-empty,.installation-mobile-empty-state{padding:18px!important;text-align:center!important;color:var(--kyum-mobile-muted)!important}
+  .installation-request-mobile-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:12px 14px 14px!important}.installation-request-mobile-actions button{width:100%!important;min-width:0!important;min-height:44px!important}.installation-request-mobile-actions .danger-btn{grid-column:1/-1!important}
 
-  .filters-row,
-  .followup-filters,
-  .quotation-filters,
-  .dashboard-filters,
-  .report-filters,
-  .settings-filters{
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr)!important;
-  }
+  /* Add-appointment service/animal tables become card-form rows instead of compressed desktop tables. */
+  #installationRequestNewView .installation-services-table-wrap,#installationRequestNewView .appointment-animals-table-wrap{margin:14px!important;overflow:visible!important;border:0!important;background:transparent!important}
+  #installationRequestNewView .installation-services-table,#installationRequestNewView .appointment-animals-table,#installationRequestNewView .installation-services-table tbody,#installationRequestNewView .appointment-animals-table tbody,#installationRequestNewView .installation-services-table tr,#installationRequestNewView .appointment-animals-table tr,#installationRequestNewView .installation-services-table td,#installationRequestNewView .appointment-animals-table td{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important}
+  #installationRequestNewView .installation-services-table thead,#installationRequestNewView .appointment-animals-table thead{display:none!important}
+  #installationRequestNewView .installation-services-table tbody,#installationRequestNewView .appointment-animals-table tbody{display:grid!important;gap:12px!important}
+  #installationRequestNewView .installation-services-table tr,#installationRequestNewView .appointment-animals-table tr{box-sizing:border-box!important;padding:13px!important;border:1px solid var(--kyum-mobile-border)!important;border-radius:16px!important;background:var(--kyum-mobile-surface-alt)!important;overflow:hidden!important}
+  #installationRequestNewView .installation-services-table td,#installationRequestNewView .appointment-animals-table td{box-sizing:border-box!important;padding:0 0 11px!important;border:0!important;background:transparent!important;overflow:visible!important}
+  #installationRequestNewView .installation-services-table td:last-child,#installationRequestNewView .appointment-animals-table td:last-child{padding-bottom:0!important}
+  #installationRequestNewView .installation-services-table td::before,#installationRequestNewView .appointment-animals-table td::before{display:block!important;margin:0 0 6px!important;color:var(--kyum-mobile-muted)!important;font-size:11px!important;font-weight:900!important}
+  #installationRequestNewView .installation-services-table td:nth-child(1)::before{content:"نوع الخدمة"}#installationRequestNewView .installation-services-table td:nth-child(2)::before{content:"عدد الخدمات"}#installationRequestNewView .installation-services-table td:nth-child(3)::before{content:"سعر الخدمة"}#installationRequestNewView .installation-services-table td:nth-child(4)::before{content:"الإجمالي"}#installationRequestNewView .installation-services-table td:nth-child(5)::before{content:"إجراء"}
+  #installationRequestNewView .appointment-animals-table td:nth-child(1)::before{content:"اسم الحيوان"}#installationRequestNewView .appointment-animals-table td:nth-child(2)::before{content:"نوع الحيوان"}#installationRequestNewView .appointment-animals-table td:nth-child(3)::before{content:"السلالة"}#installationRequestNewView .appointment-animals-table td:nth-child(4)::before{content:"الحجم"}#installationRequestNewView .appointment-animals-table td:nth-child(5)::before{content:"العدد"}#installationRequestNewView .appointment-animals-table td:nth-child(6)::before{content:"الإجراءات"}
+  #installationRequestNewView .installation-services-table input,#installationRequestNewView .installation-services-table select,#installationRequestNewView .appointment-animals-table input,#installationRequestNewView .appointment-animals-table select,#installationRequestNewView .installation-services-table button,#installationRequestNewView .appointment-animals-table button{width:100%!important;min-width:0!important;max-width:100%!important}
 
-  .actions-row,
-  .form-actions,
-  .toolbar-actions,
-  .customer-main-actions{
-    flex-wrap:wrap!important;
-  }
+  /* Filters and fields: single-column and touch-safe. */
+  .actions-row,.filters-row,.followup-filters,.quotation-filters,.dashboard-filters,.report-filters,.settings-filters,.form-actions,.toolbar-actions,.customer-main-actions,.installation-request-filters{min-width:0!important;max-width:100%!important;gap:10px!important}
+  .filters-row,.followup-filters,.quotation-filters,.dashboard-filters,.report-filters,.settings-filters,.installation-request-filters{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
+  .actions-row,.form-actions,.toolbar-actions,.customer-main-actions{flex-wrap:wrap!important}
+  .actions-row>*,.filters-row>*,.followup-filters>*,.quotation-filters>*,.dashboard-filters>*,.report-filters>*,.settings-filters>*,.customer-main-actions>*,.installation-request-filters>*{min-width:0!important;max-width:100%!important;width:100%!important}
+  input:not([type="checkbox"]):not([type="radio"]),select,textarea,.searchable-select-trigger{min-height:46px!important;font-size:16px!important;border-radius:12px!important}textarea{min-height:96px!important;resize:vertical}
 
-  .actions-row > *,
-  .filters-row > *,
-  .followup-filters > *,
-  .quotation-filters > *,
-  .dashboard-filters > *,
-  .report-filters > *,
-  .settings-filters > *,
-  .customer-main-actions > *{
-    min-width:0!important;
-    max-width:100%!important;
-  }
+  /* Viewport-safe custom popovers. They are fixed above the bottom nav so parents cannot clip them. */
+  .installation-customer-results:not(.hidden),.installation-neighborhood-results:not(.hidden),.geo-searchable-options:not(.hidden),.searchable-select-menu:not(.hidden),.select-menu:not(.hidden),.dropdown-menu:not(.hidden){position:fixed!important;z-index:2147482500!important;left:max(10px,env(safe-area-inset-left,0px))!important;right:max(10px,env(safe-area-inset-right,0px))!important;top:auto!important;bottom:var(--petatoe-mobile-popover-bottom)!important;width:auto!important;max-width:none!important;max-height:min(46dvh,390px)!important;margin:0!important;padding:8px!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;border-radius:16px!important;box-shadow:0 22px 60px rgba(0,0,0,.30)!important;transform:none!important}
+  .geo-searchable-options.opens-upward:not(.hidden){top:auto!important;bottom:var(--petatoe-mobile-popover-bottom)!important}
 
-  /* Mobile fields: keep native zoom disabled on iOS without shrinking controls. */
-  input:not([type="checkbox"]):not([type="radio"]),
-  select,
-  textarea,
-  .searchable-select-trigger{
-    min-height:46px!important;
-    font-size:16px!important;
-    border-radius:12px!important;
-  }
-
-  textarea{min-height:96px!important;resize:vertical}
-
-  /* Tables remain usable instead of forcing the whole screen horizontally. */
-  .table-card,
-  .table-wrap,
-  .responsive-table{
-    overflow-x:auto!important;
-    overflow-y:visible!important;
-    overscroll-behavior-inline:contain!important;
-    -webkit-overflow-scrolling:touch!important;
-  }
-
-  .table-card table,
-  .table-wrap table,
-  .responsive-table table{
-    max-width:none!important;
-  }
-
-  /* Generic mobile dialog contract: shell stays fixed, only body scrolls. */
-  dialog[open],
-  .dialog.is-open,
-  .modal.is-open{
-    box-sizing:border-box!important;
-    width:min(100% - 12px,620px)!important;
-    max-width:calc(100vw - 12px)!important;
-    height:min(calc(var(--kyum-visual-viewport-height,100dvh) - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)),760px)!important;
-    max-height:calc(var(--kyum-visual-viewport-height,100dvh) - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
-    margin:auto!important;
-    padding:0!important;
-    border-radius:var(--petatoe-mobile-dialog-radius)!important;
-    overflow:hidden!important;
-    overscroll-behavior:contain!important;
-  }
-
-  dialog[open] > form,
-  dialog[open] > .dialog-shell,
-  .dialog.is-open > .dialog-shell,
-  .modal.is-open > .modal-card,
-  .modal.is-open > .dialog-card{
-    box-sizing:border-box!important;
-    display:grid!important;
-    grid-template-rows:auto minmax(0,1fr) auto!important;
-    width:100%!important;
-    height:100%!important;
-    min-height:0!important;
-    max-height:100%!important;
-    overflow:hidden!important;
-  }
-
-  .dialog-header,
-  .modal-header,
-  dialog[open] > form > .dialog-header{
-    position:relative!important;
-    inset:auto!important;
-    z-index:5!important;
-    min-width:0!important;
-    padding:14px 16px 12px!important;
-    border-bottom:1px solid var(--kyum-mobile-border)!important;
-  }
-
-  .dialog-body,
-  .dialog-content,
-  .modal-body,
-  .dialog-scroll,
-  dialog[open] .form-grid{
-    min-width:0!important;
-    min-height:0!important;
-    max-width:100%!important;
-    overflow-x:hidden!important;
-    overflow-y:auto!important;
-    overscroll-behavior-y:contain!important;
-    -webkit-overflow-scrolling:touch!important;
-    padding:14px 16px 24px!important;
-    scroll-padding-bottom:84px!important;
-  }
-
-  .dialog-actions,
-  .dialog-footer,
-  .modal-footer{
-    position:relative!important;
-    inset:auto!important;
-    z-index:6!important;
-    display:grid!important;
-    grid-template-columns:repeat(auto-fit,minmax(min(138px,100%),1fr))!important;
-    gap:10px!important;
-    margin:0!important;
-    padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))!important;
-    border-top:1px solid var(--kyum-mobile-border)!important;
-    box-shadow:0 -10px 26px rgba(15,23,42,.08)!important;
-  }
-
-  .dialog-actions > button,
-  .dialog-footer > button,
-  .modal-footer > button{
-    width:100%!important;
-    min-width:0!important;
-    min-height:48px!important;
-    margin:0!important;
-  }
-
-  /* Known form/dialog bodies that historically used desktop grids. */
-  #customerDialog .form-grid,
-  #followupDialog .form-grid,
-  #quotationDialog .form-grid,
-  #userDialog .form-grid,
-  #representativeDialog .form-grid,
-  #referenceItemDialog .form-grid,
-  #dailyTargetsDialog .form-grid,
-  #employeeTargetsDialog .form-grid,
-  #installationAssignmentDialog .form-grid,
-  #installationCompletionDialog .form-grid,
-  #installationRevisitDialog .form-grid,
-  #installationReferenceDialog .form-grid,
-  #installationQuantityConfirmationDialog .form-grid{
-    grid-template-columns:minmax(0,1fr)!important;
-  }
-
-  #customerDialog .form-grid > *,
-  #followupDialog .form-grid > *,
-  #quotationDialog .form-grid > *,
-  #userDialog .form-grid > *,
-  #representativeDialog .form-grid > *,
-  #referenceItemDialog .form-grid > *,
-  #dailyTargetsDialog .form-grid > *,
-  #employeeTargetsDialog .form-grid > *,
-  #installationAssignmentDialog .form-grid > *,
-  #installationCompletionDialog .form-grid > *,
-  #installationRevisitDialog .form-grid > *,
-  #installationReferenceDialog .form-grid > *,
-  #installationQuantityConfirmationDialog .form-grid > *{
-    grid-column:1!important;
-    min-width:0!important;
-    max-width:100%!important;
-  }
-
-  /* Prevent the bottom navigation from covering the last interactive content. */
-  #customersView .table-pagination,
-  #followupsView .table-pagination,
-  #quotationsView .table-pagination,
-  #installationRequestsView,
-  #installationScheduleView,
-  #installationExecutionView,
-  #installationCompletionView,
-  #dailyOperationsView,
-  #reportsOverviewView,
-  #dailyPerformanceReportView{
-    scroll-padding-bottom:var(--petatoe-mobile-bottom-clearance)!important;
-  }
+  /* Generic mobile dialog contract: body scrolls, actions stay reachable above keyboard/safe area. */
+  dialog[open],.dialog.is-open,.modal.is-open{box-sizing:border-box!important;width:min(100% - 12px,620px)!important;max-width:calc(100vw - 12px)!important;height:min(calc(var(--kyum-visual-viewport-height,100dvh) - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)),760px)!important;max-height:calc(var(--kyum-visual-viewport-height,100dvh) - 12px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;margin:auto!important;padding:0!important;border-radius:var(--petatoe-mobile-dialog-radius)!important;overflow:hidden!important;overscroll-behavior:contain!important}
+  dialog[open]>form,dialog[open]>.dialog-shell,.dialog.is-open>.dialog-shell,.modal.is-open>.modal-card,.modal.is-open>.dialog-card{box-sizing:border-box!important;display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important;width:100%!important;height:100%!important;min-height:0!important;max-height:100%!important;overflow:hidden!important}
+  .dialog-header,.modal-header,dialog[open]>form>.dialog-header{position:relative!important;inset:auto!important;z-index:5!important;min-width:0!important;padding:14px 16px 12px!important;border-bottom:1px solid var(--kyum-mobile-border)!important}
+  .dialog-body,.dialog-content,.modal-body,.dialog-scroll,dialog[open] .form-grid{min-width:0!important;min-height:0!important;max-width:100%!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;padding:14px 16px 24px!important;scroll-padding-bottom:96px!important}
+  .dialog-actions,.dialog-footer,.modal-footer{position:relative!important;inset:auto!important;z-index:6!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(138px,100%),1fr))!important;gap:10px!important;margin:0!important;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))!important;border-top:1px solid var(--kyum-mobile-border)!important;box-shadow:0 -10px 26px rgba(15,23,42,.08)!important}.dialog-actions>button,.dialog-footer>button,.modal-footer>button{width:100%!important;min-width:0!important;min-height:48px!important;margin:0!important}
+  #customerDialog .form-grid,#followupDialog .form-grid,#quotationDialog .form-grid,#userDialog .form-grid,#representativeDialog .form-grid,#referenceItemDialog .form-grid,#dailyTargetsDialog .form-grid,#employeeTargetsDialog .form-grid,#installationAssignmentDialog .form-grid,#installationCompletionDialog .form-grid,#installationRevisitDialog .form-grid,#installationReferenceDialog .form-grid,#installationQuantityConfirmationDialog .form-grid{grid-template-columns:minmax(0,1fr)!important}
+  #customerDialog .form-grid>*,#followupDialog .form-grid>*,#quotationDialog .form-grid>*,#userDialog .form-grid>*,#representativeDialog .form-grid>*,#referenceItemDialog .form-grid>*,#dailyTargetsDialog .form-grid>*,#employeeTargetsDialog .form-grid>*,#installationAssignmentDialog .form-grid>*,#installationCompletionDialog .form-grid>*,#installationRevisitDialog .form-grid>*,#installationReferenceDialog .form-grid>*,#installationQuantityConfirmationDialog .form-grid>*{grid-column:1!important;min-width:0!important;max-width:100%!important}
 }
 
 @media (max-width:380px){
-  dialog[open],.dialog.is-open,.modal.is-open{
-    width:calc(100% - 8px)!important;
-    max-width:calc(100vw - 8px)!important;
-    border-radius:18px!important;
-  }
-  .dialog-header,.modal-header,
-  .dialog-body,.dialog-content,.modal-body,.dialog-scroll,dialog[open] .form-grid,
-  .dialog-actions,.dialog-footer,.modal-footer{
-    padding-inline:12px!important;
-  }
+  dialog[open],.dialog.is-open,.modal.is-open{width:calc(100% - 8px)!important;max-width:calc(100vw - 8px)!important;border-radius:18px!important}
+  .dialog-header,.modal-header,.dialog-body,.dialog-content,.modal-body,.dialog-scroll,dialog[open] .form-grid,.dialog-actions,.dialog-footer,.modal-footer{padding-inline:12px!important}
+  #dailyOperationsView .mobile-daily-jump-nav{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .installation-request-mobile-meta{grid-template-columns:1fr!important}
 }

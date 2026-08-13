@@ -1,13 +1,13 @@
 {
-  "version": "18.54.56",
-  "build": 185456,
+  "version": "18.54.57",
+  "build": 185457,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Content & Dialogs Enterprise Certification — P5.11.8",
+  "title": "PETATOE Mobile Content, Cards, Tables & Filter Popover Certification — P5.11.9",
   "notes": [
-    "توحيد تخطيط محتوى الشاشات على الموبايل فقط لمنع العرض العريض والتمرير الأفقي غير المقصود مع الحفاظ على Desktop دون تغيير.",
-    "توحيد Dialogs وForms على الموبايل بحيث يكون Body قابلًا للتمرير مع Header وActions واضحة وآمنة مع Safe Area والكيبورد.",
-    "تعزيز تخطيط العملاء والمتابعات والعقود على الموبايل دون تغيير الهيدر أو القائمة الجانبية أو Bottom Navigation المعتمدة."
+    "إصلاح تخطيط تقدم يوم العمل على الموبايل ومنع تداخله مع بحث رقم الجوال.",
+    "تحويل جداول المواعيد وتقارير التشغيل اليومي وصفوف الخدمات والحيوانات إلى تخطيطات Mobile Cards مناسبة دون تغيير Desktop.",
+    "تثبيت القوائم القابلة للبحث والفلاتر المنبثقة داخل حدود الشاشة وفوق Bottom Navigation، مع إصلاح خطأ vatAmount من المصدر."
   ],
-  "cacheToken": "petatoe-pwa-18-54-56-p5118-mobile-content-dialogs-certification"
+  "cacheToken": "petatoe-pwa-18-54-57-p5119-mobile-cards-filter-popovers"
 }

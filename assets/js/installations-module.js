@@ -4,6 +4,10 @@
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
   const money = value => `SAR ${Number(value || 0).toFixed(2)}`;
+  // P5.11.9 — VAT-inclusive display helpers used by appointment list/details.
+  // They only affect presentation; persisted service prices and calculations are unchanged.
+  const vatAmount = value => Math.round(Math.max(0, Number(value || 0)) * 1.15 * 100) / 100;
+  const vatServiceLine = service => Math.round(vatAmount(service?.unitPrice) * Math.max(0, Number(service?.quantity || 0)) * 100) / 100;
 
   let rows = [];
   let opts = { customers: [], quotations: [], regions: [], cities: [], neighborhoods: [], serviceTypes: [] };
@@ -426,6 +430,21 @@
         <td><div class="installation-row-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">عرض</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">تعديل الخدمات</button><button class="danger-btn" data-install-delete="${row.id}" type="button">حذف</button></div></td>
       </tr>`;
     }).join("") : '<tr><td colspan="11" class="empty-cell">لا توجد مواعيد مطابقة.</td></tr>';
+
+    const mobileCards = $("installationRequestsMobileCards");
+    if (mobileCards) {
+      mobileCards.innerHTML = data.length ? data.map(row => {
+        const services = (row.services || []).map(service => `<div class="installation-mobile-service"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><small>${Number(service.quantity||0)} × ${money(vatAmount(service.unitPrice))}</small><b>${money(vatServiceLine(service))}</b></div>`).join("") || '<div class="installation-mobile-empty">لا توجد خدمات</div>';
+        const when = [row.scheduledDate || 'غير محدد', row.scheduledTime ? formatAppointmentTime(row.scheduledTime) : (row.timeSlot || '')].filter(Boolean).join(' — ');
+        return `<article class="installation-request-mobile-card" data-install-mobile-card="${esc(row.id)}">
+          <div class="installation-request-mobile-head"><div><small>رقم الموعد</small><strong>${esc(row.requestNumber)}</strong></div><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(row.status)}</span></div>
+          <div class="installation-request-mobile-customer"><strong>${esc(row.customerName||'—')}</strong><a href="tel:${esc(String(row.customerPhone||'').replace(/[^+\d]/g,''))}">${esc(row.customerPhone||'—')}</a><small>${esc(row.installationAddress||row.district||'—')}</small></div>
+          <div class="installation-request-mobile-meta"><div><span>العقد</span><strong>${esc(row.quotationNumber||'بدون عقد')}</strong></div><div><span>الموعد</span><strong>${esc(when)}</strong></div><div><span>الفرقة</span><strong>${esc(row.teamName||'—')}</strong></div><div><span>الإجمالي شامل الضريبة</span><strong>${money(row.finalAmount||row.totalServicesAmount)}</strong></div></div>
+          <div class="installation-request-mobile-services"><span>الخدمات</span>${services}</div>
+          <div class="installation-request-mobile-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">عرض</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">تعديل الخدمات</button><button class="danger-btn" data-install-delete="${row.id}" type="button">حذف</button></div>
+        </article>`;
+      }).join('') : '<div class="installation-mobile-empty-state">لا توجد مواعيد مطابقة.</div>';
+    }
   }
 
   async function ensureOptions(force = false) {
@@ -886,7 +905,7 @@
 
     $("resetNewInstallationRequest")?.addEventListener("click", resetNewForm);
 
-    $("installationRequestsBody")?.addEventListener("click", async event => {
+    $("installationRequestsView")?.addEventListener("click", async event => {
       const viewButton = event.target.closest("[data-install-view]");
       const servicesButton = event.target.closest("[data-install-services-edit]");
       const deleteButton = event.target.closest("[data-install-delete]");
