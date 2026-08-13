@@ -1512,6 +1512,11 @@
       cancelAnimationFrame(moveRaf);
       moveRaf = 0;
     }
+    if (gesture?.pointerId != null) {
+      try {
+        if (nav.hasPointerCapture?.(gesture.pointerId)) nav.releasePointerCapture?.(gesture.pointerId);
+      } catch (_) {}
+    }
     gesture = null;
     nav.classList.remove("is-live-tracking", "is-hold-navigating");
     preview(null);
@@ -1606,25 +1611,19 @@
   nav.addEventListener("dragstart", event => event.preventDefault());
 
   function applyCompactState() {
+    // P5.11.7.9 — keep the mobile bottom navigation spatially locked.
+    // Vertical page scrolling must never resize or translate the navigation bar.
     scrollTimer = 0;
-    if (!MOBILE_MEDIA.matches || gesture) return;
-    const currentY = Math.max(0, window.scrollY);
-    const delta = currentY - lastScrollY;
-    let nextCompact = compact;
-    if (currentY < 36) nextCompact = false;
-    else if (delta > 8) nextCompact = true;
-    else if (delta < -8) nextCompact = false;
-    lastScrollY = currentY;
-    if (nextCompact === compact) return;
-    compact = nextCompact;
-    nav.classList.toggle("is-compact", compact);
-    document.documentElement.classList.toggle("mobile-nav-is-compact", compact);
-    scheduleSync(true);
+    if (!MOBILE_MEDIA.matches) return;
+    compact = false;
+    lastScrollY = Math.max(0, window.scrollY);
+    nav.classList.remove("is-compact");
+    document.documentElement.classList.remove("mobile-nav-is-compact");
   }
 
   window.addEventListener("scroll", () => {
     if (gesture) return;
-    window.clearTimeout(scrollTimer);
+    if (scrollTimer) window.clearTimeout(scrollTimer);
     scrollTimer = window.setTimeout(applyCompactState, 45);
   }, { passive: true });
 

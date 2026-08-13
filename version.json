@@ -1,13 +1,13 @@
 {
-  "version": "18.54.51",
-  "build": 185450,
+  "version": "18.54.52",
+  "build": 185452,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop Header Controls + Scroll Logo — P5.11.7.7",
+  "title": "PETATOE Mobile Bottom Navigation Gesture & Position Lock — P5.11.7.9",
   "notes": [
-    "تثبيت ترتيب أزرار الهيدر على Desktop فقط طبقًا للمرجع: المستخدم ثم الإشعارات ثم Light/Dark ثم زر الصعود/النزول.",
-    "إظهار زر الصعود/النزول داخل مجموعة الهيدر باستخدام لوجو PETATOE فقط بدون أي اسم أو نص مرئي، مع الحفاظ على وظيفة الضغطة الواحدة للأعلى والضغطتين للأسفل.",
-    "عدم تغيير تصميم الهيدر أو المقاسات أو Tablet/Mobile أو الصلاحيات أو Routes أو Business Logic."
+    "إعادة تفعيل السحب الأفقي الانسيابي داخل شريط التنقل السفلي على الموبايل مع إبقاء التمرير الرأسي للصفحة طبيعيًا.",
+    "إلغاء حركة Compact/translate أثناء Scroll حتى يظل البار مثبتًا في موضعه ولا يهرب أو يتغير حجمه أثناء الصعود والنزول.",
+    "التعديل Mobile-only ولا يغير تصميم البار أو ترتيب الأيقونات أو نسخة Desktop."
   ],
-  "cacheToken": "petatoe-pwa-18-54-50-p51177-desktop-header-controls-scroll-logo"
+  "cacheToken": "petatoe-pwa-18-54-52-p51179-mobile-bottom-nav-gesture-lock"
 }

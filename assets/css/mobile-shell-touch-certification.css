@@ -178,3 +178,81 @@
     display: flex !important;
   }
 }
+
+
+/* P5.11.7.9 — Mobile Bottom Navigation Gesture + Position Lock
+   Mobile only. No desktop/tablet layout or visual contract is changed. */
+@media (max-width: 767px),
+       (pointer: coarse) and (max-device-width: 1024px),
+       (hover: none) and (max-device-width: 1024px) {
+  .mobile-bottom-nav {
+    position: fixed !important;
+    right: max(12px, env(safe-area-inset-right, 0px)) !important;
+    left: max(12px, env(safe-area-inset-left, 0px)) !important;
+    bottom: max(10px, env(safe-area-inset-bottom, 0px)) !important;
+    transform: translate3d(0,0,0) !important;
+    translate: none !important;
+    touch-action: pan-y !important;
+    overscroll-behavior-x: contain !important;
+    overscroll-behavior-y: auto !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+  }
+
+  /* Vertical page scrolling must never compact, shift, hide, or resize the bar. */
+  .mobile-bottom-nav.is-compact,
+  html.mobile-nav-is-compact .mobile-bottom-nav {
+    min-height: var(--mobile-nav-height) !important;
+    padding: 6px 7px !important;
+    border-radius: 23px !important;
+    transform: translate3d(0,0,0) !important;
+  }
+
+  .mobile-bottom-nav.is-compact .mobile-nav-active-indicator,
+  html.mobile-nav-is-compact .mobile-bottom-nav .mobile-nav-active-indicator {
+    top: 5px !important;
+    bottom: 5px !important;
+    border-radius: 17px !important;
+  }
+
+  .mobile-bottom-nav.is-compact .mobile-nav-item,
+  html.mobile-nav-is-compact .mobile-bottom-nav .mobile-nav-item {
+    min-height: 52px !important;
+    padding: 4px 2px !important;
+    gap: 2px !important;
+    font-size: 10px !important;
+  }
+
+  .mobile-bottom-nav.is-compact .mobile-nav-item svg,
+  html.mobile-nav-is-compact .mobile-bottom-nav .mobile-nav-item svg {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  /* Horizontal finger tracking belongs to the app; vertical movement remains page scroll. */
+  .mobile-bottom-nav .mobile-nav-item {
+    touch-action: pan-y !important;
+    -webkit-user-drag: none !important;
+    user-drag: none !important;
+  }
+
+  .mobile-bottom-nav.is-live-tracking,
+  .mobile-bottom-nav.is-hold-navigating,
+  .mobile-bottom-nav.is-live-tracking .mobile-nav-item,
+  .mobile-bottom-nav.is-hold-navigating .mobile-nav-item {
+    touch-action: none !important;
+  }
+
+  .mobile-bottom-nav.is-live-tracking .mobile-nav-active-indicator,
+  .mobile-bottom-nav.is-hold-navigating .mobile-nav-active-indicator {
+    transition: none !important;
+    will-change: transform, width !important;
+  }
+
+  .mobile-nav-active-indicator {
+    pointer-events: none !important;
+  }
+}
