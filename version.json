@@ -1,13 +1,13 @@
 {
-  "version": "18.54.45",
-  "build": 185445,
+  "version": "18.54.46",
+  "build": 185446,
   "forceUpdate": true,
   "releaseDate": "2026-08-13",
-  "title": "PETATOE Midnight Neon Navigation Shell — P5.11.7",
+  "title": "PETATOE Navigation Sizing & Alignment Recovery — P5.11.7.1",
   "notes": [
-    "إعادة تصميم الهيدر بهوية PETATOE الكحلية مع الأزرق الكهربائي والذهبي مع الحفاظ على وظائف العنوان والحساب والإشعارات والثيم.",
-    "إعادة تصميم القائمة الجانبية وحالة الموبايل مع Brand lockup وحالات Active/Hover وتفاصيل Neon متوافقة مع Light/Dark.",
-    "الحفاظ على نفس مفاتيح التنقل والصلاحيات وسلوك فتح/إغلاق القائمة دون تغيير Business Logic أو Mobile Bottom Navigation."
+    "تثبيت أحجام ومواقع أزرار وأيقونات الهيدر ضمن مقاسات موحدة لمنع تغير الأحجام بسبب قواعد CSS القديمة.",
+    "تصحيح Footer القائمة الجانبية وتثبيت أيقونة تسجيل الخروج ومنع تمدد SVG خارج حجمه.",
+    "تحسين تناسق Brand lockup وأيقونات المجموعات وحساب المستخدم على Desktop وTablet وMobile دون تغيير التنقل أو الصلاحيات."
   ],
-  "cacheToken": "petatoe-pwa-18-54-45-p5117-midnight-neon-navigation-shell"
+  "cacheToken": "petatoe-pwa-18-54-46-p51171-navigation-sizing-alignment-recovery"
 }

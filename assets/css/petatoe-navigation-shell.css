@@ -37,13 +37,13 @@
   z-index:1035!important;
   isolation:isolate;
   display:grid!important;
-  grid-template-columns:minmax(205px,auto) 58px minmax(300px,1fr) auto!important;
+  grid-template-columns:190px 50px minmax(300px,1fr) auto!important;
   grid-template-areas:"brand menu title actions"!important;
   align-items:center!important;
-  gap:16px!important;
-  min-height:112px!important;
+  gap:12px!important;
+  min-height:100px!important;
   margin:-26px -26px 28px!important;
-  padding:15px 24px 20px!important;
+  padding:12px 20px 16px!important;
   overflow:hidden!important;
   border:1px solid rgba(51,150,255,.24)!important;
   border-top:0!important;
@@ -108,9 +108,9 @@
   min-width:0!important;
   width:auto!important;
   margin:0!important;
-  padding:7px 16px 7px 8px!important;
+  padding:6px 12px 6px 7px!important;
   border:1px solid rgba(231,182,75,.18)!important;
-  border-radius:20px!important;
+  border-radius:17px!important;
   background:rgba(3,12,25,.42)!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
   display:flex!important;
@@ -120,10 +120,11 @@
 }
 
 #appHeader .topbar-logo-banner .petatoe-header-brand-icon{
-  width:64px!important;
-  height:64px!important;
-  flex:0 0 64px!important;
-  border-radius:18px!important;
+  width:56px!important;
+  height:56px!important;
+  flex:0 0 56px!important;
+  border-radius:15px!important;
+  object-fit:contain!important;
   box-shadow:
     0 0 0 1px rgba(231,182,75,.45),
     0 0 16px rgba(35,136,255,.42),
@@ -140,7 +141,7 @@
 }
 .petatoe-header-brand-copy strong{
   color:#fff;
-  font-size:18px;
+  font-size:16px;
   font-weight:900;
   letter-spacing:.055em;
 }
@@ -156,15 +157,15 @@
   position:relative!important;
   inset:auto!important;
   min-width:0!important;
-  width:54px!important;
-  height:54px!important;
+  width:48px!important;
+  height:48px!important;
   padding:0!important;
   margin:0!important;
   display:grid!important;
   place-items:center!important;
   color:#74baff!important;
   border:1px solid rgba(51,150,255,.34)!important;
-  border-radius:17px!important;
+  border-radius:15px!important;
   background:linear-gradient(145deg,rgba(10,31,58,.96),rgba(5,18,36,.94))!important;
   box-shadow:
     0 0 0 1px rgba(0,212,255,.04),
@@ -179,7 +180,7 @@
   box-shadow:0 0 18px rgba(0,212,255,.25),inset 0 1px 0 rgba(255,255,255,.05)!important;
   transform:translateY(-1px)!important;
 }
-.petatoe-menu-icon{width:25px;height:25px;display:block}
+.petatoe-menu-icon{width:22px!important;height:22px!important;display:block!important;flex:0 0 22px!important}
 
 #appHeader .topbar-title{
   grid-area:title!important;
@@ -219,7 +220,7 @@
   display:flex!important;
   align-items:center!important;
   justify-content:flex-end!important;
-  gap:9px!important;
+  gap:8px!important;
   min-width:0!important;
 }
 
@@ -227,12 +228,12 @@
 #appHeader .theme-toggle-button,
 #appHeader .kyum-scroll-control,
 #appHeader .kyum-scroll-control.is-visible{
-  width:52px!important;
-  height:52px!important;
-  flex:0 0 52px!important;
+  width:48px!important;
+  height:48px!important;
+  flex:0 0 48px!important;
   padding:5px!important;
   border:1px solid rgba(51,150,255,.27)!important;
-  border-radius:16px!important;
+  border-radius:15px!important;
   color:#74baff!important;
   background:linear-gradient(145deg,rgba(11,31,57,.91),rgba(6,19,37,.9))!important;
   box-shadow:0 9px 22px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.035)!important;
@@ -247,23 +248,24 @@
   box-shadow:0 0 16px rgba(0,212,255,.18),0 10px 24px rgba(0,0,0,.25)!important;
 }
 #appHeader .theme-toggle-button{color:var(--pet-nav-gold)!important}
-#appHeader .kyum-scroll-control img{width:40px!important;height:40px!important;border-radius:12px!important}
+#appHeader .kyum-scroll-control img{width:36px!important;height:36px!important;max-width:36px!important;max-height:36px!important;object-fit:contain!important;border-radius:11px!important}
 
 #appHeader .compact-user-chip{
-  min-width:190px!important;
-  min-height:54px!important;
-  padding:7px 10px!important;
+  min-width:172px!important;
+  min-height:48px!important;
+  height:48px!important;
+  padding:5px 9px!important;
   gap:9px!important;
   color:#fff!important;
   border:1px solid rgba(231,182,75,.22)!important;
-  border-radius:18px!important;
+  border-radius:15px!important;
   background:rgba(5,16,31,.58)!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
 }
 #appHeader .compact-user-chip .avatar{
-  width:39px!important;
-  height:39px!important;
-  flex:0 0 39px!important;
+  width:34px!important;
+  height:34px!important;
+  flex:0 0 34px!important;
   color:#07162a!important;
   background:linear-gradient(145deg,#dff2ff,#a9cdfb)!important;
   border:1px solid rgba(255,255,255,.62)!important;
@@ -293,9 +295,9 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
    ========================= */
 #mainSidebar.sidebar{
   --sidebar-edge:rgba(0,212,255,.5);
-  width:min(354px,calc(100vw - 24px))!important;
+  width:min(330px,calc(100vw - 24px))!important;
   height:100dvh!important;
-  padding:16px 14px 12px!important;
+  padding:14px 12px 10px!important;
   gap:10px!important;
   color:var(--pet-nav-text)!important;
   border:1px solid rgba(35,136,255,.46)!important;
@@ -323,10 +325,10 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
 #mainSidebar .sidebar-launcher-host{
   position:relative!important;
   z-index:5!important;
-  min-height:112px!important;
+  min-height:92px!important;
   height:auto!important;
   margin:0 0 4px!important;
-  padding:8px 8px 12px!important;
+  padding:6px 6px 10px!important;
   display:flex!important;
   align-items:center!important;
   justify-content:space-between!important;
@@ -337,20 +339,20 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
 }
 .petatoe-sidebar-brand-lockup{display:flex;align-items:center;gap:11px;min-width:0}
 #mainSidebar .petatoe-sidebar-brand-icon{
-  width:74px!important;
-  height:74px!important;
+  width:60px!important;
+  height:60px!important;
   margin:0!important;
-  flex:0 0 74px!important;
-  border-radius:20px!important;
+  flex:0 0 60px!important;
+  border-radius:17px!important;
   box-shadow:0 0 0 1px rgba(231,182,75,.55),0 0 18px rgba(35,136,255,.34),0 10px 22px rgba(0,0,0,.32)!important;
 }
 .petatoe-sidebar-brand-copy{display:grid;gap:4px;min-width:0;direction:ltr;text-align:left}
-.petatoe-sidebar-brand-copy strong{color:#fff;font-size:18px;font-weight:900;letter-spacing:.055em}
+.petatoe-sidebar-brand-copy strong{color:#fff;font-size:16px;font-weight:900;letter-spacing:.055em}
 .petatoe-sidebar-brand-copy span{color:var(--pet-nav-gold-soft);font-size:10px;font-weight:700;letter-spacing:.035em}
 .petatoe-sidebar-close{
-  width:38px;
-  height:38px;
-  flex:0 0 38px;
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
   display:grid;
   place-items:center;
   padding:0;
@@ -360,7 +362,7 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   background:rgba(6,18,35,.76);
   cursor:pointer;
 }
-.petatoe-sidebar-close svg{width:20px;height:20px}
+.petatoe-sidebar-close svg{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important;flex:0 0 18px!important}
 .petatoe-sidebar-close:hover{color:#fff;border-color:rgba(231,182,75,.58);background:rgba(25,43,68,.82)}
 
 #mainSidebar .sidebar-nav{
@@ -382,18 +384,18 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
 
 #mainSidebar .nav-group{display:grid!important;gap:4px!important;margin:0!important}
 #mainSidebar .nav-group-toggle{
-  min-height:52px!important;
-  padding:9px 12px!important;
+  min-height:48px!important;
+  padding:8px 11px!important;
   display:flex!important;
   align-items:center!important;
   justify-content:space-between!important;
   gap:10px!important;
   color:#d9e9fb!important;
   border:1px solid rgba(82,127,180,.15)!important;
-  border-radius:16px!important;
+  border-radius:15px!important;
   background:rgba(13,31,55,.55)!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
-  font-size:14px!important;
+  font-size:13.5px!important;
   font-weight:800!important;
 }
 #mainSidebar .nav-group-toggle:hover{
@@ -408,9 +410,9 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   box-shadow:0 0 16px rgba(35,136,255,.08),inset 0 1px 0 rgba(255,255,255,.035)!important;
 }
 .nav-group-label{display:flex;align-items:center;gap:10px;min-width:0}
-.nav-group-icon{width:22px;height:22px;flex:0 0 22px;color:#66adff;filter:drop-shadow(0 0 6px rgba(35,136,255,.18))}
+.nav-group-icon{width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important;flex:0 0 20px!important;color:#66adff;filter:drop-shadow(0 0 6px rgba(35,136,255,.18))}
 #mainSidebar .nav-group-toggle[aria-expanded="true"] .nav-group-icon{color:var(--pet-nav-cyan)}
-#mainSidebar .nav-chevron{width:17px!important;height:17px!important;color:var(--pet-nav-gold-soft)!important}
+#mainSidebar .nav-chevron{width:15px!important;height:15px!important;max-width:15px!important;max-height:15px!important;flex:0 0 15px!important;color:var(--pet-nav-gold-soft)!important}
 
 #mainSidebar .nav-group-content{
   position:relative!important;
@@ -430,6 +432,7 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
 #mainSidebar .nav-group-content .nav-item{
   position:relative!important;
   min-height:42px!important;
+  height:42px!important;
   padding:8px 15px 8px 25px!important;
   color:#aabbd0!important;
   border:1px solid transparent!important;
@@ -490,15 +493,15 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   display:flex;
   align-items:center;
   gap:10px;
-  min-height:58px;
-  padding:8px 11px;
+  min-height:52px;
+  padding:7px 10px;
   border:1px solid rgba(231,182,75,.36);
   border-radius:16px;
   background:rgba(7,22,42,.72);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
 }
 .petatoe-sidebar-avatar{
-  width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;
+  width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;
   border:1px solid rgba(231,182,75,.6);border-radius:50%;
   color:#061326;background:linear-gradient(145deg,#74baff,#d8ecff);font-weight:900;
   box-shadow:0 0 12px rgba(35,136,255,.25);
@@ -509,12 +512,82 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
 #mainSidebar .mobile-sidebar-logout{
   width:100%!important;
   min-height:42px!important;
+  height:42px!important;
   color:#ffc9c9!important;
   border:1px solid rgba(255,99,109,.18)!important;
   border-radius:13px!important;
   background:rgba(255,83,97,.055)!important;
 }
 #mainSidebar .mobile-sidebar-logout:hover{color:#fff!important;border-color:rgba(255,99,109,.35)!important;background:rgba(255,83,97,.10)!important}
+
+
+/* P5.11.7.1 — Navigation sizing lock.
+   Prevent legacy/global SVG and button rules from stretching shell controls. */
+#appHeader .sidebar-menu-launcher svg,
+#appHeader .notification-bell-btn > svg,
+#appHeader .theme-toggle-button > svg,
+#appHeader .compact-user-chip > svg{
+  display:block!important;
+  max-width:100%!important;
+  max-height:100%!important;
+}
+#appHeader .notification-bell-btn > svg{
+  width:20px!important;
+  height:20px!important;
+  flex:0 0 20px!important;
+}
+#appHeader .theme-toggle-button .theme-icon{
+  width:22px!important;
+  height:22px!important;
+  max-width:22px!important;
+  max-height:22px!important;
+}
+#appHeader .compact-user-chip .user-menu-chevron{
+  width:15px!important;
+  height:15px!important;
+  max-width:15px!important;
+  max-height:15px!important;
+  flex:0 0 15px!important;
+}
+#mainSidebar .mobile-sidebar-footer{
+  grid-template-columns:1fr!important;
+}
+#mainSidebar .petatoe-sidebar-account{
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+#mainSidebar .mobile-sidebar-logout{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  padding:0 12px!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
+#mainSidebar .mobile-sidebar-logout > svg{
+  width:18px!important;
+  height:18px!important;
+  min-width:18px!important;
+  min-height:18px!important;
+  max-width:18px!important;
+  max-height:18px!important;
+  flex:0 0 18px!important;
+  display:block!important;
+}
+#mainSidebar .mobile-sidebar-logout > span{
+  display:block!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+#mainSidebar .nav-group-toggle svg,
+#mainSidebar .petatoe-sidebar-close svg{
+  overflow:visible!important;
+}
 
 .sidebar-backdrop{
   background:rgba(1,8,20,.62)!important;
@@ -538,13 +611,13 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
    ========================= */
 @media (max-width:1180px){
   #appHeader.topbar{
-    grid-template-columns:minmax(170px,auto) 52px minmax(220px,1fr) auto!important;
+    grid-template-columns:170px 48px minmax(220px,1fr) auto!important;
     grid-template-areas:"brand menu title actions"!important;
     min-height:102px!important;
     gap:11px!important;
     padding-inline:18px!important;
   }
-  #appHeader .topbar-logo-banner .petatoe-header-brand-icon{width:54px!important;height:54px!important;flex-basis:54px!important}
+  #appHeader .topbar-logo-banner .petatoe-header-brand-icon{width:52px!important;height:52px!important;flex-basis:52px!important}
   .petatoe-header-brand-copy strong{font-size:15px}
   #appHeader .compact-user-chip{min-width:155px!important}
 }
@@ -572,16 +645,16 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
   #appHeader .notification-bell-btn,#appHeader .theme-toggle-button{width:42px!important;height:42px!important;flex-basis:42px!important;border-radius:13px!important}
 
   #mainSidebar.sidebar{
-    width:min(91vw,370px)!important;
+    width:min(90vw,330px)!important;
     padding:calc(10px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom))!important;
     border-radius:26px 0 0 26px!important;
   }
   #mainSidebar .sidebar-launcher-host{min-height:96px!important;height:auto!important;margin-bottom:4px!important;padding:5px 5px 10px!important;pointer-events:auto!important}
-  #mainSidebar .petatoe-sidebar-brand-icon{width:64px!important;height:64px!important;flex-basis:64px!important;border-radius:18px!important}
+  #mainSidebar .petatoe-sidebar-brand-icon{width:56px!important;height:56px!important;flex-basis:56px!important;border-radius:16px!important}
   .petatoe-sidebar-brand-copy strong{font-size:16px}
   .petatoe-sidebar-brand-copy span{font-size:9px}
   #mainSidebar .sidebar-nav{gap:7px!important;padding:3px 2px 9px!important}
-  #mainSidebar .nav-group-toggle{min-height:50px!important;padding:9px 11px!important;border-radius:15px!important;font-size:13px!important}
+  #mainSidebar .nav-group-toggle{min-height:48px!important;padding:8px 10px!important;border-radius:14px!important;font-size:12.5px!important}
   #mainSidebar .nav-group-content{margin-inline-start:9px!important;padding-inline-start:10px!important}
   #mainSidebar .nav-group-content .nav-item{min-height:41px!important;padding:8px 14px 8px 24px!important;font-size:12px!important}
   #mainSidebar .mobile-sidebar-footer{padding-bottom:max(5px,env(safe-area-inset-bottom))!important}
@@ -592,7 +665,7 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
   #appHeader.topbar{grid-template-columns:46px minmax(0,1fr) auto!important;min-height:76px!important}
   #appHeader .topbar-title h2{font-size:17px!important}
   #appHeader .notification-bell-btn{display:none!important}
-  #mainSidebar.sidebar{width:min(94vw,360px)!important}
+  #mainSidebar.sidebar{width:min(92vw,330px)!important}
 }
 
 @media (prefers-reduced-motion:reduce){

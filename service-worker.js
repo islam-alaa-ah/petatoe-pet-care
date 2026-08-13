@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-45-p5117-midnight-neon-navigation-shell";
+const CACHE_VERSION = "petatoe-pwa-18-54-46-p51171-navigation-sizing-alignment-recovery";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
