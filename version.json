@@ -1,13 +1,13 @@
 {
-  "version": "18.54.49",
-  "build": 185449,
+  "version": "18.54.50",
+  "build": 185450,
   "forceUpdate": true,
-  "releaseDate": "2026-08-13",
-  "title": "PETATOE Desktop Header Control Distribution — P5.11.7.6",
+  "releaseDate": "2026-08-14",
+  "title": "PETATOE Desktop Header Controls + Scroll Logo — P5.11.7.7",
   "notes": [
-    "إعادة توزيع عناصر الهيدر على نسخة الديسكتوب فقط طبقًا للتصميم المعتمد: اللوجو ثم أيقونة المستخدم الدائرية ثم الإشعارات والثيم، مع زر القائمة في أقصى اليمين.",
-    "تحويل زر المستخدم في الديسكتوب إلى أيقونة دائرية Premium مع الإبقاء على قائمة المستخدم وتسجيل الخروج بدون تغيير وظيفي.",
-    "عدم تغيير Tablet/Mobile أو الصلاحيات أو الـRoutes أو Business Logic."
+    "تثبيت ترتيب أزرار الهيدر على Desktop فقط طبقًا للمرجع: المستخدم ثم الإشعارات ثم Light/Dark ثم زر الصعود/النزول.",
+    "إظهار زر الصعود/النزول داخل مجموعة الهيدر باستخدام لوجو PETATOE فقط بدون أي اسم أو نص مرئي، مع الحفاظ على وظيفة الضغطة الواحدة للأعلى والضغطتين للأسفل.",
+    "عدم تغيير تصميم الهيدر أو المقاسات أو Tablet/Mobile أو الصلاحيات أو Routes أو Business Logic."
   ],
-  "cacheToken": "petatoe-pwa-18-54-49-p51176-desktop-header-control-distribution"
+  "cacheToken": "petatoe-pwa-18-54-50-p51177-desktop-header-controls-scroll-logo"
 }

@@ -812,9 +812,9 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
    ============================================================ */
 @media (min-width:1051px){
   #appHeader.topbar{
-    grid-template-columns:286px 190px minmax(360px,1fr) 70px!important;
+    grid-template-columns:286px 262px minmax(360px,1fr) 70px!important;
     grid-template-areas:"brand actions title menu"!important;
-    column-gap:22px!important;
+    column-gap:12px!important;
   }
 
   /* Keep the title visually centered across the full desktop header. */
@@ -867,6 +867,46 @@ html[data-theme="light"] #mainSidebar .mobile-sidebar-logout{color:#ffc9c9!impor
   #appHeader .header-user-menu{order:1!important;display:block!important;position:relative!important}
   #appHeader .notification-bell-wrap{order:2!important}
   #appHeader .theme-toggle-button{order:3!important}
+  #appHeader .kyum-scroll-control{
+    order:4!important;
+    display:grid!important;
+    place-items:center!important;
+    position:relative!important;
+    inset:auto!important;
+    width:58px!important;
+    height:58px!important;
+    min-width:58px!important;
+    min-height:58px!important;
+    max-width:58px!important;
+    max-height:58px!important;
+    flex:0 0 58px!important;
+    margin:0!important;
+    padding:6px!important;
+    border:1px solid rgba(35,136,255,.42)!important;
+    border-radius:18px!important;
+    background:linear-gradient(180deg,rgba(9,26,49,.96),rgba(3,14,29,.98))!important;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.018),0 10px 24px rgba(0,0,0,.18)!important;
+    overflow:hidden!important;
+    opacity:1!important;
+    visibility:visible!important;
+    transform:none!important;
+  }
+  #appHeader .kyum-scroll-control:hover{
+    border-color:rgba(71,155,255,.72)!important;
+    box-shadow:0 0 18px rgba(35,136,255,.25),inset 0 0 0 1px rgba(255,255,255,.03)!important;
+  }
+  #appHeader .kyum-scroll-control .petatoe-scroll-control-icon{
+    display:block!important;
+    width:44px!important;
+    height:44px!important;
+    min-width:44px!important;
+    min-height:44px!important;
+    max-width:44px!important;
+    max-height:44px!important;
+    object-fit:contain!important;
+    border-radius:13px!important;
+    filter:drop-shadow(0 0 6px rgba(37,132,255,.48))!important;
+  }
 
   /* User control is icon-only and perfectly circular on desktop. */
   #appHeader .compact-user-chip{
