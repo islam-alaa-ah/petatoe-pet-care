@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-47-p51172-reference-header-replacement";
+const CACHE_VERSION = "petatoe-pwa-18-54-48-p51173-approved-reference-header-lock";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
