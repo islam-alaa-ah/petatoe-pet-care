@@ -1,14 +1,15 @@
 {
-  "version": "18.54.63",
-  "build": 185463,
+  "version": "18.54.64",
+  "build": 185464,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Content UI Pilot — Dashboard, Customers & Follow-ups — P5.11.15",
+  "title": "PETATOE Mobile Content UI Pilot Refinement — Dashboard, Customers & Follow-ups — P5.11.16",
   "notes": [
-    "إعادة بناء التصميم الداخلي لنسخة الموبايل في الرئيسية والعملاء والمتابعات وفق المرجع البصري المعتمد.",
-    "استبدال الطبقة البصرية القديمة لهذه الشاشات بدل إضافة طبقة فوقها، مع الحفاظ على وظائف البيانات والصلاحيات.",
-    "الهيدر والقائمة وBottom Bar مكونات مقفلة ولم يتم تعديلها.",
-    "تطبيق الهوية البصرية Blue/Gold/Neon على KPI cards وsection cards وrecord cards والفلاتر والأزرار في Light وDark."
+    "رفع تطابق الهوية البصرية مع التصميم المرجعي المعتمد في الرئيسية والعملاء والمتابعات فقط.",
+    "تقليل الأحجام والمساحات الفارغة ورفع كثافة عرض البيانات دون تغيير الوظائف أو البيانات.",
+    "توحيد هوية Blue/Gold/Glow على الأزرار والفلاتر والحقول والكروت والفواصل وKPIs في Light وDark.",
+    "إعادة بناء Customer Card بشكل أكثر Compact وإضافة أيقونة عميل فعلية وهرمية واضحة لأزرار الإجراءات.",
+    "الهيدر والقائمة وBottom Bar مكونات مقفلة ولم يتم تعديلها."
   ],
-  "cacheToken": "petatoe-pwa-18-54-63-p51115-mobile-content-pilot"
+  "cacheToken": "petatoe-pwa-18-54-64-p51116-mobile-content-pilot-refinement"
 }

@@ -3348,10 +3348,10 @@ function renderCustomers() {
   const allRows=filteredCustomers(); const body=document.getElementById("customersTableBody"); const mobileCards=document.getElementById("customersMobileCards");
   const pageCount=Math.max(1,Math.ceil(allRows.length/CUSTOMERS_PAGE_SIZE)); if(customersPage>pageCount)customersPage=pageCount; const start=(customersPage-1)*CUSTOMERS_PAGE_SIZE; const rows=allRows.slice(start,start+CUSTOMERS_PAGE_SIZE);
   document.getElementById("addCustomerBtn")?.classList.toggle("hidden",!canManageCustomers("add"));
-  const actions=c=>`<div class="row-actions"><button class="edit-btn" data-details="${c.id}">عرض</button>${canManageFollowups("add")?`<button class="edit-btn" data-add-followup="${c.id}">متابعة</button>`:""}${canManageCustomers()?`<button class="edit-btn" data-edit="${c.id}">تعديل</button>`:""}${canDeleteCustomers()?`<button class="delete-btn" data-delete="${c.id}">حذف</button>`:""}</div>`;
+  const actions=c=>`<div class="row-actions"><button class="edit-btn customer-action-primary" data-details="${c.id}">عرض</button>${canManageFollowups("add")?`<button class="edit-btn customer-action-followup" data-add-followup="${c.id}">متابعة</button>`:""}${canManageCustomers()?`<button class="edit-btn customer-action-edit" data-edit="${c.id}">تعديل</button>`:""}${canDeleteCustomers()?`<button class="delete-btn customer-action-delete" data-delete="${c.id}">حذف</button>`:""}</div>`;
   if(!rows.length){const m=customersLoaded?"لا توجد نتائج مطابقة.":"جاري تحميل بيانات العملاء..."; body.innerHTML=`<tr><td colspan="6" class="empty-state">${m}</td></tr>`; if(mobileCards)mobileCards.innerHTML=`<div class="customer-mobile-empty">${m}</div>`;}
   else { body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.address||"—")}</td><td>${escapeHtml(c.phone||"—")}</td><td>${c.googleMapsUrl?`<a class="text-btn" href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">فتح الموقع</a>`:"—"}</td><td>${actions(c)}</td></tr>`).join("");
-    if(mobileCards)mobileCards.innerHTML=rows.map(c=>`<article class="customer-mobile-card"><header class="customer-mobile-card-head"><div><span class="customer-mobile-kicker">name</span><strong class="customer-mobile-name">${escapeHtml(c.name||"—")}</strong><small>${escapeHtml(c.customerNumber||"—")}</small></div></header><div class="customer-mobile-details"><div><span>address</span><strong>${escapeHtml(c.address||"—")}</strong></div><div><span>mobile</span><strong>${escapeHtml(c.phone||"—")}</strong></div><div><span>موقع Google Maps</span><strong>${c.googleMapsUrl?`<a href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">فتح الموقع</a>`:"—"}</strong></div></div><footer class="customer-mobile-card-actions row-actions">${actions(c)}</footer></article>`).join(""); }
+    if(mobileCards)mobileCards.innerHTML=rows.map(c=>`<article class="customer-mobile-card"><header class="customer-mobile-card-head"><span class="customer-mobile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><div><span class="customer-mobile-kicker">name</span><strong class="customer-mobile-name">${escapeHtml(c.name||"—")}</strong><small>${escapeHtml(c.customerNumber||"—")}</small></div></header><div class="customer-mobile-details"><div><span>address</span><strong>${escapeHtml(c.address||"—")}</strong></div><div><span>mobile</span><strong>${escapeHtml(c.phone||"—")}</strong></div><div><span>موقع Google Maps</span><strong>${c.googleMapsUrl?`<a href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">فتح الموقع</a>`:"—"}</strong></div></div><footer class="customer-mobile-card-actions row-actions">${actions(c)}</footer></article>`).join(""); }
   const info=document.getElementById("customersPaginationInfo"),pn=document.getElementById("customersPageNumber"),prev=document.getElementById("customersPrevPage"),next=document.getElementById("customersNextPage"); if(info)info.textContent=`${allRows.length} عميل`; if(pn)pn.textContent=`${customersPage} / ${pageCount}`; if(prev)prev.disabled=customersPage<=1; if(next)next.disabled=customersPage>=pageCount;
 }
 
@@ -3880,13 +3880,19 @@ function renderFollowups() {
     upcoming: followups.filter(item => followupStatus(item) === "upcoming").length
   };
 
+  const followupKpiIcons = [
+    `<svg viewBox="0 0 24 24"><path d="M8 7V3m8 4V3M4 11h16"/><rect x="3" y="5" width="18" height="16" rx="3"/></svg>`,
+    `<svg viewBox="0 0 24 24"><path d="m9 12 2 2 4-4"/><path d="M5 3h14a2 2 0 0 1 2 2v14H3V5a2 2 0 0 1 2-2Z"/></svg>`,
+    `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+    `<svg viewBox="0 0 24 24"><path d="M6 19V8m6 11V5m6 14v-7"/><path d="M4 19h16"/></svg>`
+  ];
   document.getElementById("followupStats").innerHTML = [
     ["إجمالي المتابعات", counts.total],
     ["متابعات اليوم", counts.today],
     ["المتابعات المتأخرة", counts.overdue],
     ["المتابعات القادمة", counts.upcoming]
-  ].map(([label, value]) =>
-    `<article class="followup-stat"><span>${label}</span><strong>${value}</strong></article>`
+  ].map(([label, value], index) =>
+    `<article class="followup-stat"><span class="petatoe-followup-kpi-icon" aria-hidden="true">${followupKpiIcons[index]}</span><span>${label}</span><strong>${value}</strong></article>`
   ).join("");
 
   const allRows = filteredFollowups();
