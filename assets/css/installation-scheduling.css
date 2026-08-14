@@ -885,3 +885,40 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
 .installation-day-customer .installation-map-primary-action,.installation-location-stack .installation-map-primary-action{margin-top:6px;width:max-content;max-width:100%}
 .installation-map-primary-action{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap}
 @media(max-width:760px){.installation-day-customer .installation-map-primary-action,.installation-location-stack .installation-map-primary-action{width:100%}}
+
+/* P5.11.26 — Desktop scheduling visual contract. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #installationSchedulingView :is(.installation-calendar-shell,.installation-scheduling-panel,.installation-scheduling-toolbar,.installation-scheduling-summary,.installation-unscheduled-panel){
+    border-color:var(--pet-desk-line)!important;
+    background:linear-gradient(145deg,var(--pet-desk-surface-strong),var(--pet-desk-surface))!important;
+    box-shadow:var(--pet-desk-shadow)!important;
+  }
+  #installationSchedulingView .installation-calendar-weekdays{
+    border-color:var(--pet-desk-line)!important;
+    background:linear-gradient(180deg,#174a91,#155fb7)!important;
+    color:#fff!important;
+  }
+  #installationSchedulingView .installation-calendar-day{
+    border-color:color-mix(in srgb,var(--pet-desk-line) 74%,transparent)!important;
+    background:linear-gradient(145deg,var(--pet-desk-surface-strong),var(--pet-desk-surface-soft))!important;
+    color:var(--pet-desk-text)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;
+  }
+  #installationSchedulingView .installation-calendar-day:hover{
+    border-color:var(--pet-desk-line-strong)!important;
+    background:color-mix(in srgb,var(--pet-desk-blue) 8%,var(--pet-desk-surface-strong))!important;
+    box-shadow:0 10px 22px rgba(47,131,255,.10),inset 0 1px 0 rgba(255,255,255,.07)!important;
+  }
+  #installationSchedulingView .installation-calendar-day.is-today{
+    border-color:var(--pet-desk-gold)!important;
+    box-shadow:0 0 0 1px rgba(217,168,55,.24),0 0 18px rgba(47,131,255,.10)!important;
+  }
+  #installationSchedulingView .installation-calendar-item{
+    border:1px solid color-mix(in srgb,var(--pet-desk-blue) 50%,var(--pet-desk-line))!important;
+    border-radius:10px!important;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--pet-desk-blue) 11%,var(--pet-desk-surface-strong)),var(--pet-desk-surface-soft))!important;
+    color:var(--pet-desk-text)!important;
+    box-shadow:0 5px 12px rgba(47,131,255,.08)!important;
+  }
+  #installationSchedulingView .installation-calendar-day.is-other-month{opacity:.54}
+}

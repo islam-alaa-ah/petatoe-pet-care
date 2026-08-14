@@ -1,13 +1,14 @@
 {
-  "version": "18.54.82",
-  "build": 185482,
+  "version": "18.54.83",
+  "build": 185483,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop Visual Identity All Screens P5.11.25",
+  "title": "PETATOE Desktop Visual Identity Completion & Dark Mode Certification P5.11.26",
   "notes": [
-    "تعميم هوية PETATOE Glass + 3D + Blue/Gold على باقي شاشات Desktop في Light/Dark من خلال نفس Desktop Canonical block.",
-    "تطوير Panels وToolbars وFilters وForms وTables وKPI وDialogs في المواعيد والتقارير والإعدادات والصلاحيات وباقي الأقسام دون تغيير Business Logic.",
-    "تجميد نسخة Mobile بالكامل والحفاظ على mobile.css وmobile-theme-canonical.css وmobile.js بدون أي تعديل."
+    "استبدال عقد P5.11.25 المكتمل جزئيًا بعقد Desktop Canonical نهائي بعد Legacy UI locks.",
+    "توحيد هوية PETATOE داخل المواعيد والتنفيذ والتقارير والفواتير والإعدادات من ملفات الـModules المسؤولة نفسها.",
+    "إصلاح القوائم المنسدلة والـNative options في Dark Mode وربط الجداول والكروت والـForms بهوية Glass + 3D Blue/Gold.",
+    "Mobile lockdown كامل: بدون تعديل ملفات أو تخطيطات أو Renderers الموبايل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-82-p51125-desktop-visual-identity-all-screens"
+  "cacheToken": "petatoe-pwa-18-54-83-p51126-desktop-visual-dark-cert"
 }
