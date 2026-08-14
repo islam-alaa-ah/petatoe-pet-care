@@ -1,13 +1,14 @@
 {
-  "version": "18.54.67",
-  "build": 185467,
+  "version": "18.54.68",
+  "build": 185468,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE PWA Version Synchronization Hotfix — P5.11.18.1",
+  "title": "PETATOE PWA Reload Loop Runtime Guard — P5.11.18.2",
   "notes": [
-    "مزامنة رقم الإصدار بين version.json وpwa.js وservice-worker.js وملفات التحميل لمنع دورة إعادة التحميل المتكررة.",
-    "ترقية آمنة إلى 18.54.67 لتجاوز أي نسخة 18.54.66 مخزنة في PWA أو Service Worker cache.",
+    "إيقاف حلقة إعادة التحميل التلقائي عند بقاء Runtime أقدم بعد محاولة التحديث.",
+    "تحويل stale-runtime recovery من auto-reload متكرر إلى one-shot marker ثم حوار تحديث صريح.",
+    "منع تداخل فحوص التحديث المتزامنة أثناء نفس دورة التشغيل.",
     "لا تغيير في تصميم P5.11.18 أو Business Logic أو Desktop/Tablet."
   ],
-  "cacheToken": "petatoe-pwa-18-54-67-p51118-1-pwa-version-sync-hotfix"
+  "cacheToken": "petatoe-pwa-18-54-68-p51118-2-reload-loop-runtime-guard"
 }
