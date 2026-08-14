@@ -1,14 +1,14 @@
 {
-  "version": "18.54.69",
-  "build": 185469,
+  "version": "18.54.70",
+  "build": 185470,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Update Runtime Recovery — P5.11.18.3",
+  "title": "PETATOE Stable Update Engine Recovery — P5.11.18.4",
   "notes": [
-    "إصلاح Merge ناقص كان يترك pwa.js على إصدار أقدم من version.json وService Worker.",
-    "توحيد Runtime وManifest وCache Token وCache Busters على إصدار واحد.",
-    "منع stale-runtime من تنفيذ auto-reload متكرر؛ التحديث يتم One-shot فقط عند ضغط المستخدم.",
-    "منع تداخل فحوص التحديث المتزامنة بدون تغيير تصميم P5.11.18 أو Business Logic."
+    "استعادة محرك التحديث المستقر من آخر نسخة معتمدة مع الحفاظ على تصميم P5.11.18.",
+    "إزالة Boot Guard المضاف في index.html وإعادة ملكية حالة التحديث إلى pwa.js فقط.",
+    "توحيد Runtime وManifest وService Worker وCache Busters على إصدار واحد.",
+    "لا تغيير في Mobile Pilot Action System أو Business Logic أو Desktop/Tablet."
   ],
-  "cacheToken": "petatoe-pwa-18-54-69-p51118-3-update-runtime-recovery"
+  "cacheToken": "petatoe-pwa-18-54-70-p51118-4-stable-update-engine-recovery"
 }
