@@ -1953,7 +1953,7 @@ body.customer360-exporting .customer360-shell *{
 /* P5.11.24.1 — PETATOE Desktop Visual Identity Completion
    Canonical desktop-only visual layer for Dashboard, Customers and Follow-ups.
    Replaces the previous P5.11.24 pilot block in-place. Mobile/Tablet remain untouched. */
-@media (min-width:1024px) and (hover:hover) and (pointer:fine){
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
   #dashboardView,#customersView,#followupsView{
     --desk-glass:rgba(249,252,255,.76);
     --desk-glass-strong:rgba(255,255,255,.94);

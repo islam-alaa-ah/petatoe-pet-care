@@ -73,7 +73,9 @@
   flex-wrap: wrap;
 }
 
-/* Dashboard scales by available content width rather than device names. */
+/* Dashboard scales by available content width rather than device names.
+   P5.11.24.2 ownership guard: this responsive desktop/tablet layer must never override the canonical mobile dashboard. */
+@media (min-width: 768px) {
 #dashboardView .dashboard-filter-bar {
   display: grid;
   grid-template-columns: minmax(220px, .75fr) minmax(560px, 2fr);
@@ -106,6 +108,7 @@
 
 #dashboardView .dashboard-representative-settings-btn {
   flex: 0 0 auto;
+}
 }
 
 /* Laptop and medium desktop */

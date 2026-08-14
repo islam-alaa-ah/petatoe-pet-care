@@ -1,13 +1,13 @@
 {
-  "version": "18.54.80",
-  "build": 185480,
+  "version": "18.54.81",
+  "build": 185481,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop Visual Identity Completion P5.11.24.1",
+  "title": "PETATOE Desktop-to-Mobile Dashboard Isolation Recovery P5.11.24.2",
   "notes": [
-    "استكمال الهوية البصرية PETATOE على Desktop للرئيسية والعملاء والمتابعات في Light/Dark بدل التأثير الجزئي للمرحلة التجريبية.",
-    "توحيد Toolbars وFilters وStatus bars والجداول وأزرار الإجراءات وPagination وAnalytics panels بنفس Glass + 3D + Blue/Gold identity.",
-    "إعادة تصميم Customer/Follow-up dialogs على Desktop ضمن نفس الهوية مع الحفاظ الكامل على Mobile/Tablet وBusiness Logic بدون تعديل."
+    "إصلاح تسرب قواعد Responsive العامة إلى الرئيسية على الموبايل بعد تطوير هوية Desktop.",
+    "حصر Dashboard responsive base layout داخل Tablet/Desktop من 768px فأعلى حتى تعود Mobile ownership إلى mobile.css المعتمد.",
+    "تشديد بوابة P5.11.24.1 لتعمل على Desktop الحقيقي فقط مع الحفاظ على تصميم Desktop Light/Dark الحالي."
   ],
-  "cacheToken": "petatoe-pwa-18-54-80-p511241-desktop-visual-identity-completion"
+  "cacheToken": "petatoe-pwa-18-54-81-p511242-desktop-mobile-dashboard-isolation"
 }
