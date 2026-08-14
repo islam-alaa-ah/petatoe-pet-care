@@ -1,14 +1,14 @@
 {
-  "version": "18.54.73",
-  "build": 185473,
+  "version": "18.54.74",
+  "build": 185474,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Unified Glass 3D — All Screens P5.11.20",
+  "title": "PETATOE Mobile Glass 3D Visual Regression & Responsive Recovery P5.11.21",
   "notes": [
-    "اعتماد نظام Glass + 3D الموحد على جميع شاشات محتوى نسخة الموبايل في الوضعين Light وDark.",
-    "الرئيسية والعملاء والمتابعات تظل المرجع البصري؛ باقي الشاشات تستخدم نفس Tokens والمكونات بدل إنشاء تصميمات مستقلة.",
-    "توحيد الكروت والـPanels والفلاتر والحقول والجداول والأزرار والحوارات ضمن Visual System واحد على Mobile فقط.",
-    "الحفاظ الكامل على Header/Menu/Bottom Bar وعلى Desktop/Tablet دون تغيير، وبدون تعديل Business Logic أو البيانات أو الصلاحيات."
+    "إصلاح Responsive شامل لتقارير وجداول نسخة الموبايل ومنع انضغاط الأعمدة والنصوص.",
+    "توحيد أحجام حقول التاريخ والوقت والشهر على iPhone/Safari ومنع خروجها خارج الحاويات.",
+    "موازنة Glass 3D في Light Mode وتقليل الطبقات المتداخلة مع الحفاظ على الهوية المعتمدة.",
+    "تثبيت Filter overlays ونهاية الصفحات فوق Bottom Bar مع الحفاظ الكامل على Desktop/Tablet وBusiness Logic."
   ],
-  "cacheToken": "petatoe-pwa-18-54-73-p51120-mobile-glass-3d-all-screens"
+  "cacheToken": "petatoe-pwa-18-54-74-p51121-mobile-visual-responsive-recovery"
 }

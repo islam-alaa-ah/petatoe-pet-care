@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-73-p51120-mobile-glass-3d-all-screens";
+const CACHE_VERSION = "petatoe-pwa-18-54-74-p51121-mobile-visual-responsive-recovery";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
