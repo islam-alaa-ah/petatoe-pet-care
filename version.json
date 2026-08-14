@@ -1,14 +1,13 @@
 {
-  "version": "18.54.84",
-  "build": 185484,
+  "version": "18.54.85",
+  "build": 185485,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop Icon System & Visual Consistency P5.11.27",
+  "title": "PETATOE Scheduling Icon Runtime Hotfix P5.11.27.1",
   "notes": [
-    "توحيد أيقونات Desktop الوظيفية في تنفيذ وجدولة المواعيد باستخدام Inline SVG stroke-based مستوحى من هوية PETATOE.",
-    "إزالة الاعتماد البصري على Emoji في Desktop فقط مع إبقاء Mobile fallback الحالي دون تغيير.",
-    "توحيد أحجام Stroke وBlue/Gold states وأيقونات المراحل والأقفال والأسهم والحالة الفارغة.",
-    "Mobile lockdown كامل بدون تغيير ملفات أو مخرجات تصميم الموبايل."
+    "إصلاح ReferenceError في شاشة جدولة وتوزيع المواعيد الناتج عن استدعاء scheduleLockIcon دون تعريف.",
+    "إضافة helper محلية لعرض SVG للقفل على Desktop فقط مع الحفاظ على رموز القفل القديمة على Mobile.",
+    "لا تغيير في منطق الجدولة أو الصلاحيات أو البيانات أو تصميم الموبايل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-84-p51127-desktop-icon-system"
+  "cacheToken": "petatoe-pwa-18-54-85-p511271-scheduling-icon-runtime-hotfix"
 }

@@ -1,6 +1,14 @@
 (function(){
   const $=id=>document.getElementById(id); let month=new Date();month.setDate(1);let requests=[],technicianNames=[],teams=[],dayLocks=new Map(),bookedTimes=new Map(),multiDayServices=[],multiDayVisits=[],assignmentSaveInFlight=false;
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const desktopScheduleIconMode=()=>window.matchMedia?.('(min-width:1024px) and (hover:hover) and (pointer:fine)')?.matches===true&&Number(window.screen?.width||0)>1024;
+  function scheduleLockIcon(isLocked,fallback=''){
+    if(!desktopScheduleIconMode())return fallback;
+    const paths=isLocked
+      ? '<rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path>'
+      : '<rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 7.5-2"></path>';
+    return `<span class="petatoe-desktop-icon installation-lock-svg schedule-lock-icon ${isLocked?'is-locked':'is-unlocked'}" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false">${paths}</svg></span>`;
+  }
 
   function setSaveState(button,state,originalText){if(!button)return;if(state==='saving'){button.dataset.originalText=originalText||button.textContent;button.disabled=true;button.textContent='جاري الحفظ...';button.classList.add('is-saving')}else if(state==='saved'){button.textContent='تم الحفظ';button.classList.remove('is-saving');button.classList.add('is-saved')}else if(state==='error'){button.textContent='تعذر الحفظ';button.classList.remove('is-saving');button.classList.add('is-save-error')}else{button.disabled=false;button.textContent=button.dataset.originalText||originalText||button.textContent;button.classList.remove('is-saving','is-saved','is-save-error')}}
   function status(el,msg,type='info'){if(!el)return;el.textContent=msg;el.dataset.type=type;el.classList.remove('hidden')}
