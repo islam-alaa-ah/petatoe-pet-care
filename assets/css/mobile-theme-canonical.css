@@ -666,6 +666,33 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   #installationRequestNewView .appointment-animals-table td:nth-child(1)::before{content:"اسم الحيوان"}#installationRequestNewView .appointment-animals-table td:nth-child(2)::before{content:"نوع الحيوان"}#installationRequestNewView .appointment-animals-table td:nth-child(3)::before{content:"السلالة"}#installationRequestNewView .appointment-animals-table td:nth-child(4)::before{content:"الحجم"}#installationRequestNewView .appointment-animals-table td:nth-child(5)::before{content:"العدد"}#installationRequestNewView .appointment-animals-table td:nth-child(6)::before{content:"الإجراءات"}
   #installationRequestNewView .installation-services-table input,#installationRequestNewView .installation-services-table select,#installationRequestNewView .appointment-animals-table input,#installationRequestNewView .appointment-animals-table select,#installationRequestNewView .installation-services-table button,#installationRequestNewView .appointment-animals-table button{width:100%!important;min-width:0!important;max-width:100%!important}
 
+  /* P5.11.21.2 — Form-card containment: match the proven service-card sizing model.
+     A form grid with inline margins must size to the remaining inner card width, not 100% plus margins. */
+  #installationRequestNewView .installation-request-step-card>.installation-request-form-grid{
+    box-sizing:border-box!important;
+    width:auto!important;
+    inline-size:auto!important;
+    max-width:none!important;
+    max-inline-size:none!important;
+    min-width:0!important;
+    min-inline-size:0!important;
+    margin-inline:14px!important;
+  }
+  #installationRequestNewView .installation-request-step-card>.installation-request-form-grid>*{
+    box-sizing:border-box!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  #installationRequestNewView .installation-request-step-card>.installation-request-form-grid :where(input:not([type="hidden"]),select,textarea,.installation-customer-combobox,.installation-neighborhood-combobox){
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
+  }
+
   /* Filters and fields: single-column and touch-safe. */
   .actions-row,.filters-row,.followup-filters,.quotation-filters,.dashboard-filters,.report-filters,.settings-filters,.form-actions,.toolbar-actions,.customer-main-actions,.installation-request-filters{min-width:0!important;max-width:100%!important;gap:10px!important}
   .filters-row,.followup-filters,.quotation-filters,.dashboard-filters,.report-filters,.settings-filters,.installation-request-filters{display:grid!important;grid-template-columns:minmax(0,1fr)!important}

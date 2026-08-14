@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-75-p511211-mobile-form-controls-active-state-hotfix";
+const CACHE_VERSION = "petatoe-pwa-18-54-76-p511212-mobile-form-card-containment-recovery";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

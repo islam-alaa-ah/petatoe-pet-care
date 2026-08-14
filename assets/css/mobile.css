@@ -3590,10 +3590,12 @@ html.is-offline body::before {
   }
   section.view-section :is(input[type="date"],input[type="datetime-local"],input[type="time"],input[type="month"]),
   dialog :is(input[type="date"],input[type="datetime-local"],input[type="time"],input[type="month"]){
-    display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;height:46px!important;min-height:46px!important;
-    padding-block:0!important;padding-inline:12px!important;font-size:16px!important;line-height:1.2!important;overflow:hidden!important;
+    display:block!important;width:auto!important;inline-size:auto!important;max-width:100%!important;max-inline-size:100%!important;min-width:0!important;min-inline-size:0!important;height:46px!important;min-height:46px!important;
+    justify-self:stretch!important;align-self:stretch!important;padding-block:0!important;padding-inline:12px!important;font-size:16px!important;line-height:1.2!important;overflow:hidden!important;
     direction:inherit!important;text-align:start!important;
   }
+  #dailyPerformanceReportView .daily-performance-filters>label{width:auto!important;min-width:0!important;max-width:100%!important;justify-self:stretch!important}
+  #dailyPerformanceReportView .daily-performance-filters>label>input[type="date"]{width:auto!important;inline-size:auto!important;justify-self:stretch!important}
   section.view-section :is(input[type="date"],input[type="datetime-local"],input[type="time"],input[type="month"])::-webkit-date-and-time-value,
   dialog :is(input[type="date"],input[type="datetime-local"],input[type="time"],input[type="month"])::-webkit-date-and-time-value{
     min-width:0!important;width:100%!important;text-align:start!important;line-height:1.2!important;

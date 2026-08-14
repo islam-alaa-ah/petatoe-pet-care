@@ -1,14 +1,14 @@
 {
-  "version": "18.54.75",
-  "build": 185475,
+  "version": "18.54.76",
+  "build": 185476,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Form Controls & Active State Regression Hotfix P5.11.21.1",
+  "title": "PETATOE Mobile Form Card Containment Recovery P5.11.21.2",
   "notes": [
-    "تضييق P5.11.21 بحيث لا يفرض عرض 100% على جميع حقول الإدخال والقوائم في نسخة الموبايل.",
-    "الإبقاء على احتواء حقول التاريخ والوقت الخاصة بـ iPhone/Safari داخل الحاويات بدون التأثير على بقية عناصر النماذج.",
-    "إعادة مصدر تصميم تبويبات تحليل العملاء إلى الطبقة المعتمدة لضمان وضوح الحالة النشطة في Light وDark Mode.",
-    "Mobile-only بدون تغيير Desktop/Tablet أو Business Logic."
+    "توحيد احتواء حقول نماذج الموبايل داخل الكروت اعتمادًا على نموذج تفاصيل الخدمة المعتمد.",
+    "إصلاح تعارض width:100% مع الهوامش الداخلية في بيانات العميل والتحصيل بدون تغيير تخطيط Desktop/Tablet.",
+    "ضبط حقول التاريخ في iPhone/Safari لتتمدد داخل مساحة الـgrid المتاحة دون تجاوز حدود الكارد.",
+    "Mobile-only بدون تغيير Business Logic أو تصميم Desktop/Tablet."
   ],
-  "cacheToken": "petatoe-pwa-18-54-75-p511211-mobile-form-controls-active-state-hotfix"
+  "cacheToken": "petatoe-pwa-18-54-76-p511212-mobile-form-card-containment-recovery"
 }
