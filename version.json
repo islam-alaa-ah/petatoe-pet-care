@@ -1,14 +1,14 @@
 {
-  "version": "18.54.72",
-  "build": 185472,
+  "version": "18.54.73",
+  "build": 185473,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Unified Glass 3D Pilot — P5.11.19",
+  "title": "PETATOE Mobile Unified Glass 3D — All Screens P5.11.20",
   "notes": [
-    "تطوير بصري موحد Glass + 3D لشاشات الموبايل التجريبية: الرئيسية والعملاء والمتابعات فقط.",
-    "استبدال طبقات P5.11.17 وP5.11.18 المرئية السابقة بطبقة Visual Canonical واحدة مع الحفاظ على نفس DOM والوظائف.",
-    "الحفاظ على Header/Menu/Bottom Bar وعلى Desktop/Tablet دون تغيير.",
-    "لا تغيير في Business Logic أو البيانات أو الصلاحيات أو Update Engine المستقر."
+    "اعتماد نظام Glass + 3D الموحد على جميع شاشات محتوى نسخة الموبايل في الوضعين Light وDark.",
+    "الرئيسية والعملاء والمتابعات تظل المرجع البصري؛ باقي الشاشات تستخدم نفس Tokens والمكونات بدل إنشاء تصميمات مستقلة.",
+    "توحيد الكروت والـPanels والفلاتر والحقول والجداول والأزرار والحوارات ضمن Visual System واحد على Mobile فقط.",
+    "الحفاظ الكامل على Header/Menu/Bottom Bar وعلى Desktop/Tablet دون تغيير، وبدون تعديل Business Logic أو البيانات أو الصلاحيات."
   ],
-  "cacheToken": "petatoe-pwa-18-54-72-p51119-mobile-glass-3d"
+  "cacheToken": "petatoe-pwa-18-54-73-p51120-mobile-glass-3d-all-screens"
 }

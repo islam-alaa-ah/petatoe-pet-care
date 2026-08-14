@@ -3510,13 +3510,13 @@ html.is-offline body::before {
   border-radius:inherit;
 }
 
-/* PETATOE P5.11.19 — Mobile Unified Glass 3D Visual System.
-   ONE canonical visual layer for the approved pilot screens only:
-   Dashboard + Customers + Follow-ups. Mobile <= 767px only.
+/* PETATOE P5.11.20 — Mobile Unified Glass 3D Visual System.
+   ONE canonical visual layer for ALL application content screens on mobile.
+   Dashboard + Customers + Follow-ups remain the visual reference. Mobile <= 767px only.
    Structural layout from the existing mobile implementation is preserved.
    Header / menu / bottom navigation / desktop / tablet are intentionally untouched. */
 @media (max-width:767px){
-  #dashboardView,#customersView,#followupsView{
+  section.view-section,dialog{
     --pilot-blue:#1688ff;--pilot-blue-2:#075fdc;--pilot-blue-soft:#69b8ff;--pilot-gold:#e9ad37;--pilot-gold-soft:#ffd978;
     --pilot-card:rgba(255,255,255,.76);--pilot-card-2:rgba(239,247,255,.58);--pilot-line:rgba(22,136,255,.46);--pilot-gold-line:rgba(233,173,55,.56);--pilot-divider:rgba(50,136,225,.18);
     --pilot-glass:linear-gradient(145deg,rgba(255,255,255,.88),rgba(235,246,255,.62));
@@ -3529,7 +3529,7 @@ html.is-offline body::before {
     --pilot-icon-shadow:0 8px 16px rgba(17,104,205,.16),inset 0 1px 0 rgba(255,255,255,.76),inset 0 -2px 5px rgba(16,88,179,.08);
     --pilot-glow:0 0 22px rgba(22,136,255,.16);--pilot-blur:blur(14px) saturate(145%);
   }
-  html[data-theme="dark"] #dashboardView,html[data-theme="dark"] #customersView,html[data-theme="dark"] #followupsView{
+  html[data-theme="dark"] section.view-section,html[data-theme="dark"] dialog{
     --pilot-card:rgba(4,20,40,.78);--pilot-card-2:rgba(8,35,66,.60);--pilot-line:rgba(38,147,255,.60);--pilot-gold-line:rgba(233,173,55,.70);--pilot-divider:rgba(67,158,247,.20);
     --pilot-glass:linear-gradient(145deg,rgba(12,43,78,.80),rgba(4,20,39,.70));--pilot-glass-soft:linear-gradient(145deg,rgba(14,48,85,.66),rgba(4,19,37,.56));
     --pilot-glass-blue:linear-gradient(145deg,rgba(15,66,118,.74),rgba(4,24,47,.66));--pilot-glass-gold:linear-gradient(145deg,rgba(75,57,22,.54),rgba(6,27,50,.72));
@@ -3538,6 +3538,121 @@ html.is-offline body::before {
     --pilot-gold-shadow:0 16px 34px rgba(0,0,0,.31),0 5px 14px rgba(0,0,0,.22),0 0 18px rgba(233,173,55,.12),inset 0 1px 0 rgba(255,225,149,.11);
     --pilot-icon-shadow:0 9px 18px rgba(0,0,0,.27),0 0 18px rgba(22,136,255,.14),inset 0 1px 0 rgba(158,213,255,.14),inset 0 -3px 7px rgba(0,0,0,.20);--pilot-glow:0 0 26px rgba(22,136,255,.21);
   }
+
+  /* Canonical application-wide mobile surfaces — single Glass + 3D language.
+     Structural layout stays owned by each screen's existing responsive rules. */
+  section.view-section :is(
+    .panel,.table-card,.actions-row,.filters-row,.filters-grid,.data-status,.status-message,
+    .installation-request-step-card,.installation-kpi-card,.executive-kpi-card,.backup-action-card,.health-summary-card,
+    .notification-master-card,.notification-push-card,.installation-calendar-shell,.installation-execution-workspace,
+    .installation-completion-table-panel,.installation-report-panel,.installation-service-section,
+    .about-app-identity,.about-version-panel,.about-update-panel,.permissions-role-bar
+  ){
+    border-color:var(--pilot-line)!important;
+    background:var(--pilot-glass)!important;
+    -webkit-backdrop-filter:var(--pilot-blur);backdrop-filter:var(--pilot-blur);
+    box-shadow:var(--pilot-shadow)!important;
+  }
+  section.view-section :is(.panel,.table-card,.actions-row,.filters-row,.filters-grid,.installation-request-step-card,.installation-kpi-card,.executive-kpi-card,.backup-action-card,.health-summary-card){transform:translateZ(0)}
+
+  section.view-section :is(
+    .followup-stat,.installation-kpi-card,.executive-kpi-card,.health-summary-card,.backup-counts-grid>*,
+    .installation-completion-kpis>*,.installation-request-kpis>*,.installation-schedule-kpis>*,.installation-operations-kpis>*
+  ){
+    border-color:var(--pilot-line)!important;
+    background:var(--pilot-glass-blue)!important;
+    box-shadow:var(--pilot-icon-shadow)!important;
+  }
+  section.view-section :is(.installation-kpi-card,.executive-kpi-card,.health-summary-card):nth-child(3n){
+    border-color:var(--pilot-gold-line)!important;
+    background:var(--pilot-glass-gold)!important;
+    box-shadow:var(--pilot-gold-shadow)!important;
+  }
+
+  section.view-section :is(input,select,textarea){
+    min-height:42px;
+    border:1px solid color-mix(in srgb,var(--pilot-line) 72%,var(--border))!important;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-card) 82%,transparent),color-mix(in srgb,var(--pilot-blue) 6%,var(--pilot-card-2)))!important;
+    -webkit-backdrop-filter:blur(10px) saturate(135%);backdrop-filter:blur(10px) saturate(135%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(22,136,255,.05),0 5px 12px rgba(9,70,145,.05)!important;
+  }
+  section.view-section :is(input,select,textarea):focus{
+    outline:none!important;border-color:var(--pilot-blue)!important;
+    box-shadow:0 0 0 2px color-mix(in srgb,var(--pilot-blue) 16%,transparent),0 0 18px rgba(22,136,255,.14),inset 0 1px 0 rgba(255,255,255,.24)!important;
+  }
+
+  section.view-section :is(.primary-btn,.secondary-btn,.text-btn,.compact-btn,.icon-btn,.delete-btn,button[class*="btn"],a[class*="btn"]){
+    position:relative;overflow:hidden;border-radius:14px!important;font-weight:900!important;
+    -webkit-backdrop-filter:blur(10px) saturate(140%);backdrop-filter:blur(10px) saturate(140%);
+    transition:transform .14s ease,box-shadow .16s ease,border-color .16s ease,filter .16s ease!important;
+  }
+  section.view-section :is(.secondary-btn,.text-btn,.compact-btn,.icon-btn,button[class*="btn"]):not(.primary-btn):not(.delete-btn){
+    border-color:color-mix(in srgb,var(--pilot-line) 76%,var(--border))!important;
+    background:var(--pilot-glass-soft)!important;color:var(--text)!important;
+    box-shadow:0 8px 16px rgba(8,74,154,.10),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 5px rgba(16,88,179,.05)!important;
+  }
+  section.view-section .primary-btn{
+    border:1px solid #45a7ff!important;background:linear-gradient(145deg,#198cff,#075fdc 68%,#064fbd)!important;color:#fff!important;
+    box-shadow:0 10px 20px rgba(22,136,255,.25),0 0 16px rgba(22,136,255,.15),inset 0 1px 0 rgba(255,255,255,.32),inset 0 -3px 7px rgba(0,51,130,.24)!important;
+  }
+  section.view-section .delete-btn{
+    border:1px solid rgba(239,68,68,.38)!important;
+    background:linear-gradient(145deg,color-mix(in srgb,#ef4444 9%,var(--pilot-card)),color-mix(in srgb,#ef4444 3%,var(--pilot-card-2)))!important;
+    color:#dc4b4b!important;box-shadow:0 8px 16px rgba(185,28,28,.08),inset 0 1px 0 rgba(255,255,255,.28)!important;
+  }
+  html[data-theme="dark"] section.view-section .delete-btn{color:#fca5a5!important}
+  section.view-section :is(.primary-btn,.secondary-btn,.text-btn,.compact-btn,.icon-btn,.delete-btn,button[class*="btn"],a[class*="btn"])::after{
+    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    background:linear-gradient(118deg,rgba(255,255,255,.16),transparent 28%,transparent 68%,rgba(233,173,55,.08));opacity:.68;
+  }
+  section.view-section :is(.primary-btn,.secondary-btn,.text-btn,.compact-btn,.icon-btn,.delete-btn,button[class*="btn"],a[class*="btn"]):active{transform:translateY(1px) scale(.992)!important;filter:brightness(.97)}
+
+  section.view-section :is(.table-wrap,.table-scroll){
+    border-color:color-mix(in srgb,var(--pilot-line) 58%,var(--border))!important;
+    background:color-mix(in srgb,var(--pilot-card) 58%,transparent)!important;
+    -webkit-backdrop-filter:blur(8px) saturate(125%);backdrop-filter:blur(8px) saturate(125%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 7px 18px rgba(8,67,139,.07)!important;
+  }
+  section.view-section table{border-color:var(--pilot-divider)!important;background:transparent!important}
+  section.view-section thead{background:color-mix(in srgb,var(--pilot-blue) 10%,var(--pilot-card-2))!important}
+  section.view-section :is(th,td){border-color:var(--pilot-divider)!important}
+  section.view-section tbody tr{border-color:var(--pilot-divider)!important}
+
+  section.view-section :is(.empty-state,.empty-cell){
+    color:color-mix(in srgb,var(--text) 72%,var(--muted))!important;font-weight:760!important;
+  }
+
+  /* Special mobile modules that are not built from the common panel classes. */
+  #installationRequestNewView .installation-step-header,
+  #installationScheduleView :is(.installation-calendar-weekdays,.installation-calendar-grid),
+  #installationExecutionView :is(.installation-execution-tabs,.installation-execution-tab,.installation-execution-tab-panel),
+  #installationReportsView :is(.installation-report-panel-head,.installation-summary-teams-menu,.installation-summary-execution-head),
+  #reportsOverviewView :is(.analytics-tab,.analytics-breakdown,.top10-list,.customer-action-list),
+  #permissionsView .permissions-matrix,
+  #notificationCenterView .notification-role-filter,
+  #installationSettingsView .installation-settings-section{
+    border-color:var(--pilot-line)!important;background:var(--pilot-glass-soft)!important;
+    -webkit-backdrop-filter:blur(10px) saturate(135%);backdrop-filter:blur(10px) saturate(135%);
+    box-shadow:0 9px 20px rgba(8,70,146,.09),inset 0 1px 0 rgba(255,255,255,.30)!important;
+  }
+
+  dialog{
+    border-color:var(--pilot-line)!important;background:var(--pilot-glass)!important;color:var(--text)!important;
+    -webkit-backdrop-filter:var(--pilot-blur);backdrop-filter:var(--pilot-blur);
+    box-shadow:0 28px 72px rgba(2,13,30,.34),0 0 24px rgba(22,136,255,.16),inset 0 1px 0 rgba(255,255,255,.20)!important;
+  }
+  dialog::backdrop{background:rgba(2,13,30,.48);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+  dialog :is(input,select,textarea){
+    border-color:color-mix(in srgb,var(--pilot-line) 72%,var(--border))!important;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-card) 82%,transparent),color-mix(in srgb,var(--pilot-blue) 6%,var(--pilot-card-2)))!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 5px 12px rgba(9,70,145,.05)!important;
+  }
+  dialog :is(.primary-btn,.secondary-btn,.text-btn,.compact-btn,.icon-btn,.delete-btn,button[class*="btn"]){
+    border-radius:14px!important;font-weight:900!important;-webkit-backdrop-filter:blur(10px) saturate(140%);backdrop-filter:blur(10px) saturate(140%);
+  }
+  dialog .primary-btn{border:1px solid #45a7ff!important;background:linear-gradient(145deg,#198cff,#075fdc 68%,#064fbd)!important;color:#fff!important;box-shadow:0 10px 20px rgba(22,136,255,.25),inset 0 1px 0 rgba(255,255,255,.32)!important}
+  dialog :is(.secondary-btn,.text-btn,.compact-btn,.icon-btn,button[class*="btn"]):not(.primary-btn):not(.delete-btn){border-color:color-mix(in srgb,var(--pilot-line) 76%,var(--border))!important;background:var(--pilot-glass-soft)!important;color:var(--text)!important;box-shadow:0 8px 16px rgba(8,74,154,.10),inset 0 1px 0 rgba(255,255,255,.40)!important}
+  dialog .delete-btn{border-color:rgba(239,68,68,.38)!important;background:linear-gradient(145deg,color-mix(in srgb,#ef4444 9%,var(--pilot-card)),color-mix(in srgb,#ef4444 3%,var(--pilot-card-2)))!important}
 
   #dashboardView :is(.mobile-dashboard-toolbar,.dashboard-filter-bar,.period-label,.dashboard-stats .stat-card,.analytics-grid>.panel,.analytics-grid>.full-span-panel,.performance-card,.performance-metric,.simple-item,.attention-item),
   #customersView :is(.actions-row,.filters-row,.customer-mobile-card,.table-pagination,.customer-mobile-empty),
@@ -3594,6 +3709,6 @@ html.is-offline body::before {
 
   #dashboardView :is(.primary-btn,.secondary-btn,.text-btn,.mobile-dashboard-action):active,#customersView :is(.primary-btn,.secondary-btn,.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button):active,#followupsView :is(.primary-btn,.secondary-btn,.text-btn,.report-export-actions button,.mobile-followups-filter-button,.mobile-followups-quicknav button,.row-actions button,.row-actions a,.table-pagination button):active{transform:translateY(1px) scale(.992)!important;filter:brightness(.97)}
 }
-@media (max-width:360px){#dashboardView,#customersView,#followupsView{--pilot-blur:blur(11px) saturate(135%)}#customersView .table-pagination>div,#followupsView .table-pagination>div{grid-template-columns:minmax(72px,1fr) auto minmax(72px,1fr)!important;gap:6px!important}#customersView .table-pagination button,#followupsView .table-pagination button{padding-inline:8px!important;font-size:10px!important}}
-@media (prefers-reduced-motion:reduce) and (max-width:767px){#dashboardView *,#customersView *,#followupsView *{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+@media (max-width:360px){section.view-section,dialog{--pilot-blur:blur(11px) saturate(135%)}#customersView .table-pagination>div,#followupsView .table-pagination>div{grid-template-columns:minmax(72px,1fr) auto minmax(72px,1fr)!important;gap:6px!important}#customersView .table-pagination button,#followupsView .table-pagination button{padding-inline:8px!important;font-size:10px!important}}
+@media (prefers-reduced-motion:reduce) and (max-width:767px){section.view-section *,dialog *{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 
