@@ -1,13 +1,13 @@
 {
-  "version": "18.54.78",
-  "build": 185478,
+  "version": "18.54.79",
+  "build": 185479,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop Header & Sidebar Light/Dark Shell P5.11.23",
+  "title": "PETATOE Desktop Visual Identity Pilot P5.11.24",
   "notes": [
-    "تفعيل هوية Light Mode مستقلة للهيدر والقائمة الجانبية في نسخة Desktop فقط مع الحفاظ على تصميم Dark الحالي.",
-    "استخدام نفس فلسفة PETATOE الزجاجية Blue/Gold المعتمدة بدون تغيير تخطيط الهيدر أو القائمة.",
-    "الحفاظ الكامل على Mobile shell وBottom Navigation والشاشات الداخلية وBusiness Logic بدون تعديل."
+    "تطبيق هوية PETATOE Glass + 3D داخل شاشات Desktop الرئيسية والعملاء والمتابعات في Light/Dark.",
+    "تطوير KPI cards والفلاتر واللوحات والجداول وأزرار الإجراءات بصريًا بما يناسب كثافة ومساحة Desktop.",
+    "إظهار أيقونات KPI في الرئيسية على Desktop مع الحفاظ على Mobile وTablet دون تعديل بصري."
   ],
-  "cacheToken": "petatoe-pwa-18-54-78-p51123-desktop-header-sidebar-light-dark"
+  "cacheToken": "petatoe-pwa-18-54-79-p51124-desktop-visual-identity-pilot"
 }
