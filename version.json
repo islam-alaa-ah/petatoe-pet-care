@@ -1,15 +1,16 @@
 {
-  "version": "18.54.64",
-  "build": 185464,
+  "version": "18.54.65",
+  "build": 185465,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Content UI Pilot Refinement — Dashboard, Customers & Follow-ups — P5.11.16",
+  "title": "PETATOE Mobile Content UI Pilot Final Visual Refinement — P5.11.17",
   "notes": [
-    "رفع تطابق الهوية البصرية مع التصميم المرجعي المعتمد في الرئيسية والعملاء والمتابعات فقط.",
-    "تقليل الأحجام والمساحات الفارغة ورفع كثافة عرض البيانات دون تغيير الوظائف أو البيانات.",
-    "توحيد هوية Blue/Gold/Glow على الأزرار والفلاتر والحقول والكروت والفواصل وKPIs في Light وDark.",
-    "إعادة بناء Customer Card بشكل أكثر Compact وإضافة أيقونة عميل فعلية وهرمية واضحة لأزرار الإجراءات.",
-    "الهيدر والقائمة وBottom Bar مكونات مقفلة ولم يتم تعديلها."
+    "تحسين نهائي تجريبي لعناصر المحتوى الداخلية في الرئيسية والعملاء والمتابعات على نسخة الموبايل فقط.",
+    "إعادة تصميم السابق/التالي وترقيم الصفحات بهوية PETATOE أكثر Compact ووضوحًا.",
+    "تحويل إعدادات ظهور المندوبين إلى Action واضح بهوية Blue/Gold بدل المظهر الرمادي التقليدي.",
+    "تثبيت الهرمية البصرية لأزرار عرض/متابعة/تعديل/حذف في Light وDark.",
+    "تحسين كثافة وفوكس فلاتر الموبايل ووضوح Empty States دون تغيير Business Logic.",
+    "الهيدر والقائمة وBottom Bar مكونات مقفلة ولم يتم تعديل تصميمها."
   ],
-  "cacheToken": "petatoe-pwa-18-54-64-p51116-mobile-content-pilot-refinement"
+  "cacheToken": "petatoe-pwa-18-54-65-p51117-pilot-final-refinement"
 }

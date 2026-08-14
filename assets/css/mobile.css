@@ -3509,3 +3509,86 @@ html.is-offline body::before {
   object-fit:cover;
   border-radius:inherit;
 }
+
+/* PETATOE P5.11.17 — Pilot Final Visual Refinement.
+   Mobile-only. Locked shell (header/menu/bottom nav) intentionally untouched. */
+@media (max-width:767px),(pointer:coarse) and (max-device-width:1024px),(hover:none) and (max-device-width:1024px){
+  /* Compact branded pagination shared by the pilot Customers + Follow-ups screens. */
+  #customersView .table-pagination,#followupsView .table-pagination{
+    display:grid!important;grid-template-columns:1fr!important;gap:8px!important;
+    padding:9px 10px!important;border-radius:17px!important;min-height:0!important;
+  }
+  #customersView .table-pagination>span,#followupsView .table-pagination>span{
+    justify-self:end;color:var(--muted)!important;font-size:10px!important;font-weight:850!important;line-height:1.25!important;
+  }
+  #customersView .table-pagination>div,#followupsView .table-pagination>div{
+    display:grid!important;grid-template-columns:minmax(82px,1fr) auto minmax(82px,1fr)!important;align-items:center!important;gap:8px!important;width:100%!important;
+  }
+  #customersView .table-pagination>div>span,#followupsView .table-pagination>div>span{
+    min-width:58px;padding:6px 9px;border:1px solid color-mix(in srgb,var(--pilot-line) 56%,transparent);border-radius:999px;
+    background:color-mix(in srgb,var(--pilot-blue) 6%,var(--pilot-card));color:var(--text);text-align:center;font-size:11px;font-weight:900;line-height:1.2;
+  }
+  #customersView .table-pagination button,#followupsView .table-pagination button{
+    position:relative;min-height:38px!important;padding:7px 12px!important;border:1px solid var(--pilot-line)!important;border-radius:12px!important;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 9%,var(--pilot-card-2)),var(--pilot-card))!important;
+    color:var(--pilot-blue)!important;font-size:11px!important;font-weight:900!important;box-shadow:0 5px 14px rgba(22,136,255,.10)!important;
+  }
+  #customersView .table-pagination button:disabled,#followupsView .table-pagination button:disabled{
+    opacity:.46!important;filter:saturate(.55)!important;box-shadow:none!important;color:var(--muted)!important;border-color:color-mix(in srgb,var(--pilot-line) 35%,var(--border))!important;
+  }
+  #customersView .table-pagination button:not(:disabled):active,#followupsView .table-pagination button:not(:disabled):active{transform:translateY(1px)}
+
+  /* Dashboard representative settings: make it an intentional PETATOE action, not a legacy grey control. */
+  #dashboardView .dashboard-representative-settings-btn{
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;width:auto!important;max-width:100%!important;
+    min-height:38px!important;padding:8px 12px!important;border:1px solid var(--pilot-gold-line)!important;border-radius:12px!important;
+    background:linear-gradient(135deg,color-mix(in srgb,var(--pilot-gold) 11%,var(--pilot-card)),color-mix(in srgb,var(--pilot-blue) 6%,var(--pilot-card-2)))!important;
+    color:var(--text)!important;font-size:10.5px!important;font-weight:900!important;box-shadow:0 6px 16px rgba(22,136,255,.08),0 0 12px rgba(233,173,55,.08)!important;
+  }
+  #dashboardView .dashboard-representative-settings-btn::before{
+    content:"";width:15px;height:15px;flex:0 0 15px;background:currentColor;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M19 8v6M22 11h-6'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M19 8v6M22 11h-6'/%3E%3C/svg%3E") center/contain no-repeat;
+    color:var(--pilot-gold);
+  }
+  #dashboardView .dashboard-representative-settings-btn.hidden{display:none!important}
+  #dashboardView .panel-header:has(.dashboard-representative-settings-btn:not(.hidden)){display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
+  #dashboardView .panel-header:has(.dashboard-representative-settings-btn:not(.hidden)) .dashboard-representative-settings-btn{justify-self:stretch!important}
+
+  /* Customer actions: preserve semantic hierarchy in BOTH themes and reduce legacy-button feel. */
+  #customersView .customer-mobile-card-actions{gap:7px!important;padding:9px 11px 11px!important}
+  #customersView .customer-mobile-card-actions button,#customersView .customer-mobile-card-actions a{min-height:39px!important;border-width:1px!important;font-size:10px!important;box-shadow:none!important}
+  #customersView .customer-mobile-card-actions .customer-action-primary{
+    background:linear-gradient(100deg,var(--pilot-blue-2),var(--pilot-blue))!important;border-color:var(--pilot-blue)!important;color:#fff!important;box-shadow:0 5px 13px rgba(22,136,255,.18)!important
+  }
+  #customersView .customer-mobile-card-actions .customer-action-followup{
+    border-color:var(--pilot-gold-line)!important;background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-gold) 13%,var(--pilot-card)),color-mix(in srgb,var(--pilot-gold) 5%,var(--pilot-card-2)))!important;color:color-mix(in srgb,var(--pilot-gold) 84%,#6f4900)!important
+  }
+  html[data-theme="dark"] #customersView .customer-mobile-card-actions .customer-action-followup{color:#ffd36f!important;background:linear-gradient(145deg,rgba(233,173,55,.14),rgba(10,33,61,.88))!important}
+  #customersView .customer-mobile-card-actions .customer-action-edit{
+    border-color:color-mix(in srgb,var(--pilot-blue) 58%,var(--border))!important;background:color-mix(in srgb,var(--pilot-blue) 7%,var(--pilot-card))!important;color:var(--pilot-blue)!important
+  }
+  html[data-theme="dark"] #customersView .customer-mobile-card-actions .customer-action-edit{color:#72b9ff!important;background:rgba(22,136,255,.08)!important}
+  #customersView .customer-mobile-card-actions .delete-btn{
+    border-color:color-mix(in srgb,#ef4444 45%,var(--border))!important;background:color-mix(in srgb,#ef4444 8%,var(--pilot-card))!important;color:#dc2626!important
+  }
+  html[data-theme="dark"] #customersView .customer-mobile-card-actions .delete-btn{color:#fca5a5!important;background:rgba(239,68,68,.08)!important}
+
+  /* Filter sheets: slightly denser, clearer focus and less oversized close control. */
+  #followupsView .mobile-followups-filter-sheet{gap:9px!important;padding:12px!important;border-color:color-mix(in srgb,var(--pilot-blue) 72%,var(--pilot-gold))!important}
+  #followupsView .mobile-followups-filter-sheet input,#followupsView .mobile-followups-filter-sheet select{min-height:42px!important;border-radius:12px!important}
+  #followupsView .mobile-followups-filter-sheet :is(input,select):focus,#customersView .filters-row :is(input,select):focus{
+    outline:none!important;border-color:var(--pilot-blue)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--pilot-blue) 17%,transparent),0 0 14px rgba(22,136,255,.10)!important
+  }
+  #followupsView .mobile-followups-filter-close,#customersView .mobile-customers-filter-close{width:34px!important;height:34px!important;border-radius:11px!important}
+
+  /* Empty states remain readable instead of visually disabled. */
+  #dashboardView :is(.empty-state,.empty-panel),#customersView :is(.empty-state,.customer-mobile-empty),#followupsView .empty-state{
+    color:color-mix(in srgb,var(--text) 70%,var(--muted))!important;font-weight:750!important;
+  }
+  #dashboardView .analytics-grid .empty-state{min-height:70px!important;padding:16px 10px!important}
+}
+@media (max-width:360px){
+  #customersView .table-pagination>div,#followupsView .table-pagination>div{grid-template-columns:minmax(72px,1fr) auto minmax(72px,1fr)!important;gap:6px!important}
+  #customersView .table-pagination button,#followupsView .table-pagination button{padding-inline:8px!important;font-size:10px!important}
+}
