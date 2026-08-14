@@ -1,13 +1,13 @@
 {
-  "version": "18.54.91",
-  "build": 185491,
+  "version": "18.54.92",
+  "build": 185492,
   "forceUpdate": true,
   "releaseDate": "2026-08-15",
-  "title": "PETATOE Daily Operations Background Refresh Data Hotfix",
+  "title": "PETATOE Daily Suggestions Background Refresh UI Recovery",
   "notes": [
-    "إصلاح تحديث بيانات إدارة المهام اليومية عند وصول Snapshot محدثة من Background Refresh.",
-    "ربط حدث permission-crm:dailyOperations بالـdailyOperationsCrmSnapshot وإعادة render الشاشة.",
-    "بدون تغيير RPC أو صلاحيات أو منطق التاريخ أو التصميم."
+    "إصلاح تحديث قائمة العملاء المقترح التواصل معهم عند وصول بيانات محدثة من Background Refresh.",
+    "ربط daily-suggestions وdaily-suggestions-team بحدث kyum-offline-read-updated وإعادة Render البيانات فورًا.",
+    "بدون تغيير RPC أو Supabase أو الصلاحيات أو منطق اختيار العملاء أو تصميم Desktop/Mobile."
   ],
-  "cacheToken": "petatoe-pwa-18-54-91-daily-operations-refresh-hotfix"
+  "cacheToken": "petatoe-pwa-18-54-92-daily-suggestions-refresh-hotfix"
 }

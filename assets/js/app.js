@@ -916,6 +916,23 @@ window.addEventListener("kyum-offline-read-updated", event => {
     dailyActivityReportRequested = false;
     renderDailyActivityTimeline();
   }
+
+  const dailySuggestionsDate = window.DailySuggestionsService?.riyadhDate?.() || dailyLocalDate();
+  const dailySuggestionsUserId = window.CustomerAuth?.getState?.().user?.id || null;
+  if (dailySuggestionsUserId
+    && detail.key === `daily-suggestions:${dailySuggestionsDate}:${dailySuggestionsUserId}`
+    && detail.data
+    && typeof detail.data === "object") {
+    dailySuggestedSuggestionRows = Array.isArray(detail.data.rows) ? detail.data.rows : [];
+    dailySuggestedSuggestionProgress = detail.data.progress || dailySuggestedSuggestionProgress;
+    dailySuggestedSuggestionsError = "";
+    renderDailySuggestedCustomers();
+  }
+  if (detail.key === `daily-suggestions-team:${dailySuggestionsDate}` && Array.isArray(detail.data)) {
+    dailySuggestedTeamRows = detail.data;
+    dailySuggestedTeamError = "";
+    renderDailySuggestedTeam();
+  }
 });
 
 window.addEventListener("kyum-daily-derived-invalidated", event => {
