@@ -3592,3 +3592,92 @@ html.is-offline body::before {
   #customersView .table-pagination>div,#followupsView .table-pagination>div{grid-template-columns:minmax(72px,1fr) auto minmax(72px,1fr)!important;gap:6px!important}
   #customersView .table-pagination button,#followupsView .table-pagination button{padding-inline:8px!important;font-size:10px!important}
 }
+
+/* PETATOE P5.11.18 — Pilot Mobile Action System.
+   Replaces the remaining legacy-looking pilot actions with one Blue/Gold action language.
+   Scope: Dashboard + Customers + Follow-ups mobile content only. Shell is untouched. */
+@media (max-width:767px),(pointer:coarse) and (max-device-width:1024px),(hover:none) and (max-device-width:1024px){
+  #dashboardView :is(.panel-header .text-btn),
+  #customersView :is(.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button),
+  #followupsView :is(.report-export-actions button,.table-pagination button){
+    position:relative!important;overflow:hidden!important;border-radius:14px!important;font-weight:900!important;letter-spacing:0!important;
+    transition:transform .14s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease!important;
+  }
+  #dashboardView :is(.panel-header .text-btn)::after,
+  #customersView :is(.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button)::after,
+  #followupsView :is(.report-export-actions button,.table-pagination button)::after{
+    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    background:linear-gradient(115deg,rgba(255,255,255,.10),transparent 34%,transparent 70%,rgba(233,173,55,.07));
+  }
+
+  /* Dashboard: View all / View follow-ups become real branded secondary actions. */
+  #dashboardView .panel-header .text-btn{
+    min-height:40px!important;padding:8px 14px!important;border:1px solid color-mix(in srgb,var(--pilot-blue) 72%,var(--pilot-gold))!important;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 10%,var(--pilot-card-2)),color-mix(in srgb,var(--pilot-gold) 5%,var(--pilot-card)))!important;
+    color:var(--text)!important;box-shadow:0 6px 16px rgba(22,136,255,.12),inset 0 0 0 1px rgba(255,255,255,.025)!important;
+  }
+  #dashboardView .panel-header .text-btn::before{content:"‹";display:inline-grid;place-items:center;margin-inline-end:6px;color:var(--pilot-blue);font-size:18px;font-weight:900;line-height:1}
+  html[dir="ltr"] #dashboardView .panel-header .text-btn::before{content:"›"}
+
+  /* Customer import/template: distinct utility actions, same PETATOE family. */
+  #customersView .customer-main-actions .secondary-btn{
+    min-height:46px!important;border:1px solid color-mix(in srgb,var(--pilot-blue) 55%,var(--border))!important;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 9%,var(--pilot-card-2)),var(--pilot-card))!important;
+    color:var(--text)!important;box-shadow:0 6px 16px rgba(22,136,255,.09)!important;
+  }
+  #customersView .customer-main-actions .customer-import-action{border-color:color-mix(in srgb,var(--pilot-blue) 78%,var(--border))!important}
+  #customersView .customer-main-actions .customer-export-action{border-color:color-mix(in srgb,var(--pilot-gold) 58%,var(--pilot-line))!important;background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-gold) 9%,var(--pilot-card)),var(--pilot-card-2))!important}
+
+  /* Customer card actions: semantic hierarchy without four identical grey blocks. */
+  #customersView .customer-mobile-card-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  #customersView .customer-mobile-card-actions button,#customersView .customer-mobile-card-actions a{min-height:42px!important;font-size:11px!important}
+  #customersView .customer-mobile-card-actions .customer-action-primary{
+    background:linear-gradient(100deg,#075fdc,var(--pilot-blue))!important;border-color:#2b9bff!important;color:#fff!important;
+    box-shadow:0 6px 16px rgba(22,136,255,.22),inset 0 0 0 1px rgba(255,255,255,.08)!important;
+  }
+  #customersView .customer-mobile-card-actions .customer-action-edit{
+    border-color:color-mix(in srgb,var(--pilot-blue) 68%,var(--border))!important;background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 10%,var(--pilot-card-2)),var(--pilot-card))!important;color:var(--text)!important;
+  }
+  #customersView .customer-mobile-card-actions .customer-action-followup{
+    border-color:var(--pilot-gold-line)!important;background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-gold) 14%,var(--pilot-card)),color-mix(in srgb,var(--pilot-gold) 5%,var(--pilot-card-2)))!important;color:color-mix(in srgb,var(--pilot-gold) 82%,var(--text))!important;
+    box-shadow:0 5px 14px rgba(233,173,55,.08)!important;
+  }
+  #customersView .customer-mobile-card-actions .delete-btn{
+    border-color:color-mix(in srgb,#ef4444 34%,var(--pilot-line))!important;background:linear-gradient(145deg,color-mix(in srgb,#ef4444 7%,var(--pilot-card)),var(--pilot-card-2))!important;color:#e45d5d!important;
+  }
+
+  /* Follow-up report actions: export is utility, WhatsApp report + add are branded primaries. */
+  #followupsView .report-export-actions button{min-height:46px!important;font-size:11px!important}
+  #followupsView #exportFollowupsPdfBtn{
+    border:1px solid color-mix(in srgb,var(--pilot-gold) 58%,var(--pilot-line))!important;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-gold) 9%,var(--pilot-card)),var(--pilot-card-2))!important;color:var(--text)!important;box-shadow:0 6px 16px rgba(233,173,55,.08)!important;
+  }
+  #followupsView #sendFollowupsWhatsappPdfBtn,#followupsView #addFollowupBtn{
+    border:1px solid #2b9bff!important;background:linear-gradient(100deg,#075fdc,var(--pilot-blue))!important;color:#fff!important;
+    box-shadow:0 7px 18px rgba(22,136,255,.22),inset 0 0 0 1px rgba(255,255,255,.08)!important;
+  }
+  #followupsView #addFollowupBtn{min-height:50px!important}
+
+  /* Pagination: previous/next are no longer legacy grey blocks. */
+  #customersView .table-pagination,#followupsView .table-pagination{border-color:color-mix(in srgb,var(--pilot-blue) 70%,var(--pilot-gold))!important}
+  #customersView .table-pagination button,#followupsView .table-pagination button{
+    min-height:42px!important;border:1px solid color-mix(in srgb,var(--pilot-blue) 64%,var(--border))!important;
+    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 10%,var(--pilot-card-2)),var(--pilot-card))!important;color:var(--text)!important;
+    box-shadow:0 5px 14px rgba(22,136,255,.10)!important;
+  }
+  #customersView .table-pagination button:not(:disabled),#followupsView .table-pagination button:not(:disabled){border-color:var(--pilot-blue)!important}
+  #customersView .table-pagination button:not(:disabled):first-child,#followupsView .table-pagination button:not(:disabled):first-child{box-shadow:inset -3px 0 0 color-mix(in srgb,var(--pilot-gold) 80%,transparent),0 5px 14px rgba(22,136,255,.10)!important}
+  #customersView .table-pagination button:not(:disabled):last-child,#followupsView .table-pagination button:not(:disabled):last-child{box-shadow:inset 3px 0 0 color-mix(in srgb,var(--pilot-blue) 85%,transparent),0 5px 14px rgba(22,136,255,.10)!important}
+  #customersView .table-pagination button:disabled,#followupsView .table-pagination button:disabled{opacity:.58!important;color:var(--muted)!important;background:color-mix(in srgb,var(--pilot-card-2) 94%,var(--pilot-blue) 6%)!important}
+
+  html[data-theme="dark"] #dashboardView .panel-header .text-btn,
+  html[data-theme="dark"] #customersView .customer-main-actions .secondary-btn,
+  html[data-theme="dark"] #customersView .customer-mobile-card-actions .customer-action-edit,
+  html[data-theme="dark"] #customersView .table-pagination button,
+  html[data-theme="dark"] #followupsView .table-pagination button{
+    background:linear-gradient(145deg,rgba(22,136,255,.11),rgba(8,27,50,.96))!important;color:#f4f8ff!important;
+  }
+  html[data-theme="dark"] #customersView .customer-mobile-card-actions .customer-action-followup{color:#ffd36f!important}
+
+  #dashboardView .panel-header .text-btn:active,#customersView :is(.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button):active,#followupsView :is(.report-export-actions button,.table-pagination button):active{transform:translateY(1px)!important}
+}
