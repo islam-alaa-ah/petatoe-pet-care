@@ -1950,9 +1950,9 @@ body.customer360-exporting .customer360-shell *{
   }
 }
 
-/* P5.11.24.1 — PETATOE Desktop Visual Identity Completion
-   Canonical desktop-only visual layer for Dashboard, Customers and Follow-ups.
-   Replaces the previous P5.11.24 pilot block in-place. Mobile/Tablet remain untouched. */
+/* P5.11.25 — PETATOE Desktop Visual Identity — All Screens Canonical
+   Canonical desktop-only visual system for all application screens.
+   Extends the approved Dashboard/Customers/Follow-ups identity in-place. Mobile/Tablet remain frozen and untouched. */
 @media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
   #dashboardView,#customersView,#followupsView{
     --desk-glass:rgba(249,252,255,.76);
@@ -2184,6 +2184,97 @@ body.customer360-exporting .customer360-shell *{
   #customerDialog .dialog-actions,#followupDialog .dialog-actions{padding-top:18px!important;margin-top:23px!important;border-top:1px solid rgba(79,133,197,.18)!important}
   #customerDialog .dialog-actions .primary-btn,#followupDialog .dialog-actions .primary-btn{min-height:44px!important;border-radius:12px!important;background:linear-gradient(115deg,#104fae,#2f83ff)!important;color:#fff!important;border:1px solid rgba(70,145,235,.72)!important;box-shadow:0 9px 22px rgba(47,131,255,.22)!important}
   #customerDialog .dialog-actions .secondary-btn,#followupDialog .dialog-actions .secondary-btn{min-height:44px!important;border-radius:12px!important}
+
+
+  /* ============================================================
+     P5.11.25 — remaining desktop screens canonical identity
+     Visual-only. No layout/business/navigation ownership.
+     ============================================================ */
+  #appView .view-section{
+    --desk-glass:rgba(249,252,255,.76);--desk-glass-strong:rgba(255,255,255,.94);--desk-glass-soft:rgba(239,247,255,.86);--desk-glass-deep:rgba(229,240,253,.82);
+    --desk-line:rgba(74,144,232,.24);--desk-line-strong:rgba(47,131,255,.70);--desk-blue:#2f83ff;--desk-blue-2:#1e73e8;--desk-blue-deep:#104fae;
+    --desk-gold:#d5a132;--desk-gold-soft:#f1c85d;--desk-text:#10233f;--desk-muted:#6b7f9b;
+    --desk-shadow:0 18px 44px rgba(20,58,104,.13),0 5px 16px rgba(47,131,255,.055),inset 0 1px 0 rgba(255,255,255,.94);
+    --desk-shadow-blue:0 18px 42px rgba(20,95,190,.17),0 0 0 1px rgba(47,131,255,.055),0 0 24px rgba(47,131,255,.06),inset 0 1px 0 rgba(255,255,255,.94);
+  }
+  html[data-theme="dark"] #appView .view-section{
+    --desk-glass:rgba(8,25,48,.80);--desk-glass-strong:rgba(6,20,40,.95);--desk-glass-soft:rgba(12,34,63,.88);--desk-glass-deep:rgba(16,42,75,.82);
+    --desk-line:rgba(92,158,239,.25);--desk-line-strong:rgba(47,140,255,.76);--desk-blue:#338fff;--desk-blue-2:#167ae9;--desk-blue-deep:#0c59bf;
+    --desk-gold:#d9a837;--desk-gold-soft:#f4c95c;--desk-text:#f7fbff;--desk-muted:#9fb1c8;
+    --desk-shadow:0 20px 48px rgba(0,0,0,.30),0 0 24px rgba(47,140,255,.045),inset 0 1px 0 rgba(255,255,255,.04);
+    --desk-shadow-blue:0 20px 50px rgba(0,0,0,.34),0 0 28px rgba(47,140,255,.095),inset 0 1px 0 rgba(255,255,255,.045);
+  }
+
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.panel,.daily-section-panel,.reference-data-panel,.installation-settings-section,.installation-request-step-card,.installation-service-section,.installation-report-panel,.reports-dashboard-card,.executive-kpi-card,.installation-kpi-card,.health-card,.privacy-panel){
+    position:relative!important;overflow:hidden;border:1px solid var(--desk-line)!important;border-radius:20px!important;color:var(--desk-text)!important;
+    background:radial-gradient(circle at 92% -14%,color-mix(in srgb,var(--desk-blue) 10%,transparent),transparent 35%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass))!important;
+    box-shadow:var(--desk-shadow)!important;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.panel,.daily-section-panel,.reference-data-panel,.installation-settings-section,.installation-request-step-card,.installation-service-section,.installation-report-panel,.reports-dashboard-card)::before{
+    content:"";position:absolute;inset:0 22px auto;height:2px;border-radius:999px;pointer-events:none;z-index:2;
+    background:linear-gradient(90deg,transparent,var(--desk-gold) 18%,var(--desk-blue) 54%,transparent 94%);box-shadow:0 0 12px rgba(47,131,255,.20);opacity:.82;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.panel-header,.installation-report-panel-head,.installation-settings-section-header,.installation-section-title,.installation-service-section-title){
+    color:var(--desk-text)!important;border-color:color-mix(in srgb,var(--desk-line) 65%,transparent)!important;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.panel-header h2,.panel-header h3,.section-title,h2,h3){color:var(--desk-text)!important}
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.section-note,.field-hint,.muted,.panel-header p,.panel-header span){color:var(--desk-muted)!important}
+
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.actions-row,.filters-row,.filters-grid,.data-status,.status-message,.table-pagination,.reports-toolbar,.installation-report-filters,.installation-execution-toolbar,.installation-schedule-toolbar){
+    border:1px solid var(--desk-line)!important;border-radius:17px!important;color:var(--desk-text)!important;
+    background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft))!important;box-shadow:0 10px 26px rgba(20,70,135,.08),inset 0 1px 0 rgba(255,255,255,.09)!important;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.geo-searchable-input){
+    border:1px solid color-mix(in srgb,var(--desk-line) 92%,transparent)!important;border-radius:13px!important;color:var(--desk-text)!important;
+    background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(47,131,255,.035)!important;
+    transition:border-color .16s ease,box-shadow .16s ease,background .16s ease!important;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.geo-searchable-input):focus{
+    border-color:var(--desk-blue)!important;box-shadow:0 0 0 3px rgba(47,131,255,.12),0 0 20px rgba(47,131,255,.10),inset 0 1px 0 rgba(255,255,255,.10)!important;outline:none!important;
+  }
+
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.primary-btn,.secondary-btn,.compact-btn,.icon-btn,.text-btn,.reference-manage-action,.privacy-nav-item){
+    border-radius:12px!important;font-weight:800!important;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,filter .16s ease!important;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) .primary-btn{
+    border:1px solid color-mix(in srgb,var(--desk-blue) 82%,white)!important;background:linear-gradient(115deg,var(--desk-blue-deep),var(--desk-blue))!important;color:#fff!important;box-shadow:0 9px 23px rgba(47,131,255,.22),inset 0 1px 0 rgba(255,255,255,.22)!important;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.secondary-btn,.compact-btn,.icon-btn,.text-btn,.reference-manage-action,.privacy-nav-item){
+    border:1px solid var(--desk-line)!important;background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft))!important;color:var(--desk-text)!important;box-shadow:0 6px 16px rgba(21,66,125,.065),inset 0 1px 0 rgba(255,255,255,.09)!important;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.primary-btn,.secondary-btn,.compact-btn,.icon-btn,.text-btn,.reference-manage-action,.privacy-nav-item):hover{transform:translateY(-2px);border-color:var(--desk-line-strong)!important;box-shadow:0 10px 24px rgba(47,131,255,.14)!important}
+
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.table-wrap,.table-scroll,.table-card){
+    overflow:auto;border:1px solid var(--desk-line)!important;border-radius:19px!important;background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass))!important;box-shadow:var(--desk-shadow)!important;scrollbar-color:color-mix(in srgb,var(--desk-blue) 58%,transparent) transparent;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.table-wrap,.table-scroll,.table-card) table{border-collapse:separate!important;border-spacing:0!important;color:var(--desk-text)!important}
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.table-wrap,.table-scroll,.table-card) th{
+    padding:14px 13px!important;border-bottom:1px solid color-mix(in srgb,var(--desk-blue) 45%,var(--desk-line))!important;background:linear-gradient(180deg,color-mix(in srgb,var(--desk-blue) 12%,var(--desk-glass-strong)),var(--desk-glass-strong))!important;color:var(--desk-text)!important;font-weight:900!important;
+  }
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.table-wrap,.table-scroll,.table-card) td{padding:13px!important;border-bottom-color:color-mix(in srgb,var(--desk-line) 70%,transparent)!important;color:var(--desk-text)!important;background:transparent!important}
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.table-wrap,.table-scroll,.table-card) tbody tr:nth-child(even){background:color-mix(in srgb,var(--desk-blue) 3.2%,transparent)!important}
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.table-wrap,.table-scroll,.table-card) tbody tr:hover{background:color-mix(in srgb,var(--desk-blue) 8%,var(--desk-glass))!important;box-shadow:inset -4px 0 0 var(--desk-blue)!important}
+
+  #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(.executive-kpi-card,.installation-kpi-card,.kpi-card,.summary-card,.metric-card){
+    border:1px solid var(--desk-line)!important;border-radius:18px!important;background:radial-gradient(circle at 10% 108%,rgba(47,131,255,.13),transparent 44%),linear-gradient(150deg,var(--desk-glass-strong),var(--desk-glass-soft))!important;color:var(--desk-text)!important;box-shadow:var(--desk-shadow-blue)!important;
+  }
+
+  #appView :is(.dialog-shell,.glass-dialog){
+    border:1px solid var(--desk-line)!important;border-radius:22px!important;color:var(--desk-text)!important;background:radial-gradient(circle at 90% -12%,color-mix(in srgb,var(--desk-blue) 12%,transparent),transparent 36%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass))!important;box-shadow:0 28px 72px rgba(3,21,47,.26),0 0 34px rgba(47,131,255,.08),inset 0 1px 0 rgba(255,255,255,.09)!important;
+  }
+  #appView :is(.dialog-shell,.glass-dialog) .dialog-header{border-bottom-color:color-mix(in srgb,var(--desk-line) 70%,transparent)!important;color:var(--desk-text)!important}
+  #appView :is(.dialog-shell,.glass-dialog) .dialog-actions{border-top-color:color-mix(in srgb,var(--desk-line) 70%,transparent)!important}
+
+  #installationScheduleView :is(.installation-month-shell,.installation-calendar-shell,.installation-day-detail-shell),
+  #installationExecutionView :is(.installation-execution-card,.installation-current-card),
+  #installationCompletionView :is(.installation-completion-card),
+  #installationReportsView :is(.installation-report-panel,.installation-service-analytics-table),
+  #reportsOverviewView :is(.reports-dashboard-grid>*,.top10-list),
+  #notificationCenterView :is(.notification-panel,.notification-column),
+  #settingsView :is(.privacy-panel,.privacy-nav),#systemSettingsView :is(.panel),#permissionsView :is(.panel),#usersView :is(.panel){
+    border-color:var(--desk-line)!important;color:var(--desk-text)!important;
+  }
+
 }
 
 /* KYUM Phase 16.1 — Daily Operations Center */

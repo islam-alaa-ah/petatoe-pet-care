@@ -1,13 +1,13 @@
 {
-  "version": "18.54.81",
-  "build": 185481,
+  "version": "18.54.82",
+  "build": 185482,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop-to-Mobile Dashboard Isolation Recovery P5.11.24.2",
+  "title": "PETATOE Desktop Visual Identity All Screens P5.11.25",
   "notes": [
-    "إصلاح تسرب قواعد Responsive العامة إلى الرئيسية على الموبايل بعد تطوير هوية Desktop.",
-    "حصر Dashboard responsive base layout داخل Tablet/Desktop من 768px فأعلى حتى تعود Mobile ownership إلى mobile.css المعتمد.",
-    "تشديد بوابة P5.11.24.1 لتعمل على Desktop الحقيقي فقط مع الحفاظ على تصميم Desktop Light/Dark الحالي."
+    "تعميم هوية PETATOE Glass + 3D + Blue/Gold على باقي شاشات Desktop في Light/Dark من خلال نفس Desktop Canonical block.",
+    "تطوير Panels وToolbars وFilters وForms وTables وKPI وDialogs في المواعيد والتقارير والإعدادات والصلاحيات وباقي الأقسام دون تغيير Business Logic.",
+    "تجميد نسخة Mobile بالكامل والحفاظ على mobile.css وmobile-theme-canonical.css وmobile.js بدون أي تعديل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-81-p511242-desktop-mobile-dashboard-isolation"
+  "cacheToken": "petatoe-pwa-18-54-82-p51125-desktop-visual-identity-all-screens"
 }
