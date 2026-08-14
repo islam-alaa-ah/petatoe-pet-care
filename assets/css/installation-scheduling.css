@@ -913,3 +913,13 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
   #installationScheduleView .installation-calendar-details-link{color:var(--desk-blue)!important}
   #installationScheduleView .installation-day-team-column>header{background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft))!important;border-color:var(--desk-line)!important}
 }
+
+/* P5.11.27 — PETATOE Desktop Icon System: scheduling lock states only. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #installationScheduleView .petatoe-desktop-icon{display:inline-grid;place-items:center;width:20px;height:20px;color:var(--desk-blue,#338fff);line-height:1}
+  #installationScheduleView .petatoe-desktop-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 5px rgba(47,131,255,.18))}
+  #installationScheduleView .installation-day-lock-toggle:has(.installation-lock-svg){border-color:color-mix(in srgb,var(--desk-blue,#338fff) 58%,var(--border))!important;background:linear-gradient(145deg,color-mix(in srgb,var(--desk-blue,#338fff) 10%,var(--surface)),var(--surface-soft))!important}
+  #installationScheduleView .installation-calendar-day.is-locked :is(.installation-day-lock-indicator,.installation-day-lock-glass) .petatoe-desktop-icon{color:var(--desk-gold,#d9a837)}
+  #installationScheduleView .installation-day-lock-glass>span{display:grid;place-items:center}
+  #installationScheduleView .installation-day-lock-glass .petatoe-desktop-icon{width:34px;height:34px}
+}

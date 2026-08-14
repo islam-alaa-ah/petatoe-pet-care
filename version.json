@@ -1,14 +1,14 @@
 {
-  "version": "18.54.83",
-  "build": 185483,
+  "version": "18.54.84",
+  "build": 185484,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop Visual Identity Completion P5.11.26R",
+  "title": "PETATOE Desktop Icon System & Visual Consistency P5.11.27",
   "notes": [
-    "الحفاظ الكامل على P5.11.25 المعتمدة للرئيسية والعملاء والمتابعات.",
-    "استكمال هوية Desktop فقط داخل الشاشات والـModules الناقصة دون selectors عامة على الشاشات المعتمدة.",
-    "إصلاح Dark Mode للقوائم المنسدلة والجداول والتقويم والفواتير من مصادرها المسؤولة.",
-    "Mobile lockdown كامل بدون تعديل ملفات أو تخطيطات الموبايل."
+    "توحيد أيقونات Desktop الوظيفية في تنفيذ وجدولة المواعيد باستخدام Inline SVG stroke-based مستوحى من هوية PETATOE.",
+    "إزالة الاعتماد البصري على Emoji في Desktop فقط مع إبقاء Mobile fallback الحالي دون تغيير.",
+    "توحيد أحجام Stroke وBlue/Gold states وأيقونات المراحل والأقفال والأسهم والحالة الفارغة.",
+    "Mobile lockdown كامل بدون تغيير ملفات أو مخرجات تصميم الموبايل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-83-p51126r-desktop-visual-completion"
+  "cacheToken": "petatoe-pwa-18-54-84-p51127-desktop-icon-system"
 }
