@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-85-p511271-scheduling-icon-runtime-hotfix";
+const CACHE_VERSION = "petatoe-pwa-18-54-86-p5121-desktop-core-icons";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

@@ -107,6 +107,15 @@ dialog form{padding:22px}
 .dialog-header h3{margin:0}
 .dialog-header p{margin:4px 0 0;color:var(--muted)}
 .icon-btn{background:#f1f5f9;width:36px;height:36px;border-radius:10px;font-size:24px}
+.desktop-icon-svg{display:none}
+.legacy-icon-glyph{display:inline}
+.petatoe-core-icon{width:1em;height:1em;display:block;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  .desktop-icon-svg{display:inline-grid;place-items:center}
+  .legacy-icon-glyph{display:none}
+  #appView .icon-btn .desktop-icon-svg{width:22px;height:22px}
+  #appView .icon-btn .petatoe-core-icon{width:22px;height:22px;filter:drop-shadow(0 2px 6px rgba(47,131,255,.20))}
+}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
 .full-width{grid-column:1/-1}
 select[multiple]{min-height:120px}
@@ -342,6 +351,17 @@ body[data-user-role="viewer"] .privacy-nav-group{display:none}
   background:linear-gradient(135deg,#0f766e,#0f172a);
   color:white;font-size:25px;font-weight:900;
   box-shadow:0 12px 28px rgba(15,118,110,.2)
+}
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #backupsView .backup-card-icon{
+    width:58px;height:58px;border-radius:17px;color:var(--desk-blue);
+    border:1px solid color-mix(in srgb,var(--desk-blue) 48%,var(--desk-line));
+    background:linear-gradient(145deg,color-mix(in srgb,var(--desk-blue) 10%,var(--desk-glass-strong)),var(--desk-glass-soft));
+    box-shadow:0 12px 28px rgba(47,131,255,.12),inset 0 1px 0 rgba(255,255,255,.10);font-size:24px
+  }
+  #backupsView .backup-card-icon .petatoe-core-icon{width:27px;height:27px}
+  #backupsView .backup-card-icon--verify{color:var(--desk-gold);border-color:color-mix(in srgb,var(--desk-gold) 58%,var(--desk-line))}
+  #backupsView .backup-card-icon--restore{color:#ef6b73;border-color:rgba(239,107,115,.38)}
 }
 .danger-zone{border-color:#fecaca}
 .file-picker-btn{
@@ -1166,10 +1186,17 @@ body[data-user-role="viewer"] .privacy-nav-group{display:none}
 .export-option-card h4,.export-option-card p{margin:0}
 .export-option-card p{color:var(--muted);line-height:1.7;font-size:12px;margin-top:5px}
 .export-option-icon{
-  width:58px;height:58px;border-radius:16px;
-  display:grid;place-items:center;
-  background:linear-gradient(135deg,#0f766e,#0f172a);
-  color:white;font-weight:900;font-size:12px
+  width:58px;height:58px;border-radius:16px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#0f766e,#0f172a);color:white;font-weight:900;font-size:12px
+}
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #reportsExportDialog .export-option-icon{
+    color:var(--desk-blue);border:1px solid color-mix(in srgb,var(--desk-blue) 48%,var(--desk-line));
+    background:linear-gradient(145deg,color-mix(in srgb,var(--desk-blue) 10%,var(--desk-glass-strong)),var(--desk-glass-soft));
+    box-shadow:0 12px 28px rgba(47,131,255,.12),inset 0 1px 0 rgba(255,255,255,.10);font-size:24px
+  }
+  #reportsExportDialog .export-option-icon .petatoe-core-icon{width:27px;height:27px}
+  #reportsExportDialog .export-option-card:nth-child(2) .export-option-icon{color:var(--desk-gold);border-color:color-mix(in srgb,var(--desk-gold) 58%,var(--desk-line))}
 }
 .export-summary-card{
   margin-top:16px;
