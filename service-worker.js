@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-76-p511212-mobile-form-card-containment-recovery";
+const CACHE_VERSION = "petatoe-pwa-18-54-77-p51122-mobile-calendar-glass-grid-day-details";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

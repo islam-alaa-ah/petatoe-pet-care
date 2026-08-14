@@ -1,14 +1,14 @@
 {
-  "version": "18.54.76",
-  "build": 185476,
+  "version": "18.54.77",
+  "build": 185477,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Form Card Containment Recovery P5.11.21.2",
+  "title": "PETATOE Mobile Calendar Glass Grid & Day Details P5.11.22",
   "notes": [
-    "توحيد احتواء حقول نماذج الموبايل داخل الكروت اعتمادًا على نموذج تفاصيل الخدمة المعتمد.",
-    "إصلاح تعارض width:100% مع الهوامش الداخلية في بيانات العميل والتحصيل بدون تغيير تخطيط Desktop/Tablet.",
-    "ضبط حقول التاريخ في iPhone/Safari لتتمدد داخل مساحة الـgrid المتاحة دون تجاوز حدود الكارد.",
-    "Mobile-only بدون تغيير Business Logic أو تصميم Desktop/Tablet."
+    "تطبيق تصميم Glass + 3D المعتمد على تقويم المواعيد وتفاصيل اليوم في نسخة الموبايل Light/Dark.",
+    "استعادة الحركة الأفقية السلسة داخل التقويم بخلايا أيام ثابتة ومقروءة بدل ضغط شبكة Desktop.",
+    "تثبيت الهوية البصرية للسيارات على جميع الأجهزة: Van A أزرق دائمًا وVan B بنفسجي دائمًا اعتمادًا على car_name.",
+    "الحفاظ على تخطيط Desktop/Tablet كما هو؛ التغيير المشترك الوحيد هو لون هوية Van A/Van B."
   ],
-  "cacheToken": "petatoe-pwa-18-54-76-p511212-mobile-form-card-containment-recovery"
+  "cacheToken": "petatoe-pwa-18-54-77-p51122-mobile-calendar-glass-grid-day-details"
 }
