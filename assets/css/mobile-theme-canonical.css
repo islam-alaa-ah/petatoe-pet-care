@@ -28,7 +28,7 @@ html[data-theme="dark"]{
 html[data-theme="dark"],html[data-theme="dark"] body{color-scheme:dark}
 html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
 
-@media (max-width: 768px){
+@media (min-width:768px) and (max-width:768px){
   html,body{background:var(--kyum-mobile-page)!important;color:var(--kyum-mobile-text)!important}
   body{min-height:100dvh}
 
@@ -117,6 +117,248 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   table,thead,tbody,tr,th,td{border-color:var(--kyum-mobile-border)}
   thead th{background:var(--kyum-mobile-surface-alt)!important;color:var(--kyum-mobile-text)!important}
   tbody td{background:var(--kyum-mobile-surface)!important;color:var(--kyum-mobile-text)!important}
+}
+
+
+/* P5.11.14 — PETATOE Mobile In-App Visual Design System — canonical replacement
+   Visual reference: approved PETATOE concept #1.
+   Scope: mobile in-app content only. Header, drawer and bottom navigation are locked and untouched. */
+@media (max-width:767px),
+       (pointer:coarse) and (max-device-width:767px),
+       (hover:none) and (max-device-width:767px),
+       (orientation:landscape) and (pointer:coarse) and (max-device-width:1024px) and (max-height:520px){
+  :root{
+    --kyum-mobile-page:#f3f7fd;
+    --kyum-mobile-surface:#ffffff;
+    --kyum-mobile-surface-alt:#f7faff;
+    --kyum-mobile-field:#fbfdff;
+    --kyum-mobile-text:#10233f;
+    --kyum-mobile-muted:#667792;
+    --kyum-mobile-border:#c7d9f0;
+    --kyum-mobile-shadow:0 12px 30px rgba(19,66,126,.12),0 2px 8px rgba(16,35,63,.05);
+    --kyum-mobile-overlay:rgba(7,18,35,.58);
+    --kyum-mobile-gold:#d9a63b;
+    --kyum-mobile-navy:#06172c;
+    --petatoe-brand-blue:#237cff;
+    --petatoe-brand-blue-strong:#0f61e8;
+    --petatoe-brand-blue-soft:#eaf3ff;
+    --petatoe-brand-gold:#d9a63b;
+    --petatoe-brand-gold-soft:#f3d27d;
+    --petatoe-content-line:#c9daf1;
+    --petatoe-content-line-strong:#7fb5ff;
+    --petatoe-content-glow:0 0 0 1px rgba(35,124,255,.10),0 12px 30px rgba(22,86,162,.12);
+    --petatoe-content-glow-active:0 0 0 1px rgba(35,124,255,.38),0 0 18px rgba(35,124,255,.20),0 12px 30px rgba(22,86,162,.14);
+    --petatoe-content-gold-glow:0 0 0 1px rgba(217,166,59,.32),0 0 16px rgba(217,166,59,.12);
+    --petatoe-card-gradient:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+    --petatoe-field-gradient:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  }
+  html[data-theme="dark"]{
+    --kyum-mobile-page:#050d19;
+    --kyum-mobile-surface:#081a31;
+    --kyum-mobile-surface-alt:#0b213d;
+    --kyum-mobile-field:#0a203b;
+    --kyum-mobile-text:#f7fbff;
+    --kyum-mobile-muted:#9aacc4;
+    --kyum-mobile-border:#1a426d;
+    --kyum-mobile-shadow:0 16px 36px rgba(0,0,0,.38),0 0 0 1px rgba(35,124,255,.06);
+    --kyum-mobile-overlay:rgba(0,5,14,.78);
+    --petatoe-brand-blue:#3b8dff;
+    --petatoe-brand-blue-strong:#1476ff;
+    --petatoe-brand-blue-soft:#0c2b50;
+    --petatoe-brand-gold:#e1b24e;
+    --petatoe-brand-gold-soft:#f2cf78;
+    --petatoe-content-line:#173c64;
+    --petatoe-content-line-strong:#2f84ef;
+    --petatoe-content-glow:0 0 0 1px rgba(47,132,239,.16),0 14px 34px rgba(0,0,0,.34);
+    --petatoe-content-glow-active:0 0 0 1px rgba(59,141,255,.58),0 0 22px rgba(35,124,255,.24),0 14px 34px rgba(0,0,0,.38);
+    --petatoe-content-gold-glow:0 0 0 1px rgba(225,178,78,.46),0 0 20px rgba(225,178,78,.14);
+    --petatoe-card-gradient:linear-gradient(180deg,#0a1d36 0%,#07182e 100%);
+    --petatoe-field-gradient:linear-gradient(180deg,#0c2442 0%,#0a1e38 100%);
+  }
+
+  html,body{background:var(--kyum-mobile-page)!important;color:var(--kyum-mobile-text)!important}
+  body{min-height:100dvh}
+
+  /* Canonical in-app surfaces. The shell is intentionally excluded. */
+  .view-section :where(.content-card,.metric-card,.chart-card,.table-card,.report-card,.filter-card,.panel,.settings-panel,
+    .installation-card,.installation-section,.installation-panel,.installation-settings-panel,
+    .installation-today-card,.execution-current-summary,.execution-stepper,.execution-current-stage,
+    .execution-documentation,.installation-completion-table-card,.installation-completion-mobile-card,
+    .installation-day-dialog-shell,.installation-team-column,.installation-day-appointment,
+    .installation-request-form,.installation-service-row,.installation-summary-card,
+    .executive-kpi-card,.installation-kpi-card,.installation-report-panel,.daily-section-panel,.daily-current-session-card,
+    .daily-whatsapp-template-card,.health-score-card,.health-summary-card,.export-summary-card,.backup-action-card){
+    background:var(--petatoe-card-gradient)!important;
+    color:var(--kyum-mobile-text)!important;
+    border:1px solid var(--petatoe-content-line)!important;
+    box-shadow:var(--petatoe-content-glow)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  /* Major content sections receive the blue identity edge; gold is reserved for accents/active states. */
+  .view-section :where(.panel,.content-card,.report-card,.chart-card,.table-card,.installation-report-panel,.installation-summary-panel,.installation-service-analytics-panel){
+    position:relative;
+    overflow:hidden;
+    box-shadow:var(--petatoe-content-glow)!important;
+  }
+  .view-section :where(.panel,.content-card,.report-card,.chart-card,.table-card,.installation-report-panel,.installation-summary-panel,.installation-service-analytics-panel)::before{
+    content:"";
+    position:absolute;
+    inset-inline:16px;
+    top:0;
+    height:1px;
+    pointer-events:none;
+    background:linear-gradient(90deg,transparent,var(--petatoe-brand-blue),var(--petatoe-brand-gold-soft),transparent);
+    opacity:.78;
+  }
+
+  /* KPI/stat cards: crisp separation, blue identity and restrained gold highlight. */
+  .view-section :where(.stats-grid,.reports-kpi-grid,.executive-kpi-grid,.quotation-value-kpis,.daily-operations-kpis,.daily-performance-kpis,.installation-report-kpis,.installation-request-kpis,.installation-completion-kpis,.installation-operations-kpis,.installation-summary-kpis,.installation-financial-kpis,.installation-service-analytics-kpis,.installation-service-financial-kpis,.installation-service-geographic-kpis,.installation-service-operational-kpis,.installation-schedule-kpis,.sales-invoices-summary) > :where(article,.metric-card,.executive-kpi-card,.installation-kpi-card){
+    background:var(--petatoe-card-gradient)!important;
+    border:1px solid var(--petatoe-content-line)!important;
+    box-shadow:var(--petatoe-content-glow)!important;
+    border-radius:18px!important;
+  }
+  .view-section :where(.stats-grid,.reports-kpi-grid,.executive-kpi-grid,.quotation-value-kpis,.daily-operations-kpis,.daily-performance-kpis,.installation-report-kpis,.installation-request-kpis,.installation-completion-kpis,.installation-operations-kpis,.installation-summary-kpis,.installation-financial-kpis,.installation-service-analytics-kpis,.installation-service-financial-kpis,.installation-service-geographic-kpis,.installation-service-operational-kpis,.installation-schedule-kpis,.sales-invoices-summary) strong{
+    color:var(--kyum-mobile-text)!important;
+    letter-spacing:-.02em;
+  }
+  .view-section :where(.stats-grid,.reports-kpi-grid,.executive-kpi-grid,.quotation-value-kpis,.daily-operations-kpis,.daily-performance-kpis,.installation-report-kpis,.installation-request-kpis,.installation-completion-kpis,.installation-operations-kpis,.installation-summary-kpis,.installation-financial-kpis,.installation-service-analytics-kpis,.installation-service-financial-kpis,.installation-service-geographic-kpis,.installation-service-operational-kpis,.installation-schedule-kpis,.sales-invoices-summary) > :where(article,.metric-card,.executive-kpi-card,.installation-kpi-card):nth-child(4n+1){
+    border-color:color-mix(in srgb,var(--petatoe-brand-gold) 58%,var(--petatoe-content-line))!important;
+    box-shadow:var(--petatoe-content-gold-glow)!important;
+  }
+
+  /* Section headers and dividers are visibly separated like the approved reference. */
+  .view-section :where(.panel-header,.installation-report-panel-head,.card-header,.section-header){
+    position:relative;
+    border-bottom:1px solid var(--petatoe-content-line)!important;
+  }
+  .view-section :where(.panel-header,.installation-report-panel-head,.card-header,.section-header)::after{
+    content:"";
+    position:absolute;
+    bottom:-1px;
+    inset-inline-start:0;
+    width:54px;
+    height:2px;
+    border-radius:999px;
+    background:linear-gradient(90deg,var(--petatoe-brand-gold),var(--petatoe-brand-blue));
+    box-shadow:0 0 12px rgba(35,124,255,.28);
+  }
+
+  /* Form and filter controls: one premium field language in light/dark. */
+  .view-section :where(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.searchable-select-trigger,.searchable-select-menu,.select-menu,.dropdown-menu),
+  dialog :where(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.searchable-select-trigger,.searchable-select-menu,.select-menu,.dropdown-menu){
+    background:var(--petatoe-field-gradient)!important;
+    color:var(--kyum-mobile-text)!important;
+    border:1px solid var(--petatoe-content-line)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;
+    -webkit-text-fill-color:var(--kyum-mobile-text)!important;
+    opacity:1!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  .view-section :where(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.searchable-select-trigger):focus,
+  dialog :where(input:not([type="checkbox"]):not([type="radio"]),select,textarea,.searchable-select-trigger):focus{
+    outline:none!important;
+    border-color:var(--petatoe-brand-blue)!important;
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--petatoe-brand-blue) 18%,transparent),0 0 16px color-mix(in srgb,var(--petatoe-brand-blue) 18%,transparent)!important;
+  }
+  .view-section input::placeholder,.view-section textarea::placeholder,dialog input::placeholder,dialog textarea::placeholder{color:var(--kyum-mobile-muted)!important;opacity:.9}
+  .view-section :where(input:disabled,input[readonly],select:disabled,textarea:disabled),dialog :where(input:disabled,input[readonly],select:disabled,textarea:disabled){
+    background:var(--kyum-mobile-surface-alt)!important;
+    color:var(--kyum-mobile-muted)!important;
+    -webkit-text-fill-color:var(--kyum-mobile-muted)!important;
+    opacity:1!important;
+  }
+  option{background:var(--kyum-mobile-field);color:var(--kyum-mobile-text)}
+
+  /* Internal action hierarchy inspired by the logo: electric-blue primary, navy/ice secondary, gold active accent. */
+  .view-section :where(.primary-btn,.execution-primary-action,.execution-refresh-btn,.execution-map-btn,button[class*="primary"]),
+  dialog :where(.primary-btn,button[class*="primary"]){
+    background:linear-gradient(135deg,var(--petatoe-brand-blue-strong),var(--petatoe-brand-blue))!important;
+    border:1px solid color-mix(in srgb,var(--petatoe-brand-blue) 72%,#fff)!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    box-shadow:0 8px 18px rgba(35,124,255,.22),inset 0 1px 0 rgba(255,255,255,.24)!important;
+  }
+  .view-section :where(.secondary-btn,.compact-btn,.text-btn),dialog :where(.secondary-btn,.compact-btn,.text-btn){
+    background:var(--kyum-mobile-surface-alt)!important;
+    border:1px solid var(--petatoe-content-line)!important;
+    color:var(--kyum-mobile-text)!important;
+    box-shadow:none!important;
+  }
+  .view-section :where(.primary-btn,.secondary-btn,.compact-btn,.text-btn,button):active{transform:translateY(1px)}
+
+  /* Tabs: clear data separation and luminous active state. */
+  .view-section :where(.analytics-tab,.installation-report-tabs button,.installation-execution-tab,[role="tab"]){
+    background:var(--kyum-mobile-surface-alt)!important;
+    color:var(--kyum-mobile-muted)!important;
+    border:1px solid var(--petatoe-content-line)!important;
+    box-shadow:none!important;
+  }
+  .view-section :where(.analytics-tab.active,.installation-report-tabs button.active,.installation-execution-tab.active,[role="tab"][aria-selected="true"]){
+    background:linear-gradient(135deg,color-mix(in srgb,var(--petatoe-brand-blue) 88%,#fff),var(--petatoe-brand-blue-strong))!important;
+    color:#fff!important;
+    -webkit-text-fill-color:#fff!important;
+    border-color:var(--petatoe-brand-blue)!important;
+    box-shadow:var(--petatoe-content-glow-active)!important;
+  }
+
+  /* Table/data language: blue header line, strong row separators, mobile-card identity. */
+  .view-section table,.view-section thead,.view-section tbody,.view-section tr,.view-section th,.view-section td{border-color:var(--petatoe-content-line)!important}
+  .view-section thead th{
+    background:linear-gradient(180deg,var(--kyum-mobile-surface-alt),color-mix(in srgb,var(--kyum-mobile-surface-alt) 90%,var(--petatoe-brand-blue) 10%))!important;
+    color:var(--kyum-mobile-text)!important;
+    border-bottom:2px solid color-mix(in srgb,var(--petatoe-brand-blue) 60%,var(--petatoe-content-line))!important;
+  }
+  .view-section tbody td{background:var(--kyum-mobile-surface)!important;color:var(--kyum-mobile-text)!important}
+  .view-section tbody tr+tr td{border-top-color:var(--petatoe-content-line)!important}
+
+  /* Empty/loading states are branded content states, not blank boxes. */
+  .view-section :where(.empty-state,.status-message,.data-status){
+    border-color:var(--petatoe-content-line)!important;
+    color:var(--kyum-mobile-muted)!important;
+  }
+
+  /* Dialog visual contract follows the same in-app identity while preserving its runtime layout. */
+  dialog,.dialog,.modal,.modal-card,.dialog-card{
+    color:var(--kyum-mobile-text)!important;
+    background:var(--petatoe-card-gradient)!important;
+    border:1px solid var(--petatoe-content-line-strong)!important;
+    box-shadow:0 22px 60px rgba(0,0,0,.34),0 0 22px rgba(35,124,255,.12)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  dialog::backdrop{background:var(--kyum-mobile-overlay)!important;backdrop-filter:blur(2px)}
+  dialog header,dialog footer,.dialog-header,.dialog-footer,.modal-header,.modal-footer{
+    background:var(--kyum-mobile-surface)!important;
+    color:var(--kyum-mobile-text)!important;
+    border-color:var(--petatoe-content-line)!important;
+    backdrop-filter:none!important;
+  }
+
+  /* Execution/completion surfaces keep functional colors but share the design-system surfaces. */
+  .installation-execution-view,.installation-completion-view{
+    --exec-surface:var(--kyum-mobile-surface)!important;
+    --exec-line:var(--petatoe-content-line)!important;
+    --exec-muted:var(--kyum-mobile-muted)!important;
+  }
+  .execution-step-circle,.execution-secondary-action,.execution-upload-box,
+  .installation-completion-mobile-card,.installation-completion-dialog .completion-section,
+  .installation-completion-dialog .completion-files-section{
+    background:var(--kyum-mobile-surface)!important;
+    color:var(--kyum-mobile-text)!important;
+    border-color:var(--petatoe-content-line)!important;
+  }
+  .execution-step-connector span{background:var(--kyum-mobile-surface)!important}
+  .execution-completion-note{background:var(--kyum-mobile-surface-alt)!important;color:var(--kyum-mobile-text)!important}
+
+  /* Text hierarchy. Semantic status colors remain untouched. */
+  .view-section :where(h1,h2,h3,h4,h5,h6,label,th,td,strong,.card-title,.section-title){color:var(--kyum-mobile-text)}
+  .view-section :where(p,small,.muted,.helper-text,.installation-card-muted){color:var(--kyum-mobile-muted)!important}
+  .execution-primary-action .execution-arrow{color:var(--kyum-mobile-navy)!important;-webkit-text-fill-color:var(--kyum-mobile-navy)!important}
+
 }
 
 /* KYUM Phase M14.9.7.1 — Mobile quotation dialog viewport and safe footer */
@@ -299,6 +541,33 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
     --petatoe-mobile-dialog-radius:22px;
     --petatoe-mobile-bottom-clearance:calc(var(--mobile-nav-height,78px) + max(10px,env(safe-area-inset-bottom,0px)) + 10px);
     --petatoe-mobile-popover-bottom:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 14px);
+  }
+
+  /* P5.11.14 — Approved PETATOE content identity.
+     This is the visual source-of-truth for mobile screen content; shell components are excluded. */
+  .view-section{
+    --petatoe-screen-card-bg:var(--petatoe-card-gradient);
+    --petatoe-screen-border:var(--petatoe-content-line);
+    --petatoe-screen-border-active:var(--petatoe-content-line-strong);
+    --petatoe-screen-shadow:var(--petatoe-content-glow);
+  }
+  .view-section :where(.content-card,.filter-card,.report-card,.metric-card,.chart-card,.table-card,.panel,.settings-panel,
+    .installation-request-mobile-card,.petatoe-mobile-card-table tr,.petatoe-mobile-notification-cards tr){
+    background:var(--petatoe-screen-card-bg)!important;
+    border-color:var(--petatoe-screen-border)!important;
+    box-shadow:var(--petatoe-screen-shadow)!important;
+  }
+  .view-section :where(.filter-card,.filters-row,.filters-grid,.dashboard-filters,.report-filters,.settings-filters,.installation-report-advanced-filters,.sales-invoices-filters){
+    border-radius:18px!important;
+  }
+  .view-section :where(.filter-card,.installation-report-advanced-filters,.sales-invoices-filters,.dashboard-filter-bar,.reports-filter-bar){
+    background:color-mix(in srgb,var(--kyum-mobile-surface) 94%,var(--petatoe-brand-blue) 6%)!important;
+    border:1px solid var(--petatoe-content-line)!important;
+    box-shadow:0 10px 24px rgba(17,69,132,.08)!important;
+  }
+  html[data-theme="dark"] .view-section :where(.filter-card,.installation-report-advanced-filters,.sales-invoices-filters,.dashboard-filter-bar,.reports-filter-bar){
+    background:linear-gradient(180deg,#0a203b 0%,#081a31 100%)!important;
+    box-shadow:0 12px 26px rgba(0,0,0,.30),0 0 0 1px rgba(35,124,255,.07)!important;
   }
 
   .main-content,.view-section,.view-section>*{box-sizing:border-box!important;min-width:0!important;max-width:100%!important}
