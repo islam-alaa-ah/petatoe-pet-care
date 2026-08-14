@@ -202,3 +202,15 @@
   #installationReportsView :is(.installation-summary-table,.installation-service-analytics-table) thead th{background:linear-gradient(180deg,color-mix(in srgb,var(--desk-blue) 13%,var(--desk-glass-strong)),var(--desk-glass-strong))!important;color:var(--desk-text)!important;border-color:var(--desk-line)!important}
   #installationReportsView .installation-summary-execution-team>header{background:linear-gradient(90deg,var(--desk-blue-deep),var(--desk-blue))!important;color:#fff!important}
 }
+
+/* P5.12.2 — Desktop report table/filter owner replacement. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #installationReportsView :is(.installation-summary-filters,.installation-service-analytics-filters){
+    border:1px solid var(--desk-line);border-radius:17px;background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft));box-shadow:var(--desk-shadow)
+  }
+  #installationReportsView :is(.installation-summary-table-wrap,.installation-service-analytics-table-wrap,.installation-service-geographic-grid .table-scroll,.installation-service-period-comparison>.table-scroll){
+    border:1px solid var(--desk-line);border-radius:16px;background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));box-shadow:var(--desk-shadow)
+  }
+  #installationReportsView :is(.installation-summary-table,.installation-service-analytics-table) thead th{background:linear-gradient(180deg,#174a91,#155fb7);color:#fff;border-color:rgba(140,188,244,.18)}
+  html[data-theme="dark"] #installationReportsView select option{background:#0d223e;color:#f7fbff}
+}

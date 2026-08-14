@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-86-p5121-desktop-core-icons";
+const CACHE_VERSION = "petatoe-pwa-18-54-87-p5122-desktop-tables-forms-dropdowns";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

@@ -1,14 +1,14 @@
 {
-  "version": "18.54.86",
-  "build": 185486,
+  "version": "18.54.87",
+  "build": 185487,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop Core Visual System & Icons P5.12.1",
+  "title": "PETATOE Desktop Tables Forms Dropdowns Certification P5.12.2",
   "notes": [
-    "بدء نظام أيقونات Desktop موحد باستخدام Inline SVG stroke-based مع الحفاظ على مخرجات الموبايل الحالية.",
-    "استبدال رموز التقويم ومركز التصدير والنسخ الاحتياطي وإغلاق النوافذ الإدارية على Desktop من مصادرها بدل إضافة طبقة بصرية متأخرة.",
-    "الحفاظ على شاشات الرئيسية والعملاء والمتابعات كمرجع بصري مستقر وعدم تغيير نظام KPI المعتمد.",
-    "Mobile lockdown: لا تعديل على ملفات أو تخطيطات الموبايل."
+    "توحيد جداول وحقول وفلاتر وقوائم Desktop من مصادر الملكية الحالية مع استثناء الشاشات المرجعية المستقرة.",
+    "تطوير حالات hover/focus/disabled والـpagination والـnative/custom dropdowns في Light/Dark.",
+    "تحديث مصادر Modules المواعيد والتقارير والإعدادات والإشعارات بدل إضافة Theme عام متأخر.",
+    "Mobile lockdown كامل بدون تعديل ملفات الموبايل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-86-p5121-desktop-core-icons"
+  "cacheToken": "petatoe-pwa-18-54-87-p5122-desktop-tables-forms-dropdowns"
 }
