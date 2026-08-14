@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-71-p51118-5-desktop-kpi-isolation";
+const CACHE_VERSION = "petatoe-pwa-18-54-72-p51119-mobile-glass-3d";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

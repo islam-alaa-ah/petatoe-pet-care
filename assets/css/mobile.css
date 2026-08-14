@@ -3510,174 +3510,90 @@ html.is-offline body::before {
   border-radius:inherit;
 }
 
-/* PETATOE P5.11.17 — Pilot Final Visual Refinement.
-   Mobile-only. Locked shell (header/menu/bottom nav) intentionally untouched. */
-@media (max-width:767px),(pointer:coarse) and (max-device-width:1024px),(hover:none) and (max-device-width:1024px){
-  /* Compact branded pagination shared by the pilot Customers + Follow-ups screens. */
-  #customersView .table-pagination,#followupsView .table-pagination{
-    display:grid!important;grid-template-columns:1fr!important;gap:8px!important;
-    padding:9px 10px!important;border-radius:17px!important;min-height:0!important;
+/* PETATOE P5.11.19 — Mobile Unified Glass 3D Visual System.
+   ONE canonical visual layer for the approved pilot screens only:
+   Dashboard + Customers + Follow-ups. Mobile <= 767px only.
+   Structural layout from the existing mobile implementation is preserved.
+   Header / menu / bottom navigation / desktop / tablet are intentionally untouched. */
+@media (max-width:767px){
+  #dashboardView,#customersView,#followupsView{
+    --pilot-blue:#1688ff;--pilot-blue-2:#075fdc;--pilot-blue-soft:#69b8ff;--pilot-gold:#e9ad37;--pilot-gold-soft:#ffd978;
+    --pilot-card:rgba(255,255,255,.76);--pilot-card-2:rgba(239,247,255,.58);--pilot-line:rgba(22,136,255,.46);--pilot-gold-line:rgba(233,173,55,.56);--pilot-divider:rgba(50,136,225,.18);
+    --pilot-glass:linear-gradient(145deg,rgba(255,255,255,.88),rgba(235,246,255,.62));
+    --pilot-glass-soft:linear-gradient(145deg,rgba(255,255,255,.70),rgba(229,242,255,.48));
+    --pilot-glass-blue:linear-gradient(145deg,rgba(234,245,255,.84),rgba(207,231,255,.54));
+    --pilot-glass-gold:linear-gradient(145deg,rgba(255,249,232,.90),rgba(255,236,190,.54));
+    --pilot-shadow:0 14px 30px rgba(9,69,145,.13),0 5px 12px rgba(8,31,64,.08),inset 0 1px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(39,117,199,.07);
+    --pilot-shadow-hover:0 17px 34px rgba(9,75,158,.17),0 6px 14px rgba(8,31,64,.10),inset 0 1px 0 rgba(255,255,255,.88);
+    --pilot-gold-shadow:0 14px 30px rgba(198,137,24,.13),0 5px 12px rgba(8,31,64,.07),inset 0 1px 0 rgba(255,255,255,.84);
+    --pilot-icon-shadow:0 8px 16px rgba(17,104,205,.16),inset 0 1px 0 rgba(255,255,255,.76),inset 0 -2px 5px rgba(16,88,179,.08);
+    --pilot-glow:0 0 22px rgba(22,136,255,.16);--pilot-blur:blur(14px) saturate(145%);
   }
-  #customersView .table-pagination>span,#followupsView .table-pagination>span{
-    justify-self:end;color:var(--muted)!important;font-size:10px!important;font-weight:850!important;line-height:1.25!important;
-  }
-  #customersView .table-pagination>div,#followupsView .table-pagination>div{
-    display:grid!important;grid-template-columns:minmax(82px,1fr) auto minmax(82px,1fr)!important;align-items:center!important;gap:8px!important;width:100%!important;
-  }
-  #customersView .table-pagination>div>span,#followupsView .table-pagination>div>span{
-    min-width:58px;padding:6px 9px;border:1px solid color-mix(in srgb,var(--pilot-line) 56%,transparent);border-radius:999px;
-    background:color-mix(in srgb,var(--pilot-blue) 6%,var(--pilot-card));color:var(--text);text-align:center;font-size:11px;font-weight:900;line-height:1.2;
-  }
-  #customersView .table-pagination button,#followupsView .table-pagination button{
-    position:relative;min-height:38px!important;padding:7px 12px!important;border:1px solid var(--pilot-line)!important;border-radius:12px!important;
-    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 9%,var(--pilot-card-2)),var(--pilot-card))!important;
-    color:var(--pilot-blue)!important;font-size:11px!important;font-weight:900!important;box-shadow:0 5px 14px rgba(22,136,255,.10)!important;
-  }
-  #customersView .table-pagination button:disabled,#followupsView .table-pagination button:disabled{
-    opacity:.46!important;filter:saturate(.55)!important;box-shadow:none!important;color:var(--muted)!important;border-color:color-mix(in srgb,var(--pilot-line) 35%,var(--border))!important;
-  }
-  #customersView .table-pagination button:not(:disabled):active,#followupsView .table-pagination button:not(:disabled):active{transform:translateY(1px)}
-
-  /* Dashboard representative settings: make it an intentional PETATOE action, not a legacy grey control. */
-  #dashboardView .dashboard-representative-settings-btn{
-    display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;width:auto!important;max-width:100%!important;
-    min-height:38px!important;padding:8px 12px!important;border:1px solid var(--pilot-gold-line)!important;border-radius:12px!important;
-    background:linear-gradient(135deg,color-mix(in srgb,var(--pilot-gold) 11%,var(--pilot-card)),color-mix(in srgb,var(--pilot-blue) 6%,var(--pilot-card-2)))!important;
-    color:var(--text)!important;font-size:10.5px!important;font-weight:900!important;box-shadow:0 6px 16px rgba(22,136,255,.08),0 0 12px rgba(233,173,55,.08)!important;
-  }
-  #dashboardView .dashboard-representative-settings-btn::before{
-    content:"";width:15px;height:15px;flex:0 0 15px;background:currentColor;
-    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M19 8v6M22 11h-6'/%3E%3C/svg%3E") center/contain no-repeat;
-    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M19 8v6M22 11h-6'/%3E%3C/svg%3E") center/contain no-repeat;
-    color:var(--pilot-gold);
-  }
-  #dashboardView .dashboard-representative-settings-btn.hidden{display:none!important}
-  #dashboardView .panel-header:has(.dashboard-representative-settings-btn:not(.hidden)){display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
-  #dashboardView .panel-header:has(.dashboard-representative-settings-btn:not(.hidden)) .dashboard-representative-settings-btn{justify-self:stretch!important}
-
-  /* Customer actions: preserve semantic hierarchy in BOTH themes and reduce legacy-button feel. */
-  #customersView .customer-mobile-card-actions{gap:7px!important;padding:9px 11px 11px!important}
-  #customersView .customer-mobile-card-actions button,#customersView .customer-mobile-card-actions a{min-height:39px!important;border-width:1px!important;font-size:10px!important;box-shadow:none!important}
-  #customersView .customer-mobile-card-actions .customer-action-primary{
-    background:linear-gradient(100deg,var(--pilot-blue-2),var(--pilot-blue))!important;border-color:var(--pilot-blue)!important;color:#fff!important;box-shadow:0 5px 13px rgba(22,136,255,.18)!important
-  }
-  #customersView .customer-mobile-card-actions .customer-action-followup{
-    border-color:var(--pilot-gold-line)!important;background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-gold) 13%,var(--pilot-card)),color-mix(in srgb,var(--pilot-gold) 5%,var(--pilot-card-2)))!important;color:color-mix(in srgb,var(--pilot-gold) 84%,#6f4900)!important
-  }
-  html[data-theme="dark"] #customersView .customer-mobile-card-actions .customer-action-followup{color:#ffd36f!important;background:linear-gradient(145deg,rgba(233,173,55,.14),rgba(10,33,61,.88))!important}
-  #customersView .customer-mobile-card-actions .customer-action-edit{
-    border-color:color-mix(in srgb,var(--pilot-blue) 58%,var(--border))!important;background:color-mix(in srgb,var(--pilot-blue) 7%,var(--pilot-card))!important;color:var(--pilot-blue)!important
-  }
-  html[data-theme="dark"] #customersView .customer-mobile-card-actions .customer-action-edit{color:#72b9ff!important;background:rgba(22,136,255,.08)!important}
-  #customersView .customer-mobile-card-actions .delete-btn{
-    border-color:color-mix(in srgb,#ef4444 45%,var(--border))!important;background:color-mix(in srgb,#ef4444 8%,var(--pilot-card))!important;color:#dc2626!important
-  }
-  html[data-theme="dark"] #customersView .customer-mobile-card-actions .delete-btn{color:#fca5a5!important;background:rgba(239,68,68,.08)!important}
-
-  /* Filter sheets: slightly denser, clearer focus and less oversized close control. */
-  #followupsView .mobile-followups-filter-sheet{gap:9px!important;padding:12px!important;border-color:color-mix(in srgb,var(--pilot-blue) 72%,var(--pilot-gold))!important}
-  #followupsView .mobile-followups-filter-sheet input,#followupsView .mobile-followups-filter-sheet select{min-height:42px!important;border-radius:12px!important}
-  #followupsView .mobile-followups-filter-sheet :is(input,select):focus,#customersView .filters-row :is(input,select):focus{
-    outline:none!important;border-color:var(--pilot-blue)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--pilot-blue) 17%,transparent),0 0 14px rgba(22,136,255,.10)!important
-  }
-  #followupsView .mobile-followups-filter-close,#customersView .mobile-customers-filter-close{width:34px!important;height:34px!important;border-radius:11px!important}
-
-  /* Empty states remain readable instead of visually disabled. */
-  #dashboardView :is(.empty-state,.empty-panel),#customersView :is(.empty-state,.customer-mobile-empty),#followupsView .empty-state{
-    color:color-mix(in srgb,var(--text) 70%,var(--muted))!important;font-weight:750!important;
-  }
-  #dashboardView .analytics-grid .empty-state{min-height:70px!important;padding:16px 10px!important}
-}
-@media (max-width:360px){
-  #customersView .table-pagination>div,#followupsView .table-pagination>div{grid-template-columns:minmax(72px,1fr) auto minmax(72px,1fr)!important;gap:6px!important}
-  #customersView .table-pagination button,#followupsView .table-pagination button{padding-inline:8px!important;font-size:10px!important}
-}
-
-/* PETATOE P5.11.18 — Pilot Mobile Action System.
-   Replaces the remaining legacy-looking pilot actions with one Blue/Gold action language.
-   Scope: Dashboard + Customers + Follow-ups mobile content only. Shell is untouched. */
-@media (max-width:767px),(pointer:coarse) and (max-device-width:1024px),(hover:none) and (max-device-width:1024px){
-  #dashboardView :is(.panel-header .text-btn),
-  #customersView :is(.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button),
-  #followupsView :is(.report-export-actions button,.table-pagination button){
-    position:relative!important;overflow:hidden!important;border-radius:14px!important;font-weight:900!important;letter-spacing:0!important;
-    transition:transform .14s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease!important;
-  }
-  #dashboardView :is(.panel-header .text-btn)::after,
-  #customersView :is(.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button)::after,
-  #followupsView :is(.report-export-actions button,.table-pagination button)::after{
-    content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
-    background:linear-gradient(115deg,rgba(255,255,255,.10),transparent 34%,transparent 70%,rgba(233,173,55,.07));
+  html[data-theme="dark"] #dashboardView,html[data-theme="dark"] #customersView,html[data-theme="dark"] #followupsView{
+    --pilot-card:rgba(4,20,40,.78);--pilot-card-2:rgba(8,35,66,.60);--pilot-line:rgba(38,147,255,.60);--pilot-gold-line:rgba(233,173,55,.70);--pilot-divider:rgba(67,158,247,.20);
+    --pilot-glass:linear-gradient(145deg,rgba(12,43,78,.80),rgba(4,20,39,.70));--pilot-glass-soft:linear-gradient(145deg,rgba(14,48,85,.66),rgba(4,19,37,.56));
+    --pilot-glass-blue:linear-gradient(145deg,rgba(15,66,118,.74),rgba(4,24,47,.66));--pilot-glass-gold:linear-gradient(145deg,rgba(75,57,22,.54),rgba(6,27,50,.72));
+    --pilot-shadow:0 16px 34px rgba(0,0,0,.32),0 5px 14px rgba(0,0,0,.24),0 0 18px rgba(22,136,255,.11),inset 0 1px 0 rgba(145,204,255,.12),inset 0 -1px 0 rgba(0,0,0,.24);
+    --pilot-shadow-hover:0 19px 38px rgba(0,0,0,.36),0 7px 17px rgba(0,0,0,.26),0 0 22px rgba(22,136,255,.17),inset 0 1px 0 rgba(158,213,255,.15);
+    --pilot-gold-shadow:0 16px 34px rgba(0,0,0,.31),0 5px 14px rgba(0,0,0,.22),0 0 18px rgba(233,173,55,.12),inset 0 1px 0 rgba(255,225,149,.11);
+    --pilot-icon-shadow:0 9px 18px rgba(0,0,0,.27),0 0 18px rgba(22,136,255,.14),inset 0 1px 0 rgba(158,213,255,.14),inset 0 -3px 7px rgba(0,0,0,.20);--pilot-glow:0 0 26px rgba(22,136,255,.21);
   }
 
-  /* Dashboard: View all / View follow-ups become real branded secondary actions. */
-  #dashboardView .panel-header .text-btn{
-    min-height:40px!important;padding:8px 14px!important;border:1px solid color-mix(in srgb,var(--pilot-blue) 72%,var(--pilot-gold))!important;
-    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 10%,var(--pilot-card-2)),color-mix(in srgb,var(--pilot-gold) 5%,var(--pilot-card)))!important;
-    color:var(--text)!important;box-shadow:0 6px 16px rgba(22,136,255,.12),inset 0 0 0 1px rgba(255,255,255,.025)!important;
+  #dashboardView :is(.mobile-dashboard-toolbar,.dashboard-filter-bar,.period-label,.dashboard-stats .stat-card,.analytics-grid>.panel,.analytics-grid>.full-span-panel,.performance-card,.performance-metric,.simple-item,.attention-item),
+  #customersView :is(.actions-row,.filters-row,.customer-mobile-card,.table-pagination,.customer-mobile-empty),
+  #followupsView :is(.actions-row,.mobile-followups-toolbar,.followup-stat,.mobile-followups-filter-sheet,tbody tr,.table-pagination,.empty-state){
+    -webkit-backdrop-filter:var(--pilot-blur);backdrop-filter:var(--pilot-blur);background:var(--pilot-glass)!important;border-color:var(--pilot-line)!important;box-shadow:var(--pilot-shadow)!important;
   }
-  #dashboardView .panel-header .text-btn::before{content:"‹";display:inline-grid;place-items:center;margin-inline-end:6px;color:var(--pilot-blue);font-size:18px;font-weight:900;line-height:1}
-  html[dir="ltr"] #dashboardView .panel-header .text-btn::before{content:"›"}
+  #dashboardView :is(.mobile-dashboard-toolbar,.analytics-grid>.panel,.analytics-grid>.full-span-panel,.dashboard-stats .stat-card),#customersView :is(.actions-row,.customer-mobile-card,.table-pagination),#followupsView :is(.actions-row,.mobile-followups-toolbar,.followup-stat,tbody tr,.table-pagination){transform:translateZ(0)}
+  #dashboardView :is(.analytics-grid>.panel,.analytics-grid>.full-span-panel)::before,#customersView .customer-mobile-card::before,#followupsView :is(.mobile-followups-toolbar,tbody tr)::before{filter:drop-shadow(0 0 5px rgba(22,136,255,.30))}
 
-  /* Customer import/template: distinct utility actions, same PETATOE family. */
-  #customersView .customer-main-actions .secondary-btn{
-    min-height:46px!important;border:1px solid color-mix(in srgb,var(--pilot-blue) 55%,var(--border))!important;
-    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 9%,var(--pilot-card-2)),var(--pilot-card))!important;
-    color:var(--text)!important;box-shadow:0 6px 16px rgba(22,136,255,.09)!important;
-  }
-  #customersView .customer-main-actions .customer-import-action{border-color:color-mix(in srgb,var(--pilot-blue) 78%,var(--border))!important}
-  #customersView .customer-main-actions .customer-export-action{border-color:color-mix(in srgb,var(--pilot-gold) 58%,var(--pilot-line))!important;background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-gold) 9%,var(--pilot-card)),var(--pilot-card-2))!important}
+  #dashboardView .dashboard-stats .stat-card,#followupsView .followup-stat{background:var(--pilot-glass-blue)!important}
+  #dashboardView .dashboard-stats .stat-card:nth-child(4n),#dashboardView .dashboard-stats .stat-card:nth-child(4n+1),#followupsView .followup-stat:nth-child(3n){background:var(--pilot-glass-gold)!important;border-color:var(--pilot-gold-line)!important;box-shadow:var(--pilot-gold-shadow)!important}
+  #dashboardView .dashboard-stats .stat-card .petatoe-kpi-icon,#followupsView .petatoe-followup-kpi-icon,#customersView .customer-mobile-avatar{background:linear-gradient(145deg,rgba(255,255,255,.44),color-mix(in srgb,var(--pilot-blue) 15%,var(--pilot-card-2)))!important;border-color:color-mix(in srgb,var(--pilot-blue) 78%,transparent)!important;box-shadow:var(--pilot-icon-shadow)!important;text-shadow:0 1px 0 rgba(255,255,255,.16)}
+  html[data-theme="dark"] #dashboardView .dashboard-stats .stat-card .petatoe-kpi-icon,html[data-theme="dark"] #followupsView .petatoe-followup-kpi-icon,html[data-theme="dark"] #customersView .customer-mobile-avatar{background:linear-gradient(145deg,rgba(24,102,177,.38),rgba(5,27,52,.70))!important}
+  #dashboardView .dashboard-stats .stat-card:nth-child(4n) .petatoe-kpi-icon,#dashboardView .dashboard-stats .stat-card:nth-child(4n+1) .petatoe-kpi-icon,#followupsView .followup-stat:nth-child(3n) .petatoe-followup-kpi-icon{background:linear-gradient(145deg,rgba(255,225,147,.35),color-mix(in srgb,var(--pilot-gold) 13%,var(--pilot-card-2)))!important;border-color:var(--pilot-gold-line)!important;color:var(--pilot-gold)!important;box-shadow:0 8px 16px rgba(166,108,6,.14),inset 0 1px 0 rgba(255,244,205,.45)!important}
 
-  /* Customer card actions: semantic hierarchy without four identical grey blocks. */
+  #dashboardView :is(.performance-card,.performance-metric,.simple-item,.attention-item),#followupsView .empty-state,#customersView .customer-mobile-empty{background:var(--pilot-glass-soft)!important;box-shadow:0 8px 18px rgba(8,67,139,.08),inset 0 1px 0 rgba(255,255,255,.35)!important}
+
+  #dashboardView :is(input,select,textarea),#customersView :is(input,select,textarea),#followupsView :is(input,select,textarea){min-height:42px;border:1px solid color-mix(in srgb,var(--pilot-line) 72%,var(--border))!important;background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-card) 82%,transparent),color-mix(in srgb,var(--pilot-blue) 6%,var(--pilot-card-2)))!important;-webkit-backdrop-filter:blur(10px) saturate(135%);backdrop-filter:blur(10px) saturate(135%);box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(22,136,255,.05),0 5px 12px rgba(9,70,145,.05)!important}
+  #dashboardView :is(input,select,textarea):focus,#customersView :is(input,select,textarea):focus,#followupsView :is(input,select,textarea):focus{outline:none!important;border-color:var(--pilot-blue)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--pilot-blue) 16%,transparent),0 0 18px rgba(22,136,255,.14),inset 0 1px 0 rgba(255,255,255,.24)!important}
+
+  #dashboardView :is(.primary-btn,.secondary-btn,.text-btn,.mobile-dashboard-action,.mobile-filter-close,.mobile-filter-apply),#customersView :is(.primary-btn,.secondary-btn,.mobile-customers-filter-btn,.mobile-customers-filter-close,.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button),#followupsView :is(.primary-btn,.secondary-btn,.text-btn,.mobile-followups-filter-button,.mobile-followups-filter-close,.mobile-followups-quicknav button,.report-export-actions button,.row-actions button,.row-actions a,.table-pagination button){position:relative!important;overflow:hidden!important;border-radius:14px!important;font-weight:900!important;-webkit-backdrop-filter:blur(10px) saturate(140%);backdrop-filter:blur(10px) saturate(140%);transition:transform .14s ease,box-shadow .16s ease,border-color .16s ease,filter .16s ease!important}
+  #dashboardView :is(.secondary-btn,.text-btn,.mobile-dashboard-action,.mobile-filter-close),#customersView :is(.secondary-btn,.mobile-customers-filter-btn,.mobile-customers-filter-close,.customer-main-actions .secondary-btn,.customer-mobile-card-actions .customer-action-edit,.table-pagination button),#followupsView :is(.secondary-btn,.text-btn,.mobile-followups-filter-button,.mobile-followups-filter-close,.mobile-followups-quicknav button,.row-actions button,.row-actions a,.table-pagination button,#exportFollowupsPdfBtn){border:1px solid color-mix(in srgb,var(--pilot-line) 76%,var(--border))!important;background:var(--pilot-glass-soft)!important;color:var(--text)!important;box-shadow:0 8px 16px rgba(8,74,154,.10),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 5px rgba(16,88,179,.05)!important}
+  #dashboardView :is(.primary-btn,.mobile-filter-apply),#customersView :is(.primary-btn,.customer-main-actions .primary-btn,.customer-mobile-card-actions .customer-action-primary),#followupsView :is(.primary-btn,#sendFollowupsWhatsappPdfBtn,#addFollowupBtn,.mobile-followup-update,.mobile-followups-quicknav button.is-active){border:1px solid #45a7ff!important;background:linear-gradient(145deg,#198cff,#075fdc 68%,#064fbd)!important;color:#fff!important;box-shadow:0 10px 20px rgba(22,136,255,.25),0 0 16px rgba(22,136,255,.15),inset 0 1px 0 rgba(255,255,255,.32),inset 0 -3px 7px rgba(0,51,130,.24)!important}
+  #dashboardView .panel-header .text-btn,#customersView .customer-main-actions .customer-export-action,#customersView .customer-mobile-card-actions .customer-action-followup,#followupsView #exportFollowupsPdfBtn{border-color:var(--pilot-gold-line)!important;background:var(--pilot-glass-gold)!important;color:color-mix(in srgb,var(--pilot-gold) 82%,var(--text))!important;box-shadow:0 9px 18px rgba(193,132,20,.11),inset 0 1px 0 rgba(255,246,210,.50),inset 0 -2px 5px rgba(166,108,6,.06)!important}
+  html[data-theme="dark"] #dashboardView .panel-header .text-btn,html[data-theme="dark"] #customersView .customer-main-actions .customer-export-action,html[data-theme="dark"] #customersView .customer-mobile-card-actions .customer-action-followup,html[data-theme="dark"] #followupsView #exportFollowupsPdfBtn{color:#ffd978!important}
+  #customersView .customer-mobile-card-actions .delete-btn{border:1px solid rgba(239,68,68,.38)!important;background:linear-gradient(145deg,color-mix(in srgb,#ef4444 9%,var(--pilot-card)),color-mix(in srgb,#ef4444 3%,var(--pilot-card-2)))!important;color:#dc4b4b!important;box-shadow:0 8px 16px rgba(185,28,28,.08),inset 0 1px 0 rgba(255,255,255,.28)!important}
+  html[data-theme="dark"] #customersView .customer-mobile-card-actions .delete-btn{color:#fca5a5!important}
+
+  #dashboardView :is(.primary-btn,.secondary-btn,.text-btn,.mobile-dashboard-action)::after,#customersView :is(.primary-btn,.secondary-btn,.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button)::after,#followupsView :is(.primary-btn,.secondary-btn,.text-btn,.report-export-actions button,.mobile-followups-quicknav button,.table-pagination button)::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(118deg,rgba(255,255,255,.16),transparent 28%,transparent 68%,rgba(233,173,55,.08));opacity:.72}
+
+  #customersView .customer-mobile-card{background:var(--pilot-glass)!important;box-shadow:var(--pilot-shadow)!important}
+  #customersView .customer-mobile-card:nth-child(3n+1){border-color:var(--pilot-gold-line)!important;box-shadow:var(--pilot-gold-shadow)!important}
+  #customersView .customer-mobile-card::after{background:radial-gradient(circle,color-mix(in srgb,var(--pilot-blue) 18%,transparent),transparent 70%)!important;opacity:.75}
+  #customersView .customer-mobile-card-head,#customersView .customer-mobile-card-actions,#customersView .customer-mobile-details>div{border-color:var(--pilot-divider)!important}
   #customersView .customer-mobile-card-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
   #customersView .customer-mobile-card-actions button,#customersView .customer-mobile-card-actions a{min-height:42px!important;font-size:11px!important}
-  #customersView .customer-mobile-card-actions .customer-action-primary{
-    background:linear-gradient(100deg,#075fdc,var(--pilot-blue))!important;border-color:#2b9bff!important;color:#fff!important;
-    box-shadow:0 6px 16px rgba(22,136,255,.22),inset 0 0 0 1px rgba(255,255,255,.08)!important;
-  }
-  #customersView .customer-mobile-card-actions .customer-action-edit{
-    border-color:color-mix(in srgb,var(--pilot-blue) 68%,var(--border))!important;background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 10%,var(--pilot-card-2)),var(--pilot-card))!important;color:var(--text)!important;
-  }
-  #customersView .customer-mobile-card-actions .customer-action-followup{
-    border-color:var(--pilot-gold-line)!important;background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-gold) 14%,var(--pilot-card)),color-mix(in srgb,var(--pilot-gold) 5%,var(--pilot-card-2)))!important;color:color-mix(in srgb,var(--pilot-gold) 82%,var(--text))!important;
-    box-shadow:0 5px 14px rgba(233,173,55,.08)!important;
-  }
-  #customersView .customer-mobile-card-actions .delete-btn{
-    border-color:color-mix(in srgb,#ef4444 34%,var(--pilot-line))!important;background:linear-gradient(145deg,color-mix(in srgb,#ef4444 7%,var(--pilot-card)),var(--pilot-card-2))!important;color:#e45d5d!important;
-  }
+  #customersView .customer-main-actions .secondary-btn{min-height:46px!important}#customersView .customer-main-actions .primary-btn{min-height:50px!important}
 
-  /* Follow-up report actions: export is utility, WhatsApp report + add are branded primaries. */
-  #followupsView .report-export-actions button{min-height:46px!important;font-size:11px!important}
-  #followupsView #exportFollowupsPdfBtn{
-    border:1px solid color-mix(in srgb,var(--pilot-gold) 58%,var(--pilot-line))!important;
-    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-gold) 9%,var(--pilot-card)),var(--pilot-card-2))!important;color:var(--text)!important;box-shadow:0 6px 16px rgba(233,173,55,.08)!important;
-  }
-  #followupsView #sendFollowupsWhatsappPdfBtn,#followupsView #addFollowupBtn{
-    border:1px solid #2b9bff!important;background:linear-gradient(100deg,#075fdc,var(--pilot-blue))!important;color:#fff!important;
-    box-shadow:0 7px 18px rgba(22,136,255,.22),inset 0 0 0 1px rgba(255,255,255,.08)!important;
-  }
-  #followupsView #addFollowupBtn{min-height:50px!important}
+  #followupsView .mobile-followups-filter-sheet,#customersView .filters-row,#dashboardView>.dashboard-filter-bar{background:var(--pilot-glass)!important;box-shadow:0 28px 72px rgba(2,13,30,.34),0 0 24px rgba(22,136,255,.16),inset 0 1px 0 rgba(255,255,255,.20)!important}
+  #followupsView .mobile-followups-filter-backdrop,#customersView .mobile-customers-filter-backdrop,#dashboardView .mobile-dashboard-filter-backdrop{-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+  #followupsView .mobile-followups-quicknav button.is-active{color:#fff!important}
+  #followupsView .mobile-followup-whatsapp{border-color:rgba(34,197,94,.45)!important;background:linear-gradient(145deg,color-mix(in srgb,#22c55e 12%,var(--pilot-card)),var(--pilot-card-2))!important;color:#16833c!important}
+  html[data-theme="dark"] #followupsView .mobile-followup-whatsapp{color:#86efac!important}
 
-  /* Pagination: previous/next are no longer legacy grey blocks. */
-  #customersView .table-pagination,#followupsView .table-pagination{border-color:color-mix(in srgb,var(--pilot-blue) 70%,var(--pilot-gold))!important}
-  #customersView .table-pagination button,#followupsView .table-pagination button{
-    min-height:42px!important;border:1px solid color-mix(in srgb,var(--pilot-blue) 64%,var(--border))!important;
-    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-blue) 10%,var(--pilot-card-2)),var(--pilot-card))!important;color:var(--text)!important;
-    box-shadow:0 5px 14px rgba(22,136,255,.10)!important;
-  }
-  #customersView .table-pagination button:not(:disabled),#followupsView .table-pagination button:not(:disabled){border-color:var(--pilot-blue)!important}
-  #customersView .table-pagination button:not(:disabled):first-child,#followupsView .table-pagination button:not(:disabled):first-child{box-shadow:inset -3px 0 0 color-mix(in srgb,var(--pilot-gold) 80%,transparent),0 5px 14px rgba(22,136,255,.10)!important}
-  #customersView .table-pagination button:not(:disabled):last-child,#followupsView .table-pagination button:not(:disabled):last-child{box-shadow:inset 3px 0 0 color-mix(in srgb,var(--pilot-blue) 85%,transparent),0 5px 14px rgba(22,136,255,.10)!important}
-  #customersView .table-pagination button:disabled,#followupsView .table-pagination button:disabled{opacity:.58!important;color:var(--muted)!important;background:color-mix(in srgb,var(--pilot-card-2) 94%,var(--pilot-blue) 6%)!important}
+  #customersView .table-pagination,#followupsView .table-pagination{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;padding:9px 10px!important;border-radius:17px!important;min-height:0!important}
+  #customersView .table-pagination>span,#followupsView .table-pagination>span{justify-self:end;color:var(--muted)!important;font-size:10px!important;font-weight:850!important;line-height:1.25!important}
+  #customersView .table-pagination>div,#followupsView .table-pagination>div{display:grid!important;grid-template-columns:minmax(84px,1fr) auto minmax(84px,1fr)!important;align-items:center!important;gap:8px!important;width:100%!important}
+  #customersView .table-pagination>div>span,#followupsView .table-pagination>div>span{min-width:60px;padding:7px 10px;border:1px solid var(--pilot-line);border-radius:999px;background:var(--pilot-glass-blue);color:var(--text);text-align:center;font-size:11px;font-weight:900;line-height:1.2;box-shadow:var(--pilot-icon-shadow)}
+  #customersView .table-pagination button,#followupsView .table-pagination button{min-height:42px!important}
+  #customersView .table-pagination button:disabled,#followupsView .table-pagination button:disabled{opacity:.48!important;filter:saturate(.55)!important;box-shadow:none!important;color:var(--muted)!important}
 
-  html[data-theme="dark"] #dashboardView .panel-header .text-btn,
-  html[data-theme="dark"] #customersView .customer-main-actions .secondary-btn,
-  html[data-theme="dark"] #customersView .customer-mobile-card-actions .customer-action-edit,
-  html[data-theme="dark"] #customersView .table-pagination button,
-  html[data-theme="dark"] #followupsView .table-pagination button{
-    background:linear-gradient(145deg,rgba(22,136,255,.11),rgba(8,27,50,.96))!important;color:#f4f8ff!important;
-  }
-  html[data-theme="dark"] #customersView .customer-mobile-card-actions .customer-action-followup{color:#ffd36f!important}
+  #dashboardView :is(.empty-state,.empty-panel),#customersView :is(.empty-state,.customer-mobile-empty),#followupsView .empty-state{color:color-mix(in srgb,var(--text) 72%,var(--muted))!important;font-weight:760!important}
+  #dashboardView .analytics-grid .empty-state{min-height:70px!important;padding:16px 10px!important}
 
-  #dashboardView .panel-header .text-btn:active,#customersView :is(.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button):active,#followupsView :is(.report-export-actions button,.table-pagination button):active{transform:translateY(1px)!important}
+  #dashboardView :is(.primary-btn,.secondary-btn,.text-btn,.mobile-dashboard-action):active,#customersView :is(.primary-btn,.secondary-btn,.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button):active,#followupsView :is(.primary-btn,.secondary-btn,.text-btn,.report-export-actions button,.mobile-followups-filter-button,.mobile-followups-quicknav button,.row-actions button,.row-actions a,.table-pagination button):active{transform:translateY(1px) scale(.992)!important;filter:brightness(.97)}
 }
+@media (max-width:360px){#dashboardView,#customersView,#followupsView{--pilot-blur:blur(11px) saturate(135%)}#customersView .table-pagination>div,#followupsView .table-pagination>div{grid-template-columns:minmax(72px,1fr) auto minmax(72px,1fr)!important;gap:6px!important}#customersView .table-pagination button,#followupsView .table-pagination button{padding-inline:8px!important;font-size:10px!important}}
+@media (prefers-reduced-motion:reduce) and (max-width:767px){#dashboardView *,#customersView *,#followupsView *{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
