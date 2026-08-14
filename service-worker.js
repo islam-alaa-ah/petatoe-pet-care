@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-89-p5124-desktop-full-certification";
+const CACHE_VERSION = "petatoe-pwa-18-54-90-p5125-desktop-marked-areas-hotfix";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

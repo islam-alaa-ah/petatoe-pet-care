@@ -874,6 +874,11 @@
   }
 
   function initialize() {
+    if (!MOBILE_MEDIA.matches) {
+      observer?.disconnect();
+      view.querySelector(".mobile-daily-toolbar")?.remove();
+      return;
+    }
     ensureToolbar();
     syncTables();
     syncProgress();
@@ -1209,6 +1214,16 @@
   }
 
   function initialize() {
+    if (!MOBILE_MEDIA.matches) {
+      observer?.disconnect();
+      view.querySelector(".mobile-reports-toolbar")?.remove();
+      view.querySelector(".mobile-reports-filter-backdrop")?.remove();
+      filters.querySelector(".mobile-reports-sheet-header")?.remove();
+      filters.classList.remove("mobile-reports-filter-sheet");
+      view.classList.remove("mobile-reports-filters-open", "mobile-reports-loading");
+      document.body.classList.remove("mobile-reports-sheet-open");
+      return;
+    }
     ensureToolbar();
     ensureFilterSheet();
     syncPeriodSummary();

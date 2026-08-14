@@ -1,14 +1,14 @@
 {
-  "version": "18.54.89",
-  "build": 185489,
+  "version": "18.54.90",
+  "build": 185490,
   "forceUpdate": true,
-  "releaseDate": "2026-08-14",
-  "title": "PETATOE Admin System Full Desktop Visual Certification P5.12.4",
+  "releaseDate": "2026-08-15",
+  "title": "PETATOE Desktop Marked Areas Visual & Mobile Leak Hotfix P5.12.5",
   "notes": [
-    "إكمال الهوية البصرية لشاشات المستخدمين والصلاحيات والنسخ الاحتياطي وصحة النظام والإشعارات على Desktop.",
-    "توحيد Dialog وEmpty State في الشاشات غير المرجعية من مصادرها الأساسية مع Blue/Gold Glass 3D.",
-    "إغلاق P5.12 مع Full Desktop visual-system ownership مع الحفاظ على الرئيسية والعملاء والمتابعات كمرجع مستقر.",
-    "Mobile lockdown كامل بدون تعديل ملفات الموبايل."
+    "منع حقن شريط التشغيل اليومي الخاص بالموبايل داخل Desktop.",
+    "منع حقن شريط وفلاتر مركز التقارير الخاصة بالموبايل داخل Desktop.",
+    "إعادة ضبط كروت عقود العملاء والأداء اليومي ومركز التقارير والمواعيد في Desktop لتقليل الفراغات وتحسين الهوية البصرية.",
+    "الحفاظ على سلوك Mobile نفسه عند تحقق Mobile media query."
   ],
-  "cacheToken": "petatoe-pwa-18-54-89-p5124-desktop-full-certification"
+  "cacheToken": "petatoe-pwa-18-54-90-p5125-desktop-marked-areas-hotfix"
 }
