@@ -1,14 +1,13 @@
 {
-  "version": "18.54.80",
-  "build": 185480,
+  "version": "18.54.78",
+  "build": 185478,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Tables & Icons Canonical Replacement P5.11.24.1",
+  "title": "PETATOE Desktop Header & Sidebar Light/Dark Shell P5.11.23",
   "notes": [
-    "إزالة طبقات Pilot القديمة الخاصة بالرئيسية والعملاء والمتابعات من mobile.css بدل إضافة Override جديد.",
-    "اعتماد تعريف Mobile Canonical واحد للجداول وRecord Cards والأيقونات في الشاشات الثلاث Light/Dark.",
-    "ربط جدول المتابعات فعليًا بحقوله عبر data-mobile-field/data-mobile-label وإضافة Inline SVG لأزرار الإجراءات على الموبايل فقط.",
-    "الحفاظ على Desktop/Tablet بصريًا ووظيفيًا بدون تغيير."
+    "تفعيل هوية Light Mode مستقلة للهيدر والقائمة الجانبية في نسخة Desktop فقط مع الحفاظ على تصميم Dark الحالي.",
+    "استخدام نفس فلسفة PETATOE الزجاجية Blue/Gold المعتمدة بدون تغيير تخطيط الهيدر أو القائمة.",
+    "الحفاظ الكامل على Mobile shell وBottom Navigation والشاشات الداخلية وBusiness Logic بدون تعديل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-80-p511241-mobile-tables-icons-canonical-replacement"
+  "cacheToken": "petatoe-pwa-18-54-78-p51123-desktop-header-sidebar-light-dark"
 }
