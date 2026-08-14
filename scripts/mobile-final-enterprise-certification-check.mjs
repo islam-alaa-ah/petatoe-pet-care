@@ -27,12 +27,23 @@ check('Cache token service worker', sw.includes(version.cacheToken));
 check('Canonical mobile theme registered', index.includes('assets/css/mobile-theme-canonical.css') && sw.includes('assets/css/mobile-theme-canonical.css'));
 check('Theme runtime synchronizes html/body', appJs.includes('document.body?.dataset.theme') || (appJs.includes('root.dataset.theme') && appJs.includes('classList.toggle("dark-mode"')));
 check('Completion mobile cards', completionCss.includes('@media (max-width: 767px)') && completionCss.includes('data-label'));
-check('Current request server ownership', installationsService.includes('get_current_installation_execution_request_id'));
+check('Current execution visit server ownership', installationsService.includes('get_current_installation_execution_visit_id'));
 check('Execution stage ownership RPC', installationsService.includes('advance_installation_execution_stage'));
 check('No arbitrary timeline fallback', !executionJs.includes('find((request) => hasExecutionProgress(request))'));
-check('Completion default pending documentation', completionJs.includes('بانتظار التوثيق'));
+check(
+  'Completion default pending invoice conversion',
+  completionJs.includes('بانتظار التحويل إلى فاتورة') &&
+    index.includes('installationCompletionReportFilter') &&
+    index.includes('بانتظار التحويل إلى فاتورة')
+);
 check('Completion representative filter', index.includes('installationCompletionRepresentativeFilter'));
-check('Customer order number field', index.includes('newInstallationCustomerOrderNumber') && index.includes('installationCompletionCustomerOrderNumber') && installationsService.includes('customer_order_number'));
+check(
+  'Customer order number current contract',
+  index.includes('installationCompletionCustomerOrderNumber') &&
+    installationsService.includes('customer_order_number') &&
+    index.includes('newInstallationQuotationId') &&
+    !index.includes('newInstallationCustomerOrderNumber')
+);
 check('Gregorian calendar lock', [appJs, executionJs, completionJs].some((text) => text.includes('u-ca-gregory')));
 check('Operational dropdown resilience', appJs.includes('Promise.allSettled'));
 check('Reference scope migration present', exists('supabase/migrations/phase_m14_9_3_1_operational_reference_dropdown_scope_recovery.sql'));
