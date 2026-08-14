@@ -1,14 +1,14 @@
 {
-  "version": "18.54.88",
-  "build": 185488,
+  "version": "18.54.89",
+  "build": 185489,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop Appointments Reports Specialized Screens P5.12.3",
+  "title": "PETATOE Admin System Full Desktop Visual Certification P5.12.4",
   "notes": [
-    "تطوير الهوية البصرية المتخصصة لشاشات المواعيد والجدولة والتنفيذ والمحاضر والتقارير والفواتير على Desktop.",
-    "توحيد KPI cards وcalendar surfaces وexecution cards وanalytics sections والـspecialized panels مع هوية Blue/Gold Glass 3D.",
-    "تطوير المهام اليومية وتقرير الأداء والعقود بصريًا ضمن Desktop specialized scope.",
-    "Mobile lockdown كامل مع الحفاظ على الشاشات المرجعية المستقرة."
+    "إكمال الهوية البصرية لشاشات المستخدمين والصلاحيات والنسخ الاحتياطي وصحة النظام والإشعارات على Desktop.",
+    "توحيد Dialog وEmpty State في الشاشات غير المرجعية من مصادرها الأساسية مع Blue/Gold Glass 3D.",
+    "إغلاق P5.12 مع Full Desktop visual-system ownership مع الحفاظ على الرئيسية والعملاء والمتابعات كمرجع مستقر.",
+    "Mobile lockdown كامل بدون تعديل ملفات الموبايل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-88-p5123-desktop-specialized-screens"
+  "cacheToken": "petatoe-pwa-18-54-89-p5124-desktop-full-certification"
 }

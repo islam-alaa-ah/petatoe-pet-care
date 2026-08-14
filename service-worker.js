@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-88-p5123-desktop-specialized-screens";
+const CACHE_VERSION = "petatoe-pwa-18-54-89-p5124-desktop-full-certification";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

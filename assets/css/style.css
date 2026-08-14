@@ -130,6 +130,9 @@ td{font-size:13px}
 .edit-btn{background:#eff6ff;color:#1d4ed8}
 .delete-btn{background:#fef2f2;color:#dc2626}
 .empty-state{text-align:center;color:var(--muted);padding:32px}
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+ #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) .empty-state{margin:10px 0;border:1px dashed color-mix(in srgb,var(--desk-blue) 35%,var(--desk-line));border-radius:16px;background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft));color:var(--desk-muted)}
+}
 .representatives-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .rep-card{padding:15px;border:1px solid var(--border);border-radius:15px;background:var(--surface-2)}
 .rep-card strong{display:block}
@@ -137,6 +140,11 @@ td{font-size:13px}
 .tag-list{display:flex;flex-wrap:wrap;gap:8px}
 .tag{background:#eef2ff;color:#4338ca;padding:7px 11px;border-radius:999px;font-size:13px}
 dialog{border:0;border-radius:22px;width:min(780px,calc(100% - 24px));padding:0;box-shadow:0 30px 90px rgba(15,23,42,.28)}
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+ #appView dialog{border:1px solid var(--desk-line);border-radius:22px;color:var(--desk-text);background:radial-gradient(circle at 90% -12%,rgba(47,131,255,.12),transparent 36%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));box-shadow:0 28px 72px rgba(3,21,47,.26),0 0 34px rgba(47,131,255,.08),inset 0 1px 0 rgba(255,255,255,.09)}
+ #appView dialog .dialog-header{border-bottom-color:color-mix(in srgb,var(--desk-line) 70%,transparent)}
+ #appView dialog .dialog-actions{border-top-color:color-mix(in srgb,var(--desk-line) 70%,transparent)}
+}
 dialog::backdrop{background:rgba(15,23,42,.62);backdrop-filter:blur(4px)}
 dialog form{padding:22px}
 .dialog-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:18px}
@@ -364,6 +372,13 @@ body[data-user-role="viewer"] .privacy-nav-group{display:none}
 .permissions-role-bar label{min-width:280px}
 .permissions-matrix{display:grid;gap:18px}
 .permission-group{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+ #permissionsView .permission-group{background:radial-gradient(circle at 92% -14%,rgba(47,131,255,.10),transparent 35%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));border:1px solid var(--desk-line);border-radius:18px;box-shadow:var(--desk-shadow)}
+ #permissionsView .permission-row{border:1px solid transparent}
+ #permissionsView .permission-row:nth-child(even){background:color-mix(in srgb,var(--desk-blue) 4%,var(--desk-glass-soft))}
+ #permissionsView .permission-row:hover{background:color-mix(in srgb,var(--desk-blue) 8%,var(--desk-glass-soft));border-color:var(--desk-line)}
+ #permissionsView .permission-row input[type="checkbox"]{accent-color:var(--desk-blue)}
+}
 .permission-group h4{margin:0 0 12px}
 .permission-table{display:grid;gap:4px}
 .permission-row{display:grid;grid-template-columns:minmax(180px,2fr) repeat(5,minmax(55px,.6fr));align-items:center;gap:8px;padding:10px;border-radius:10px}
@@ -388,6 +403,11 @@ body[data-user-role="viewer"] .privacy-nav-group{display:none}
   min-height:230px
 }
 .backup-action-card h3,.backup-action-card p{margin:0}
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+ #backupsView .backup-action-card{border:1px solid var(--desk-line);border-radius:19px;background:radial-gradient(circle at 90% -12%,rgba(47,131,255,.11),transparent 36%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));box-shadow:var(--desk-shadow);padding:18px}
+ #backupsView .backup-counts-grid article{border:1px solid var(--desk-line);background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft));box-shadow:0 8px 20px rgba(47,131,255,.06)}
+ #backupsView .file-picker-btn{border-color:var(--desk-line);background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft));color:var(--desk-text)}
+}
 .backup-action-card p{color:var(--muted);line-height:1.8}
 .backup-card-icon{
   width:54px;height:54px;border-radius:18px;display:grid;place-items:center;
@@ -432,6 +452,11 @@ body[data-user-role="viewer"] .privacy-nav-group{display:none}
 
 .health-hero-grid{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:16px;margin-bottom:18px}
 .health-score-card{display:flex;align-items:center;gap:18px}
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+ #systemHealthView :is(.health-score-card,.health-summary-card,.health-details-grid>.panel,.smart-health-grid>section,.diagnostics-center-panel,.diagnostics-group){border:1px solid var(--desk-line);border-radius:18px;background:radial-gradient(circle at 92% -14%,rgba(47,131,255,.10),transparent 35%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));box-shadow:var(--desk-shadow)}
+ #systemHealthView .health-list-item,#systemHealthView .health-metrics-grid article,#systemHealthView .diagnostics-summary-grid article,#systemHealthView .diagnostics-test{border-color:var(--desk-line);background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft));color:var(--desk-text)}
+ #systemHealthView .health-score-ring{box-shadow:0 12px 30px rgba(47,131,255,.10),inset 0 0 0 1px var(--desk-line)}
+}
 .health-score-card h3,.health-score-card p{margin:0}.health-score-card p{margin-top:6px;color:var(--muted)}
 .health-score-ring{--health-score:0deg;width:118px;height:118px;border-radius:50%;display:grid;place-items:center;align-content:center;flex:0 0 auto;background:radial-gradient(circle at center,var(--surface) 58%,transparent 59%),conic-gradient(#0f766e var(--health-score),var(--surface-2) 0);box-shadow:inset 0 0 0 1px var(--border)}
 .health-score-ring strong{font-size:27px}.health-score-ring span{font-size:11px;color:var(--muted)}
