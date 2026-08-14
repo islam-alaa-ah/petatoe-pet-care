@@ -1,13 +1,14 @@
 {
-  "version": "18.54.79",
-  "build": 185479,
+  "version": "18.54.80",
+  "build": 185480,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Tables & Icons Pilot P5.11.24",
+  "title": "PETATOE Mobile Tables & Icons Canonical Replacement P5.11.24.1",
   "notes": [
-    "تطوير عرض البيانات والأيقونات في الرئيسية والعملاء والمتابعات على الموبايل فقط بنفس هوية Glass + 3D المعتمدة.",
-    "تحسين فواصل بيانات كروت العملاء وصفوف المتابعات مع وضوح أكبر في Light/Dark.",
-    "توحيد قياسات وStroke وتأثيرات أيقونات KPI والإجراءات داخل الشاشات الثلاث دون تغيير Desktop أو Business Logic."
+    "إزالة طبقات Pilot القديمة الخاصة بالرئيسية والعملاء والمتابعات من mobile.css بدل إضافة Override جديد.",
+    "اعتماد تعريف Mobile Canonical واحد للجداول وRecord Cards والأيقونات في الشاشات الثلاث Light/Dark.",
+    "ربط جدول المتابعات فعليًا بحقوله عبر data-mobile-field/data-mobile-label وإضافة Inline SVG لأزرار الإجراءات على الموبايل فقط.",
+    "الحفاظ على Desktop/Tablet بصريًا ووظيفيًا بدون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-54-79-p51124-mobile-tables-icons-pilot"
+  "cacheToken": "petatoe-pwa-18-54-80-p511241-mobile-tables-icons-canonical-replacement"
 }

@@ -3349,7 +3349,7 @@ function renderCustomers() {
   const allRows=filteredCustomers(); const body=document.getElementById("customersTableBody"); const mobileCards=document.getElementById("customersMobileCards");
   const pageCount=Math.max(1,Math.ceil(allRows.length/CUSTOMERS_PAGE_SIZE)); if(customersPage>pageCount)customersPage=pageCount; const start=(customersPage-1)*CUSTOMERS_PAGE_SIZE; const rows=allRows.slice(start,start+CUSTOMERS_PAGE_SIZE);
   document.getElementById("addCustomerBtn")?.classList.toggle("hidden",!canManageCustomers("add"));
-  const actions=c=>`<div class="row-actions"><button class="edit-btn customer-action-primary" data-details="${c.id}">عرض</button>${canManageFollowups("add")?`<button class="edit-btn customer-action-followup" data-add-followup="${c.id}">متابعة</button>`:""}${canManageCustomers()?`<button class="edit-btn customer-action-edit" data-edit="${c.id}">تعديل</button>`:""}${canDeleteCustomers()?`<button class="delete-btn customer-action-delete" data-delete="${c.id}">حذف</button>`:""}</div>`;
+  const actions=c=>`<div class="row-actions"><button class="edit-btn customer-action-primary" data-details="${c.id}"><svg class="mobile-action-icon" style="display:none" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>عرض</button>${canManageFollowups("add")?`<button class="edit-btn customer-action-followup" data-add-followup="${c.id}"><svg class="mobile-action-icon" style="display:none" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>متابعة</button>`:""}${canManageCustomers()?`<button class="edit-btn customer-action-edit" data-edit="${c.id}"><svg class="mobile-action-icon" style="display:none" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>تعديل</button>`:""}${canDeleteCustomers()?`<button class="delete-btn customer-action-delete" data-delete="${c.id}"><svg class="mobile-action-icon" style="display:none" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v5M14 11v5"/></svg>حذف</button>`:""}</div>`;
   if(!rows.length){const m=customersLoaded?"لا توجد نتائج مطابقة.":"جاري تحميل بيانات العملاء..."; body.innerHTML=`<tr><td colspan="6" class="empty-state">${m}</td></tr>`; if(mobileCards)mobileCards.innerHTML=`<div class="customer-mobile-empty">${m}</div>`;}
   else { body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.address||"—")}</td><td>${escapeHtml(c.phone||"—")}</td><td>${c.googleMapsUrl?`<a class="text-btn" href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">فتح الموقع</a>`:"—"}</td><td>${actions(c)}</td></tr>`).join("");
     if(mobileCards)mobileCards.innerHTML=rows.map(c=>`<article class="customer-mobile-card"><header class="customer-mobile-card-head"><span class="customer-mobile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><div><span class="customer-mobile-kicker">name</span><strong class="customer-mobile-name">${escapeHtml(c.name||"—")}</strong><small>${escapeHtml(c.customerNumber||"—")}</small></div></header><div class="customer-mobile-details"><div><span>address</span><strong>${escapeHtml(c.address||"—")}</strong></div><div><span>mobile</span><strong>${escapeHtml(c.phone||"—")}</strong></div><div><span>موقع Google Maps</span><strong>${c.googleMapsUrl?`<a href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">فتح الموقع</a>`:"—"}</strong></div></div><footer class="customer-mobile-card-actions row-actions">${actions(c)}</footer></article>`).join(""); }
@@ -3916,19 +3916,19 @@ function renderFollowups() {
       const status = followupStatus(item);
       return `
         <tr>
-          <td><strong>${escapeHtml(customer?.name || item.customerName || "عميل غير معروف")}</strong></td>
-          <td>${escapeHtml(customer?.phone || item.customerPhone || "—")}</td>
-          <td>${formatDate(item.contactDate)}</td>
-          <td><span class="badge">${escapeHtml(item.method)}</span></td>
-          <td>${escapeHtml(item.representative || "—")}</td>
-          <td>${escapeHtml(item.result)}</td>
-          <td>${escapeHtml(item.quotationNumber || "—")}</td>
-          <td>${formatDate(item.nextFollowupDate)}</td>
-          <td><span class="status-badge status-${status}">${statusLabel(status)}</span></td>
-          <td>
+          <td data-mobile-field="customer" data-mobile-label="العميل"><strong>${escapeHtml(customer?.name || item.customerName || "عميل غير معروف")}</strong></td>
+          <td data-mobile-field="phone" data-mobile-label="الجوال">${escapeHtml(customer?.phone || item.customerPhone || "—")}</td>
+          <td data-mobile-field="contact-date" data-mobile-label="تاريخ التواصل">${formatDate(item.contactDate)}</td>
+          <td data-mobile-field="method" data-mobile-label="الطريقة"><span class="badge">${escapeHtml(item.method)}</span></td>
+          <td data-mobile-field="representative" data-mobile-label="المندوب">${escapeHtml(item.representative || "—")}</td>
+          <td data-mobile-field="result" data-mobile-label="النتيجة">${escapeHtml(item.result)}</td>
+          <td data-mobile-field="quotation" data-mobile-label="العقد">${escapeHtml(item.quotationNumber || "—")}</td>
+          <td data-mobile-field="next-date" data-mobile-label="المتابعة القادمة">${formatDate(item.nextFollowupDate)}</td>
+          <td data-mobile-field="status" data-mobile-label="الحالة"><span class="status-badge status-${status}">${statusLabel(status)}</span></td>
+          <td data-mobile-field="actions" data-mobile-label="الإجراءات">
             <div class="row-actions">
-              ${canManageFollowups("edit") ? `<button class="edit-btn" data-edit-followup="${item.id}">تعديل</button>` : ""}
-              ${canManageFollowups("delete") ? `<button class="delete-btn" data-delete-followup="${item.id}">حذف</button>` : ""}
+              ${canManageFollowups("edit") ? `<button class="edit-btn" data-edit-followup="${item.id}"><svg class="mobile-action-icon" style="display:none" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>تعديل</button>` : ""}
+              ${canManageFollowups("delete") ? `<button class="delete-btn" data-delete-followup="${item.id}"><svg class="mobile-action-icon" style="display:none" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v5M14 11v5"/></svg>حذف</button>` : ""}
             </div>
           </td>
         </tr>`;
