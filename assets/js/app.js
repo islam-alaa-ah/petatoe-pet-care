@@ -1480,7 +1480,8 @@ function renderDashboard() {
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h4"/></svg>',
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M6 4h12l2 16H4L6 4Zm3 7h6"/></svg>'
   ];
-  document.getElementById("statsGrid").innerHTML=stats.map(([l,v],index)=>`<article class="stat-card"><span class="petatoe-kpi-icon">${dashboardKpiIcons[index%dashboardKpiIcons.length]}</span><span>${l}</span><strong>${v}</strong></article>`).join("");
+  const useMobileDashboardKpiIcons = window.matchMedia?.("(max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px)")?.matches === true;
+  document.getElementById("statsGrid").innerHTML=stats.map(([l,v],index)=>`<article class="stat-card">${useMobileDashboardKpiIcons?`<span class="petatoe-kpi-icon">${dashboardKpiIcons[index%dashboardKpiIcons.length]}</span>`:""}<span>${l}</span><strong>${v}</strong></article>`).join("");
   const periodText=data.filters.from||data.filters.to?`الفترة: ${data.filters.from?formatDate(data.filters.from):"البداية"} — ${data.filters.to?formatDate(data.filters.to):"اليوم"}`:"الفترة: جميع البيانات"; document.getElementById("dashboardPeriodLabel").textContent=periodText;
   renderRepresentativePerformance(data); renderQuotationStatusAnalytics(filteredQuotations); renderNoSaleReasonAnalytics([],filteredQuotations); renderActivityTrend(data);
   const latest=[...filteredCustomers].sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||""))).slice(0,5);
