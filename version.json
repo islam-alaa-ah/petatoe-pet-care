@@ -1,14 +1,13 @@
 {
-  "version": "18.54.66",
-  "build": 185466,
+  "version": "18.54.67",
+  "build": 185467,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Pilot Action System — P5.11.18",
+  "title": "PETATOE PWA Version Synchronization Hotfix — P5.11.18.1",
   "notes": [
-    "توحيد أزرار المحتوى الداخلية في الرئيسية والعملاء والمتابعات بهوية PETATOE Blue/Gold على الموبايل فقط.",
-    "إعادة تصميم عرض الكل وعرض المتابعات ورفع العملاء وتنزيل النموذج وتصدير PDF وإرسال التقرير وإضافة متابعة.",
-    "إعادة تصميم السابق/التالي وترقيم الصفحات وأزرار عرض/تعديل/متابعة/حذف مع هرمية بصرية واضحة.",
-    "عدم تعديل الهيدر أو القائمة أو Bottom Bar أو Business Logic أو Desktop/Tablet."
+    "مزامنة رقم الإصدار بين version.json وpwa.js وservice-worker.js وملفات التحميل لمنع دورة إعادة التحميل المتكررة.",
+    "ترقية آمنة إلى 18.54.67 لتجاوز أي نسخة 18.54.66 مخزنة في PWA أو Service Worker cache.",
+    "لا تغيير في تصميم P5.11.18 أو Business Logic أو Desktop/Tablet."
   ],
-  "cacheToken": "petatoe-pwa-18-54-66-p51118-pilot-action-system"
+  "cacheToken": "petatoe-pwa-18-54-67-p51118-1-pwa-version-sync-hotfix"
 }
