@@ -305,6 +305,46 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   .view-section{overflow-x:hidden!important;padding-inline:max(10px,env(safe-area-inset-left,0px)) max(10px,env(safe-area-inset-right,0px))!important;padding-bottom:var(--petatoe-mobile-bottom-clearance)!important;scroll-padding-bottom:var(--petatoe-mobile-bottom-clearance)!important}
   .content-card,.filter-card,.report-card,.metric-card,.chart-card,.table-card,.panel,.settings-panel{box-sizing:border-box!important;min-width:0!important;max-width:100%!important;border-radius:var(--petatoe-mobile-card-radius)!important}
 
+  /* P5.11.12 — Mobile Cell/Control Boundary Certification.
+     One canonical boundary contract for every mobile form/filter cell.
+     It removes intrinsic desktop min-content overflow without clipping or widening the viewport. */
+  body :where(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),select,textarea){
+    box-sizing:border-box!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
+  }
+  :where(.view-section,dialog,.dialog-shell,.modal,.modal-card) :where(label,.field,.form-field,.form-group,.input-group,.select-group,.search-box,.searchable-select,.geo-searchable-select){
+    box-sizing:border-box!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
+  }
+  :where(.view-section,dialog,.dialog-shell,.modal,.modal-card) :where(.customer-import-toolbar,.dashboard-filter-bar,.employee-targets-toolbar,.executive-filter-bar,.installation-service-team-filter,.installation-settings-filter,.installation-summary-team-filter,.notification-role-filter,.reference-data-toolbar,.reports-filter-bar){
+    box-sizing:border-box!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
+  }
+  .view-section :where(.filters-row,.filters-grid,.form-grid,.settings-form-grid,.dashboard-filters,.daily-activity-filters,.daily-performance-filters,.followup-filters,.quotation-filters,.users-filters,.reference-customers-filters,.installation-request-filters,.installation-request-form-grid,.installation-completion-filters,.installation-completion-form-grid,.installation-operations-filters,.installation-report-advanced-filters,.installation-service-analytics-filters,.installation-summary-filters,.sales-invoices-filters,.representatives-list-toolbar,.installation-schedule-toolbar,.installation-execution-toolbar){
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
+  }
+  .view-section :where(.filters-row,.filters-grid,.form-grid,.settings-form-grid,.dashboard-filters,.daily-activity-filters,.daily-performance-filters,.followup-filters,.quotation-filters,.users-filters,.reference-customers-filters,.installation-request-filters,.installation-request-form-grid,.installation-completion-filters,.installation-completion-form-grid,.installation-operations-filters,.installation-report-advanced-filters,.installation-service-analytics-filters,.installation-summary-filters,.sales-invoices-filters,.representatives-list-toolbar,.installation-schedule-toolbar,.installation-execution-toolbar)>*{
+    box-sizing:border-box!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
+  }
+
   /* Daily Operations: toolbar participates in normal document flow; never overlaps phone search. */
   #dailyOperationsView .mobile-daily-toolbar{position:relative!important;top:auto!important;inset:auto!important;z-index:1!important;width:100%!important;margin:0 0 14px!important;padding:14px!important;overflow:hidden!important}
   #dailyOperationsView .mobile-daily-toolbar-head{display:block!important}
@@ -435,6 +475,10 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   #installationReportsView .installation-report-advanced-filters button{
     box-sizing:border-box!important;
     width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
     min-height:48px!important;
     height:48px!important;
     margin:0!important;
@@ -460,6 +504,10 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   #salesInvoicesView .sales-invoices-filters>button{
     box-sizing:border-box!important;
     width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-inline-size:0!important;
+    max-inline-size:100%!important;
     min-height:48px!important;
     height:48px!important;
     margin:0!important;

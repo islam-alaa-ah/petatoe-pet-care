@@ -1,13 +1,13 @@
 {
-  "version": "18.54.59",
-  "build": 185459,
+  "version": "18.54.60",
+  "build": 185460,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Form Controls & Cell Sizing Fine-Tuning — P5.11.11",
+  "title": "PETATOE Mobile Cell & Control Boundary Certification — P5.11.12",
   "notes": [
-    "ضبط أحجام حقول وفلاتر تقارير المواعيد على الهاتف دون تغيير الديسكتوب أو التابلت.",
-    "تقليل الارتفاعات الزائدة في خلايا فلاتر وفواتير المبيعات مع الحفاظ على Touch Target مناسب.",
-    "توحيد المساحة الآمنة أسفل الشاشات فوق شريط التنقل السفلي."
+    "منع خروج حقول وخلايا النماذج والفلاتر خارج حدود حاوية الموبايل في جميع الشاشات.",
+    "توحيد min-width و max-width و logical inline sizing لحقول input و select و textarea وحاوياتها على الموبايل فقط.",
+    "الحفاظ على تصميم الهيدر وشريط التنقل ونسخ الديسكتوب والتابلت دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-54-59-p51111-mobile-form-cell-sizing"
+  "cacheToken": "petatoe-pwa-18-54-60-p51112-mobile-cell-boundary"
 }

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-59-p51111-mobile-form-cell-sizing";
+const CACHE_VERSION = "petatoe-pwa-18-54-60-p51112-mobile-cell-boundary";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
