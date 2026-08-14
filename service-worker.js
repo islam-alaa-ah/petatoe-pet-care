@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-62-p51114-mobile-inapp-design-system";
+const CACHE_VERSION = "petatoe-pwa-18-54-63-p51115-mobile-content-pilot";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
