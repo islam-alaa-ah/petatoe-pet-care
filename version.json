@@ -1,14 +1,14 @@
 {
-  "version": "18.54.74",
-  "build": 185474,
+  "version": "18.54.75",
+  "build": 185475,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Glass 3D Visual Regression & Responsive Recovery P5.11.21",
+  "title": "PETATOE Mobile Form Controls & Active State Regression Hotfix P5.11.21.1",
   "notes": [
-    "إصلاح Responsive شامل لتقارير وجداول نسخة الموبايل ومنع انضغاط الأعمدة والنصوص.",
-    "توحيد أحجام حقول التاريخ والوقت والشهر على iPhone/Safari ومنع خروجها خارج الحاويات.",
-    "موازنة Glass 3D في Light Mode وتقليل الطبقات المتداخلة مع الحفاظ على الهوية المعتمدة.",
-    "تثبيت Filter overlays ونهاية الصفحات فوق Bottom Bar مع الحفاظ الكامل على Desktop/Tablet وBusiness Logic."
+    "تضييق P5.11.21 بحيث لا يفرض عرض 100% على جميع حقول الإدخال والقوائم في نسخة الموبايل.",
+    "الإبقاء على احتواء حقول التاريخ والوقت الخاصة بـ iPhone/Safari داخل الحاويات بدون التأثير على بقية عناصر النماذج.",
+    "إعادة مصدر تصميم تبويبات تحليل العملاء إلى الطبقة المعتمدة لضمان وضوح الحالة النشطة في Light وDark Mode.",
+    "Mobile-only بدون تغيير Desktop/Tablet أو Business Logic."
   ],
-  "cacheToken": "petatoe-pwa-18-54-74-p51121-mobile-visual-responsive-recovery"
+  "cacheToken": "petatoe-pwa-18-54-75-p511211-mobile-form-controls-active-state-hotfix"
 }

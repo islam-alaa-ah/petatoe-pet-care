@@ -3582,9 +3582,11 @@ html.is-offline body::before {
   }
 
   /* P5.11.21 — canonical mobile form-control sizing. Safari date/time controls must never escape their field/container. */
+  /* P5.11.21.1 — keep sizing containment without forcing every control to full width.
+     Existing module layouts remain the source of truth for normal input/select/textarea widths. */
   section.view-section label,dialog label{min-width:0!important;max-width:100%!important}
   section.view-section :is(input,select,textarea),dialog :is(input,select,textarea){
-    box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;
+    box-sizing:border-box!important;max-width:100%!important;min-width:0!important;
   }
   section.view-section :is(input[type="date"],input[type="datetime-local"],input[type="time"],input[type="month"]),
   dialog :is(input[type="date"],input[type="datetime-local"],input[type="time"],input[type="month"]){
@@ -3647,7 +3649,7 @@ html.is-offline body::before {
   #installationScheduleView :is(.installation-calendar-weekdays,.installation-calendar-grid),
   #installationExecutionView :is(.installation-execution-tabs,.installation-execution-tab,.installation-execution-tab-panel),
   #installationReportsView :is(.installation-report-panel-head,.installation-summary-teams-menu,.installation-summary-execution-head),
-  #reportsOverviewView :is(.analytics-tab,.analytics-breakdown,.top10-list,.customer-action-list),
+  #reportsOverviewView :is(.analytics-breakdown,.top10-list,.customer-action-list),
   #permissionsView .permissions-matrix,
   #notificationCenterView .notification-role-filter,
   #installationSettingsView .installation-settings-section{
