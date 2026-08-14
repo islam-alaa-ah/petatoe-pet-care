@@ -415,6 +415,61 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   /* All mobile filter sheets stop above the fixed bottom navigation and scroll internally. */
   #reportsOverviewView .mobile-reports-filter-sheet,.mobile-admin-filter-sheet,#followupsView .mobile-followups-filter-sheet,#quotationsView .mobile-quotations-filter-sheet,#dashboardView>.dashboard-filter-bar,#customersView>.filters-row.mobile-customers-filter-sheet{bottom:var(--petatoe-mobile-popover-bottom)!important;max-height:min(68dvh,calc(var(--kyum-visual-viewport-height,100dvh) - 170px))!important;border-radius:20px!important;padding-bottom:18px!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
 
+  /* Mobile form-control sizing fine-tuning: compact touch-safe controls without oversized cells. */
+  #installationReportsView .installation-report-advanced-filters{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:10px!important;
+    margin:0 0 14px!important;
+    padding:14px!important;
+  }
+  #installationReportsView .installation-report-advanced-filters label{
+    display:grid!important;
+    gap:5px!important;
+    margin:0!important;
+    font-size:13px!important;
+    line-height:1.35!important;
+  }
+  #installationReportsView .installation-report-advanced-filters input,
+  #installationReportsView .installation-report-advanced-filters select,
+  #installationReportsView .installation-report-advanced-filters button{
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-height:48px!important;
+    height:48px!important;
+    margin:0!important;
+    padding-block:0!important;
+    padding-inline:14px!important;
+    border-radius:13px!important;
+  }
+  #installationReportsView .installation-report-kpis{gap:10px!important;margin-bottom:14px!important}
+  #installationReportsView .installation-report-kpis>article{min-height:92px!important;padding:14px!important;align-content:center!important}
+  #installationReportsView{padding-bottom:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 28px)!important}
+
+  /* Sales invoices: keep summary and filter cells proportional on narrow phones. */
+  #salesInvoicesView .sales-invoices-summary{gap:10px!important;margin:14px 0!important}
+  #salesInvoicesView .sales-invoices-summary article{min-height:96px!important;padding:14px!important;align-content:center!important}
+  #salesInvoicesView .sales-invoices-filters{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:10px!important;
+    margin-bottom:14px!important;
+  }
+  #salesInvoicesView .sales-invoices-filters>input,
+  #salesInvoicesView .sales-invoices-filters>select,
+  #salesInvoicesView .sales-invoices-filters>button{
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-height:48px!important;
+    height:48px!important;
+    margin:0!important;
+    padding-block:0!important;
+    padding-inline:14px!important;
+    border-radius:13px!important;
+  }
+  #salesInvoicesView .sales-invoices-table-card{margin-top:4px!important}
+  #salesInvoicesView{padding-bottom:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 28px)!important}
+
   /* Sales invoice summary uses the active mobile theme instead of the desktop white fallback. */
   #salesInvoicesView .sales-invoices-summary article,#salesInvoicesView .sales-invoices-table tr{background:var(--kyum-mobile-surface)!important;color:var(--kyum-mobile-text)!important;border-color:var(--kyum-mobile-border)!important}
   #salesInvoicesView .sales-invoices-summary span,#salesInvoicesView .sales-invoices-table td::before{color:var(--kyum-mobile-muted)!important}

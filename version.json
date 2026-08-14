@@ -1,13 +1,13 @@
 {
-  "version": "18.54.58",
-  "build": 185458,
+  "version": "18.54.59",
+  "build": 185459,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Responsive Certification — Tables, Reports, Filters & Matrices Recovery — P5.11.10",
+  "title": "PETATOE Mobile Form Controls & Cell Sizing Fine-Tuning — P5.11.11",
   "notes": [
-    "تحويل الجداول العريضة في تقارير المواعيد وإعدادات المواعيد والجدولة إلى بطاقات موبايل مقروءة دون تغيير الديسكتوب.",
-    "إصلاح تبويبات التقارير والرسوم الزمنية ومصفوفات الصلاحيات والإشعارات والفلاتر المنبثقة لتناسب شاشات الهاتف.",
-    "تصحيح أسطح فواتير المبيعات في الوضع الداكن وتوحيد المساحة الآمنة فوق شريط التنقل السفلي."
+    "ضبط أحجام حقول وفلاتر تقارير المواعيد على الهاتف دون تغيير الديسكتوب أو التابلت.",
+    "تقليل الارتفاعات الزائدة في خلايا فلاتر وفواتير المبيعات مع الحفاظ على Touch Target مناسب.",
+    "توحيد المساحة الآمنة أسفل الشاشات فوق شريط التنقل السفلي."
   ],
-  "cacheToken": "petatoe-pwa-18-54-58-p51110-mobile-responsive-certification"
+  "cacheToken": "petatoe-pwa-18-54-59-p51111-mobile-form-cell-sizing"
 }
