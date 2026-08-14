@@ -427,3 +427,8 @@ html[data-theme="dark"] .installation-completion-dialog .installation-invoice-no
 @media(max-width:700px){.installation-quantity-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.installation-quantity-line-head{align-items:flex-start;flex-direction:column}.installation-quantity-confirmation-dialog{width:100%;max-width:none;height:100dvh;max-height:100dvh;margin:0;border-radius:0}.installation-quantity-confirmation-dialog .dialog-shell{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto}}
 [data-theme="dark"] .installation-quantity-line,[data-theme="dark"] #installationQuantityRemainingActionWrap{background:#111b30;border-color:#2f3b54}
 [data-theme="dark"] .installation-quantity-metrics span{background:#18243b}
+
+/* P5.11.26R — Desktop completion identity completion. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #installationCompletionView :is(.installation-completion-filters,.installation-completion-card,.installation-completion-form,.installation-completion-summary){border-color:var(--desk-line)!important;color:var(--desk-text)!important;background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass))!important;box-shadow:var(--desk-shadow)!important}
+}

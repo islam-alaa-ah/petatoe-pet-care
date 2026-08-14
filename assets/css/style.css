@@ -11820,3 +11820,62 @@ html[data-theme="light"] .brand-mark.petatoe-visible-app-icon {
     border-radius: 11px;
   }
 }
+
+/* P5.11.26R — Desktop remaining-screens targeted certification
+   Does not target dashboardView, customersView or followupsView. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #appView :is(#dailyOperationsView,#quotationsView,#salesInvoicesView,#representativesView,#settingsView,#dailyPerformanceReportView,#installationsOverviewView,#installationRequestNewView,#installationRequestsView,#installationScheduleView,#installationExecutionView,#installationCompletionView,#installationExceptionsView,#installationReportsView,#reportsOverviewView,#usersView,#permissionsView,#activityLogView,#backupsView,#systemHealthView,#notificationCenterView,#systemSettingsView,#aboutAppView,#installationSettingsView){
+    color:var(--desk-text);
+  }
+
+  #dailyOperationsView :is(.daily-operations-header,.daily-checklist-panel,.daily-section-panel,.daily-task-item),
+  #dailyPerformanceReportView :is(.daily-performance-header,.daily-performance-filters,.daily-performance-panel),
+  #quotationsView :is(.actions-row,.filters-row,.quotation-stats,.table-card),
+  #representativesView :is(.actions-row,.representatives-filters,.table-wrap),
+  #settingsView :is(.reference-data-toolbar,.reference-data-panel,.reference-customers-toolbar,.reference-list),
+  #salesInvoicesView :is(.actions-row,.sales-invoices-filters,.table-wrap){
+    border-color:var(--desk-line)!important;
+    color:var(--desk-text)!important;
+  }
+
+  #dailyOperationsView .daily-operations-header,
+  #dailyOperationsView .daily-section-panel,
+  #dailyOperationsView .daily-checklist-panel,
+  #dailyPerformanceReportView :is(.daily-performance-header,.daily-performance-filters),
+  #quotationsView :is(.actions-row,.filters-row),
+  #representativesView :is(.actions-row,.representatives-filters),
+  #settingsView .reference-data-toolbar,
+  #salesInvoicesView :is(.actions-row,.sales-invoices-filters){
+    background:radial-gradient(circle at 92% -14%,color-mix(in srgb,var(--desk-blue) 9%,transparent),transparent 36%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft))!important;
+    box-shadow:var(--desk-shadow)!important;
+    border:1px solid var(--desk-line)!important;
+    border-radius:18px!important;
+  }
+
+  #dailyOperationsView .daily-operations-kpis article,
+  #quotationsView :is(.quotation-stat,.stat-card),
+  #salesInvoicesView .sales-invoices-summary article{
+    position:relative!important;overflow:hidden!important;
+    border:1px solid var(--desk-line)!important;border-radius:18px!important;
+    background:radial-gradient(circle at 10% 108%,rgba(47,131,255,.13),transparent 44%),linear-gradient(150deg,var(--desk-glass-strong),var(--desk-glass-soft))!important;
+    color:var(--desk-text)!important;box-shadow:var(--desk-shadow-blue)!important;
+  }
+  #salesInvoicesView .sales-invoices-summary article :is(span,strong){color:var(--desk-text)!important}
+  #salesInvoicesView .sales-invoices-summary article span{color:var(--desk-muted)!important}
+
+  #dailyOperationsView .daily-task-item{
+    background:linear-gradient(145deg,var(--desk-glass-soft),color-mix(in srgb,var(--desk-blue) 4%,var(--desk-glass)))!important;
+    border:1px solid var(--desk-line)!important;border-radius:15px!important;
+    box-shadow:0 7px 18px rgba(20,70,135,.06),inset 0 1px 0 rgba(255,255,255,.06)!important;
+  }
+
+  #appView :is(#quotationsView,#salesInvoicesView,#representativesView,#settingsView,#dailyPerformanceReportView,#installationRequestNewView,#installationRequestsView,#installationScheduleView,#installationExecutionView,#installationCompletionView,#installationExceptionsView,#installationReportsView,#reportsOverviewView,#usersView,#permissionsView,#activityLogView,#backupsView,#systemHealthView,#notificationCenterView,#systemSettingsView,#installationSettingsView) select option,
+  #appView :is(#quotationsView,#salesInvoicesView,#representativesView,#settingsView,#dailyPerformanceReportView,#installationRequestNewView,#installationRequestsView,#installationScheduleView,#installationExecutionView,#installationCompletionView,#installationExceptionsView,#installationReportsView,#reportsOverviewView,#usersView,#permissionsView,#activityLogView,#backupsView,#systemHealthView,#notificationCenterView,#systemSettingsView,#installationSettingsView) select optgroup{
+    color:var(--desk-text)!important;background:var(--desk-glass-strong)!important;
+  }
+  html[data-theme="dark"] #appView :is(#quotationsView,#salesInvoicesView,#representativesView,#settingsView,#dailyPerformanceReportView,#installationRequestNewView,#installationRequestsView,#installationScheduleView,#installationExecutionView,#installationCompletionView,#installationExceptionsView,#installationReportsView,#reportsOverviewView,#usersView,#permissionsView,#activityLogView,#backupsView,#systemHealthView,#notificationCenterView,#systemSettingsView,#installationSettingsView) select option,
+  html[data-theme="dark"] #appView :is(#quotationsView,#salesInvoicesView,#representativesView,#settingsView,#dailyPerformanceReportView,#installationRequestNewView,#installationRequestsView,#installationScheduleView,#installationExecutionView,#installationCompletionView,#installationExceptionsView,#installationReportsView,#reportsOverviewView,#usersView,#permissionsView,#activityLogView,#backupsView,#systemHealthView,#notificationCenterView,#systemSettingsView,#installationSettingsView) select optgroup{
+    color:#f7fbff!important;background:#0d223e!important;
+  }
+}
+

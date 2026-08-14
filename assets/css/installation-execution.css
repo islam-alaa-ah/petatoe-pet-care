@@ -167,3 +167,13 @@ html[data-theme="dark"] .installation-map-primary-action,
   color:#fff!important;
   -webkit-text-fill-color:#fff!important;
 }
+
+/* P5.11.26R — Desktop execution identity completion. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #installationExecutionView :is(.installation-execution-toolbar,.installation-execution-card,.installation-current-card,.installation-execution-list,.installation-today-list,.installation-execution-stage-card){
+    border-color:var(--desk-line)!important;color:var(--desk-text)!important;
+    background:radial-gradient(circle at 92% -14%,color-mix(in srgb,var(--desk-blue) 8%,transparent),transparent 36%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass))!important;box-shadow:var(--desk-shadow)!important;
+  }
+  #installationExecutionView :is(.installation-execution-tabs,.installation-execution-filter-bar){border-color:var(--desk-line)!important;background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft))!important}
+  #installationExecutionView .installation-execution-tab.active{border-color:var(--desk-gold)!important;box-shadow:0 0 0 1px rgba(217,168,55,.15),0 8px 20px rgba(47,131,255,.08)!important}
+}
