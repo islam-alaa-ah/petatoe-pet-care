@@ -432,7 +432,9 @@
   }
 
   .main-content{
-    padding-bottom:calc(var(--mobile-nav-height) + env(safe-area-inset-bottom,0px) + 30px)!important;
+    /* P5.11.13 — the active mobile view owns the bottom clearance.
+       Keeping the shell at zero prevents nested nav-height padding and large blank page tails. */
+    padding-bottom:0!important;
   }
 
   /* P5.11.7.11 — Light branch of the same canonical bottom-navigation contract. */

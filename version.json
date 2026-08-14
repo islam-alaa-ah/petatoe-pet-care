@@ -1,13 +1,13 @@
 {
-  "version": "18.54.60",
-  "build": 185460,
+  "version": "18.54.61",
+  "build": 185461,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Cell & Control Boundary Certification — P5.11.12",
+  "title": "PETATOE Mobile Vertical Bottom Boundary Certification — P5.11.13",
   "notes": [
-    "منع خروج حقول وخلايا النماذج والفلاتر خارج حدود حاوية الموبايل في جميع الشاشات.",
-    "توحيد min-width و max-width و logical inline sizing لحقول input و select و textarea وحاوياتها على الموبايل فقط.",
-    "الحفاظ على تصميم الهيدر وشريط التنقل ونسخ الديسكتوب والتابلت دون تغيير."
+    "توحيد نهاية جميع شاشات الموبايل فوق شريط التنقل السفلي بمسافة صغيرة فقط.",
+    "إلغاء احتساب مساحة شريط التنقل مرتين بين main-content و view-section لمنع الفراغ الكبير عند نهاية التمرير.",
+    "الحفاظ على شريط التنقل والهيدر ونسخ الديسكتوب والتابلت دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-54-60-p51112-mobile-cell-boundary"
+  "cacheToken": "petatoe-pwa-18-54-61-p51113-mobile-vertical-boundary"
 }

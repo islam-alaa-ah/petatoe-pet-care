@@ -297,7 +297,7 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
     --petatoe-mobile-content-gap:12px;
     --petatoe-mobile-card-radius:18px;
     --petatoe-mobile-dialog-radius:22px;
-    --petatoe-mobile-bottom-clearance:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 30px);
+    --petatoe-mobile-bottom-clearance:calc(var(--mobile-nav-height,78px) + max(10px,env(safe-area-inset-bottom,0px)) + 10px);
     --petatoe-mobile-popover-bottom:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 14px);
   }
 
@@ -488,7 +488,7 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   }
   #installationReportsView .installation-report-kpis{gap:10px!important;margin-bottom:14px!important}
   #installationReportsView .installation-report-kpis>article{min-height:92px!important;padding:14px!important;align-content:center!important}
-  #installationReportsView{padding-bottom:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 28px)!important}
+  #installationReportsView{padding-bottom:var(--petatoe-mobile-bottom-clearance)!important}
 
   /* Sales invoices: keep summary and filter cells proportional on narrow phones. */
   #salesInvoicesView .sales-invoices-summary{gap:10px!important;margin:14px 0!important}
@@ -516,7 +516,7 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
     border-radius:13px!important;
   }
   #salesInvoicesView .sales-invoices-table-card{margin-top:4px!important}
-  #salesInvoicesView{padding-bottom:calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 28px)!important}
+  #salesInvoicesView{padding-bottom:var(--petatoe-mobile-bottom-clearance)!important}
 
   /* Sales invoice summary uses the active mobile theme instead of the desktop white fallback. */
   #salesInvoicesView .sales-invoices-summary article,#salesInvoicesView .sales-invoices-table tr{background:var(--kyum-mobile-surface)!important;color:var(--kyum-mobile-text)!important;border-color:var(--kyum-mobile-border)!important}
