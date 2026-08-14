@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-83-p51126-desktop-visual-dark-cert";
+const CACHE_VERSION = "petatoe-pwa-18-54-82-p51125-desktop-visual-identity-all-screens";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
