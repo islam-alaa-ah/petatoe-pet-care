@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-77-p51122-mobile-calendar-glass-grid-day-details";
+const CACHE_VERSION = "petatoe-pwa-18-54-78-p51123-desktop-header-sidebar-light-dark";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

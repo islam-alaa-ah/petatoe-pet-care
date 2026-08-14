@@ -1,14 +1,13 @@
 {
-  "version": "18.54.77",
-  "build": 185477,
+  "version": "18.54.78",
+  "build": 185478,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Mobile Calendar Glass Grid & Day Details P5.11.22",
+  "title": "PETATOE Desktop Header & Sidebar Light/Dark Shell P5.11.23",
   "notes": [
-    "تطبيق تصميم Glass + 3D المعتمد على تقويم المواعيد وتفاصيل اليوم في نسخة الموبايل Light/Dark.",
-    "استعادة الحركة الأفقية السلسة داخل التقويم بخلايا أيام ثابتة ومقروءة بدل ضغط شبكة Desktop.",
-    "تثبيت الهوية البصرية للسيارات على جميع الأجهزة: Van A أزرق دائمًا وVan B بنفسجي دائمًا اعتمادًا على car_name.",
-    "الحفاظ على تخطيط Desktop/Tablet كما هو؛ التغيير المشترك الوحيد هو لون هوية Van A/Van B."
+    "تفعيل هوية Light Mode مستقلة للهيدر والقائمة الجانبية في نسخة Desktop فقط مع الحفاظ على تصميم Dark الحالي.",
+    "استخدام نفس فلسفة PETATOE الزجاجية Blue/Gold المعتمدة بدون تغيير تخطيط الهيدر أو القائمة.",
+    "الحفاظ الكامل على Mobile shell وBottom Navigation والشاشات الداخلية وBusiness Logic بدون تعديل."
   ],
-  "cacheToken": "petatoe-pwa-18-54-77-p51122-mobile-calendar-glass-grid-day-details"
+  "cacheToken": "petatoe-pwa-18-54-78-p51123-desktop-header-sidebar-light-dark"
 }
