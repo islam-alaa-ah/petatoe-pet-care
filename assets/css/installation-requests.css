@@ -118,3 +118,10 @@ html[data-theme="dark"] .installation-neighborhood-results{background:#132238;bo
   #installationRequestNewView :is(.installation-customer-result,.installation-neighborhood-result,.geo-searchable-option):hover{background:color-mix(in srgb,var(--desk-blue) 10%,var(--desk-glass-strong))}
   html[data-theme="dark"] #installationRequestNewView select option{background:#0d223e;color:#f7fbff}
 }
+
+/* P5.12.3 — Desktop appointment requests specialized visual owner. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #installationRequestNewView .installation-request-step-card,#installationRequestsView .installation-request-card{border:1px solid var(--desk-line);border-radius:19px;background:radial-gradient(circle at 8% 112%,rgba(47,131,255,.11),transparent 45%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));box-shadow:var(--desk-shadow)}
+  #installationRequestNewView .installation-step-header{border-bottom:1px solid var(--desk-line);background:linear-gradient(90deg,color-mix(in srgb,var(--desk-blue) 9%,var(--desk-glass-strong)),var(--desk-glass-soft))}
+  #installationRequestNewView .appointment-financial-summary{border:1px solid rgba(217,168,55,.38);border-radius:16px;background:linear-gradient(145deg,color-mix(in srgb,var(--desk-gold) 7%,var(--desk-glass-strong)),var(--desk-glass-soft))}
+}

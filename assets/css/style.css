@@ -11949,3 +11949,21 @@ html[data-theme="light"] .brand-mark.petatoe-visible-app-icon {
   }
 }
 
+/* P5.12.3 — Desktop specialized core-screen visual owner. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #dailyOperationsView :is(.daily-checklist-panel,.daily-section-panel,.daily-task-item),
+  #dailyPerformanceReportView :is(.daily-performance-ranking-panel,.daily-performance-table-panel,.daily-performance-detail-panel,.daily-performance-manager-note,.daily-task-matrix-panel),
+  #quotationsView :is(.quotation-stat,.stat-card){
+    border:1px solid var(--desk-line);border-radius:17px;
+    background:radial-gradient(circle at 9% 112%,rgba(47,131,255,.11),transparent 46%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));
+    box-shadow:var(--desk-shadow),inset 0 1px 0 rgba(255,255,255,.08)
+  }
+  #dailyOperationsView .daily-task-item:hover{border-color:var(--desk-line-strong);box-shadow:0 12px 28px rgba(47,131,255,.10),inset 3px 0 0 var(--desk-blue)}
+  #dailyPerformanceReportView .daily-performance-kpis article{
+    border:1px solid var(--desk-line);border-radius:17px;background:radial-gradient(circle at 10% 112%,rgba(47,131,255,.13),transparent 46%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));box-shadow:var(--desk-shadow)
+  }
+  #dailyPerformanceReportView :is(.daily-performance-task-cards>article,.daily-performance-target-cards>article){
+    border:1px solid var(--desk-line);border-radius:16px;background:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft));box-shadow:0 10px 26px rgba(16,65,126,.08)
+  }
+  #quotationsView .quotation-stats{gap:14px}
+}

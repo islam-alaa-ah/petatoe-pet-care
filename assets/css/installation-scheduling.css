@@ -933,3 +933,13 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
   #installationAssignmentDialog :is(input,select,textarea):focus{border-color:var(--desk-blue);box-shadow:0 0 0 3px rgba(47,131,255,.12),0 8px 20px rgba(47,131,255,.08)}
   html[data-theme="dark"] #installationAssignmentDialog select option{background:#0d223e;color:#f7fbff}
 }
+
+/* P5.12.3 — Desktop scheduling specialized visual owner. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #installationScheduleView .installation-schedule-kpis article{border:1px solid var(--desk-line);border-radius:17px;background:radial-gradient(circle at 12% 112%,rgba(47,131,255,.14),transparent 45%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));box-shadow:var(--desk-shadow),inset 0 1px 0 rgba(255,255,255,.08)}
+  #installationScheduleView .installation-calendar-weekdays{border-radius:14px;background:linear-gradient(180deg,rgba(23,74,145,.96),rgba(21,95,183,.96));box-shadow:0 10px 24px rgba(16,65,126,.14)}
+  #installationScheduleView .installation-calendar-weekdays span{color:#f8fbff!important;font-weight:850}
+  #installationScheduleView .installation-calendar-day{border-radius:15px}
+  #installationScheduleView .installation-calendar-day.has-appointments{background:radial-gradient(circle at 12% 110%,rgba(47,131,255,.12),transparent 48%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass))}
+  #installationScheduleView .installation-calendar-team-summary{border-radius:9px;padding:4px 6px;background:color-mix(in srgb,var(--desk-blue) 5%,transparent)}
+}

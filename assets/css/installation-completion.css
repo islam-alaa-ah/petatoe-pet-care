@@ -440,3 +440,9 @@ html[data-theme="dark"] .installation-completion-dialog .installation-invoice-no
   #installationCompletionDialog :is(input,select,textarea):focus{border-color:var(--desk-blue);box-shadow:0 0 0 3px rgba(47,131,255,.12)}
   html[data-theme="dark"] #installationCompletionDialog select option{background:#0d223e;color:#f7fbff}
 }
+
+/* P5.12.3 — Desktop completion specialized visual owner. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #installationCompletionView .installation-completion-card,#installationCompletionDialog :is(.installation-invoice-section,.installation-evidence-section){border:1px solid var(--desk-line);border-radius:18px;background:radial-gradient(circle at 10% 112%,rgba(47,131,255,.10),transparent 46%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));box-shadow:var(--desk-shadow)}
+  #installationCompletionDialog .installation-quantity-summary-card{border-color:rgba(217,168,55,.42);background:linear-gradient(145deg,color-mix(in srgb,var(--desk-gold) 8%,var(--desk-glass-strong)),var(--desk-glass-soft));box-shadow:0 10px 24px rgba(217,168,55,.08)}
+}

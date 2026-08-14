@@ -190,3 +190,12 @@ html[data-theme="dark"] .installation-map-primary-action,
   #installationExecutionView .execution-arrow{display:inline-grid;place-items:center;vertical-align:middle;margin-inline-start:6px}
   #installationExecutionView .execution-arrow .petatoe-desktop-icon{width:18px;height:18px;color:currentColor}
 }
+
+/* P5.12.3 — Desktop execution specialized visual owner. */
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  #installationExecutionView .installation-today-card,#installationExecutionView .installation-current-card{border:1px solid var(--desk-line);border-radius:18px;background:radial-gradient(circle at 8% 110%,rgba(47,131,255,.13),transparent 44%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));box-shadow:var(--desk-shadow),inset 0 1px 0 rgba(255,255,255,.08)}
+  #installationExecutionView .installation-execution-tab{border:1px solid var(--desk-line);border-radius:12px;background:var(--desk-glass-soft);color:var(--desk-muted)}
+  #installationExecutionView .installation-execution-tab.active{color:#fff;border-color:rgba(47,131,255,.58);background:linear-gradient(135deg,#174a91,#2f83ff);box-shadow:0 9px 22px rgba(47,131,255,.20)}
+  #installationExecutionView .installation-progress-step{border-color:var(--desk-line)}
+  #installationExecutionView .installation-progress-step.is-done{border-color:rgba(217,168,55,.45);box-shadow:0 0 18px rgba(217,168,55,.08)}
+}

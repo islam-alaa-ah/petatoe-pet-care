@@ -1,14 +1,14 @@
 {
-  "version": "18.54.87",
-  "build": 185487,
+  "version": "18.54.88",
+  "build": 185488,
   "forceUpdate": true,
   "releaseDate": "2026-08-14",
-  "title": "PETATOE Desktop Tables Forms Dropdowns Certification P5.12.2",
+  "title": "PETATOE Desktop Appointments Reports Specialized Screens P5.12.3",
   "notes": [
-    "توحيد جداول وحقول وفلاتر وقوائم Desktop من مصادر الملكية الحالية مع استثناء الشاشات المرجعية المستقرة.",
-    "تطوير حالات hover/focus/disabled والـpagination والـnative/custom dropdowns في Light/Dark.",
-    "تحديث مصادر Modules المواعيد والتقارير والإعدادات والإشعارات بدل إضافة Theme عام متأخر.",
-    "Mobile lockdown كامل بدون تعديل ملفات الموبايل."
+    "تطوير الهوية البصرية المتخصصة لشاشات المواعيد والجدولة والتنفيذ والمحاضر والتقارير والفواتير على Desktop.",
+    "توحيد KPI cards وcalendar surfaces وexecution cards وanalytics sections والـspecialized panels مع هوية Blue/Gold Glass 3D.",
+    "تطوير المهام اليومية وتقرير الأداء والعقود بصريًا ضمن Desktop specialized scope.",
+    "Mobile lockdown كامل مع الحفاظ على الشاشات المرجعية المستقرة."
   ],
-  "cacheToken": "petatoe-pwa-18-54-87-p5122-desktop-tables-forms-dropdowns"
+  "cacheToken": "petatoe-pwa-18-54-88-p5123-desktop-specialized-screens"
 }
