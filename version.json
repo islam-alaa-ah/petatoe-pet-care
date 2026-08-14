@@ -1,14 +1,13 @@
 {
-  "version": "18.54.90",
-  "build": 185490,
+  "version": "18.54.91",
+  "build": 185491,
   "forceUpdate": true,
   "releaseDate": "2026-08-15",
-  "title": "PETATOE Desktop Marked Areas Visual & Mobile Leak Hotfix P5.12.5",
+  "title": "PETATOE Daily Operations Background Refresh Data Hotfix",
   "notes": [
-    "منع حقن شريط التشغيل اليومي الخاص بالموبايل داخل Desktop.",
-    "منع حقن شريط وفلاتر مركز التقارير الخاصة بالموبايل داخل Desktop.",
-    "إعادة ضبط كروت عقود العملاء والأداء اليومي ومركز التقارير والمواعيد في Desktop لتقليل الفراغات وتحسين الهوية البصرية.",
-    "الحفاظ على سلوك Mobile نفسه عند تحقق Mobile media query."
+    "إصلاح تحديث بيانات إدارة المهام اليومية عند وصول Snapshot محدثة من Background Refresh.",
+    "ربط حدث permission-crm:dailyOperations بالـdailyOperationsCrmSnapshot وإعادة render الشاشة.",
+    "بدون تغيير RPC أو صلاحيات أو منطق التاريخ أو التصميم."
   ],
-  "cacheToken": "petatoe-pwa-18-54-90-p5125-desktop-marked-areas-hotfix"
+  "cacheToken": "petatoe-pwa-18-54-91-daily-operations-refresh-hotfix"
 }

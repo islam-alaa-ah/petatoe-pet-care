@@ -888,6 +888,8 @@ function applyDailyOperationsCacheUpdate(event) {
     dailyOperationTargets = detail.data;
   } else if (detail.type === "manager-note") {
     dailyManagerNote = detail.data || null;
+  } else if (detail.type === "permission-crm:dailyOperations" && detail.data && typeof detail.data === "object") {
+    dailyOperationsCrmSnapshot = detail.data;
   } else {
     return;
   }
