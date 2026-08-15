@@ -1,13 +1,13 @@
 {
-  "version": "18.54.96",
-  "build": 185496,
+  "version": "18.54.97",
+  "build": 185497,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Latin Digits for Appointment Numeric Inputs Hotfix",
+  "title": "PETATOE Latin Digits Native Number Locale Fix",
   "notes": [
-    "إجبار حقول الأعداد والأسعار الرقمية في شاشة إضافة/تعديل الموعد على استخدام الأرقام الإنجليزية 0-9 دون تغيير اتجاه الواجهة العربية.",
-    "تطبيق الإصلاح داخل مالك الحقول الأصلي في نموذج الخدمات وبيانات الحيوان وتعديل الخدمات، بدون CSS override أو طبقة تنسيق إضافية.",
-    "الحفاظ على Light/Dark وMobile/Desktop كما هي دون تغيير التصميم أو منطق الحفظ والحسابات."
+    "إصلاح السبب الفعلي لاستمرار عرض الأرقام العربية داخل حقول كميات الخدمات والحيوانات: متصفح Chromium كان يوطّن عرض input type=number حسب لغة الصفحة العربية حتى مع lang=en.",
+    "استبدال الحقول الرقمية المرئية في نموذج الموعد بحقول نصية رقمية inputmode مع تطبيع مباشر للأرقام العربية والفارسية إلى 0-9 داخل مالك الحقول نفسه، دون CSS override.",
+    "الحفاظ على الحسابات والحفظ والتحقق والجدولة وLight/Dark وMobile/Desktop دون تغيير وظيفي خارج تمثيل الأرقام."
   ],
-  "cacheToken": "petatoe-pwa-18-54-96-appointment-latin-numeric-inputs"
+  "cacheToken": "petatoe-pwa-18-54-97-appointment-latin-text-inputs"
 }

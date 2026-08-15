@@ -4,6 +4,21 @@
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
   const money = value => `SAR ${Number(value || 0).toFixed(2)}`;
+  const latinDigits = value => String(value ?? "")
+    .replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
+    .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)));
+  function normalizeLatinNumericInput(input, { integer = false } = {}) {
+    if (!input) return "";
+    let value = latinDigits(input.value);
+    if (integer) value = value.replace(/[^0-9]/g, "");
+    else {
+      value = value.replace(/[^0-9.]/g, "");
+      const dot = value.indexOf(".");
+      if (dot >= 0) value = value.slice(0, dot + 1) + value.slice(dot + 1).replace(/\./g, "");
+    }
+    if (input.value !== value) input.value = value;
+    return value;
+  }
   // P5.11.9 — VAT-inclusive display helpers used by appointment list/details.
   // They only affect presentation; persisted service prices and calculations are unchanged.
   const vatAmount = value => Math.round(Math.max(0, Number(value || 0)) * 1.15 * 100) / 100;
@@ -584,8 +599,8 @@
     const row=document.createElement("tr");row.className="installation-service-entry";
     row.innerHTML=`
       <td><div class="installation-service-searchbox"><input class="installation-service-type" type="text" tabindex="-1" aria-hidden="true" data-pending-service-type-id="${esc(initial.serviceTypeId||"")}" value="${esc(initial.serviceTypeId||"")}"><button class="installation-service-select" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="installation-service-select-label">اختر نوع الخدمة</span><span class="installation-service-select-arrow" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M5.5 7.5 10 12l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><div class="installation-service-search-results hidden" popover="manual"><div class="installation-service-search-head"><input class="installation-service-search" type="search" autocomplete="off" placeholder="ابحث عن خدمة..." aria-label="البحث في الخدمات"></div><div class="installation-service-search-options" role="listbox"></div></div></div></td>
-      <td><input class="installation-service-quantity" type="number" lang="en" dir="ltr" inputmode="numeric" min="1" step="1" value="${esc(initial.quantity||1)}" required></td>
-      <td><input class="installation-service-price" type="number" lang="en" dir="ltr" inputmode="decimal" min="0" step="0.01" value="${esc(initial.unitPrice??0)}" required></td>
+      <td><input class="installation-service-quantity" type="text" inputmode="numeric" pattern="[0-9]*" value="${esc(latinDigits(initial.quantity||1))}" required></td>
+      <td><input class="installation-service-price" type="text" inputmode="decimal" pattern="[0-9]+(?:\.[0-9]{0,2})?" value="${esc(latinDigits(initial.unitPrice??0))}" required></td>
       <td><output class="installation-service-line-total">${money((initial.quantity||1)*(initial.unitPrice||0))}</output></td>
       <td><button type="button" class="danger-btn installation-service-remove">حذف</button></td>`;
     body.appendChild(row);if(optionsLoaded)hydrateServiceRows();recalculateServices();
@@ -653,7 +668,7 @@
       <td><select class="appointment-animal-type"><option value="">اختر النوع</option><option value="كلب" ${initial.petType==='كلب'?'selected':''}>كلب</option><option value="قط" ${initial.petType==='قط'?'selected':''}>قط</option><option value="أخرى" ${initial.petType==='أخرى'?'selected':''}>أخرى</option></select></td>
       <td><select class="appointment-animal-breed">${breedOptions(initial.petType||'',initial.breed||'')}</select></td>
       <td><select class="appointment-animal-size"><option value="">اختر الحجم</option><option value="صغير" ${initial.petSize==='صغير'?'selected':''}>صغير</option><option value="متوسط" ${initial.petSize==='متوسط'?'selected':''}>متوسط</option><option value="كبير" ${initial.petSize==='كبير'?'selected':''}>كبير</option></select></td>
-      <td><input class="appointment-animal-quantity" type="number" lang="en" dir="ltr" inputmode="numeric" min="1" step="1" value="${esc(initial.quantity||1)}"></td>
+      <td><input class="appointment-animal-quantity" type="text" inputmode="numeric" pattern="[0-9]*" value="${esc(latinDigits(initial.quantity||1))}"></td>
       <td><button type="button" class="danger-btn appointment-animal-remove">حذف</button></td>`;
     body.appendChild(row);
   }
@@ -706,7 +721,7 @@
     $("installationRequestViewDialog").showModal();
   }
 
-  function addInlineServiceRow(initial={}){const body=$("installationServicesEditBody");const tr=document.createElement('tr');tr.className='installation-inline-service-row';tr.innerHTML=`<td data-label="الخدمة"><select class="inline-service-type" required>${inlineServiceOptions(initial.serviceTypeId||initial.id||'')}</select></td><td data-label="العدد"><input class="inline-service-quantity" type="number" lang="en" dir="ltr" inputmode="numeric" min="1" step="1" value="${esc(initial.quantity||1)}" required></td><td data-label="سعر الوحدة"><input class="inline-service-price" type="number" lang="en" dir="ltr" inputmode="decimal" min="0" step="0.01" value="${esc(initial.unitPrice??0)}" required></td><td data-label="الإجمالي"><output class="inline-service-total">${money((initial.quantity||1)*(initial.unitPrice||0))}</output></td><td data-label="إجراء"><button class="danger-btn inline-service-remove" type="button">حذف</button></td>`;body.appendChild(tr);recalculateInlineServices()}
+  function addInlineServiceRow(initial={}){const body=$("installationServicesEditBody");const tr=document.createElement('tr');tr.className='installation-inline-service-row';tr.innerHTML=`<td data-label="الخدمة"><select class="inline-service-type" required>${inlineServiceOptions(initial.serviceTypeId||initial.id||'')}</select></td><td data-label="العدد"><input class="inline-service-quantity" type="text" inputmode="numeric" pattern="[0-9]*" value="${esc(latinDigits(initial.quantity||1))}" required></td><td data-label="سعر الوحدة"><input class="inline-service-price" type="text" inputmode="decimal" pattern="[0-9]+(?:\.[0-9]{0,2})?" value="${esc(latinDigits(initial.unitPrice??0))}" required></td><td data-label="الإجمالي"><output class="inline-service-total">${money((initial.quantity||1)*(initial.unitPrice||0))}</output></td><td data-label="إجراء"><button class="danger-btn inline-service-remove" type="button">حذف</button></td>`;body.appendChild(tr);recalculateInlineServices()}
   function recalculateInlineServices(){let q=0,t=0;document.querySelectorAll('#installationServicesEditBody .installation-inline-service-row').forEach(row=>{const qty=Math.max(0,Number(row.querySelector('.inline-service-quantity').value||0)),price=Math.max(0,Number(row.querySelector('.inline-service-price').value||0)),line=qty*price;q+=qty;t+=line;row.querySelector('.inline-service-total').textContent=money(line)});$("installationInlineTotalQuantity").textContent=String(q);$("installationInlineGrandTotal").textContent=money(t)}
   function collectInlineServices(){return [...document.querySelectorAll('#installationServicesEditBody .installation-inline-service-row')].map(row=>({serviceTypeId:row.querySelector('.inline-service-type').value,quantity:Number(row.querySelector('.inline-service-quantity').value||0),unitPrice:Number(row.querySelector('.inline-service-price').value||0)}))}
   function inlineNeighborhoodOptions(selected=""){return '<option value="">اختر الحي</option>'+opts.neighborhoods.map(item=>`<option value="${esc(item.id)}" ${String(item.id)===String(selected)?'selected':''}>${esc(item.name)}</option>`).join('')}
@@ -932,6 +947,8 @@
 
     $("addInstallationServiceRow")?.addEventListener("click", () => addServiceRow());
     $("newInstallationServicesBody")?.addEventListener("input", event => {
+      if (event.target.matches(".installation-service-quantity")) normalizeLatinNumericInput(event.target, { integer: true });
+      if (event.target.matches(".installation-service-price")) normalizeLatinNumericInput(event.target);
       const row=event.target.closest(".installation-service-entry");
       if(event.target.matches(".installation-service-search")&&row){
         const options=row.querySelector(".installation-service-search-options");
@@ -953,16 +970,18 @@
     });
     window.addEventListener("resize",()=>closeAllServicePickers(),{passive:true});
     window.addEventListener("scroll",()=>closeAllServicePickers(),{passive:true});
-    $("newInstallationDiscount")?.addEventListener("input",recalculateServices);
+    $("newInstallationDiscount")?.addEventListener("input", event => { normalizeLatinNumericInput(event.target); recalculateServices(); });
+    $("newInstallationAmountCollected")?.addEventListener("input", event => normalizeLatinNumericInput(event.target));
     $("newInstallationDiscountType")?.addEventListener("change",recalculateServices);
     $("addInstallationAnimalRow")?.addEventListener("click",()=>addAnimalRow());
+    $("newInstallationAnimalsBody")?.addEventListener("input",event=>{if(event.target.matches('.appointment-animal-quantity'))normalizeLatinNumericInput(event.target,{integer:true});});
     $("newInstallationAnimalsBody")?.addEventListener("change",event=>{if(event.target.matches('.appointment-animal-type'))syncBreedSelect(event.target.closest('.appointment-animal-entry'));});
     $("newInstallationAnimalsBody")?.addEventListener("click",event=>{
       const button=event.target.closest(".appointment-animal-remove");
       if(!button)return;
       const all=$("newInstallationAnimalsBody").querySelectorAll(".appointment-animal-entry");
       if(all.length===1){
-        all[0].querySelectorAll("input").forEach(input=>{ if(input.type==='number')input.value='1'; else input.value=''; });
+        all[0].querySelectorAll("input").forEach(input=>{ if(input.classList.contains('appointment-animal-quantity')) input.value='1'; else input.value=''; });
         all[0].querySelectorAll("select").forEach(select=>select.value='');
         return;
       }
@@ -995,7 +1014,7 @@
     $("closeInstallationServicesEditDialog")?.addEventListener("click",()=>$("installationServicesEditDialog").close());
     $("cancelInstallationServicesEdit")?.addEventListener("click",()=>$("installationServicesEditDialog").close());
     $("addInstallationInlineService")?.addEventListener("click",()=>addInlineServiceRow());
-    $("installationServicesEditBody")?.addEventListener("input",event=>{const row=event.target.closest('.installation-inline-service-row');if(event.target.matches('.inline-service-type')){const service=opts.serviceTypes.find(item=>item.id===event.target.value);if(service&&row)row.querySelector('.inline-service-price').value=Number(service.default_price||0).toFixed(2)}recalculateInlineServices()});
+    $("installationServicesEditBody")?.addEventListener("input",event=>{if(event.target.matches('.inline-service-quantity'))normalizeLatinNumericInput(event.target,{integer:true});if(event.target.matches('.inline-service-price'))normalizeLatinNumericInput(event.target);const row=event.target.closest('.installation-inline-service-row');if(event.target.matches('.inline-service-type')){const service=opts.serviceTypes.find(item=>item.id===event.target.value);if(service&&row)row.querySelector('.inline-service-price').value=Number(service.default_price||0).toFixed(2)}recalculateInlineServices()});
     $("installationServicesEditBody")?.addEventListener("click",event=>{const btn=event.target.closest('.inline-service-remove');if(!btn)return;const all=$("installationServicesEditBody").querySelectorAll('.installation-inline-service-row');if(all.length===1)return status($("installationServicesEditStatus"),'يجب أن يحتوي الطلب على خدمة واحدة على الأقل.','error');btn.closest('tr').remove();recalculateInlineServices()});
     $("installationServicesEditMapUrl")?.addEventListener("input",syncInlineMapLink);
     $("installationServicesEditForm")?.addEventListener("submit",async event=>{event.preventDefault();const services=collectInlineServices();if(!services.length||services.some(x=>!x.serviceTypeId||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unitPrice)||x.unitPrice<0))return status($("installationServicesEditStatus"),'راجع الخدمة والعدد والسعر في جميع البنود.','error');const geoValidation=installationGeoController('edit').validate({requireRegion:true,requireCity:true,requireDistrict:true});if(!geoValidation.valid){installationGeoController('edit').elements(geoValidation.field)?.search?.focus();return status($("installationServicesEditStatus"),geoValidation.message,'error')}const neighborhoodId=geoValidation.value.districtId;const btn=$("saveInstallationServicesEdit");setSaveState(btn,'saving','حفظ التعديلات');try{const requestId=$("installationServicesEditRequestId").value;await window.InstallationsServiceSafe.updateRequestContextServices(requestId,{neighborhoodId,customerMapUrl:$("installationServicesEditMapUrl").value,customerOrderNumber:$("installationServicesEditCustomerOrder").value,quotationId:$("installationServicesEditQuotation").value,services});const fresh=await window.InstallationsServiceSafe.requestEditDetail(requestId);const index=rows.findIndex(item=>item.id===requestId);if(index>=0)rows[index]=fresh;setSaveState(btn,'saved');window.dispatchEvent(new CustomEvent('kyum-installation-services-updated',{detail:{id:requestId,row:fresh}}));await new Promise(r=>setTimeout(r,350));$("installationServicesEditDialog").close();render();load().catch(()=>{})}catch(error){setSaveState(btn,'error');status($("installationServicesEditStatus"),error.message,'error');await new Promise(r=>setTimeout(r,900))}finally{setSaveState(btn,'idle','حفظ التعديلات')}});
