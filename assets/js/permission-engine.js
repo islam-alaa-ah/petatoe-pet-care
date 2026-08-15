@@ -46,12 +46,8 @@
     Object.freeze({ selector: "[data-add-reference]", screen: "settings", action: "add" })
   ]);
 
-  const DEFAULT_NAVIGATION_GROUPS = Object.freeze({
-    "main-navigation": Object.freeze(["dashboard", "dailyOperations"]),
-    "customer-management": Object.freeze(["customers", "followups", "quotations", "representatives", "settings"]),
-    "installations-management": Object.freeze(["installationsOverview", "installationRequestNew", "installationRequests", "installationSchedule", "installationExecution", "installationCompletion", "installationExceptions", "installationReports", "installationSettings"]),
-    "reports-analytics": Object.freeze(["reportsOverview", "dailyPerformanceReport"]),
-    "settings-privacy": Object.freeze(["users", "permissions", "activityLog", "backups", "systemHealth", "notificationCenter", "systemSettings", "aboutApp"])
+  const NAVIGATION_GROUP_UTILITY_SCREENS = Object.freeze({
+    "settings-privacy": Object.freeze(["aboutApp"])
   });
 
   function legacyPermissions() {
@@ -83,7 +79,6 @@
   const engine = {
     version: "1.2.0-action-authorization",
     debugEnabled: false,
-    navigationGroups: DEFAULT_NAVIGATION_GROUPS,
     actionBindings: ACTION_BINDINGS,
     actionGuardInstalled: false,
 
@@ -216,13 +211,12 @@
 
     groupScreens(groupKey, root = document) {
       const key = normalizeKey(groupKey);
-      const declared = this.navigationGroups[key];
-      if (declared) return [...declared];
       const group = root.querySelector?.(`[data-nav-group="${CSS.escape(key)}"]`);
       if (!group) return [];
-      return [...group.querySelectorAll(".nav-item[data-view]")]
+      const utilities = new Set(NAVIGATION_GROUP_UTILITY_SCREENS[key] || []);
+      return [...group.querySelectorAll(".nav-group-content .nav-item[data-view]")]
         .map(item => normalizeKey(item.dataset.view))
-        .filter(Boolean);
+        .filter(screenKey => screenKey && !utilities.has(screenKey));
     },
 
     canShowGroup(groupKey, root = document) {
