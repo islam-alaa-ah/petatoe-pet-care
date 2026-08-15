@@ -291,19 +291,16 @@
 
   async function executionWorkspace(){
     requireAction('view','installationExecution');
-    const [requestResult,visitResult,anyVisitResult,lineResult,currentResult]=await Promise.all([
+    const [requestResult,visitResult,anyVisitResult,lineResult]=await Promise.all([
       db().from('installation_requests').select('*,customer:customers(id,customer_name,phone),team:installation_teams(id,name,status,groomer_name,driver_name),representative:sales_representatives(id,full_name),services:installation_request_services(id,quantity,unit_price,line_total,service_type:installation_service_types(id,name)),collection:installation_request_collection(amount_collected,collection_status,payment_method,collection_reference,collection_notes,collected_at)').or('installation_team_id.not.is.null,assigned_technician_name.not.is.null').order('scheduled_date',{ascending:true,nullsFirst:false}).order('scheduled_time',{ascending:true,nullsFirst:false}),
       db().from('installation_execution_visits').select('id,installation_request_id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status,selected_for_execution_at,selected_for_execution_by,on_route_at,map_opened_at,arrived_at,started_at,collection_at,completed_at,execution_notes,team:installation_teams(id,name,groomer_name,driver_name)').in('status',['مجدولة','قيد التنفيذ','بانتظار التأكيد']).order('scheduled_date',{ascending:true}).order('scheduled_time',{ascending:true}),
       db().from('installation_execution_visits').select('installation_request_id'),
-      db().from('installation_execution_visit_services').select('visit_id,request_service_id,scheduled_quantity'),
-      db().rpc('get_current_installation_execution_visit_id')
+      db().from('installation_execution_visit_services').select('visit_id,request_service_id,scheduled_quantity')
     ]);
     if(requestResult.error)throw new Error('تعذر تحميل مهام التنفيذ: '+requestResult.error.message);
     if(visitResult.error&&visitResult.error.code!=='42P01')throw new Error('تعذر تحميل زيارات التنفيذ: '+visitResult.error.message);
     if(anyVisitResult.error&&anyVisitResult.error.code!=='42P01')throw new Error('تعذر التحقق من سجل زيارات التنفيذ: '+anyVisitResult.error.message);
     if(lineResult.error&&lineResult.error.code!=='42P01')throw new Error('تعذر تحميل خدمات زيارات التنفيذ: '+lineResult.error.message);
-    if(currentResult.error)throw new Error('تعذر تحديد الطلب الحالي: '+currentResult.error.message);
-    const currentVisitId=currentResult.data;
     const requests=requestResult.data||[],visits=visitResult.data||[],allVisitRefs=anyVisitResult.data||[],visitLines=lineResult.data||[];
     const requestsWithAnyVisit=new Set(allVisitRefs.map(v=>String(v.installation_request_id||'')).filter(Boolean));
     const lineMap=new Map();
@@ -327,7 +324,7 @@
         const allocations=new Map((lineMap.get(v.id)||[]).map(x=>[x.request_service_id,Number(x.scheduled_quantity||0)]));
         const allocated=base.services.map(x=>{const quantity=allocations.has(x.id)?allocations.get(x.id):0;return {...x,quantity,lineTotal:quantity*Number(x.unitPrice||0)}}).filter(x=>x.quantity>0);
         const services=allocated.length?allocated:base.services;
-        output.push({...base,scheduleEntryId:v.id,visitId:v.id,visitNo:Number(v.visit_no||0),executionNumber:`${base.requestNumber}-${String(Number(v.visit_no||0)).padStart(2,'0')}`,scheduledDate:v.scheduled_date||base.scheduledDate,scheduledTime:String(v.scheduled_time||base.scheduledTime||'').slice(0,5),teamId:v.installation_team_id||base.teamId,teamName:v.team?.name||base.teamName,groomerName:v.team?.groomer_name||v.technician_name||base.groomerName||base.technicianName,driverName:v.team?.driver_name||base.driverName,technicianName:v.technician_name||base.technicianName,visitStatus:v.status||'',status:v.completed_at?'مكتمل':(v.started_at?'قيد التنفيذ':(v.arrived_at?'وصل إلى العميل':(v.on_route_at?'في الطريق':'مسند'))),selectedForExecutionAt:v.selected_for_execution_at||'',selectedForExecutionBy:v.selected_for_execution_by||'',isCurrentUserSelection:Boolean(currentVisitId&&String(v.id)===String(currentVisitId)),onRouteAt:v.on_route_at||'',mapOpenedAt:v.map_opened_at||'',arrivedAt:v.arrived_at||'',startedAt:v.started_at||'',collectionAt:v.collection_at||'',completedAt:v.completed_at||'',executionNotes:v.execution_notes||'',services,totalServicesCount:services.reduce((a,x)=>a+Number(x.quantity||0),0),totalServicesAmount:services.reduce((a,x)=>a+Number(x.lineTotal||0),0)});
+        output.push({...base,scheduleEntryId:v.id,visitId:v.id,visitNo:Number(v.visit_no||0),executionNumber:`${base.requestNumber}-${String(Number(v.visit_no||0)).padStart(2,'0')}`,scheduledDate:v.scheduled_date||base.scheduledDate,scheduledTime:String(v.scheduled_time||base.scheduledTime||'').slice(0,5),teamId:v.installation_team_id||base.teamId,teamName:v.team?.name||base.teamName,groomerName:v.team?.groomer_name||v.technician_name||base.groomerName||base.technicianName,driverName:v.team?.driver_name||base.driverName,technicianName:v.technician_name||base.technicianName,visitStatus:v.status||'',status:v.completed_at?'مكتمل':(v.started_at?'قيد التنفيذ':(v.arrived_at?'وصل إلى العميل':(v.on_route_at?'في الطريق':'مسند'))),selectedForExecutionAt:v.selected_for_execution_at||'',selectedForExecutionBy:v.selected_for_execution_by||'',isCurrentUserSelection:Boolean(v.selected_for_execution_at)&&!v.completed_at&&['مجدولة','قيد التنفيذ'].includes(String(v.status||'')),onRouteAt:v.on_route_at||'',mapOpenedAt:v.map_opened_at||'',arrivedAt:v.arrived_at||'',startedAt:v.started_at||'',collectionAt:v.collection_at||'',completedAt:v.completed_at||'',executionNotes:v.execution_notes||'',services,totalServicesCount:services.reduce((a,x)=>a+Number(x.quantity||0),0),totalServicesAmount:services.reduce((a,x)=>a+Number(x.lineTotal||0),0)});
       });
     });
     // P5.11.4.10.2: same request + same team + same local date executes as one workflow.

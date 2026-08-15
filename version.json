@@ -1,13 +1,14 @@
 {
-  "version": "18.55.02",
-  "build": 185502,
+  "version": "18.55.03",
+  "build": 185503,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Execution Visibility & Notification Portal Hotfix",
+  "title": "PETATOE Team Current Execution, Service Details & Icon Visual Hotfix",
   "notes": [
-    "نقل قائمة الإشعارات إلى body كـ universal portal حتى لا يتم قصها داخل Desktop Header ذي overflow:hidden، مع تموضع حي أسفل زر الجرس.",
-    "السماح لمستخدمي تنفيذ المواعيد بقراءة اسم الفرقة والسائق والجرومر للفرق المصرح لهم بها دون اشتراط صلاحية إعدادات المواعيد.",
-    "ضمان ظهور خدمات الموعد في طلبات اليوم والطلب الحالي عند وجود صلاحية تنفيذ على فرقة الزيارة، بما في ذلك الطلبات متعددة الزيارات."
+    "جعل الطلب الحالي مرئيًا لكل مستخدم لديه صلاحية ونطاق على نفس الفرقة بدل ربطه بالمستخدم الذي بدأ التنفيذ فقط.",
+    "إظهار تفاصيل الخدمات في طلبات اليوم والطلب الحالي من نفس بيانات الخدمات الحالية دون مصدر بيانات مكرر.",
+    "إضافة Realtime على زيارات التنفيذ وخدمات الزيارة حتى يظهر بدء التنفيذ وتحديثاته للحسابات المصرح لها دون تحديث يدوي.",
+    "تنظيف الـcanonical execution timeline owner وتوحيد حالات الأيقونات Pending/Active/Done في Light وDark دون طبقة CSS جديدة فوق القديمة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-02-execution-visibility-notification-portal"
+  "cacheToken": "petatoe-pwa-18-55-03-team-current-execution-services-icons"
 }
