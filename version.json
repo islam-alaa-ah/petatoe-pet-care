@@ -1,13 +1,14 @@
 {
-  "version": "18.54.98",
-  "build": 185498,
+  "version": "18.54.99",
+  "build": 185499,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Service Picker Live Anchor Hotfix",
+  "title": "PETATOE Execution Confirmation Workspace",
   "notes": [
-    "إصلاح هروب قائمة البحث عن الخدمة بعد فتحها في شاشة إضافة/تعديل الموعد على Desktop.",
-    "ربط قائمة الخدمة بالزر الفعلي باستخدام CSS Anchor Positioning عند دعمه، مع تتبع حي للتمرير وتغيير الحجم كـ fallback بدل التموضع لمرة واحدة.",
-    "الحفاظ على القائمة داخل Top Layer لتجنب قصها داخل جدول الخدمات، دون تغيير منطق البحث أو اختيار الخدمة أو Mobile Runtime."
+    "توسيع شاشة تأكيد الكمية المنفذة لتشمل تعديل وإضافة الخدمات وبيانات الأسعار والخصم والإجماليات والتحصيل.",
+    "الحفاظ على سجل الكميات المنفذة المؤكدة ومنع حذف أو تخفيض خدمة تحت الكمية المنفذة سابقًا.",
+    "ربط الخدمات المضافة أثناء الزيارة الحالية بالزيارة نفسها وإعادة تحميل كميات التأكيد قبل الاعتماد.",
+    "توسيع Dialog بشكل Responsive مع نفس هوية Light/Dark الحالية ودون إضافة طبقة تنسيق فوق الـowner القديم."
   ],
-  "cacheToken": "petatoe-pwa-18-54-98-service-picker-live-anchor"
+  "cacheToken": "petatoe-pwa-18-54-99-execution-confirmation-workspace"
 }

@@ -409,9 +409,27 @@ html[data-theme="dark"] .installation-completion-dialog .installation-invoice-no
   html[data-theme="dark"] .installation-completion-table tbody tr:hover{background:#111b2b;}
 }
 
-/* Phase M14.9.8.14 — Actual execution confirmation */
-.installation-quantity-confirmation-dialog{width:min(940px,calc(100vw - 24px));max-height:94dvh}
-.installation-quantity-confirmation-body{display:grid;gap:16px;padding:4px 2px 12px;overflow:auto}
+/* P5.12.8 — Execution confirmation workspace canonical owner. */
+.installation-quantity-confirmation-dialog{width:min(1240px,calc(100vw - 28px));max-height:96dvh}
+.installation-quantity-confirmation-dialog .dialog-shell{max-height:96dvh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}
+.installation-quantity-confirmation-body{display:grid;gap:16px;padding:6px 4px 16px;overflow:auto;overscroll-behavior:contain}
+.installation-confirmation-workspace-section{display:grid;gap:14px;padding:16px;border:1px solid var(--border-color,#d8dee9);border-radius:18px;background:var(--surface-color,#fff)}
+.installation-confirmation-service-table-wrap{overflow:auto;border:1px solid var(--border-color,#d8dee9);border-radius:14px}
+.installation-confirmation-service-table{width:100%;min-width:760px;border-collapse:collapse}
+.installation-confirmation-service-table th,.installation-confirmation-service-table td{padding:10px;border-bottom:1px solid var(--border-color,#e5e7eb);vertical-align:middle}
+.installation-confirmation-service-table thead th{background:var(--soft-surface,#f5f7fb);font-weight:800;text-align:start;position:sticky;top:0;z-index:1}
+.installation-confirmation-service-table tbody tr:last-child td{border-bottom:0}
+.installation-confirmation-service-table :is(select,input){width:100%;min-height:44px}
+.installation-confirmation-service-total{white-space:nowrap;font-weight:800}
+.installation-confirmation-financial-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.installation-confirmation-financial-grid>div,.installation-confirmation-financial-grid>label{display:grid;gap:6px;padding:12px;border:1px solid var(--border-color,#d8dee9);border-radius:14px;background:var(--soft-surface,#f5f7fb)}
+.installation-confirmation-financial-grid span{font-size:.82rem;color:var(--muted-text,#667085);font-weight:700}
+.installation-confirmation-financial-grid strong{font-size:1.05rem}
+.installation-confirmation-financial-grid .is-total{border-color:rgba(187,145,48,.38);background:rgba(187,145,48,.08)}
+.installation-confirmation-collection-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.installation-confirmation-collection-grid label{display:grid;gap:7px;font-weight:700}
+.installation-confirmation-collection-grid .full-span{grid-column:1/-1}
+.installation-confirmation-workspace-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .installation-quantity-lines{display:grid;gap:12px}
 .installation-quantity-line{display:grid;gap:12px;padding:16px;border:1px solid var(--border-color,#d8dee9);border-radius:16px;background:var(--surface-color,#fff)}
 .installation-quantity-line-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
@@ -424,9 +442,12 @@ html[data-theme="dark"] .installation-completion-dialog .installation-invoice-no
 .installation-quantity-summary-card strong{font-size:1.35rem}
 #installationQuantityRemainingActionWrap{display:grid;gap:12px;padding:14px;border:1px solid var(--border-color,#d8dee9);border-radius:16px}
 #installationQuantityRemainingActionWrap>label{display:grid;gap:7px;font-weight:700}
-@media(max-width:700px){.installation-quantity-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.installation-quantity-line-head{align-items:flex-start;flex-direction:column}.installation-quantity-confirmation-dialog{width:100%;max-width:none;height:100dvh;max-height:100dvh;margin:0;border-radius:0}.installation-quantity-confirmation-dialog .dialog-shell{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto}}
-[data-theme="dark"] .installation-quantity-line,[data-theme="dark"] #installationQuantityRemainingActionWrap{background:#111b30;border-color:#2f3b54}
-[data-theme="dark"] .installation-quantity-metrics span{background:#18243b}
+[data-theme="dark"] .installation-confirmation-workspace-section,[data-theme="dark"] .installation-quantity-line,[data-theme="dark"] #installationQuantityRemainingActionWrap{background:#111b30;border-color:#2f3b54}
+[data-theme="dark"] .installation-confirmation-service-table-wrap{border-color:#2f3b54}
+[data-theme="dark"] .installation-confirmation-service-table th,[data-theme="dark"] .installation-confirmation-financial-grid>div,[data-theme="dark"] .installation-confirmation-financial-grid>label,[data-theme="dark"] .installation-quantity-metrics span{background:#18243b;border-color:#2f3b54;color:#f5f7fb}
+[data-theme="dark"] .installation-confirmation-service-table td{border-color:#2f3b54}
+@media(max-width:900px){.installation-confirmation-financial-grid,.installation-confirmation-collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.installation-quantity-confirmation-dialog{width:100%;max-width:none;height:100dvh;max-height:100dvh;margin:0;border-radius:0}.installation-quantity-confirmation-dialog .dialog-shell{height:100%;max-height:100dvh}.installation-confirmation-workspace-section{padding:12px;border-radius:15px}.installation-confirmation-financial-grid,.installation-confirmation-collection-grid,.installation-quantity-metrics{grid-template-columns:1fr}.installation-quantity-line-head{align-items:flex-start;flex-direction:column}.installation-confirmation-workspace-actions{display:grid;grid-template-columns:1fr}.installation-confirmation-workspace-actions button{width:100%}}
 
 /* P5.11.26R — Desktop completion identity completion. */
 @media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){

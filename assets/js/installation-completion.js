@@ -4,6 +4,9 @@
   let current=null;
   let mode="installation";
   let quantityCurrent=null;
+  let quantityDetail=null;
+  let quantityOptions={serviceTypes:[]};
+  let quantityWorkspaceDirty=false;
   const $=id=>document.getElementById(id);
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const money=v=>new Intl.NumberFormat("ar-SA-u-nu-latn",{style:"currency",currency:"SAR",minimumFractionDigits:2}).format(Number(v||0));
@@ -63,7 +66,7 @@
         <span>المتبقي قبل التأكيد <b>${x.remainingQuantity}</b></span>
       </div>
       <label>الكمية المنفذة في الزيارة الحالية
-        <input class="installation-confirmed-qty" type="number" min="0" max="${x.remainingQuantity}" step="1" value="${Math.min(scheduled,x.remainingQuantity)}" data-request-service-id="${esc(x.requestServiceId)}" data-scheduled="${scheduled}" data-remaining="${x.remainingQuantity}">
+        <input class="installation-confirmed-qty" type="text" inputmode="numeric" lang="en" dir="ltr" value="${Math.min(scheduled,x.remainingQuantity)}" data-request-service-id="${esc(x.requestServiceId)}" data-scheduled="${scheduled}" data-remaining="${x.remainingQuantity}">
       </label>
       <small class="installation-quantity-result"></small>
     </article>`;
@@ -108,12 +111,31 @@
     if(note&&action==="return_to_schedule"){note.classList.remove("hidden");note.textContent="سيتم إعادة فرق الكمية فقط إلى شاشة الجدولة، مع الحفاظ على أي موعد مجدول مسبقًا لنفس الطلب.";}
     else if(note&&action==="append_to_next_visit"){const next=quantityCurrent?.nextScheduledVisit;note.classList.remove("hidden");note.textContent=next?`سيتم إضافة فرق الكمية إلى الموعد المجدول ${next.scheduledDate} ${next.scheduledTime} لنفس الطلب.`:"";}
   }
+  const latinDigits=v=>String(v??'').replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)));
+  function normalizeNumericInput(input,{integer=false}={}){if(!input)return '';let value=latinDigits(input.value);if(integer)value=value.replace(/[^0-9]/g,'');else{value=value.replace(/[^0-9.]/g,'');const dot=value.indexOf('.');if(dot>=0)value=value.slice(0,dot+1)+value.slice(dot+1).replace(/\./g,'')}if(input.value!==value)input.value=value;return value}
+  function serviceTypeOptions(selected=''){return '<option value="">اختر الخدمة</option>'+quantityOptions.serviceTypes.map(x=>`<option value="${esc(x.id)}" ${String(x.id)===String(selected)?'selected':''}>${esc(x.name)}</option>`).join('')}
+  function serviceEditorRowHtml(service={}){return `<tr class="installation-confirmation-service-row">
+    <td><select class="installation-confirmation-service-type" required>${serviceTypeOptions(service.serviceTypeId||'')}</select></td>
+    <td><input class="installation-confirmation-service-qty" type="text" inputmode="numeric" lang="en" dir="ltr" value="${Math.max(1,Number(service.quantity||1))}"></td>
+    <td><input class="installation-confirmation-service-price" type="text" inputmode="decimal" lang="en" dir="ltr" value="${Number(service.unitPrice||0).toFixed(2)}"></td>
+    <td><output class="installation-confirmation-service-total">${money(Number(service.quantity||1)*Number(service.unitPrice||0))}</output></td>
+    <td><button class="danger-btn installation-confirmation-service-remove" type="button">حذف</button></td>
+  </tr>`}
+  function collectWorkspaceServices(){return [...document.querySelectorAll('.installation-confirmation-service-row')].map(row=>({serviceTypeId:row.querySelector('.installation-confirmation-service-type')?.value||'',quantity:Number(row.querySelector('.installation-confirmation-service-qty')?.value||0),unitPrice:Number(row.querySelector('.installation-confirmation-service-price')?.value||0)}))}
+  function workspaceFinancials(){const services=collectWorkspaceServices();const subtotal=Math.round(services.reduce((n,x)=>n+Math.max(0,x.quantity)*Math.max(0,x.unitPrice),0)*100)/100;const discount=Math.min(Math.max(0,Number($('installationQuantityDiscountAmount')?.value||0)),subtotal);const taxable=Math.max(subtotal-discount,0);const tax=Math.round(taxable*.15*100)/100;const final=Math.round((taxable+tax)*100)/100;return {subtotal,discount,tax,final}}
+  function syncWorkspaceFinancials(){document.querySelectorAll('.installation-confirmation-service-row').forEach(row=>{const qty=Math.max(0,Number(row.querySelector('.installation-confirmation-service-qty')?.value||0)),price=Math.max(0,Number(row.querySelector('.installation-confirmation-service-price')?.value||0));const out=row.querySelector('.installation-confirmation-service-total');if(out)out.textContent=money(qty*price)});const f=workspaceFinancials();$('installationQuantitySubtotal').textContent=money(f.subtotal);$('installationQuantityTaxAmount').textContent=money(f.tax);$('installationQuantityFinalAmount').textContent=money(f.final);const amount=Math.max(0,Number($('installationQuantityAmountCollected')?.value||0));$('installationQuantityCollectionStatus').value=amount<=0?'غير محصل':(amount>=f.final-.005?'محصل بالكامل':'محصل جزئيًا');quantityWorkspaceDirty=true;return f}
+  function renderWorkspace(detail){quantityDetail=detail;const body=$('installationQuantityServiceEditorBody');body.innerHTML=(detail.services||[]).map(serviceEditorRowHtml).join('')||serviceEditorRowHtml();$('installationQuantityDiscountAmount').value=Number(detail.discountAmount||0).toFixed(2);$('installationQuantityAmountCollected').value=Number(detail.collection?.amountCollected||0).toFixed(2);$('installationQuantityPaymentMethod').value=detail.collection?.paymentMethod||'';$('installationQuantityCollectionReference').value=detail.collection?.reference||'';$('installationQuantityCollectionNotes').value=detail.collection?.notes||'';syncWorkspaceFinancials();quantityWorkspaceDirty=false}
+  async function reloadWorkspaceQuantities(){const quantities=await window.InstallationsServiceSafe.completionQuantitySummary(quantityCurrent.id,quantityCurrent.visitId||null);quantityCurrent.quantities=quantities;$('installationQuantityLines').innerHTML=quantities.map(quantityLineHtml).join('')||'<p class="empty-state">لا توجد خدمات قابلة للتأكيد.</p>';syncQuantityResults()}
+  async function saveWorkspace(){const services=collectWorkspaceServices();if(!services.length)throw new Error('أضف خدمة واحدة على الأقل.');if(services.some(x=>!x.serviceTypeId||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unitPrice)||x.unitPrice<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');const duplicates=new Set();for(const x of services){if(duplicates.has(x.serviceTypeId))throw new Error('لا يمكن تكرار نفس الخدمة أكثر من مرة.');duplicates.add(x.serviceTypeId)}const f=workspaceFinancials();const amount=Math.max(0,Number($('installationQuantityAmountCollected').value||0));if(amount>f.final+.005)throw new Error('المبلغ المحصل لا يمكن أن يتجاوز الإجمالي النهائي.');const payment=$('installationQuantityPaymentMethod').value;if(amount>0&&!payment)throw new Error('اختر طريقة الدفع عند وجود مبلغ محصل.');await window.InstallationsServiceSafe.saveCompletionWorkspace({id:quantityCurrent.id,visitId:quantityCurrent.visitId||null,services,discountAmount:f.discount,collection:{amountCollected:amount,paymentMethod:payment,reference:$('installationQuantityCollectionReference').value.trim(),notes:$('installationQuantityCollectionNotes').value.trim()}});quantityDetail=await window.InstallationsServiceSafe.requestEditDetail(quantityCurrent.id);renderWorkspace(quantityDetail);await reloadWorkspaceQuantities();quantityWorkspaceDirty=false}
+
   function requireQuantityDialog(){
     const ids=[
       "installationQuantityConfirmationDialog","installationQuantityConfirmationForm","installationQuantityRequestLabel",
       "installationQuantityLines","installationQuantityRemainingTotal","installationQuantityRemainingActionWrap",
       "installationQuantityRemainingAction","installationQuantityRescheduleDate","installationQuantityRescheduleTime",
-      "installationQuantityConfirmationNotes","installationQuantityConfirmationStatus","saveInstallationQuantityConfirmation"
+      "installationQuantityConfirmationNotes","installationQuantityConfirmationStatus","saveInstallationQuantityConfirmation",
+      "installationQuantityServiceEditorBody","installationQuantityDiscountAmount","installationQuantityAmountCollected",
+      "installationQuantityPaymentMethod","installationQuantityCollectionStatus","saveInstallationQuantityWorkspace"
     ];
     const missing=ids.filter(id=>!$(id));
     if(missing.length)throw new Error(`تعذر فتح نافذة تأكيد الكمية: عناصر الواجهة غير مكتملة (${missing.join(", ")}).`);
@@ -122,8 +144,13 @@
     if(!can("edit","installationCompletion"))return;
     requireQuantityDialog();
     quantityCurrent=r;
+    quantityWorkspaceDirty=false;
+    status($("installationQuantityConfirmationStatus"),"جاري تحميل بيانات الخدمات والتحصيل...");
+    const detail=await window.InstallationsServiceSafe.requestEditDetail(r.id);
+    quantityOptions=await window.InstallationsServiceSafe.requestEditOptions(detail.customerId||detail.customer?.id||null);
     $("installationQuantityRequestLabel").textContent=`${r.executionNumber||r.requestNumber} — ${r.customerName}`;
-    $("installationQuantityLines").innerHTML=(r.quantities||[]).map(quantityLineHtml).join("")||'<p class="empty-state">لا توجد خدمات قابلة للتأكيد.</p>';
+    renderWorkspace(detail);
+    await reloadWorkspaceQuantities();
     $("installationQuantityRemainingAction").value="return_to_schedule";
     $("installationQuantityRescheduleDate").value=today();
     $("installationQuantityRescheduleTime").value="10:00";
@@ -131,7 +158,6 @@
     if($("installationQuantityRescheduleTechnician"))$("installationQuantityRescheduleTechnician").value=r.technicianName||"";
     $("installationQuantityConfirmationNotes").value="";
     status($("installationQuantityConfirmationStatus"),"");
-    syncQuantityResults();
     $("installationQuantityConfirmationDialog").showModal();
   }
 
@@ -169,7 +195,15 @@
       if(b){const r=rows.find(x=>(x.rowKey||x.id)===b.dataset.installationCompletion);if(r)openInstallation(r)}
     });
     $("installationCompletionExistingFiles")?.addEventListener("click",async e=>{const b=e.target.closest("[data-open-installation-file]");if(!b)return;b.disabled=true;try{const url=await window.InstallationsServiceSafe.signedFileUrl(b.dataset.openInstallationFile);window.open(url,"_blank","noopener,noreferrer")}catch(err){status($("installationCompletionFormStatus"),err.message,"error")}finally{b.disabled=false}});
-    $("installationQuantityLines")?.addEventListener("input",e=>{if(e.target.matches(".installation-confirmed-qty"))syncQuantityResults()});
+    $("installationQuantityLines")?.addEventListener("input",e=>{if(e.target.matches(".installation-confirmed-qty")){normalizeNumericInput(e.target,{integer:true});syncQuantityResults()}});
+    $("addInstallationQuantityService")?.addEventListener("click",()=>{$("installationQuantityServiceEditorBody").insertAdjacentHTML("beforeend",serviceEditorRowHtml());quantityWorkspaceDirty=true;syncWorkspaceFinancials()});
+    $("installationQuantityServiceEditorBody")?.addEventListener("click",e=>{const b=e.target.closest(".installation-confirmation-service-remove");if(!b)return;const rows=document.querySelectorAll(".installation-confirmation-service-row");if(rows.length<=1){status($("installationQuantityConfirmationStatus"),"يجب الاحتفاظ بخدمة واحدة على الأقل.","error");return}b.closest("tr")?.remove();syncWorkspaceFinancials()});
+    $("installationQuantityServiceEditorBody")?.addEventListener("input",e=>{if(e.target.matches(".installation-confirmation-service-qty"))normalizeNumericInput(e.target,{integer:true});if(e.target.matches(".installation-confirmation-service-price"))normalizeNumericInput(e.target);syncWorkspaceFinancials()});
+    $("installationQuantityServiceEditorBody")?.addEventListener("change",e=>{if(e.target.matches(".installation-confirmation-service-type")){const opt=quantityOptions.serviceTypes.find(x=>String(x.id)===String(e.target.value));const row=e.target.closest("tr");if(opt&&row&&Number(row.querySelector(".installation-confirmation-service-price").value||0)===0)row.querySelector(".installation-confirmation-service-price").value=Number(opt.default_price||0).toFixed(2);syncWorkspaceFinancials()}});
+    $("installationQuantityDiscountAmount")?.addEventListener("input",e=>{normalizeNumericInput(e.target);syncWorkspaceFinancials()});
+    $("installationQuantityAmountCollected")?.addEventListener("input",e=>{normalizeNumericInput(e.target);syncWorkspaceFinancials()});
+    ["installationQuantityPaymentMethod","installationQuantityCollectionReference","installationQuantityCollectionNotes"].forEach(id=>$(id)?.addEventListener(id==="installationQuantityPaymentMethod"?"change":"input",()=>{quantityWorkspaceDirty=true}));
+    $("saveInstallationQuantityWorkspace")?.addEventListener("click",async()=>{const btn=$("saveInstallationQuantityWorkspace");btn.disabled=true;try{status($("installationQuantityConfirmationStatus"),"جاري حفظ تحديثات الخدمات والتحصيل...");await saveWorkspace();status($("installationQuantityConfirmationStatus"),"تم حفظ الخدمات والتحصيل وتحديث كميات الزيارة.")}catch(err){status($("installationQuantityConfirmationStatus"),err.message,"error")}finally{btn.disabled=false}});
     $("installationQuantityRemainingAction")?.addEventListener("change",syncQuantityAction);
     $("closeInstallationQuantityConfirmation")?.addEventListener("click",()=>$("installationQuantityConfirmationDialog").close());
     $("cancelInstallationQuantityConfirmation")?.addEventListener("click",()=>$("installationQuantityConfirmationDialog").close());
@@ -179,6 +213,7 @@
       const btn=$("saveInstallationQuantityConfirmation");
       btn.disabled=true;
       try{
+        if(quantityWorkspaceDirty){status($("installationQuantityConfirmationStatus"),"جاري حفظ تحديثات الخدمات والتحصيل قبل الاعتماد...");await saveWorkspace();}
         const lines=[...document.querySelectorAll(".installation-confirmed-qty")].map(input=>({
           requestServiceId:input.dataset.requestServiceId,
           scheduledQuantity:Number(input.dataset.scheduled||0),

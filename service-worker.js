@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-54-98-service-picker-live-anchor";
+const CACHE_VERSION = "petatoe-pwa-18-54-99-execution-confirmation-workspace";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
