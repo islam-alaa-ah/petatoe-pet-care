@@ -55,7 +55,7 @@
       const date = new Date(current.getFullYear(), current.getMonth() - offset, 1);
       result.push({
         key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`,
-        label: date.toLocaleDateString("ar-SA", { month: "short", year: "2-digit" })
+        label: date.toLocaleDateString("ar-SA-u-nu-latn", { month: "short", year: "2-digit" })
       });
     }
     return result;

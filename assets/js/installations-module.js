@@ -13,6 +13,8 @@
   let opts = { customers: [], quotations: [], regions: [], cities: [], neighborhoods: [], serviceTypes: [] };
   let optionsLoaded = false;
   let editingRequestId = null;
+  let editingReturnView = "installationRequests";
+  let scheduleTeams = [], scheduleTechnicians = [];
   const QUOTATION_PREFILL_KEY = "kyum:installation:quotation-prefill";
   let quotationPrefillPromise = null;
   let customerDefaultsSelectionToken = 0;
@@ -361,20 +363,26 @@
     ).join("");
   }
 
+  function serviceSearchResults(query="", selectedId="") {
+    const q=String(query||"").trim().toLocaleLowerCase("ar");
+    const rows=(opts.serviceTypes||[]).filter(item=>!q||String(item.name||"").toLocaleLowerCase("ar").includes(q)).slice(0,80);
+    return rows.length?rows.map(item=>`<button type="button" class="installation-service-search-option ${String(item.id)===String(selectedId)?"is-selected":""}" data-service-id="${esc(item.id)}">${esc(item.name)} <small>${money(item.default_price||0)}</small></button>`).join(""):'<div class="installation-service-search-empty">لا توجد خدمة مطابقة للبحث.</div>';
+  }
+  function setServiceSearchValue(row,serviceId="") {
+    const hidden=row?.querySelector(".installation-service-type"),search=row?.querySelector(".installation-service-search");
+    if(!hidden||!search)return;
+    const item=(opts.serviceTypes||[]).find(x=>String(x.id)===String(serviceId));
+    hidden.value=item?.id||serviceId||"";
+    search.value=item?.name||(serviceId?"خدمة محفوظة غير نشطة":"");
+    search.setCustomValidity(hidden.value?"":"اختر نوع الخدمة");
+  }
   function hydrateServiceRows() {
     document.querySelectorAll("#newInstallationServicesBody .installation-service-entry").forEach(row => {
-      const select = row.querySelector(".installation-service-type");
-      if (!select) return;
-      const currentValue = select.value || select.dataset.pendingServiceTypeId || "";
-      select.innerHTML = serviceTypeOptions(currentValue);
-      if (currentValue && !opts.serviceTypes.some(item => String(item.id) === String(currentValue))) {
-        const legacyOption = document.createElement("option");
-        legacyOption.value = currentValue;
-        legacyOption.textContent = "خدمة محفوظة غير نشطة";
-        select.appendChild(legacyOption);
-      }
-      select.value = currentValue;
-      delete select.dataset.pendingServiceTypeId;
+      const hidden=row.querySelector(".installation-service-type");
+      if(!hidden)return;
+      const currentValue=hidden.value||hidden.dataset.pendingServiceTypeId||"";
+      setServiceSearchValue(row,currentValue);
+      delete hidden.dataset.pendingServiceTypeId;
     });
   }
 
@@ -527,19 +535,15 @@
   }
 
   function addServiceRow(initial = {}) {
-    const body = $("newInstallationServicesBody");
-    if (!body) return;
-    const row = document.createElement("tr");
-    row.className = "installation-service-entry";
-    row.innerHTML = `
-      <td><select class="installation-service-type" required data-pending-service-type-id="${esc(initial.serviceTypeId || "")}">${serviceTypeOptions(initial.serviceTypeId || "")}</select></td>
-      <td><input class="installation-service-quantity" type="number" min="1" step="1" value="${esc(initial.quantity || 1)}" required></td>
-      <td><input class="installation-service-price" type="number" min="0" step="0.01" value="${esc(initial.unitPrice ?? 0)}" required></td>
-      <td><output class="installation-service-line-total">${money((initial.quantity || 1) * (initial.unitPrice || 0))}</output></td>
+    const body=$("newInstallationServicesBody");if(!body)return;
+    const row=document.createElement("tr");row.className="installation-service-entry";
+    row.innerHTML=`
+      <td><div class="installation-service-searchbox"><input class="installation-service-search" type="search" autocomplete="off" placeholder="ابحث عن خدمة..." value=""><input class="installation-service-type" type="hidden" required data-pending-service-type-id="${esc(initial.serviceTypeId||"")}" value="${esc(initial.serviceTypeId||"")}"><div class="installation-service-search-results hidden"></div></div></td>
+      <td><input class="installation-service-quantity" type="number" min="1" step="1" value="${esc(initial.quantity||1)}" required></td>
+      <td><input class="installation-service-price" type="number" min="0" step="0.01" value="${esc(initial.unitPrice??0)}" required></td>
+      <td><output class="installation-service-line-total">${money((initial.quantity||1)*(initial.unitPrice||0))}</output></td>
       <td><button type="button" class="danger-btn installation-service-remove">حذف</button></td>`;
-    body.appendChild(row);
-    if (optionsLoaded) hydrateServiceRows();
-    recalculateServices();
+    body.appendChild(row);if(optionsLoaded)hydrateServiceRows();recalculateServices();
   }
 
   function currentFinancials(){
@@ -734,6 +738,10 @@
     if($("newInstallationCollectionStatus")) $("newInstallationCollectionStatus").value = "غير محصل";
     if($("newInstallationPaymentMethod")) $("newInstallationPaymentMethod").value = "";
     if($("newInstallationAppointmentStatus")) $("newInstallationAppointmentStatus").value = "بانتظار المراجعة";
+    if($("newInstallationScheduleDate")) $("newInstallationScheduleDate").value="";
+    if($("newInstallationScheduleTime")) $("newInstallationScheduleTime").value="";
+    if($("newInstallationScheduleTeam")) $("newInstallationScheduleTeam").value="";
+    if($("newInstallationScheduleTechnician")) $("newInstallationScheduleTechnician").value="";
     recalculateServices();
     $("newInstallationRequestHeading").textContent = "إضافة موعد جديد";
     $("newInstallationRequestNote").textContent = "سجّل بيانات العميل والخدمات والحيوان والتحصيل. ينتقل الموعد بعد الحفظ إلى المواعيد بحالة بانتظار المراجعة.";
@@ -775,6 +783,11 @@
       if (!editingRequestId && preservePrefill) applyInstantQuotationPrefill(prefillIntent);
 
       await ensureOptions();
+      try{
+        [scheduleTeams,scheduleTechnicians]=await Promise.all([window.InstallationsServiceSafe.scheduleTeams(),window.InstallationsServiceSafe.technicianNameSuggestions()]);
+        const team=$("newInstallationScheduleTeam");if(team){const current=team.value;team.innerHTML='<option value="">تحدد لاحقًا</option>'+scheduleTeams.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}${x.carName?` — ${esc(x.carName)}`:''}</option>`).join('');team.value=current;}
+        const dl=$("newInstallationScheduleTechnicianOptions");if(dl)dl.innerHTML=scheduleTechnicians.map(x=>`<option value="${esc(x)}"></option>`).join('');
+      }catch(error){console.warn('[Appointments] Optional schedule options unavailable:',error.message)}
       if (!editingRequestId) {
         if (!preservePrefill) resetNewForm({ exitEdit: true });
         else {
@@ -861,6 +874,7 @@
     document.addEventListener("click", event => {
       if (!event.target.closest(".installation-customer-combobox")) closeCustomerResults();
       if (!event.target.closest(".installation-neighborhood-combobox")) closeNewNeighborhoodResults();
+      if(!event.target.closest(".installation-service-searchbox"))document.querySelectorAll(".installation-service-search-results").forEach(x=>x.classList.add("hidden"));
     });
 
     ["installationRequestSearch", "installationRequestRepresentativeFilter", "installationRequestStatusFilter", "installationRequestDateFrom", "installationRequestDateTo"].forEach(id => $(id)?.addEventListener("input", render));
@@ -871,14 +885,16 @@
 
     $("addInstallationServiceRow")?.addEventListener("click", () => addServiceRow());
     $("newInstallationServicesBody")?.addEventListener("input", event => {
-      const row = event.target.closest(".installation-service-entry");
-      if (event.target.matches(".installation-service-type")) {
-        const service = opts.serviceTypes.find(item => item.id === event.target.value);
-        if (service && row) row.querySelector(".installation-service-price").value = Number(service.default_price || 0).toFixed(2);
+      const row=event.target.closest(".installation-service-entry");
+      if(event.target.matches(".installation-service-search")&&row){
+        const hidden=row.querySelector(".installation-service-type"),results=row.querySelector(".installation-service-search-results");hidden.value="";event.target.setCustomValidity("اختر نوع الخدمة");results.innerHTML=serviceSearchResults(event.target.value,"");results.classList.remove("hidden");
       }
       recalculateServices();
     });
     $("newInstallationServicesBody")?.addEventListener("click", event => {
+      const serviceOption=event.target.closest("[data-service-id]");
+      if(serviceOption){const row=serviceOption.closest(".installation-service-entry"),service=opts.serviceTypes.find(item=>String(item.id)===String(serviceOption.dataset.serviceId));setServiceSearchValue(row,serviceOption.dataset.serviceId);if(service)row.querySelector(".installation-service-price").value=Number(service.default_price||0).toFixed(2);row.querySelector(".installation-service-search-results")?.classList.add("hidden");recalculateServices();return;}
+      const search=event.target.closest(".installation-service-search");if(search){const row=search.closest(".installation-service-entry"),results=row.querySelector(".installation-service-search-results");results.innerHTML=serviceSearchResults(search.value,row.querySelector(".installation-service-type")?.value||"");results.classList.remove("hidden");return;}
       const button = event.target.closest(".installation-service-remove");
       if (!button) return;
       const rows = $("newInstallationServicesBody").querySelectorAll(".installation-service-entry");
@@ -972,6 +988,10 @@
       if (collection.amountCollected > financials.final) {
         return status($("newInstallationRequestFormStatus"), "المبلغ المحصل لا يمكن أن يتجاوز قيمة الجلسة.", "error");
       }
+      const optionalSchedule={scheduledDate:$("newInstallationScheduleDate")?.value||"",scheduledTime:$("newInstallationScheduleTime")?.value||"",teamId:$("newInstallationScheduleTeam")?.value||"",technicianName:String($("newInstallationScheduleTechnician")?.value||"").trim(),assignmentNotes:payload.notes||""};
+      const scheduleValues=[optionalSchedule.scheduledDate,optionalSchedule.scheduledTime,optionalSchedule.teamId,optionalSchedule.technicianName];
+      const wantsSchedule=scheduleValues.some(Boolean);
+      if(wantsSchedule&&!scheduleValues.every(Boolean))return status($("newInstallationRequestFormStatus"),"لجدولة الموعد الآن أكمل التاريخ والوقت والفرقة والجرومر، أو اترك بيانات الجدولة كلها فارغة.","error");
       const button = $("saveNewInstallationRequest");
       setSaveState(button,"saving", editingRequestId ? "حفظ التعديلات" : "حفظ الموعد");
       try {
@@ -983,10 +1003,12 @@
           await load();
           setSaveState(button,"saved");
           await new Promise(r=>setTimeout(r,450));
-          window.KYUMNavigation?.open?.("installationRequests", { trustedNavigation: true });
+          const returnView=editingReturnView||"installationRequests";editingReturnView="installationRequests";
+          window.KYUMNavigation?.open?.(returnView,{trustedNavigation:true});
         } else {
-          const created = await window.InstallationsServiceSafe.createRequest(payload);
-          status($("newInstallationRequestFormStatus"), `تم إنشاء الموعد ${created.request_number || ""} ونقله إلى شاشة الجدولة بانتظار المراجعة.`, "success");
+          const created=await window.InstallationsServiceSafe.createRequest(payload);
+          if(wantsSchedule)await window.InstallationsServiceSafe.assign({...optionalSchedule,id:created.id});
+          status($("newInstallationRequestFormStatus"),wantsSchedule?`تم إنشاء الموعد ${created.request_number||""} وجدولته في الموعد المحدد.`:`تم إنشاء الموعد ${created.request_number||""} ونقله إلى انتظار الجدولة.`,"success");
           setSaveState(button,"saved");
           await new Promise(r=>setTimeout(r,450));
           resetNewForm({ exitEdit: true });
@@ -1018,7 +1040,8 @@
         renderRequestView(row);
         return true;
       },
-      openServicesEdit(id){return openServicesEdit(id)}
+      openServicesEdit(id){return openServicesEdit(id)},
+      async openRequestEdit(id,{returnView="installationRequests"}={}){const row=await window.InstallationsServiceSafe.requestEditDetail(id);editingReturnView=returnView;await openEdit(row);return true}
     });
 
 ;

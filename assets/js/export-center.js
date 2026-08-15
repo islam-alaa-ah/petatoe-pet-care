@@ -41,7 +41,7 @@
       `أعلى عميل قيمة: ${topCustomer?.name || "—"} (${topCustomer ? topCustomer.totalValue.toFixed(2) : "0.00"} SAR)`,
       `أكثر سبب خسارة: ${topLossReason?.name || "—"} (${topLossReason?.count || 0})`,
       "",
-      `تاريخ الإنشاء: ${new Date(report.generatedAt).toLocaleString("ar-SA")}`
+      `تاريخ الإنشاء: ${new Date(report.generatedAt).toLocaleString("ar-SA-u-nu-latn")}`
     ].join("\n");
   }
 
@@ -177,7 +177,7 @@ footer{margin-top:20px;color:#667085;font-size:10px}
 <div class="meta">
 <div>${report.filters.from || "All"} — ${report.filters.to || "All"}</div>
 <div>${report.filters.representative || "كل المندوبين"}</div>
-<div>${new Date(report.generatedAt).toLocaleString("ar-SA")}</div>
+<div>${new Date(report.generatedAt).toLocaleString("ar-SA-u-nu-latn")}</div>
 </div>
 </header>
 <section class="kpis">

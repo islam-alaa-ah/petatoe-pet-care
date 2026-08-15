@@ -6,7 +6,7 @@ let cache={services:[],teams:[],neighborhoods:[],regions:[],cities:[],employees:
 
 function db(){if(!window.customerSupabase)throw new Error('اتصال Supabase غير جاهز.');return window.customerSupabase}
 function message(text,type=''){const el=$('installationSettingsStatus');if(!el)return;el.textContent=text||'';el.classList.toggle('hidden',!text);el.dataset.type=type}
-function money(v){return new Intl.NumberFormat('ar-SA',{style:'currency',currency:'SAR',minimumFractionDigits:2}).format(Number(v||0))}
+function money(v){return new Intl.NumberFormat('ar-SA-u-nu-latn',{style:'currency',currency:'SAR',minimumFractionDigits:2}).format(Number(v||0))}
 function round2(v){return Math.round((Number(v||0)+Number.EPSILON)*100)/100}
 function vatInclusive(net){return round2(Number(net||0)*1.15)}
 function netFromVatInclusive(gross){return round2(Number(gross||0)/1.15)}

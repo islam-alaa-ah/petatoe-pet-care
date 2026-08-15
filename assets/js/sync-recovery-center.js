@@ -13,7 +13,7 @@
 
   function formatTime(value) {
     if (!value) return "—";
-    try { return new Intl.DateTimeFormat("ar-SA", { dateStyle: "short", timeStyle: "short" }).format(new Date(value)); }
+    try { return new Intl.DateTimeFormat("ar-SA-u-nu-latn", { dateStyle: "short", timeStyle: "short" }).format(new Date(value)); }
     catch (_) { return "—"; }
   }
 

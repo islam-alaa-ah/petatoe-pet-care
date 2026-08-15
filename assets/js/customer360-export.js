@@ -25,7 +25,7 @@
   }
 
   function currency(value) {
-    return new Intl.NumberFormat("ar-SA", {
+    return new Intl.NumberFormat("ar-SA-u-nu-latn", {
       style: "currency",
       currency: "SAR",
       maximumFractionDigits: 2
@@ -37,7 +37,7 @@
     const parsed = new Date(value);
     return Number.isNaN(parsed.getTime())
       ? String(value)
-      : parsed.toLocaleDateString("ar-SA");
+      : parsed.toLocaleDateString("ar-SA-u-nu-latn");
   }
 
   function summaryRows(view) {
@@ -196,7 +196,7 @@ footer{margin-top:20px;font-size:10px;color:#667085}
 <div>
 <strong>${safe(customer.name)}</strong>
 <p class="muted">${safe(customer.customerNumber || "—")} · ${safe(customer.phone || "—")}</p>
-<p class="muted">${safe(new Date().toLocaleString("ar-SA"))}</p>
+<p class="muted">${safe(new Date().toLocaleString("ar-SA-u-nu-latn"))}</p>
 </div>
 </header>
 

@@ -8,7 +8,7 @@
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const money=v=>new Intl.NumberFormat("ar-SA-u-nu-latn",{style:"currency",currency:"SAR",minimumFractionDigits:2}).format(Number(v||0));
   function status(el,msg,type=""){if(!el)return;el.textContent=msg||"";el.classList.toggle("hidden",!msg);el.classList.toggle("error",type==="error")}
-  function date(v){return v?new Date(v).toLocaleString("ar-SA",{calendar:"gregory",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}):"—"}
+  function date(v){return v?new Date(v).toLocaleString("ar-SA-u-nu-latn",{calendar:"gregory",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}):"—"}
   function today(){const d=new Date(),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`}
   function reps(){const map=new Map();rows.forEach(r=>{if(r.representativeId)map.set(r.representativeId,r.representativeName||"مندوب غير محدد")});return [...map].sort((a,b)=>a[1].localeCompare(b[1],"ar"))}
   function fillReps(){const el=$("installationCompletionRepresentativeFilter");if(!el)return;const val=el.value;el.innerHTML='<option value="">كل المندوبين المسموحين</option>'+reps().map(([id,n])=>`<option value="${esc(id)}">${esc(n)}</option>`).join("");el.value=[...el.options].some(o=>o.value===val)?val:""}

@@ -98,8 +98,10 @@
     if(error)throw new Error('تعذر حفظ تعديلات الموعد: '+error.message);
     const {error:customerDefaultsError}=await db().rpc('save_customer_appointment_location_defaults',{p_customer_id:payload.customerId,p_neighborhood_id:geo.neighborhood.id,p_google_maps_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null});
     if(customerDefaultsError)console.warn('[Appointments] Customer location defaults were not persisted:',customerDefaultsError.message);
-    void notifyEvent('installation.request_updated',payload.id,null,{source:'appointment_edit'},'updated:'+new Date().toISOString().slice(0,16));
-    return Array.isArray(data)?data[0]:data;
+    const updated=Array.isArray(data)?data[0]:data;
+    const requestNumber=updated?.request_number||payload.requestNumber||'';
+    void notifyEvent('installation.request_updated',payload.id,null,{source:'appointment_edit',requestNumber},'updated:'+new Date().toISOString());
+    return updated;
   }
 
   async function updateRequestServices(requestId,services){
@@ -185,7 +187,7 @@
   async function scheduleContextSnapshot(requestIds=[]){
     const ids=[...new Set((requestIds||[]).filter(Boolean))];
     if(!ids.length)return new Map();
-    const {data:requestRows,error:requestError}=await db().from('installation_requests').select('id,neighborhood_id,customer_map_url,customer_order_number,quotation_id,total_services_amount,tax_amount,discount_amount,final_amount').in('id',ids);
+    const {data:requestRows,error:requestError}=await db().from('installation_requests').select('id,neighborhood_id,customer_map_url,customer_order_number,quotation_id,notes,total_services_amount,tax_amount,discount_amount,final_amount').in('id',ids);
     if(requestError)throw new Error('تعذر تحميل أحدث بيانات طلبات الجدولة: '+requestError.message);
     const neighborhoodIds=[...new Set((requestRows||[]).map(x=>x.neighborhood_id).filter(Boolean))];
     const quotationIds=[...new Set((requestRows||[]).map(x=>x.quotation_id).filter(Boolean))];
@@ -203,7 +205,7 @@
       customerMapUrl:x.customer_map_url||'',
       customerOrderNumber:x.customer_order_number||'',
       quotationId:x.quotation_id||'',
-      quotationNumber:quotations.get(String(x.quotation_id||''))||'',
+      quotationNumber:quotations.get(String(x.quotation_id||''))||'',notes:x.notes||'',
       totalServicesAmount:Number(x.total_services_amount||0),taxAmount:Number(x.tax_amount||0),discountAmount:Number(x.discount_amount||0),finalAmount:Number(x.final_amount||0)
     }]));
   }
@@ -223,7 +225,7 @@
     const base=rawRows.map(r=>{
       const context=contextMap.get(String(r.id))||{};
       return {
-      id:r.id,scheduleEntryId:r.id,visitId:'',visitNo:0,requestNumber:r.request_number,customerOrderNumber:context.customerOrderNumber??r.customer_order_number??'',customerName:r.customer_name||'',customerPhone:r.customer_phone||'',customerMasked:r.customer_masked===true,representativeId:r.representative_id||'',representativeName:r.representative_name||'',scheduledDate:r.scheduled_date||'',scheduledTime:r.scheduled_time||'',timeSlot:r.time_slot||'',status:r.status||'جديد',priority:r.priority||'عادية',technicianId:r.technician_id||'',technicianName:r.technician_name||'',technicianStatus:r.technician_status||'',teamId:r.team_id||'',teamName:r.team_name||'',installationAddress:context.neighborhoodName||r.installation_address||'',neighborhoodId:context.neighborhoodId||'',neighborhoodName:context.neighborhoodName||'',customerMapUrl:context.customerMapUrl||'',quotationId:context.quotationId||'',quotationNumber:context.quotationNumber||'',totalServicesCount:Number(r.total_services_count||0),totalServicesAmount:Number(r.total_services_amount||0),taxAmount:Number(context.taxAmount||0),discountAmount:Number(context.discountAmount||0),finalAmount:Number(context.finalAmount||0),grossServicesAmount:Number(context.totalServicesAmount||r.total_services_amount||0)+Number(context.taxAmount||0),services:(Array.isArray(r.services)?r.services:[]).map(x=>({id:x.id||'',name:x.name||'خدمة',quantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0),lineTotal:Number(x.line_total||0)})),assignmentNotes:r.assignment_notes||'',canOperate:r.can_operate===true
+      id:r.id,scheduleEntryId:r.id,visitId:'',visitNo:0,requestNumber:r.request_number,customerOrderNumber:context.customerOrderNumber??r.customer_order_number??'',customerName:r.customer_name||'',customerPhone:r.customer_phone||'',customerMasked:r.customer_masked===true,representativeId:r.representative_id||'',representativeName:r.representative_name||'',scheduledDate:r.scheduled_date||'',scheduledTime:r.scheduled_time||'',timeSlot:r.time_slot||'',status:r.status||'جديد',priority:r.priority||'عادية',technicianId:r.technician_id||'',technicianName:r.technician_name||'',technicianStatus:r.technician_status||'',teamId:r.team_id||'',teamName:r.team_name||'',installationAddress:context.neighborhoodName||r.installation_address||'',neighborhoodId:context.neighborhoodId||'',neighborhoodName:context.neighborhoodName||'',customerMapUrl:context.customerMapUrl||'',quotationId:context.quotationId||'',quotationNumber:context.quotationNumber||'',totalServicesCount:Number(r.total_services_count||0),totalServicesAmount:Number(r.total_services_amount||0),taxAmount:Number(context.taxAmount||0),discountAmount:Number(context.discountAmount||0),finalAmount:Number(context.finalAmount||0),grossServicesAmount:Number(context.totalServicesAmount||r.total_services_amount||0)+Number(context.taxAmount||0),services:(Array.isArray(r.services)?r.services:[]).map(x=>({id:x.id||'',name:x.name||'خدمة',quantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0),lineTotal:Number(x.line_total||0)})),requestNotes:context.notes||'',assignmentNotes:r.assignment_notes||'',canOperate:r.can_operate===true
       };
     });
     if(visitError||lineError||!(visits||[]).length)return base;

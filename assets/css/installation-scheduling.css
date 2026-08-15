@@ -119,7 +119,8 @@ html[data-theme="light"] #installationAssignmentDialog .data-status:not(.hidden)
 .installation-day-team-column>header strong{font-size:.75rem;color:var(--muted)}
 .installation-day-team-list{padding:10px;display:grid;gap:10px;overflow-y:auto;overscroll-behavior:contain}
 .installation-day-appointment{border:1px solid var(--border);border-radius:13px;background:var(--surface);padding:12px;display:grid;gap:10px;box-shadow:0 5px 16px rgba(15,23,42,.05)}
-.installation-day-appointment-head,.installation-day-meta,.installation-day-totals,.installation-day-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.installation-day-appointment-head,.installation-day-meta,.installation-day-totals{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.installation-day-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .installation-day-appointment-head time{color:var(--primary);font-weight:900}
 .installation-day-appointment-head strong{font-size:.82rem}
 .installation-day-customer{display:grid;gap:3px}
@@ -943,3 +944,6 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
   #installationScheduleView .installation-calendar-day.has-appointments{background:radial-gradient(circle at 12% 110%,rgba(47,131,255,.12),transparent 48%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass))}
   #installationScheduleView .installation-calendar-team-summary{border-radius:9px;padding:4px 6px;background:color-mix(in srgb,var(--desk-blue) 5%,transparent)}
 }
+
+/* P5.12.7 — canonical schedule-card notes and three-action owner */
+.installation-day-request-notes{display:grid;gap:4px;padding:9px 11px;border:1px solid color-mix(in srgb,var(--warning,#d9a837) 45%,var(--border));border-radius:10px;background:color-mix(in srgb,var(--warning,#d9a837) 7%,var(--surface));font-size:.82rem}.installation-day-request-notes strong{color:var(--text,#0f172a)}.installation-day-request-notes span{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text-muted,#64748b)}.installation-day-actions button{min-width:0}.installation-day-actions .installation-edit-request-btn{border-color:rgba(37,99,235,.45)}html[data-theme="dark"] .installation-day-request-notes{background:rgba(217,168,55,.08);border-color:rgba(217,168,55,.38)}@media(max-width:767px){.installation-day-actions{grid-template-columns:1fr}}
