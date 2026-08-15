@@ -14,6 +14,7 @@
   let optionsLoaded = false;
   let editingRequestId = null;
   let editingReturnView = "installationRequests";
+  let editingScheduleSnapshot = null;
   let scheduleTeams = [], scheduleTechnicians = [];
   const QUOTATION_PREFILL_KEY = "kyum:installation:quotation-prefill";
   let quotationPrefillPromise = null;
@@ -366,15 +367,53 @@
   function serviceSearchResults(query="", selectedId="") {
     const q=String(query||"").trim().toLocaleLowerCase("ar");
     const rows=(opts.serviceTypes||[]).filter(item=>!q||String(item.name||"").toLocaleLowerCase("ar").includes(q)).slice(0,80);
-    return rows.length?rows.map(item=>`<button type="button" class="installation-service-search-option ${String(item.id)===String(selectedId)?"is-selected":""}" data-service-id="${esc(item.id)}">${esc(item.name)} <small>${money(item.default_price||0)}</small></button>`).join(""):'<div class="installation-service-search-empty">لا توجد خدمة مطابقة للبحث.</div>';
+    return rows.length?rows.map(item=>`<button type="button" role="option" aria-selected="${String(item.id)===String(selectedId)}" class="installation-service-search-option ${String(item.id)===String(selectedId)?"is-selected":""}" data-service-id="${esc(item.id)}"><span>${esc(item.name)}</span><small>${money(item.default_price||0)}</small></button>`).join(""):'<div class="installation-service-search-empty">لا توجد خدمة مطابقة للبحث.</div>';
+  }
+  function closeServicePicker(row) {
+    const panel=row?.querySelector(".installation-service-search-results"),button=row?.querySelector(".installation-service-select");
+    if(!panel)return;
+    try{if(panel.matches(":popover-open"))panel.hidePopover()}catch(_){/* fallback below */}
+    panel.classList.add("hidden");
+    if(button)button.setAttribute("aria-expanded","false");
+  }
+  function closeAllServicePickers(exceptRow=null){
+    document.querySelectorAll("#newInstallationServicesBody .installation-service-entry").forEach(row=>{if(row!==exceptRow)closeServicePicker(row)});
+  }
+  function positionServicePicker(row){
+    const panel=row?.querySelector(".installation-service-search-results"),button=row?.querySelector(".installation-service-select");
+    if(!panel||!button)return;
+    const rect=button.getBoundingClientRect();
+    const margin=12;
+    const width=Math.min(Math.max(rect.width,320),Math.max(280,window.innerWidth-margin*2));
+    let left=Math.min(Math.max(margin,rect.right-width),Math.max(margin,window.innerWidth-width-margin));
+    let top=rect.bottom+6;
+    const maxHeight=Math.min(320,Math.max(180,window.innerHeight-margin*2));
+    if(top+maxHeight>window.innerHeight-margin)top=Math.max(margin,rect.top-maxHeight-6);
+    panel.style.left=`${Math.round(left)}px`;
+    panel.style.top=`${Math.round(top)}px`;
+    panel.style.width=`${Math.round(width)}px`;
+    panel.style.maxHeight=`${Math.round(maxHeight)}px`;
+  }
+  function openServicePicker(row){
+    if(!row)return;
+    closeAllServicePickers(row);
+    const hidden=row.querySelector(".installation-service-type"),panel=row.querySelector(".installation-service-search-results"),search=row.querySelector(".installation-service-search"),options=row.querySelector(".installation-service-search-options"),button=row.querySelector(".installation-service-select");
+    if(!panel||!search||!options)return;
+    search.value="";
+    options.innerHTML=serviceSearchResults("",hidden?.value||"");
+    panel.classList.remove("hidden");
+    positionServicePicker(row);
+    try{if(typeof panel.showPopover==="function"&&!panel.matches(":popover-open"))panel.showPopover()}catch(_){/* CSS fallback remains visible */}
+    if(button)button.setAttribute("aria-expanded","true");
+    requestAnimationFrame(()=>search.focus({preventScroll:true}));
   }
   function setServiceSearchValue(row,serviceId="") {
-    const hidden=row?.querySelector(".installation-service-type"),search=row?.querySelector(".installation-service-search");
-    if(!hidden||!search)return;
+    const hidden=row?.querySelector(".installation-service-type"),label=row?.querySelector(".installation-service-select-label");
+    if(!hidden||!label)return;
     const item=(opts.serviceTypes||[]).find(x=>String(x.id)===String(serviceId));
     hidden.value=item?.id||serviceId||"";
-    search.value=item?.name||(serviceId?"خدمة محفوظة غير نشطة":"");
-    search.setCustomValidity(hidden.value?"":"اختر نوع الخدمة");
+    label.textContent=item?.name||(serviceId?"خدمة محفوظة غير نشطة":"اختر نوع الخدمة");
+    hidden.setCustomValidity(hidden.value?"":"اختر نوع الخدمة");
   }
   function hydrateServiceRows() {
     document.querySelectorAll("#newInstallationServicesBody .installation-service-entry").forEach(row => {
@@ -506,7 +545,7 @@
       neighborhoodOptions();
 
       $("newInstallationRequestHeading").textContent = "تعديل الموعد";
-      $("newInstallationRequestNote").textContent = `عدّل بيانات الموعد ${row.requestNumber} دون تغيير بيانات الجدولة أو التنفيذ.`;
+      $("newInstallationRequestNote").textContent = `عدّل بيانات الموعد ${row.requestNumber}. بيانات الجدولة الحالية والملاحظات محمّلة كما هي، وأي حقل لا تغيّره سيظل دون تغيير.`;
       $("saveNewInstallationRequest").textContent = "حفظ التعديلات";
       $("resetNewInstallationRequest").textContent = "استعادة البيانات";
 
@@ -526,6 +565,12 @@
       $("newInstallationCollectionStatus").value = row.collection?.collectionStatus || "غير محصل";
       $("newInstallationPaymentMethod").value = row.collection?.paymentMethod || "";
       $("newInstallationAppointmentStatus").value = row.collection?.appointmentStatus || row.status || "بانتظار المراجعة";
+      const editSchedule={scheduledDate:row.scheduledDate||"",scheduledTime:String(row.scheduledTime||"").slice(0,5),teamId:row.teamId||"",technicianName:row.technicianName||""};
+      if($("newInstallationScheduleDate"))$("newInstallationScheduleDate").value=editSchedule.scheduledDate;
+      if($("newInstallationScheduleTime"))$("newInstallationScheduleTime").value=editSchedule.scheduledTime;
+      if($("newInstallationScheduleTeam"))$("newInstallationScheduleTeam").value=editSchedule.teamId;
+      if($("newInstallationScheduleTechnician"))$("newInstallationScheduleTechnician").value=editSchedule.technicianName;
+      editingScheduleSnapshot={...editSchedule};
       recalculateServices();
       clearStatus($("newInstallationRequestFormStatus"));
     } catch (error) {
@@ -538,7 +583,7 @@
     const body=$("newInstallationServicesBody");if(!body)return;
     const row=document.createElement("tr");row.className="installation-service-entry";
     row.innerHTML=`
-      <td><div class="installation-service-searchbox"><input class="installation-service-search" type="search" autocomplete="off" placeholder="ابحث عن خدمة..." value=""><input class="installation-service-type" type="hidden" required data-pending-service-type-id="${esc(initial.serviceTypeId||"")}" value="${esc(initial.serviceTypeId||"")}"><div class="installation-service-search-results hidden"></div></div></td>
+      <td><div class="installation-service-searchbox"><input class="installation-service-type" type="text" tabindex="-1" aria-hidden="true" data-pending-service-type-id="${esc(initial.serviceTypeId||"")}" value="${esc(initial.serviceTypeId||"")}"><button class="installation-service-select" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="installation-service-select-label">اختر نوع الخدمة</span><span class="installation-service-select-arrow" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M5.5 7.5 10 12l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><div class="installation-service-search-results hidden" popover="manual"><div class="installation-service-search-head"><input class="installation-service-search" type="search" autocomplete="off" placeholder="ابحث عن خدمة..." aria-label="البحث في الخدمات"></div><div class="installation-service-search-options" role="listbox"></div></div></div></td>
       <td><input class="installation-service-quantity" type="number" min="1" step="1" value="${esc(initial.quantity||1)}" required></td>
       <td><input class="installation-service-price" type="number" min="0" step="0.01" value="${esc(initial.unitPrice??0)}" required></td>
       <td><output class="installation-service-line-total">${money((initial.quantity||1)*(initial.unitPrice||0))}</output></td>
@@ -724,6 +769,7 @@
     if (!form) return;
     if (editingRequestId && !options.exitEdit) return restoreEditForm();
     editingRequestId = null;
+    editingScheduleSnapshot = null;
     form.reset();
     quotationOptions("", "newInstallationQuotationId");
     neighborhoodOptions();
@@ -811,6 +857,7 @@
     window.addEventListener("kyum-installation-create-from-quotation", async event => {
       const detail = event.detail || {};
       editingRequestId = null;
+      editingScheduleSnapshot = null;
       saveQuotationPrefillIntent(detail);
       applyInstantQuotationPrefill(detail);
       await initializeNewView({ preservePrefill: true });
@@ -874,7 +921,7 @@
     document.addEventListener("click", event => {
       if (!event.target.closest(".installation-customer-combobox")) closeCustomerResults();
       if (!event.target.closest(".installation-neighborhood-combobox")) closeNewNeighborhoodResults();
-      if(!event.target.closest(".installation-service-searchbox"))document.querySelectorAll(".installation-service-search-results").forEach(x=>x.classList.add("hidden"));
+      if(!event.target.closest(".installation-service-searchbox")&&!event.target.closest(".installation-service-search-results"))closeAllServicePickers();
     });
 
     ["installationRequestSearch", "installationRequestRepresentativeFilter", "installationRequestStatusFilter", "installationRequestDateFrom", "installationRequestDateTo"].forEach(id => $(id)?.addEventListener("input", render));
@@ -887,14 +934,16 @@
     $("newInstallationServicesBody")?.addEventListener("input", event => {
       const row=event.target.closest(".installation-service-entry");
       if(event.target.matches(".installation-service-search")&&row){
-        const hidden=row.querySelector(".installation-service-type"),results=row.querySelector(".installation-service-search-results");hidden.value="";event.target.setCustomValidity("اختر نوع الخدمة");results.innerHTML=serviceSearchResults(event.target.value,"");results.classList.remove("hidden");
+        const options=row.querySelector(".installation-service-search-options");
+        if(options)options.innerHTML=serviceSearchResults(event.target.value,row.querySelector(".installation-service-type")?.value||"");
       }
       recalculateServices();
     });
     $("newInstallationServicesBody")?.addEventListener("click", event => {
       const serviceOption=event.target.closest("[data-service-id]");
-      if(serviceOption){const row=serviceOption.closest(".installation-service-entry"),service=opts.serviceTypes.find(item=>String(item.id)===String(serviceOption.dataset.serviceId));setServiceSearchValue(row,serviceOption.dataset.serviceId);if(service)row.querySelector(".installation-service-price").value=Number(service.default_price||0).toFixed(2);row.querySelector(".installation-service-search-results")?.classList.add("hidden");recalculateServices();return;}
-      const search=event.target.closest(".installation-service-search");if(search){const row=search.closest(".installation-service-entry"),results=row.querySelector(".installation-service-search-results");results.innerHTML=serviceSearchResults(search.value,row.querySelector(".installation-service-type")?.value||"");results.classList.remove("hidden");return;}
+      if(serviceOption){const row=serviceOption.closest(".installation-service-entry"),service=opts.serviceTypes.find(item=>String(item.id)===String(serviceOption.dataset.serviceId));setServiceSearchValue(row,serviceOption.dataset.serviceId);if(service)row.querySelector(".installation-service-price").value=Number(service.default_price||0).toFixed(2);closeServicePicker(row);recalculateServices();return;}
+      const selectButton=event.target.closest(".installation-service-select");
+      if(selectButton){const row=selectButton.closest(".installation-service-entry"),panel=row?.querySelector(".installation-service-search-results");if(panel&&!panel.classList.contains("hidden"))closeServicePicker(row);else openServicePicker(row);return;}
       const button = event.target.closest(".installation-service-remove");
       if (!button) return;
       const rows = $("newInstallationServicesBody").querySelectorAll(".installation-service-entry");
@@ -902,6 +951,8 @@
       button.closest(".installation-service-entry").remove();
       recalculateServices();
     });
+    window.addEventListener("resize",()=>closeAllServicePickers(),{passive:true});
+    window.addEventListener("scroll",()=>closeAllServicePickers(),{passive:true});
     $("newInstallationDiscount")?.addEventListener("input",recalculateServices);
     $("newInstallationDiscountType")?.addEventListener("change",recalculateServices);
     $("addInstallationAnimalRow")?.addEventListener("click",()=>addAnimalRow());
@@ -996,10 +1047,16 @@
       setSaveState(button,"saving", editingRequestId ? "حفظ التعديلات" : "حفظ الموعد");
       try {
         if (editingRequestId) {
+          const originalSchedule=editingScheduleSnapshot||{scheduledDate:"",scheduledTime:"",teamId:"",technicianName:""};
+          const scheduleChanged=["scheduledDate","scheduledTime","teamId","technicianName"].some(key=>String(optionalSchedule[key]||"")!==String(originalSchedule[key]||""));
+          const hadSchedule=[originalSchedule.scheduledDate,originalSchedule.scheduledTime,originalSchedule.teamId,originalSchedule.technicianName].some(Boolean);
+          if(scheduleChanged&&!wantsSchedule&&hadSchedule)return status($("newInstallationRequestFormStatus"),"لإلغاء الجدولة استخدم زر إلغاء الجدولة من شاشة الجدولة. لا تترك بيانات الجدولة الحالية فارغة من شاشة تعديل الطلب.","error");
           await window.InstallationsServiceSafe.updateRequest({ ...payload, id: editingRequestId });
+          if(scheduleChanged&&wantsSchedule)await window.InstallationsServiceSafe.assign({...optionalSchedule,id:editingRequestId});
           const requestNumber = rows.find(item => item.id === editingRequestId)?.requestNumber || "";
-          status($("newInstallationRequestFormStatus"), `تم حفظ تعديلات الموعد ${requestNumber}.`, "success");
+          status($("newInstallationRequestFormStatus"), scheduleChanged&&wantsSchedule?`تم حفظ تعديلات الموعد ${requestNumber} وتحديث جدولته.`:`تم حفظ تعديلات الموعد ${requestNumber} دون تغيير موضعه في الجدول.`, "success");
           editingRequestId = null;
+          editingScheduleSnapshot = null;
           await load();
           setSaveState(button,"saved");
           await new Promise(r=>setTimeout(r,450));

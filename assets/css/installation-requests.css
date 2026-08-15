@@ -126,5 +126,29 @@ html[data-theme="dark"] .installation-neighborhood-results{background:#132238;bo
   #installationRequestNewView .appointment-financial-summary{border:1px solid rgba(217,168,55,.38);border-radius:16px;background:linear-gradient(145deg,color-mix(in srgb,var(--desk-gold) 7%,var(--desk-glass-strong)),var(--desk-glass-soft))}
 }
 
-/* P5.12.7 — canonical appointment searchable-service + optional scheduling owner */
-.installation-service-searchbox{position:relative;min-width:220px}.installation-service-searchbox>.installation-service-search{width:100%;min-height:44px}.installation-service-search-results{position:absolute;z-index:12060;inset-inline:0;top:calc(100% + 6px);max-height:300px;overflow:auto;padding:6px;border:1px solid var(--border,#dbe2ea);border-radius:12px;background:var(--surface,#fff);box-shadow:0 18px 42px rgba(15,23,42,.20)}.installation-service-search-results.hidden{display:none}.installation-service-search-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:42px;padding:9px 11px;border:0;border-radius:9px;background:transparent;color:inherit;text-align:right;cursor:pointer}.installation-service-search-option:hover,.installation-service-search-option:focus,.installation-service-search-option.is-selected{outline:0;background:rgba(37,99,235,.11);color:var(--primary,#2563eb)}.installation-service-search-option small{direction:ltr;color:var(--text-muted,#64748b);font-weight:800}.installation-service-search-empty{padding:14px;text-align:center;color:var(--text-muted,#64748b);font-weight:700}.appointment-optional-schedule-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.appointment-optional-schedule-hint{margin:0 20px 20px;color:var(--text-muted,#64748b);font-weight:700}.optional-mark{color:var(--text-muted,#64748b);font-size:.82em;font-weight:700}html[data-theme="dark"] .installation-service-search-results{background:#0d223e;color:#f7fbff;border-color:#33445f;box-shadow:0 18px 46px rgba(0,0,0,.46)}@media(max-width:1023px){.appointment-optional-schedule-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:767px){.appointment-optional-schedule-grid{grid-template-columns:1fr}.installation-service-searchbox{min-width:180px}.appointment-optional-schedule-hint{margin:0 14px 14px}}
+/* P5.12.7.1 — canonical service dropdown with in-menu search + optional scheduling owner */
+.installation-service-searchbox{position:relative;min-width:220px}
+.installation-service-type{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;inset:auto!important}
+.installation-service-select{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:44px;padding:0 14px;border:1px solid var(--border,#dbe2ea);border-radius:12px;background:var(--surface,#fff);color:inherit;font:inherit;text-align:right;cursor:pointer}
+.installation-service-select:focus{outline:2px solid color-mix(in srgb,var(--primary,#2563eb) 32%,transparent);outline-offset:1px;border-color:var(--primary,#2563eb)}
+.installation-service-select-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.installation-service-select-arrow{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:20px;height:20px;color:var(--text-muted,#64748b)}
+.installation-service-select-arrow svg{display:block;width:18px;height:18px}
+.installation-service-search-results{position:fixed;inset:auto;z-index:2147482600;box-sizing:border-box;max-height:320px;overflow:hidden;padding:7px;border:1px solid var(--border,#dbe2ea);border-radius:14px;background:var(--surface,#fff);color:var(--text,#0f172a);box-shadow:0 18px 48px rgba(15,23,42,.24)}
+.installation-service-search-results.hidden{display:none}
+.installation-service-search-results:popover-open{display:block;margin:0}
+.installation-service-search-head{position:sticky;top:0;z-index:1;padding-bottom:7px;background:inherit}
+.installation-service-search-head>.installation-service-search{width:100%;min-height:42px;margin:0}
+.installation-service-search-options{max-height:248px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable}
+.installation-service-search-option{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:42px;padding:9px 11px;border:0;border-radius:9px;background:transparent;color:inherit;text-align:right;cursor:pointer}
+.installation-service-search-option:hover,.installation-service-search-option:focus,.installation-service-search-option.is-selected{outline:0;background:rgba(37,99,235,.11);color:var(--primary,#2563eb)}
+.installation-service-search-option span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.installation-service-search-option small{direction:ltr;color:var(--text-muted,#64748b);font-weight:800;white-space:nowrap}
+.installation-service-search-empty{padding:14px;text-align:center;color:var(--text-muted,#64748b);font-weight:700}
+.appointment-optional-schedule-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.appointment-optional-schedule-hint{margin:0 20px 20px;color:var(--text-muted,#64748b);font-weight:700}
+.optional-mark{color:var(--text-muted,#64748b);font-size:.82em;font-weight:700}
+html[data-theme="dark"] .installation-service-select,html[data-theme="dark"] .installation-service-search-results{background:#0d223e;color:#f7fbff;border-color:#33445f}
+html[data-theme="dark"] .installation-service-search-results{box-shadow:0 18px 46px rgba(0,0,0,.46)}
+@media(max-width:1023px){.appointment-optional-schedule-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:767px){.appointment-optional-schedule-grid{grid-template-columns:1fr}.installation-service-searchbox{min-width:180px}.appointment-optional-schedule-hint{margin:0 14px 14px}.installation-service-search-results{max-width:calc(100vw - 24px)}}
