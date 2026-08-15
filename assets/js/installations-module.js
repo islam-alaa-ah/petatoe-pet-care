@@ -384,9 +384,30 @@
     const rows=(opts.serviceTypes||[]).filter(item=>!q||String(item.name||"").toLocaleLowerCase("ar").includes(q)).slice(0,80);
     return rows.length?rows.map(item=>`<button type="button" role="option" aria-selected="${String(item.id)===String(selectedId)}" class="installation-service-search-option ${String(item.id)===String(selectedId)?"is-selected":""}" data-service-id="${esc(item.id)}"><span>${esc(item.name)}</span><small>${money(item.default_price||0)}</small></button>`).join(""):'<div class="installation-service-search-empty">لا توجد خدمة مطابقة للبحث.</div>';
   }
+  const servicePickerDesktopQuery="(min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine)";
+  let activeServicePickerRow=null;
+  let stopServicePickerTracking=null;
+  let servicePickerAnchorSeq=0;
+  function isDesktopServicePicker(){
+    try{return window.matchMedia(servicePickerDesktopQuery).matches}catch(_){return false}
+  }
+  function supportsServicePickerAnchor(){
+    try{return isDesktopServicePicker()&&!!window.CSS?.supports?.("anchor-name: --petatoe-service-anchor")&&CSS.supports("position-anchor: --petatoe-service-anchor")}catch(_){return false}
+  }
+  function clearServicePickerTracking(row=null){
+    if(row&&activeServicePickerRow&&row!==activeServicePickerRow)return;
+    if(typeof stopServicePickerTracking==="function")stopServicePickerTracking();
+    stopServicePickerTracking=null;
+    const active=activeServicePickerRow;
+    activeServicePickerRow=null;
+    const panel=active?.querySelector(".installation-service-search-results"),button=active?.querySelector(".installation-service-select");
+    if(panel){panel.style.removeProperty("position-anchor");panel.style.removeProperty("left");panel.style.removeProperty("top");panel.style.removeProperty("width");panel.style.removeProperty("max-height")}
+    if(button)button.style.removeProperty("anchor-name");
+  }
   function closeServicePicker(row) {
     const panel=row?.querySelector(".installation-service-search-results"),button=row?.querySelector(".installation-service-select");
     if(!panel)return;
+    clearServicePickerTracking(row);
     try{if(panel.matches(":popover-open"))panel.hidePopover()}catch(_){/* fallback below */}
     panel.classList.add("hidden");
     if(button)button.setAttribute("aria-expanded","false");
@@ -409,6 +430,31 @@
     panel.style.width=`${Math.round(width)}px`;
     panel.style.maxHeight=`${Math.round(maxHeight)}px`;
   }
+  function bindServicePickerToTrigger(row){
+    clearServicePickerTracking();
+    activeServicePickerRow=row;
+    const panel=row?.querySelector(".installation-service-search-results"),button=row?.querySelector(".installation-service-select");
+    if(!panel||!button)return;
+    if(supportsServicePickerAnchor()){
+      const anchorName=`--petatoe-service-picker-${++servicePickerAnchorSeq}`;
+      button.style.setProperty("anchor-name",anchorName);
+      panel.style.setProperty("position-anchor",anchorName);
+      return;
+    }
+    positionServicePicker(row);
+    if(!isDesktopServicePicker())return;
+    const reposition=()=>{if(activeServicePickerRow===row&&!panel.classList.contains("hidden"))positionServicePicker(row)};
+    window.addEventListener("scroll",reposition,true);
+    window.addEventListener("resize",reposition);
+    window.visualViewport?.addEventListener("scroll",reposition);
+    window.visualViewport?.addEventListener("resize",reposition);
+    stopServicePickerTracking=()=>{
+      window.removeEventListener("scroll",reposition,true);
+      window.removeEventListener("resize",reposition);
+      window.visualViewport?.removeEventListener("scroll",reposition);
+      window.visualViewport?.removeEventListener("resize",reposition);
+    };
+  }
   function openServicePicker(row){
     if(!row)return;
     closeAllServicePickers(row);
@@ -417,7 +463,7 @@
     search.value="";
     options.innerHTML=serviceSearchResults("",hidden?.value||"");
     panel.classList.remove("hidden");
-    positionServicePicker(row);
+    bindServicePickerToTrigger(row);
     try{if(typeof panel.showPopover==="function"&&!panel.matches(":popover-open"))panel.showPopover()}catch(_){/* CSS fallback remains visible */}
     if(button)button.setAttribute("aria-expanded","true");
     requestAnimationFrame(()=>search.focus({preventScroll:true}));

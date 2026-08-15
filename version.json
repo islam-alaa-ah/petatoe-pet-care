@@ -1,13 +1,13 @@
 {
-  "version": "18.54.97",
-  "build": 185497,
+  "version": "18.54.98",
+  "build": 185498,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Latin Digits Native Number Locale Fix",
+  "title": "PETATOE Service Picker Live Anchor Hotfix",
   "notes": [
-    "إصلاح السبب الفعلي لاستمرار عرض الأرقام العربية داخل حقول كميات الخدمات والحيوانات: متصفح Chromium كان يوطّن عرض input type=number حسب لغة الصفحة العربية حتى مع lang=en.",
-    "استبدال الحقول الرقمية المرئية في نموذج الموعد بحقول نصية رقمية inputmode مع تطبيع مباشر للأرقام العربية والفارسية إلى 0-9 داخل مالك الحقول نفسه، دون CSS override.",
-    "الحفاظ على الحسابات والحفظ والتحقق والجدولة وLight/Dark وMobile/Desktop دون تغيير وظيفي خارج تمثيل الأرقام."
+    "إصلاح هروب قائمة البحث عن الخدمة بعد فتحها في شاشة إضافة/تعديل الموعد على Desktop.",
+    "ربط قائمة الخدمة بالزر الفعلي باستخدام CSS Anchor Positioning عند دعمه، مع تتبع حي للتمرير وتغيير الحجم كـ fallback بدل التموضع لمرة واحدة.",
+    "الحفاظ على القائمة داخل Top Layer لتجنب قصها داخل جدول الخدمات، دون تغيير منطق البحث أو اختيار الخدمة أو Mobile Runtime."
   ],
-  "cacheToken": "petatoe-pwa-18-54-97-appointment-latin-text-inputs"
+  "cacheToken": "petatoe-pwa-18-54-98-service-picker-live-anchor"
 }

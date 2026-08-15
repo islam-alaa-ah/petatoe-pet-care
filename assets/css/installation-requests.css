@@ -137,6 +137,11 @@ html[data-theme="dark"] .installation-neighborhood-results{background:#132238;bo
 .installation-service-search-results{position:fixed;inset:auto;z-index:2147482600;box-sizing:border-box;max-height:320px;overflow:hidden;padding:7px;border:1px solid var(--border,#dbe2ea);border-radius:14px;background:var(--surface,#fff);color:var(--text,#0f172a);box-shadow:0 18px 48px rgba(15,23,42,.24)}
 .installation-service-search-results.hidden{display:none}
 .installation-service-search-results:popover-open{display:block;margin:0}
+@media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
+  @supports (position-anchor: --petatoe-service-anchor){
+    .installation-service-search-results:popover-open{top:anchor(bottom);right:anchor(right);left:auto;width:max(320px,anchor-size(width));max-width:calc(100vw - 24px);margin-top:6px;position-try-fallbacks:flip-block,flip-inline}
+  }
+}
 .installation-service-search-head{position:sticky;top:0;z-index:1;padding-bottom:7px;background:inherit}
 .installation-service-search-head>.installation-service-search{width:100%;min-height:42px;margin:0}
 .installation-service-search-options{max-height:248px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable}
