@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-01-free-invoice-hidden-permission-groups";
+const CACHE_VERSION = "petatoe-pwa-18-55-02-execution-visibility-notification-portal";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

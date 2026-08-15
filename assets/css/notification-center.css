@@ -62,14 +62,6 @@ html[data-theme="dark"] .notification-unread-badge{border-color:#071a2e}
   }
   #appHeader .notification-bell-btn:hover,
   #appHeader .notification-bell-btn:focus-visible{transform:none!important}
-  #appHeader .notification-dropdown{
-    position:fixed!important;
-    top:calc(var(--kyum-stable-header-height,84px) + env(safe-area-inset-top) + 8px)!important;
-    left:max(12px,env(safe-area-inset-left))!important;
-    right:max(12px,env(safe-area-inset-right))!important;
-    width:auto!important;
-    max-height:calc(100dvh - var(--kyum-stable-header-height,84px) - env(safe-area-inset-top) - 28px)!important;
-  }
 }
 
 
@@ -126,10 +118,6 @@ html[data-theme="dark"] .notification-unread-badge{border-color:#071a2e}
     z-index:1!important;
     flex:0 0 42px!important;
     margin:0!important;
-  }
-  #appHeader .notification-dropdown{
-    z-index:2140!important;
-    top:calc(var(--kyum-stable-header-height,84px) + env(safe-area-inset-top) + 10px)!important;
   }
 }
 
@@ -249,16 +237,6 @@ html[data-theme="dark"] .notification-unread-badge{border-color:#071a2e}
     pointer-events:auto!important;
     touch-action:manipulation!important;
   }
-
-  #appHeader .notification-dropdown{
-    position:fixed!important;
-    top:calc(var(--kyum-stable-header-height,96px) + env(safe-area-inset-top) + 10px)!important;
-    right:max(12px,env(safe-area-inset-right))!important;
-    left:max(12px,env(safe-area-inset-left))!important;
-    width:auto!important;
-    max-height:calc(100dvh - var(--kyum-stable-header-height,96px) - env(safe-area-inset-top) - 28px)!important;
-    z-index:2140!important;
-  }
 }
 
 @media (max-width:360px){
@@ -296,32 +274,38 @@ html[data-theme="dark"] .notification-unread-badge{border-color:#071a2e}
   #appHeader .notification-bell-wrap{pointer-events:auto!important;z-index:90!important}
   #appHeader #notificationBellBtn{pointer-events:auto!important;z-index:91!important;touch-action:manipulation!important}
   #appHeader #notificationBellBtn>*{pointer-events:none!important}
-  #appHeader #notificationDropdown{pointer-events:auto!important;z-index:2147483000!important;visibility:visible}
-  #appHeader #notificationDropdown.hidden{display:none!important}
 }
 
 
-/* Phase M15.13.7 — Mobile bell dropdown portal recovery.
-   The fixed mobile header is intentionally overflow:hidden + contain:paint; therefore
-   the dropdown is portaled to body on mobile so it cannot be clipped by the header. */
+/* P5.12.10 — Notification dropdown universal portal owner.
+   The header is intentionally overflow:hidden, so the dropdown is always portaled to body.
+   Desktop is positioned from the live bell rect; mobile keeps the certified full-width sheet lane. */
+body > #notificationDropdown.notification-dropdown-portal{
+  position:fixed!important;
+  top:var(--notification-popover-top,110px)!important;
+  left:var(--notification-popover-left,12px)!important;
+  right:auto!important;
+  width:var(--notification-popover-width,min(380px,calc(100vw - 24px)))!important;
+  max-width:calc(100vw - 24px)!important;
+  max-height:min(520px,calc(100dvh - var(--notification-popover-top,110px) - 16px))!important;
+  overflow:auto!important;
+  z-index:2147483000!important;
+  pointer-events:auto!important;
+  visibility:visible!important;
+  transform:none!important;
+}
+body > #notificationDropdown.notification-dropdown-portal.hidden{display:none!important}
 @media (max-width:767px),
        (pointer:coarse) and (max-device-width:1024px),
        (hover:none) and (max-device-width:1024px){
-  body > #notificationDropdown.notification-dropdown-mobile-portal{
-    position:fixed!important;
+  body > #notificationDropdown.notification-dropdown-portal.notification-dropdown-mobile-portal{
     top:calc(var(--kyum-stable-header-height,90px) + env(safe-area-inset-top) + 8px)!important;
     right:max(12px,env(safe-area-inset-right))!important;
     left:max(12px,env(safe-area-inset-left))!important;
     width:auto!important;
     max-width:none!important;
     max-height:calc(100dvh - var(--kyum-stable-header-height,90px) - env(safe-area-inset-top) - 28px)!important;
-    overflow:auto!important;
-    z-index:2147483000!important;
-    pointer-events:auto!important;
-    visibility:visible!important;
-    transform:none!important;
   }
-  body > #notificationDropdown.notification-dropdown-mobile-portal.hidden{display:none!important}
 }
 
 /* P5.11.26R — Desktop notification center identity completion. */

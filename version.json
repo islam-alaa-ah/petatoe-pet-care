@@ -1,13 +1,13 @@
 {
-  "version": "18.55.01",
-  "build": 185501,
+  "version": "18.55.02",
+  "build": 185502,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Free Invoice Number & Hidden Permission Groups Hotfix",
+  "title": "PETATOE Execution Visibility & Notification Portal Hotfix",
   "notes": [
-    "إخفاء تبويب/قسم القائمة بالكامل عندما لا يملك المستخدم صلاحية عرض أي شاشة فعلية داخله، مع احترام hidden داخل الـcanonical sidebar owner.",
-    "إلغاء قيد التسعة أرقام عن رقم الفاتورة والسماح بمعرّفات فاتورة نصية أو رقمية بأي طول مع الإبقاء على شرط عدم الفراغ والتفرّد عند الإصدار.",
-    "إزالة قيود تنسيق رقم الفاتورة من واجهة تأكيد الكمية ومسارات إنشاء الفواتير وRPCs الحالية دون تعديل البيانات التاريخية."
+    "نقل قائمة الإشعارات إلى body كـ universal portal حتى لا يتم قصها داخل Desktop Header ذي overflow:hidden، مع تموضع حي أسفل زر الجرس.",
+    "السماح لمستخدمي تنفيذ المواعيد بقراءة اسم الفرقة والسائق والجرومر للفرق المصرح لهم بها دون اشتراط صلاحية إعدادات المواعيد.",
+    "ضمان ظهور خدمات الموعد في طلبات اليوم والطلب الحالي عند وجود صلاحية تنفيذ على فرقة الزيارة، بما في ذلك الطلبات متعددة الزيارات."
   ],
-  "cacheToken": "petatoe-pwa-18-55-01-free-invoice-hidden-permission-groups"
+  "cacheToken": "petatoe-pwa-18-55-02-execution-visibility-notification-portal"
 }

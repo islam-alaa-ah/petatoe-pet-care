@@ -74,20 +74,24 @@ async function enablePush(){const status=$('notificationCenterStatus');try{statu
 async function disablePush(){const status=$('notificationCenterStatus');try{await window.NotificationCenterService.disablePush();status.textContent='تم إيقاف Push على هذا الجهاز.';status.dataset.type='success';status.classList.remove('hidden');await renderPushStatus()}catch(e){status.textContent=e.message;status.dataset.type='error'}}
 function init(){
  const bell=$('notificationBellBtn'),dropdown=$('notificationDropdown');let lastBellToggle=0;
- const dropdownHome=dropdown?.parentElement||null;
  const mobileBellMq=window.matchMedia?.('(max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px)');
  const syncDropdownPortal=()=>{
    if(!dropdown)return;
-   const mobile=!!mobileBellMq?.matches;
-   if(mobile&&dropdown.parentElement!==document.body){
-     dropdown.classList.add('notification-dropdown-mobile-portal');
-     document.body.appendChild(dropdown);
-   }else if(!mobile&&dropdownHome&&dropdown.parentElement!==dropdownHome){
-     dropdown.classList.remove('notification-dropdown-mobile-portal');
-     dropdownHome.appendChild(dropdown);
-   }
+   if(dropdown.parentElement!==document.body)document.body.appendChild(dropdown);
+   dropdown.classList.add('notification-dropdown-portal');
+   dropdown.classList.toggle('notification-dropdown-mobile-portal',!!mobileBellMq?.matches);
  };
- const toggleBell=()=>{if(!dropdown)return;syncDropdownPortal();dropdown.classList.toggle('hidden');bell?.setAttribute('aria-expanded',String(!dropdown.classList.contains('hidden')));refresh()};
+ const positionDropdown=()=>{
+   if(!dropdown||dropdown.classList.contains('hidden')||mobileBellMq?.matches||!bell)return;
+   const rect=bell.getBoundingClientRect();
+   const gap=10,viewportGap=12,maxWidth=Math.min(380,Math.max(280,window.innerWidth-(viewportGap*2)));
+   const width=Math.min(maxWidth,380);
+   const left=Math.max(viewportGap,Math.min(window.innerWidth-width-viewportGap,rect.left+(rect.width/2)-(width/2)));
+   dropdown.style.setProperty('--notification-popover-left',`${Math.round(left)}px`);
+   dropdown.style.setProperty('--notification-popover-top',`${Math.round(rect.bottom+gap)}px`);
+   dropdown.style.setProperty('--notification-popover-width',`${Math.round(width)}px`);
+ };
+ const toggleBell=()=>{if(!dropdown)return;syncDropdownPortal();dropdown.classList.toggle('hidden');bell?.setAttribute('aria-expanded',String(!dropdown.classList.contains('hidden')));positionDropdown();refresh()};
  const isBellTarget=target=>!!target?.closest?.('#notificationBellBtn');
  const handleMobileBell=e=>{
    if(!isBellTarget(e.target))return;
@@ -99,7 +103,9 @@ function init(){
  bell?.setAttribute('aria-haspopup','dialog');bell?.setAttribute('aria-expanded','false');
  syncDropdownPortal();
  mobileBellMq?.addEventListener?.('change',()=>{dropdown?.classList.add('hidden');bell?.setAttribute('aria-expanded','false');syncDropdownPortal()});
- window.addEventListener('orientationchange',()=>setTimeout(syncDropdownPortal,80));
+ window.addEventListener('orientationchange',()=>setTimeout(()=>{syncDropdownPortal();positionDropdown()},80));
+ window.addEventListener('resize',positionDropdown,{passive:true});
+ window.addEventListener('scroll',positionDropdown,{passive:true,capture:true});
  // Capture-phase delegation is intentional: iOS Safari/PWA may have positioned
  // header layers or synthetic click handling that prevents the button's own
  // bubbling listener from receiving the tap. Intercept the actual touch/pointer
