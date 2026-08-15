@@ -518,6 +518,7 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
 #mainSidebar .sidebar-nav::-webkit-scrollbar-thumb{border-radius:8px;background:linear-gradient(var(--pet-nav-blue),var(--pet-nav-cyan))}
 
 #mainSidebar .nav-group{display:grid!important;gap:4px!important;margin:0!important}
+#mainSidebar .nav-group[hidden],#mainSidebar .nav-group.hidden{display:none!important}
 #mainSidebar .nav-group-toggle{
   min-height:48px!important;
   padding:8px 11px!important;

@@ -495,7 +495,7 @@
     const invoiceDate=String(payload.invoiceDate||'').trim();
     if(!workSummary)throw new Error('ملخص الأعمال المنفذة مطلوب.');
     if(!recipientName)throw new Error('اسم مستلم الأعمال مطلوب.');
-    if(!/^\d{9}$/.test(invoiceNumber))throw new Error('رقم الفاتورة يجب أن يتكون من 9 أرقام إنجليزية بالضبط.');
+    if(!invoiceNumber)throw new Error('رقم الفاتورة مطلوب.');
     if(!invoiceDate)throw new Error('تاريخ الفاتورة مطلوب.');
     const report={installation_request_id:payload.id,work_summary:workSummary,recipient_name:recipientName,invoice_number:invoiceNumber,invoice_date:invoiceDate,recipient_role:null,customer_notes:null,signed_at:null};
     const {error:reportError}=await db().from('installation_completion_reports').upsert(report,{onConflict:'installation_request_id'});
