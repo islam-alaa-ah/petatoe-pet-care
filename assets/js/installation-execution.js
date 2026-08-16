@@ -149,7 +149,34 @@ function bindCollectionStage(){
     try{await window.InstallationsServiceSafe.completeCollectionStage({id:current.id,visitId:current.visitId||null,amountCollected:amount,paymentMethod,reference:$('installationExecutionCollectionReference')?.value||'',notes:$('installationExecutionCollectionNotes')?.value||''});await load();switchTab('current')}catch(e){setStatus($('installationExecutionCollectionStatus'),e.message,'error');submit.disabled=false}
   });
 }
-function bindPhotoInput(){const input=$('installationExecutionPhotos');if(!input)return;input.addEventListener('change',()=>{selectedFiles=[...input.files];const list=$('installationExecutionPhotoList');if(list)list.innerHTML=selectedFiles.map(f=>`<span class="execution-photo-chip">${esc(f.name)}</span>`).join('')})}
+function renderSelectedPhotos(){
+  const list=$('installationExecutionPhotoList');
+  if(!list)return;
+  list.querySelectorAll('img[src^="blob:"]').forEach(img=>{try{URL.revokeObjectURL(img.src)}catch{}});
+  list.innerHTML=selectedFiles.length?selectedFiles.map((f,index)=>{
+    const previewUrl=URL.createObjectURL(f);
+    return `<span class="execution-photo-chip" data-photo-index="${index}"><img src="${previewUrl}" alt=""><span>${esc(f.name)}</span><button type="button" class="execution-photo-remove" data-photo-remove="${index}" aria-label="حذف الصورة">×</button></span>`;
+  }).join(''):'<span class="execution-photo-empty">لم يتم اختيار صور.</span>';
+}
+function bindPhotoInput(){
+  const input=$('installationExecutionPhotos'),list=$('installationExecutionPhotoList');
+  if(!input||!list)return;
+  input.addEventListener('change',()=>{
+    const incoming=[...input.files];
+    const keys=new Set(selectedFiles.map(f=>`${f.name}:${f.size}:${f.lastModified}`));
+    incoming.forEach(f=>{const key=`${f.name}:${f.size}:${f.lastModified}`;if(!keys.has(key)){selectedFiles.push(f);keys.add(key)}});
+    input.value='';
+    renderSelectedPhotos();
+  });
+  list.addEventListener('click',e=>{
+    const btn=e.target.closest('[data-photo-remove]');
+    if(!btn)return;
+    e.preventDefault();e.stopPropagation();
+    const index=Number(btn.dataset.photoRemove);
+    if(Number.isInteger(index)&&index>=0&&index<selectedFiles.length){selectedFiles.splice(index,1);renderSelectedPhotos();}
+  });
+  renderSelectedPhotos();
+}
 async function load({resetDate=false}={}){setStatus($('installationExecutionStatus'),'جاري تحميل طلبات التنفيذ...');try{[rows,executionIdentity]=await Promise.all([window.InstallationsServiceSafe.executionWorkspace(),window.InstallationsServiceSafe.executionIdentity?.()||Promise.resolve(null)]);const dateFilter=$('installationExecutionDateFilter');if(dateFilter&&(resetDate||!dateFilter.value))dateFilter.value=today();fillFilters();renderToday();renderCurrent();setStatus($('installationExecutionStatus'),'')}catch(e){setStatus($('installationExecutionStatus'),e.message,'error')}}
 async function startRequest(entryId){const r=rows.find(x=>(x.scheduleEntryId||x.id)===entryId);if(!r)return;try{await window.InstallationsServiceSafe.selectExecutionRequest(r.id,r.visitId||null);await load();switchTab('current')}catch(e){setStatus($('installationExecutionStatus'),e.message,'error')}}
 async function advance(nextStatus){if(!current)return;const btn=document.querySelector('[data-execution-next]');if(btn)btn.disabled=true;try{const notes=$('installationExecutionNotes')?.value.trim()||'';await window.InstallationsServiceSafe.advanceExecution({id:current.id,visitId:current.visitId||null,nextStatus,notes,photos:nextStatus==='مكتمل'?selectedFiles:[]});selectedFiles=[];await load();if(nextStatus==='مكتمل'){window.KYUMNavigation?.open?.('installationCompletion',{trustedNavigation:true});document.querySelector('[data-view="installationCompletion"]')?.click()}else switchTab('current')}catch(e){setStatus($('installationExecutionCurrentStatus'),e.message,'error')}finally{if(btn)btn.disabled=false}}

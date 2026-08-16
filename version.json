@@ -1,14 +1,13 @@
 {
-  "version": "18.55.03",
-  "build": 185503,
+  "version": "18.55.04",
+  "build": 185504,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Team Current Execution, Service Details & Icon Visual Hotfix",
+  "title": "PETATOE Execution Stage & Photo Integrity Hotfix",
   "notes": [
-    "جعل الطلب الحالي مرئيًا لكل مستخدم لديه صلاحية ونطاق على نفس الفرقة بدل ربطه بالمستخدم الذي بدأ التنفيذ فقط.",
-    "إظهار تفاصيل الخدمات في طلبات اليوم والطلب الحالي من نفس بيانات الخدمات الحالية دون مصدر بيانات مكرر.",
-    "إضافة Realtime على زيارات التنفيذ وخدمات الزيارة حتى يظهر بدء التنفيذ وتحديثاته للحسابات المصرح لها دون تحديث يدوي.",
-    "تنظيف الـcanonical execution timeline owner وتوحيد حالات الأيقونات Pending/Active/Done في Light وDark دون طبقة CSS جديدة فوق القديمة."
+    "إصلاح انتقال مراحل التنفيذ بعد فتح موقع العميل بحيث تعتمد الزيارة النشطة على نطاق الفرقة والصلاحية لا على المستخدم الذي بدأ التنفيذ فقط.",
+    "تصحيح سياسات حفظ صور التنفيذ في installation-evidence أثناء التنفيذ مع تنظيف الملف والسجل تلقائيًا إذا فشل اعتماد المرحلة.",
+    "إضافة معاينة للصور المختارة وإمكانية حذف أي صورة قبل الاعتماد، وتحسين إبراز المرحلة الحالية في مسار التنفيذ في الوضعين الفاتح والداكن."
   ],
-  "cacheToken": "petatoe-pwa-18-55-03-team-current-execution-services-icons"
+  "cacheToken": "petatoe-pwa-18-55-04-execution-stage-photo-integrity"
 }

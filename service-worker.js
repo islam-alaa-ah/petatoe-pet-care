@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-03-team-current-execution-services-icons";
+const CACHE_VERSION = "petatoe-pwa-18-55-04-execution-stage-photo-integrity";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

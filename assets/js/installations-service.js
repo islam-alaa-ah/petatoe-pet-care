@@ -391,9 +391,45 @@
     void notifyEvent('installation.execution_returned_to_schedule',id,null,{source:'current_execution',reason,stage:data?.stage||''},'return-schedule:'+id+':'+Date.now());
     return data;
   }
-  async function uploadExecutionFile(requestId,file){if(!file)return null;if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('صيغة الصورة غير مدعومة.');if(file.size>10485760)throw new Error('حجم الصورة يجب ألا يتجاوز 10 ميجابايت.');const ext=(file.name.split('.').pop()||'jpg').toLowerCase(),path=`${requestId}/execution/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;const {error:up}=await db().storage.from('installation-evidence').upload(path,file,{contentType:file.type,upsert:false});if(up)throw new Error('تعذر رفع صورة التنفيذ: '+up.message);const {error}=await db().from('installation_execution_files').insert({installation_request_id:requestId,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size});if(error)throw new Error('تعذر تسجيل صورة التنفيذ: '+error.message);return path}
+  async function uploadExecutionFile(requestId,file){
+    if(!file)return null;
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('صيغة الصورة غير مدعومة.');
+    if(file.size<1||file.size>10485760)throw new Error('حجم الصورة يجب أن يكون بين 1 بايت و10 ميجابايت.');
+    const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+    const path=`${requestId}/execution/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const bucket=db().storage.from('installation-evidence');
+    const {error:up}=await bucket.upload(path,file,{contentType:file.type,upsert:false});
+    if(up)throw new Error('تعذر رفع صورة التنفيذ: '+up.message);
+    const {data:record,error}=await db().from('installation_execution_files').insert({installation_request_id:requestId,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size}).select('id,storage_path').single();
+    if(error){await bucket.remove([path]);throw new Error('تعذر تسجيل صورة التنفيذ: '+error.message);}
+    return {id:record?.id||null,path};
+  }
+  async function rollbackExecutionFiles(files){
+    const saved=(files||[]).filter(Boolean);
+    if(!saved.length)return;
+    const ids=saved.map(x=>x.id).filter(Boolean),paths=saved.map(x=>x.path).filter(Boolean);
+    if(ids.length)await db().from('installation_execution_files').delete().in('id',ids);
+    if(paths.length)await db().storage.from('installation-evidence').remove(paths);
+  }
   async function completeCollectionStage(payload){requireAction('edit','installationExecution');const amount=Number(payload.amountCollected||0);if(!Number.isFinite(amount)||amount<0)throw new Error('المبلغ المستلم غير صحيح.');const paymentMethod=String(payload.paymentMethod||'').trim();if(amount>0&&!paymentMethod)throw new Error('طريقة التحصيل مطلوبة.');const {error}=await db().rpc('complete_installation_collection_stage',{p_request_id:payload.id,p_visit_id:payload.visitId||null,p_amount_received:amount,p_payment_method:paymentMethod||null,p_reference:String(payload.reference||'').trim()||null,p_notes:String(payload.notes||'').trim()||null});if(error)throw new Error('تعذر تأكيد مرحلة التحصيل: '+error.message);void notifyEvent('installation.collection_completed',payload.id,payload.visitId||null,{amountCollected:amount,paymentMethod},'collection:'+String(payload.visitId||payload.id))}
-  async function advanceExecution(payload){requireAction('edit','installationExecution');const allowed=['في الطريق','وصل إلى العميل','قيد التنفيذ','مكتمل'];if(!allowed.includes(payload.nextStatus))throw new Error('مرحلة التنفيذ غير مسموحة.');if(payload.nextStatus==='مكتمل'&&payload.photos?.length)for(const f of payload.photos)await uploadExecutionFile(payload.id,f);const rpc=payload.visitId?'advance_installation_execution_visit_stage':'advance_installation_execution_stage';const args=payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_next_status:payload.nextStatus,p_notes:payload.notes||null}:{p_request_id:payload.id,p_next_status:payload.nextStatus,p_notes:payload.notes||null};const {error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر تحديث مرحلة التنفيذ: '+error.message);const eventKey={'في الطريق':'installation.on_route','وصل إلى العميل':'installation.arrived','قيد التنفيذ':'installation.work_started','مكتمل':'installation.completed'}[payload.nextStatus];if(eventKey)void notifyEvent(eventKey,payload.id,payload.visitId||null,{status:payload.nextStatus},payload.nextStatus+':'+String(payload.visitId||payload.id))}
+  async function advanceExecution(payload){
+    requireAction('edit','installationExecution');
+    const allowed=['في الطريق','وصل إلى العميل','قيد التنفيذ','مكتمل'];
+    if(!allowed.includes(payload.nextStatus))throw new Error('مرحلة التنفيذ غير مسموحة.');
+    const uploaded=[];
+    try{
+      if(payload.nextStatus==='مكتمل'&&payload.photos?.length){for(const f of payload.photos)uploaded.push(await uploadExecutionFile(payload.id,f));}
+      const rpc=payload.visitId?'advance_installation_execution_visit_stage':'advance_installation_execution_stage';
+      const args=payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_next_status:payload.nextStatus,p_notes:payload.notes||null}:{p_request_id:payload.id,p_next_status:payload.nextStatus,p_notes:payload.notes||null};
+      const {error}=await db().rpc(rpc,args);
+      if(error)throw new Error('تعذر تحديث مرحلة التنفيذ: '+error.message);
+      const eventKey={'في الطريق':'installation.on_route','وصل إلى العميل':'installation.arrived','قيد التنفيذ':'installation.work_started','مكتمل':'installation.completed'}[payload.nextStatus];
+      if(eventKey)void notifyEvent(eventKey,payload.id,payload.visitId||null,{status:payload.nextStatus},payload.nextStatus+':'+String(payload.visitId||payload.id));
+    }catch(error){
+      if(uploaded.length)await rollbackExecutionFiles(uploaded).catch(()=>{});
+      throw error;
+    }
+  }
   async function completionQuantitySummary(requestId,visitId){
     requireAction('view','installationCompletion');
     if(!requestId)throw new Error('معرّف الموعد مطلوب.');
