@@ -1,12 +1,12 @@
 {
-  "version": "18.55.19",
-  "build": 185519,
+  "version": "18.55.20",
+  "build": 185520,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Dashboard Localization Rollout",
+  "title": "PETATOE Dashboard Filter Localization Hotfix",
   "notes": [
-    "ترجمة لوحة التحكم على Desktop وMobile باستخدام مركز الترجمه المركزي.",
-    "تحديث النصوص الديناميكية ومؤشرات KPI والفلاتر والتحليلات عند تغيير اللغة مباشرة."
+    "إصلاح ترجمة فلتر المندوب في لوحة التحكم بعد إعادة بناء الخيارات ديناميكيًا.",
+    "إضافة placeholders مترجمة لحقول التاريخ مع مزامنة RTL/LTR."
   ],
-  "cacheToken": "petatoe-pwa-18-55-19-dashboard-localization"
+  "cacheToken": "petatoe-pwa-18-55-20-dashboard-filter-localization"
 }

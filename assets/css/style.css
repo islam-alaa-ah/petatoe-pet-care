@@ -229,6 +229,12 @@ select[multiple]{min-height:120px}
 
 .dashboard-filter-bar{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
 .dashboard-filters{display:grid;grid-template-columns:repeat(3,minmax(150px,1fr));gap:10px;min-width:min(760px,65vw)}
+.dashboard-date-filter{position:relative;display:block;min-width:0}
+.dashboard-date-filter input{width:100%;position:relative;z-index:1}
+.dashboard-date-placeholder{position:absolute;inset-inline:14px 44px;inset-block-start:50%;transform:translateY(-50%);z-index:2;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font:inherit}
+.dashboard-date-filter:not(.has-value) input::-webkit-datetime-edit{color:transparent}
+.dashboard-date-filter.has-value .dashboard-date-placeholder{display:none}
+html[data-theme="dark"] .dashboard-date-placeholder{color:var(--muted)}
 .period-label{color:var(--muted);font-size:13px;margin:0 0 14px}
 .dashboard-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
 .dashboard-stats .stat-card strong{font-size:26px}

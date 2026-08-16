@@ -721,7 +721,7 @@ function refreshReferenceOptions() {
       repFilter: "كل المندوبين",
       followupRepFilter: "كل المندوبين",
       quotationRepFilter: "كل المندوبين",
-      dashboardRepFilter: "كل المندوبين"
+      dashboardRepFilter: customerT("dashboard.filter.allReps", "كل المندوبين")
     };
     replaceSelectOptions(
       document.getElementById(id),
@@ -1485,7 +1485,7 @@ function refreshDashboardRepresentativeOptions() {
   replaceSelectOptions(
     select,
     visibleRepresentatives.map(rep => ({ label: rep.name, value: rep.name })),
-    "كل المندوبين",
+    customerT("dashboard.filter.allReps", "كل المندوبين"),
     visibleRepresentatives.some(rep => rep.name === current) ? current : ""
   );
 }
@@ -1507,6 +1507,15 @@ function dashboardFilterState() {
     from: document.getElementById("dashboardDateFrom")?.value || "",
     to: document.getElementById("dashboardDateTo")?.value || ""
   };
+}
+
+function syncDashboardDatePlaceholderState() {
+  ["dashboardDateFrom", "dashboardDateTo"].forEach(id => {
+    const input = document.getElementById(id);
+    const wrapper = input?.closest?.(".dashboard-date-filter");
+    if (!input || !wrapper) return;
+    wrapper.classList.toggle("has-value", Boolean(input.value));
+  });
 }
 
 function dateInRange(value, from, to) {
@@ -7302,12 +7311,14 @@ document.querySelector("[data-open-customers]").addEventListener("click", () => 
 
 ["dashboardRepFilter", "dashboardDateFrom", "dashboardDateTo"].forEach(id => {
   document.getElementById(id).addEventListener("change", () => {
+    syncDashboardDatePlaceholderState();
     if (document.body.classList.contains("mobile-dashboard-sheet-open")) return;
     renderDashboard();
   });
 });
 
 document.addEventListener("kyum-apply-dashboard-filters", () => renderDashboard());
+syncDashboardDatePlaceholderState();
 
 document.getElementById("resetDashboardFilters").addEventListener("click", () => {
   document.getElementById("dashboardRepFilter").value = "";
@@ -7315,6 +7326,7 @@ document.getElementById("resetDashboardFilters").addEventListener("click", () =>
   
   document.getElementById("dashboardDateFrom").value = "";
   document.getElementById("dashboardDateTo").value = "";
+  syncDashboardDatePlaceholderState();
   if (!document.body.classList.contains("mobile-dashboard-sheet-open")) renderDashboard();
 });
 
@@ -9276,6 +9288,8 @@ document.getElementById("dailyWhatsAppTemplateImage")?.addEventListener("change"
 
 window.addEventListener("petatoe-language-changed", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
+  refreshDashboardRepresentativeOptions();
+  syncDashboardDatePlaceholderState();
   if (activeViewKey === "dashboard") renderDashboard();
   if (customersLoaded) renderCustomers();
   if (followupsLoaded) renderFollowups();
