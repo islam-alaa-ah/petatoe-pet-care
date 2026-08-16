@@ -1,12 +1,13 @@
 {
-  "version": "18.55.09",
-  "build": 185509,
+  "version": "18.55.10",
+  "build": 185510,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE PWA Refresh Loop Hotfix",
+  "title": "PETATOE Full Appointment Service Translation Catalog",
   "notes": [
-    "مزامنة إصدار Runtime داخل pwa.js مع الإصدار الفعلي لمنع حلقة التحديث وإعادة التحميل المستمرة.",
-    "الحفاظ على نظام الترجمة وتغطية الأحياء والخدمات دون أي تغيير وظيفي خارج مسار PWA/versioning."
+    "إضافة ترجمة إنجليزية معتمدة لكل الخدمات والمنتجات المرسلة من إعدادات المواعيد / الخدمات باستخدام كود الخدمة كمفتاح ثابت.",
+    "الحفاظ على أي ترجمة مخصصة موجودة مسبقًا داخل مركز الترجمه وعدم استبدالها أثناء تحديث القاموس.",
+    "إزالة fallback من نوع Service <code> من العرض الإنجليزي وإظهار Translation pending فقط لأي خدمة مستقبلية غير مترجمة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-09-pwa-refresh-loop-hotfix"
+  "cacheToken": "petatoe-pwa-18-55-10-service-catalog-translation"
 }

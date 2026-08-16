@@ -189,23 +189,112 @@
   function effectiveLanguage(){return desktopPilot()?state.language:'ar'}
   function entry(key){return state.remote.get(key)||defaults.get(key)||null}
   function t(key,vars={}){const item=entry(key);if(!item)return`[${key}]`;const lang=effectiveLanguage();const base=defaults.get(key);const value=lang==='en'?(item.en||base?.en):(item.ar||base?.ar);return interpolate(value||`[${key}]`,vars)}
+  const SERVICE_EN_BY_CODE=Object.freeze({
+    '100001':'Basic Package - Large Cat',
+    '100002':'Basic Package - Medium Cat',
+    '100003':'Basic Package - Large Dog',
+    '100004':'Basic Package - Medium Dog',
+    '100005':'Happy Package - Large Cat',
+    '100006':'Happy Package - Medium Cat',
+    '100007':'Happy Package - Large Dog',
+    '100008':'Happy Package - Medium Dog',
+    '100009':'Comprehensive Package - Large Cat',
+    '100010':'Comprehensive Package - Medium Cat',
+    '100011':'Comprehensive Package - Large Dog',
+    '100012':'Comprehensive Package - Medium Dog',
+    '100013':'Tip',
+    '100014':'Additional Fee - Remote Areas',
+    '100015':'Claw Trimming',
+    '100016':'Face Trim',
+    '100017':'Coat Brushing / Cleaning / Dematting',
+    '100018':'Teeth Brushing',
+    '100019':'Nail Trimming',
+    '100020':'Ear Cleaning',
+    '100021':'Anal Gland Cleaning',
+    '100022':'Sanitary Trim',
+    '100023':'Haircut',
+    '100024':'Special Shampoo',
+    '100025':'Hair Dye - Large Cat/Dog',
+    '100026':'Hair Dye - Medium Cat/Dog',
+    '100027':'Large Haircut',
+    '100028':'Medium Haircut',
+    '100029':'Hair Brushing',
+    '100030':'Bravecto',
+    '100031':'Duvo Cat Toy',
+    '100032':'Lolly Dog Sticks',
+    '200001':'Royal Canin Mini Adult Dog Food',
+    '200002':'Revolution',
+    '200003':'Prazitel',
+    '200004':'Kippy Cat Food',
+    '200005':'Small Double Bowl',
+    '200006':'Medium Leather Collar',
+    '200007':'Caramel Dog Bone',
+    '200008':'Cat Leash / Harness',
+    '200009':'Fipron for Cats',
+    '200010':'Flexi Large Yellow',
+    '200011':'Jouet Dog Toy',
+    '200012':'Brit Stick Cat Treat',
+    '200013':'GimCat',
+    '200014':'Large Gray Double Bowl',
+    '200015':'Lolly Cat Treat',
+    '200016':'Small Dog Harness',
+    '200017':'MyFamily Leash',
+    '200018':'Cat Ball',
+    '200019':'Medium Dog Harness',
+    '200020':'Dog Tennis Balls',
+    '200021':'Zolux Chicken Sticks 10',
+    '200022':'Pet Diapers',
+    '200023':'Canvit Nutritional Supplement',
+    '200024':'Veto Pure - Small Dog',
+    '200025':'Sanal Bites Box',
+    '200026':'Wolf Snack',
+    '200027':'Duvo Pet Plastic Ball 4',
+    '200028':'Kit Cat Cat Treat',
+    '200029':'Large Fine Litter Scoop',
+    '200030':'Small Fine Litter Scoop',
+    '200031':'Plain Small Bones 5',
+    '200032':'Cat Wand Toy',
+    '200033':'Medium Dog Bone',
+    '200034':'Bell Collar',
+    '200035':'Sanal Dog Treats',
+    '200036':'Fresh Lavender Cat Litter',
+    '200037':'Wanpy Creamy Cat Treat',
+    '200038':'Flexi Small Pink',
+    '200039':'Pet Hair Remover',
+    '200040':'Fresh Cat Litter',
+    '200041':'Dog Bone Toy',
+    '200042':'Cat Brush 39',
+    '200043':'Butcher\'s Cat Food',
+    '200044':'Jungle Chicken Cat Treat',
+    '200045':'Dog Chain',
+    '200046':'Canvit Health Care Snack 100g',
+    '200047':'Dog Fest',
+    '200048':'Zolux Medium Plastic Grooming Brush',
+    '200049':'Pet Waste Bags',
+    '200050':'Zolux Bell Collar',
+    '200051':'Litter Bag',
+    '200052':'Pet Socks',
+    '200053':'Laser Pointer',
+    '200054':'Apple Collar for Dogs',
+    '200055':'Apple Collar for Cats',
+    '200056':'Large Treat Ball',
+    '200057':'Quick Soap 5L',
+    '200058':'Jungle Baby Powder 5L',
+    '200059':'Quick Baby Powder',
+    '200060':'Jungle Mix 9×14 g',
+  });
   function serviceDefaultEnglish(name,code=''){
+    const normalizedCode=String(code||'').trim();
+    if(normalizedCode&&SERVICE_EN_BY_CODE[normalizedCode])return SERVICE_EN_BY_CODE[normalizedCode];
     const source=String(name||'').trim();
     const exact=new Map([
       ['أكياس قمامة للحيوانات','Pet Waste Bags'],['اكياس قمامة للحيوانات','Pet Waste Bags'],['اكرامية','Tip'],['إكرامية','Tip'],
-      ['تقليم الاظافر','Nail Trimming'],['تقليم الأظافر','Nail Trimming'],['تقليم الأظافر','Nail Trimming'],['تشذيب المخالب','Claw Trimming'],
-      ['تنظيف الاذنين','Ear Cleaning'],['تنظيف الأذنين','Ear Cleaning'],['حلاقة للاعضاء التناسلية','Sanitary Trim'],['حلاقة للأعضاء التناسلية','Sanitary Trim'],['حلاقة الأعضاء التناسلية','Sanitary Trim'],
+      ['تقليم الاظافر','Nail Trimming'],['تقليم الأظافر','Nail Trimming'],['تشذيب المخالب','Claw Trimming'],
+      ['تنظيف الاذنين','Ear Cleaning'],['تنظيف الأذنين','Ear Cleaning'],['حلاقة للاعضاء التناسلية','Sanitary Trim'],['حلاقة للأعضاء التناسلية','Sanitary Trim'],['حلاقة الأعضاء التناسلية','Sanitary Trim'],['حلاقة الاعضاء التناسلية','Sanitary Trim'],
       ['تنظيف عميق للفراء','Deep Coat Cleaning']
     ]);
     if(exact.has(source))return exact.get(source);
-    const packageMatch=source.match(/^(.+?)\s*-\s*(.+)$/);
-    if(packageMatch){
-      const packageNames={'الاساسية':'Basic Package','الأساسية':'Basic Package','الشاملة':'Full Package','السعيدة':'Happy Package'};
-      const animals={'قط كبير':'Large Cat','قط متوسط':'Medium Cat','قط صغير':'Small Cat','كلب كبير':'Large Dog','كلب متوسط':'Medium Dog','كلب صغير':'Small Dog'};
-      const left=packageNames[packageMatch[1].trim()],right=animals[packageMatch[2].trim()];
-      if(left&&right)return `${left} - ${right}`;
-    }
-    return code?`Service ${String(code).trim()}`:'Service';
+    return 'Translation pending';
   }
   function entityKey(kind,id){return `entity.${kind}.${String(id||'').trim()}`}
   function registerEntity(kind,item){
