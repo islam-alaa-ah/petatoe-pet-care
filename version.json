@@ -1,13 +1,12 @@
 {
-  "version": "18.55.08",
-  "build": 185508,
+  "version": "18.55.09",
+  "build": 185509,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Authoritative Neighborhood & Service Translation Coverage",
+  "title": "PETATOE PWA Refresh Loop Hotfix",
   "notes": [
-    "ربط أحياء مكة المكرمة وجدة بترجمات العنوان الوطني المعتمدة داخل مركز الترجمه دون إنشاء مصدر ترجمة موازٍ.",
-    "توسيع تغطية خدمات إعدادات المواعيد وإزالة fallback من نوع Service 100022 من واجهة التنفيذ.",
-    "إظهار أي خدمة أو حي غير مكتمل الترجمة كحالة Translation pending بدل تسريب العربية أو المفاتيح التقنية داخل النسخة الإنجليزية."
+    "مزامنة إصدار Runtime داخل pwa.js مع الإصدار الفعلي لمنع حلقة التحديث وإعادة التحميل المستمرة.",
+    "الحفاظ على نظام الترجمة وتغطية الأحياء والخدمات دون أي تغيير وظيفي خارج مسار PWA/versioning."
   ],
-  "cacheToken": "petatoe-pwa-18-55-08-authoritative-neighborhood-service-coverage"
+  "cacheToken": "petatoe-pwa-18-55-09-pwa-refresh-loop-hotfix"
 }

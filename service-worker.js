@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-08-authoritative-neighborhood-service-coverage";
+const CACHE_VERSION = "petatoe-pwa-18-55-09-pwa-refresh-loop-hotfix";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
