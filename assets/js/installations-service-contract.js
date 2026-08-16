@@ -2,7 +2,7 @@
   'use strict';
 
   const REQUIRED_METHODS = [
-    'list', 'options', 'requestEditDetail', 'requestEditOptions', 'createRequest', 'updateRequest', 'updateRequestServices', 'updateRequestContextServices', 'remove', 'technicians', 'scheduleTeams', 'technicianNameSuggestions', 'scheduleList', 'schedulePlan', 'assignMultiDay', 'cancelSchedule', 'assign', 'executionWorkspace', 'executionIdentity', 'selectExecutionRequest', 'recordMapOpened', 'advanceExecution', 'completionList', 'confirmActualQuantities', 'cancelConfirmedQuantity', 'saveCompletion', 'signedFileUrl', 'exceptionList', 'saveRevisit', 'operationalReport', 'installationSummaryReport', 'settingsCatalog', 'saveSettingItem', 'toggleSettingItem', 'removeSettingItem'
+    'list', 'options', 'requestEditDetail', 'requestEditOptions', 'createRequest', 'updateRequest', 'updateRequestServices', 'updateRequestContextServices', 'remove', 'technicians', 'scheduleTeams', 'technicianNameSuggestions', 'scheduleList', 'schedulePlan', 'assignMultiDay', 'cancelSchedule', 'assign', 'executionWorkspace', 'executionIdentity', 'selectExecutionRequest', 'recordMapOpened', 'advanceExecution', 'subscribeExecutionWorkspace', 'completionList', 'confirmActualQuantities', 'cancelConfirmedQuantity', 'saveCompletion', 'signedFileUrl', 'exceptionList', 'saveRevisit', 'operationalReport', 'installationSummaryReport', 'settingsCatalog', 'saveSettingItem', 'toggleSettingItem', 'removeSettingItem'
   ];
 
   function isValid(service) {

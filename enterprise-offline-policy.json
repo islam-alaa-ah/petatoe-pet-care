@@ -146,6 +146,11 @@
       "file": "assets/js/sales-invoices-service.js",
       "mode": "online_only_financial_operations",
       "status": "accepted_online_only"
+    },
+    "localization_center": {
+      "file": "assets/js/localization-center-service.js",
+      "mode": "online_write_cached_runtime_fallback",
+      "status": "accepted_online_only_with_bundled_fallback"
     }
   },
   "registeredDirectDataFiles": [
@@ -169,6 +174,7 @@
     "assets/js/installation-settings-management.js",
     "assets/js/installations-module.js",
     "assets/js/installations-service.js",
+    "assets/js/localization-center-service.js",
     "assets/js/notification-center-service.js",
     "assets/js/offline-queue.js",
     "assets/js/offline-read-cache.js",

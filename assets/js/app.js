@@ -192,6 +192,7 @@ const views = {
   reportsOverview: document.getElementById("reportsOverviewView"),
   dailyPerformanceReport: document.getElementById("dailyPerformanceReportView"),
   notificationCenter: document.getElementById("notificationCenterView"),
+  translationCenter: document.getElementById("translationCenterView"),
   systemSettings: document.getElementById("systemSettingsView"),
   aboutApp: document.getElementById("aboutAppView")
 };
@@ -222,6 +223,7 @@ const pageMeta = {
   reportsOverview: ["مركز التقارير", "تحليلات العملاء والمتابعات والعروض وأداء المندوبين"],
   dailyPerformanceReport: ["تقرير الأداء اليومي", "متابعة تنفيذ المهام والنشاط اليومي للموظفين"],
   notificationCenter: ["مركز الإشعارات", "إدارة الأحداث والمستلمين وقنوات الإشعار"],
+  translationCenter: ["مركز الترجمه", "إدارة قاموس الترجمة المركزي ومراجعة تغطية الشاشات"],
   systemSettings: ["إعدادات النظام", "الخيارات العامة وبيانات الشركة"],
   aboutApp: ["حول التطبيق", "معلومات الإصدار وحالة التحديثات"]
 };
@@ -1359,18 +1361,22 @@ function switchView(requestedName, options = {}) {
   if (name === "notificationCenter") {
     window.NotificationCenterUI?.loadConfig?.(true);
   }
+  if (name === "translationCenter") {
+    window.TranslationCenterUI?.load?.(false);
+  }
   if (name === "systemSettings") {
     loadSystemSettings();
   }
 
-  document.getElementById("pageTitle").textContent = pageMeta[name][0];
+  const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : pageMeta[name];
+  document.getElementById("pageTitle").textContent = activePageMeta[0];
   requestAnimationFrame(() => {
     window.PerformanceMonitor?.recordRender(
       name,
       performance.now() - viewRenderStartedAt
     );
   });
-  document.getElementById("pageSubtitle").textContent = pageMeta[name][1];
+  document.getElementById("pageSubtitle").textContent = activePageMeta[1];
 
   if (name === "dashboard") {
     renderDashboard();
@@ -1406,6 +1412,26 @@ function switchView(requestedName, options = {}) {
   window.dispatchEvent(new CustomEvent("kyum-view-changed", { detail: { view: name } }));
   return true;
 }
+
+
+window.addEventListener("petatoe-language-changed", event => {
+  if (event.detail?.screenKey !== "installationExecution") return;
+  const view = document.getElementById("installationExecutionView");
+  if (!view || view.classList.contains("hidden")) return;
+  const meta = window.PetatoeLocalization?.pageMeta?.();
+  if (!meta) return;
+  document.getElementById("pageTitle").textContent = meta[0];
+  document.getElementById("pageSubtitle").textContent = meta[1];
+});
+window.addEventListener("petatoe-localization-updated", event => {
+  if (event.detail?.screenKey !== "installationExecution") return;
+  const view = document.getElementById("installationExecutionView");
+  if (!view || view.classList.contains("hidden")) return;
+  const meta = window.PetatoeLocalization?.pageMeta?.();
+  if (!meta) return;
+  document.getElementById("pageTitle").textContent = meta[0];
+  document.getElementById("pageSubtitle").textContent = meta[1];
+});
 
 window.KYUMNavigation = Object.freeze({
   open: (viewKey, options = {}) => switchView(viewKey, options),
