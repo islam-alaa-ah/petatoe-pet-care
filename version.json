@@ -1,13 +1,13 @@
 {
-  "version": "18.55.10",
-  "build": 185510,
+  "version": "18.55.11",
+  "build": 185511,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Full Appointment Service Translation Catalog",
+  "title": "PETATOE Localization Core & Shared UI Lockdown",
   "notes": [
-    "إضافة ترجمة إنجليزية معتمدة لكل الخدمات والمنتجات المرسلة من إعدادات المواعيد / الخدمات باستخدام كود الخدمة كمفتاح ثابت.",
-    "الحفاظ على أي ترجمة مخصصة موجودة مسبقًا داخل مركز الترجمه وعدم استبدالها أثناء تحديث القاموس.",
-    "إزالة fallback من نوع Service <code> من العرض الإنجليزي وإظهار Translation pending فقط لأي خدمة مستقبلية غير مترجمة."
+    "توسيع مركز الترجمه ليشمل عناصر الهيدر المشتركة وغلاف الإشعارات مع الحفاظ على ترجمة القائمة الجانبية الحالية دون إعادة بنائها.",
+    "ربط عناصر الهيدر الديناميكية مثل الوضع الفاتح/الداكن وحالة المستخدم بنفس مصدر الترجمة المركزي.",
+    "إضافة Localization Lockdown check يمنع مفاتيح مفقودة أو تسرب نص عربي داخل English catalog في النطاقات المعتمدة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-10-service-catalog-translation"
+  "cacheToken": "petatoe-pwa-18-55-11-shared-localization-lockdown"
 }

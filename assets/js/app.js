@@ -6808,6 +6808,11 @@ function setSidebarOpen(isOpen) {
   }
 }
 
+function petatoeSharedT(key, fallback = '') {
+  const value = window.PetatoeLocalization?.t?.(key);
+  return value && value !== key ? value : fallback;
+}
+
 function initializeDynamicSidebar() {
   const launcher = document.getElementById("sidebarMenuToggle");
   const backdrop = document.getElementById("sidebarBackdrop");
@@ -6833,8 +6838,8 @@ function initializeDynamicSidebar() {
   const sidebarUserName = document.getElementById("sidebarCurrentUserName");
   if (headerUserName && sidebarUserName) {
     const syncHeaderIdentity = () => {
-      sidebarUserName.textContent = headerUserName.textContent || "مستخدم";
-      if (headerUserRole) headerUserRole.textContent = roleLabel(currentRole()) || "مستخدم النظام";
+      sidebarUserName.textContent = headerUserName.textContent || petatoeSharedT("sidebar.userFallback", "مستخدم");
+      if (headerUserRole) headerUserRole.textContent = roleLabel(currentRole()) || petatoeSharedT("shared.header.systemUser", "مستخدم النظام");
     };
     syncHeaderIdentity();
     new MutationObserver(syncHeaderIdentity).observe(headerUserName, { childList: true, characterData: true, subtree: true });
@@ -6952,9 +6957,13 @@ function applyKyumTheme(theme, persist = true) {
     button.setAttribute("aria-pressed", String(darkActive));
     button.setAttribute(
       "aria-label",
-      darkActive ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"
+      darkActive
+        ? petatoeSharedT("shared.header.themeEnableLight", "تفعيل الوضع الفاتح")
+        : petatoeSharedT("shared.header.themeEnableDark", "تفعيل الوضع الداكن")
     );
-    button.title = darkActive ? "التبديل إلى الوضع الفاتح" : "التبديل إلى الوضع الداكن";
+    button.title = darkActive
+      ? petatoeSharedT("shared.header.themeSwitchLight", "التبديل إلى الوضع الفاتح")
+      : petatoeSharedT("shared.header.themeSwitchDark", "التبديل إلى الوضع الداكن");
   }
 
   if (persist) {
@@ -7113,6 +7122,12 @@ function initializeKyumThemeToggle() {
 }
 
 initializeKyumThemeToggle();
+
+window.addEventListener("petatoe-language-changed", () => {
+  applyKyumTheme(getKyumTheme(), false);
+  const roleNode = document.getElementById("currentUserRoleLabel");
+  if (roleNode && !roleLabel(currentRole())) roleNode.textContent = petatoeSharedT("shared.header.systemUser", "مستخدم النظام");
+});
 
 // Phase M7.2.1 — stable public navigation bridge for mobile controls.
 window.KYUMNavigateTo = (viewKey, options = {}) => {
