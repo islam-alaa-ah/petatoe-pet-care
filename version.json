@@ -1,12 +1,12 @@
 {
-  "version": "18.55.16",
-  "build": 185516,
+  "version": "18.55.17",
+  "build": 185517,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Follow-ups KPI Direction Hotfix",
+  "title": "PETATOE Collection Team Scope Hotfix",
   "notes": [
-    "تصحيح اتجاه أيقونات مؤشرات المتابعات حسب RTL/LTR بدون طبقة CSS إضافية.",
-    "الإنجليزية تعرض أيقونات KPI ناحية اليمين والعربية ناحية اليسار."
+    "إصلاح تأكيد التحصيل ليعتمد على الزيارة النشطة وصلاحية الفرقة بدل المستخدم الذي بدأ التنفيذ.",
+    "السوبر أدمن يمكنه تأكيد التحصيل بدون قيود الفرقة مع بقاء selected_for_execution_by كبيانات تدقيق فقط."
   ],
-  "cacheToken": "petatoe-pwa-18-55-16-followups-kpi-direction"
+  "cacheToken": "petatoe-pwa-18-55-17-collection-team-scope"
 }
