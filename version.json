@@ -1,13 +1,12 @@
 {
-  "version": "18.55.15",
-  "build": 185515,
+  "version": "18.55.16",
+  "build": 185516,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Follow-ups Localization Certification",
+  "title": "PETATOE Follow-ups KPI Direction Hotfix",
   "notes": [
-    "اعتماد ترجمة شاشة المتابعات على مركز الترجمه في Desktop وMobile.",
-    "إصلاح تحديث النصوص الديناميكية ورسائل الكاش عند تبديل اللغة.",
-    "ربط مواضع أيقونات المتابعات باتجاه RTL/LTR باستخدام logical CSS."
+    "تصحيح اتجاه أيقونات مؤشرات المتابعات حسب RTL/LTR بدون طبقة CSS إضافية.",
+    "الإنجليزية تعرض أيقونات KPI ناحية اليمين والعربية ناحية اليسار."
   ],
-  "cacheToken": "petatoe-pwa-18-55-15-followups-localization"
+  "cacheToken": "petatoe-pwa-18-55-16-followups-kpi-direction"
 }
