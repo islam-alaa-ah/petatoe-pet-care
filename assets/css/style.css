@@ -241,9 +241,9 @@ select[multiple]{min-height:120px}
 .dashboard-date-popover-title{text-align:center;font-weight:800;font-size:14px}
 .dashboard-date-nav{inline-size:40px;block-size:40px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);color:var(--text);display:grid;place-items:center;cursor:pointer}
 .dashboard-date-nav svg{inline-size:18px;block-size:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.dashboard-date-weekdays,.dashboard-date-days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dashboard-date-weekdays,.dashboard-date-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;inline-size:100%}
 .dashboard-date-weekdays span{padding:4px 0;text-align:center;color:var(--muted);font-size:11px;font-weight:700}
-.dashboard-date-day{aspect-ratio:1;border:0;border-radius:10px;background:transparent;color:var(--text);font:inherit;font-size:13px;cursor:pointer}
+.dashboard-date-day{inline-size:100%;block-size:36px;min-inline-size:0;min-block-size:36px;padding:0;border:0;border-radius:10px;background:transparent;color:var(--text);font:inherit;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;direction:ltr;font-variant-numeric:tabular-nums}
 .dashboard-date-day:hover{background:var(--surface-2)}
 .dashboard-date-day.is-outside{color:var(--muted);opacity:.55}
 .dashboard-date-day.is-selected{background:#0b67d8;color:#fff;font-weight:800}

@@ -36,27 +36,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.55.23" />
-  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.55.23" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.55.24" />
+  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.55.24" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
@@ -1090,19 +1090,19 @@
 
 
       <section id="installationsOverviewView" class="view-section hidden installations-overview-view" aria-hidden="true">
-        <div class="actions-row installation-dashboard-header"><div><h3 class="section-title">لوحة المواعيد</h3><p class="section-note">ملخص تشغيلي مباشر للطلبات والجدولة والتنفيذ والاستثناءات.</p></div><button id="refreshInstallationsDashboardBtn" class="secondary-btn" type="button">تحديث البيانات</button></div>
+        <div class="actions-row installation-dashboard-header"><div><h3 class="section-title" data-petatoe-i18n="appointments.overview.title">لوحة المواعيد</h3><p class="section-note" data-petatoe-i18n="appointments.overview.note">ملخص تشغيلي مباشر للطلبات والجدولة والتنفيذ والاستثناءات.</p></div><button id="refreshInstallationsDashboardBtn" class="secondary-btn" type="button" data-petatoe-i18n="appointments.common.refreshData">تحديث البيانات</button></div>
         <div id="installationsDashboardStatus" class="status-message hidden"></div>
         <div class="installations-kpi-grid">
-          <article class="panel installation-kpi-card"><span>مواعيد اليوم</span><strong id="installationsDashToday">0</strong><small>المواعيد المحددة لليوم</small></article>
-          <article class="panel installation-kpi-card"><span>قيد التنفيذ</span><strong id="installationsDashInProgress">0</strong><small>في الطريق أو قيد التنفيذ</small></article>
-          <article class="panel installation-kpi-card"><span>متأخرة</span><strong id="installationsDashOverdue">0</strong><small>تجاوزت الموعد ولم تُغلق</small></article>
-          <article class="panel installation-kpi-card"><span>مكتملة</span><strong id="installationsDashCompleted">0</strong><small>إجمالي المواعيد المكتملة</small></article>
-          <article class="panel installation-kpi-card"><span>غير مسندة</span><strong id="installationsDashUnassigned">0</strong><small>طلبات بلا فني مسؤول</small></article>
-          <article class="panel installation-kpi-card"><span>استثناءات مفتوحة</span><strong id="installationsDashExceptions">0</strong><small>مؤجلة أو متعذرة</small></article>
+          <article class="panel installation-kpi-card"><span data-petatoe-i18n="appointments.overview.today">مواعيد اليوم</span><strong id="installationsDashToday">0</strong><small data-petatoe-i18n="appointments.overview.todayNote">المواعيد المحددة لليوم</small></article>
+          <article class="panel installation-kpi-card"><span data-petatoe-i18n="appointments.overview.inProgress">قيد التنفيذ</span><strong id="installationsDashInProgress">0</strong><small data-petatoe-i18n="appointments.overview.inProgressNote">في الطريق أو قيد التنفيذ</small></article>
+          <article class="panel installation-kpi-card"><span data-petatoe-i18n="appointments.overview.overdue">متأخرة</span><strong id="installationsDashOverdue">0</strong><small data-petatoe-i18n="appointments.overview.overdueNote">تجاوزت الموعد ولم تُغلق</small></article>
+          <article class="panel installation-kpi-card"><span data-petatoe-i18n="appointments.overview.completed">مكتملة</span><strong id="installationsDashCompleted">0</strong><small data-petatoe-i18n="appointments.overview.completedNote">إجمالي المواعيد المكتملة</small></article>
+          <article class="panel installation-kpi-card"><span data-petatoe-i18n="appointments.overview.unassigned">غير مسندة</span><strong id="installationsDashUnassigned">0</strong><small data-petatoe-i18n="appointments.overview.unassignedNote">طلبات بلا فني مسؤول</small></article>
+          <article class="panel installation-kpi-card"><span data-petatoe-i18n="appointments.overview.exceptions">استثناءات مفتوحة</span><strong id="installationsDashExceptions">0</strong><small data-petatoe-i18n="appointments.overview.exceptionsNote">مؤجلة أو متعذرة</small></article>
         </div>
         <div class="installation-dashboard-grid">
-          <article class="panel"><div class="panel-header"><div><h3>توزيع الحالات</h3><p>عدد الطلبات في كل حالة تشغيلية.</p></div></div><div id="installationsStatusSummary" class="installation-status-summary"></div></article>
-          <article class="panel"><div class="panel-header"><div><h3>أقرب المواعيد</h3><p>الطلبات المجدولة القادمة.</p></div></div><div id="installationsUpcomingList" class="installation-upcoming-list"></div></article>
+          <article class="panel"><div class="panel-header"><div><h3 data-petatoe-i18n="appointments.overview.statusDistribution">توزيع الحالات</h3><p data-petatoe-i18n="appointments.overview.statusDistributionNote">عدد الطلبات في كل حالة تشغيلية.</p></div></div><div id="installationsStatusSummary" class="installation-status-summary"></div></article>
+          <article class="panel"><div class="panel-header"><div><h3 data-petatoe-i18n="appointments.overview.upcoming">أقرب المواعيد</h3><p data-petatoe-i18n="appointments.overview.upcomingNote">الطلبات المجدولة القادمة.</p></div></div><div id="installationsUpcomingList" class="installation-upcoming-list"></div></article>
         </div>
       </section>
 
@@ -1216,32 +1216,32 @@
       <section id="installationRequestsView" class="view-section hidden installation-requests-view" aria-hidden="true">
         <div class="actions-row installation-requests-header">
           <div>
-            <h3 class="section-title">المواعيد</h3>
-            <p class="section-note">عرض الطلبات الحالية والبحث والتصفية والمتابعة والتعديل.</p>
+            <h3 class="section-title" data-petatoe-i18n="appointments.requests.title">المواعيد</h3>
+            <p class="section-note" data-petatoe-i18n="appointments.requests.note">عرض الطلبات الحالية والبحث والتصفية والمتابعة والتعديل.</p>
           </div>
         </div>
 
         <div class="panel installation-request-filters">
-          <label>بحث<input id="installationRequestSearch" type="search" placeholder="رقم الموعد، العميل، الهاتف أو العقد"></label>
-          <label>الفرقة<select id="installationRequestRepresentativeFilter"><option value="">كل الفرق</option></select></label>
-          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationRequestStatusFilter"><option value="">كل الحالات</option><option>بانتظار المراجعة</option><option>جديد</option><option>مجدول</option><option>مسند</option><option>في الطريق</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option><option>ملغي</option></select></label>
-          <label>من تاريخ<input id="installationRequestDateFrom" type="date"></label>
-          <label>إلى تاريخ<input id="installationRequestDateTo" type="date"></label>
-          <button id="resetInstallationRequestFilters" class="secondary-btn" type="button">إعادة تعيين</button>
+          <label><span data-petatoe-i18n="appointments.common.search">بحث</span><input id="installationRequestSearch" type="search" placeholder="رقم الموعد، العميل، الهاتف أو العقد" data-petatoe-i18n-placeholder="appointments.requests.searchPlaceholder"></label>
+          <label><span data-petatoe-i18n="appointments.common.team">الفرقة</span><select id="installationRequestRepresentativeFilter"><option value="" data-petatoe-i18n="appointments.common.allTeams">كل الفرق</option></select></label>
+          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationRequestStatusFilter"><option value="" data-petatoe-i18n="appointments.common.allStatuses">كل الحالات</option><option>بانتظار المراجعة</option><option>جديد</option><option>مجدول</option><option>مسند</option><option>في الطريق</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option><option>ملغي</option></select></label>
+          <label><span data-petatoe-i18n="appointments.common.fromDate">من تاريخ</span><input id="installationRequestDateFrom" type="date"></label>
+          <label><span data-petatoe-i18n="appointments.common.toDate">إلى تاريخ</span><input id="installationRequestDateTo" type="date"></label>
+          <button id="resetInstallationRequestFilters" class="secondary-btn" type="button" data-petatoe-i18n="appointments.common.reset">إعادة تعيين</button>
         </div>
 
         <div class="installation-request-kpis" aria-label="ملخص المواعيد">
-          <article class="panel"><span>إجمالي الطلبات</span><strong id="installationKpiTotal">0</strong></article>
-          <article class="panel"><span>مجدولة</span><strong id="installationKpiScheduled">0</strong></article>
-          <article class="panel"><span>قيد التنفيذ</span><strong id="installationKpiInProgress">0</strong></article>
-          <article class="panel"><span>متأخرة</span><strong id="installationKpiOverdue">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.requests.kpiTotal">إجمالي الطلبات</span><strong id="installationKpiTotal">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.requests.kpiScheduled">مجدولة</span><strong id="installationKpiScheduled">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.requests.kpiInProgress">قيد التنفيذ</span><strong id="installationKpiInProgress">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.requests.kpiOverdue">متأخرة</span><strong id="installationKpiOverdue">0</strong></article>
         </div>
 
         <div id="installationRequestsStatus" class="data-status hidden" aria-live="polite"></div>
         <div class="table-wrap installation-requests-table-wrap">
           <table class="data-table installation-requests-table">
-            <thead><tr><th>رقم الموعد</th><th>العميل</th><th>العقد</th><th>الخدمات</th><th>الإجمالي النهائي</th><th>الحي</th><th>تاريخ الموعد</th><th>الفترة</th><th>الحالة</th><th>الفرقة</th><th>الإجراءات</th></tr></thead>
-            <tbody id="installationRequestsBody"><tr><td colspan="11" class="empty-cell">جاري تحميل المواعيد...</td></tr></tbody>
+            <thead><tr><th data-petatoe-i18n="appointments.col.number">رقم الموعد</th><th data-petatoe-i18n="appointments.col.customer">العميل</th><th data-petatoe-i18n="appointments.col.contract">العقد</th><th data-petatoe-i18n="appointments.col.services">الخدمات</th><th data-petatoe-i18n="appointments.col.finalTotal">الإجمالي النهائي</th><th data-petatoe-i18n="appointments.col.district">الحي</th><th data-petatoe-i18n="appointments.col.date">تاريخ الموعد</th><th data-petatoe-i18n="appointments.col.period">الفترة</th><th data-petatoe-i18n="appointments.col.status">الحالة</th><th data-petatoe-i18n="appointments.col.team">الفرقة</th><th data-petatoe-i18n="appointments.col.actions">الإجراءات</th></tr></thead>
+            <tbody id="installationRequestsBody"><tr><td colspan="11" class="empty-cell" data-petatoe-i18n="appointments.requests.loading">جاري تحميل المواعيد...</td></tr></tbody>
           </table>
         </div>
         <div id="installationRequestsMobileCards" class="installation-requests-mobile-cards" aria-live="polite"></div>
@@ -1250,35 +1250,35 @@
       <section id="installationScheduleView" class="view-section hidden installation-schedule-view" aria-hidden="true">
         <div class="actions-row installation-schedule-header">
           <div>
-            <h3 class="section-title">جدولة وتوزيع المواعيد</h3>
-            <p class="section-note">تقويم تشغيلي لتوزيع المواعيد على فرق التشغيل ومراجعة الأحمال اليومية.</p>
+            <h3 class="section-title" data-petatoe-i18n="appointments.schedule.title">جدولة وتوزيع المواعيد</h3>
+            <p class="section-note" data-petatoe-i18n="appointments.schedule.note">تقويم تشغيلي لتوزيع المواعيد على فرق التشغيل ومراجعة الأحمال اليومية.</p>
           </div>
           <div class="installation-schedule-actions">
-            <button id="refreshInstallationScheduleBtn" class="primary-btn" type="button">تحديث الجدول</button>
+            <button id="refreshInstallationScheduleBtn" class="primary-btn" type="button" data-petatoe-i18n="appointments.schedule.refresh">تحديث الجدول</button>
           </div>
         </div>
         <div class="panel installation-schedule-toolbar">
-          <button id="installationSchedulePrevBtn" class="icon-btn" type="button" aria-label="الشهر السابق"><span class="legacy-icon-glyph" aria-hidden="true">‹</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/></svg></span></button>
-          <div><span>الشهر المعروض</span><strong id="installationScheduleMonthLabel">—</strong></div>
-          <button id="installationScheduleTodayBtn" class="secondary-btn" type="button">اليوم</button>
-          <button id="installationScheduleNextBtn" class="icon-btn" type="button" aria-label="الشهر التالي"><span class="legacy-icon-glyph" aria-hidden="true">›</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg></span></button>
-          <label>الجرومر<select id="installationScheduleTechnicianFilter"><option value="">كل الجرومر</option></select></label>
-          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationScheduleStatusFilter"><option value="">كل الحالات</option><option>بانتظار المراجعة</option><option>جديد</option><option>مجدول</option><option>مسند</option><option>في الطريق</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option><option>ملغي</option></select></label>
+          <button id="installationSchedulePrevBtn" class="icon-btn" type="button" aria-label="الشهر السابق" data-petatoe-i18n-aria="appointments.common.previousMonth"><span class="legacy-icon-glyph" aria-hidden="true">‹</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/></svg></span></button>
+          <div><span data-petatoe-i18n="appointments.schedule.displayedMonth">الشهر المعروض</span><strong id="installationScheduleMonthLabel">—</strong></div>
+          <button id="installationScheduleTodayBtn" class="secondary-btn" type="button" data-petatoe-i18n="appointments.common.today">اليوم</button>
+          <button id="installationScheduleNextBtn" class="icon-btn" type="button" aria-label="الشهر التالي" data-petatoe-i18n-aria="appointments.common.nextMonth"><span class="legacy-icon-glyph" aria-hidden="true">›</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg></span></button>
+          <label><span data-petatoe-i18n="appointments.common.groomer">الجرومر</span><select id="installationScheduleTechnicianFilter"><option value="" data-petatoe-i18n="appointments.common.allGroomers">كل الجرومر</option></select></label>
+          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationScheduleStatusFilter"><option value="" data-petatoe-i18n="appointments.common.allStatuses">كل الحالات</option><option>بانتظار المراجعة</option><option>جديد</option><option>مجدول</option><option>مسند</option><option>في الطريق</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option><option>ملغي</option></select></label>
         </div>
         <div class="installation-schedule-kpis">
-          <article class="panel"><span>طلبات الشهر</span><strong id="installationScheduleKpiMonth">0</strong></article>
-          <article class="panel"><span>غير مسندة</span><strong id="installationScheduleKpiUnassigned">0</strong></article>
-          <article class="panel"><span>الجرومر المتاحون</span><strong id="installationScheduleKpiAvailable">0</strong></article>
-          <article class="panel"><span>أعلى حمل يومي</span><strong id="installationScheduleKpiPeak">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.schedule.kpiMonth">طلبات الشهر</span><strong id="installationScheduleKpiMonth">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.schedule.kpiUnassigned">غير مسندة</span><strong id="installationScheduleKpiUnassigned">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.schedule.kpiAvailable">الجرومر المتاحون</span><strong id="installationScheduleKpiAvailable">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.schedule.kpiPeak">أعلى حمل يومي</span><strong id="installationScheduleKpiPeak">0</strong></article>
         </div>
         <div id="installationScheduleStatus" class="data-status hidden" aria-live="polite"></div>
         <div class="panel installation-calendar-shell">
-          <div class="installation-calendar-weekdays"><span>الأحد</span><span>الاثنين</span><span>الثلاثاء</span><span>الأربعاء</span><span>الخميس</span><span>الجمعة</span><span>السبت</span></div>
-          <div id="installationCalendarGrid" class="installation-calendar-grid" aria-label="تقويم المواعيد"></div>
+          <div class="installation-calendar-weekdays"><span data-petatoe-i18n="appointments.weekday.sun">الأحد</span><span data-petatoe-i18n="appointments.weekday.mon">الاثنين</span><span data-petatoe-i18n="appointments.weekday.tue">الثلاثاء</span><span data-petatoe-i18n="appointments.weekday.wed">الأربعاء</span><span data-petatoe-i18n="appointments.weekday.thu">الخميس</span><span data-petatoe-i18n="appointments.weekday.fri">الجمعة</span><span data-petatoe-i18n="appointments.weekday.sat">السبت</span></div>
+          <div id="installationCalendarGrid" class="installation-calendar-grid" aria-label="تقويم المواعيد" data-petatoe-i18n-aria="appointments.schedule.calendarAria"></div>
         </div>
         <div class="panel installation-unscheduled-panel">
-          <div class="panel-heading"><div><h4>طلبات تحتاج جدولة أو إسناد</h4><p>الطلبات الجديدة أو غير المرتبطة بفرقة تشغيل.</p></div></div>
-          <div class="table-wrap"><table class="data-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الخدمات</th><th>إجمالي الخدمات</th><th>الموقع</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody id="installationUnscheduledBody"><tr><td colspan="7" class="empty-cell">جاري التحميل...</td></tr></tbody></table></div>
+          <div class="panel-heading"><div><h4 data-petatoe-i18n="appointments.schedule.unscheduledTitle">طلبات تحتاج جدولة أو إسناد</h4><p data-petatoe-i18n="appointments.schedule.unscheduledNote">الطلبات الجديدة أو غير المرتبطة بفرقة تشغيل.</p></div></div>
+          <div class="table-wrap"><table class="data-table"><thead><tr><th data-petatoe-i18n="appointments.col.number">رقم الطلب</th><th data-petatoe-i18n="appointments.col.customer">العميل</th><th data-petatoe-i18n="appointments.col.services">الخدمات</th><th data-petatoe-i18n="appointments.col.servicesTotal">إجمالي الخدمات</th><th data-petatoe-i18n="appointments.col.location">الموقع</th><th data-petatoe-i18n="appointments.col.status">الحالة</th><th data-petatoe-i18n="appointments.col.action">الإجراء</th></tr></thead><tbody id="installationUnscheduledBody"><tr><td colspan="7" class="empty-cell" data-petatoe-i18n="appointments.common.loading">جاري التحميل...</td></tr></tbody></table></div>
         </div>
       </section>
 
@@ -1313,25 +1313,25 @@
 
       <section id="installationCompletionView" class="view-section hidden installation-completion-view" aria-hidden="true">
         <div class="actions-row installation-completion-header">
-          <div><h2>تأكيد انتهاء المواعيد</h2><p>مراجعة واعتماد انتهاء الموعد وتحويل الطلب إلى فاتورة.</p></div>
-          <button id="refreshInstallationCompletionBtn" class="secondary-btn" type="button">تحديث</button>
+          <div><h2 data-petatoe-i18n="appointments.completion.title">تأكيد انتهاء المواعيد</h2><p data-petatoe-i18n="appointments.completion.note">مراجعة واعتماد انتهاء الموعد وتحويل الطلب إلى فاتورة.</p></div>
+          <button id="refreshInstallationCompletionBtn" class="secondary-btn" type="button" data-petatoe-i18n="appointments.common.refresh">تحديث</button>
         </div>
         <div class="panel installation-completion-filters">
-          <label>بحث<input id="installationCompletionSearch" type="search" placeholder="رقم الطلب، اسم العميل، رقم العميل أو اسم الفني"></label>
-          <label>حالة التحويل<select id="installationCompletionReportFilter"><option value="" selected>بانتظار التحويل إلى فاتورة</option></select></label>
-          <label>المندوب<select id="installationCompletionRepresentativeFilter"><option value="">كل المندوبين المسموحين</option></select></label>
-          <label>من تاريخ<input id="installationCompletionDateFrom" type="date"></label>
-          <label>إلى تاريخ<input id="installationCompletionDateTo" type="date"></label>
-          <button id="resetInstallationCompletionFilters" class="secondary-btn" type="button">إعادة ضبط</button>
+          <label><span data-petatoe-i18n="appointments.common.search">بحث</span><input id="installationCompletionSearch" type="search" placeholder="رقم الطلب، اسم العميل، رقم العميل أو اسم الفني" data-petatoe-i18n-placeholder="appointments.completion.searchPlaceholder"></label>
+          <label><span data-petatoe-i18n="appointments.completion.transferStatus">حالة التحويل</span><select id="installationCompletionReportFilter"><option value="" selected data-petatoe-i18n="appointments.completion.pendingInvoice">بانتظار التحويل إلى فاتورة</option></select></label>
+          <label><span data-petatoe-i18n="appointments.common.representative">المندوب</span><select id="installationCompletionRepresentativeFilter"><option value="" data-petatoe-i18n="appointments.completion.allAllowedReps">كل المندوبين المسموحين</option></select></label>
+          <label><span data-petatoe-i18n="appointments.common.fromDate">من تاريخ</span><input id="installationCompletionDateFrom" type="date"></label>
+          <label><span data-petatoe-i18n="appointments.common.toDate">إلى تاريخ</span><input id="installationCompletionDateTo" type="date"></label>
+          <button id="resetInstallationCompletionFilters" class="secondary-btn" type="button" data-petatoe-i18n="appointments.common.reset">إعادة ضبط</button>
         </div>
         <div class="installation-completion-kpis">
-          <article class="panel"><span>مواعيد مكتملة</span><strong id="installationCompletionKpiCompleted">0</strong></article>
-          <article class="panel"><span>بيانات موثقة</span><strong id="installationCompletionKpiReports">0</strong></article>
-          <article class="panel"><span>بانتظار التحويل</span><strong id="installationCompletionKpiPending">0</strong></article>
-          <article class="panel"><span>صور مرفوعة</span><strong id="installationCompletionKpiPhotos">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.completion.kpiCompleted">مواعيد مكتملة</span><strong id="installationCompletionKpiCompleted">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.completion.kpiDocumented">بيانات موثقة</span><strong id="installationCompletionKpiReports">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.completion.kpiPending">بانتظار التحويل</span><strong id="installationCompletionKpiPending">0</strong></article>
+          <article class="panel"><span data-petatoe-i18n="appointments.completion.kpiPhotos">صور مرفوعة</span><strong id="installationCompletionKpiPhotos">0</strong></article>
         </div>
         <div id="installationCompletionStatus" class="data-status hidden" aria-live="polite"></div>
-        <div class="panel installation-completion-table-panel"><div class="table-scroll"><table class="installation-completion-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>رقم العميل</th><th>المندوب</th><th>الفني</th><th>الفرقة</th><th>تاريخ الإكمال</th><th>حالة التحويل</th><th>الإجراءات</th></tr></thead><tbody id="installationCompletionTableBody"></tbody></table></div></div>
+        <div class="panel installation-completion-table-panel"><div class="table-scroll"><table class="installation-completion-table"><thead><tr><th data-petatoe-i18n="appointments.col.number">رقم الطلب</th><th data-petatoe-i18n="appointments.col.customer">العميل</th><th data-petatoe-i18n="appointments.col.customerNumber">رقم العميل</th><th data-petatoe-i18n="appointments.common.representative">المندوب</th><th data-petatoe-i18n="appointments.common.technician">الفني</th><th data-petatoe-i18n="appointments.col.team">الفرقة</th><th data-petatoe-i18n="appointments.completion.completedAt">تاريخ الإكمال</th><th data-petatoe-i18n="appointments.completion.transferStatus">حالة التحويل</th><th data-petatoe-i18n="appointments.col.actions">الإجراءات</th></tr></thead><tbody id="installationCompletionTableBody"></tbody></table></div></div>
       </section>
 
 
@@ -1367,7 +1367,7 @@
           <label>المندوب<select id="installationReportsRepresentativeFilter"><option value="" data-petatoe-i18n="dashboard.filter.allReps">كل المندوبين</option></select></label>
           <label>الفرقة<select id="installationReportsTeamFilter"><option value="">كل الفرق</option></select></label>
           <label>الفني<select id="installationReportsTechnicianFilter"><option value="">كل الفنيين</option></select></label>
-          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationReportsStatusFilter"><option value="">كل الحالات</option><option>جديد</option><option>مسند</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option></select></label>
+          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationReportsStatusFilter"><option value="" data-petatoe-i18n="appointments.common.allStatuses">كل الحالات</option><option>جديد</option><option>مسند</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option></select></label>
           <button id="resetInstallationReportsFilters" class="secondary-btn" type="button">إعادة ضبط</button>
         </div>
         <div class="installation-report-kpis installation-financial-kpis">
@@ -3123,10 +3123,10 @@
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.55.23"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.55.23"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.55.23"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.55.23"></script>
+  <script src="assets/js/performance-monitor.js?v=18.55.24"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.55.24"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.55.24"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.55.24"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -3560,65 +3560,65 @@
         </form>
       </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.55.23"></script>
-  <script src="assets/js/offline-session-store.js?v=18.55.23"></script>
-  <script src="assets/js/supabase-client.js?v=18.55.23"></script>
-  <script src="assets/js/geographic-address.js?v=18.55.23"></script>
-  <script src="assets/js/permissions.js?v=18.55.23"></script>
-  <script src="assets/js/permission-engine.js?v=18.55.23"></script>
-  <script src="assets/js/localization-center-service.js?v=18.55.23"></script>
-  <script src="assets/js/localization-center.js?v=18.55.23"></script>
-  <script src="assets/js/translation-center.js?v=18.55.23"></script>
-  <script src="assets/js/data-access-scope.js?v=18.55.23"></script>
-  <script src="assets/js/smart-cache.js?v=18.55.23"></script>
-  <script src="assets/js/sync-engine.js?v=18.55.23"></script>
-  <script src="assets/js/offline-queue.js?v=18.55.23"></script>
-  <script src="assets/js/permissions-service.js?v=18.55.23"></script>
-  <script src="assets/js/auth-session.js?v=18.55.23"></script>
-  <script src="assets/js/reference-data-service.js?v=18.55.23"></script>
-  <script src="assets/js/customers-service.js?v=18.55.23"></script>
-  <script src="assets/js/followups-service.js?v=18.55.23"></script>
-  <script src="assets/js/quotations-service.js?v=18.55.23"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.55.23"></script>
-  <script src="assets/js/users-service.js?v=18.55.23"></script>
-  <script src="assets/js/activity-service.js?v=18.55.23"></script>
-  <script src="assets/js/backup-service.js?v=18.55.23"></script>
-  <script src="assets/js/system-settings-service.js?v=18.55.23"></script>
-  <script src="assets/js/system-health-service.js?v=18.55.23"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.55.23"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.55.23"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.55.23"></script>
-  <script src="assets/js/installations-service.js?v=18.55.23"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.55.23"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.55.23"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.55.23"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.55.23"></script>
+  <script src="assets/js/supabase-config.js?v=18.55.24"></script>
+  <script src="assets/js/offline-session-store.js?v=18.55.24"></script>
+  <script src="assets/js/supabase-client.js?v=18.55.24"></script>
+  <script src="assets/js/geographic-address.js?v=18.55.24"></script>
+  <script src="assets/js/permissions.js?v=18.55.24"></script>
+  <script src="assets/js/permission-engine.js?v=18.55.24"></script>
+  <script src="assets/js/localization-center-service.js?v=18.55.24"></script>
+  <script src="assets/js/localization-center.js?v=18.55.24"></script>
+  <script src="assets/js/translation-center.js?v=18.55.24"></script>
+  <script src="assets/js/data-access-scope.js?v=18.55.24"></script>
+  <script src="assets/js/smart-cache.js?v=18.55.24"></script>
+  <script src="assets/js/sync-engine.js?v=18.55.24"></script>
+  <script src="assets/js/offline-queue.js?v=18.55.24"></script>
+  <script src="assets/js/permissions-service.js?v=18.55.24"></script>
+  <script src="assets/js/auth-session.js?v=18.55.24"></script>
+  <script src="assets/js/reference-data-service.js?v=18.55.24"></script>
+  <script src="assets/js/customers-service.js?v=18.55.24"></script>
+  <script src="assets/js/followups-service.js?v=18.55.24"></script>
+  <script src="assets/js/quotations-service.js?v=18.55.24"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.55.24"></script>
+  <script src="assets/js/users-service.js?v=18.55.24"></script>
+  <script src="assets/js/activity-service.js?v=18.55.24"></script>
+  <script src="assets/js/backup-service.js?v=18.55.24"></script>
+  <script src="assets/js/system-settings-service.js?v=18.55.24"></script>
+  <script src="assets/js/system-health-service.js?v=18.55.24"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.55.24"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.55.24"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.55.24"></script>
+  <script src="assets/js/installations-service.js?v=18.55.24"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.55.24"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.55.24"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.55.24"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.55.24"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.55.23"></script>
-  <script src="assets/js/export-center.js?v=18.55.23"></script>
-  <script src="assets/js/customer360-engine.js?v=18.55.23"></script>
-  <script src="assets/js/customer360-export.js?v=18.55.23"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.55.23"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.55.23"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.55.23"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.55.23"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.55.23"></script>
-  <script src="assets/js/notification-center-service.js?v=18.55.23"></script>
-  <script src="assets/js/app.js?v=18.55.23"></script>
-  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.55.23"></script>
-  <script src="assets/js/notification-center.js?v=18.55.23"></script>
-  <script src="assets/js/sales-invoices.js?v=18.55.23"></script>
-  <script src="assets/js/installations-module.js?v=18.55.23"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.55.23"></script>
-  <script src="assets/js/installation-execution.js?v=18.55.23"></script>
-  <script src="assets/js/installation-completion.js?v=18.55.23"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.55.23"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.55.23"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.55.23"></script>
-  <script src="assets/js/mobile.js?v=18.55.23"></script>
-  <script src="assets/js/pwa.js?v=18.55.23"></script>
-  <script src="assets/js/native.js?v=18.55.23"></script>
+  <script src="assets/js/reports-engine.js?v=18.55.24"></script>
+  <script src="assets/js/export-center.js?v=18.55.24"></script>
+  <script src="assets/js/customer360-engine.js?v=18.55.24"></script>
+  <script src="assets/js/customer360-export.js?v=18.55.24"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.55.24"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.55.24"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.55.24"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.55.24"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.55.24"></script>
+  <script src="assets/js/notification-center-service.js?v=18.55.24"></script>
+  <script src="assets/js/app.js?v=18.55.24"></script>
+  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.55.24"></script>
+  <script src="assets/js/notification-center.js?v=18.55.24"></script>
+  <script src="assets/js/sales-invoices.js?v=18.55.24"></script>
+  <script src="assets/js/installations-module.js?v=18.55.24"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.55.24"></script>
+  <script src="assets/js/installation-execution.js?v=18.55.24"></script>
+  <script src="assets/js/installation-completion.js?v=18.55.24"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.55.24"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.55.24"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.55.24"></script>
+  <script src="assets/js/mobile.js?v=18.55.24"></script>
+  <script src="assets/js/pwa.js?v=18.55.24"></script>
+  <script src="assets/js/native.js?v=18.55.24"></script>
 </body>
 </html>

@@ -1510,7 +1510,7 @@ function dashboardFilterState() {
 }
 
 function dashboardDateLocale() {
-  return window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "en-US-u-nu-latn" : "ar-SA-u-nu-latn";
+  return window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "en-US-u-ca-gregory-nu-latn" : "ar-SA-u-ca-gregory-nu-latn";
 }
 
 function dashboardIsoToDate(value) {
@@ -1598,7 +1598,7 @@ function drawDashboardCalendar() {
     const date = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate()+i);
     const iso = dashboardDateToIso(date);
     const outside = date.getMonth() !== month.getMonth();
-    return `<button type="button" class="dashboard-date-day${outside?' is-outside':''}${iso===selectedIso?' is-selected':''}${iso===todayIso?' is-today':''}" data-dashboard-pick-date="${iso}">${new Intl.NumberFormat(locale,{useGrouping:false}).format(date.getDate())}</button>`;
+    return `<button type="button" class="dashboard-date-day${outside?' is-outside':''}${iso===selectedIso?' is-selected':''}${iso===todayIso?' is-today':''}" data-dashboard-pick-date="${iso}">${new Intl.NumberFormat('en-US-u-nu-latn',{useGrouping:false}).format(date.getDate())}</button>`;
   }).join("");
   popover.innerHTML = `<div class="dashboard-date-popover-head"><button type="button" class="dashboard-date-nav" data-dashboard-calendar-prev aria-label="${escapeHtml(customerT('dashboard.calendar.previousMonth','الشهر السابق'))}"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><div class="dashboard-date-popover-title">${escapeHtml(monthTitle)}</div><button type="button" class="dashboard-date-nav" data-dashboard-calendar-next aria-label="${escapeHtml(customerT('dashboard.calendar.nextMonth','الشهر التالي'))}"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button></div><div class="dashboard-date-weekdays">${weekdays.map(day=>`<span>${escapeHtml(day)}</span>`).join('')}</div><div class="dashboard-date-days">${days}</div><div class="dashboard-date-popover-actions"><button type="button" data-dashboard-calendar-today>${escapeHtml(customerT('dashboard.calendar.today','اليوم'))}</button><button type="button" data-dashboard-calendar-clear>${escapeHtml(customerT('dashboard.calendar.clear','مسح'))}</button></div>`;
   positionDashboardCalendar();

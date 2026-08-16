@@ -6,6 +6,10 @@
   const money = value => `SAR ${Number(value || 0).toFixed(2)}`;
   const appointmentT = (key, fallback, vars = {}) => window.PetatoeLocalization?.t?.(key, vars) || fallback;
   const appointmentEntity = (kind, id, fallback = "") => window.PetatoeLocalization?.entityText?.(kind, id, fallback) || fallback;
+  const appointmentStatusLabel = value => {
+    const map={"جديد":"appointments.status.new","مسند":"appointments.status.assigned","مجدول":"appointments.status.scheduled","في الطريق":"appointments.status.onRoute","وصل إلى العميل":"appointments.status.arrived","قيد التنفيذ":"appointments.status.inProgress","مكتمل":"appointments.status.completed","ملغي":"appointments.status.cancelled","بانتظار المراجعة":"appointments.status.pendingReview"};
+    return map[value]?appointmentT(map[value],value):String(value||"");
+  };
   const latinDigits = value => String(value ?? "")
     .replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
     .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)));
@@ -524,36 +528,36 @@
 
     $("installationRequestsBody").innerHTML = data.length ? data.map(row => {
       const serviceSummary = row.services.length
-        ? row.services.map(service => `<div class="installation-service-detail"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><small>${service.quantity} × ${money(vatAmount(service.unitPrice))} = ${money(vatServiceLine(service))}</small></div>`).join("")
+        ? row.services.map(service => `<div class="installation-service-detail"><strong>${esc(appointmentEntity('service',service.serviceTypeId||service.service_type_id||service.id,service.serviceName||service.name||appointmentT('appointments.common.service','خدمة')))}</strong><small>${service.quantity} × ${money(vatAmount(service.unitPrice))} = ${money(vatServiceLine(service))}</small></div>`).join("")
         : "—";
       return `<tr>
         <td>${esc(row.requestNumber)}</td>
         <td><strong>${esc(row.customerName)}</strong><br><small>${esc(row.customerPhone)}</small></td>
-        <td>${esc(row.quotationNumber || "بدون عقد")}</td>
+        <td>${esc(row.quotationNumber || appointmentT('appointments.common.noContract','بدون عقد'))}</td>
         <td>${serviceSummary}</td>
         <td>${money(row.finalAmount || row.totalServicesAmount)}</td>
         <td>${esc(row.installationAddress || row.district || "—")}</td>
-        <td>${esc(row.scheduledDate || "غير محدد")}</td>
+        <td>${esc(row.scheduledDate || appointmentT('appointments.common.notSpecified','غير محدد'))}</td>
         <td>${esc(row.scheduledTime ? formatAppointmentTime(row.scheduledTime) : (row.timeSlot || "—"))}</td>
-        <td><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(row.status)}</span></td>
+        <td><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(appointmentStatusLabel(row.status))}</span></td>
         <td>${esc(row.teamName || "—")}</td>
-        <td><div class="installation-row-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">عرض</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">تعديل الخدمات</button><button class="danger-btn" data-install-delete="${row.id}" type="button">حذف</button></div></td>
+        <td><div class="installation-row-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">${esc(appointmentT("appointments.common.view","عرض"))}</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">${esc(appointmentT("appointments.common.editServices","تعديل الخدمات"))}</button><button class="danger-btn" data-install-delete="${row.id}" type="button">${esc(appointmentT("appointments.common.delete","حذف"))}</button></div></td>
       </tr>`;
-    }).join("") : '<tr><td colspan="11" class="empty-cell">لا توجد مواعيد مطابقة.</td></tr>';
+    }).join("") : `<tr><td colspan="11" class="empty-cell">${esc(appointmentT('appointments.requests.empty','لا توجد مواعيد مطابقة.'))}</td></tr>`;
 
     const mobileCards = $("installationRequestsMobileCards");
     if (mobileCards) {
       mobileCards.innerHTML = data.length ? data.map(row => {
-        const services = (row.services || []).map(service => `<div class="installation-mobile-service"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><small>${Number(service.quantity||0)} × ${money(vatAmount(service.unitPrice))}</small><b>${money(vatServiceLine(service))}</b></div>`).join("") || '<div class="installation-mobile-empty">لا توجد خدمات</div>';
-        const when = [row.scheduledDate || 'غير محدد', row.scheduledTime ? formatAppointmentTime(row.scheduledTime) : (row.timeSlot || '')].filter(Boolean).join(' — ');
+        const services = (row.services || []).map(service => `<div class="installation-mobile-service"><strong>${esc(appointmentEntity('service',service.serviceTypeId||service.service_type_id||service.id,service.serviceName||service.name||appointmentT('appointments.common.service','خدمة')))}</strong><small>${Number(service.quantity||0)} × ${money(vatAmount(service.unitPrice))}</small><b>${money(vatServiceLine(service))}</b></div>`).join("") || `<div class="installation-mobile-empty">${esc(appointmentT('appointments.common.noServices','لا توجد خدمات'))}</div>`;
+        const when = [row.scheduledDate || appointmentT('appointments.common.notSpecified','غير محدد'), row.scheduledTime ? formatAppointmentTime(row.scheduledTime) : (row.timeSlot || '')].filter(Boolean).join(' — ');
         return `<article class="installation-request-mobile-card" data-install-mobile-card="${esc(row.id)}">
-          <div class="installation-request-mobile-head"><div><small>رقم الموعد</small><strong>${esc(row.requestNumber)}</strong></div><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(row.status)}</span></div>
+          <div class="installation-request-mobile-head"><div><small>${esc(appointmentT('appointments.requests.appointmentNumber','رقم الموعد'))}</small><strong>${esc(row.requestNumber)}</strong></div><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(appointmentStatusLabel(row.status))}</span></div>
           <div class="installation-request-mobile-customer"><strong>${esc(row.customerName||'—')}</strong><a href="tel:${esc(String(row.customerPhone||'').replace(/[^+\d]/g,''))}">${esc(row.customerPhone||'—')}</a><small>${esc(row.installationAddress||row.district||'—')}</small></div>
-          <div class="installation-request-mobile-meta"><div><span>العقد</span><strong>${esc(row.quotationNumber||'بدون عقد')}</strong></div><div><span>الموعد</span><strong>${esc(when)}</strong></div><div><span>الفرقة</span><strong>${esc(row.teamName||'—')}</strong></div><div><span>الإجمالي شامل الضريبة</span><strong>${money(row.finalAmount||row.totalServicesAmount)}</strong></div></div>
-          <div class="installation-request-mobile-services"><span>الخدمات</span>${services}</div>
-          <div class="installation-request-mobile-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">عرض</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">تعديل الخدمات</button><button class="danger-btn" data-install-delete="${row.id}" type="button">حذف</button></div>
+          <div class="installation-request-mobile-meta"><div><span>${esc(appointmentT('appointments.requests.contract','العقد'))}</span><strong>${esc(row.quotationNumber||'بدون عقد')}</strong></div><div><span>${esc(appointmentT('appointments.requests.appointment','الموعد'))}</span><strong>${esc(when)}</strong></div><div><span>${esc(appointmentT('appointments.common.team','الفرقة'))}</span><strong>${esc(row.teamName||'—')}</strong></div><div><span>${esc(appointmentT('appointments.requests.totalVat','الإجمالي شامل الضريبة'))}</span><strong>${money(row.finalAmount||row.totalServicesAmount)}</strong></div></div>
+          <div class="installation-request-mobile-services"><span>${esc(appointmentT('appointmentNew.services.title','الخدمات'))}</span>${services}</div>
+          <div class="installation-request-mobile-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">${esc(appointmentT("appointments.common.view","عرض"))}</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">${esc(appointmentT("appointments.common.editServices","تعديل الخدمات"))}</button><button class="danger-btn" data-install-delete="${row.id}" type="button">${esc(appointmentT("appointments.common.delete","حذف"))}</button></div>
         </article>`;
-      }).join('') : '<div class="installation-mobile-empty-state">لا توجد مواعيد مطابقة.</div>';
+      }).join('') : `<div class="installation-mobile-empty-state">${esc(appointmentT('appointments.requests.empty','لا توجد مواعيد مطابقة.'))}</div>`;
     }
   }
 
@@ -575,7 +579,7 @@
   }
 
   async function load() {
-    status($("installationRequestsStatus"), "جاري تحميل المواعيد...");
+    status($("installationRequestsStatus"), appointmentT('appointments.requests.loading','جاري تحميل المواعيد...'));
     try {
       [rows, opts] = await Promise.all([window.InstallationsServiceSafe.list(), window.InstallationsServiceSafe.options()]);
       customerOptions("installationCustomerId");
@@ -583,8 +587,8 @@
       const teamFilter = $("installationRequestRepresentativeFilter");
       if (teamFilter) {
         const current = teamFilter.value;
-        const teams = [...new Map(rows.filter(row => row.teamId).map(row => [row.teamId, row.teamName || "فرقة بدون اسم"])).entries()];
-        teamFilter.innerHTML = '<option value="">كل الفرق</option>' + teams.map(([id,name]) => `<option value="${esc(id)}">${esc(name)}</option>`).join('');
+        const teams = [...new Map(rows.filter(row => row.teamId).map(row => [row.teamId, row.teamName || appointmentT('appointments.common.team','الفرقة')])).entries()];
+        teamFilter.innerHTML = `<option value="">${esc(appointmentT('appointments.common.allTeams','كل الفرق'))}</option>` + teams.map(([id,name]) => `<option value="${esc(id)}">${esc(name)}</option>`).join('');
         teamFilter.value = teams.some(([id]) => id === current) ? current : "";
       }
       render();
@@ -745,7 +749,7 @@
   function renderRequestView(row){
     if(!row)return;
     $("installationRequestViewLabel").textContent=`${row.requestNumber} — ${row.customerName}`;
-    const services=(row.services||[]).map(service=>`<div class="installation-view-service-row"><strong>${esc(service.serviceName||service.name||'خدمة')}</strong><span>${Number(service.quantity||0)} × ${money(vatAmount(service.unitPrice))}</span><span>${money(vatServiceLine(service))}</span></div>`).join('')||'<p>لا توجد خدمات.</p>';
+    const services=(row.services||[]).map(service=>`<div class="installation-view-service-row"><strong>${esc(appointmentEntity('service',service.serviceTypeId||service.service_type_id||service.id,service.serviceName||service.name||appointmentT('appointments.common.service','خدمة')))}</strong><span>${Number(service.quantity||0)} × ${money(vatAmount(service.unitPrice))}</span><span>${money(vatServiceLine(service))}</span></div>`).join('')||'<p>لا توجد خدمات.</p>';
     const animals=(row.animals||[]).map(animal=>`<div class="installation-view-service-row"><strong>${esc(animal.petName||'حيوان')}</strong><span>${esc([animal.petType,animal.breed,animal.petSize].filter(Boolean).join(' — ')||'—')}</span><span>العدد: ${Number(animal.quantity||1)}</span></div>`).join('')||'<p>لا توجد بيانات حيوان مسجلة.</p>';
     const collection=row.collection||{};
     $("installationRequestViewContent").innerHTML=`<div class="installation-request-view-grid">

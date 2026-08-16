@@ -1,13 +1,13 @@
 {
-  "version": "18.55.23",
-  "build": 185523,
+  "version": "18.55.24",
+  "build": 185524,
   "forceUpdate": true,
   "releaseDate": "2026-08-17",
-  "title": "PETATOE Localization Runtime Catalog Recovery",
+  "title": "PETATOE Appointment Management Localization Rollout",
   "notes": [
-    "إصلاح خطأ بنيوي في قاموس الترجمة كان يمنع تهيئة PetatoeLocalization بالكامل بعد P5.13.7.",
-    "استعادة زر تغيير اللغة في الهيدر واستعادة تحميل وعرض مركز الترجمه من القاموس المحلي والمركزي.",
-    "الحفاظ على Local-First Translation Center من P5.13.7.1 بدون تراجع أو إعادة بناء لنظام الترجمة."
+    "توسيع مركز الترجمه إلى شاشات إدارة المواعيد الأساسية مع الحفاظ على التنفيذ وإضافة الموعد المترجمين سابقًا.",
+    "إصلاح تشوه تقويم لوحة التحكم عبر تثبيت شبكة الأيام والأبعاد ومنع التفاف الأرقام.",
+    "إعادة رسم الجدولة وتأكيد الإكمال عند تغيير اللغة مع دعم RTL/LTR وLatin digits."
   ],
-  "cacheToken": "petatoe-pwa-18-55-23-localization-runtime-recovery"
+  "cacheToken": "petatoe-pwa-18-55-24-appointment-management-localization"
 }
