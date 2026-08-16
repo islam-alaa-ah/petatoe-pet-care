@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-11-shared-localization-lockdown";
+const CACHE_VERSION = "petatoe-pwa-18-55-12-mobile-localization";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
