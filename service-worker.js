@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-07-neighborhood-translation-schema-hotfix";
+const CACHE_VERSION = "petatoe-pwa-18-55-08-authoritative-neighborhood-service-coverage";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

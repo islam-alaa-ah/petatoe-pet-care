@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const CURRENT_VERSION = "18.54.69";
+  const CURRENT_VERSION = "18.55.08";
   const VERSION_ENDPOINT = "./version.json";
   const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
   const isNative = Boolean(window.Capacitor?.isNativePlatform?.());
@@ -171,7 +171,6 @@
 
   async function checkForUpdate({ silent = true, showDialog = true } = {}) {
     if (isNative || location.protocol === "file:") return null;
-    if (updateState.checking) return updateState.latestRelease;
     updateState.checking = true;
     updateState.lastError = null;
     emitUpdateState();
@@ -189,16 +188,12 @@
       if (updateState.latestRelease && showDialog) {
         const expectedRelease = readExpectedRelease();
         if (expectedRelease && compareVersions(expectedRelease, updateState.latestRelease.version) >= 0) {
-          // A previous update attempt already reloaded the app, but this runtime is
-          // still older than the published release. Never auto-reload here: doing
-          // so creates a boot loop while CDN/GitHub Pages assets are still propagating
-          // or an older document remains in memory. Clear the one-shot marker and
-          // fall back to the explicit update dialog instead.
-          try {
-            localStorage.removeItem("kyumExpectedRelease");
-            localStorage.removeItem("kyumUpdateRequestedAt");
-            localStorage.setItem("kyumStaleRuntimeDetectedAt", new Date().toISOString());
-          } catch (_) {}
+          // The user already requested this exact release. Do not reopen the modal
+          // forever; complete the stale-runtime recovery automatically.
+          await withTimeout(clearApplicationCaches(), 5000).catch(() => undefined);
+          await withTimeout(unregisterServiceWorkers(), 5000).catch(() => undefined);
+          window.setTimeout(() => reloadWithCacheBuster(expectedRelease), 100);
+          return updateState.latestRelease;
         }
         showUpdateDialog(updateState.latestRelease);
       }

@@ -1,13 +1,13 @@
 {
-  "version": "18.55.07",
-  "build": 185507,
+  "version": "18.55.08",
+  "build": 185508,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Neighborhood Translation Schema Hotfix",
+  "title": "PETATOE Authoritative Neighborhood & Service Translation Coverage",
   "notes": [
-    "إزالة الاعتماد الخاطئ على installation_neighborhoods.name_en من مرحلة الترجمة التجريبية.",
-    "اعتماد app_translations كمصدر الترجمة الإنجليزية الوحيد للأحياء مع إظهار الأحياء غير المترجمة كترجمات ناقصة داخل مركز الترجمه.",
-    "تصحيح استعلامات Runtime ومركز الترجمه لتعمل مع Schema الإنتاج الفعلي الذي يحتوي id وname فقط للأحياء."
+    "ربط أحياء مكة المكرمة وجدة بترجمات العنوان الوطني المعتمدة داخل مركز الترجمه دون إنشاء مصدر ترجمة موازٍ.",
+    "توسيع تغطية خدمات إعدادات المواعيد وإزالة fallback من نوع Service 100022 من واجهة التنفيذ.",
+    "إظهار أي خدمة أو حي غير مكتمل الترجمة كحالة Translation pending بدل تسريب العربية أو المفاتيح التقنية داخل النسخة الإنجليزية."
   ],
-  "cacheToken": "petatoe-pwa-18-55-07-neighborhood-translation-schema-hotfix"
+  "cacheToken": "petatoe-pwa-18-55-08-authoritative-neighborhood-service-coverage"
 }
