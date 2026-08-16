@@ -8,7 +8,31 @@
   function renderStats(){const total=rows.length,complete=rows.filter(r=>r.complete).length,custom=rows.filter(r=>r.customized).length;const totalEl=$('translationCenterTotal'),completeEl=$('translationCenterComplete'),customEl=$('translationCenterCustom');if(totalEl)totalEl.textContent=String(total);if(completeEl)completeEl.textContent=String(complete);if(customEl)customEl.textContent=String(custom)}
   function render(){const body=$('translationCenterRows');if(!body)return;const list=filtered();body.innerHTML=list.length?list.map(r=>`<tr data-translation-key="${esc(r.key)}"><td><strong>${esc(r.key)}</strong><small>${esc(r.type)}</small></td><td><textarea data-translation-ar rows="2" spellcheck="false">${esc(r.ar)}</textarea></td><td><textarea data-translation-en rows="2" spellcheck="false" dir="ltr">${esc(r.en)}</textarea></td><td><span class="translation-status ${r.complete?'is-complete':'is-missing'}">${r.complete?'مكتملة':'ناقصة'}</span>${r.customized?'<small class="translation-custom-badge">معدّلة</small>':''}</td></tr>`).join(''):'<tr><td colspan="4" class="empty-cell">لا توجد نتائج مطابقة.</td></tr>';renderStats()}
   function collect(){return[...document.querySelectorAll('#translationCenterRows tr[data-translation-key]')].map(tr=>({key:tr.dataset.translationKey,ar:tr.querySelector('[data-translation-ar]')?.value||'',en:tr.querySelector('[data-translation-en]')?.value||''}))}
-  async function load(force=false){if(!window.PetatoeLocalization)return;setStatus('جاري تحميل مركز الترجمه...');try{const catalog=await window.LocalizationCenterService?.listEntityCatalog?.().catch(()=>({services:[],neighborhoods:[]}));window.PetatoeLocalization.registerEntityCatalog?.(catalog||{});rows=await window.PetatoeLocalization.loadRemote(true);render();syncLanguage();setStatus('')}catch(e){setStatus(e.message||'تعذر تحميل مركز الترجمه.','error')}}
+  async function load(force=false){
+    if(!window.PetatoeLocalization)return;
+    rows=window.PetatoeLocalization.getRows?.()||[];
+    render();
+    syncLanguage();
+    setStatus('تم عرض القاموس المحلي — جاري تحديث البيانات من الخادم...');
+    const failures=[];
+    const remoteTask=Promise.resolve(window.PetatoeLocalization.loadRemote?.(force===true)).then(updated=>{
+      rows=Array.isArray(updated)?updated:(window.PetatoeLocalization.getRows?.()||rows);
+      render();
+      syncLanguage();
+    }).catch(error=>{failures.push(error?.message||'تعذر تحديث الترجمات المركزية.');});
+    const entityTask=window.LocalizationCenterService?.listEntityCatalog?window.LocalizationCenterService.listEntityCatalog().then(catalog=>{
+      window.PetatoeLocalization.registerEntityCatalog?.(catalog||{});
+      rows=window.PetatoeLocalization.getRows?.()||rows;
+      render();
+      syncLanguage();
+    }).catch(error=>{failures.push(error?.message||'تعذر تحديث الخدمات والأحياء.');}):Promise.resolve();
+    await Promise.allSettled([remoteTask,entityTask]);
+    rows=window.PetatoeLocalization.getRows?.()||rows;
+    render();
+    syncLanguage();
+    if(failures.length)setStatus('تم عرض القاموس المحلي — تعذر تحديث بعض البيانات من الخادم.','error');
+    else setStatus('');
+  }
   async function save(){setStatus('جاري حفظ الترجمات...');try{rows=await window.PetatoeLocalization.saveRows(rows);render();setStatus('تم حفظ الترجمات بنجاح.','success');setTimeout(()=>setStatus(''),2200)}catch(e){setStatus(e.message||'تعذر حفظ الترجمات.','error')}}
   function syncLanguage(){const lang=window.PetatoeLocalization?.getLanguage?.()||'ar';document.querySelectorAll('[data-translation-language]').forEach(btn=>{const active=btn.dataset.translationLanguage===lang;btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active))})}
   function setLanguage(lang){window.PetatoeLocalization?.setLanguage?.(lang);syncLanguage();syncHeaderToggle();setStatus(lang==='en'?'تم تحويل شاشة تنفيذ المواعيد والقائمة الجانبية إلى الإنجليزية.':'تم تحويل شاشة تنفيذ المواعيد والقائمة الجانبية إلى العربية.','success');setTimeout(()=>setStatus(''),1800)}

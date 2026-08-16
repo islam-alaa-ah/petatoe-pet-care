@@ -1,13 +1,13 @@
 {
-  "version": "18.55.21",
-  "build": 185521,
+  "version": "18.55.22",
+  "build": 185522,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Add Appointment Localization & Dashboard Calendar Locale",
+  "title": "PETATOE Translation Center Local-First Recovery",
   "notes": [
-    "تطبيق ترجمة مركزية على شاشة إضافة موعد جديد وربط النصوص الثابتة والديناميكية بمركز الترجمه.",
-    "استبدال تقويم Dashboard الأصلي بمحدد تاريخ محلي يلتزم بلغة الواجهة ويستخدم أرقامًا لاتينية ويمنع تداخل أيقونة التاريخ مع النص.",
-    "الحفاظ على القيم التشغيلية العربية للخدمات والتحصيل والجدولة مع ترجمة طبقة العرض فقط."
+    "عرض القاموس المحلي فور فتح مركز الترجمه بدون انتظار Supabase أو كتالوج الخدمات والأحياء.",
+    "تحميل الترجمات المركزية والخدمات والأحياء في الخلفية مع بقاء المركز قابلًا للاستخدام عند تعذر الاتصال.",
+    "إزالة قائمة الشاشات الثابتة من تحميل مركز الترجمه وجلب جميع ترجمات app_translations النشطة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-21-add-appointment-dashboard-calendar"
+  "cacheToken": "petatoe-pwa-18-55-22-translation-center-local-first"
 }
