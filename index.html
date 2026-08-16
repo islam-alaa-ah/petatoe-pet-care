@@ -36,27 +36,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.55.18" />
-  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.55.18" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.55.19" />
+  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.55.19" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
@@ -491,16 +491,16 @@
       <section id="dashboardView" class="view-section">
         <div class="dashboard-filter-bar">
           <div>
-            <h3 class="section-title">لوحة التحليل والمتابعة</h3>
-            <p class="section-note">استخدم الفلاتر لتحديث جميع المؤشرات والتحليلات في نفس الوقت.</p>
+            <h3 class="section-title" data-petatoe-i18n="dashboard.header.title">لوحة التحليل والمتابعة</h3>
+            <p class="section-note" data-petatoe-i18n="dashboard.header.note">استخدم الفلاتر لتحديث جميع المؤشرات والتحليلات في نفس الوقت.</p>
           </div>
           <div class="dashboard-filters">
             <select id="dashboardRepFilter">
-              <option value="">كل المندوبين</option>
+              <option value="" data-petatoe-i18n="dashboard.filter.allReps">كل المندوبين</option>
             </select>
-            <input id="dashboardDateFrom" type="date" aria-label="من تاريخ">
-            <input id="dashboardDateTo" type="date" aria-label="إلى تاريخ">
-            <button id="resetDashboardFilters" class="secondary-btn">إعادة تعيين</button>
+            <input id="dashboardDateFrom" type="date" aria-label="من تاريخ" data-petatoe-i18n-aria="dashboard.filter.fromAria">
+            <input id="dashboardDateTo" type="date" aria-label="إلى تاريخ" data-petatoe-i18n-aria="dashboard.filter.toAria">
+            <button id="resetDashboardFilters" class="secondary-btn" data-petatoe-i18n="dashboard.filter.reset">إعادة تعيين</button>
           </div>
         </div>
 
@@ -511,10 +511,10 @@
           <article class="panel">
             <div class="panel-header">
               <div>
-                <h3>أداء المندوبين</h3>
-                <p>العملاء، المتابعات، العروض، ونسبة التحويل</p>
+                <h3 data-petatoe-i18n="dashboard.reps.title">أداء المندوبين</h3>
+                <p data-petatoe-i18n="dashboard.reps.note">العملاء، المتابعات، العروض، ونسبة التحويل</p>
               </div>
-              <button id="dashboardRepresentativeVisibilityBtn" class="secondary-btn dashboard-representative-settings-btn hidden" type="button">إعدادات ظهور المندوبين</button>
+              <button id="dashboardRepresentativeVisibilityBtn" class="secondary-btn dashboard-representative-settings-btn hidden" type="button" data-petatoe-i18n="dashboard.reps.settings">إعدادات ظهور المندوبين</button>
             </div>
             <div id="representativePerformance" class="performance-list"></div>
           </article>
@@ -522,8 +522,8 @@
           <article class="panel">
             <div class="panel-header">
               <div>
-                <h3>حالات عقود العملاء</h3>
-                <p>توزيع العروض حسب الحالة الحالية</p>
+                <h3 data-petatoe-i18n="dashboard.contractStatus.title">حالات عقود العملاء</h3>
+                <p data-petatoe-i18n="dashboard.contractStatus.note">توزيع العروض حسب الحالة الحالية</p>
               </div>
             </div>
             <div id="quotationStatusAnalytics" class="bar-chart"></div>
@@ -532,8 +532,8 @@
           <article class="panel">
             <div class="panel-header">
               <div>
-                <h3>أسباب عدم البيع</h3>
-                <p>الأسباب الأكثر تكرارًا داخل الفترة</p>
+                <h3 data-petatoe-i18n="dashboard.noSale.title">أسباب عدم البيع</h3>
+                <p data-petatoe-i18n="dashboard.noSale.note">الأسباب الأكثر تكرارًا داخل الفترة</p>
               </div>
             </div>
             <div id="noSaleReasonAnalytics" class="bar-chart"></div>
@@ -542,8 +542,8 @@
           <article class="panel full-span-panel">
             <div class="panel-header">
               <div>
-                <h3>اتجاه النشاط خلال الفترة</h3>
-                <p>العملاء الجدد، المتابعات، وعقود العملاء حسب التاريخ</p>
+                <h3 data-petatoe-i18n="dashboard.activity.title">اتجاه النشاط خلال الفترة</h3>
+                <p data-petatoe-i18n="dashboard.activity.note">العملاء الجدد، المتابعات، وعقود العملاء حسب التاريخ</p>
               </div>
             </div>
             <div id="activityTrend" class="trend-chart"></div>
@@ -551,16 +551,16 @@
 
           <article class="panel">
             <div class="panel-header">
-              <h3>أحدث العملاء</h3>
-              <button class="text-btn" data-open-customers>عرض الكل</button>
+              <h3 data-petatoe-i18n="dashboard.recent.title">أحدث العملاء</h3>
+              <button class="text-btn" data-open-customers data-petatoe-i18n="dashboard.recent.viewAll">عرض الكل</button>
             </div>
             <div id="recentCustomers"></div>
           </article>
 
           <article class="panel dashboard-attention-panel">
             <div class="panel-header">
-              <h3>المتابعات التي تحتاج انتباه</h3>
-              <button class="text-btn" data-open-followups>عرض المتابعات</button>
+              <h3 data-petatoe-i18n="dashboard.attention.title">المتابعات التي تحتاج انتباه</h3>
+              <button class="text-btn" data-open-followups data-petatoe-i18n="dashboard.attention.view">عرض المتابعات</button>
             </div>
             <div id="attentionFollowups"></div>
           </article>
@@ -816,7 +816,7 @@
           <article class="panel reference-data-panel hidden" data-reference-panel="reason">
             <div class="panel-header">
               <div>
-                <h3>أسباب عدم البيع</h3>
+                <h3 data-petatoe-i18n="dashboard.noSale.title">أسباب عدم البيع</h3>
                 <p>إدارة وتعديل وتفعيل وحذف أسباب الرفض المستخدمة في العقود والمتابعات.</p>
               </div>
               <button class="primary-btn compact-btn reference-manage-action" data-add-reference="reason">إضافة</button>
@@ -1352,7 +1352,7 @@
         <div class="panel installation-operations-filters installation-report-advanced-filters">
           <label>من تاريخ<input id="installationReportsDateFrom" type="date"></label>
           <label>إلى تاريخ<input id="installationReportsDateTo" type="date"></label>
-          <label>المندوب<select id="installationReportsRepresentativeFilter"><option value="">كل المندوبين</option></select></label>
+          <label>المندوب<select id="installationReportsRepresentativeFilter"><option value="" data-petatoe-i18n="dashboard.filter.allReps">كل المندوبين</option></select></label>
           <label>الفرقة<select id="installationReportsTeamFilter"><option value="">كل الفرق</option></select></label>
           <label>الفني<select id="installationReportsTechnicianFilter"><option value="">كل الفنيين</option></select></label>
           <label>الحالة<select id="installationReportsStatusFilter"><option value="">كل الحالات</option><option>جديد</option><option>مسند</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option></select></label>
@@ -1398,7 +1398,7 @@
             <label>السنة<select id="installationSummaryYear"></select></label>
             <label>الشهر<select id="installationSummaryMonth"></select></label>
             <label>اليوم<select id="installationSummaryDay"></select></label>
-            <label>المندوب<select id="installationSummaryRepresentative"><option value="">كل المندوبين</option></select></label>
+            <label>المندوب<select id="installationSummaryRepresentative"><option value="" data-petatoe-i18n="dashboard.filter.allReps">كل المندوبين</option></select></label>
             <div class="installation-summary-team-filter">
               <button id="installationSummaryTeamsButton" class="secondary-btn" type="button" aria-expanded="false">كل الفرق</button>
               <div id="installationSummaryTeamsMenu" class="installation-summary-teams-menu hidden">
@@ -1438,7 +1438,7 @@
             <label>السنة<select id="installationServiceYear"></select></label>
             <label>الشهر<select id="installationServiceMonth"></select></label>
             <label>اليوم<select id="installationServiceDay"></select></label>
-            <label>المندوب<select id="installationServiceRepresentative"><option value="">كل المندوبين</option></select></label>
+            <label>المندوب<select id="installationServiceRepresentative"><option value="" data-petatoe-i18n="dashboard.filter.allReps">كل المندوبين</option></select></label>
             <div class="installation-service-team-filter">
               <button id="installationServiceTeamsButton" class="secondary-btn" type="button" aria-expanded="false">كل الفرق</button>
               <div id="installationServiceTeamsMenu" class="installation-summary-teams-menu hidden">
@@ -1576,7 +1576,7 @@
           <label>
             المندوب
             <select id="reportsRepresentativeFilter">
-              <option value="">كل المندوبين</option>
+              <option value="" data-petatoe-i18n="dashboard.filter.allReps">كل المندوبين</option>
             </select>
           </label>
           <label>
@@ -1685,7 +1685,7 @@
           <article class="panel">
             <div class="panel-header">
               <div>
-                <h3>حالات عقود العملاء</h3>
+                <h3 data-petatoe-i18n="dashboard.contractStatus.title">حالات عقود العملاء</h3>
                 <p>توزيع العروض حسب الحالة الحالية.</p>
               </div>
             </div>
@@ -3111,10 +3111,10 @@
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.55.18"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.55.18"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.55.18"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.55.18"></script>
+  <script src="assets/js/performance-monitor.js?v=18.55.19"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.55.19"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.55.19"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.55.19"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -3548,65 +3548,65 @@
         </form>
       </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.55.18"></script>
-  <script src="assets/js/offline-session-store.js?v=18.55.18"></script>
-  <script src="assets/js/supabase-client.js?v=18.55.18"></script>
-  <script src="assets/js/geographic-address.js?v=18.55.18"></script>
-  <script src="assets/js/permissions.js?v=18.55.18"></script>
-  <script src="assets/js/permission-engine.js?v=18.55.18"></script>
-  <script src="assets/js/localization-center-service.js?v=18.55.18"></script>
-  <script src="assets/js/localization-center.js?v=18.55.18"></script>
-  <script src="assets/js/translation-center.js?v=18.55.18"></script>
-  <script src="assets/js/data-access-scope.js?v=18.55.18"></script>
-  <script src="assets/js/smart-cache.js?v=18.55.18"></script>
-  <script src="assets/js/sync-engine.js?v=18.55.18"></script>
-  <script src="assets/js/offline-queue.js?v=18.55.18"></script>
-  <script src="assets/js/permissions-service.js?v=18.55.18"></script>
-  <script src="assets/js/auth-session.js?v=18.55.18"></script>
-  <script src="assets/js/reference-data-service.js?v=18.55.18"></script>
-  <script src="assets/js/customers-service.js?v=18.55.18"></script>
-  <script src="assets/js/followups-service.js?v=18.55.18"></script>
-  <script src="assets/js/quotations-service.js?v=18.55.18"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.55.18"></script>
-  <script src="assets/js/users-service.js?v=18.55.18"></script>
-  <script src="assets/js/activity-service.js?v=18.55.18"></script>
-  <script src="assets/js/backup-service.js?v=18.55.18"></script>
-  <script src="assets/js/system-settings-service.js?v=18.55.18"></script>
-  <script src="assets/js/system-health-service.js?v=18.55.18"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.55.18"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.55.18"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.55.18"></script>
-  <script src="assets/js/installations-service.js?v=18.55.18"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.55.18"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.55.18"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.55.18"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.55.18"></script>
+  <script src="assets/js/supabase-config.js?v=18.55.19"></script>
+  <script src="assets/js/offline-session-store.js?v=18.55.19"></script>
+  <script src="assets/js/supabase-client.js?v=18.55.19"></script>
+  <script src="assets/js/geographic-address.js?v=18.55.19"></script>
+  <script src="assets/js/permissions.js?v=18.55.19"></script>
+  <script src="assets/js/permission-engine.js?v=18.55.19"></script>
+  <script src="assets/js/localization-center-service.js?v=18.55.19"></script>
+  <script src="assets/js/localization-center.js?v=18.55.19"></script>
+  <script src="assets/js/translation-center.js?v=18.55.19"></script>
+  <script src="assets/js/data-access-scope.js?v=18.55.19"></script>
+  <script src="assets/js/smart-cache.js?v=18.55.19"></script>
+  <script src="assets/js/sync-engine.js?v=18.55.19"></script>
+  <script src="assets/js/offline-queue.js?v=18.55.19"></script>
+  <script src="assets/js/permissions-service.js?v=18.55.19"></script>
+  <script src="assets/js/auth-session.js?v=18.55.19"></script>
+  <script src="assets/js/reference-data-service.js?v=18.55.19"></script>
+  <script src="assets/js/customers-service.js?v=18.55.19"></script>
+  <script src="assets/js/followups-service.js?v=18.55.19"></script>
+  <script src="assets/js/quotations-service.js?v=18.55.19"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.55.19"></script>
+  <script src="assets/js/users-service.js?v=18.55.19"></script>
+  <script src="assets/js/activity-service.js?v=18.55.19"></script>
+  <script src="assets/js/backup-service.js?v=18.55.19"></script>
+  <script src="assets/js/system-settings-service.js?v=18.55.19"></script>
+  <script src="assets/js/system-health-service.js?v=18.55.19"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.55.19"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.55.19"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.55.19"></script>
+  <script src="assets/js/installations-service.js?v=18.55.19"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.55.19"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.55.19"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.55.19"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.55.19"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.55.18"></script>
-  <script src="assets/js/export-center.js?v=18.55.18"></script>
-  <script src="assets/js/customer360-engine.js?v=18.55.18"></script>
-  <script src="assets/js/customer360-export.js?v=18.55.18"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.55.18"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.55.18"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.55.18"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.55.18"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.55.18"></script>
-  <script src="assets/js/notification-center-service.js?v=18.55.18"></script>
-  <script src="assets/js/app.js?v=18.55.18"></script>
-  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.55.18"></script>
-  <script src="assets/js/notification-center.js?v=18.55.18"></script>
-  <script src="assets/js/sales-invoices.js?v=18.55.18"></script>
-  <script src="assets/js/installations-module.js?v=18.55.18"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.55.18"></script>
-  <script src="assets/js/installation-execution.js?v=18.55.18"></script>
-  <script src="assets/js/installation-completion.js?v=18.55.18"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.55.18"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.55.18"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.55.18"></script>
-  <script src="assets/js/mobile.js?v=18.55.18"></script>
-  <script src="assets/js/pwa.js?v=18.55.18"></script>
-  <script src="assets/js/native.js?v=18.55.18"></script>
+  <script src="assets/js/reports-engine.js?v=18.55.19"></script>
+  <script src="assets/js/export-center.js?v=18.55.19"></script>
+  <script src="assets/js/customer360-engine.js?v=18.55.19"></script>
+  <script src="assets/js/customer360-export.js?v=18.55.19"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.55.19"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.55.19"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.55.19"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.55.19"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.55.19"></script>
+  <script src="assets/js/notification-center-service.js?v=18.55.19"></script>
+  <script src="assets/js/app.js?v=18.55.19"></script>
+  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.55.19"></script>
+  <script src="assets/js/notification-center.js?v=18.55.19"></script>
+  <script src="assets/js/sales-invoices.js?v=18.55.19"></script>
+  <script src="assets/js/installations-module.js?v=18.55.19"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.55.19"></script>
+  <script src="assets/js/installation-execution.js?v=18.55.19"></script>
+  <script src="assets/js/installation-completion.js?v=18.55.19"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.55.19"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.55.19"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.55.19"></script>
+  <script src="assets/js/mobile.js?v=18.55.19"></script>
+  <script src="assets/js/pwa.js?v=18.55.19"></script>
+  <script src="assets/js/native.js?v=18.55.19"></script>
 </body>
 </html>

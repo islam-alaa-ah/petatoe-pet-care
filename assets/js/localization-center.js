@@ -195,6 +195,65 @@
     ['shared.notifications.now','format','الآن','Now'],
     ['shared.notifications.minutesAgo','format','منذ {count} دقيقة','{count} min ago'],
     ['shared.notifications.hoursAgo','format','منذ {count} ساعة','{count} hr ago'],
+    ["dashboard.page.title","title","لوحة التحكم","Dashboard"],
+    ["dashboard.page.subtitle","subtitle","ملخص بيانات العملاء والمتابعة","Customer and follow-up data summary"],
+    ["dashboard.header.title","title","لوحة التحليل والمتابعة","Analytics & Monitoring Dashboard"],
+    ["dashboard.header.note","help","استخدم الفلاتر لتحديث جميع المؤشرات والتحليلات في نفس الوقت.","Use the filters to update all indicators and analytics at the same time."],
+    ["dashboard.filter.allReps","option","كل المندوبين","All representatives"],
+    ["dashboard.filter.fromAria","aria","من تاريخ","From date"],
+    ["dashboard.filter.toAria","aria","إلى تاريخ","To date"],
+    ["dashboard.filter.reset","button","إعادة تعيين","Reset"],
+    ["dashboard.reps.title","title","أداء المندوبين","Representative Performance"],
+    ["dashboard.reps.note","help","العملاء، المتابعات، العروض، ونسبة التحويل","Customers, follow-ups, contracts, and conversion rate"],
+    ["dashboard.reps.settings","button","إعدادات ظهور المندوبين","Representative Visibility Settings"],
+    ["dashboard.contractStatus.title","title","حالات عقود العملاء","Customer Contract Statuses"],
+    ["dashboard.contractStatus.note","help","توزيع العروض حسب الحالة الحالية","Distribution of contracts by current status"],
+    ["dashboard.noSale.title","title","أسباب عدم البيع","Reasons for No Sale"],
+    ["dashboard.noSale.note","help","الأسباب الأكثر تكرارًا داخل الفترة","Most frequent reasons within the selected period"],
+    ["dashboard.activity.title","title","اتجاه النشاط خلال الفترة","Activity Trend During the Period"],
+    ["dashboard.activity.note","help","العملاء الجدد، المتابعات، وعقود العملاء حسب التاريخ","New customers, follow-ups, and customer contracts by date"],
+    ["dashboard.recent.title","title","أحدث العملاء","Recent Customers"],
+    ["dashboard.recent.viewAll","button","عرض الكل","View All"],
+    ["dashboard.attention.title","title","المتابعات التي تحتاج انتباه","Follow-ups Requiring Attention"],
+    ["dashboard.attention.view","button","عرض المتابعات","View Follow-ups"],
+    ["dashboard.stats.customers","label","إجمالي العملاء","Total Customers"],
+    ["dashboard.stats.followups","label","إجمالي المتابعات","Total Follow-ups"],
+    ["dashboard.stats.today","label","متابعات اليوم","Today's Follow-ups"],
+    ["dashboard.stats.overdue","label","متابعات متأخرة","Overdue Follow-ups"],
+    ["dashboard.stats.contracts","label","عدد عقود العملاء","Customer Contracts"],
+    ["dashboard.stats.contractValue","label","قيمة العقود","Contract Value"],
+    ["dashboard.stats.accepted","label","العقود المقبولة","Accepted Contracts"],
+    ["dashboard.stats.acceptedValue","label","قيمة المقبول","Accepted Value"],
+    ["dashboard.stats.rejected","label","العقود المرفوضة","Rejected Contracts"],
+    ["dashboard.stats.conversion","label","نسبة التحويل","Conversion Rate"],
+    ["dashboard.period.all","label","الفترة: جميع البيانات","Period: All data"],
+    ["dashboard.period.range","format","الفترة: {from} — {to}","Period: {from} — {to}"],
+    ["dashboard.period.start","label","البداية","Start"],
+    ["dashboard.period.today","label","اليوم","Today"],
+    ["dashboard.reps.conversion","format","نسبة التحويل {value}%","Conversion rate {value}%"],
+    ["dashboard.reps.followups","label","المتابعات","Follow-ups"],
+    ["dashboard.reps.contracts","label","العقود","Contracts"],
+    ["dashboard.reps.contractValue","label","قيمة العقود","Contract Value"],
+    ["dashboard.reps.conversionLabel","label","التحويل","Conversion"],
+    ["dashboard.reps.empty","empty","لا توجد بيانات أداء ضمن الفلاتر.","No performance data matches the filters."],
+    ["dashboard.chart.empty","empty","لا توجد بيانات كافية.","Not enough data."],
+    ["dashboard.activity.empty","empty","لا توجد بيانات زمنية كافية.","Not enough time-series data."],
+    ["dashboard.activity.customers","label","العملاء","Customers"],
+    ["dashboard.activity.followups","label","المتابعات","Follow-ups"],
+    ["dashboard.activity.contracts","label","العروض","Contracts"],
+    ["dashboard.activity.customersTitle","format","العملاء: {count}","Customers: {count}"],
+    ["dashboard.activity.followupsTitle","format","المتابعات: {count}","Follow-ups: {count}"],
+    ["dashboard.activity.contractsTitle","format","العروض: {count}","Contracts: {count}"],
+    ["dashboard.recent.empty","empty","لا توجد بيانات عملاء.","No customer data."],
+    ["dashboard.attention.empty","empty","لا توجد متابعات تحتاج انتباهًا حاليًا.","No follow-ups currently require attention."],
+    ["dashboard.mobile.quick","label","نظرة سريعة","Quick Overview"],
+    ["dashboard.mobile.title","title","لوحة التحكم","Dashboard"],
+    ["dashboard.mobile.filterAria","aria","فتح فلاتر لوحة التحكم","Open dashboard filters"],
+    ["dashboard.mobile.refresh","button","تحديث","Refresh"],
+    ["dashboard.mobile.refreshAria","aria","تحديث لوحة التحكم","Refresh dashboard"],
+    ["dashboard.mobile.closeFilters","aria","إغلاق الفلاتر","Close filters"],
+    ["dashboard.mobile.apply","button","تنفيذ الفلترة","Apply Filters"],
+    ["dashboard.mobile.closeBackdrop","aria","إغلاق فلاتر لوحة التحكم","Close dashboard filters"],
     ["customers.page.title","title","العملاء","Customers"],
     ["customers.page.subtitle","subtitle","إدارة بيانات العملاء والبحث والتصفية","Manage customer data, search, and filtering"],
     ["followups.page.title","title","المتابعات","Follow-ups"],
@@ -400,7 +459,7 @@
     ["users.language.ar","option","العربية","Arabic"],
     ["users.language.en","option","English","English"]
   ];
-  const screenKeyFor=(key)=>key.startsWith('sidebar.')?'sidebar':key.startsWith('shared.')?'shared':key.startsWith('customers.')?'customers':key.startsWith('followups.')?'followups':key.startsWith('contracts.')?'quotations':key.startsWith('invoices.')?'salesInvoices':key.startsWith('users.')?'users':SCREEN_KEY;
+  const screenKeyFor=(key)=>key.startsWith('sidebar.')?'sidebar':key.startsWith('shared.')?'shared':key.startsWith('dashboard.')?'dashboard':key.startsWith('customers.')?'customers':key.startsWith('followups.')?'followups':key.startsWith('contracts.')?'quotations':key.startsWith('invoices.')?'salesInvoices':key.startsWith('users.')?'users':SCREEN_KEY;
   const defaults=new Map(rows.map(([key,type,ar,en])=>[key,Object.freeze({key,type,screenKey:screenKeyFor(key),ar,en})]));
   const state={language:(localStorage.getItem(STORAGE_LANGUAGE)==='en'?'en':'ar'),remote:new Map(),loaded:false,loading:null};
   const ARABIC_RE=/[\u0600-\u06FF]/;
@@ -537,7 +596,7 @@
   function loadCache(){try{const data=JSON.parse(localStorage.getItem(STORAGE_CACHE)||'[]');if(Array.isArray(data))data.forEach(row=>{const base=defaults.get(row.translation_key);state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||base?.ar||''),en:String(row.en_text||base?.en||''),type:row.text_type||base?.type||'label',screenKey:row.screen_key||base?.screenKey||SCREEN_KEY})})}catch(_){}}
   async function loadRemote(force=false){if(state.loading&&!force)return state.loading;if(state.loaded&&!force)return getRows();state.loading=(async()=>{try{if(!window.LocalizationCenterService)return getRows();const data=await (window.LocalizationCenterService.listPilot?.()||window.LocalizationCenterService.listScreen(SCREEN_KEY));(data||[]).forEach(row=>{const base=defaults.get(row.translation_key);state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||base?.ar||''),en:String(row.en_text||base?.en||''),type:row.text_type||base?.type||'label',screenKey:row.screen_key||base?.screenKey||SCREEN_KEY})});state.loaded=true;cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}catch(error){console.warn('[Localization] remote load deferred',error?.message||error);return getRows()}finally{state.loading=null}})();return state.loading}
   function getRows(){const keys=new Set([...defaults.keys(),...state.remote.keys()]);return [...keys].map(key=>{const base=defaults.get(key),remote=state.remote.get(key);const ar=String(remote?.ar||base?.ar||''),en=String(remote?.en||base?.en||'');return{key,type:remote?.type||base?.type||'label',screenKey:remote?.screenKey||base?.screenKey||SCREEN_KEY,ar,en,defaultAr:base?.ar||ar,defaultEn:base?.en||en,complete:Boolean(ar.trim()&&en.trim()&&!ARABIC_RE.test(en)),customized:Boolean(remote&&base&&(remote.ar!==base.ar||remote.en!==base.en))}}).sort((a,b)=>a.screenKey.localeCompare(b.screenKey)||a.key.localeCompare(b.key))}
-  async function saveRows(entries){if(!window.LocalizationCenterService)throw new Error('خدمة مركز الترجمه غير جاهزة.');const normalized=(entries||[]).map(x=>{const base=defaults.get(x.key),remote=state.remote.get(x.key);return{translation_key:x.key,screen_key:x.screenKey||base?.screenKey||SCREEN_KEY,module_name:x.key.startsWith('sidebar.')?'navigation':x.key.startsWith('shared.')?'core':x.key.startsWith('customers.')||x.key.startsWith('followups.')||x.key.startsWith('contracts.')||x.key.startsWith('invoices.')?'customers':x.key.startsWith('users.')?'users':'appointments',text_type:x.type||base?.type||'label',ar_text:String(x.ar||'').trim(),en_text:String(x.en||'').trim(),default_ar:base?.ar||String(x.ar||'').trim(),default_en:base?.en||String(x.en||'').trim(),_hadEnglish:Boolean(String(remote?.en||base?.en||'').trim())}});if(normalized.some(x=>x.en_text&&ARABIC_RE.test(x.en_text)))throw new Error('لا يمكن الحفظ مع نص عربي داخل العمود الإنجليزي.');if(normalized.some(x=>!x.ar_text||(x._hadEnglish&&!x.en_text)))throw new Error('لا يمكن حذف ترجمة مكتملة أو حفظ نص عربي فارغ.');const payload=normalized.filter(x=>x.ar_text&&x.en_text).map(({_hadEnglish,...x})=>x);if(payload.length)await (window.LocalizationCenterService.saveEntries?.(payload)||window.LocalizationCenterService.saveScreen(SCREEN_KEY,payload));payload.forEach(x=>state.remote.set(x.translation_key,{key:x.translation_key,ar:x.ar_text,en:x.en_text,type:x.text_type,screenKey:x.screen_key}));cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}
+  async function saveRows(entries){if(!window.LocalizationCenterService)throw new Error('خدمة مركز الترجمه غير جاهزة.');const normalized=(entries||[]).map(x=>{const base=defaults.get(x.key),remote=state.remote.get(x.key);return{translation_key:x.key,screen_key:x.screenKey||base?.screenKey||SCREEN_KEY,module_name:x.key.startsWith('sidebar.')?'navigation':x.key.startsWith('shared.')?'core':x.key.startsWith('dashboard.')?'dashboard':x.key.startsWith('customers.')||x.key.startsWith('followups.')||x.key.startsWith('contracts.')||x.key.startsWith('invoices.')?'customers':x.key.startsWith('users.')?'users':'appointments',text_type:x.type||base?.type||'label',ar_text:String(x.ar||'').trim(),en_text:String(x.en||'').trim(),default_ar:base?.ar||String(x.ar||'').trim(),default_en:base?.en||String(x.en||'').trim(),_hadEnglish:Boolean(String(remote?.en||base?.en||'').trim())}});if(normalized.some(x=>x.en_text&&ARABIC_RE.test(x.en_text)))throw new Error('لا يمكن الحفظ مع نص عربي داخل العمود الإنجليزي.');if(normalized.some(x=>!x.ar_text||(x._hadEnglish&&!x.en_text)))throw new Error('لا يمكن حذف ترجمة مكتملة أو حفظ نص عربي فارغ.');const payload=normalized.filter(x=>x.ar_text&&x.en_text).map(({_hadEnglish,...x})=>x);if(payload.length)await (window.LocalizationCenterService.saveEntries?.(payload)||window.LocalizationCenterService.saveScreen(SCREEN_KEY,payload));payload.forEach(x=>state.remote.set(x.translation_key,{key:x.translation_key,ar:x.ar_text,en:x.en_text,type:x.text_type,screenKey:x.screen_key}));cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}
   function setLanguage(language){state.language=language==='en'?'en':'ar';localStorage.setItem(STORAGE_LANGUAGE,state.language);applyStatic(document);window.dispatchEvent(new CustomEvent('petatoe-language-changed',{detail:{screenKey:SCREEN_KEY,language:state.language}}));return state.language}
   function getLanguage(){return state.language}
   function applyStatic(root=document){const lang=effectiveLanguage();const scope=root?.querySelectorAll?root:document;scope.querySelectorAll?.('[data-execution-i18n]').forEach(el=>{el.textContent=t(el.dataset.executionI18n)});scope.querySelectorAll?.('[data-execution-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.executionI18nPlaceholder))});scope.querySelectorAll?.('[data-petatoe-i18n]').forEach(el=>{el.textContent=t(el.dataset.petatoeI18n)});scope.querySelectorAll?.('[data-petatoe-i18n-aria]').forEach(el=>{const value=t(el.dataset.petatoeI18nAria);el.setAttribute('aria-label',value);el.setAttribute('title',value)});scope.querySelectorAll?.('[data-petatoe-i18n-title]').forEach(el=>{el.setAttribute('title',t(el.dataset.petatoeI18nTitle))});scope.querySelectorAll?.('[data-petatoe-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.petatoeI18nPlaceholder))});document.documentElement.lang=lang==='en'?'en':'ar';document.documentElement.dir=lang==='en'?'ltr':'rtl';const header=document.getElementById('appHeader');if(header){header.lang=lang==='en'?'en':'ar';header.dataset.petatoeLanguage=lang}const view=document.getElementById('installationExecutionView');if(view){view.dir=lang==='en'?'ltr':'rtl';view.lang=lang==='en'?'en':'ar';view.dataset.executionLanguage=lang}const sidebar=document.getElementById('mainSidebar');if(sidebar){sidebar.dir=lang==='en'?'ltr':'rtl';sidebar.lang=lang==='en'?'en':'ar';sidebar.dataset.petatoeLanguage=lang}}

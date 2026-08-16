@@ -1382,7 +1382,7 @@ function switchView(requestedName, options = {}) {
     loadSystemSettings();
   }
 
-  const localizedPageMetaKeys = { customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"] };
+  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"] };
   const localizedMetaKeys = localizedPageMetaKeys[name];
   const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map((key,index)=>customerT(key,pageMeta[name][index])) : pageMeta[name];
   document.getElementById("pageTitle").textContent = activePageMeta[0];
@@ -1433,7 +1433,7 @@ function switchView(requestedName, options = {}) {
 window.addEventListener("petatoe-language-changed", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
   const current = activeViewKey;
-  const localizedPageMetaKeys = { customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"] };
+  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"] };
   let meta = null;
   if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
   else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map((key,index)=>customerT(key,pageMeta[current][index]));
@@ -1527,7 +1527,7 @@ function renderDashboard() {
   const data=dashboardData(),filteredCustomers=data.customers,filteredFollowups=data.followups,filteredQuotations=data.quotations;
   const dueToday=filteredFollowups.filter(item=>followupStatus(item)==="today").length,overdue=filteredFollowups.filter(item=>followupStatus(item)==="overdue").length,accepted=filteredQuotations.filter(item=>item.status==="مقبول"),rejected=filteredQuotations.filter(item=>item.status==="مرفوض");
   const totalQuotationValue=filteredQuotations.reduce((s,i)=>s+Number(i.amount||0),0),acceptedValue=accepted.reduce((s,i)=>s+Number(i.amount||0),0),conversionRate=filteredQuotations.length?(accepted.length/filteredQuotations.length)*100:0;
-  const stats=[["إجمالي العملاء",filteredCustomers.length],["إجمالي المتابعات",filteredFollowups.length],["متابعات اليوم",dueToday],["متابعات متأخرة",overdue],["عدد عقود العملاء",filteredQuotations.length],["قيمة العقود",formatCurrency(totalQuotationValue)],["العقود المقبولة",accepted.length],["قيمة المقبول",formatCurrency(acceptedValue)],["العقود المرفوضة",rejected.length],["نسبة التحويل",`${conversionRate.toFixed(1)}%`]];
+  const stats=[[customerT("dashboard.stats.customers","إجمالي العملاء"),filteredCustomers.length],[customerT("dashboard.stats.followups","إجمالي المتابعات"),filteredFollowups.length],[customerT("dashboard.stats.today","متابعات اليوم"),dueToday],[customerT("dashboard.stats.overdue","متابعات متأخرة"),overdue],[customerT("dashboard.stats.contracts","عدد عقود العملاء"),filteredQuotations.length],[customerT("dashboard.stats.contractValue","قيمة العقود"),formatCurrency(totalQuotationValue)],[customerT("dashboard.stats.accepted","العقود المقبولة"),accepted.length],[customerT("dashboard.stats.acceptedValue","قيمة المقبول"),formatCurrency(acceptedValue)],[customerT("dashboard.stats.rejected","العقود المرفوضة"),rejected.length],[customerT("dashboard.stats.conversion","نسبة التحويل"),`${conversionRate.toFixed(1)}%`]];
   const dashboardKpiIcons=[
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87"/></svg>',
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4M16 2v4M3 9h18M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z"/></svg>',
@@ -1537,23 +1537,23 @@ function renderDashboard() {
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M6 4h12l2 16H4L6 4Zm3 7h6"/></svg>'
   ];
   document.getElementById("statsGrid").innerHTML=stats.map(([l,v],index)=>`<article class="stat-card"><span class="petatoe-kpi-icon">${dashboardKpiIcons[index%dashboardKpiIcons.length]}</span><span>${l}</span><strong>${v}</strong></article>`).join("");
-  const periodText=data.filters.from||data.filters.to?`الفترة: ${data.filters.from?formatDate(data.filters.from):"البداية"} — ${data.filters.to?formatDate(data.filters.to):"اليوم"}`:"الفترة: جميع البيانات"; document.getElementById("dashboardPeriodLabel").textContent=periodText;
+  const periodText=data.filters.from||data.filters.to?customerT("dashboard.period.range","الفترة: {from} — {to}",{from:data.filters.from?formatDate(data.filters.from):customerT("dashboard.period.start","البداية"),to:data.filters.to?formatDate(data.filters.to):customerT("dashboard.period.today","اليوم")}):customerT("dashboard.period.all","الفترة: جميع البيانات"); document.getElementById("dashboardPeriodLabel").textContent=periodText;
   renderRepresentativePerformance(data); renderQuotationStatusAnalytics(filteredQuotations); renderNoSaleReasonAnalytics([],filteredQuotations); renderActivityTrend(data);
   const latest=[...filteredCustomers].sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||""))).slice(0,5);
-  document.getElementById("recentCustomers").innerHTML=latest.length?`<div class="simple-list">${latest.map(c=>`<div class="simple-item"><div><strong>${escapeHtml(c.name)}</strong><span>${escapeHtml(c.customerNumber||"—")} · ${escapeHtml(c.phone||"—")}</span></div><span>${escapeHtml(c.address||"—")}</span></div>`).join("")}</div>`:`<div class="empty-state">لا توجد بيانات عملاء.</div>`;
+  document.getElementById("recentCustomers").innerHTML=latest.length?`<div class="simple-list">${latest.map(c=>`<div class="simple-item"><div><strong>${escapeHtml(c.name)}</strong><span>${escapeHtml(c.customerNumber||"—")} · ${escapeHtml(c.phone||"—")}</span></div><span>${escapeHtml(customerNeighborhoodLabel(c.neighborhoodId,c.address)||"—")}</span></div>`).join("")}</div>`:`<div class="empty-state">${customerT("dashboard.recent.empty","لا توجد بيانات عملاء.")}</div>`;
   const attention=filteredFollowups.filter(item=>["today","overdue"].includes(followupStatus(item))).sort((a,b)=>String(a.nextFollowupDate).localeCompare(String(b.nextFollowupDate))).slice(0,6);
-  document.getElementById("attentionFollowups").innerHTML=attention.length?`<div class="simple-list">${attention.map(item=>{const c=customerById(item.customerId),status=followupStatus(item);return `<div class="attention-item ${status==="overdue"?"overdue":""}"><div><strong>${escapeHtml(c?.name||"عميل غير معروف")}</strong><span>${escapeHtml(item.representative)} · ${escapeHtml(item.result)}</span></div><span>${statusLabel(status)} · ${formatDate(item.nextFollowupDate)}</span></div>`;}).join("")}</div>`:`<div class="empty-state">لا توجد متابعات تحتاج انتباهًا حاليًا.</div>`;
+  document.getElementById("attentionFollowups").innerHTML=attention.length?`<div class="simple-list">${attention.map(item=>{const c=customerById(item.customerId),status=followupStatus(item);return `<div class="attention-item ${status==="overdue"?"overdue":""}"><div><strong>${escapeHtml(c?.name||customerT("customers.unknown","عميل غير معروف"))}</strong><span>${escapeHtml(item.representative)} · ${escapeHtml(followupResultLabel(item.result))}</span></div><span>${statusLabel(status)} · ${formatDate(item.nextFollowupDate)}</span></div>`;}).join("")}</div>`:`<div class="empty-state">${customerT("dashboard.attention.empty","لا توجد متابعات تحتاج انتباهًا حاليًا.")}</div>`;
 }
 
 function renderRepresentativePerformance(data) {
   const rows=dashboardVisibleRepresentatives().map(rep=>{const f=data.followups.filter(x=>x.representative===rep.name),q=data.quotations.filter(x=>x.representative===rep.name),accepted=q.filter(x=>x.status==="مقبول"),conversion=q.length?(accepted.length/q.length)*100:0;return{name:rep.name,followups:f.length,quotations:q.length,quotationValue:q.reduce((s,x)=>s+Number(x.amount||0),0),conversion};}).filter(r=>r.followups||r.quotations);
-  document.getElementById("representativePerformance").innerHTML=rows.length?rows.map(r=>`<article class="performance-card"><div class="performance-card-head"><strong>${escapeHtml(r.name)}</strong><span>نسبة التحويل ${r.conversion.toFixed(1)}%</span></div><div class="performance-metrics"><div class="performance-metric"><span>المتابعات</span><strong>${r.followups}</strong></div><div class="performance-metric"><span>العقود</span><strong>${r.quotations}</strong></div><div class="performance-metric"><span>قيمة العقود</span><strong>${formatCurrency(r.quotationValue)}</strong></div><div class="performance-metric"><span>التحويل</span><strong>${r.conversion.toFixed(1)}%</strong></div></div></article>`).join(""):`<div class="empty-state">لا توجد بيانات أداء ضمن الفلاتر.</div>`;
+  document.getElementById("representativePerformance").innerHTML=rows.length?rows.map(r=>`<article class="performance-card"><div class="performance-card-head"><strong>${escapeHtml(r.name)}</strong><span>${customerT("dashboard.reps.conversion","نسبة التحويل {value}%",{value:r.conversion.toFixed(1)})}</span></div><div class="performance-metrics"><div class="performance-metric"><span>${customerT("dashboard.reps.followups","المتابعات")}</span><strong>${r.followups}</strong></div><div class="performance-metric"><span>${customerT("dashboard.reps.contracts","العقود")}</span><strong>${r.quotations}</strong></div><div class="performance-metric"><span>${customerT("dashboard.reps.contractValue","قيمة العقود")}</span><strong>${formatCurrency(r.quotationValue)}</strong></div><div class="performance-metric"><span>${customerT("dashboard.reps.conversionLabel","التحويل")}</span><strong>${r.conversion.toFixed(1)}%</strong></div></div></article>`).join(""):`<div class="empty-state">${customerT("dashboard.reps.empty","لا توجد بيانات أداء ضمن الفلاتر.")}</div>`;
 }
 
 function renderBarChart(containerId, rows) {
   const container = document.getElementById(containerId);
   if (!rows.length) {
-    container.innerHTML = `<div class="empty-state">لا توجد بيانات كافية.</div>`;
+    container.innerHTML = `<div class="empty-state">${customerT("dashboard.chart.empty","لا توجد بيانات كافية.")}</div>`;
     return;
   }
 
@@ -1571,7 +1571,7 @@ function renderInterestAnalytics() {}
 function renderQuotationStatusAnalytics(filteredQuotations) {
   const statuses = ["قيد التنفيذ", "مقبول", "مرفوض"];
   const rows = statuses.map(status => ({
-    label: status,
+    label: customerT(status === "قيد التنفيذ" ? "contracts.status.inProgress" : status === "مقبول" ? "contracts.status.accepted" : "contracts.status.rejected", status),
     value: filteredQuotations.filter(q => canonicalQuotationStatus(q.status) === status).length
   })).filter(row => row.value > 0);
 
@@ -1613,24 +1613,24 @@ function renderActivityTrend(data) {
 
   const container = document.getElementById("activityTrend");
   if (!rows.length) {
-    container.innerHTML = `<div class="empty-state">لا توجد بيانات زمنية كافية.</div>`;
+    container.innerHTML = `<div class="empty-state">${customerT("dashboard.activity.empty","لا توجد بيانات زمنية كافية.")}</div>`;
     return;
   }
 
   const max = Math.max(1, ...rows.flatMap(([, v]) => [v.customers, v.followups, v.quotations]));
   container.innerHTML = `
     <div class="trend-legend">
-      <span>العملاء</span>
-      <span>المتابعات</span>
-      <span>العروض</span>
+      <span>${customerT("dashboard.activity.customers","العملاء")}</span>
+      <span>${customerT("dashboard.activity.followups","المتابعات")}</span>
+      <span>${customerT("dashboard.activity.contracts","العروض")}</span>
     </div>
     <div class="trend-bars">
       ${rows.map(([date, values]) => `
         <div class="trend-day">
           <div class="trend-day-bars">
-            <div class="trend-bar" title="العملاء: ${values.customers}" style="height:${Math.max(2, (values.customers / max) * 160)}px"></div>
-            <div class="trend-bar followups" title="المتابعات: ${values.followups}" style="height:${Math.max(2, (values.followups / max) * 160)}px"></div>
-            <div class="trend-bar quotations" title="العروض: ${values.quotations}" style="height:${Math.max(2, (values.quotations / max) * 160)}px"></div>
+            <div class="trend-bar" title="${escapeHtml(customerT("dashboard.activity.customersTitle","العملاء: {count}",{count:values.customers}))}" style="height:${Math.max(2, (values.customers / max) * 160)}px"></div>
+            <div class="trend-bar followups" title="${escapeHtml(customerT("dashboard.activity.followupsTitle","المتابعات: {count}",{count:values.followups}))}" style="height:${Math.max(2, (values.followups / max) * 160)}px"></div>
+            <div class="trend-bar quotations" title="${escapeHtml(customerT("dashboard.activity.contractsTitle","العروض: {count}",{count:values.quotations}))}" style="height:${Math.max(2, (values.quotations / max) * 160)}px"></div>
           </div>
           <span class="trend-day-label">${formatDate(date)}</span>
         </div>`).join("")}
@@ -9276,6 +9276,7 @@ document.getElementById("dailyWhatsAppTemplateImage")?.addEventListener("change"
 
 window.addEventListener("petatoe-language-changed", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
+  if (activeViewKey === "dashboard") renderDashboard();
   if (customersLoaded) renderCustomers();
   if (followupsLoaded) renderFollowups();
   if (quotationsLoaded) renderQuotations();

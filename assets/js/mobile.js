@@ -223,17 +223,17 @@
     toolbar.className = "mobile-dashboard-toolbar";
     toolbar.innerHTML = `
       <div class="mobile-dashboard-heading">
-        <span>نظرة سريعة</span>
-        <strong>لوحة التحكم</strong>
+        <span data-petatoe-i18n="dashboard.mobile.quick">نظرة سريعة</span>
+        <strong data-petatoe-i18n="dashboard.mobile.title">لوحة التحكم</strong>
       </div>
       <div class="mobile-dashboard-actions">
-        <button type="button" class="mobile-dashboard-action" data-mobile-dashboard-filter aria-expanded="false" aria-label="فتح فلاتر لوحة التحكم">
+        <button type="button" class="mobile-dashboard-action" data-mobile-dashboard-filter aria-expanded="false" aria-label="فتح فلاتر لوحة التحكم" data-petatoe-i18n-aria="dashboard.mobile.filterAria">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
           <span data-petatoe-i18n="followups.mobile.filters">الفلاتر</span>
         </button>
-        <button type="button" class="mobile-dashboard-action" data-mobile-dashboard-refresh aria-label="تحديث لوحة التحكم">
+        <button type="button" class="mobile-dashboard-action" data-mobile-dashboard-refresh aria-label="تحديث لوحة التحكم" data-petatoe-i18n-aria="dashboard.mobile.refreshAria">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0 2 5M20 4v7h-7"/></svg>
-          <span>تحديث</span>
+          <span data-petatoe-i18n="dashboard.mobile.refresh">تحديث</span>
         </button>
       </div>
       <span class="mobile-dashboard-status" data-mobile-dashboard-status aria-live="polite"></span>`;
@@ -245,7 +245,7 @@
       const closeButton = document.createElement("button");
       closeButton.type = "button";
       closeButton.className = "mobile-filter-close";
-      closeButton.setAttribute("aria-label", "إغلاق الفلاتر");
+      closeButton.setAttribute("aria-label", window.PetatoeLocalization?.t?.("dashboard.mobile.closeFilters") || "إغلاق الفلاتر");
       closeButton.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
       filterBar.prepend(closeButton);
       closeButton.addEventListener("click", () => closeDashboardFilters({ restore: true }));
@@ -256,7 +256,7 @@
         applyButton.type = "button";
         applyButton.className = "primary-btn mobile-filter-apply";
         applyButton.dataset.mobileDashboardApply = "";
-        applyButton.textContent = "تنفيذ الفلترة";
+        applyButton.textContent = window.PetatoeLocalization?.t?.("dashboard.mobile.apply") || "تنفيذ الفلترة";
         filtersGrid.append(applyButton);
         applyButton.addEventListener("click", () => {
           dashboardAppliedSnapshot = captureDashboardFilters();
@@ -269,7 +269,7 @@
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "mobile-dashboard-filter-backdrop";
-    backdrop.setAttribute("aria-label", "إغلاق فلاتر لوحة التحكم");
+    backdrop.setAttribute("aria-label", window.PetatoeLocalization?.t?.("dashboard.mobile.closeBackdrop") || "إغلاق فلاتر لوحة التحكم");
     dashboardView.append(backdrop);
 
     toolbar.querySelector("[data-mobile-dashboard-filter]")?.addEventListener("click", toggleDashboardFilters);
@@ -1039,7 +1039,7 @@
       applyButton.type = "button";
       applyButton.className = "primary-btn mobile-filter-apply";
       applyButton.dataset.mobileQuotationsApply = "";
-      applyButton.textContent = "تنفيذ الفلترة";
+      applyButton.textContent = window.PetatoeLocalization?.t?.("dashboard.mobile.apply") || "تنفيذ الفلترة";
       filters.append(applyButton);
       applyButton.addEventListener("click", () => {
         appliedFilterSnapshot = captureQuoteFilters();

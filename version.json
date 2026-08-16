@@ -1,12 +1,12 @@
 {
-  "version": "18.55.18",
-  "build": 185518,
+  "version": "18.55.19",
+  "build": 185519,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE KPI Card Direction Consistency Hotfix",
+  "title": "PETATOE Dashboard Localization Rollout",
   "notes": [
-    "توحيد موضع أيقونات KPI داخل الكروت الاتجاهية بحيث تظهر يمينًا في الإنجليزية ويسارًا في العربية.",
-    "دمج Owner أيقونات Dashboard وFollow-ups في قاعدة CSS منطقية واحدة بدون إضافة Override جديد."
+    "ترجمة لوحة التحكم على Desktop وMobile باستخدام مركز الترجمه المركزي.",
+    "تحديث النصوص الديناميكية ومؤشرات KPI والفلاتر والتحليلات عند تغيير اللغة مباشرة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-18-kpi-card-direction"
+  "cacheToken": "petatoe-pwa-18-55-19-dashboard-localization"
 }
