@@ -1,13 +1,13 @@
 {
-  "version": "18.55.06",
-  "build": 185506,
+  "version": "18.55.07",
+  "build": 185507,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Global Language Toggle + Execution Entity & Sidebar Localization",
+  "title": "PETATOE Neighborhood Translation Schema Hotfix",
   "notes": [
-    "تحويل زر الترجمة في هيدر Desktop إلى مفتاح مباشر للتبديل بين العربية والإنجليزية بدل فتح مركز الترجمه.",
-    "ترجمة محتوى القائمة الجانبية وربطه بالقاموس المركزي مع RTL/LTR داخل نطاق الـDesktop pilot.",
-    "إضافة ترجمة أسماء خدمات تنفيذ المواعيد والأحياء من مركز الترجمه مع الاستفادة من الاسم الإنجليزي المرجعي للأحياء ومنع تسرب العربية للواجهة الإنجليزية."
+    "إزالة الاعتماد الخاطئ على installation_neighborhoods.name_en من مرحلة الترجمة التجريبية.",
+    "اعتماد app_translations كمصدر الترجمة الإنجليزية الوحيد للأحياء مع إظهار الأحياء غير المترجمة كترجمات ناقصة داخل مركز الترجمه.",
+    "تصحيح استعلامات Runtime ومركز الترجمه لتعمل مع Schema الإنتاج الفعلي الذي يحتوي id وname فقط للأحياء."
   ],
-  "cacheToken": "petatoe-pwa-18-55-06-global-language-execution-entities-sidebar"
+  "cacheToken": "petatoe-pwa-18-55-07-neighborhood-translation-schema-hotfix"
 }

@@ -1,26 +1,11 @@
 -- P5.13.2 — Global language toggle + Execution entity/sidebar localization.
--- Extends the existing app_translations canonical owner; no parallel translation table is introduced.
+-- Corrected for production schemas where installation_neighborhoods has no name_en column.
+-- app_translations remains the only canonical English-translation owner.
 
--- Canonical English neighborhood names already exist in installation_neighborhoods.name_en.
-insert into public.app_translations(
-  translation_key,screen_key,module_name,text_type,ar_text,en_text,default_ar,default_en,is_active,updated_at
-)
-select
-  'entity.neighborhood.'||n.id::text,
-  'installationExecutionNeighborhoods',
-  'appointments',
-  'neighborhood',
-  trim(n.name),
-  trim(n.name_en),
-  trim(n.name),
-  trim(n.name_en),
-  true,
-  now()
-from public.installation_neighborhoods n
-where n.is_active is true
-  and nullif(trim(n.name),'') is not null
-  and nullif(trim(n.name_en),'') is not null
-on conflict(translation_key) do nothing;
+-- Neighborhoods are intentionally NOT copied from a parallel name_en column.
+-- Runtime registers every active neighborhood from installation_neighborhoods(id,name)
+-- as entity.neighborhood.<id>. Missing English values appear in مركز الترجمه as incomplete.
+-- Once an English value is entered there, the existing app_translations upsert persists it.
 
 -- Seed known service translations. Any future/unmatched service remains editable from مركز الترجمه;
 -- runtime never falls back to Arabic while English is active.
