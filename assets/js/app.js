@@ -1382,7 +1382,7 @@ function switchView(requestedName, options = {}) {
     loadSystemSettings();
   }
 
-  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"] };
+  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"] };
   const localizedMetaKeys = localizedPageMetaKeys[name];
   const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map((key,index)=>customerT(key,pageMeta[name][index])) : pageMeta[name];
   document.getElementById("pageTitle").textContent = activePageMeta[0];
@@ -1433,7 +1433,7 @@ function switchView(requestedName, options = {}) {
 window.addEventListener("petatoe-language-changed", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
   const current = activeViewKey;
-  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"] };
+  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"] };
   let meta = null;
   if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
   else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map((key,index)=>customerT(key,pageMeta[current][index]));
@@ -1509,13 +1509,149 @@ function dashboardFilterState() {
   };
 }
 
+function dashboardDateLocale() {
+  return window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "en-US-u-nu-latn" : "ar-SA-u-nu-latn";
+}
+
+function dashboardIsoToDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+  if (!match) return null;
+  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function dashboardDateToIso(date) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+  const y = String(date.getFullYear()).padStart(4, "0");
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function dashboardFormatPickedDate(value) {
+  const date = dashboardIsoToDate(value);
+  if (!date) return "";
+  return new Intl.DateTimeFormat(dashboardDateLocale(), { year: "numeric", month: "short", day: "2-digit" }).format(date);
+}
+
+const dashboardCalendarState = { targetId: "", month: null, popover: null };
+
 function syncDashboardDatePlaceholderState() {
-  ["dashboardDateFrom", "dashboardDateTo"].forEach(id => {
+  [["dashboardDateFrom", "dashboard.filter.fromDisplay"], ["dashboardDateTo", "dashboard.filter.toDisplay"]].forEach(([id, key]) => {
     const input = document.getElementById(id);
     const wrapper = input?.closest?.(".dashboard-date-filter");
+    const display = wrapper?.querySelector?.(".dashboard-date-display-text");
     if (!input || !wrapper) return;
     wrapper.classList.toggle("has-value", Boolean(input.value));
+    if (display) display.textContent = input.value ? dashboardFormatPickedDate(input.value) : customerT(key, id === "dashboardDateFrom" ? "من تاريخ" : "إلى تاريخ");
   });
+  if (dashboardCalendarState.popover && !dashboardCalendarState.popover.hidden) drawDashboardCalendar();
+}
+
+function ensureDashboardCalendar() {
+  if (dashboardCalendarState.popover) return dashboardCalendarState.popover;
+  const popover = document.createElement("div");
+  popover.className = "dashboard-date-popover";
+  popover.hidden = true;
+  popover.setAttribute("role", "dialog");
+  popover.setAttribute("aria-modal", "false");
+  document.body.appendChild(popover);
+  dashboardCalendarState.popover = popover;
+  return popover;
+}
+
+function positionDashboardCalendar() {
+  const popover = dashboardCalendarState.popover;
+  const trigger = document.querySelector(`[data-dashboard-date-target="${CSS.escape(dashboardCalendarState.targetId)}"]`);
+  if (!popover || !trigger || popover.hidden) return;
+  const rect = trigger.getBoundingClientRect();
+  const width = Math.min(340, window.innerWidth - 24);
+  const left = Math.max(12, Math.min(window.innerWidth - width - 12, rect.left));
+  const desiredTop = rect.bottom + 8;
+  const estimatedHeight = Math.min(430, window.innerHeight - 24);
+  const top = desiredTop + estimatedHeight > window.innerHeight ? Math.max(12, rect.top - Math.min(380, rect.top - 12) - 8) : desiredTop;
+  popover.style.width = `${width}px`;
+  popover.style.left = `${left}px`;
+  popover.style.top = `${top}px`;
+}
+
+function drawDashboardCalendar() {
+  const popover = ensureDashboardCalendar();
+  if (!dashboardCalendarState.targetId) return;
+  const input = document.getElementById(dashboardCalendarState.targetId);
+  const selected = dashboardIsoToDate(input?.value);
+  const month = dashboardCalendarState.month || selected || new Date();
+  dashboardCalendarState.month = new Date(month.getFullYear(), month.getMonth(), 1);
+  const locale = dashboardDateLocale();
+  const lang = window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "en" : "ar";
+  popover.dir = lang === "en" ? "ltr" : "rtl";
+  popover.lang = lang;
+  const monthTitle = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(month);
+  const firstWeekday = new Date(month.getFullYear(), month.getMonth(), 1).getDay();
+  const gridStart = new Date(month.getFullYear(), month.getMonth(), 1 - firstWeekday);
+  const weekdayFmt = new Intl.DateTimeFormat(locale, { weekday: "narrow" });
+  const weekdayBase = new Date(2026, 7, 16);
+  const weekdays = Array.from({length:7}, (_,i)=>weekdayFmt.format(new Date(weekdayBase.getFullYear(),weekdayBase.getMonth(),weekdayBase.getDate()+i)));
+  const todayIso = dashboardDateToIso(new Date());
+  const selectedIso = input?.value || "";
+  const days = Array.from({length:42}, (_,i)=>{
+    const date = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate()+i);
+    const iso = dashboardDateToIso(date);
+    const outside = date.getMonth() !== month.getMonth();
+    return `<button type="button" class="dashboard-date-day${outside?' is-outside':''}${iso===selectedIso?' is-selected':''}${iso===todayIso?' is-today':''}" data-dashboard-pick-date="${iso}">${new Intl.NumberFormat(locale,{useGrouping:false}).format(date.getDate())}</button>`;
+  }).join("");
+  popover.innerHTML = `<div class="dashboard-date-popover-head"><button type="button" class="dashboard-date-nav" data-dashboard-calendar-prev aria-label="${escapeHtml(customerT('dashboard.calendar.previousMonth','الشهر السابق'))}"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><div class="dashboard-date-popover-title">${escapeHtml(monthTitle)}</div><button type="button" class="dashboard-date-nav" data-dashboard-calendar-next aria-label="${escapeHtml(customerT('dashboard.calendar.nextMonth','الشهر التالي'))}"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button></div><div class="dashboard-date-weekdays">${weekdays.map(day=>`<span>${escapeHtml(day)}</span>`).join('')}</div><div class="dashboard-date-days">${days}</div><div class="dashboard-date-popover-actions"><button type="button" data-dashboard-calendar-today>${escapeHtml(customerT('dashboard.calendar.today','اليوم'))}</button><button type="button" data-dashboard-calendar-clear>${escapeHtml(customerT('dashboard.calendar.clear','مسح'))}</button></div>`;
+  positionDashboardCalendar();
+}
+
+function openDashboardCalendar(targetId, trigger) {
+  const popover = ensureDashboardCalendar();
+  dashboardCalendarState.targetId = targetId;
+  const current = dashboardIsoToDate(document.getElementById(targetId)?.value);
+  dashboardCalendarState.month = current ? new Date(current.getFullYear(), current.getMonth(), 1) : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  popover.hidden = false;
+  drawDashboardCalendar();
+}
+
+function closeDashboardCalendar() {
+  if (dashboardCalendarState.popover) dashboardCalendarState.popover.hidden = true;
+  dashboardCalendarState.targetId = "";
+}
+
+function setDashboardCalendarValue(value) {
+  const input = document.getElementById(dashboardCalendarState.targetId);
+  if (!input) return;
+  input.value = value || "";
+  input.dispatchEvent(new Event("change", { bubbles: true }));
+  closeDashboardCalendar();
+}
+
+function initializeDashboardCalendar() {
+  document.querySelectorAll("[data-dashboard-date-target]").forEach(button => {
+    if (button.dataset.dashboardCalendarBound === "true") return;
+    button.dataset.dashboardCalendarBound = "true";
+    button.addEventListener("click", () => openDashboardCalendar(button.dataset.dashboardDateTarget, button));
+  });
+  document.addEventListener("click", event => {
+    const popover = dashboardCalendarState.popover;
+    if (!popover || popover.hidden) return;
+    if (event.target.closest?.("[data-dashboard-date-target]")) return;
+    const prev = event.target.closest?.("[data-dashboard-calendar-prev]");
+    const next = event.target.closest?.("[data-dashboard-calendar-next]");
+    const day = event.target.closest?.("[data-dashboard-pick-date]");
+    if (prev || next) {
+      const delta = prev ? -1 : 1;
+      dashboardCalendarState.month = new Date(dashboardCalendarState.month.getFullYear(), dashboardCalendarState.month.getMonth()+delta, 1);
+      drawDashboardCalendar();
+      return;
+    }
+    if (day) { setDashboardCalendarValue(day.dataset.dashboardPickDate); return; }
+    if (event.target.closest?.("[data-dashboard-calendar-today]")) { setDashboardCalendarValue(dashboardDateToIso(new Date())); return; }
+    if (event.target.closest?.("[data-dashboard-calendar-clear]")) { setDashboardCalendarValue(""); return; }
+    if (!event.target.closest?.(".dashboard-date-popover")) closeDashboardCalendar();
+  });
+  window.addEventListener("resize", positionDashboardCalendar, { passive: true });
+  window.addEventListener("scroll", positionDashboardCalendar, { passive: true, capture: true });
 }
 
 function dateInRange(value, from, to) {
@@ -7318,6 +7454,7 @@ document.querySelector("[data-open-customers]").addEventListener("click", () => 
 });
 
 document.addEventListener("kyum-apply-dashboard-filters", () => renderDashboard());
+initializeDashboardCalendar();
 syncDashboardDatePlaceholderState();
 
 document.getElementById("resetDashboardFilters").addEventListener("click", () => {

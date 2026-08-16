@@ -4,6 +4,8 @@
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
   const money = value => `SAR ${Number(value || 0).toFixed(2)}`;
+  const appointmentT = (key, fallback, vars = {}) => window.PetatoeLocalization?.t?.(key, vars) || fallback;
+  const appointmentEntity = (kind, id, fallback = "") => window.PetatoeLocalization?.entityText?.(kind, id, fallback) || fallback;
   const latinDigits = value => String(value ?? "")
     .replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
     .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)));
@@ -38,9 +40,9 @@
 
   function setSaveState(button,state,originalText){
     if(!button)return;
-    if(state==='saving'){button.dataset.originalText=originalText||button.textContent;button.disabled=true;button.textContent='جاري الحفظ...';button.classList.add('is-saving');}
-    else if(state==='saved'){button.textContent='تم الحفظ';button.classList.remove('is-saving');button.classList.add('is-saved');}
-    else if(state==='error'){button.textContent='تعذر الحفظ';button.classList.remove('is-saving');button.classList.add('is-save-error');}
+    if(state==='saving'){button.dataset.originalText=originalText||button.textContent;button.disabled=true;button.textContent=appointmentT('appointmentNew.action.saving','جاري الحفظ...');button.classList.add('is-saving');}
+    else if(state==='saved'){button.textContent=appointmentT('appointmentNew.action.saved','تم الحفظ');button.classList.remove('is-saving');button.classList.add('is-saved');}
+    else if(state==='error'){button.textContent=appointmentT('appointmentNew.action.saveError','تعذر الحفظ');button.classList.remove('is-saving');button.classList.add('is-save-error');}
     else{button.disabled=false;button.textContent=button.dataset.originalText||originalText||button.textContent;button.classList.remove('is-saving','is-saved','is-save-error');}
   }
   function status(node, message, type = "info") {
@@ -349,7 +351,7 @@
     if(!box||!input)return;
     const q=normalizeArabicText(query);
     const matches=(opts.neighborhoods||[]).filter(item=>!q||normalizeArabicText(item.name).includes(q)).slice(0,250);
-    box.innerHTML=matches.length?matches.map(item=>`<button type="button" class="installation-neighborhood-result" role="option" data-installation-neighborhood-id="${esc(item.id)}"><strong>${esc(newNeighborhoodLabel(item))}</strong></button>`).join(''):'<div class="installation-neighborhood-empty">لا توجد أحياء مطابقة.</div>';
+    box.innerHTML=matches.length?matches.map(item=>`<button type="button" class="installation-neighborhood-result" role="option" data-installation-neighborhood-id="${esc(item.id)}"><strong>${esc(newNeighborhoodLabel(item))}</strong></button>`).join(''):`<div class="installation-neighborhood-empty">${esc(appointmentT('customers.dialog.noNeighborhoods','لا توجد أحياء مطابقة.'))}</div>`;
     box.classList.remove('hidden');input.setAttribute('aria-expanded','true');
   }
   function setNewNeighborhood(neighborhoodId=''){
@@ -374,15 +376,15 @@
   }
 
   function serviceTypeOptions(selectedId = "") {
-    return '<option value="">اختر نوع الخدمة</option>' + opts.serviceTypes.map(item =>
-      `<option value="${esc(item.id)}" ${String(item.id) === String(selectedId) ? "selected" : ""}>${esc(item.name)}</option>`
+    return `<option value="">${esc(appointmentT('appointmentNew.services.select','اختر نوع الخدمة'))}</option>` + opts.serviceTypes.map(item =>
+      `<option value="${esc(item.id)}" ${String(item.id) === String(selectedId) ? "selected" : ""}>${esc(appointmentEntity('service', item.id, item.name))}</option>`
     ).join("");
   }
 
   function serviceSearchResults(query="", selectedId="") {
-    const q=String(query||"").trim().toLocaleLowerCase("ar");
-    const rows=(opts.serviceTypes||[]).filter(item=>!q||String(item.name||"").toLocaleLowerCase("ar").includes(q)).slice(0,80);
-    return rows.length?rows.map(item=>`<button type="button" role="option" aria-selected="${String(item.id)===String(selectedId)}" class="installation-service-search-option ${String(item.id)===String(selectedId)?"is-selected":""}" data-service-id="${esc(item.id)}"><span>${esc(item.name)}</span><small>${money(item.default_price||0)}</small></button>`).join(""):'<div class="installation-service-search-empty">لا توجد خدمة مطابقة للبحث.</div>';
+    const q=String(query||"").trim().toLocaleLowerCase(window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en':'ar');
+    const rows=(opts.serviceTypes||[]).filter(item=>{const label=appointmentEntity('service',item.id,item.name);return !q||String(label||"").toLocaleLowerCase().includes(q)}).slice(0,80);
+    return rows.length?rows.map(item=>`<button type="button" role="option" aria-selected="${String(item.id)===String(selectedId)}" class="installation-service-search-option ${String(item.id)===String(selectedId)?"is-selected":""}" data-service-id="${esc(item.id)}"><span>${esc(appointmentEntity('service',item.id,item.name))}</span><small>${money(item.default_price||0)}</small></button>`).join(""):`<div class="installation-service-search-empty">${esc(appointmentT('appointmentNew.services.noMatch','لا توجد خدمة مطابقة للبحث.'))}</div>`;
   }
   const servicePickerDesktopQuery="(min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine)";
   let activeServicePickerRow=null;
@@ -644,11 +646,11 @@
     const body=$("newInstallationServicesBody");if(!body)return;
     const row=document.createElement("tr");row.className="installation-service-entry";
     row.innerHTML=`
-      <td><div class="installation-service-searchbox"><input class="installation-service-type" type="text" tabindex="-1" aria-hidden="true" data-pending-service-type-id="${esc(initial.serviceTypeId||"")}" value="${esc(initial.serviceTypeId||"")}"><button class="installation-service-select" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="installation-service-select-label">اختر نوع الخدمة</span><span class="installation-service-select-arrow" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M5.5 7.5 10 12l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><div class="installation-service-search-results hidden" popover="manual"><div class="installation-service-search-head"><input class="installation-service-search" type="search" autocomplete="off" placeholder="ابحث عن خدمة..." aria-label="البحث في الخدمات"></div><div class="installation-service-search-options" role="listbox"></div></div></div></td>
+      <td><div class="installation-service-searchbox"><input class="installation-service-type" type="text" tabindex="-1" aria-hidden="true" data-pending-service-type-id="${esc(initial.serviceTypeId||"")}" value="${esc(initial.serviceTypeId||"")}"><button class="installation-service-select" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="installation-service-select-label">${esc(appointmentT('appointmentNew.services.select','اختر نوع الخدمة'))}</span><span class="installation-service-select-arrow" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M5.5 7.5 10 12l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><div class="installation-service-search-results hidden" popover="manual"><div class="installation-service-search-head"><input class="installation-service-search" type="search" autocomplete="off" placeholder="${esc(appointmentT('appointmentNew.services.search','ابحث عن خدمة...'))}" aria-label="${esc(appointmentT('appointmentNew.services.searchAria','البحث في الخدمات'))}"></div><div class="installation-service-search-options" role="listbox"></div></div></div></td>
       <td><input class="installation-service-quantity" type="text" inputmode="numeric" pattern="[0-9]*" value="${esc(latinDigits(initial.quantity||1))}" required></td>
       <td><input class="installation-service-price" type="text" inputmode="decimal" pattern="[0-9]+(?:\.[0-9]{0,2})?" value="${esc(latinDigits(initial.unitPrice??0))}" required></td>
       <td><output class="installation-service-line-total">${money((initial.quantity||1)*(initial.unitPrice||0))}</output></td>
-      <td><button type="button" class="danger-btn installation-service-remove">حذف</button></td>`;
+      <td><button type="button" class="danger-btn installation-service-remove">${esc(appointmentT('appointmentNew.services.remove','حذف'))}</button></td>`;
     body.appendChild(row);if(optionsLoaded)hydrateServiceRows();recalculateServices();
   }
 
@@ -685,7 +687,7 @@
       if(totals.discountType==='percentage'&&Number(discountInput.value||0)>100)discountInput.value='100';
       if(totals.discountType==='amount'&&Number(discountInput.value||0)>totals.gross)discountInput.value=totals.gross.toFixed(2);
     }
-    if(discountLabel)discountLabel.textContent=totals.discountType==='percentage'?'نسبة الخصم (%)':'قيمة الخصم (SAR)';
+    if(discountLabel)discountLabel.textContent=totals.discountType==='percentage'?appointmentT('appointmentNew.discount.percentageLabel','نسبة الخصم (%)'):appointmentT('appointmentNew.discount.amountLabel','قيمة الخصم (SAR)');
     $('newInstallationTotalQuantity').textContent=String(totals.quantity);
     $('newInstallationSubtotal').textContent=money(totals.subtotal);
     $('newInstallationDiscountTotal').textContent=money(totals.discount);
@@ -704,18 +706,18 @@
     }));
   }
 
-  function breedOptions(petType,selected=''){const rows=(opts.breeds||[]).filter(x=>x.pet_type===petType&&x.is_active!==false);const has=rows.some(x=>x.name===selected);return '<option value="">اختر السلالة</option>'+(!has&&selected?`<option value="${esc(selected)}" selected>${esc(selected)} — محفوظ سابقًا</option>`:'')+rows.map(x=>`<option value="${esc(x.name)}" ${x.name===selected?'selected':''}>${esc(x.name)}</option>`).join('')}
+  function breedOptions(petType,selected=''){const rows=(opts.breeds||[]).filter(x=>x.pet_type===petType&&x.is_active!==false);const has=rows.some(x=>x.name===selected);return `<option value="">${esc(appointmentT('appointmentNew.animals.selectBreed','اختر السلالة'))}</option>`+(!has&&selected?`<option value="${esc(selected)}" selected>${esc(selected)} — ${esc(appointmentT('appointmentNew.animals.saved','محفوظ سابقًا'))}</option>`:'')+rows.map(x=>`<option value="${esc(x.name)}" ${x.name===selected?'selected':''}>${esc(x.name)}</option>`).join('')}
   function syncBreedSelect(row,selected=''){const type=row.querySelector('.appointment-animal-type')?.value||'';const sel=row.querySelector('.appointment-animal-breed');if(sel)sel.innerHTML=breedOptions(type,selected||sel.value)}
   function addAnimalRow(initial={}){
     const body=$('newInstallationAnimalsBody');if(!body)return;
     const row=document.createElement('tr');row.className='appointment-animal-entry';
     row.innerHTML=`
-      <td><input class="appointment-animal-name" type="text" maxlength="120" value="${esc(initial.petName||'')}" placeholder="مثال: Max"></td>
-      <td><select class="appointment-animal-type"><option value="">اختر النوع</option><option value="كلب" ${initial.petType==='كلب'?'selected':''}>كلب</option><option value="قط" ${initial.petType==='قط'?'selected':''}>قط</option><option value="أخرى" ${initial.petType==='أخرى'?'selected':''}>أخرى</option></select></td>
+      <td><input class="appointment-animal-name" type="text" maxlength="120" value="${esc(initial.petName||'')}" placeholder="Max"></td>
+      <td><select class="appointment-animal-type"><option value="">${esc(appointmentT('appointmentNew.animals.selectType','اختر النوع'))}</option><option value="كلب" ${initial.petType==='كلب'?'selected':''}>${esc(appointmentT('appointmentNew.animals.dog','كلب'))}</option><option value="قط" ${initial.petType==='قط'?'selected':''}>${esc(appointmentT('appointmentNew.animals.cat','قط'))}</option><option value="أخرى" ${initial.petType==='أخرى'?'selected':''}>${esc(appointmentT('appointmentNew.animals.other','أخرى'))}</option></select></td>
       <td><select class="appointment-animal-breed">${breedOptions(initial.petType||'',initial.breed||'')}</select></td>
-      <td><select class="appointment-animal-size"><option value="">اختر الحجم</option><option value="صغير" ${initial.petSize==='صغير'?'selected':''}>صغير</option><option value="متوسط" ${initial.petSize==='متوسط'?'selected':''}>متوسط</option><option value="كبير" ${initial.petSize==='كبير'?'selected':''}>كبير</option></select></td>
+      <td><select class="appointment-animal-size"><option value="">${esc(appointmentT('appointmentNew.animals.selectSize','اختر الحجم'))}</option><option value="صغير" ${initial.petSize==='صغير'?'selected':''}>${esc(appointmentT('appointmentNew.animals.small','صغير'))}</option><option value="متوسط" ${initial.petSize==='متوسط'?'selected':''}>${esc(appointmentT('appointmentNew.animals.medium','متوسط'))}</option><option value="كبير" ${initial.petSize==='كبير'?'selected':''}>${esc(appointmentT('appointmentNew.animals.large','كبير'))}</option></select></td>
       <td><input class="appointment-animal-quantity" type="text" inputmode="numeric" pattern="[0-9]*" value="${esc(latinDigits(initial.quantity||1))}"></td>
-      <td><button type="button" class="danger-btn appointment-animal-remove">حذف</button></td>`;
+      <td><button type="button" class="danger-btn appointment-animal-remove">${esc(appointmentT('appointmentNew.services.remove','حذف'))}</button></td>`;
     body.appendChild(row);
   }
 
@@ -735,7 +737,7 @@
       amountCollected:amount,
       collectionStatus:$('newInstallationCollectionStatus')?.value||'غير محصل',
       paymentMethod:$('newInstallationPaymentMethod')?.value||'',
-      appointmentStatus:$('newInstallationAppointmentStatus')?.value||'بانتظار المراجعة'
+      appointmentStatus:'بانتظار المراجعة'
     };
   }
 
@@ -1167,5 +1169,26 @@
     });
 
 ;
+  });
+
+  window.addEventListener('petatoe-language-changed',()=>{
+    document.querySelectorAll('#newInstallationServicesBody .installation-service-entry').forEach(row=>{
+      const selected=row.querySelector('.installation-service-type')?.value||'';
+      const service=opts.serviceTypes.find(item=>String(item.id)===String(selected));
+      const label=row.querySelector('.installation-service-select-label');
+      if(label)label.textContent=service?appointmentEntity('service',service.id,service.name):appointmentT('appointmentNew.services.select','اختر نوع الخدمة');
+      const search=row.querySelector('.installation-service-search');
+      if(search){search.placeholder=appointmentT('appointmentNew.services.search','ابحث عن خدمة...');search.setAttribute('aria-label',appointmentT('appointmentNew.services.searchAria','البحث في الخدمات'))}
+    });
+    document.querySelectorAll('#newInstallationAnimalsBody .appointment-animal-entry').forEach(row=>{
+      const type=row.querySelector('.appointment-animal-type'), size=row.querySelector('.appointment-animal-size');
+      const typeValue=type?.value||'', sizeValue=size?.value||'';
+      if(type)type.innerHTML=`<option value="">${esc(appointmentT('appointmentNew.animals.selectType','اختر النوع'))}</option><option value="كلب" ${typeValue==='كلب'?'selected':''}>${esc(appointmentT('appointmentNew.animals.dog','كلب'))}</option><option value="قط" ${typeValue==='قط'?'selected':''}>${esc(appointmentT('appointmentNew.animals.cat','قط'))}</option><option value="أخرى" ${typeValue==='أخرى'?'selected':''}>${esc(appointmentT('appointmentNew.animals.other','أخرى'))}</option>`;
+      if(size)size.innerHTML=`<option value="">${esc(appointmentT('appointmentNew.animals.selectSize','اختر الحجم'))}</option><option value="صغير" ${sizeValue==='صغير'?'selected':''}>${esc(appointmentT('appointmentNew.animals.small','صغير'))}</option><option value="متوسط" ${sizeValue==='متوسط'?'selected':''}>${esc(appointmentT('appointmentNew.animals.medium','متوسط'))}</option><option value="كبير" ${sizeValue==='كبير'?'selected':''}>${esc(appointmentT('appointmentNew.animals.large','كبير'))}</option>`;
+      syncBreedSelect(row);
+    });
+    const statusInput=$('newInstallationAppointmentStatus');
+    if(statusInput)statusInput.value=appointmentT('appointmentNew.collection.pendingReview','بانتظار المراجعة');
+    recalculateServices();
   });
 })();

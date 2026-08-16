@@ -230,11 +230,27 @@ select[multiple]{min-height:120px}
 .dashboard-filter-bar{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
 .dashboard-filters{display:grid;grid-template-columns:repeat(3,minmax(150px,1fr));gap:10px;min-width:min(760px,65vw)}
 .dashboard-date-filter{position:relative;display:block;min-width:0}
-.dashboard-date-filter input{width:100%;position:relative;z-index:1}
-.dashboard-date-placeholder{position:absolute;inset-inline:14px 44px;inset-block-start:50%;transform:translateY(-50%);z-index:2;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font:inherit}
-.dashboard-date-filter:not(.has-value) input::-webkit-datetime-edit{color:transparent}
-.dashboard-date-filter.has-value .dashboard-date-placeholder{display:none}
-html[data-theme="dark"] .dashboard-date-placeholder{color:var(--muted)}
+.dashboard-date-display{inline-size:100%;min-block-size:48px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);font:inherit;cursor:pointer;box-shadow:none;text-align:start}
+.dashboard-date-display:hover,.dashboard-date-display:focus-visible{border-color:#68a9ff;outline:none;box-shadow:0 0 0 3px rgba(37,99,235,.10)}
+.dashboard-date-display-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.dashboard-date-filter.has-value .dashboard-date-display-text{color:var(--text)}
+.dashboard-date-icon{inline-size:20px;block-size:20px;flex:0 0 20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dashboard-date-popover{position:fixed;z-index:3200;inline-size:min(340px,calc(100vw - 24px));padding:14px;border:1px solid var(--border);border-radius:18px;background:var(--surface);box-shadow:0 22px 60px rgba(15,23,42,.22);color:var(--text)}
+.dashboard-date-popover[hidden]{display:none!important}
+.dashboard-date-popover-head{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:8px;margin-block-end:10px}
+.dashboard-date-popover-title{text-align:center;font-weight:800;font-size:14px}
+.dashboard-date-nav{inline-size:40px;block-size:40px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);color:var(--text);display:grid;place-items:center;cursor:pointer}
+.dashboard-date-nav svg{inline-size:18px;block-size:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dashboard-date-weekdays,.dashboard-date-days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dashboard-date-weekdays span{padding:4px 0;text-align:center;color:var(--muted);font-size:11px;font-weight:700}
+.dashboard-date-day{aspect-ratio:1;border:0;border-radius:10px;background:transparent;color:var(--text);font:inherit;font-size:13px;cursor:pointer}
+.dashboard-date-day:hover{background:var(--surface-2)}
+.dashboard-date-day.is-outside{color:var(--muted);opacity:.55}
+.dashboard-date-day.is-selected{background:#0b67d8;color:#fff;font-weight:800}
+.dashboard-date-day.is-today:not(.is-selected){outline:1px solid #d9a321;outline-offset:-2px}
+.dashboard-date-popover-actions{display:flex;justify-content:space-between;gap:8px;margin-block-start:10px;padding-block-start:10px;border-block-start:1px solid var(--border)}
+.dashboard-date-popover-actions button{border:0;background:transparent;color:#0b67d8;font:inherit;font-weight:800;cursor:pointer;padding:6px 8px}
+html[data-theme="dark"] .dashboard-date-display,html[data-theme="dark"] .dashboard-date-popover{background:var(--surface)}
 .period-label{color:var(--muted);font-size:13px;margin:0 0 14px}
 .dashboard-stats{grid-template-columns:repeat(4,minmax(0,1fr))}
 .dashboard-stats .stat-card strong{font-size:26px}

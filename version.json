@@ -1,12 +1,13 @@
 {
-  "version": "18.55.20",
-  "build": 185520,
+  "version": "18.55.21",
+  "build": 185521,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Dashboard Filter Localization Hotfix",
+  "title": "PETATOE Add Appointment Localization & Dashboard Calendar Locale",
   "notes": [
-    "إصلاح ترجمة فلتر المندوب في لوحة التحكم بعد إعادة بناء الخيارات ديناميكيًا.",
-    "إضافة placeholders مترجمة لحقول التاريخ مع مزامنة RTL/LTR."
+    "تطبيق ترجمة مركزية على شاشة إضافة موعد جديد وربط النصوص الثابتة والديناميكية بمركز الترجمه.",
+    "استبدال تقويم Dashboard الأصلي بمحدد تاريخ محلي يلتزم بلغة الواجهة ويستخدم أرقامًا لاتينية ويمنع تداخل أيقونة التاريخ مع النص.",
+    "الحفاظ على القيم التشغيلية العربية للخدمات والتحصيل والجدولة مع ترجمة طبقة العرض فقط."
   ],
-  "cacheToken": "petatoe-pwa-18-55-20-dashboard-filter-localization"
+  "cacheToken": "petatoe-pwa-18-55-21-add-appointment-dashboard-calendar"
 }

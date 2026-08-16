@@ -36,27 +36,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.55.20" />
-  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.55.20" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.55.21" />
+  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.55.21" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
@@ -498,13 +498,19 @@
             <select id="dashboardRepFilter">
               <option value="" data-petatoe-i18n="dashboard.filter.allReps">كل المندوبين</option>
             </select>
-            <label class="dashboard-date-filter" for="dashboardDateFrom">
-              <span class="dashboard-date-placeholder" data-petatoe-i18n="dashboard.filter.fromDisplay">من تاريخ</span>
-              <input id="dashboardDateFrom" type="date" aria-label="من تاريخ" data-petatoe-i18n-aria="dashboard.filter.fromAria">
+            <label class="dashboard-date-filter" for="dashboardDateFromDisplay">
+              <input id="dashboardDateFrom" type="hidden">
+              <button id="dashboardDateFromDisplay" class="dashboard-date-display" type="button" data-dashboard-date-target="dashboardDateFrom" aria-label="من تاريخ" data-petatoe-i18n-aria="dashboard.filter.fromAria">
+                <span class="dashboard-date-display-text" data-petatoe-i18n="dashboard.filter.fromDisplay">من تاريخ</span>
+                <svg class="dashboard-date-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v3M17 2v3M3.5 9h17M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z"/></svg>
+              </button>
             </label>
-            <label class="dashboard-date-filter" for="dashboardDateTo">
-              <span class="dashboard-date-placeholder" data-petatoe-i18n="dashboard.filter.toDisplay">إلى تاريخ</span>
-              <input id="dashboardDateTo" type="date" aria-label="إلى تاريخ" data-petatoe-i18n-aria="dashboard.filter.toAria">
+            <label class="dashboard-date-filter" for="dashboardDateToDisplay">
+              <input id="dashboardDateTo" type="hidden">
+              <button id="dashboardDateToDisplay" class="dashboard-date-display" type="button" data-dashboard-date-target="dashboardDateTo" aria-label="إلى تاريخ" data-petatoe-i18n-aria="dashboard.filter.toAria">
+                <span class="dashboard-date-display-text" data-petatoe-i18n="dashboard.filter.toDisplay">إلى تاريخ</span>
+                <svg class="dashboard-date-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v3M17 2v3M3.5 9h17M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z"/></svg>
+              </button>
             </label>
             <button id="resetDashboardFilters" class="secondary-btn" data-petatoe-i18n="dashboard.filter.reset">إعادة تعيين</button>
           </div>
@@ -1103,106 +1109,106 @@
       <section id="installationRequestNewView" class="view-section hidden installation-request-new-view" aria-hidden="true">
         <div class="installation-request-new-heading">
           <div>
-            <h3 id="newInstallationRequestHeading" class="section-title">إضافة موعد جديد</h3>
-            <p id="newInstallationRequestNote" class="section-note">سجّل بيانات العميل والخدمات والحيوان والتحصيل. ينتقل الموعد بعد الحفظ إلى المواعيد بحالة بانتظار المراجعة.</p>
+            <h3 id="newInstallationRequestHeading" class="section-title" data-petatoe-i18n="appointmentNew.page.title">إضافة موعد جديد</h3>
+            <p id="newInstallationRequestNote" class="section-note" data-petatoe-i18n="appointmentNew.intro.note">سجّل بيانات العميل والخدمات والحيوان والتحصيل. ينتقل الموعد بعد الحفظ إلى المواعيد بحالة بانتظار المراجعة.</p>
           </div>
         </div>
 
         <form id="newInstallationRequestForm" class="installation-request-workflow-form">
           <article class="panel installation-request-step-card">
-            <div class="installation-step-header"><span class="installation-step-number">1</span><div><h4>بيانات العميل</h4><p>اختر العميل والحي، واربط الموعد بعقد العميل إن وجد.</p></div></div>
+            <div class="installation-step-header"><span class="installation-step-number">1</span><div><h4 data-petatoe-i18n="appointmentNew.customer.title">بيانات العميل</h4><p data-petatoe-i18n="appointmentNew.customer.note">اختر العميل والحي، واربط الموعد بعقد العميل إن وجد.</p></div></div>
             <div class="installation-request-form-grid installation-customer-grid">
-              <label class="installation-customer-search-field">اسم العميل <span class="required-mark">*</span>
+              <label class="installation-customer-search-field"><span data-petatoe-i18n="appointmentNew.customer.name">اسم العميل</span> <span class="required-mark">*</span>
                 <div class="installation-customer-combobox">
-                  <input id="newInstallationCustomerSearch" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="newInstallationCustomerResults" autocomplete="off" placeholder="ابحث بالاسم أو رقم الجوال أو رقم العميل">
+                  <input id="newInstallationCustomerSearch" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="newInstallationCustomerResults" autocomplete="off" placeholder="ابحث بالاسم أو رقم الجوال أو رقم العميل" data-petatoe-i18n-placeholder="appointmentNew.customer.search">
                   <input id="newInstallationCustomerId" type="hidden" required>
                   <div id="newInstallationCustomerResults" class="installation-customer-results hidden" role="listbox"></div>
                 </div>
-                <small class="field-hint">يمكن البحث باسم العميل أو رقم الجوال أو رقم العميل.</small>
+                <small class="field-hint" data-petatoe-i18n="appointmentNew.customer.searchHint">يمكن البحث باسم العميل أو رقم الجوال أو رقم العميل.</small>
               </label>
-              <label class="installation-neighborhood-field">الحي <span class="required-mark">*</span>
+              <label class="installation-neighborhood-field"><span data-petatoe-i18n="appointmentNew.customer.district">الحي</span> <span class="required-mark">*</span>
                 <div class="installation-neighborhood-combobox">
                   <input id="newInstallationNeighborhoodSearch" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="newInstallationNeighborhoodResults" autocomplete="off" placeholder="ابحث واختر الحي" data-petatoe-i18n-placeholder="customers.dialog.neighborhoodPlaceholder">
                   <input id="newInstallationNeighborhoodId" type="hidden" required>
                   <div id="newInstallationNeighborhoodResults" class="installation-neighborhood-results hidden" role="listbox"></div>
                 </div>
-                <small class="field-hint">القائمة الحالية مخصصة لأحياء جدة فقط.</small>
+                <small class="field-hint" data-petatoe-i18n="appointmentNew.customer.districtHint">القائمة الحالية مخصصة لأحياء جدة فقط.</small>
               </label>
-              <label>رقم العقد (اختياري)<select id="newInstallationQuotationId"><option value="">بدون عقد</option></select><small class="field-hint">تظهر عقود العميل المقبولة والمتاحة فقط.</small></label>
-              <label>موقع العميل (رابط Google Maps) <span class="optional-mark">اختياري</span><input id="newInstallationCustomerMapUrl" type="url" inputmode="url" maxlength="1000" placeholder="https://maps.app.goo.gl/..." autocomplete="url"><small class="field-hint">الصق رابط مشاركة الموقع من Google Maps ليظهر للفريق زر فتح الموقع.</small></label>
+              <label><span data-petatoe-i18n="appointmentNew.customer.contract">رقم العقد (اختياري)</span><select id="newInstallationQuotationId"><option value="" data-petatoe-i18n="appointmentNew.customer.noContract">بدون عقد</option></select><small class="field-hint" data-petatoe-i18n="appointmentNew.customer.contractHint">تظهر عقود العميل المقبولة والمتاحة فقط.</small></label>
+              <label><span data-petatoe-i18n="appointmentNew.customer.location">موقع العميل (رابط Google Maps)</span> <span class="optional-mark" data-petatoe-i18n="appointmentNew.common.optional">اختياري</span><input id="newInstallationCustomerMapUrl" type="url" inputmode="url" maxlength="1000" placeholder="https://maps.app.goo.gl/..." autocomplete="url"><small class="field-hint" data-petatoe-i18n="appointmentNew.customer.locationHint">الصق رابط مشاركة الموقع من Google Maps ليظهر للفريق زر فتح الموقع.</small></label>
             </div>
           </article>
 
           <article class="panel installation-request-step-card">
-            <div class="installation-step-header"><span class="installation-step-number">2</span><div><h4>تفاصيل الخدمة</h4><p>أضف خدمة واحدة أو أكثر، ثم اختر نوع الخصم. ضريبة القيمة المضافة ثابتة 15%، ثم يطبق الخصم على الإجمالي شامل الضريبة.</p></div></div>
+            <div class="installation-step-header"><span class="installation-step-number">2</span><div><h4 data-petatoe-i18n="appointmentNew.services.title">تفاصيل الخدمة</h4><p data-petatoe-i18n="appointmentNew.services.note">أضف خدمة واحدة أو أكثر، ثم اختر نوع الخصم. ضريبة القيمة المضافة ثابتة 15%، ثم يطبق الخصم على الإجمالي شامل الضريبة.</p></div></div>
             <div class="installation-services-table-wrap">
               <table class="installation-services-table">
-                <thead><tr><th>نوع الخدمة</th><th>عدد الخدمات</th><th>سعر الخدمة</th><th>الإجمالي</th><th>إجراء</th></tr></thead>
+                <thead><tr><th data-petatoe-i18n="appointmentNew.services.type">نوع الخدمة</th><th data-petatoe-i18n="appointmentNew.services.quantity">عدد الخدمات</th><th data-petatoe-i18n="appointmentNew.services.price">سعر الخدمة</th><th data-petatoe-i18n="appointmentNew.services.total">الإجمالي</th><th data-petatoe-i18n="appointmentNew.services.action">إجراء</th></tr></thead>
                 <tbody id="newInstallationServicesBody"></tbody>
               </table>
             </div>
             <div class="installation-services-footer appointment-financial-footer">
-              <button id="addInstallationServiceRow" type="button" class="secondary-btn">إضافة خدمة أخرى</button>
+              <button id="addInstallationServiceRow" type="button" class="secondary-btn" data-petatoe-i18n="appointmentNew.services.add">إضافة خدمة أخرى</button>
               <div class="appointment-discount-field">
-                <label>نوع الخصم
+                <label><span data-petatoe-i18n="appointmentNew.discount.type">نوع الخصم</span>
                   <select id="newInstallationDiscountType">
-                    <option value="amount">قيمة (SAR)</option>
-                    <option value="percentage">نسبة (%)</option>
+                    <option value="amount" data-petatoe-i18n="appointmentNew.discount.amount">قيمة (SAR)</option>
+                    <option value="percentage" data-petatoe-i18n="appointmentNew.discount.percentage">نسبة (%)</option>
                   </select>
                 </label>
-                <label><span id="newInstallationDiscountLabel">قيمة الخصم (SAR)</span><input id="newInstallationDiscount" type="text" inputmode="decimal" pattern="[0-9]+(?:\.[0-9]{0,2})?" value="0"></label>
+                <label><span id="newInstallationDiscountLabel" data-petatoe-i18n="appointmentNew.discount.amountLabel">قيمة الخصم (SAR)</span><input id="newInstallationDiscount" type="text" inputmode="decimal" pattern="[0-9]+(?:\.[0-9]{0,2})?" value="0"></label>
               </div>
               <div class="installation-services-summary appointment-financial-summary">
-                <span>إجمالي عدد الخدمات</span><strong id="newInstallationTotalQuantity">0</strong>
-                <span>إجمالي الخدمات قبل الضريبة</span><strong id="newInstallationSubtotal">SAR 0.00</strong>
-                <span>ضريبة القيمة المضافة (15%)</span><strong id="newInstallationTaxAmount">SAR 0.00</strong>
-                <span>الخصم بعد الضريبة</span><strong id="newInstallationDiscountTotal">SAR 0.00</strong>
-                <span>الإجمالي النهائي</span><strong id="newInstallationGrandTotal">SAR 0.00</strong>
+                <span data-petatoe-i18n="appointmentNew.summary.quantity">إجمالي عدد الخدمات</span><strong id="newInstallationTotalQuantity">0</strong>
+                <span data-petatoe-i18n="appointmentNew.summary.subtotal">إجمالي الخدمات قبل الضريبة</span><strong id="newInstallationSubtotal">SAR 0.00</strong>
+                <span data-petatoe-i18n="appointmentNew.summary.tax">ضريبة القيمة المضافة (15%)</span><strong id="newInstallationTaxAmount">SAR 0.00</strong>
+                <span data-petatoe-i18n="appointmentNew.summary.discount">الخصم بعد الضريبة</span><strong id="newInstallationDiscountTotal">SAR 0.00</strong>
+                <span data-petatoe-i18n="appointmentNew.summary.final">الإجمالي النهائي</span><strong id="newInstallationGrandTotal">SAR 0.00</strong>
               </div>
             </div>
           </article>
 
           <article class="panel installation-request-step-card">
-            <div class="installation-step-header"><span class="installation-step-number">3</span><div><h4>بيانات الحيوان</h4><p>أضف بيانات الحيوان أو أكثر المرتبطين بالموعد.</p></div></div>
+            <div class="installation-step-header"><span class="installation-step-number">3</span><div><h4 data-petatoe-i18n="appointmentNew.animals.title">بيانات الحيوان</h4><p data-petatoe-i18n="appointmentNew.animals.note">أضف بيانات الحيوان أو أكثر المرتبطين بالموعد.</p></div></div>
             <div class="appointment-animals-wrap">
               <div class="appointment-animals-table-wrap">
                 <table class="appointment-animals-table">
-                  <thead><tr><th>اسم الحيوان</th><th>نوع الحيوان</th><th>السلالة</th><th>الحجم</th><th>العدد</th><th>الإجراءات</th></tr></thead>
+                  <thead><tr><th data-petatoe-i18n="appointmentNew.animals.name">اسم الحيوان</th><th data-petatoe-i18n="appointmentNew.animals.type">نوع الحيوان</th><th data-petatoe-i18n="appointmentNew.animals.breed">السلالة</th><th data-petatoe-i18n="appointmentNew.animals.size">الحجم</th><th data-petatoe-i18n="appointmentNew.animals.quantity">العدد</th><th data-petatoe-i18n="appointmentNew.animals.actions">الإجراءات</th></tr></thead>
                   <tbody id="newInstallationAnimalsBody"></tbody>
                 </table>
               </div>
-              <button id="addInstallationAnimalRow" type="button" class="secondary-btn">إضافة حيوان آخر</button>
+              <button id="addInstallationAnimalRow" type="button" class="secondary-btn" data-petatoe-i18n="appointmentNew.animals.add">إضافة حيوان آخر</button>
             </div>
           </article>
 
           <article class="panel installation-request-step-card">
-            <div class="installation-step-header"><span class="installation-step-number">4</span><div><h4>التحصيل</h4><p>قيمة الموعد والخصم تتحدثان تلقائيًا من تفاصيل الخدمة.</p></div></div>
+            <div class="installation-step-header"><span class="installation-step-number">4</span><div><h4 data-petatoe-i18n="appointmentNew.collection.title">التحصيل</h4><p data-petatoe-i18n="appointmentNew.collection.note">قيمة الموعد والخصم تتحدثان تلقائيًا من تفاصيل الخدمة.</p></div></div>
             <div class="installation-request-form-grid appointment-collection-grid">
-              <label>قيمة الجلسة<input id="newInstallationSessionValue" type="text" value="SAR 0.00" readonly></label>
-              <label>إجمالي الخصم<input id="newInstallationCollectionDiscount" type="text" value="SAR 0.00" readonly></label>
-              <label>المبلغ المحصل<input id="newInstallationAmountCollected" type="text" inputmode="decimal" pattern="[0-9]+(?:\.[0-9]{0,2})?" value="0"></label>
-              <label>حالة التحصيل<select id="newInstallationCollectionStatus"><option value="غير محصل">غير محصل</option><option value="محصل جزئيًا">محصل جزئيًا</option><option value="محصل بالكامل">محصل بالكامل</option></select></label>
-              <label>طريقة الدفع<select id="newInstallationPaymentMethod"><option value="">اختر طريقة الدفع</option><option value="نقدي">نقدي</option><option value="بطاقة / شبكة">بطاقة / شبكة</option><option value="تحويل بنكي">تحويل بنكي</option><option value="الدفع عن طريق الموقع">الدفع عن طريق الموقع</option></select></label>
-              <label>الحالة<input id="newInstallationAppointmentStatus" type="text" value="بانتظار المراجعة" readonly></label>
+              <label><span data-petatoe-i18n="appointmentNew.collection.sessionValue">قيمة الجلسة</span><input id="newInstallationSessionValue" type="text" value="SAR 0.00" readonly></label>
+              <label><span data-petatoe-i18n="appointmentNew.collection.discount">إجمالي الخصم</span><input id="newInstallationCollectionDiscount" type="text" value="SAR 0.00" readonly></label>
+              <label><span data-petatoe-i18n="appointmentNew.collection.collected">المبلغ المحصل</span><input id="newInstallationAmountCollected" type="text" inputmode="decimal" pattern="[0-9]+(?:\.[0-9]{0,2})?" value="0"></label>
+              <label><span data-petatoe-i18n="appointmentNew.collection.status">حالة التحصيل</span><select id="newInstallationCollectionStatus"><option value="غير محصل" data-petatoe-i18n="appointmentNew.collection.uncollected">غير محصل</option><option value="محصل جزئيًا" data-petatoe-i18n="appointmentNew.collection.partial">محصل جزئيًا</option><option value="محصل بالكامل" data-petatoe-i18n="appointmentNew.collection.full">محصل بالكامل</option></select></label>
+              <label><span data-petatoe-i18n="appointmentNew.collection.payment">طريقة الدفع</span><select id="newInstallationPaymentMethod"><option value="" data-petatoe-i18n="appointmentNew.collection.paymentChoose">اختر طريقة الدفع</option><option value="نقدي" data-petatoe-i18n="appointmentNew.collection.cash">نقدي</option><option value="بطاقة / شبكة" data-petatoe-i18n="appointmentNew.collection.card">بطاقة / شبكة</option><option value="تحويل بنكي" data-petatoe-i18n="appointmentNew.collection.bank">تحويل بنكي</option><option value="الدفع عن طريق الموقع" data-petatoe-i18n="appointmentNew.collection.website">الدفع عن طريق الموقع</option></select></label>
+              <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><input id="newInstallationAppointmentStatus" type="text" value="بانتظار المراجعة" readonly></label>
             </div>
           </article>
 
           <article class="panel installation-request-step-card">
-            <div class="installation-step-header"><span class="installation-step-number">5</span><div><h4>جدولة الموعد <span class="optional-mark">اختياري</span></h4><p>يمكن جدولة الموعد الآن، أو تركه لينتقل إلى قائمة انتظار الجدولة. أضف الملاحظات التشغيلية مع الجدولة.</p></div></div>
+            <div class="installation-step-header"><span class="installation-step-number">5</span><div><h4><span data-petatoe-i18n="appointmentNew.schedule.title">جدولة الموعد</span> <span class="optional-mark" data-petatoe-i18n="appointmentNew.common.optional">اختياري</span></h4><p data-petatoe-i18n="appointmentNew.schedule.note">يمكن جدولة الموعد الآن، أو تركه لينتقل إلى قائمة انتظار الجدولة. أضف الملاحظات التشغيلية مع الجدولة.</p></div></div>
             <div class="installation-request-form-grid appointment-optional-schedule-grid">
-              <label>تاريخ الموعد <span class="optional-mark">اختياري</span><input id="newInstallationScheduleDate" type="date"></label>
-              <label>وقت الموعد <span class="optional-mark">اختياري</span><select id="newInstallationScheduleTime"><option value="">يحدد لاحقًا</option><option value="12:00">12:00 ظهرًا</option><option value="14:00">2:00 مساءً</option><option value="16:00">4:00 مساءً</option><option value="18:00">6:00 مساءً</option><option value="20:00">8:00 مساءً</option><option value="22:00">10:00 مساءً</option></select></label>
-              <label>الفرقة / السيارة <span class="optional-mark">اختياري</span><select id="newInstallationScheduleTeam"><option value="">تحدد لاحقًا</option></select></label>
-              <label>الجرومر <span class="optional-mark">اختياري</span><input id="newInstallationScheduleTechnician" type="text" list="newInstallationScheduleTechnicianOptions" autocomplete="off" placeholder="اسم الجرومر"><datalist id="newInstallationScheduleTechnicianOptions"></datalist></label>
-              <label class="full-span installation-notes-label">ملاحظات الموعد<textarea id="newInstallationNotes" rows="5" maxlength="2000" placeholder="اكتب تعليمات العميل أو تفاصيل الموقع أو أي متطلبات خاصة"></textarea></label>
+              <label><span data-petatoe-i18n="appointmentNew.schedule.date">تاريخ الموعد</span> <span class="optional-mark" data-petatoe-i18n="appointmentNew.common.optional">اختياري</span><input id="newInstallationScheduleDate" type="date"></label>
+              <label><span data-petatoe-i18n="appointmentNew.schedule.time">وقت الموعد</span> <span class="optional-mark" data-petatoe-i18n="appointmentNew.common.optional">اختياري</span><select id="newInstallationScheduleTime"><option value="" data-petatoe-i18n="appointmentNew.schedule.later">يحدد لاحقًا</option><option value="12:00" data-petatoe-i18n="appointmentNew.schedule.time12">12:00 ظهرًا</option><option value="14:00" data-petatoe-i18n="appointmentNew.schedule.time14">2:00 مساءً</option><option value="16:00" data-petatoe-i18n="appointmentNew.schedule.time16">4:00 مساءً</option><option value="18:00" data-petatoe-i18n="appointmentNew.schedule.time18">6:00 مساءً</option><option value="20:00" data-petatoe-i18n="appointmentNew.schedule.time20">8:00 مساءً</option><option value="22:00" data-petatoe-i18n="appointmentNew.schedule.time22">10:00 مساءً</option></select></label>
+              <label><span data-petatoe-i18n="appointmentNew.schedule.team">الفرقة / السيارة</span> <span class="optional-mark" data-petatoe-i18n="appointmentNew.common.optional">اختياري</span><select id="newInstallationScheduleTeam"><option value="" data-petatoe-i18n="appointmentNew.schedule.teamLater">تحدد لاحقًا</option></select></label>
+              <label><span data-petatoe-i18n="appointmentNew.schedule.groomer">الجرومر</span> <span class="optional-mark" data-petatoe-i18n="appointmentNew.common.optional">اختياري</span><input id="newInstallationScheduleTechnician" type="text" list="newInstallationScheduleTechnicianOptions" autocomplete="off" placeholder="اسم الجرومر" data-petatoe-i18n-placeholder="appointmentNew.schedule.groomerPlaceholder"><datalist id="newInstallationScheduleTechnicianOptions"></datalist></label>
+              <label class="full-span installation-notes-label"><span data-petatoe-i18n="appointmentNew.schedule.notes">ملاحظات الموعد</span><textarea id="newInstallationNotes" rows="5" maxlength="2000" placeholder="اكتب تعليمات العميل أو تفاصيل الموقع أو أي متطلبات خاصة" data-petatoe-i18n-placeholder="appointmentNew.schedule.notesPlaceholder"></textarea></label>
             </div>
-            <p class="appointment-optional-schedule-hint">إذا اكتملت بيانات الجدولة سيظهر الموعد مباشرة في الجدول. إذا تُركت فارغة سيبقى في انتظار الجدولة.</p>
+            <p class="appointment-optional-schedule-hint" data-petatoe-i18n="appointmentNew.schedule.hint">إذا اكتملت بيانات الجدولة سيظهر الموعد مباشرة في الجدول. إذا تُركت فارغة سيبقى في انتظار الجدولة.</p>
           </article>
 
           <div id="newInstallationRequestFormStatus" class="data-status hidden" aria-live="polite"></div>
           <div class="installation-request-page-actions">
-            <button id="resetNewInstallationRequest" type="button" class="secondary-btn">إعادة تعيين</button>
-            <button id="saveNewInstallationRequest" type="submit" class="primary-btn">حفظ الموعد</button>
+            <button id="resetNewInstallationRequest" type="button" class="secondary-btn" data-petatoe-i18n="appointmentNew.action.reset">إعادة تعيين</button>
+            <button id="saveNewInstallationRequest" type="submit" class="primary-btn" data-petatoe-i18n="appointmentNew.action.save">حفظ الموعد</button>
           </div>
         </form>
       </section>
@@ -1218,7 +1224,7 @@
         <div class="panel installation-request-filters">
           <label>بحث<input id="installationRequestSearch" type="search" placeholder="رقم الموعد، العميل، الهاتف أو العقد"></label>
           <label>الفرقة<select id="installationRequestRepresentativeFilter"><option value="">كل الفرق</option></select></label>
-          <label>الحالة<select id="installationRequestStatusFilter"><option value="">كل الحالات</option><option>بانتظار المراجعة</option><option>جديد</option><option>مجدول</option><option>مسند</option><option>في الطريق</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option><option>ملغي</option></select></label>
+          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationRequestStatusFilter"><option value="">كل الحالات</option><option>بانتظار المراجعة</option><option>جديد</option><option>مجدول</option><option>مسند</option><option>في الطريق</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option><option>ملغي</option></select></label>
           <label>من تاريخ<input id="installationRequestDateFrom" type="date"></label>
           <label>إلى تاريخ<input id="installationRequestDateTo" type="date"></label>
           <button id="resetInstallationRequestFilters" class="secondary-btn" type="button">إعادة تعيين</button>
@@ -1257,7 +1263,7 @@
           <button id="installationScheduleTodayBtn" class="secondary-btn" type="button">اليوم</button>
           <button id="installationScheduleNextBtn" class="icon-btn" type="button" aria-label="الشهر التالي"><span class="legacy-icon-glyph" aria-hidden="true">›</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg></span></button>
           <label>الجرومر<select id="installationScheduleTechnicianFilter"><option value="">كل الجرومر</option></select></label>
-          <label>الحالة<select id="installationScheduleStatusFilter"><option value="">كل الحالات</option><option>بانتظار المراجعة</option><option>جديد</option><option>مجدول</option><option>مسند</option><option>في الطريق</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option><option>ملغي</option></select></label>
+          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationScheduleStatusFilter"><option value="">كل الحالات</option><option>بانتظار المراجعة</option><option>جديد</option><option>مجدول</option><option>مسند</option><option>في الطريق</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option><option>ملغي</option></select></label>
         </div>
         <div class="installation-schedule-kpis">
           <article class="panel"><span>طلبات الشهر</span><strong id="installationScheduleKpiMonth">0</strong></article>
@@ -1336,7 +1342,7 @@
         </div>
         <div class="panel installation-operations-filters">
           <label>بحث<input id="installationExceptionsSearch" type="search" placeholder="رقم الطلب، العميل أو الفني"></label>
-          <label>الحالة<select id="installationExceptionsStatusFilter"><option value="">الكل</option><option>مؤجل</option><option>متعذر</option></select></label>
+          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationExceptionsStatusFilter"><option value="">الكل</option><option>مؤجل</option><option>متعذر</option></select></label>
           <label>سبب التعثر<select id="installationExceptionsReasonFilter"><option value="">كل الأسباب</option><option>العميل غير موجود</option><option>الموقع غير جاهز</option><option>نقص مواد</option><option>تأجيل العميل</option><option>تعذر الوصول</option><option>سبب آخر</option></select></label>
           <button id="resetInstallationExceptionsFilters" class="secondary-btn" type="button">إعادة ضبط</button>
         </div>
@@ -1361,7 +1367,7 @@
           <label>المندوب<select id="installationReportsRepresentativeFilter"><option value="" data-petatoe-i18n="dashboard.filter.allReps">كل المندوبين</option></select></label>
           <label>الفرقة<select id="installationReportsTeamFilter"><option value="">كل الفرق</option></select></label>
           <label>الفني<select id="installationReportsTechnicianFilter"><option value="">كل الفنيين</option></select></label>
-          <label>الحالة<select id="installationReportsStatusFilter"><option value="">كل الحالات</option><option>جديد</option><option>مسند</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option></select></label>
+          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="installationReportsStatusFilter"><option value="">كل الحالات</option><option>جديد</option><option>مسند</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option><option>متعذر</option></select></label>
           <button id="resetInstallationReportsFilters" class="secondary-btn" type="button">إعادة ضبط</button>
         </div>
         <div class="installation-report-kpis installation-financial-kpis">
@@ -1956,7 +1962,7 @@
         <div class="filters-grid users-filters">
           <label>بحث<input id="usersSearch" type="search" placeholder="الاسم أو البريد"></label>
           <label>الدور<select id="usersRoleFilter"><option value="">كل الأدوار</option></select></label>
-          <label>الحالة<select id="usersStatusFilter"><option value="">كل الحالات</option><option value="active">نشط</option><option value="inactive">غير نشط</option></select></label>
+          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="usersStatusFilter"><option value="">كل الحالات</option><option value="active">نشط</option><option value="inactive">غير نشط</option></select></label>
         </div>
         <div id="usersStatus" class="data-status hidden"></div>
         <div class="table-wrap">
@@ -3117,10 +3123,10 @@
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.55.20"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.55.20"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.55.20"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.55.20"></script>
+  <script src="assets/js/performance-monitor.js?v=18.55.21"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.55.21"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.55.21"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.55.21"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -3340,7 +3346,7 @@
         </label>
         <label class="installation-context-location-field"><span>موقع العميل (Google Maps)</span><div class="installation-context-location-control"><input id="installationServicesEditMapUrl" type="url" inputmode="url" placeholder="https://maps.app.goo.gl/..."><a id="installationServicesEditOpenMap" class="installation-context-location-link hidden" href="#" target="_blank" rel="noopener noreferrer">فتح الموقع</a></div></label>
         <label><span>رقم طلب العميل</span><input id="installationServicesEditCustomerOrder" type="text" maxlength="120" placeholder="رقم طلب العميل"></label>
-        <label><span>رقم العقد</span><select id="installationServicesEditQuotation"><option value="">بدون عقد</option></select></label>
+        <label><span>رقم العقد</span><select id="installationServicesEditQuotation"><option value="" data-petatoe-i18n="appointmentNew.customer.noContract">بدون عقد</option></select></label>
       </section>
       <div class="installation-inline-services-wrap"><table class="installation-inline-services-table"><thead><tr><th>الخدمة</th><th>العدد</th><th>سعر الوحدة</th><th>الإجمالي</th><th>إجراء</th></tr></thead><tbody id="installationServicesEditBody"></tbody></table></div>
       <div class="installation-inline-services-footer"><button id="addInstallationInlineService" class="secondary-btn" type="button">إضافة خدمة أخرى</button><div><span>إجمالي العدد</span><strong id="installationInlineTotalQuantity">0</strong><span>إجمالي الطلب</span><strong id="installationInlineGrandTotal">SAR 0.00</strong></div></div>
@@ -3364,12 +3370,12 @@
         <label>تاريخ الموعد<input id="installationAssignmentDate" type="date" required><small id="installationAssignmentDateHint" class="field-hint">الأيام المغلقة لا يمكن حفظ الجدولة عليها.</small></label>
         <label>وقت الموعد<select id="installationAssignmentTime" required>
           <option value="">اختر الوقت</option>
-          <option value="12:00">12:00 ظهرًا</option>
-          <option value="14:00">2:00 مساءً</option>
-          <option value="16:00">4:00 مساءً</option>
-          <option value="18:00">6:00 مساءً</option>
-          <option value="20:00">8:00 مساءً</option>
-          <option value="22:00">10:00 مساءً</option>
+          <option value="12:00" data-petatoe-i18n="appointmentNew.schedule.time12">12:00 ظهرًا</option>
+          <option value="14:00" data-petatoe-i18n="appointmentNew.schedule.time14">2:00 مساءً</option>
+          <option value="16:00" data-petatoe-i18n="appointmentNew.schedule.time16">4:00 مساءً</option>
+          <option value="18:00" data-petatoe-i18n="appointmentNew.schedule.time18">6:00 مساءً</option>
+          <option value="20:00" data-petatoe-i18n="appointmentNew.schedule.time20">8:00 مساءً</option>
+          <option value="22:00" data-petatoe-i18n="appointmentNew.schedule.time22">10:00 مساءً</option>
         </select></label>
         <label>اسم الفرقة
           <select id="installationAssignmentTeam" required><option value="">اختر فرقة المواعيد</option></select>
@@ -3433,9 +3439,9 @@
         <section class="installation-confirmation-workspace-section" aria-labelledby="installationQuantityCollectionTitle">
           <div class="installation-section-title"><div><h4 id="installationQuantityCollectionTitle">التحصيل</h4><p>راجع بيانات التحصيل المسجلة على الموعد وحدّثها عند الحاجة.</p></div></div>
           <div class="installation-confirmation-collection-grid">
-            <label>المبلغ المحصل<input id="installationQuantityAmountCollected" type="text" inputmode="decimal" lang="en" dir="ltr" value="0.00"></label>
-            <label>طريقة الدفع<select id="installationQuantityPaymentMethod"><option value="">اختر طريقة الدفع</option><option value="نقدي">نقدي</option><option value="بطاقة / شبكة">بطاقة / شبكة</option><option value="تحويل بنكي">تحويل بنكي</option><option value="الدفع عن طريق الموقع">الدفع عن طريق الموقع</option></select></label>
-            <label>حالة التحصيل<input id="installationQuantityCollectionStatus" type="text" readonly value="غير محصل"></label>
+            <label><span data-petatoe-i18n="appointmentNew.collection.collected">المبلغ المحصل</span><input id="installationQuantityAmountCollected" type="text" inputmode="decimal" lang="en" dir="ltr" value="0.00"></label>
+            <label><span data-petatoe-i18n="appointmentNew.collection.payment">طريقة الدفع</span><select id="installationQuantityPaymentMethod"><option value="" data-petatoe-i18n="appointmentNew.collection.paymentChoose">اختر طريقة الدفع</option><option value="نقدي" data-petatoe-i18n="appointmentNew.collection.cash">نقدي</option><option value="بطاقة / شبكة" data-petatoe-i18n="appointmentNew.collection.card">بطاقة / شبكة</option><option value="تحويل بنكي" data-petatoe-i18n="appointmentNew.collection.bank">تحويل بنكي</option><option value="الدفع عن طريق الموقع" data-petatoe-i18n="appointmentNew.collection.website">الدفع عن طريق الموقع</option></select></label>
+            <label><span data-petatoe-i18n="appointmentNew.collection.status">حالة التحصيل</span><input id="installationQuantityCollectionStatus" type="text" readonly value="غير محصل"></label>
             <label>رقم الفاتورة<input id="installationQuantityInvoiceNumber" type="text" autocomplete="off" placeholder="اكتب رقم أو رمز الفاتورة"></label>
             <label class="full-span">ملاحظات التحصيل<textarea id="installationQuantityCollectionNotes" rows="2" maxlength="1000" placeholder="أي ملاحظات مرتبطة بالتحصيل"></textarea></label>
           </div>
@@ -3554,65 +3560,65 @@
         </form>
       </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.55.20"></script>
-  <script src="assets/js/offline-session-store.js?v=18.55.20"></script>
-  <script src="assets/js/supabase-client.js?v=18.55.20"></script>
-  <script src="assets/js/geographic-address.js?v=18.55.20"></script>
-  <script src="assets/js/permissions.js?v=18.55.20"></script>
-  <script src="assets/js/permission-engine.js?v=18.55.20"></script>
-  <script src="assets/js/localization-center-service.js?v=18.55.20"></script>
-  <script src="assets/js/localization-center.js?v=18.55.20"></script>
-  <script src="assets/js/translation-center.js?v=18.55.20"></script>
-  <script src="assets/js/data-access-scope.js?v=18.55.20"></script>
-  <script src="assets/js/smart-cache.js?v=18.55.20"></script>
-  <script src="assets/js/sync-engine.js?v=18.55.20"></script>
-  <script src="assets/js/offline-queue.js?v=18.55.20"></script>
-  <script src="assets/js/permissions-service.js?v=18.55.20"></script>
-  <script src="assets/js/auth-session.js?v=18.55.20"></script>
-  <script src="assets/js/reference-data-service.js?v=18.55.20"></script>
-  <script src="assets/js/customers-service.js?v=18.55.20"></script>
-  <script src="assets/js/followups-service.js?v=18.55.20"></script>
-  <script src="assets/js/quotations-service.js?v=18.55.20"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.55.20"></script>
-  <script src="assets/js/users-service.js?v=18.55.20"></script>
-  <script src="assets/js/activity-service.js?v=18.55.20"></script>
-  <script src="assets/js/backup-service.js?v=18.55.20"></script>
-  <script src="assets/js/system-settings-service.js?v=18.55.20"></script>
-  <script src="assets/js/system-health-service.js?v=18.55.20"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.55.20"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.55.20"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.55.20"></script>
-  <script src="assets/js/installations-service.js?v=18.55.20"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.55.20"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.55.20"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.55.20"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.55.20"></script>
+  <script src="assets/js/supabase-config.js?v=18.55.21"></script>
+  <script src="assets/js/offline-session-store.js?v=18.55.21"></script>
+  <script src="assets/js/supabase-client.js?v=18.55.21"></script>
+  <script src="assets/js/geographic-address.js?v=18.55.21"></script>
+  <script src="assets/js/permissions.js?v=18.55.21"></script>
+  <script src="assets/js/permission-engine.js?v=18.55.21"></script>
+  <script src="assets/js/localization-center-service.js?v=18.55.21"></script>
+  <script src="assets/js/localization-center.js?v=18.55.21"></script>
+  <script src="assets/js/translation-center.js?v=18.55.21"></script>
+  <script src="assets/js/data-access-scope.js?v=18.55.21"></script>
+  <script src="assets/js/smart-cache.js?v=18.55.21"></script>
+  <script src="assets/js/sync-engine.js?v=18.55.21"></script>
+  <script src="assets/js/offline-queue.js?v=18.55.21"></script>
+  <script src="assets/js/permissions-service.js?v=18.55.21"></script>
+  <script src="assets/js/auth-session.js?v=18.55.21"></script>
+  <script src="assets/js/reference-data-service.js?v=18.55.21"></script>
+  <script src="assets/js/customers-service.js?v=18.55.21"></script>
+  <script src="assets/js/followups-service.js?v=18.55.21"></script>
+  <script src="assets/js/quotations-service.js?v=18.55.21"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.55.21"></script>
+  <script src="assets/js/users-service.js?v=18.55.21"></script>
+  <script src="assets/js/activity-service.js?v=18.55.21"></script>
+  <script src="assets/js/backup-service.js?v=18.55.21"></script>
+  <script src="assets/js/system-settings-service.js?v=18.55.21"></script>
+  <script src="assets/js/system-health-service.js?v=18.55.21"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.55.21"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.55.21"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.55.21"></script>
+  <script src="assets/js/installations-service.js?v=18.55.21"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.55.21"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.55.21"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.55.21"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.55.21"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.55.20"></script>
-  <script src="assets/js/export-center.js?v=18.55.20"></script>
-  <script src="assets/js/customer360-engine.js?v=18.55.20"></script>
-  <script src="assets/js/customer360-export.js?v=18.55.20"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.55.20"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.55.20"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.55.20"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.55.20"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.55.20"></script>
-  <script src="assets/js/notification-center-service.js?v=18.55.20"></script>
-  <script src="assets/js/app.js?v=18.55.20"></script>
-  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.55.20"></script>
-  <script src="assets/js/notification-center.js?v=18.55.20"></script>
-  <script src="assets/js/sales-invoices.js?v=18.55.20"></script>
-  <script src="assets/js/installations-module.js?v=18.55.20"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.55.20"></script>
-  <script src="assets/js/installation-execution.js?v=18.55.20"></script>
-  <script src="assets/js/installation-completion.js?v=18.55.20"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.55.20"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.55.20"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.55.20"></script>
-  <script src="assets/js/mobile.js?v=18.55.20"></script>
-  <script src="assets/js/pwa.js?v=18.55.20"></script>
-  <script src="assets/js/native.js?v=18.55.20"></script>
+  <script src="assets/js/reports-engine.js?v=18.55.21"></script>
+  <script src="assets/js/export-center.js?v=18.55.21"></script>
+  <script src="assets/js/customer360-engine.js?v=18.55.21"></script>
+  <script src="assets/js/customer360-export.js?v=18.55.21"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.55.21"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.55.21"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.55.21"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.55.21"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.55.21"></script>
+  <script src="assets/js/notification-center-service.js?v=18.55.21"></script>
+  <script src="assets/js/app.js?v=18.55.21"></script>
+  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.55.21"></script>
+  <script src="assets/js/notification-center.js?v=18.55.21"></script>
+  <script src="assets/js/sales-invoices.js?v=18.55.21"></script>
+  <script src="assets/js/installations-module.js?v=18.55.21"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.55.21"></script>
+  <script src="assets/js/installation-execution.js?v=18.55.21"></script>
+  <script src="assets/js/installation-completion.js?v=18.55.21"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.55.21"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.55.21"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.55.21"></script>
+  <script src="assets/js/mobile.js?v=18.55.21"></script>
+  <script src="assets/js/pwa.js?v=18.55.21"></script>
+  <script src="assets/js/native.js?v=18.55.21"></script>
 </body>
 </html>
