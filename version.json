@@ -1,13 +1,13 @@
 {
-  "version": "18.55.12",
-  "build": 185512,
+  "version": "18.55.13",
+  "build": 185513,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Mobile Localization Enablement",
+  "title": "PETATOE Customer Localization + User Default Language",
   "notes": [
-    "تفعيل نفس محرك الترجمة المركزي على نسخة الموبايل بدل إجبارها على العربية.",
-    "تفعيل ترجمة شاشة تنفيذ المواعيد والقائمة الجانبية والعناصر المشتركة على الموبايل بنفس القاموس المعتمد.",
-    "إظهار زر تبديل اللغة بجوار زر الوضع الفاتح/الداكن في هيدر الموبايل مع الحفاظ على Light/Dark."
+    "تطبيق Localization Lockdown على قسم إدارة العملاء مع الحفاظ على ترجمات القائمة الجانبية والخدمات والأحياء الحالية.",
+    "إضافة لغة افتراضية لكل مستخدم وتطبيقها عند تسجيل الدخول على Desktop وMobile.",
+    "توسيع مركز الترجمه ليشمل العملاء والمتابعات والعقود وفواتير المبيعات."
   ],
-  "cacheToken": "petatoe-pwa-18-55-12-mobile-localization"
+  "cacheToken": "petatoe-pwa-18-55-13-customer-localization"
 }

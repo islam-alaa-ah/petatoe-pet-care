@@ -36,27 +36,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.55.12" />
-  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.55.12" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.55.13" />
+  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.55.13" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
@@ -569,21 +569,21 @@
 
       <section id="customersView" class="view-section hidden">
         <div class="actions-row">
-          <div class="search-box"><input id="customerSearch" type="search" placeholder="بحث بالكود أو الاسم أو العنوان أو الجوال..."></div>
+          <div class="search-box"><input id="customerSearch" type="search" placeholder="بحث بالكود أو الاسم أو العنوان أو الجوال..." data-petatoe-i18n-placeholder="customers.search.placeholder"></div>
           <div class="customer-main-actions">
-            <button id="customersImportBtn" class="secondary-btn customer-import-action" type="button">رفع عملاء Excel</button>
-            <button id="customersTemplateBtn" class="secondary-btn customer-export-action" type="button">تنزيل نموذج Excel</button>
-            <button id="addCustomerBtn" class="primary-btn customer-manage-action">إضافة عميل</button>
+            <button id="customersImportBtn" class="secondary-btn customer-import-action" type="button" data-petatoe-i18n="customers.import">رفع عملاء Excel</button>
+            <button id="customersTemplateBtn" class="secondary-btn customer-export-action" type="button" data-petatoe-i18n="customers.template">تنزيل نموذج Excel</button>
+            <button id="addCustomerBtn" class="primary-btn customer-manage-action" data-petatoe-i18n="customers.add">إضافة عميل</button>
           </div>
         </div>
         <div id="customersStatus" class="data-status hidden"></div>
         <div id="customersMobileCards" class="customers-mobile-cards" aria-live="polite"></div>
         <div class="table-card customers-desktop-table"><table>
-          <thead><tr><th>code</th><th>name</th><th>address</th><th>mobile</th><th>موقع Google Maps</th><th>الإجراءات</th></tr></thead>
+          <thead><tr><th data-petatoe-i18n="customers.col.code">code</th><th data-petatoe-i18n="customers.col.name">name</th><th data-petatoe-i18n="customers.col.address">address</th><th data-petatoe-i18n="customers.col.mobile">mobile</th><th data-petatoe-i18n="customers.col.maps">موقع Google Maps</th><th data-petatoe-i18n="customers.col.actions">الإجراءات</th></tr></thead>
           <tbody id="customersTableBody"></tbody>
         </table></div>
         <div class="table-pagination" id="customersPagination"><span id="customersPaginationInfo">0 عميل</span><div>
-          <button id="customersPrevPage" class="secondary-btn compact-btn" type="button">السابق</button><span id="customersPageNumber">1</span><button id="customersNextPage" class="secondary-btn compact-btn" type="button">التالي</button>
+          <button id="customersPrevPage" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="customers.prev">السابق</button><span id="customersPageNumber">1</span><button id="customersNextPage" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="customers.next">التالي</button>
         </div></div>
       </section>
 
@@ -591,13 +591,13 @@
       <section id="followupsView" class="view-section hidden">
         <div class="actions-row">
           <div>
-            <h3 class="section-title">سجل متابعات العملاء</h3>
-            <p class="section-note">كل تواصل مع العميل يُحفظ كسجل مستقل دون حذف التاريخ السابق.</p>
+            <h3 class="section-title" data-petatoe-i18n="followups.title">سجل متابعات العملاء</h3>
+            <p class="section-note" data-petatoe-i18n="followups.note">كل تواصل مع العميل يُحفظ كسجل مستقل دون حذف التاريخ السابق.</p>
           </div>
           <div class="report-export-actions">
-            <button id="exportFollowupsPdfBtn" class="secondary-btn" type="button">تصدير PDF</button>
-            <button id="sendFollowupsWhatsappPdfBtn" class="primary-btn" type="button">إرسال التقرير واتساب PDF</button>
-            <button id="addFollowupBtn" class="primary-btn followup-manage-action">إضافة متابعة</button>
+            <button id="exportFollowupsPdfBtn" class="secondary-btn" type="button" data-petatoe-i18n="followups.exportPdf">تصدير PDF</button>
+            <button id="sendFollowupsWhatsappPdfBtn" class="primary-btn" type="button" data-petatoe-i18n="followups.whatsappPdf">إرسال التقرير واتساب PDF</button>
+            <button id="addFollowupBtn" class="primary-btn followup-manage-action" data-petatoe-i18n="followups.add">إضافة متابعة</button>
           </div>
         </div>
 
@@ -605,16 +605,16 @@
         <div class="followup-stats" id="followupStats"></div>
 
         <div class="filters-row followup-filters">
-          <input id="followupSearch" type="search" placeholder="بحث باسم العميل أو رقم الجوال أو المندوب...">
+          <input id="followupSearch" type="search" placeholder="بحث باسم العميل أو رقم الجوال أو المندوب..." data-petatoe-i18n-placeholder="followups.search.placeholder">
           <select id="followupStatusFilter">
-            <option value="">كل المتابعات</option>
-            <option value="today">متابعات اليوم</option>
-            <option value="overdue">متابعات متأخرة</option>
-            <option value="upcoming">متابعات قادمة</option>
-            <option value="completed">متابعات مكتملة</option>
+            <option value="" data-petatoe-i18n="followups.filter.all">كل المتابعات</option>
+            <option value="today" data-petatoe-i18n="followups.filter.today">متابعات اليوم</option>
+            <option value="overdue" data-petatoe-i18n="followups.filter.overdue">متابعات متأخرة</option>
+            <option value="upcoming" data-petatoe-i18n="followups.filter.upcoming">متابعات قادمة</option>
+            <option value="completed" data-petatoe-i18n="followups.filter.completed">متابعات مكتملة</option>
           </select>
           <select id="followupRepFilter">
-            <option value="">كل المندوبين</option>
+            <option value="" data-petatoe-i18n="followups.filter.allReps">كل المندوبين</option>
           </select>
         </div>
 
@@ -622,16 +622,16 @@
           <table>
             <thead>
               <tr>
-                <th>العميل</th>
-                <th>رقم العميل</th>
-                <th>تاريخ التواصل</th>
-                <th>طريقة التواصل</th>
-                <th>المندوب</th>
-                <th>نتيجة التواصل</th>
-                <th>العقد</th>
-                <th>المتابعة القادمة</th>
-                <th>الحالة</th>
-                <th>الإجراءات</th>
+                <th data-petatoe-i18n="followups.col.customer">العميل</th>
+                <th data-petatoe-i18n="followups.col.phone">رقم العميل</th>
+                <th data-petatoe-i18n="followups.col.contactDate">تاريخ التواصل</th>
+                <th data-petatoe-i18n="followups.col.method">طريقة التواصل</th>
+                <th data-petatoe-i18n="followups.col.rep">المندوب</th>
+                <th data-petatoe-i18n="followups.col.result">نتيجة التواصل</th>
+                <th data-petatoe-i18n="followups.col.contract">العقد</th>
+                <th data-petatoe-i18n="followups.col.next">المتابعة القادمة</th>
+                <th data-petatoe-i18n="followups.col.status">الحالة</th>
+                <th data-petatoe-i18n="followups.col.actions">الإجراءات</th>
               </tr>
             </thead>
             <tbody id="followupsTableBody"></tbody>
@@ -640,9 +640,9 @@
         <div class="table-pagination" id="followupsPagination">
           <span id="followupsPaginationInfo">0 متابعة</span>
           <div>
-            <button id="followupsPrevPage" class="secondary-btn compact-btn" type="button">السابق</button>
+            <button id="followupsPrevPage" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="customers.prev">السابق</button>
             <span id="followupsPageNumber">1</span>
-            <button id="followupsNextPage" class="secondary-btn compact-btn" type="button">التالي</button>
+            <button id="followupsNextPage" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="customers.next">التالي</button>
           </div>
         </div>
       </section>
@@ -651,13 +651,13 @@
       <section id="quotationsView" class="view-section hidden">
         <div class="actions-row">
           <div>
-            <h3 class="section-title">إدارة عقود العملاء</h3>
-            <p class="section-note">تسجيل عقود العملاء وربطها بالعملاء ومتابعة حالتها وقيمتها.</p>
+            <h3 class="section-title" data-petatoe-i18n="contracts.title">إدارة عقود العملاء</h3>
+            <p class="section-note" data-petatoe-i18n="contracts.note">تسجيل عقود العملاء وربطها بالعملاء ومتابعة حالتها وقيمتها.</p>
           </div>
           <div class="report-export-actions">
-            <button id="exportQuotationsPdfBtn" class="secondary-btn" type="button">تصدير PDF</button>
-            <button id="sendQuotationsWhatsappPdfBtn" class="primary-btn" type="button">إرسال التقرير واتساب PDF</button>
-            <button id="addQuotationBtn" class="primary-btn quotation-manage-action" data-permission-screen="quotations" data-permission-action="add">إضافة عقد</button>
+            <button id="exportQuotationsPdfBtn" class="secondary-btn" type="button" data-petatoe-i18n="contracts.exportPdf">تصدير PDF</button>
+            <button id="sendQuotationsWhatsappPdfBtn" class="primary-btn" type="button" data-petatoe-i18n="contracts.whatsappPdf">إرسال التقرير واتساب PDF</button>
+            <button id="addQuotationBtn" class="primary-btn quotation-manage-action" data-permission-screen="quotations" data-permission-action="add" data-petatoe-i18n="contracts.add">إضافة عقد</button>
           </div>
         </div>
 
@@ -665,20 +665,20 @@
         <div id="quotationStats" class="followup-stats"></div>
 
         <div class="filters-row quotation-filters">
-          <input id="quotationSearch" type="search" placeholder="بحث برقم العقد أو رقم طلب العميل أو العميل أو المندوب...">
+          <input id="quotationSearch" type="search" placeholder="بحث برقم العقد أو رقم طلب العميل أو العميل أو المندوب..." data-petatoe-i18n-placeholder="contracts.search.placeholder">
           <select id="quotationStatusFilter">
-            <option value="">كل الحالات</option>
-            <option value="قيد التنفيذ">قيد التنفيذ</option>
-            <option value="مقبول">مقبول</option>
-            <option value="مرفوض">مرفوض</option>
+            <option value="" data-petatoe-i18n="contracts.filter.allStatuses">كل الحالات</option>
+            <option value="قيد التنفيذ" data-petatoe-i18n="contracts.status.inProgress">قيد التنفيذ</option>
+            <option value="مقبول" data-petatoe-i18n="contracts.status.accepted">مقبول</option>
+            <option value="مرفوض" data-petatoe-i18n="contracts.status.rejected">مرفوض</option>
           </select>
           <select id="quotationWorkflowFilter">
-            <option value="unconverted" selected>غير محول إلى موعد</option>
-            <option value="converted">تم تحويله إلى موعد</option>
-            <option value="">الكل</option>
+            <option value="unconverted" selected data-petatoe-i18n="contracts.filter.unconverted">غير محول إلى موعد</option>
+            <option value="converted" data-petatoe-i18n="contracts.filter.converted">تم تحويله إلى موعد</option>
+            <option value="" data-petatoe-i18n="contracts.filter.all">الكل</option>
           </select>
           <select id="quotationRepFilter">
-            <option value="">كل المندوبين</option>
+            <option value="" data-petatoe-i18n="contracts.filter.allReps">كل المندوبين</option>
           </select>
         </div>
 
@@ -686,16 +686,16 @@
           <table>
             <thead>
               <tr>
-                <th>رقم العقد</th>
-                <th>العميل</th>
-                <th>رقم العميل</th>
-                <th>المندوب</th>
-                <th>تاريخ العقد</th>
-                <th>القيمة</th>
-                <th>الحالة</th>
-                <th>تاريخ الانتهاء</th>
-                <th>سبب الرفض</th>
-                <th>الإجراءات</th>
+                <th data-petatoe-i18n="contracts.col.number">رقم العقد</th>
+                <th data-petatoe-i18n="contracts.col.customer">العميل</th>
+                <th data-petatoe-i18n="contracts.col.phone">رقم العميل</th>
+                <th data-petatoe-i18n="contracts.col.rep">المندوب</th>
+                <th data-petatoe-i18n="contracts.col.date">تاريخ العقد</th>
+                <th data-petatoe-i18n="contracts.col.value">القيمة</th>
+                <th data-petatoe-i18n="contracts.col.status">الحالة</th>
+                <th data-petatoe-i18n="contracts.col.expiry">تاريخ الانتهاء</th>
+                <th data-petatoe-i18n="contracts.col.rejectReason">سبب الرفض</th>
+                <th data-petatoe-i18n="contracts.col.actions">الإجراءات</th>
               </tr>
             </thead>
             <tbody id="quotationsTableBody"></tbody>
@@ -704,9 +704,9 @@
         <div class="table-pagination" id="quotationsPagination">
           <span id="quotationsPaginationInfo">0 عرض</span>
           <div>
-            <button id="quotationsPrevPage" class="secondary-btn compact-btn" type="button">السابق</button>
+            <button id="quotationsPrevPage" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="customers.prev">السابق</button>
             <span id="quotationsPageNumber">1</span>
-            <button id="quotationsNextPage" class="secondary-btn compact-btn" type="button">التالي</button>
+            <button id="quotationsNextPage" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="customers.next">التالي</button>
           </div>
         </div>
       </section>
@@ -714,28 +714,28 @@
       <section id="salesInvoicesView" class="view-section hidden">
         <div class="actions-row">
           <div>
-            <h3 class="section-title">فواتير المبيعات</h3>
-            <p class="section-note">سجل موحد للفواتير الناتجة من عقود العملاء وتأكيد انتهاء المواعيد.</p>
+            <h3 class="section-title" data-petatoe-i18n="invoices.title">فواتير المبيعات</h3>
+            <p class="section-note" data-petatoe-i18n="invoices.note">سجل موحد للفواتير الناتجة من عقود العملاء وتأكيد انتهاء المواعيد.</p>
           </div>
-          <button id="refreshSalesInvoicesBtn" class="secondary-btn" type="button">تحديث</button>
+          <button id="refreshSalesInvoicesBtn" class="secondary-btn" type="button" data-petatoe-i18n="invoices.refresh">تحديث</button>
         </div>
         <div id="salesInvoicesStatus" class="data-status hidden" aria-live="polite"></div>
         <div class="sales-invoices-summary" aria-label="ملخص فواتير المبيعات">
-          <article><span>عدد الفواتير</span><strong id="salesInvoicesCount">0</strong></article>
-          <article><span>إجمالي قيمة الفواتير</span><strong id="salesInvoicesAmount">0.00 ر.س</strong></article>
-          <article><span>إجمالي مصاريف الموعد</span><strong id="salesInvoicesInstallationCost">0.00 ر.س</strong></article>
+          <article><span data-petatoe-i18n="invoices.summary.count">عدد الفواتير</span><strong id="salesInvoicesCount">0</strong></article>
+          <article><span data-petatoe-i18n="invoices.summary.amount">إجمالي قيمة الفواتير</span><strong id="salesInvoicesAmount">0.00 ر.س</strong></article>
+          <article><span data-petatoe-i18n="invoices.summary.cost">إجمالي مصاريف الموعد</span><strong id="salesInvoicesInstallationCost">0.00 ر.س</strong></article>
         </div>
         <div class="filters-row sales-invoices-filters">
-          <input id="salesInvoicesSearch" type="search" placeholder="بحث برقم الطلب أو العميل أو رقم الفاتورة أو المندوب...">
-          <select id="salesInvoicesSourceFilter"><option value="">كل المصادر</option><option value="quotation">عقد</option><option value="installation">موعد</option></select>
-          <select id="salesInvoicesStatusFilter"><option value="">كل الحالات</option><option value="صادرة">صادرة</option><option value="ملغاة">ملغاة</option></select>
-          <input id="salesInvoicesDateFrom" type="date" aria-label="من تاريخ">
-          <input id="salesInvoicesDateTo" type="date" aria-label="إلى تاريخ">
-          <button id="resetSalesInvoicesFilters" class="secondary-btn" type="button">إعادة تعيين</button>
+          <input id="salesInvoicesSearch" type="search" placeholder="بحث برقم الطلب أو العميل أو رقم الفاتورة أو المندوب..." data-petatoe-i18n-placeholder="invoices.search.placeholder">
+          <select id="salesInvoicesSourceFilter"><option value="" data-petatoe-i18n="invoices.filter.allSources">كل المصادر</option><option value="quotation" data-petatoe-i18n="invoices.source.contract">عقد</option><option value="installation" data-petatoe-i18n="invoices.source.appointment">موعد</option></select>
+          <select id="salesInvoicesStatusFilter"><option value="" data-petatoe-i18n="invoices.filter.allStatuses">كل الحالات</option><option value="صادرة" data-petatoe-i18n="invoices.status.issued">صادرة</option><option value="ملغاة" data-petatoe-i18n="invoices.status.cancelled">ملغاة</option></select>
+          <input id="salesInvoicesDateFrom" type="date" aria-label="من تاريخ" data-petatoe-i18n-aria="invoices.date.from">
+          <input id="salesInvoicesDateTo" type="date" aria-label="إلى تاريخ" data-petatoe-i18n-aria="invoices.date.to">
+          <button id="resetSalesInvoicesFilters" class="secondary-btn" type="button" data-petatoe-i18n="invoices.reset">إعادة تعيين</button>
         </div>
         <div class="table-card sales-invoices-table-card">
           <table class="sales-invoices-table">
-            <thead><tr><th>رقم الطلب</th><th>اسم العميل</th><th>رقم الفاتورة</th><th>قيمة الفاتورة</th><th>مصاريف الموعد</th><th>اسم المندوب</th><th>تاريخ الفاتورة</th><th>المصدر</th><th>الحالة</th></tr></thead>
+            <thead><tr><th data-petatoe-i18n="invoices.col.request">رقم الطلب</th><th data-petatoe-i18n="invoices.col.customer">اسم العميل</th><th data-petatoe-i18n="invoices.col.invoice">رقم الفاتورة</th><th data-petatoe-i18n="invoices.col.amount">قيمة الفاتورة</th><th data-petatoe-i18n="invoices.col.cost">مصاريف الموعد</th><th data-petatoe-i18n="invoices.col.rep">اسم المندوب</th><th data-petatoe-i18n="invoices.col.date">تاريخ الفاتورة</th><th data-petatoe-i18n="invoices.col.source">المصدر</th><th data-petatoe-i18n="invoices.col.status">الحالة</th></tr></thead>
             <tbody id="salesInvoicesTableBody"><tr><td colspan="9" class="empty-state">جاري تحميل الفواتير...</td></tr></tbody>
           </table>
         </div>
@@ -747,7 +747,7 @@
             <h3 class="section-title">مندوبو المبيعات</h3>
           </div>
           <div class="representatives-import-actions reference-manage-action">
-            <button id="representativesTemplateBtn" class="secondary-btn" type="button">تنزيل نموذج Excel</button>
+            <button id="representativesTemplateBtn" class="secondary-btn" type="button" data-petatoe-i18n="customers.template">تنزيل نموذج Excel</button>
             <button id="representativesImportBtn" class="secondary-btn" type="button">رفع مندوبي Excel</button>
             <button id="addRepresentativeBtn" class="primary-btn" type="button">إضافة مندوب</button>
           </div>
@@ -836,7 +836,7 @@
             <div class="reference-customers-filters"><label class="reference-customers-search">بحث<input id="referenceCustomersSearch" type="search" placeholder="الكود أو الاسم أو العنوان أو الجوال"></label></div>
             <div id="referenceCustomersStatus" class="data-status hidden"></div>
             <div class="table-card reference-customers-table-card"><table class="reference-customers-table">
-              <thead><tr><th>code</th><th>name</th><th>address</th><th>mobile</th><th>موقع Google Maps</th><th>الإجراءات</th></tr></thead>
+              <thead><tr><th data-petatoe-i18n="customers.col.code">code</th><th data-petatoe-i18n="customers.col.name">name</th><th data-petatoe-i18n="customers.col.address">address</th><th data-petatoe-i18n="customers.col.mobile">mobile</th><th data-petatoe-i18n="customers.col.maps">موقع Google Maps</th><th data-petatoe-i18n="customers.col.actions">الإجراءات</th></tr></thead>
               <tbody id="referenceCustomersTableBody"></tbody>
             </table></div>
             <div class="table-pagination" id="referenceCustomersPagination"><span id="referenceCustomersPaginationInfo">0 عميل</span><div>
@@ -1116,7 +1116,7 @@
               </label>
               <label class="installation-neighborhood-field">الحي <span class="required-mark">*</span>
                 <div class="installation-neighborhood-combobox">
-                  <input id="newInstallationNeighborhoodSearch" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="newInstallationNeighborhoodResults" autocomplete="off" placeholder="ابحث واختر الحي">
+                  <input id="newInstallationNeighborhoodSearch" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="newInstallationNeighborhoodResults" autocomplete="off" placeholder="ابحث واختر الحي" data-petatoe-i18n-placeholder="customers.dialog.neighborhoodPlaceholder">
                   <input id="newInstallationNeighborhoodId" type="hidden" required>
                   <div id="newInstallationNeighborhoodResults" class="installation-neighborhood-results hidden" role="listbox"></div>
                 </div>
@@ -2604,23 +2604,23 @@
 
   <dialog id="customerDialog">
     <form id="customerForm" method="dialog">
-      <div class="dialog-header"><div><h3 id="dialogTitle">إضافة عميل جديد</h3><p>بيانات العميل الأساسية فقط.</p></div><button id="closeDialogBtn" class="icon-btn" type="button">×</button></div>
+      <div class="dialog-header"><div><h3 id="dialogTitle" data-petatoe-i18n="customers.dialog.add">إضافة عميل جديد</h3><p data-petatoe-i18n="customers.dialog.note">بيانات العميل الأساسية فقط.</p></div><button id="closeDialogBtn" class="icon-btn" type="button">×</button></div>
       <input id="customerId" type="hidden">
       <div class="form-grid">
-        <label>code<input id="customerCode" maxlength="80" required autocomplete="off"></label>
-        <label>name<input id="customerName" maxlength="200" required autocomplete="name"></label>
-        <label class="full-width">address
+        <label><span data-petatoe-i18n="customers.col.code">code</span><input id="customerCode" maxlength="80" required autocomplete="off"></label>
+        <label><span data-petatoe-i18n="customers.col.name">name</span><input id="customerName" maxlength="200" required autocomplete="name"></label>
+        <label class="full-width"><span data-petatoe-i18n="customers.col.address">address</span>
           <div id="customerNeighborhoodCombobox" class="geo-searchable-select">
             <input id="customerNeighborhoodId" type="hidden">
-            <input id="customerAddress" class="geo-searchable-input" type="search" maxlength="500" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="customerNeighborhoodOptions" placeholder="ابحث واختر الحي">
-            <button id="customerNeighborhoodToggle" class="geo-searchable-toggle" type="button" aria-label="فتح قائمة الأحياء">⌄</button>
+            <input id="customerAddress" class="geo-searchable-input" type="search" maxlength="500" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="customerNeighborhoodOptions" placeholder="ابحث واختر الحي" data-petatoe-i18n-placeholder="customers.dialog.neighborhoodPlaceholder">
+            <button id="customerNeighborhoodToggle" class="geo-searchable-toggle" type="button" aria-label="فتح قائمة الأحياء" data-petatoe-i18n-aria="customers.dialog.neighborhoodAria">⌄</button>
             <div id="customerNeighborhoodOptions" class="geo-searchable-options hidden" role="listbox"></div>
           </div>
         </label>
-        <label class="full-width">موقع Google Maps<input id="customerGoogleMapsUrl" type="url" maxlength="1000" placeholder="https://maps.app.goo.gl/..." autocomplete="url"></label>
-        <label>mobile<input id="customerPhone" inputmode="tel" placeholder="05XXXXXXXX" maxlength="20" required autocomplete="tel"></label>
+        <label class="full-width"><span data-petatoe-i18n="customers.col.maps">موقع Google Maps</span><input id="customerGoogleMapsUrl" type="url" maxlength="1000" placeholder="https://maps.app.goo.gl/..." autocomplete="url"></label>
+        <label><span data-petatoe-i18n="customers.col.mobile">mobile</span><input id="customerPhone" inputmode="tel" placeholder="05XXXXXXXX" maxlength="20" required autocomplete="tel"></label>
       </div>
-      <div class="dialog-actions"><button id="cancelDialogBtn" type="button" class="secondary-btn">إلغاء</button><button type="submit" class="primary-btn">حفظ العميل</button></div>
+      <div class="dialog-actions"><button id="cancelDialogBtn" type="button" class="secondary-btn" data-petatoe-i18n="customers.dialog.cancel">إلغاء</button><button type="submit" class="primary-btn" data-petatoe-i18n="customers.dialog.save">حفظ العميل</button></div>
     </form>
   </dialog>
 
@@ -2629,8 +2629,8 @@
     <form id="followupForm" method="dialog">
       <div class="dialog-header">
         <div>
-          <h3 id="followupDialogTitle">إضافة متابعة جديدة</h3>
-          <p>سيتم الاحتفاظ بكل متابعة داخل سجل العميل.</p>
+          <h3 id="followupDialogTitle" data-petatoe-i18n="followups.dialog.add">إضافة متابعة جديدة</h3>
+          <p data-petatoe-i18n="followups.dialog.note">سيتم الاحتفاظ بكل متابعة داخل سجل <span data-petatoe-i18n="followups.dialog.customer">العميل</span>.</p>
         </div>
         <button id="closeFollowupDialogBtn" class="icon-btn" type="button">×</button>
       </div>
@@ -2644,72 +2644,72 @@
         </label>
 
         <label>
-          تاريخ التواصل
+          <span data-petatoe-i18n="followups.dialog.contactDate">تاريخ التواصل</span>
           <input id="followupContactDate" type="date" required>
         </label>
 
         <label>
-          طريقة التواصل
+          <span data-petatoe-i18n="followups.dialog.method">طريقة التواصل</span>
           <select id="followupMethod" required>
-            <option value="اتصال">اتصال</option>
-            <option value="واتساب">واتساب</option>
-            <option value="زيارة">زيارة</option>
-            <option value="بريد إلكتروني">بريد إلكتروني</option>
-            <option value="اجتماع">اجتماع</option>
+            <option value="اتصال" data-petatoe-i18n="followups.method.call">اتصال</option>
+            <option value="واتساب" data-petatoe-i18n="followups.method.whatsapp">واتساب</option>
+            <option value="زيارة" data-petatoe-i18n="followups.method.visit">زيارة</option>
+            <option value="بريد إلكتروني" data-petatoe-i18n="followups.method.email">بريد إلكتروني</option>
+            <option value="اجتماع" data-petatoe-i18n="followups.method.meeting">اجتماع</option>
           </select>
         </label>
 
         <label>
-          المندوب المسؤول
+          <span data-petatoe-i18n="followups.dialog.rep">المندوب المسؤول</span>
           <select id="followupRepresentative" required></select>
         </label>
 
         <label>
-          نتيجة التواصل
+          <span data-petatoe-i18n="followups.dialog.result">نتيجة التواصل</span>
           <select id="followupResult" required>
-            <option value="تم التواصل">تم التواصل</option>
-            <option value="لم يتم الرد">لم يتم الرد</option>
-            <option value="طلب عقد">طلب عقد</option>
-            <option value="تم إرسال عقد">تم إرسال عقد</option>
-            <option value="تفاوض">تفاوض</option>
-            <option value="تم البيع">تم البيع</option>
-            <option value="لم يتم البيع">لم يتم البيع</option>
-            <option value="مؤجل">مؤجل</option>
+            <option value="تم التواصل" data-petatoe-i18n="followups.result.contacted">تم التواصل</option>
+            <option value="لم يتم الرد" data-petatoe-i18n="followups.result.noAnswer">لم يتم الرد</option>
+            <option value="طلب عقد" data-petatoe-i18n="followups.result.requestContract">طلب عقد</option>
+            <option value="تم إرسال عقد" data-petatoe-i18n="followups.result.sentContract">تم إرسال عقد</option>
+            <option value="تفاوض" data-petatoe-i18n="followups.result.negotiation">تفاوض</option>
+            <option value="تم البيع" data-petatoe-i18n="followups.result.sold">تم البيع</option>
+            <option value="لم يتم البيع" data-petatoe-i18n="followups.result.notSold">لم يتم البيع</option>
+            <option value="مؤجل" data-petatoe-i18n="followups.result.deferred">مؤجل</option>
           </select>
         </label>
 
         <label>
-          رقم العقد
+          <span data-petatoe-i18n="followups.dialog.contractNumber">رقم العقد</span>
           <input id="followupQuotationNumber">
         </label>
 
         <label>
-          سبب عدم البيع
+          <span data-petatoe-i18n="followups.dialog.noSaleReason">سبب عدم البيع</span>
           <select id="followupNoSaleReason"></select>
         </label>
 
         <label>
-          تاريخ المتابعة القادمة
+          <span data-petatoe-i18n="followups.dialog.nextDate">تاريخ المتابعة القادمة</span>
           <input id="nextFollowupDate" type="date">
         </label>
 
         <label>
-          حالة المتابعة
+          <span data-petatoe-i18n="followups.dialog.status">حالة المتابعة</span>
           <select id="followupCompleted">
-            <option value="false">مفتوحة</option>
-            <option value="true">مكتملة</option>
+            <option value="false" data-petatoe-i18n="followups.status.open">مفتوحة</option>
+            <option value="true" data-petatoe-i18n="followups.status.completed">مكتملة</option>
           </select>
         </label>
 
         <label class="full-width">
-          ملاحظات المتابعة
+          <span data-petatoe-i18n="followups.dialog.notes">ملاحظات المتابعة</span>
           <textarea id="followupNotes" rows="4"></textarea>
         </label>
       </div>
 
       <div class="dialog-actions">
-        <button id="cancelFollowupDialogBtn" type="button" class="secondary-btn">إلغاء</button>
-        <button type="submit" class="primary-btn">حفظ المتابعة</button>
+        <button id="cancelFollowupDialogBtn" type="button" class="secondary-btn" data-petatoe-i18n="followups.dialog.cancel">إلغاء</button>
+        <button type="submit" class="primary-btn" data-petatoe-i18n="followups.dialog.save">حفظ المتابعة</button>
       </div>
     </form>
   </dialog>
@@ -2857,8 +2857,8 @@
     <form id="quotationForm" method="dialog">
       <div class="dialog-header">
         <div>
-          <h3 id="quotationDialogTitle">إضافة عقد</h3>
-          <p>أدخل بيانات العقد واربطه بالعميل والمندوب.</p>
+          <h3 id="quotationDialogTitle" data-petatoe-i18n="contracts.dialog.add">إضافة عقد</h3>
+          <p data-petatoe-i18n="contracts.dialog.note">أدخل بيانات العقد واربطه بالعميل والمندوب.</p>
         </div>
         <button id="closeQuotationDialogBtn" class="icon-btn" type="button"><span class="legacy-icon-glyph" aria-hidden="true">×</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></span></button>
       </div>
@@ -2867,24 +2867,24 @@
 
       <div class="form-grid">
         <label>
-          رقم العقد
+          <span data-petatoe-i18n="contracts.col.number">رقم العقد</span>
           <input id="quotationCode" required>
         </label>
 
         <label>
-          رقم طلب العميل (اختياري)
-          <input id="quotationCustomerOrderNumber" maxlength="120" autocomplete="off" placeholder="رقم أمر الشراء أو طلب العميل">
+          <span data-petatoe-i18n="contracts.dialog.customerOrder">رقم طلب العميل (اختياري)</span>
+          <input id="quotationCustomerOrderNumber" maxlength="120" autocomplete="off" placeholder="رقم أمر الشراء أو طلب العميل" data-petatoe-i18n-placeholder="contracts.dialog.customerOrderPlaceholder">
         </label>
 
         <div class="quotation-customer-field">
-          <label for="quotationCustomerSearch">العميل</label>
+          <label for="quotationCustomerSearch" data-petatoe-i18n="contracts.col.customer">العميل</label>
           <div id="quotationCustomerCombobox" class="searchable-select" data-open="false">
             <input
               id="quotationCustomerSearch"
               class="searchable-select-input"
               type="search"
               required
-              placeholder="ابحث باسم العميل أو رقم الجوال..."
+              placeholder="ابحث باسم العميل أو رقم الجوال..." data-petatoe-i18n-placeholder="contracts.dialog.customerSearchPlaceholder"
               autocomplete="off"
               role="combobox"
               aria-autocomplete="list"
@@ -2895,14 +2895,14 @@
               id="quotationCustomerToggle"
               class="searchable-select-toggle"
               type="button"
-              aria-label="فتح قائمة العملاء"
+              aria-label="فتح قائمة العملاء" data-petatoe-i18n-aria="contracts.dialog.openCustomers"
               tabindex="-1"
             >⌄</button>
             <div
               id="quotationCustomerOptions"
               class="searchable-select-options hidden"
               role="listbox"
-              aria-label="نتائج بحث العملاء"
+              aria-label="نتائج بحث العملاء" data-petatoe-i18n-aria="contracts.dialog.customerResults"
             ></div>
             <select
               id="quotationCustomer"
@@ -2911,57 +2911,57 @@
               aria-hidden="true"
             ></select>
           </div>
-          <small id="quotationCustomerHint">يمكن البحث بالاسم أو رقم الجوال أو كود العميل.</small>
+          <small id="quotationCustomerHint" data-petatoe-i18n="contracts.dialog.customerHint">يمكن البحث بالاسم أو رقم الجوال أو كود العميل.</small>
         </div>
 
         <label>
-          المندوب المسؤول
+          <span data-petatoe-i18n="followups.dialog.rep">المندوب المسؤول</span>
           <select id="quotationRepresentative" required></select>
         </label>
 
         <label>
-          تاريخ العقد
+          <span data-petatoe-i18n="contracts.col.date">تاريخ العقد</span>
           <input id="quotationDate" type="date" required>
         </label>
 
         <label>
-          قيمة العقد
+          <span data-petatoe-i18n="contracts.dialog.amount">قيمة العقد</span>
           <input id="quotationAmount" type="number" min="0" step="0.01" required>
         </label>
 
         <label>
-          حالة العقد
+          <span data-petatoe-i18n="contracts.col.status">حالة العقد</span>
           <select id="quotationStatus" required>
-            <option value="قيد التنفيذ">قيد التنفيذ</option>
-            <option value="مقبول">مقبول</option>
-            <option value="مرفوض">مرفوض</option>
+            <option value="قيد التنفيذ" data-petatoe-i18n="contracts.status.inProgress">قيد التنفيذ</option>
+            <option value="مقبول" data-petatoe-i18n="contracts.status.accepted">مقبول</option>
+            <option value="مرفوض" data-petatoe-i18n="contracts.status.rejected">مرفوض</option>
           </select>
         </label>
 
         <label>
-          تاريخ انتهاء العقد
+          <span data-petatoe-i18n="contracts.dialog.expiry">تاريخ انتهاء العقد</span>
           <input id="quotationExpiryDate" type="date">
         </label>
 
         <label>
-          سبب الرفض
+          <span data-petatoe-i18n="contracts.col.rejectReason">سبب الرفض</span>
           <select id="quotationRejectionReason"></select>
         </label>
 
         <label class="full-width">
-          تفاصيل العقد
-          <textarea id="quotationDescription" rows="3" placeholder="وصف مختصر للخدمات أو البنود المشمولة في العقد"></textarea>
+          <span data-petatoe-i18n="contracts.dialog.description">تفاصيل العقد</span>
+          <textarea id="quotationDescription" rows="3" placeholder="وصف مختصر للخدمات أو البنود المشمولة في العقد" data-petatoe-i18n-placeholder="contracts.dialog.descriptionPlaceholder"></textarea>
         </label>
 
         <label class="full-width">
-          ملاحظات
+          <span data-petatoe-i18n="contracts.dialog.notes">ملاحظات</span>
           <textarea id="quotationNotes" rows="3"></textarea>
         </label>
       </div>
 
       <div class="dialog-actions">
-        <button id="cancelQuotationDialogBtn" type="button" class="secondary-btn">إلغاء</button>
-        <button type="submit" class="primary-btn">حفظ العقد</button>
+        <button id="cancelQuotationDialogBtn" type="button" class="secondary-btn" data-petatoe-i18n="contracts.dialog.cancel">إلغاء</button>
+        <button type="submit" class="primary-btn" data-petatoe-i18n="contracts.dialog.save">حفظ العقد</button>
       </div>
     </form>
   </dialog>
@@ -3100,6 +3100,7 @@
           </div>
           <div id="userInstallationRepresentativesList" class="user-representatives-checklist hidden" role="group"></div>
         </div>
+        <label><span data-petatoe-i18n="users.defaultLanguage">اللغة الافتراضية</span><select id="userDefaultLanguage"><option value="ar" data-petatoe-i18n="users.language.ar">العربية</option><option value="en" data-petatoe-i18n="users.language.en">English</option></select></label>
         <label>حالة الحساب<select id="userActive"><option value="true">نشط</option><option value="false">غير نشط</option></select></label>
         <label>تغيير كلمة المرور عند أول دخول<select id="userMustChangePassword"><option value="true">نعم</option><option value="false">لا</option></select></label>
       </div>
@@ -3110,10 +3111,10 @@
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.55.12"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.55.12"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.55.12"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.55.12"></script>
+  <script src="assets/js/performance-monitor.js?v=18.55.13"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.55.13"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.55.13"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.55.13"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -3327,7 +3328,7 @@
           <div id="installationServicesEditDistrictCombobox" class="geo-searchable-select installation-geo-select is-disabled" data-installation-geo-scope="edit" data-installation-geo-type="district">
             <input id="installationServicesEditNeighborhood" type="hidden" required>
             <input id="installationServicesEditDistrictSearch" class="geo-searchable-input" type="search" placeholder="اختر المدينة أولًا" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="installationServicesEditDistrictOptions" disabled>
-            <button class="geo-searchable-toggle" type="button" aria-label="فتح قائمة الأحياء" disabled>⌄</button>
+            <button class="geo-searchable-toggle" type="button" aria-label="فتح قائمة الأحياء" data-petatoe-i18n-aria="customers.dialog.neighborhoodAria" disabled>⌄</button>
             <div id="installationServicesEditDistrictOptions" class="geo-searchable-options hidden" role="listbox"></div>
           </div>
         </label>
@@ -3547,65 +3548,65 @@
         </form>
       </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.55.12"></script>
-  <script src="assets/js/offline-session-store.js?v=18.55.12"></script>
-  <script src="assets/js/supabase-client.js?v=18.55.12"></script>
-  <script src="assets/js/geographic-address.js?v=18.55.12"></script>
-  <script src="assets/js/permissions.js?v=18.55.12"></script>
-  <script src="assets/js/permission-engine.js?v=18.55.12"></script>
-  <script src="assets/js/localization-center-service.js?v=18.55.12"></script>
-  <script src="assets/js/localization-center.js?v=18.55.12"></script>
-  <script src="assets/js/translation-center.js?v=18.55.12"></script>
-  <script src="assets/js/data-access-scope.js?v=18.55.12"></script>
-  <script src="assets/js/smart-cache.js?v=18.55.12"></script>
-  <script src="assets/js/sync-engine.js?v=18.55.12"></script>
-  <script src="assets/js/offline-queue.js?v=18.55.12"></script>
-  <script src="assets/js/permissions-service.js?v=18.55.12"></script>
-  <script src="assets/js/auth-session.js?v=18.55.12"></script>
-  <script src="assets/js/reference-data-service.js?v=18.55.12"></script>
-  <script src="assets/js/customers-service.js?v=18.55.12"></script>
-  <script src="assets/js/followups-service.js?v=18.55.12"></script>
-  <script src="assets/js/quotations-service.js?v=18.55.12"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.55.12"></script>
-  <script src="assets/js/users-service.js?v=18.55.12"></script>
-  <script src="assets/js/activity-service.js?v=18.55.12"></script>
-  <script src="assets/js/backup-service.js?v=18.55.12"></script>
-  <script src="assets/js/system-settings-service.js?v=18.55.12"></script>
-  <script src="assets/js/system-health-service.js?v=18.55.12"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.55.12"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.55.12"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.55.12"></script>
-  <script src="assets/js/installations-service.js?v=18.55.12"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.55.12"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.55.12"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.55.12"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.55.12"></script>
+  <script src="assets/js/supabase-config.js?v=18.55.13"></script>
+  <script src="assets/js/offline-session-store.js?v=18.55.13"></script>
+  <script src="assets/js/supabase-client.js?v=18.55.13"></script>
+  <script src="assets/js/geographic-address.js?v=18.55.13"></script>
+  <script src="assets/js/permissions.js?v=18.55.13"></script>
+  <script src="assets/js/permission-engine.js?v=18.55.13"></script>
+  <script src="assets/js/localization-center-service.js?v=18.55.13"></script>
+  <script src="assets/js/localization-center.js?v=18.55.13"></script>
+  <script src="assets/js/translation-center.js?v=18.55.13"></script>
+  <script src="assets/js/data-access-scope.js?v=18.55.13"></script>
+  <script src="assets/js/smart-cache.js?v=18.55.13"></script>
+  <script src="assets/js/sync-engine.js?v=18.55.13"></script>
+  <script src="assets/js/offline-queue.js?v=18.55.13"></script>
+  <script src="assets/js/permissions-service.js?v=18.55.13"></script>
+  <script src="assets/js/auth-session.js?v=18.55.13"></script>
+  <script src="assets/js/reference-data-service.js?v=18.55.13"></script>
+  <script src="assets/js/customers-service.js?v=18.55.13"></script>
+  <script src="assets/js/followups-service.js?v=18.55.13"></script>
+  <script src="assets/js/quotations-service.js?v=18.55.13"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.55.13"></script>
+  <script src="assets/js/users-service.js?v=18.55.13"></script>
+  <script src="assets/js/activity-service.js?v=18.55.13"></script>
+  <script src="assets/js/backup-service.js?v=18.55.13"></script>
+  <script src="assets/js/system-settings-service.js?v=18.55.13"></script>
+  <script src="assets/js/system-health-service.js?v=18.55.13"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.55.13"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.55.13"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.55.13"></script>
+  <script src="assets/js/installations-service.js?v=18.55.13"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.55.13"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.55.13"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.55.13"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.55.13"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.55.12"></script>
-  <script src="assets/js/export-center.js?v=18.55.12"></script>
-  <script src="assets/js/customer360-engine.js?v=18.55.12"></script>
-  <script src="assets/js/customer360-export.js?v=18.55.12"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.55.12"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.55.12"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.55.12"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.55.12"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.55.12"></script>
-  <script src="assets/js/notification-center-service.js?v=18.55.12"></script>
-  <script src="assets/js/app.js?v=18.55.12"></script>
-  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.55.12"></script>
-  <script src="assets/js/notification-center.js?v=18.55.12"></script>
-  <script src="assets/js/sales-invoices.js?v=18.55.12"></script>
-  <script src="assets/js/installations-module.js?v=18.55.12"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.55.12"></script>
-  <script src="assets/js/installation-execution.js?v=18.55.12"></script>
-  <script src="assets/js/installation-completion.js?v=18.55.12"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.55.12"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.55.12"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.55.12"></script>
-  <script src="assets/js/mobile.js?v=18.55.12"></script>
-  <script src="assets/js/pwa.js?v=18.55.12"></script>
-  <script src="assets/js/native.js?v=18.55.12"></script>
+  <script src="assets/js/reports-engine.js?v=18.55.13"></script>
+  <script src="assets/js/export-center.js?v=18.55.13"></script>
+  <script src="assets/js/customer360-engine.js?v=18.55.13"></script>
+  <script src="assets/js/customer360-export.js?v=18.55.13"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.55.13"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.55.13"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.55.13"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.55.13"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.55.13"></script>
+  <script src="assets/js/notification-center-service.js?v=18.55.13"></script>
+  <script src="assets/js/app.js?v=18.55.13"></script>
+  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.55.13"></script>
+  <script src="assets/js/notification-center.js?v=18.55.13"></script>
+  <script src="assets/js/sales-invoices.js?v=18.55.13"></script>
+  <script src="assets/js/installations-module.js?v=18.55.13"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.55.13"></script>
+  <script src="assets/js/installation-execution.js?v=18.55.13"></script>
+  <script src="assets/js/installation-completion.js?v=18.55.13"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.55.13"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.55.13"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.55.13"></script>
+  <script src="assets/js/mobile.js?v=18.55.13"></script>
+  <script src="assets/js/pwa.js?v=18.55.13"></script>
+  <script src="assets/js/native.js?v=18.55.13"></script>
 </body>
 </html>

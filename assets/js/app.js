@@ -300,12 +300,26 @@ function followupStatus(item) {
 }
 
 function statusLabel(status) {
-  return {
-    today: "اليوم",
-    overdue: "متأخرة",
-    upcoming: "قادمة",
-    completed: "مكتملة"
-  }[status] || status;
+  const map = {
+    today: ["followups.status.today","اليوم"],
+    overdue: ["followups.status.overdue","متأخرة"],
+    upcoming: ["followups.status.upcoming","قادمة"],
+    completed: ["followups.status.completed","مكتملة"]
+  };
+  return map[status] ? customerT(map[status][0], map[status][1]) : status;
+}
+function followupMethodLabel(value) {
+  const map={"اتصال":"followups.method.call","واتساب":"followups.method.whatsapp","زيارة":"followups.method.visit","بريد إلكتروني":"followups.method.email","اجتماع":"followups.method.meeting"};
+  return map[value]?customerT(map[value],value):String(value||"");
+}
+function followupResultLabel(value) {
+  const map={"تم التواصل":"followups.result.contacted","لم يتم الرد":"followups.result.noAnswer","طلب عقد":"followups.result.requestContract","تم إرسال عقد":"followups.result.sentContract","تفاوض":"followups.result.negotiation","تم البيع":"followups.result.sold","لم يتم البيع":"followups.result.notSold","مؤجل":"followups.result.deferred"};
+  return map[value]?customerT(map[value],value):String(value||"");
+}
+function quotationStatusLabel(value) {
+  const canonical=canonicalQuotationStatus(value);
+  const map={"قيد التنفيذ":"contracts.status.inProgress","مقبول":"contracts.status.accepted","مرفوض":"contracts.status.rejected"};
+  return map[canonical]?customerT(map[canonical],canonical):canonical;
 }
 
 function saveCustomers() {
@@ -1066,7 +1080,7 @@ function renderCustomerNeighborhoodOptions(query=""){
   const q=normalizeCustomerNeighborhoodSearch(query);
   const matches=(customerDistrictCatalog||[])
     .filter(row=>row?.is_active!==false)
-    .filter(row=>!q||normalizeCustomerNeighborhoodSearch(row?.name).includes(q))
+    .filter(row=>{const label=customerNeighborhoodLabel(row?.id,row?.name);return !q||normalizeCustomerNeighborhoodSearch(`${row?.name||""} ${label}`).includes(q)})
     .slice(0,250);
   options.replaceChildren();
   if(!matches.length){
@@ -1083,7 +1097,7 @@ function renderCustomerNeighborhoodOptions(query=""){
     button.setAttribute("role","option");
     button.setAttribute("aria-selected",String(String(hidden?.value||"")===String(row.id)));
     button.dataset.customerNeighborhoodId=String(row.id);
-    button.textContent=String(row.name||"");
+    button.textContent=customerNeighborhoodLabel(row.id,row.name);
     options.appendChild(button);
   });
 }
@@ -1101,7 +1115,7 @@ function setCustomerNeighborhood(neighborhoodId="", fallbackAddress=""){
   const row=(customerDistrictCatalog||[]).find(item=>String(item.id)===String(neighborhoodId))
     ||(!neighborhoodId&&fallbackAddress?(customerDistrictCatalog||[]).find(item=>normalizeCustomerNeighborhoodSearch(item.name)===normalizeCustomerNeighborhoodSearch(fallbackAddress)):null);
   hidden.value=row?String(row.id):"";
-  search.value=row?String(row.name||""):String(fallbackAddress||"");
+  search.value=row?customerNeighborhoodLabel(row.id,row.name):String(fallbackAddress||"");
   search.dataset.selectedId=row?String(row.id):"";
   search.setCustomValidity("");
   return row||null;
@@ -1368,7 +1382,9 @@ function switchView(requestedName, options = {}) {
     loadSystemSettings();
   }
 
-  const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : pageMeta[name];
+  const localizedPageMetaKeys = { customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"] };
+  const localizedMetaKeys = localizedPageMetaKeys[name];
+  const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map((key,index)=>customerT(key,pageMeta[name][index])) : pageMeta[name];
   document.getElementById("pageTitle").textContent = activePageMeta[0];
   requestAnimationFrame(() => {
     window.PerformanceMonitor?.recordRender(
@@ -1414,23 +1430,17 @@ function switchView(requestedName, options = {}) {
 }
 
 
-window.addEventListener("petatoe-language-changed", event => {
-  if (event.detail?.screenKey !== "installationExecution") return;
-  const view = document.getElementById("installationExecutionView");
-  if (!view || view.classList.contains("hidden")) return;
-  const meta = window.PetatoeLocalization?.pageMeta?.();
-  if (!meta) return;
-  document.getElementById("pageTitle").textContent = meta[0];
-  document.getElementById("pageSubtitle").textContent = meta[1];
+window.addEventListener("petatoe-language-changed", () => {
+  window.PetatoeLocalization?.applyStatic?.(document);
+  const current = activeViewKey;
+  const localizedPageMetaKeys = { customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"] };
+  let meta = null;
+  if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
+  else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map((key,index)=>customerT(key,pageMeta[current][index]));
+  if (meta) { document.getElementById("pageTitle").textContent = meta[0]; document.getElementById("pageSubtitle").textContent = meta[1]; }
 });
-window.addEventListener("petatoe-localization-updated", event => {
-  if (event.detail?.screenKey !== "installationExecution") return;
-  const view = document.getElementById("installationExecutionView");
-  if (!view || view.classList.contains("hidden")) return;
-  const meta = window.PetatoeLocalization?.pageMeta?.();
-  if (!meta) return;
-  document.getElementById("pageTitle").textContent = meta[0];
-  document.getElementById("pageSubtitle").textContent = meta[1];
+window.addEventListener("petatoe-localization-updated", () => {
+  window.PetatoeLocalization?.applyStatic?.(document);
 });
 
 window.KYUMNavigation = Object.freeze({
@@ -1887,6 +1897,7 @@ function openUserDialog(user = null) {
   syncUserInstallationAccessFields();
   document.getElementById("userActive").value = String(user?.is_active ?? true);
   document.getElementById("userMustChangePassword").value = String(user?.must_change_password ?? true);
+  document.getElementById("userDefaultLanguage").value = user?.default_language === "en" ? "en" : "ar";
   document.getElementById("userDialog").showModal();
 }
 
@@ -1918,7 +1929,8 @@ async function saveUserForm(event) {
       installationTeamId: document.getElementById("userInstallationTeam").value || null,
       installationTechnicianName: document.getElementById("userRole").value === "viewer" ? document.getElementById("userFullName").value.trim() : document.getElementById("userInstallationTechnicianName").value.trim(),
       isActive: document.getElementById("userActive").value === "true",
-      mustChangePassword: document.getElementById("userMustChangePassword").value === "true"
+      mustChangePassword: document.getElementById("userMustChangePassword").value === "true",
+      defaultLanguage: document.getElementById("userDefaultLanguage").value === "en" ? "en" : "ar"
     };
     if (payload.role !== "viewer" && payload.accessMode === "selected" && !payload.representativeId && payload.allowedRepresentativeIds.length === 0) {
       throw new Error("اختر مندوبًا مرتبطًا أو مندوبًا واحدًا على الأقل ضمن نطاق البيانات.");
@@ -2218,7 +2230,7 @@ function renderBackupHistory() {
         <td>${escapeHtml(item.file_name || "—")}</td>
         <td>${Number(item.total_records || 0)}</td>
         <td>${escapeHtml(item.user?.full_name || item.user?.email || "—")}</td>
-        <td><span class="record-status ${item.status === "completed" ? "active" : "inactive"}">${escapeHtml(canonicalStatus)}</span></td>
+        <td><span class="record-status ${item.status === "completed" ? "active" : "inactive"}">${escapeHtml(quotationStatusLabel(canonicalStatus))}</span></td>
         <td>${new Date(item.created_at).toLocaleString("ar-SA-u-ca-gregory-nu-latn")}</td>
       </tr>
     `).join("")
@@ -3347,6 +3359,15 @@ function stopSystemHealthAutoRefresh() {
   }
 }
 
+function customerT(key, fallback = "", vars = {}) {
+  const value = window.PetatoeLocalization?.t?.(key, vars);
+  return value && !/^\[.+\]$/.test(value) ? value : fallback;
+}
+
+function customerNeighborhoodLabel(id, name) {
+  return window.PetatoeLocalization?.entityText?.("neighborhood", { id, name }) || String(name || "");
+}
+
 function canManageCustomers(action = "edit") {
   return canScreenAction("customers", action);
 }
@@ -3393,11 +3414,11 @@ function renderCustomers() {
   const allRows=filteredCustomers(); const body=document.getElementById("customersTableBody"); const mobileCards=document.getElementById("customersMobileCards");
   const pageCount=Math.max(1,Math.ceil(allRows.length/CUSTOMERS_PAGE_SIZE)); if(customersPage>pageCount)customersPage=pageCount; const start=(customersPage-1)*CUSTOMERS_PAGE_SIZE; const rows=allRows.slice(start,start+CUSTOMERS_PAGE_SIZE);
   document.getElementById("addCustomerBtn")?.classList.toggle("hidden",!canManageCustomers("add"));
-  const actions=c=>`<div class="row-actions"><button class="edit-btn customer-action-primary" data-details="${c.id}">عرض</button>${canManageFollowups("add")?`<button class="edit-btn customer-action-followup" data-add-followup="${c.id}">متابعة</button>`:""}${canManageCustomers()?`<button class="edit-btn customer-action-edit" data-edit="${c.id}">تعديل</button>`:""}${canDeleteCustomers()?`<button class="delete-btn customer-action-delete" data-delete="${c.id}">حذف</button>`:""}</div>`;
-  if(!rows.length){const m=customersLoaded?"لا توجد نتائج مطابقة.":"جاري تحميل بيانات العملاء..."; body.innerHTML=`<tr><td colspan="6" class="empty-state">${m}</td></tr>`; if(mobileCards)mobileCards.innerHTML=`<div class="customer-mobile-empty">${m}</div>`;}
-  else { body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.address||"—")}</td><td>${escapeHtml(c.phone||"—")}</td><td>${c.googleMapsUrl?`<a class="text-btn" href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">فتح الموقع</a>`:"—"}</td><td>${actions(c)}</td></tr>`).join("");
-    if(mobileCards)mobileCards.innerHTML=rows.map(c=>`<article class="customer-mobile-card"><header class="customer-mobile-card-head"><span class="customer-mobile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><div><span class="customer-mobile-kicker">name</span><strong class="customer-mobile-name">${escapeHtml(c.name||"—")}</strong><small>${escapeHtml(c.customerNumber||"—")}</small></div></header><div class="customer-mobile-details"><div><span>address</span><strong>${escapeHtml(c.address||"—")}</strong></div><div><span>mobile</span><strong>${escapeHtml(c.phone||"—")}</strong></div><div><span>موقع Google Maps</span><strong>${c.googleMapsUrl?`<a href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">فتح الموقع</a>`:"—"}</strong></div></div><footer class="customer-mobile-card-actions row-actions">${actions(c)}</footer></article>`).join(""); }
-  const info=document.getElementById("customersPaginationInfo"),pn=document.getElementById("customersPageNumber"),prev=document.getElementById("customersPrevPage"),next=document.getElementById("customersNextPage"); if(info)info.textContent=`${allRows.length} عميل`; if(pn)pn.textContent=`${customersPage} / ${pageCount}`; if(prev)prev.disabled=customersPage<=1; if(next)next.disabled=customersPage>=pageCount;
+  const actions=c=>`<div class="row-actions"><button class="edit-btn customer-action-primary" data-details="${c.id}">${customerT("customers.action.view","عرض")}</button>${canManageFollowups("add")?`<button class="edit-btn customer-action-followup" data-add-followup="${c.id}">${customerT("customers.action.followup","متابعة")}</button>`:""}${canManageCustomers()?`<button class="edit-btn customer-action-edit" data-edit="${c.id}">${customerT("customers.action.edit","تعديل")}</button>`:""}${canDeleteCustomers()?`<button class="delete-btn customer-action-delete" data-delete="${c.id}">${customerT("customers.action.delete","حذف")}</button>`:""}</div>`;
+  if(!rows.length){const m=customersLoaded?customerT("customers.empty","لا توجد نتائج مطابقة."):customerT("customers.loading","جاري تحميل بيانات العملاء..."); body.innerHTML=`<tr><td colspan="6" class="empty-state">${m}</td></tr>`; if(mobileCards)mobileCards.innerHTML=`<div class="customer-mobile-empty">${m}</div>`;}
+  else { body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.neighborhoodId?customerNeighborhoodLabel(c.neighborhoodId,c.address):(c.address||"—"))}</td><td>${escapeHtml(c.phone||"—")}</td><td>${c.googleMapsUrl?`<a class="text-btn" href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">${customerT("customers.action.openMap","فتح الموقع")}</a>`:"—"}</td><td>${actions(c)}</td></tr>`).join("");
+    if(mobileCards)mobileCards.innerHTML=rows.map(c=>`<article class="customer-mobile-card"><header class="customer-mobile-card-head"><span class="customer-mobile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><div><span class="customer-mobile-kicker">${customerT("customers.col.name","name")}</span><strong class="customer-mobile-name">${escapeHtml(c.name||"—")}</strong><small>${escapeHtml(c.customerNumber||"—")}</small></div></header><div class="customer-mobile-details"><div><span>${customerT("customers.col.address","address")}</span><strong>${escapeHtml(c.neighborhoodId?customerNeighborhoodLabel(c.neighborhoodId,c.address):(c.address||"—"))}</strong></div><div><span>${customerT("customers.col.mobile","mobile")}</span><strong>${escapeHtml(c.phone||"—")}</strong></div><div><span>${customerT("customers.col.maps","موقع Google Maps")}</span><strong>${c.googleMapsUrl?`<a href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">${customerT("customers.action.openMap","فتح الموقع")}</a>`:"—"}</strong></div></div><footer class="customer-mobile-card-actions row-actions">${actions(c)}</footer></article>`).join(""); }
+  const info=document.getElementById("customersPaginationInfo"),pn=document.getElementById("customersPageNumber"),prev=document.getElementById("customersPrevPage"),next=document.getElementById("customersNextPage"); if(info)info.textContent=customerT("customers.count",`${allRows.length} عميل`,{count:allRows.length}); if(pn)pn.textContent=`${customersPage} / ${pageCount}`; if(prev)prev.disabled=customersPage<=1; if(next)next.disabled=customersPage>=pageCount;
 }
 
 function currentRole() {
@@ -3641,8 +3662,8 @@ function syncReferenceCustomerFilters() {}
 function renderReferenceCustomers() {
   const body=document.getElementById("referenceCustomersTableBody"); if(!body)return; const allRows=filteredReferenceCustomers(); const pageCount=Math.max(1,Math.ceil(allRows.length/REFERENCE_CUSTOMERS_PAGE_SIZE)); if(referenceCustomersPage>pageCount)referenceCustomersPage=pageCount; const start=(referenceCustomersPage-1)*REFERENCE_CUSTOMERS_PAGE_SIZE,rows=allRows.slice(start,start+REFERENCE_CUSTOMERS_PAGE_SIZE);
   document.getElementById("referenceAddCustomerBtn")?.classList.toggle("hidden",!canScreenAction("customers","add")); document.querySelectorAll(".customer-export-action").forEach(b=>b.classList.toggle("hidden",!canScreenAction("customers","export"))); document.querySelectorAll(".customer-import-action").forEach(b=>b.classList.toggle("hidden",!canScreenAction("customers","add")));
-  if(!rows.length)body.innerHTML=`<tr><td colspan="6" class="empty-state">${customersLoaded?"لا توجد نتائج مطابقة.":"جاري تحميل بيانات العملاء..."}</td></tr>`; else body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.address||"—")}</td><td>${escapeHtml(c.phone||"—")}</td><td><div class="row-actions"><button class="edit-btn" type="button" data-reference-customer-details="${c.id}">فتح</button>${canScreenAction("customers","edit")?`<button class="edit-btn" type="button" data-reference-customer-edit="${c.id}">تعديل</button>`:""}${canScreenAction("customers","delete")?`<button class="delete-btn" type="button" data-reference-customer-delete="${c.id}">حذف</button>`:""}</div></td></tr>`).join("");
-  const info=document.getElementById("referenceCustomersPaginationInfo"),pn=document.getElementById("referenceCustomersPageNumber"),prev=document.getElementById("referenceCustomersPrevPage"),next=document.getElementById("referenceCustomersNextPage"); if(info)info.textContent=`${allRows.length} عميل`; if(pn)pn.textContent=`${referenceCustomersPage} / ${pageCount}`; if(prev)prev.disabled=referenceCustomersPage<=1; if(next)next.disabled=referenceCustomersPage>=pageCount;
+  if(!rows.length)body.innerHTML=`<tr><td colspan="6" class="empty-state">${customersLoaded?"لا توجد نتائج مطابقة.":"جاري تحميل بيانات العملاء..."}</td></tr>`; else body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.neighborhoodId?customerNeighborhoodLabel(c.neighborhoodId,c.address):(c.address||"—"))}</td><td>${escapeHtml(c.phone||"—")}</td><td><div class="row-actions"><button class="edit-btn" type="button" data-reference-customer-details="${c.id}">فتح</button>${canScreenAction("customers","edit")?`<button class="edit-btn" type="button" data-reference-customer-edit="${c.id}">تعديل</button>`:""}${canScreenAction("customers","delete")?`<button class="delete-btn" type="button" data-reference-customer-delete="${c.id}">حذف</button>`:""}</div></td></tr>`).join("");
+  const info=document.getElementById("referenceCustomersPaginationInfo"),pn=document.getElementById("referenceCustomersPageNumber"),prev=document.getElementById("referenceCustomersPrevPage"),next=document.getElementById("referenceCustomersNextPage"); if(info)info.textContent=customerT("customers.count",`${allRows.length} عميل`,{count:allRows.length}); if(pn)pn.textContent=`${referenceCustomersPage} / ${pageCount}`; if(prev)prev.disabled=referenceCustomersPage<=1; if(next)next.disabled=referenceCustomersPage>=pageCount;
 }
 
 function syncReferenceDataPanel() {
@@ -3804,7 +3825,7 @@ function syncCustomerContactPersonField() {
 
 async function openCustomerDialog(customer=null) {
   const action=customer?"edit":"add"; if(!requireScreenAction("customers",action,`لا توجد صلاحية ${customer?"تعديل":"إضافة"} العملاء.`))return;
-  const dialog=document.getElementById("customerDialog"),form=document.getElementById("customerForm"),submitButton=form?.querySelector('button[type="submit"]'); editingId=customer?.id||null; document.getElementById("dialogTitle").textContent=customer?"تعديل بيانات العميل":"إضافة عميل جديد"; dialog?.showModal(); dialog?.classList.add("is-loading"); if(submitButton){submitButton.disabled=true;submitButton.textContent="جاري تحميل البيانات...";}
+  const dialog=document.getElementById("customerDialog"),form=document.getElementById("customerForm"),submitButton=form?.querySelector('button[type="submit"]'); editingId=customer?.id||null; document.getElementById("dialogTitle").textContent=customer?customerT("customers.dialog.edit","تعديل بيانات العميل"):customerT("customers.dialog.add","إضافة عميل جديد"); dialog?.showModal(); dialog?.classList.add("is-loading"); if(submitButton){submitButton.disabled=true;submitButton.textContent=customerT("customers.dialog.loading","جاري تحميل البيانات...");}
   try {
     const record=customer?.id&&window.CustomersService?.getCustomerById?await window.CustomersService.getCustomerById(customer.id):customer;
     editingId=record?.id||null;
@@ -3932,10 +3953,10 @@ function renderFollowups() {
     `<svg viewBox="0 0 24 24"><path d="M6 19V8m6 11V5m6 14v-7"/><path d="M4 19h16"/></svg>`
   ];
   document.getElementById("followupStats").innerHTML = [
-    ["إجمالي المتابعات", counts.total],
-    ["متابعات اليوم", counts.today],
-    ["المتابعات المتأخرة", counts.overdue],
-    ["المتابعات القادمة", counts.upcoming]
+    [customerT("followups.stats.total","إجمالي المتابعات"), counts.total],
+    [customerT("followups.stats.today","متابعات اليوم"), counts.today],
+    [customerT("followups.stats.overdue","المتابعات المتأخرة"), counts.overdue],
+    [customerT("followups.stats.upcoming","المتابعات القادمة"), counts.upcoming]
   ].map(([label, value], index) =>
     `<article class="followup-stat"><span class="petatoe-followup-kpi-icon" aria-hidden="true">${followupKpiIcons[index]}</span><span>${label}</span><strong>${value}</strong></article>`
   ).join("");
@@ -3952,7 +3973,7 @@ function renderFollowups() {
 
   if (!rows.length) {
     body.innerHTML = `<tr><td colspan="10" class="empty-state">${
-      followupsLoaded ? "لا توجد متابعات مطابقة." : "جاري تحميل المتابعات..."
+      followupsLoaded ? customerT("followups.empty","لا توجد متابعات مطابقة.") : customerT("followups.loading","جاري تحميل المتابعات...")
     }</td></tr>`;
   } else {
     body.innerHTML = rows.map(item => {
@@ -3960,19 +3981,19 @@ function renderFollowups() {
       const status = followupStatus(item);
       return `
         <tr>
-          <td><strong>${escapeHtml(customer?.name || item.customerName || "عميل غير معروف")}</strong></td>
+          <td><strong>${escapeHtml(customer?.name || item.customerName || customerT("customers.unknown","عميل غير معروف"))}</strong></td>
           <td>${escapeHtml(customer?.phone || item.customerPhone || "—")}</td>
           <td>${formatDate(item.contactDate)}</td>
-          <td><span class="badge">${escapeHtml(item.method)}</span></td>
+          <td><span class="badge">${escapeHtml(followupMethodLabel(item.method))}</span></td>
           <td>${escapeHtml(item.representative || "—")}</td>
-          <td>${escapeHtml(item.result)}</td>
+          <td>${escapeHtml(followupResultLabel(item.result))}</td>
           <td>${escapeHtml(item.quotationNumber || "—")}</td>
           <td>${formatDate(item.nextFollowupDate)}</td>
           <td><span class="status-badge status-${status}">${statusLabel(status)}</span></td>
           <td>
             <div class="row-actions">
-              ${canManageFollowups("edit") ? `<button class="edit-btn" data-edit-followup="${item.id}">تعديل</button>` : ""}
-              ${canManageFollowups("delete") ? `<button class="delete-btn" data-delete-followup="${item.id}">حذف</button>` : ""}
+              ${canManageFollowups("edit") ? `<button class="edit-btn" data-edit-followup="${item.id}">${customerT("customers.action.edit","تعديل")}</button>` : ""}
+              ${canManageFollowups("delete") ? `<button class="delete-btn" data-delete-followup="${item.id}">${customerT("customers.action.delete","حذف")}</button>` : ""}
             </div>
           </td>
         </tr>`;
@@ -3984,7 +4005,7 @@ function renderFollowups() {
   const prev = document.getElementById("followupsPrevPage");
   const next = document.getElementById("followupsNextPage");
 
-  if (info) info.textContent = `${allRows.length} متابعة`;
+  if (info) info.textContent = customerT("followups.count",`${allRows.length} متابعة`,{count:allRows.length});
   if (pageNumber) pageNumber.textContent = `${followupsPage} / ${pageCount}`;
   if (prev) prev.disabled = followupsPage <= 1;
   if (next) next.disabled = followupsPage >= pageCount;
@@ -3996,7 +4017,7 @@ async function openFollowupDialog(customerId = null, followup = null) {
   if (!(await ensureOperationalReferenceData())) return;
   editingFollowupId = followup?.id || null;
   document.getElementById("followupDialogTitle").textContent =
-    followup ? "تعديل المتابعة" : "إضافة متابعة جديدة";
+    followup ? customerT("followups.dialog.edit","تعديل المتابعة") : customerT("followups.dialog.add","إضافة متابعة جديدة");
   document.getElementById("followupId").value = followup?.id || "";
   document.getElementById("followupCustomer").value = followup?.customerId || customerId || customers[0]?.id || "";
   document.getElementById("followupContactDate").value = followup?.contactDate || todayIso();
@@ -6502,12 +6523,12 @@ function renderQuotations() {
     : 0;
 
   document.getElementById("quotationStats").innerHTML = [
-    ["إجمالي العروض", workflowRows.length],
-    ["إجمالي القيمة", formatCurrency(totalValue)],
-    ["العقود المقبولة", accepted.length],
-    ["قيمة العقود المقبولة", formatCurrency(acceptedValue)],
-    ["العقود المرفوضة", rejected],
-    ["نسبة التحويل", `${conversionRate.toFixed(1)}%`]
+    [customerT("contracts.stats.total","إجمالي العقود"), workflowRows.length],
+    [customerT("contracts.stats.totalValue","إجمالي القيمة"), formatCurrency(totalValue)],
+    [customerT("contracts.stats.accepted","العقود المقبولة"), accepted.length],
+    [customerT("contracts.stats.acceptedValue","قيمة العقود المقبولة"), formatCurrency(acceptedValue)],
+    [customerT("contracts.stats.rejected","العقود المرفوضة"), rejected],
+    [customerT("contracts.stats.conversion","نسبة التحويل"), `${conversionRate.toFixed(1)}%`]
   ].map(([label, value]) =>
     `<article class="followup-stat"><span>${label}</span><strong>${value}</strong></article>`
   ).join("");
@@ -6522,12 +6543,12 @@ function renderQuotations() {
 
   if (!rows.length) {
     body.innerHTML = `<tr><td colspan="10" class="empty-state">${
-      quotationsLoaded ? "لا توجد عروض أسعار مطابقة." : "جاري تحميل عقود العملاء..."
+      quotationsLoaded ? customerT("contracts.empty","لا توجد عقود مطابقة.") : customerT("contracts.loading","جاري تحميل عقود العملاء...")
     }</td></tr>`;
   } else {
     body.innerHTML = rows.map(item => {
       const customer = customerById(item.customerId);
-      const customerName = customer?.name || item.customerName || "عميل غير معروف";
+      const customerName = customer?.name || item.customerName || customerT("customers.unknown","عميل غير معروف");
       const customerPhone = customer?.phone || item.customerPhone || "—";
       const canonicalStatus = canonicalQuotationStatus(item.status);
       const statusClass = quotationStatusClass(canonicalStatus);
@@ -6540,15 +6561,15 @@ function renderQuotations() {
           <td>${escapeHtml(item.representative || "—")}</td>
           <td>${formatDate(item.quotationDate)}</td>
           <td class="quotation-value">${formatCurrency(item.amount)}</td>
-          <td><span class="quotation-status quotation-status-${statusClass}">${escapeHtml(canonicalStatus)}</span></td>
+          <td><span class="quotation-status quotation-status-${statusClass}">${escapeHtml(quotationStatusLabel(canonicalStatus))}</span></td>
           <td>${formatDate(item.expiryDate)}</td>
           <td>${escapeHtml(item.rejectionReason || "—")}</td>
           <td>
             <div class="row-actions">
-              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("installationRequestNew", "add") ? `<button class="primary-btn compact-btn" data-create-installation-from-quotation="${item.id}">إنشاء موعد</button>` : ""}
-              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("salesInvoices", "add") ? `<button class="secondary-btn compact-btn" data-create-invoice-from-quotation="${item.id}">تحويل إلى فاتورة</button>` : ""}
-              ${item.salesInvoiceId && canScreenAction("salesInvoices", "view") ? `<button class="secondary-btn compact-btn" data-open-sales-invoice="${item.salesInvoiceId}">فتح الفاتورة</button>` : ""}
-              ${item.installationRequestId && canScreenAction("installationRequests", "view") ? `<button class="secondary-btn compact-btn" data-open-installation-request="${item.installationRequestId}">فتح الموعد</button>` : ""}
+              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("installationRequestNew", "add") ? `<button class="primary-btn compact-btn" data-create-installation-from-quotation="${item.id}">${customerT("contracts.action.createAppointment","إنشاء موعد")}</button>` : ""}
+              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("salesInvoices", "add") ? `<button class="secondary-btn compact-btn" data-create-invoice-from-quotation="${item.id}">${customerT("contracts.action.toInvoice","تحويل إلى فاتورة")}</button>` : ""}
+              ${item.salesInvoiceId && canScreenAction("salesInvoices", "view") ? `<button class="secondary-btn compact-btn" data-open-sales-invoice="${item.salesInvoiceId}">${customerT("contracts.action.openInvoice","فتح الفاتورة")}</button>` : ""}
+              ${item.installationRequestId && canScreenAction("installationRequests", "view") ? `<button class="secondary-btn compact-btn" data-open-installation-request="${item.installationRequestId}">${customerT("contracts.action.openAppointment","فتح الموعد")}</button>` : ""}
               ${canManageQuotations("edit") ? `<button class="edit-btn" data-edit-quotation="${item.id}">تعديل</button>` : ""}
               ${canManageQuotations("delete") ? `<button class="delete-btn" data-delete-quotation="${item.id}">حذف</button>` : ""}
             </div>
@@ -6562,7 +6583,7 @@ function renderQuotations() {
   const prev = document.getElementById("quotationsPrevPage");
   const next = document.getElementById("quotationsNextPage");
 
-  if (info) info.textContent = `${allRows.length} عرض`;
+  if (info) info.textContent = customerT("contracts.count",`${allRows.length} عقد`,{count:allRows.length});
   if (pageNumber) pageNumber.textContent = `${quotationsPage} / ${pageCount}`;
   if (prev) prev.disabled = quotationsPage <= 1;
   if (next) next.disabled = quotationsPage >= pageCount;
@@ -6574,7 +6595,7 @@ async function openQuotationDialog(quotation = null, customerId = null) {
   if (!(await ensureOperationalReferenceData())) return;
   editingQuotationId = quotation?.id || null;
   document.getElementById("quotationDialogTitle").textContent =
-    quotation ? "تعديل العقد" : "إضافة عقد";
+    quotation ? customerT("contracts.dialog.edit","تعديل العقد") : customerT("contracts.dialog.add","إضافة عقد");
 
   document.getElementById("quotationId").value = quotation?.id || "";
   document.getElementById("quotationCode").value = quotation?.code || nextQuotationCode();
@@ -9251,3 +9272,10 @@ document.getElementById("dailyWhatsAppTemplateImage")?.addEventListener("change"
     if (customerId) openExistingCustomer(customerId);
   });
 })();
+
+window.addEventListener("petatoe-language-changed", () => {
+  window.PetatoeLocalization?.applyStatic?.(document);
+  if (customersLoaded) renderCustomers();
+  if (followupsLoaded) renderFollowups();
+  if (quotationsLoaded) renderQuotations();
+});

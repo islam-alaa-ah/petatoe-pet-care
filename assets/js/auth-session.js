@@ -20,7 +20,7 @@
 
   async function loadProfileOnline(userId) {
     const { data, error } = await window.customerSupabase.from("user_profiles")
-      .select("id, full_name, email, role, representative_id, is_active, must_change_password, last_login_at")
+      .select("id, full_name, email, role, representative_id, is_active, must_change_password, default_language, last_login_at")
       .eq("id", userId).single();
     if (error) throw new Error(`تعذر تحميل ملف المستخدم: ${error.message}`);
     if (!data?.is_active) throw new Error("هذا الحساب غير نشط.");
@@ -36,6 +36,12 @@
     const avatar = document.querySelector(".avatar");
     if (avatar) avatar.textContent = (profile.full_name || session.user.email || "م").trim().charAt(0).toUpperCase();
     window.CustomerPermissions?.apply(profile);
+    const preferredLanguage = profile?.default_language === "en" ? "en" : "ar";
+    if (window.PetatoeLocalization?.getLanguage?.() !== preferredLanguage) {
+      window.PetatoeLocalization?.setLanguage?.(preferredLanguage);
+    } else {
+      window.PetatoeLocalization?.applyStatic?.(document);
+    }
   }
 
   async function activate(session, options = {}) {

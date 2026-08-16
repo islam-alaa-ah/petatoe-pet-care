@@ -154,6 +154,7 @@ Deno.serve(async (request) => {
       );
       const role = normalizeRole(body.role);
       const isActive = body.is_active ?? body.isActive ?? true;
+      const defaultLanguage = String(body.default_language ?? body.defaultLanguage ?? "ar").trim().toLowerCase() === "en" ? "en" : "ar";
 
       const { data: existing } = await admin.auth.admin.listUsers({
         page: 1,
@@ -200,6 +201,7 @@ Deno.serve(async (request) => {
         representative_id: representativeId || null,
         is_active: Boolean(isActive),
         must_change_password: Boolean(mustChangePassword),
+        default_language: defaultLanguage,
       };
 
       const { error: upsertError } = await admin
@@ -246,7 +248,7 @@ Deno.serve(async (request) => {
         entity_type: "user_profile",
         entity_id: userId,
         actor_id: callerData.user.id,
-        details: { email, full_name: fullName, role, is_active: Boolean(isActive) },
+        details: { email, full_name: fullName, role, is_active: Boolean(isActive), default_language: defaultLanguage },
       });
 
       return jsonResponse({

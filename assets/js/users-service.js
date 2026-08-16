@@ -14,7 +14,7 @@
   async function listUsers() {
     const { data, error } = await client()
       .from("user_profiles")
-      .select("id,full_name,email,role,representative_id,is_active,must_change_password,last_login_at,created_at,representative:sales_representatives!user_profiles_representative_id_fkey(id,full_name)")
+      .select("id,full_name,email,role,representative_id,is_active,must_change_password,default_language,last_login_at,created_at,representative:sales_representatives!user_profiles_representative_id_fkey(id,full_name)")
       .order("created_at", { ascending: false });
     if (error) throw new Error(`تعذر تحميل المستخدمين: ${error.message}`);
 
@@ -123,12 +123,15 @@
       representative_id: payload.role === "viewer" ? null : (payload.representativeId || null),
       is_active: payload.isActive,
       must_change_password: payload.mustChangePassword,
+      default_language: payload.defaultLanguage === "en" ? "en" : "ar",
       access_mode: payload.role === "viewer" ? "selected" : payload.accessMode,
       allowed_representative_ids: payload.role === "viewer" ? [] : (payload.allowedRepresentativeIds || [])
     });
     if (!data?.success) throw new Error(data?.error || "تعذر إنشاء المستخدم.");
     const user = data.user;
     if (!user?.id) throw new Error("تم إنشاء الحساب بدون معرف مستخدم صالح.");
+    const { error: languageError } = await client().from("user_profiles").update({ default_language: payload.defaultLanguage === "en" ? "en" : "ar" }).eq("id", user.id);
+    if (languageError) throw new Error(`تعذر حفظ اللغة الافتراضية للمستخدم: ${languageError.message}`);
     await saveInstallationDataAccess(user.id, payload.role === "viewer" ? "own" : payload.installationAccessMode, payload.role === "viewer" ? [] : payload.allowedInstallationRepresentativeIds);
     await saveInstallationTechnicianBinding(user.id, payload.role, payload.installationTeamId, payload.installationTechnicianName);
     return user;
@@ -143,7 +146,8 @@
         role: payload.role,
         representative_id: payload.role === "viewer" ? null : (payload.representativeId || null),
         is_active: payload.isActive,
-        must_change_password: payload.mustChangePassword
+        must_change_password: payload.mustChangePassword,
+        default_language: payload.defaultLanguage === "en" ? "en" : "ar"
       })
       .eq("id", payload.id)
       .select()
