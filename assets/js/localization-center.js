@@ -143,26 +143,98 @@
     ['execution.error.returnRestricted','error','إلغاء الطلب وإعادته للجدولة متاح للسوبر أدمن ومدير المبيعات فقط.','Cancelling and returning an appointment to scheduling is available only to the Super Admin and Sales Manager.'],
     ['execution.error.requestRequired','error','معرّف الموعد مطلوب.','Appointment ID is required.'],
     ['execution.error.returnReasonRequired','error','سبب إعادة الجدولة مطلوب.','A rescheduling reason is required.'],
-    ['execution.error.returnFailed','error','تعذر إلغاء الطلب وإعادته إلى الجدولة:','Unable to cancel and return the appointment to scheduling:']
+    ['execution.error.returnFailed','error','تعذر إلغاء الطلب وإعادته إلى الجدولة:','Unable to cancel and return the appointment to scheduling:'],
+    ['sidebar.group.main','navigation','الرئيسية','Home'],
+    ['sidebar.dashboard','navigation','لوحة التحكم','Dashboard'],
+    ['sidebar.dailyOperations','navigation','إدارة المهام اليومية','Daily Operations'],
+    ['sidebar.group.customers','navigation','إدارة العملاء','Customer Management'],
+    ['sidebar.customers','navigation','العملاء','Customers'],
+    ['sidebar.followups','navigation','المتابعات','Follow-ups'],
+    ['sidebar.quotations','navigation','عقود العملاء','Customer Contracts'],
+    ['sidebar.salesInvoices','navigation','فواتير المبيعات','Sales Invoices'],
+    ['sidebar.representatives','navigation','مندوبو المبيعات','Sales Representatives'],
+    ['sidebar.referenceData','navigation','البيانات المرجعية','Reference Data'],
+    ['sidebar.group.appointments','navigation','إدارة المواعيد','Appointment Management'],
+    ['sidebar.appointmentsOverview','navigation','لوحة المواعيد','Appointments Dashboard'],
+    ['sidebar.appointmentNew','navigation','إضافة موعد جديد','Add New Appointment'],
+    ['sidebar.appointments','navigation','المواعيد','Appointments'],
+    ['sidebar.appointmentSchedule','navigation','جدولة وتوزيع المواعيد','Appointment Scheduling & Dispatch'],
+    ['sidebar.appointmentExecution','navigation','تنفيذ المواعيد','Appointment Execution'],
+    ['sidebar.appointmentCompletion','navigation','تأكيد انتهاء المواعيد','Appointment Completion Confirmation'],
+    ['sidebar.appointmentExceptions','navigation','الاستثناءات وإعادة الزيارة','Exceptions & Revisit'],
+    ['sidebar.appointmentReports','navigation','تقارير المواعيد','Appointment Reports'],
+    ['sidebar.appointmentSettings','navigation','إعدادات المواعيد','Appointment Settings'],
+    ['sidebar.group.reports','navigation','التقارير والتحليلات','Reports & Analytics'],
+    ['sidebar.reportsOverview','navigation','مركز التقارير','Reports Center'],
+    ['sidebar.dailyPerformance','navigation','تقرير الأداء اليومي','Daily Performance Report'],
+    ['sidebar.group.settings','navigation','الإعدادات والخصوصية','Settings & Privacy'],
+    ['sidebar.users','navigation','المستخدمون','Users'],
+    ['sidebar.permissions','navigation','الصلاحيات','Permissions'],
+    ['sidebar.activityLog','navigation','سجل النشاط','Activity Log'],
+    ['sidebar.backups','navigation','النسخ الاحتياطي','Backups'],
+    ['sidebar.systemHealth','navigation','مراقبة النظام','System Health'],
+    ['sidebar.notifications','navigation','مركز الإشعارات','Notification Center'],
+    ['sidebar.translationCenter','navigation','مركز الترجمه','Translation Center'],
+    ['sidebar.systemSettings','navigation','إعدادات النظام','System Settings'],
+    ['sidebar.about','navigation','حول التطبيق','About App'],
+    ['sidebar.account','navigation','حساب المستخدم','User Account'],
+    ['sidebar.userFallback','navigation','مستخدم','User'],
+    ['sidebar.logout','navigation','تسجيل الخروج','Log out'],
+    ['sidebar.close','navigation','إغلاق القائمة','Close menu']
   ];
-  const defaults=new Map(rows.map(([key,type,ar,en])=>[key,Object.freeze({key,type,screenKey:SCREEN_KEY,ar,en})]));
+  const defaults=new Map(rows.map(([key,type,ar,en])=>[key,Object.freeze({key,type,screenKey:key.startsWith('sidebar.')?'sidebar':SCREEN_KEY,ar,en})]));
   const state={language:(localStorage.getItem(STORAGE_LANGUAGE)==='en'?'en':'ar'),remote:new Map(),loaded:false,loading:null};
+  const ARABIC_RE=/[\u0600-\u06FF]/;
   function interpolate(value,vars){return String(value??'').replace(/\{(\w+)\}/g,(_,k)=>vars&&Object.prototype.hasOwnProperty.call(vars,k)?String(vars[k]):`{${k}}`)}
   function effectiveLanguage(){return desktopPilot()?state.language:'ar'}
   function entry(key){return state.remote.get(key)||defaults.get(key)||null}
-  function t(key,vars={}){const item=entry(key);if(!item)return`[${key}]`;const lang=effectiveLanguage();const value=lang==='en'?(item.en||defaults.get(key)?.en):(item.ar||defaults.get(key)?.ar);return interpolate(value||`[${key}]`,vars)}
+  function t(key,vars={}){const item=entry(key);if(!item)return`[${key}]`;const lang=effectiveLanguage();const base=defaults.get(key);const value=lang==='en'?(item.en||base?.en):(item.ar||base?.ar);return interpolate(value||`[${key}]`,vars)}
+  function serviceDefaultEnglish(name,code=''){
+    const source=String(name||'').trim();
+    const exact=new Map([
+      ['أكياس قمامة للحيوانات','Pet Waste Bags'],['اكياس قمامة للحيوانات','Pet Waste Bags'],['اكرامية','Tip'],['إكرامية','Tip'],
+      ['تقليم الاظافر','Nail Trimming'],['تقليم الأظافر','Nail Trimming'],['تقليم الأظافر','Nail Trimming'],['تشذيب المخالب','Claw Trimming'],
+      ['تنظيف الاذنين','Ear Cleaning'],['تنظيف الأذنين','Ear Cleaning'],['حلاقة للاعضاء التناسلية','Sanitary Trim'],['حلاقة للأعضاء التناسلية','Sanitary Trim'],['حلاقة الأعضاء التناسلية','Sanitary Trim'],
+      ['تنظيف عميق للفراء','Deep Coat Cleaning']
+    ]);
+    if(exact.has(source))return exact.get(source);
+    const packageMatch=source.match(/^(.+?)\s*-\s*(.+)$/);
+    if(packageMatch){
+      const packageNames={'الاساسية':'Basic Package','الأساسية':'Basic Package','الشاملة':'Full Package','السعيدة':'Happy Package'};
+      const animals={'قط كبير':'Large Cat','قط متوسط':'Medium Cat','قط صغير':'Small Cat','كلب كبير':'Large Dog','كلب متوسط':'Medium Dog','كلب صغير':'Small Dog'};
+      const left=packageNames[packageMatch[1].trim()],right=animals[packageMatch[2].trim()];
+      if(left&&right)return `${left} - ${right}`;
+    }
+    return code?`Service ${String(code).trim()}`:'Service';
+  }
+  function entityKey(kind,id){return `entity.${kind}.${String(id||'').trim()}`}
+  function registerEntity(kind,item){
+    const id=String(item?.id||'').trim();if(!id)return null;
+    const key=entityKey(kind,id),ar=String(item?.name||item?.ar||'').trim();
+    let en=String(item?.nameEn||item?.name_en||item?.en||'').trim();
+    if(kind==='service'&&!en)en=serviceDefaultEnglish(ar,item?.serviceCode||item?.service_code||'');
+    const type=kind==='service'?'service':'neighborhood',screenKey=kind==='service'?'installationExecutionServices':'installationExecutionNeighborhoods';
+    if(!defaults.has(key))defaults.set(key,Object.freeze({key,type,screenKey,ar,en}));
+    return key;
+  }
+  function registerEntityCatalog(catalog={}){(catalog.services||[]).forEach(x=>registerEntity('service',x));(catalog.neighborhoods||[]).forEach(x=>registerEntity('neighborhood',x));return getRows()}
+  function entityText(kind,item){
+    const key=registerEntity(kind,item);if(!key)return effectiveLanguage()==='en'?'Not specified':String(item?.name||'');
+    const value=t(key);if(effectiveLanguage()==='en'&&ARABIC_RE.test(value))return kind==='service'?serviceDefaultEnglish(item?.name,item?.serviceCode||item?.service_code||''):(String(item?.nameEn||item?.name_en||'').trim()||'Neighborhood');
+    return value;
+  }
   function statusLabel(value){const map={'مسند':'execution.status.assigned','في الطريق':'execution.status.onRoute','وصل إلى العميل':'execution.status.arrived','قيد التنفيذ':'execution.status.inProgress','مكتمل':'execution.status.completed','ملغي':'execution.status.cancelled','بانتظار التأكيد':'execution.status.awaitingConfirmation'};return map[value]?t(map[value]):String(value||'')}
   function translateMessage(message){const text=String(message||'');if(effectiveLanguage()==='ar'||!text)return text;for(const base of defaults.values()){if(base.type!=='error')continue;if(text===base.ar)return t(base.key);if(base.ar.endsWith(':')&&text.startsWith(base.ar))return `${t(base.key)}${text.slice(base.ar.length)}`;}return text}
   function cacheRows(){try{localStorage.setItem(STORAGE_CACHE,JSON.stringify([...state.remote.values()].map(x=>({translation_key:x.key,ar_text:x.ar,en_text:x.en,text_type:x.type,screen_key:x.screenKey||SCREEN_KEY}))))}catch(_){}}
-  function loadCache(){try{const data=JSON.parse(localStorage.getItem(STORAGE_CACHE)||'[]');if(Array.isArray(data))data.forEach(row=>{if(!defaults.has(row.translation_key))return;state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||''),en:String(row.en_text||''),type:row.text_type||defaults.get(row.translation_key).type,screenKey:row.screen_key||SCREEN_KEY})})}catch(_){}}
-  async function loadRemote(force=false){if(state.loading&&!force)return state.loading;if(state.loaded&&!force)return getRows();state.loading=(async()=>{try{if(!window.LocalizationCenterService)return getRows();const data=await window.LocalizationCenterService.listScreen(SCREEN_KEY);(data||[]).forEach(row=>{if(!defaults.has(row.translation_key))return;state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||''),en:String(row.en_text||''),type:row.text_type||defaults.get(row.translation_key).type,screenKey:row.screen_key||SCREEN_KEY})});state.loaded=true;cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}catch(error){console.warn('[Localization] remote load deferred',error?.message||error);return getRows()}finally{state.loading=null}})();return state.loading}
-  function getRows(){return [...defaults.values()].map(base=>{const remote=state.remote.get(base.key);const ar=remote?.ar||base.ar,en=remote?.en||base.en;return{key:base.key,type:base.type,screenKey:SCREEN_KEY,ar,en,defaultAr:base.ar,defaultEn:base.en,complete:Boolean(ar.trim()&&en.trim()),customized:Boolean(remote&&(remote.ar!==base.ar||remote.en!==base.en))}})}
-  async function saveRows(entries){if(!window.LocalizationCenterService)throw new Error('خدمة مركز الترجمه غير جاهزة.');const payload=(entries||[]).filter(x=>defaults.has(x.key)).map(x=>({translation_key:x.key,module_name:'appointments',text_type:defaults.get(x.key).type,ar_text:String(x.ar||'').trim(),en_text:String(x.en||'').trim(),default_ar:defaults.get(x.key).ar,default_en:defaults.get(x.key).en}));if(payload.some(x=>!x.ar_text||!x.en_text))throw new Error('لا يمكن الحفظ مع وجود ترجمة عربية أو إنجليزية فارغة.');await window.LocalizationCenterService.saveScreen(SCREEN_KEY,payload);payload.forEach(x=>state.remote.set(x.translation_key,{key:x.translation_key,ar:x.ar_text,en:x.en_text,type:x.text_type,screenKey:SCREEN_KEY}));cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}
-  function setLanguage(language){state.language=language==='en'?'en':'ar';localStorage.setItem(STORAGE_LANGUAGE,state.language);window.dispatchEvent(new CustomEvent('petatoe-language-changed',{detail:{screenKey:SCREEN_KEY,language:state.language}}));return state.language}
+  function loadCache(){try{const data=JSON.parse(localStorage.getItem(STORAGE_CACHE)||'[]');if(Array.isArray(data))data.forEach(row=>{const base=defaults.get(row.translation_key);state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||base?.ar||''),en:String(row.en_text||base?.en||''),type:row.text_type||base?.type||'label',screenKey:row.screen_key||base?.screenKey||SCREEN_KEY})})}catch(_){}}
+  async function loadRemote(force=false){if(state.loading&&!force)return state.loading;if(state.loaded&&!force)return getRows();state.loading=(async()=>{try{if(!window.LocalizationCenterService)return getRows();const data=await (window.LocalizationCenterService.listPilot?.()||window.LocalizationCenterService.listScreen(SCREEN_KEY));(data||[]).forEach(row=>{const base=defaults.get(row.translation_key);state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||base?.ar||''),en:String(row.en_text||base?.en||''),type:row.text_type||base?.type||'label',screenKey:row.screen_key||base?.screenKey||SCREEN_KEY})});state.loaded=true;cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}catch(error){console.warn('[Localization] remote load deferred',error?.message||error);return getRows()}finally{state.loading=null}})();return state.loading}
+  function getRows(){const keys=new Set([...defaults.keys(),...state.remote.keys()]);return [...keys].map(key=>{const base=defaults.get(key),remote=state.remote.get(key);const ar=String(remote?.ar||base?.ar||''),en=String(remote?.en||base?.en||'');return{key,type:remote?.type||base?.type||'label',screenKey:remote?.screenKey||base?.screenKey||SCREEN_KEY,ar,en,defaultAr:base?.ar||ar,defaultEn:base?.en||en,complete:Boolean(ar.trim()&&en.trim()&&!ARABIC_RE.test(en)),customized:Boolean(remote&&base&&(remote.ar!==base.ar||remote.en!==base.en))}}).sort((a,b)=>a.screenKey.localeCompare(b.screenKey)||a.key.localeCompare(b.key))}
+  async function saveRows(entries){if(!window.LocalizationCenterService)throw new Error('خدمة مركز الترجمه غير جاهزة.');const payload=(entries||[]).map(x=>{const base=defaults.get(x.key);return{translation_key:x.key,screen_key:x.screenKey||base?.screenKey||SCREEN_KEY,module_name:x.key.startsWith('sidebar.')?'navigation':'appointments',text_type:x.type||base?.type||'label',ar_text:String(x.ar||'').trim(),en_text:String(x.en||'').trim(),default_ar:base?.ar||String(x.ar||'').trim(),default_en:base?.en||String(x.en||'').trim()}});if(payload.some(x=>!x.ar_text||!x.en_text||ARABIC_RE.test(x.en_text)))throw new Error('لا يمكن الحفظ مع ترجمة ناقصة أو نص عربي داخل العمود الإنجليزي.');await (window.LocalizationCenterService.saveEntries?.(payload)||window.LocalizationCenterService.saveScreen(SCREEN_KEY,payload));payload.forEach(x=>state.remote.set(x.translation_key,{key:x.translation_key,ar:x.ar_text,en:x.en_text,type:x.text_type,screenKey:x.screen_key}));cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}
+  function setLanguage(language){state.language=language==='en'?'en':'ar';localStorage.setItem(STORAGE_LANGUAGE,state.language);applyStatic(document);window.dispatchEvent(new CustomEvent('petatoe-language-changed',{detail:{screenKey:SCREEN_KEY,language:state.language}}));return state.language}
   function getLanguage(){return state.language}
-  function applyStatic(root=document){const lang=effectiveLanguage();const scope=root?.querySelectorAll?root:document;scope.querySelectorAll?.('[data-execution-i18n]').forEach(el=>{el.textContent=t(el.dataset.executionI18n)});scope.querySelectorAll?.('[data-execution-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.executionI18nPlaceholder))});const view=document.getElementById('installationExecutionView');if(view){view.dir=lang==='en'?'ltr':'rtl';view.lang=lang==='en'?'en':'ar';view.dataset.executionLanguage=lang}}
+  function applyStatic(root=document){const lang=effectiveLanguage();const scope=root?.querySelectorAll?root:document;scope.querySelectorAll?.('[data-execution-i18n]').forEach(el=>{el.textContent=t(el.dataset.executionI18n)});scope.querySelectorAll?.('[data-execution-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.executionI18nPlaceholder))});scope.querySelectorAll?.('[data-petatoe-i18n]').forEach(el=>{el.textContent=t(el.dataset.petatoeI18n)});scope.querySelectorAll?.('[data-petatoe-i18n-aria]').forEach(el=>{const value=t(el.dataset.petatoeI18nAria);el.setAttribute('aria-label',value);el.setAttribute('title',value)});const view=document.getElementById('installationExecutionView');if(view){view.dir=lang==='en'?'ltr':'rtl';view.lang=lang==='en'?'en':'ar';view.dataset.executionLanguage=lang}const sidebar=document.getElementById('mainSidebar');if(sidebar&&desktopPilot()){sidebar.dir=lang==='en'?'ltr':'rtl';sidebar.lang=lang==='en'?'en':'ar';sidebar.dataset.petatoeLanguage=lang}}
   function pageMeta(){return[t('execution.page.title'),t('execution.page.subtitle')]}
   loadCache();
-  window.PetatoeLocalization=Object.freeze({screenKey:SCREEN_KEY,t,statusLabel,translateMessage,getRows,loadRemote,saveRows,setLanguage,getLanguage,effectiveLanguage,applyStatic,pageMeta,desktopPilot});
+  window.PetatoeLocalization=Object.freeze({screenKey:SCREEN_KEY,t,statusLabel,translateMessage,getRows,loadRemote,saveRows,setLanguage,getLanguage,effectiveLanguage,applyStatic,pageMeta,desktopPilot,registerEntityCatalog,entityText,serviceDefaultEnglish});
   document.addEventListener('DOMContentLoaded',()=>{applyStatic(document);setTimeout(()=>loadRemote(false),0)});
 })();

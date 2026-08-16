@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-05-translation-center-execution-pilot";
+const CACHE_VERSION = "petatoe-pwa-18-55-06-global-language-execution-entities-sidebar";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
