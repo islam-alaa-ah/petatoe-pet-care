@@ -1,12 +1,12 @@
 {
-  "version": "18.55.17",
-  "build": 185517,
+  "version": "18.55.18",
+  "build": 185518,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Collection Team Scope Hotfix",
+  "title": "PETATOE KPI Card Direction Consistency Hotfix",
   "notes": [
-    "إصلاح تأكيد التحصيل ليعتمد على الزيارة النشطة وصلاحية الفرقة بدل المستخدم الذي بدأ التنفيذ.",
-    "السوبر أدمن يمكنه تأكيد التحصيل بدون قيود الفرقة مع بقاء selected_for_execution_by كبيانات تدقيق فقط."
+    "توحيد موضع أيقونات KPI داخل الكروت الاتجاهية بحيث تظهر يمينًا في الإنجليزية ويسارًا في العربية.",
+    "دمج Owner أيقونات Dashboard وFollow-ups في قاعدة CSS منطقية واحدة بدون إضافة Override جديد."
   ],
-  "cacheToken": "petatoe-pwa-18-55-17-collection-team-scope"
+  "cacheToken": "petatoe-pwa-18-55-18-kpi-card-direction"
 }
