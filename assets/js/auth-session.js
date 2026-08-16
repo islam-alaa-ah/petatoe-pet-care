@@ -19,9 +19,21 @@
   function showApp() { const e = el(); e.overlay?.classList.add("hidden"); e.loginView?.classList.add("hidden"); e.appView?.classList.remove("hidden"); }
 
   async function loadProfileOnline(userId) {
-    const { data, error } = await window.customerSupabase.from("user_profiles")
-      .select("id, full_name, email, role, representative_id, is_active, must_change_password, default_language, last_login_at")
+    const baseColumns = "id, full_name, email, role, representative_id, is_active, must_change_password, last_login_at";
+    let { data, error } = await window.customerSupabase.from("user_profiles")
+      .select(`${baseColumns}, default_language`)
       .eq("id", userId).single();
+
+    // Schema-safe recovery: P5.13.4 may be deployed before its migration is applied.
+    // In that case, keep login available and fall back to Arabic until the column exists.
+    if (error && /default_language.*does not exist|column .*default_language/i.test(String(error.message || ""))) {
+      const fallback = await window.customerSupabase.from("user_profiles")
+        .select(baseColumns)
+        .eq("id", userId).single();
+      data = fallback.data ? { ...fallback.data, default_language: "ar" } : fallback.data;
+      error = fallback.error;
+    }
+
     if (error) throw new Error(`تعذر تحميل ملف المستخدم: ${error.message}`);
     if (!data?.is_active) throw new Error("هذا الحساب غير نشط.");
     return data;

@@ -1,13 +1,13 @@
 {
-  "version": "18.55.13",
-  "build": 185513,
+  "version": "18.55.14",
+  "build": 185514,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Customer Localization + User Default Language",
+  "title": "PETATOE Login Schema Recovery Hotfix",
   "notes": [
-    "تطبيق Localization Lockdown على قسم إدارة العملاء مع الحفاظ على ترجمات القائمة الجانبية والخدمات والأحياء الحالية.",
-    "إضافة لغة افتراضية لكل مستخدم وتطبيقها عند تسجيل الدخول على Desktop وMobile.",
-    "توسيع مركز الترجمه ليشمل العملاء والمتابعات والعقود وفواتير المبيعات."
+    "إصلاح Migration اللغة الافتراضية بحيث تملأ default_ar/default_en عند إدخال مفاتيح الترجمة.",
+    "إضافة Login schema guard يمنع تعطل تسجيل الدخول إذا سبق نشر الواجهة تطبيق الـMigration.",
+    "الحفاظ على الترجمات المخصصة الحالية وعدم تغيير منطق المصادقة أو الصلاحيات."
   ],
-  "cacheToken": "petatoe-pwa-18-55-13-customer-localization"
+  "cacheToken": "petatoe-pwa-18-55-14-login-schema-recovery"
 }
