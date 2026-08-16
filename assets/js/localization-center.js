@@ -307,7 +307,7 @@
     ["appointmentNew.action.save","button","حفظ الموعد","Save Appointment"],
     ["appointmentNew.action.saving","button","جاري الحفظ...","Saving..."],
     ["appointmentNew.action.saved","button","تم الحفظ","Saved"],
-    ["appointmentNew.action.saveError","button","تعذر الحفظ","Save Failed"]
+    ["appointmentNew.action.saveError","button","تعذر الحفظ","Save Failed"],
     ["dashboard.reps.title","title","أداء المندوبين","Representative Performance"],
     ["dashboard.reps.note","help","العملاء، المتابعات، العروض، ونسبة التحويل","Customers, follow-ups, contracts, and conversion rate"],
     ["dashboard.reps.settings","button","إعدادات ظهور المندوبين","Representative Visibility Settings"],

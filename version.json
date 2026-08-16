@@ -1,13 +1,13 @@
 {
-  "version": "18.55.22",
-  "build": 185522,
+  "version": "18.55.23",
+  "build": 185523,
   "forceUpdate": true,
-  "releaseDate": "2026-08-16",
-  "title": "PETATOE Translation Center Local-First Recovery",
+  "releaseDate": "2026-08-17",
+  "title": "PETATOE Localization Runtime Catalog Recovery",
   "notes": [
-    "عرض القاموس المحلي فور فتح مركز الترجمه بدون انتظار Supabase أو كتالوج الخدمات والأحياء.",
-    "تحميل الترجمات المركزية والخدمات والأحياء في الخلفية مع بقاء المركز قابلًا للاستخدام عند تعذر الاتصال.",
-    "إزالة قائمة الشاشات الثابتة من تحميل مركز الترجمه وجلب جميع ترجمات app_translations النشطة."
+    "إصلاح خطأ بنيوي في قاموس الترجمة كان يمنع تهيئة PetatoeLocalization بالكامل بعد P5.13.7.",
+    "استعادة زر تغيير اللغة في الهيدر واستعادة تحميل وعرض مركز الترجمه من القاموس المحلي والمركزي.",
+    "الحفاظ على Local-First Translation Center من P5.13.7.1 بدون تراجع أو إعادة بناء لنظام الترجمة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-22-translation-center-local-first"
+  "cacheToken": "petatoe-pwa-18-55-23-localization-runtime-recovery"
 }
