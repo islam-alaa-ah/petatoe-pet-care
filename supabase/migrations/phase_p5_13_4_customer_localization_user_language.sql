@@ -6,7 +6,7 @@ alter table public.user_profiles add constraint user_profiles_default_language_c
 update public.user_profiles set default_language='ar' where default_language is null or default_language not in ('ar','en');
 
 insert into public.app_translations
-  (translation_key,screen_key,module_name,text_type,ar_text,en_text,default_ar,default_en,is_active)
+  (translation_key,screen_key,module_name,text_type,ar_text,en_text)
 values
   ('customers.page.title','customers','customers','title','العملاء','Customers'),
   ('customers.page.subtitle','customers','customers','subtitle','إدارة بيانات العملاء والبحث والتصفية','Manage customer data, search, and filtering'),
@@ -193,7 +193,7 @@ values
   ('users.language.ar','users','users','option','العربية','Arabic'),
   ('users.language.en','users','users','option','English','English')
 on conflict (translation_key) do update set
-  screen_key=excluded.screen_key,module_name=excluded.module_name,text_type=excluded.text_type,default_ar=excluded.default_ar,default_en=excluded.default_en,
+  screen_key=excluded.screen_key,module_name=excluded.module_name,text_type=excluded.text_type,default_ar=excluded.ar_text,default_en=excluded.en_text,
   ar_text=case when coalesce(public.app_translations.ar_text,'')='' then excluded.ar_text else public.app_translations.ar_text end,
   en_text=case when coalesce(public.app_translations.en_text,'')='' then excluded.en_text else public.app_translations.en_text end,is_active=true;
 
