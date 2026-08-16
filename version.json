@@ -1,13 +1,13 @@
 {
-  "version": "18.55.24",
-  "build": 185524,
+  "version": "18.55.25",
+  "build": 185525,
   "forceUpdate": true,
   "releaseDate": "2026-08-17",
-  "title": "PETATOE Appointment Management Localization Rollout",
+  "title": "PETATOE Completion Localization & Invoice Row Recovery",
   "notes": [
-    "توسيع مركز الترجمه إلى شاشات إدارة المواعيد الأساسية مع الحفاظ على التنفيذ وإضافة الموعد المترجمين سابقًا.",
-    "إصلاح تشوه تقويم لوحة التحكم عبر تثبيت شبكة الأيام والأبعاد ومنع التفاف الأرقام.",
-    "إعادة رسم الجدولة وتأكيد الإكمال عند تغيير اللغة مع دعم RTL/LTR وLatin digits."
+    "استكمال مفاتيح ترجمة شاشة تأكيد انتهاء المواعيد ومنع ظهور مفاتيح الترجمة الخام.",
+    "منع إعادة إنشاء صف طلب أساسي بعد فوترة زيارة تنفيذ مؤكدة مع الحفاظ على الطلبات القديمة غير المعتمدة على الزيارات.",
+    "الحفاظ على مسارات التأكيد والفوترة الحالية بدون تغيير الحسابات أو الصلاحيات أو Workflow التحصيل."
   ],
-  "cacheToken": "petatoe-pwa-18-55-24-appointment-management-localization"
+  "cacheToken": "petatoe-pwa-18-55-25-completion-invoice-row-recovery"
 }

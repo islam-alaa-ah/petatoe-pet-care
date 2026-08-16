@@ -8,7 +8,7 @@
   let quantityOptions={serviceTypes:[]};
   let quantityWorkspaceDirty=false;
   const $=id=>document.getElementById(id);
-  const t=(key,fallback,vars={})=>window.PetatoeLocalization?.t?.(key,vars)||fallback;
+  const t=(key,fallback,vars={})=>{const value=window.PetatoeLocalization?.t?.(key,vars);return value&&!/^\[.+\]$/.test(value)?value:fallback};
   const lang=()=>window.PetatoeLocalization?.effectiveLanguage?.()==="en"?"en":"ar";
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const money=v=>new Intl.NumberFormat(lang()==="en"?"en-US-u-nu-latn":"ar-SA-u-nu-latn",{style:"currency",currency:"SAR",minimumFractionDigits:2}).format(Number(v||0));
