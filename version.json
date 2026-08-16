@@ -1,13 +1,13 @@
 {
-  "version": "18.55.14",
-  "build": 185514,
+  "version": "18.55.15",
+  "build": 185515,
   "forceUpdate": true,
   "releaseDate": "2026-08-16",
-  "title": "PETATOE Login Schema Recovery Hotfix",
+  "title": "PETATOE Follow-ups Localization Certification",
   "notes": [
-    "إصلاح Migration اللغة الافتراضية بحيث تملأ default_ar/default_en عند إدخال مفاتيح الترجمة.",
-    "إضافة Login schema guard يمنع تعطل تسجيل الدخول إذا سبق نشر الواجهة تطبيق الـMigration.",
-    "الحفاظ على الترجمات المخصصة الحالية وعدم تغيير منطق المصادقة أو الصلاحيات."
+    "اعتماد ترجمة شاشة المتابعات على مركز الترجمه في Desktop وMobile.",
+    "إصلاح تحديث النصوص الديناميكية ورسائل الكاش عند تبديل اللغة.",
+    "ربط مواضع أيقونات المتابعات باتجاه RTL/LTR باستخدام logical CSS."
   ],
-  "cacheToken": "petatoe-pwa-18-55-14-login-schema-recovery"
+  "cacheToken": "petatoe-pwa-18-55-15-followups-localization"
 }

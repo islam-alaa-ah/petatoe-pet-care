@@ -817,14 +817,14 @@ function showDataStatus(id, message = "", type = "info") {
 function formatOfflineCacheStatus(status) {
   if (!status || status.source !== "cache") return "";
   const updatedAt = Number(status.metadata?.updatedAt || 0);
-  if (!updatedAt) return status.stale ? "يتم عرض آخر بيانات محفوظة محليًا." : "";
+  if (!updatedAt) return status.stale ? customerT("shared.cache.local","يتم عرض آخر بيانات محفوظة محليًا.") : "";
   const minutes = Math.max(0, Math.floor((Date.now() - updatedAt) / 60000));
-  if (minutes < 1) return "يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ أقل من دقيقة.";
-  if (minutes < 60) return `يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ ${minutes} دقيقة.`;
+  if (minutes < 1) return customerT("shared.cache.lessMinute","يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ أقل من دقيقة.");
+  if (minutes < 60) return customerT("shared.cache.minutes",`يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ ${minutes} دقيقة.`,{count:minutes});
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ ${hours} ساعة.`;
+  if (hours < 24) return customerT("shared.cache.hours",`يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ ${hours} ساعة.`,{count:hours});
   const days = Math.floor(hours / 24);
-  return `يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ ${days} يوم.`;
+  return customerT("shared.cache.days",`يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ ${days} يوم.`,{count:days});
 }
 
 function applyReferenceCacheUpdate(event) {
@@ -1438,6 +1438,7 @@ window.addEventListener("petatoe-language-changed", () => {
   if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
   else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map((key,index)=>customerT(key,pageMeta[current][index]));
   if (meta) { document.getElementById("pageTitle").textContent = meta[0]; document.getElementById("pageSubtitle").textContent = meta[1]; }
+  if (current === "followups") { renderFollowups(); showDataStatus("followupsStatus", formatOfflineCacheStatus(window.FollowupsService?.getLastReadStatus?.()), "info"); }
 });
 window.addEventListener("petatoe-localization-updated", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
@@ -3893,7 +3894,7 @@ async function loadFollowupsFromSupabase(force = false) {
   if (!window.FollowupsService) return;
 
   followupsLoading = true;
-  showDataStatus("followupsStatus", navigator.onLine === false ? "جاري تحميل آخر بيانات المتابعات المحفوظة..." : "جاري تحميل المتابعات...", "info");
+  showDataStatus("followupsStatus", navigator.onLine === false ? customerT("followups.loading.cached","جاري تحميل آخر بيانات المتابعات المحفوظة...") : customerT("followups.loading","جاري تحميل المتابعات..."), "info");
 
   try {
     followups = await window.FollowupsService.listFollowups({ force });
@@ -3906,7 +3907,7 @@ async function loadFollowupsFromSupabase(force = false) {
     console.error("Follow-up loading failed:", error);
     showDataStatus(
       "followupsStatus",
-      error instanceof Error ? error.message : "تعذر تحميل المتابعات.",
+      error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : customerT("followups.error.load","تعذر تحميل المتابعات."),
       "error"
     );
   } finally {
@@ -4055,12 +4056,12 @@ async function handleFollowupSubmit(event) {
   const representativeId = document.getElementById("followupRepresentative").value;
 
   if (!customerId) {
-    alert("اختر العميل.");
+    alert(customerT("followups.error.chooseCustomer","اختر العميل."));
     return;
   }
 
   if (!representativeId) {
-    alert("اختر المندوب المسؤول.");
+    alert(customerT("followups.error.chooseRep","اختر المندوب المسؤول."));
     return;
   }
 
@@ -4068,7 +4069,7 @@ async function handleFollowupSubmit(event) {
   try {
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.textContent = "جاري الحفظ...";
+      submitButton.textContent = customerT("followups.dialog.saving","جاري الحفظ...");
     }
 
     const followupPayload = {
@@ -4131,25 +4132,25 @@ async function handleFollowupSubmit(event) {
       alert(`تم حفظ المتابعة، ولكن تعذر تحديث قائمة العملاء المقترحين: ${suggestionCompletionError.message || "خطأ غير معروف"}`);
     }
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حفظ المتابعة.");
+    alert(error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : customerT("followups.error.save","تعذر حفظ المتابعة."));
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
-      submitButton.textContent = "حفظ المتابعة";
+      submitButton.textContent = customerT("followups.dialog.save","حفظ المتابعة");
     }
   }
 }
 
 async function deleteFollowup(id) {
-  if (!requireScreenAction("followups", "delete", "لا توجد صلاحية حذف المتابعات.")) return;
+  if (!requireScreenAction("followups", "delete", customerT("followups.error.deletePermission","لا توجد صلاحية حذف المتابعات."))) return;
   if (!canManageFollowups("delete")) {
-    alert("لا توجد صلاحية لحذف المتابعات.");
+    alert(customerT("followups.error.deletePermission","لا توجد صلاحية لحذف المتابعات."));
     return;
   }
 
   const item = followups.find(followup => followup.id === id);
   if (!item) return;
-  if (!confirm("هل تريد حذف هذه المتابعة؟")) return;
+  if (!confirm(customerT("followups.confirm.delete","هل تريد حذف هذه المتابعة؟"))) return;
 
   try {
     await window.FollowupsService.deleteFollowup(item);
@@ -6649,12 +6650,12 @@ async function handleQuotationSubmit(event) {
   }
 
   if (!customerId) {
-    alert("اختر العميل.");
+    alert(customerT("followups.error.chooseCustomer","اختر العميل."));
     return;
   }
 
   if (!representativeId) {
-    alert("اختر المندوب المسؤول.");
+    alert(customerT("followups.error.chooseRep","اختر المندوب المسؤول."));
     return;
   }
 

@@ -229,7 +229,7 @@
       <div class="mobile-dashboard-actions">
         <button type="button" class="mobile-dashboard-action" data-mobile-dashboard-filter aria-expanded="false" aria-label="فتح فلاتر لوحة التحكم">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
-          <span>الفلاتر</span>
+          <span data-petatoe-i18n="followups.mobile.filters">الفلاتر</span>
         </button>
         <button type="button" class="mobile-dashboard-action" data-mobile-dashboard-refresh aria-label="تحديث لوحة التحكم">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0 2 5M20 4v7h-7"/></svg>
@@ -543,18 +543,15 @@
   let filtersOpen = false;
   let rowObserver = null;
 
-  const labels = [
-    "العميل",
-    "رقم العميل",
-    "تاريخ التواصل",
-    "طريقة التواصل",
-    "المندوب",
-    "نتيجة التواصل",
-    "العقد",
-    "المتابعة القادمة",
-    "الحالة",
-    "الإجراءات"
+  const labelKeys = [
+    ["followups.col.customer","العميل"], ["followups.col.phone","رقم العميل"],
+    ["followups.col.contactDate","تاريخ التواصل"], ["followups.col.method","طريقة التواصل"],
+    ["followups.col.rep","المندوب"], ["followups.col.result","نتيجة التواصل"],
+    ["followups.col.contract","العقد"], ["followups.col.next","المتابعة القادمة"],
+    ["followups.col.status","الحالة"], ["followups.col.actions","الإجراءات"]
   ];
+  const t = (key, fallback) => { const value=window.PetatoeLocalization?.t?.(key); return value && !/^\[.+\]$/.test(value) ? value : fallback; };
+  const labels = () => labelKeys.map(([key,fallback])=>t(key,fallback));
 
   const fields = [
     "customer",
@@ -589,7 +586,7 @@
 
   function activeStatusLabel() {
     const select = document.getElementById("followupStatusFilter");
-    return select?.selectedOptions?.[0]?.textContent?.trim() || "كل المتابعات";
+    return select?.selectedOptions?.[0]?.textContent?.trim() || t("followups.filter.all","كل المتابعات");
   }
 
   function updateToolbarState() {
@@ -621,26 +618,26 @@
     toolbar.className = "mobile-followups-toolbar";
     toolbar.innerHTML = `
       <div class="mobile-followups-heading">
-        <span>إدارة التواصل</span>
-        <strong>المتابعات</strong>
-        <small data-mobile-followups-active-filter>كل المتابعات</small>
+        <span data-petatoe-i18n="followups.mobile.communication">إدارة التواصل</span>
+        <strong data-petatoe-i18n="followups.page.title">المتابعات</strong>
+        <small data-mobile-followups-active-filter>${t("followups.filter.all","كل المتابعات")}</small>
       </div>
       <button type="button" class="mobile-followups-filter-button" data-mobile-followups-filter aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
-        <span>الفلاتر</span>
+        <span data-petatoe-i18n="followups.mobile.filters">الفلاتر</span>
       </button>`;
 
     actions?.insertAdjacentElement("afterend", toolbar);
 
     const quickNav = document.createElement("div");
     quickNav.className = "mobile-followups-quicknav";
-    quickNav.setAttribute("aria-label", "فلترة المتابعات حسب الحالة");
+    quickNav.setAttribute("aria-label", t("followups.mobile.statusFilterAria","فلترة المتابعات حسب الحالة"));
     quickNav.innerHTML = `
-      <button type="button" data-mobile-followups-status="">الكل</button>
-      <button type="button" data-mobile-followups-status="today">اليوم</button>
-      <button type="button" data-mobile-followups-status="overdue">المتأخرة</button>
-      <button type="button" data-mobile-followups-status="upcoming">القادمة</button>
-      <button type="button" data-mobile-followups-status="completed">المكتملة</button>`;
+      <button type="button" data-mobile-followups-status="" data-petatoe-i18n="followups.mobile.all">الكل</button>
+      <button type="button" data-mobile-followups-status="today" data-petatoe-i18n="followups.status.today">اليوم</button>
+      <button type="button" data-mobile-followups-status="overdue" data-petatoe-i18n="followups.status.overdue">المتأخرة</button>
+      <button type="button" data-mobile-followups-status="upcoming" data-petatoe-i18n="followups.status.upcoming">القادمة</button>
+      <button type="button" data-mobile-followups-status="completed" data-petatoe-i18n="followups.status.completed">المكتملة</button>`;
     stats?.insertAdjacentElement("afterend", quickNav);
 
     if (filters) {
@@ -648,8 +645,8 @@
       const header = document.createElement("div");
       header.className = "mobile-followups-sheet-header";
       header.innerHTML = `
-        <div><span>خيارات العرض</span><strong>فلترة المتابعات</strong></div>
-        <button type="button" class="mobile-followups-filter-close" aria-label="إغلاق الفلاتر">
+        <div><span data-petatoe-i18n="followups.mobile.viewOptions">خيارات العرض</span><strong data-petatoe-i18n="followups.mobile.filterTitle">فلترة المتابعات</strong></div>
+        <button type="button" class="mobile-followups-filter-close" aria-label="إغلاق الفلاتر" data-petatoe-i18n-aria="followups.mobile.closeFilters">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>`;
       filters.prepend(header);
@@ -659,7 +656,7 @@
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "mobile-followups-filter-backdrop";
-    backdrop.setAttribute("aria-label", "إغلاق فلاتر المتابعات");
+    backdrop.setAttribute("aria-label", t("followups.mobile.closeFilters","إغلاق فلاتر المتابعات"));
     followupsView.append(backdrop);
 
     toolbar.querySelector("[data-mobile-followups-filter]")?.addEventListener("click", toggleFilters);
@@ -676,8 +673,15 @@
       });
     });
 
+    window.PetatoeLocalization?.applyStatic?.(followupsView);
     updateToolbarState();
   }
+
+  window.addEventListener("petatoe-language-changed", () => {
+    window.PetatoeLocalization?.applyStatic?.(followupsView);
+    updateToolbarState();
+    decorateRows();
+  });
 
   function decorateRows() {
     followupsView.querySelectorAll("#followupsTableBody tr").forEach(row => {
@@ -685,7 +689,7 @@
       if (cells.length !== 10) return;
 
       cells.forEach((cell, index) => {
-        cell.dataset.mobileLabel = labels[index];
+        cell.dataset.mobileLabel = labels()[index];
         cell.dataset.mobileField = fields[index];
       });
 

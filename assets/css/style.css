@@ -2189,7 +2189,7 @@ body.customer360-exporting .customer360-shell *{
   #dashboardView .dashboard-stats .stat-card strong,#followupsView .followup-stat strong{color:var(--desk-text)!important;font-size:26px!important;line-height:1.15!important;margin-top:11px!important}
   #followupsView .followup-stat{min-height:120px}
   #dashboardView .petatoe-kpi-icon,#followupsView .petatoe-followup-kpi-icon{
-    position:absolute;inset:17px auto auto 17px;display:grid!important;place-items:center;width:46px;height:46px;
+    position:absolute;inset-block-start:17px;inset-inline-start:17px;display:grid!important;place-items:center;width:46px;height:46px;
     border:1px solid color-mix(in srgb,var(--desk-blue) 72%,var(--desk-line));border-radius:15px;
     background:linear-gradient(145deg,color-mix(in srgb,var(--desk-blue) 15%,var(--desk-glass-strong)),var(--desk-glass-soft));
     color:var(--desk-blue)!important;box-shadow:0 8px 20px rgba(47,131,255,.16),0 0 14px rgba(47,131,255,.07),inset 0 1px 0 rgba(255,255,255,.18)
