@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-31-operational-report-live-visits-hotfix";
+const CACHE_VERSION = "petatoe-pwa-18-55-32-installation-summary-export-recovery";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -128,7 +128,8 @@ const OPTIONAL_APP_SHELL = [
 const VENDOR_URLS = [
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2",
   "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js",
-  "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
+  "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",
+  "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"
 ];
 
 function isDynamicOrSensitive(url) {
