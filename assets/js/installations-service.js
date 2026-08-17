@@ -672,8 +672,13 @@
     if(rseAudit)throw new Error('تعذر تحميل سجل إعادة الجدولة اليومي: '+rseAudit.message);
     if(te||re)throw new Error('تعذر تحميل فلاتر ملخص المواعيد.');
     const inScope=(row,representativeId,teamId)=>(!filters.representativeId||String(representativeId||'')===String(filters.representativeId))&&(!teamFilterApplied||selectedTeams.has(String(teamId||'')));
-    const scopedVisits=(visits||[]).filter(v=>inScope(v,v.request?.representative_id,v.installation_team_id));
-    const scopedRequests=(scheduledRequests||[]).filter(r=>inScope(r,r.representative_id,r.installation_team_id));
+    // P5.13.8.7: operational appointment reports must be built from the canonical LIVE visit set.
+    // Historical cancelled/replaced visits remain in the database for audit/reschedule history, but they
+    // must never occupy a current appointment slot, inflate visit/service totals, or render an execution row.
+    const operationalVisitStatuses=new Set(['مجدولة','قيد التنفيذ','بانتظار التأكيد','مؤكدة']);
+    const cancelledRequestStatuses=new Set(['ملغي','ملغاة']);
+    const scopedVisits=(visits||[]).filter(v=>operationalVisitStatuses.has(String(v.status||'').trim())&&inScope(v,v.request?.representative_id,v.installation_team_id));
+    const scopedRequests=(scheduledRequests||[]).filter(r=>!cancelledRequestStatuses.has(String(r.status||'').trim())&&inScope(r,r.representative_id,r.installation_team_id));
     const scopedRescheduleEvents=(rescheduleEvents||[]).filter(e=>inScope(e,e.previous_representative_id,e.previous_team_id)).map(e=>({
       id:e.id,requestId:e.installation_request_id||'',visitId:e.execution_visit_id||'',occurredAt:e.occurred_at||'',
       reason:e.reason||'',stage:e.execution_stage||'غير محدد',previousStatus:e.previous_status||'',
@@ -689,7 +694,7 @@
     const candidateRequestIds=[...new Set(scopedRequests.map(r=>r.id).filter(Boolean))];
     let requestsWithVisits=new Set();
     if(candidateRequestIds.length){
-      const {data:anyVisits,error:ave}=await db().from('installation_execution_visits').select('installation_request_id').in('installation_request_id',candidateRequestIds);
+      const {data:anyVisits,error:ave}=await db().from('installation_execution_visits').select('installation_request_id').in('installation_request_id',candidateRequestIds).in('status',[...operationalVisitStatuses]);
       if(ave)throw new Error('تعذر التحقق من نوع جدولة طلبات ملخص المواعيد: '+ave.message);
       requestsWithVisits=new Set((anyVisits||[]).map(v=>String(v.installation_request_id||'')).filter(Boolean));
     }

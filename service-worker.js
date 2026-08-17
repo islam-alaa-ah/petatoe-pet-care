@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-30-execution-financial-double-count-hotfix";
+const CACHE_VERSION = "petatoe-pwa-18-55-31-operational-report-live-visits-hotfix";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
