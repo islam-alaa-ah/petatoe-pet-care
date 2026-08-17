@@ -214,7 +214,7 @@
     requireAction('view','installationSchedule');
     const [{data,error},{data:visits,error:visitError},{data:visitLines,error:lineError}]=await Promise.all([
       db().rpc('get_installation_schedule_global'),
-      db().from('installation_execution_visits').select('id,installation_request_id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status,team:installation_teams(id,name)').in('status',['بانتظار الجدولة','مجدولة','قيد التنفيذ','بانتظار التأكيد']).order('visit_no'),
+      db().from('installation_execution_visits').select('id,installation_request_id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status,team:installation_teams(id,name)').in('status',['بانتظار الجدولة','مجدولة','قيد التنفيذ','بانتظار التأكيد','مؤكدة']).order('visit_no'),
       db().from('installation_execution_visit_services').select('visit_id,request_service_id,scheduled_quantity')
     ]);
     if(error)throw new Error('تعذر تحميل الرؤية العامة لجدول المواعيد: '+error.message);
@@ -248,7 +248,7 @@
   async function schedulePlan(requestId){
     requireAction('view','installationSchedule');
     const [{data:visits,error},{data:requestServices,error:serviceError},{data:confirmedVisits,error:confirmedVisitError}]=await Promise.all([
-      db().from('installation_execution_visits').select('id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status').eq('installation_request_id',requestId).in('status',['بانتظار الجدولة','مجدولة','قيد التنفيذ','بانتظار التأكيد']).order('visit_no'),
+      db().from('installation_execution_visits').select('id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status').eq('installation_request_id',requestId).in('status',['بانتظار الجدولة','مجدولة','قيد التنفيذ','بانتظار التأكيد','مؤكدة']).order('visit_no'),
       db().from('installation_request_services').select('id,quantity,unit_price,line_total,service:installation_service_types(id,name)').eq('installation_request_id',requestId).order('id'),
       db().from('installation_execution_visits').select('id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status,completed_at').eq('installation_request_id',requestId).eq('status','مؤكدة').order('visit_no')
     ]);

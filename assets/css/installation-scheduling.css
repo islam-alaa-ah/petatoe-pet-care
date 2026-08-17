@@ -947,3 +947,13 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
 
 /* P5.12.7 — canonical schedule-card notes and three-action owner */
 .installation-day-request-notes{display:grid;gap:4px;padding:9px 11px;border:1px solid color-mix(in srgb,var(--warning,#d9a837) 45%,var(--border));border-radius:10px;background:color-mix(in srgb,var(--warning,#d9a837) 7%,var(--surface));font-size:.82rem}.installation-day-request-notes strong{color:var(--text,#0f172a)}.installation-day-request-notes span{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text-muted,#64748b)}.installation-day-actions button{min-width:0}.installation-day-actions .installation-edit-request-btn{border-color:rgba(37,99,235,.45)}html[data-theme="dark"] .installation-day-request-notes{background:rgba(217,168,55,.08);border-color:rgba(217,168,55,.38)}@media(max-width:767px){.installation-day-actions{grid-template-columns:1fr}}
+
+/* Phase P5.13.8.19 — Completed-day historical schedule retention */
+#installationScheduleView .installation-calendar-day.is-completed-day{border-color:color-mix(in srgb,var(--desk-blue,#338fff) 28%,var(--border))}
+#installationScheduleView .installation-calendar-day.is-completed-collapsed{opacity:1;border-style:solid}
+#installationScheduleView .installation-calendar-day.is-completed-collapsed .installation-calendar-day-summary{filter:blur(2.2px);opacity:.42;user-select:none}
+#installationScheduleView .installation-day-lock-glass.is-completed-glass{background:color-mix(in srgb,var(--surface) 62%,transparent);backdrop-filter:blur(3px) saturate(.82);-webkit-backdrop-filter:blur(3px) saturate(.82)}
+#installationScheduleView .installation-day-lock-glass.is-completed-glass>span{display:grid;place-items:center;padding:7px 10px;border-radius:999px;background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid color-mix(in srgb,var(--desk-blue,#338fff) 22%,var(--border));box-shadow:0 8px 22px rgba(15,23,42,.10);font-size:.82rem;line-height:1.25}
+#installationScheduleView .installation-day-lock-glass.is-completed-glass b{white-space:nowrap;color:var(--text)}
+#installationScheduleView .installation-day-lock-toggle.is-completed-day-toggle{z-index:7}
+html[data-theme="dark"] #installationScheduleView .installation-day-lock-glass.is-completed-glass{background:rgba(15,23,42,.58)}
