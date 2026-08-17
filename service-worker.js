@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-37-appointment-summary-vat-payment-matrix";
+const CACHE_VERSION = "petatoe-pwa-18-55-38-appointment-summary-payment-layout";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
