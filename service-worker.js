@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-35-appointments-list-localization-recovery";
+const CACHE_VERSION = "petatoe-pwa-18-55-36-appointment-summary-a4-layout-recovery";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
