@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-41-confirmation-group-cancel-payment-edit";
+const CACHE_VERSION = "petatoe-pwa-18-55-42-atomic-confirmation-invoice-handoff";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

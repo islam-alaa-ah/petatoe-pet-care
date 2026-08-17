@@ -2,7 +2,7 @@
   'use strict';
 
   const REQUIRED_METHODS = [
-    'list', 'options', 'requestEditDetail', 'requestEditOptions', 'createRequest', 'updateRequest', 'updateRequestServices', 'updateRequestContextServices', 'remove', 'technicians', 'scheduleTeams', 'technicianNameSuggestions', 'scheduleList', 'schedulePlan', 'assignMultiDay', 'cancelSchedule', 'assign', 'executionWorkspace', 'executionIdentity', 'selectExecutionRequest', 'recordMapOpened', 'advanceExecution', 'subscribeExecutionWorkspace', 'completionList', 'confirmActualQuantities', 'cancelConfirmedQuantity', 'saveCompletion', 'signedFileUrl', 'exceptionList', 'saveRevisit', 'operationalReport', 'installationSummaryReport', 'settingsCatalog', 'saveSettingItem', 'toggleSettingItem', 'removeSettingItem'
+    'list', 'options', 'requestEditDetail', 'requestEditOptions', 'createRequest', 'updateRequest', 'updateRequestServices', 'updateRequestContextServices', 'remove', 'technicians', 'scheduleTeams', 'technicianNameSuggestions', 'scheduleList', 'schedulePlan', 'assignMultiDay', 'cancelSchedule', 'assign', 'executionWorkspace', 'executionIdentity', 'selectExecutionRequest', 'recordMapOpened', 'advanceExecution', 'subscribeExecutionWorkspace', 'completionList', 'confirmActualQuantities', 'confirmActualQuantitiesAndInvoice', 'cancelConfirmedQuantity', 'saveCompletion', 'signedFileUrl', 'exceptionList', 'saveRevisit', 'operationalReport', 'installationSummaryReport', 'settingsCatalog', 'saveSettingItem', 'toggleSettingItem', 'removeSettingItem'
   ];
 
   function isValid(service) {
@@ -19,7 +19,7 @@
       }
 
       const script = document.createElement('script');
-      script.src = 'assets/js/installations-service.js?v=18.54.10-recovery';
+      script.src = 'assets/js/installations-service.js?v=18.55.42-atomic-recovery';
       script.async = false;
       script.dataset.kyumInstallationsServiceRecovery = 'true';
       script.addEventListener('load', resolve, { once: true });

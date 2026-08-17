@@ -530,6 +530,28 @@
     return Array.isArray(data)?data[0]:data;
   }
   async function confirmActualQuantities(payload){requireAction('edit','installationCompletion');const rpc=payload.visitId?'confirm_installation_execution_visit_quantities':'confirm_installation_actual_quantities';const args=payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:{p_request_id:payload.id,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null};const {data,error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر اعتماد التنفيذ الفعلي: '+error.message);void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId||null,{remainingAction:payload.remainingAction},'confirm:'+String(payload.visitId||payload.id));if(payload.remainingAction==='append_to_next_visit')void notifyEvent('installation.remaining_added_to_next',payload.id,payload.visitId||null,{},'remaining-next:'+String(payload.visitId||payload.id));if(payload.remainingAction==='return_to_schedule')void notifyEvent('installation.remaining_to_schedule',payload.id,payload.visitId||null,{},'remaining-schedule:'+String(payload.visitId||payload.id));return data}
+  async function confirmActualQuantitiesAndInvoice(payload){
+    requireAction('edit','installationCompletion');
+    if(!payload?.id||!payload?.visitId)throw new Error('بيانات زيارة التنفيذ غير مكتملة.');
+    const invoiceNumber=String(payload.invoiceNumber||'').trim(),invoiceDate=String(payload.invoiceDate||'').trim(),withoutInvoice=Boolean(payload.withoutInvoice);
+    if(!withoutInvoice&&!invoiceNumber)throw new Error('رقم الفاتورة مطلوب أو اختر بدون فاتورة.');
+    if(!invoiceDate)throw new Error('تاريخ الفاتورة مطلوب.');
+    const {data,error}=await db().rpc('confirm_installation_execution_visit_and_create_invoice_v3',{
+      p_request_id:payload.id,
+      p_visit_id:payload.visitId,
+      p_lines:payload.lines||[],
+      p_remaining_action:payload.remainingAction,
+      p_schedule:payload.schedule||null,
+      p_notes:payload.notes||null,
+      p_invoice_number:withoutInvoice?null:invoiceNumber,
+      p_invoice_date:invoiceDate,
+      p_without_invoice:withoutInvoice
+    });
+    if(error)throw new Error('تعذر اعتماد الكمية وإنشاء الفاتورة: '+error.message);
+    void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId,{remainingAction:payload.remainingAction,directInvoice:true},'confirm-invoice:'+String(payload.visitId));
+    void notifyEvent('sales_invoice.created',payload.id,payload.visitId,{sourceType:'installation',directConfirmation:true},'invoice:'+String(payload.visitId));
+    return data;
+  }
   async function cancelConfirmedQuantity(payload){
     if(window.CustomerPermissions?.currentRole?.()!=='super_admin')throw new Error('إلغاء الكمية المنفذة متاح لمدير النظام فقط.');
     const visitIds=[...new Set((payload?.visitIds?.length?payload.visitIds:[payload?.visitId]).filter(Boolean))];
@@ -549,7 +571,20 @@
       fetchPaged((from,to)=>db().from('installation_execution_visit_services').select('visit_id,request_service_id,scheduled_quantity').range(from,to),1000),
       fetchPaged((from,to)=>db().from('installation_request_collection').select('installation_request_id,invoice_number').range(from,to),1000)
     ]);
-    const legacyInvoicedRequestIds=new Set(invoices.filter(x=>!x.installation_execution_visit_id).map(x=>x.installation_request_id).filter(Boolean)),invoicedVisitIds=new Set(invoices.map(x=>x.installation_execution_visit_id).filter(Boolean)),reportMap=new Map(reports.map(x=>[x.installation_request_id,x])),collectionInvoiceMap=new Map((collectionRows||[]).map(x=>[String(x.installation_request_id),x.invoice_number||''])),filesMap=new Map(),executionFilesMap=new Map(),amountMap=new Map(),costMap=new Map(),serviceCostMap=new Map();files.forEach(f=>{const arr=filesMap.get(f.installation_request_id)||[];arr.push(f);filesMap.set(f.installation_request_id,arr)});(executionFiles||[]).forEach(f=>{const arr=executionFilesMap.get(String(f.installation_request_id))||[];arr.push({id:f.id,storagePath:f.storage_path,originalName:f.original_name||'مرفق',mimeType:f.mime_type||'',fileSize:Number(f.file_size||0),fileKind:f.file_kind||'execution',visitId:f.execution_visit_id||'',uploadedAt:f.uploaded_at||''});executionFilesMap.set(String(f.installation_request_id),arr)});serviceRows.forEach(x=>{amountMap.set(x.installation_request_id,(amountMap.get(x.installation_request_id)||0)+Number(x.line_total||0));costMap.set(x.installation_request_id,(costMap.get(x.installation_request_id)||0)+(Number(x.quantity||0)*Number(x.service?.default_cost||0)));serviceCostMap.set(String(x.id),Number(x.service?.default_cost||0))});
+    const legacyInvoicedRequestIds=new Set(invoices.filter(x=>!x.installation_execution_visit_id).map(x=>x.installation_request_id).filter(Boolean)),invoicedVisitIds=new Set(invoices.map(x=>x.installation_execution_visit_id).filter(Boolean)),reportMap=new Map(reports.map(x=>[x.installation_request_id,x])),collectionInvoiceMap=new Map((collectionRows||[]).map(x=>[String(x.installation_request_id),x.invoice_number||''])),filesMap=new Map(),executionFilesMap=new Map(),amountMap=new Map(),costMap=new Map(),serviceCostMap=new Map();
+    // A sales invoice represents the whole canonical same-day/same-team execution group.
+    // Expand the stored canonical visit id to every confirmed sibling in that group so the
+    // completion screen cannot recreate a ghost confirmed row after successful invoicing.
+    for(const inv of invoices){
+      if(!inv.installation_execution_visit_id)continue;
+      const anchor=confirmedHistoryVisits.find(v=>String(v.id)===String(inv.installation_execution_visit_id));
+      if(!anchor)continue;
+      confirmedHistoryVisits.forEach(v=>{
+        if(String(v.installation_request_id)===String(anchor.installation_request_id)
+          &&String(v.installation_team_id||'')===String(anchor.installation_team_id||'')
+          &&String(v.scheduled_date||'')===String(anchor.scheduled_date||''))invoicedVisitIds.add(v.id);
+      });
+    }files.forEach(f=>{const arr=filesMap.get(f.installation_request_id)||[];arr.push(f);filesMap.set(f.installation_request_id,arr)});(executionFiles||[]).forEach(f=>{const arr=executionFilesMap.get(String(f.installation_request_id))||[];arr.push({id:f.id,storagePath:f.storage_path,originalName:f.original_name||'مرفق',mimeType:f.mime_type||'',fileSize:Number(f.file_size||0),fileKind:f.file_kind||'execution',visitId:f.execution_visit_id||'',uploadedAt:f.uploaded_at||''});executionFilesMap.set(String(f.installation_request_id),arr)});serviceRows.forEach(x=>{amountMap.set(x.installation_request_id,(amountMap.get(x.installation_request_id)||0)+Number(x.line_total||0));costMap.set(x.installation_request_id,(costMap.get(x.installation_request_id)||0)+(Number(x.quantity||0)*Number(x.service?.default_cost||0)));serviceCostMap.set(String(x.id),Number(x.service?.default_cost||0))});
     const requestMap=new Map(requests.map(r=>[String(r.id),r]));
     const pendingRequestIds=[...new Set([...pendingVisits,...confirmedHistoryVisits].map(v=>String(v.installation_request_id)))];
     if(pendingRequestIds.length){const {data:extra,error}=await db().from('installation_requests').select('*,customer:customers(id,customer_name,phone),technician:installation_technicians(id,full_name),representative:sales_representatives(id,full_name),team:installation_teams(id,name)').in('id',pendingRequestIds);if(error)throw new Error('تعذر تحميل طلبات زيارات التأكيد: '+error.message);(extra||[]).forEach(r=>requestMap.set(String(r.id),r))}
@@ -815,6 +850,6 @@
 
   async function getSettings(){requireAction('view','installationSettings');const {data,error}=await db().from('installation_settings').select('*').eq('id',1).maybeSingle();if(error)throw new Error('تعذر تحميل إعدادات المواعيد: '+error.message);const r=data||{};return {morningLabel:r.morning_label||'صباحية',eveningLabel:r.evening_label||'مسائية',slaDays:Number(r.sla_days??1),defaultPriority:r.default_priority||'عادية',requireCompletionReport:r.require_completion_report!==false}}
   async function saveSettings(payload){requireAction('edit','installationSettings');const record={id:1,morning_label:payload.morningLabel,evening_label:payload.eveningLabel,sla_days:payload.slaDays,default_priority:payload.defaultPriority,require_completion_report:!!payload.requireCompletionReport,updated_at:new Date().toISOString()};const {error}=await db().from('installation_settings').upsert(record,{onConflict:'id'});if(error)throw new Error('تعذر حفظ إعدادات المواعيد: '+error.message)}
-  window.InstallationsService={list,options,customerAppointmentDefaults,saveCustomerLocationDefaults,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,returnExecutionToSchedule,completeCollectionStage,advanceExecution,subscribeExecutionWorkspace,completionList,completionQuantitySummary,saveCompletionWorkspace,confirmActualQuantities,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
+  window.InstallationsService={list,options,customerAppointmentDefaults,saveCustomerLocationDefaults,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,returnExecutionToSchedule,completeCollectionStage,advanceExecution,subscribeExecutionWorkspace,completionList,completionQuantitySummary,saveCompletionWorkspace,confirmActualQuantities,confirmActualQuantitiesAndInvoice,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
   window.dispatchEvent(new CustomEvent('kyum-installations-service-ready'));
 })();

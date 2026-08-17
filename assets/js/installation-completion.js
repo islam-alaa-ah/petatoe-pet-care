@@ -252,27 +252,25 @@
         const directInvoiceNumber=directWithoutInvoice?'':$("installationQuantityInvoiceNumber")?.value.trim()||'';
         const shouldCreateInvoice=Boolean(directWithoutInvoice||directInvoiceNumber);
         if(shouldCreateInvoice&&!quantityCurrent.visitId)throw new Error('التحويل المباشر إلى فاتورة متاح لزيارات التنفيذ فقط.');
+        if(shouldCreateInvoice){
+          status($("installationQuantityConfirmationStatus"),"جاري اعتماد الكمية وإنشاء الفاتورة...");
+          await window.InstallationsServiceSafe.confirmActualQuantitiesAndInvoice({
+            id:quantityCurrent.id,visitId:quantityCurrent.visitId,lines,remainingAction:action,schedule,
+            notes:$("installationQuantityConfirmationNotes").value.trim(),
+            invoiceNumber:directInvoiceNumber,invoiceDate:today(),withoutInvoice:directWithoutInvoice
+          });
+          window.dispatchEvent(new CustomEvent("kyum-installation-quantities-confirmed",{detail:{requestId:quantityCurrent.id,action,directInvoice:true}}));
+          window.dispatchEvent(new CustomEvent("kyum-sales-invoice-created",{detail:{sourceType:"installation",requestId:quantityCurrent.id,visitId:quantityCurrent.visitId}}));
+          $("installationQuantityConfirmationDialog").close();
+          window.KYUMNavigation?.open?.("salesInvoices",{trustedNavigation:true});
+          return;
+        }
         status($("installationQuantityConfirmationStatus"),"جاري اعتماد التنفيذ الفعلي...");
         await window.InstallationsServiceSafe.confirmActualQuantities({
           id:quantityCurrent.id,visitId:quantityCurrent.visitId||null,lines,remainingAction:action,schedule,
           notes:$("installationQuantityConfirmationNotes").value.trim()
         });
         window.dispatchEvent(new CustomEvent("kyum-installation-quantities-confirmed",{detail:{requestId:quantityCurrent.id,action}}));
-        if(shouldCreateInvoice){
-          try{
-            status($("installationQuantityConfirmationStatus"),"تم اعتماد الكمية، جاري إنشاء الفاتورة...");
-            await window.SalesInvoicesService.createFromInstallationVisit({installationRequestId:quantityCurrent.id,visitId:quantityCurrent.visitId,invoiceNumber:directInvoiceNumber,invoiceDate:today(),withoutInvoice:directWithoutInvoice});
-            window.dispatchEvent(new CustomEvent("kyum-sales-invoice-created",{detail:{sourceType:"installation",requestId:quantityCurrent.id,visitId:quantityCurrent.visitId}}));
-            $("installationQuantityConfirmationDialog").close();
-            window.KYUMNavigation?.open?.("salesInvoices",{trustedNavigation:true});
-            return;
-          }catch(invoiceErr){
-            $("installationQuantityConfirmationDialog").close();
-            await load();
-            status($("installationCompletionStatus"),"تم اعتماد الكمية، لكن تعذر إنشاء الفاتورة: "+invoiceErr.message,"error");
-            return;
-          }
-        }
         $("installationQuantityConfirmationDialog").close();
         await load();
       }catch(err){status($("installationQuantityConfirmationStatus"),err.message,"error")}
