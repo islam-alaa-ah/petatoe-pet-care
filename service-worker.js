@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-25-completion-invoice-row-recovery";
+const CACHE_VERSION = "petatoe-pwa-18-55-26-completion-sales-vat-no-invoice";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
