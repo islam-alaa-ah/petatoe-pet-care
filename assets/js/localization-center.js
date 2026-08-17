@@ -571,7 +571,7 @@
     ["invoices.attachments.execution","label","مرفق التنفيذ","Execution attachment"],
     ["invoices.edit.title","title","تعديل بيانات الفاتورة","Edit invoice details"],
     ["invoices.edit.action","button","تعديل","Edit"],
-    ["invoices.edit.numberValidation","validation","رقم الفاتورة يجب أن يكون 9 أرقام، أو اختر بدون فاتورة.","Invoice number must be 9 digits, or choose No invoice."],
+    ["invoices.edit.numberValidation","validation","رقم الفاتورة مطلوب أو اختر بدون فاتورة.","Invoice number is required, or choose No invoice."],
     ["invoices.loading","status","جاري تحميل الفواتير...","Loading invoices..."],
     ["invoices.empty","empty","لا توجد فواتير مطابقة.","No matching invoices."],
     ["appointments.common.refreshData","button","تحديث البيانات","Refresh Data"],

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-39-invoice-attachments-direct-confirmation";
+const CACHE_VERSION = "petatoe-pwa-18-55-40-invoice-number-confirm-cancel-recovery";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

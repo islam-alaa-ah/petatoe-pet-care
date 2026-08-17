@@ -569,8 +569,9 @@
       if(!row.visitId){groupedOut.set(row.rowKey,row);continue;}
       const key=[row.id,row.teamId||'',String(row.completedAt||'').slice(0,10)||row.scheduledDate||''].join('|');
       const prev=groupedOut.get(key);
-      if(!prev){groupedOut.set(key,{...row,groupVisitIds:[row.visitId]});continue;}
+      if(!prev){groupedOut.set(key,{...row,groupVisitIds:[row.visitId],confirmedVisitIds:row.quantityConfirmed||row.confirmedHistory?[row.visitId]:[]});continue;}
       prev.groupVisitIds.push(row.visitId);
+      if(row.quantityConfirmed||row.confirmedHistory)prev.confirmedVisitIds.push(row.visitId);
       prev.visitNo=Math.min(Number(prev.visitNo||999999),Number(row.visitNo||999999));
       prev.executionNumber=`${prev.requestNumber}-${String(Number(prev.visitNo||0)).padStart(2,'0')}`;
       prev.quantityConfirmed=prev.quantityConfirmed||row.quantityConfirmed;
