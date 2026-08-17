@@ -719,7 +719,7 @@
     for(const service of requestServices||[]){const key=String(service.installation_request_id||'');const list=servicesByRequest.get(key)||[];list.push(service);servicesByRequest.set(key,list)}
     const addLine=(teamId,teamName,entryKey,serviceName,quantity,unitPrice,unitCost)=>{
       quantity=Number(quantity||0);unitPrice=Number(unitPrice||0);unitCost=Number(unitCost||0);if(quantity<=0)return;
-      const value=quantity*unitPrice,expenses=quantity*unitCost,profit=value-expenses;
+      const value=quantity*unitPrice*1.15,expenses=quantity*unitCost,profit=value-expenses;
       teamId=String(teamId||'unassigned');teamName=teamName||'غير مسند';serviceName=serviceName||'خدمة غير محددة';
       let team=grouped.get(teamId);if(!team){team={id:teamId,name:teamName,visitIds:new Set(),services:new Map(),quantity:0,value:0,expenses:0,profit:0};grouped.set(teamId,team)}
       team.visitIds.add(entryKey);team.quantity+=quantity;team.value+=value;team.expenses+=expenses;team.profit+=profit;
