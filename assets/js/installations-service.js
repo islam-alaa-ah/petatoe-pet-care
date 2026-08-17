@@ -294,7 +294,7 @@
     const [requestResult,visitResult,anyVisitResult,lineResult]=await Promise.all([
       db().from('installation_requests').select('*,customer:customers(id,customer_name,phone),team:installation_teams(id,name,status,groomer_name,driver_name),representative:sales_representatives(id,full_name),services:installation_request_services(id,service_type_id,quantity,unit_price,line_total,service_type:installation_service_types(id,name,service_code)),collection:installation_request_collection(amount_collected,collection_status,payment_method,collection_reference,collection_notes,collected_at)').or('installation_team_id.not.is.null,assigned_technician_name.not.is.null').order('scheduled_date',{ascending:true,nullsFirst:false}).order('scheduled_time',{ascending:true,nullsFirst:false}),
       db().from('installation_execution_visits').select('id,installation_request_id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status,selected_for_execution_at,selected_for_execution_by,on_route_at,map_opened_at,arrived_at,started_at,collection_at,completed_at,execution_notes,team:installation_teams(id,name,groomer_name,driver_name)').in('status',['مجدولة','قيد التنفيذ','بانتظار التأكيد']).order('scheduled_date',{ascending:true}).order('scheduled_time',{ascending:true}),
-      db().from('installation_execution_visits').select('id,installation_request_id,scheduled_date,installation_team_id'),
+      db().from('installation_execution_visits').select('id,installation_request_id,scheduled_date,installation_team_id,status'),
       db().from('installation_execution_visit_services').select('visit_id,request_service_id,scheduled_quantity')
     ]);
     if(requestResult.error)throw new Error('تعذر تحميل مهام التنفيذ: '+requestResult.error.message);
@@ -309,13 +309,16 @@
     const requestsWithAnyVisit=new Set(allVisitRefs.map(v=>String(v.installation_request_id||'')).filter(Boolean));
     const lineMap=new Map();
     visitLines.forEach(x=>{const a=lineMap.get(x.visit_id)||[];a.push(x);lineMap.set(x.visit_id,a)});
-    // P5.13.8.5: canonical execution-group financial allocation.
-    // A multi-day request must expose/collect only the financial share of the current
-    // request+team+date execution group, while all group shares still reconcile to
-    // the request's canonical final_amount exactly.
+    // P5.13.8.6: canonical execution-group financial allocation recovery.
+    // Only live/confirmed execution visits participate in financial allocation. Historical
+    // cancelled/replaced visits must never duplicate service value. If visit-service data
+    // is over-allocated, normalize shares against the allocated subtotal so the execution
+    // groups can never exceed the request's canonical final_amount.
     const requestById=new Map(requests.map(r=>[String(r.id),r]));
     const allFinancialGroups=new Map();
-    allVisitRefs.forEach(v=>{
+    const financialVisitStatuses=new Set(['مجدولة','قيد التنفيذ','بانتظار التأكيد','مؤكدة']);
+    const financialVisitRefs=allVisitRefs.filter(v=>financialVisitStatuses.has(String(v.status||'').trim()));
+    financialVisitRefs.forEach(v=>{
       const requestId=String(v.installation_request_id||'');
       const request=requestById.get(requestId);
       if(!request)return;
@@ -338,11 +341,13 @@
       const allocatedSubtotal=groups.reduce((sum,g)=>sum+Math.max(0,Number(g.subtotal||0)),0);
       if(requestSubtotal<=0||allocatedSubtotal<=0)return;
       const fullyAllocated=Math.abs(allocatedSubtotal-requestSubtotal)<=0.01;
+      const overAllocated=allocatedSubtotal>requestSubtotal+0.01;
+      const allocationBase=overAllocated?allocatedSubtotal:requestSubtotal;
       groups.sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.teamId).localeCompare(String(b.teamId))||String(a.key).localeCompare(String(b.key)));
       let taxUsed=0,discountUsed=0,finalUsed=0;
       groups.forEach((g,index)=>{
-        const share=Math.max(0,Number(g.subtotal||0))/requestSubtotal;
-        const last=fullyAllocated&&index===groups.length-1;
+        const share=Math.max(0,Number(g.subtotal||0))/allocationBase;
+        const last=(fullyAllocated||overAllocated)&&index===groups.length-1;
         const tax=last?Math.max(0,Math.round((requestTax-taxUsed)*100)/100):Math.max(0,Math.round(requestTax*share*100)/100);
         const discount=last?Math.max(0,Math.round((requestDiscount-discountUsed)*100)/100):Math.max(0,Math.round(requestDiscount*share*100)/100);
         const finalAmount=last?Math.max(0,Math.round((requestFinal-finalUsed)*100)/100):Math.max(0,Math.round(requestFinal*share*100)/100);
