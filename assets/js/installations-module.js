@@ -4,7 +4,7 @@
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
   const money = value => `SAR ${Number(value || 0).toFixed(2)}`;
-  const appointmentT = (key, fallback, vars = {}) => window.PetatoeLocalization?.t?.(key, vars) || fallback;
+  const appointmentT = (key, fallback, vars = {}) => { const value = window.PetatoeLocalization?.t?.(key, vars); return (!value || value === `[${key}]`) ? fallback : value; };
   const appointmentEntity = (kind, id, fallback = "") => window.PetatoeLocalization?.entityText?.(kind, id, fallback) || fallback;
   const appointmentStatusLabel = value => {
     const map={"جديد":"appointments.status.new","مسند":"appointments.status.assigned","مجدول":"appointments.status.scheduled","في الطريق":"appointments.status.onRoute","وصل إلى العميل":"appointments.status.arrived","قيد التنفيذ":"appointments.status.inProgress","مكتمل":"appointments.status.completed","ملغي":"appointments.status.cancelled","بانتظار المراجعة":"appointments.status.pendingReview"};
@@ -498,6 +498,13 @@
     const hour = Number(parts[0]);
     const minute = parts[1] || "00";
     if (!Number.isFinite(hour)) return String(value);
+    const lang = window.PetatoeLocalization?.getLanguage?.() || document.documentElement.lang || 'ar';
+    if (lang === 'en') {
+      if (hour === 0) return `12:${minute} AM`;
+      if (hour < 12) return `${hour}:${minute} AM`;
+      if (hour === 12) return `12:${minute} PM`;
+      return `${hour - 12}:${minute} PM`;
+    }
     if (hour === 12) return `12:${minute} ظهرًا`;
     if (hour < 12) return `${hour}:${minute} صباحًا`;
     return `${hour - 12}:${minute} مساءً`;
@@ -533,7 +540,7 @@
       return `<tr>
         <td>${esc(row.requestNumber)}</td>
         <td><strong>${esc(row.customerName)}</strong><br><small>${esc(row.customerPhone)}</small></td>
-        <td>${esc(row.quotationNumber || appointmentT('appointments.common.noContract','بدون عقد'))}</td>
+        <td>${esc(row.quotationNumber || appointmentT('appointmentNew.customer.noContract','بدون عقد'))}</td>
         <td>${serviceSummary}</td>
         <td>${money(row.finalAmount || row.totalServicesAmount)}</td>
         <td>${esc(row.installationAddress || row.district || "—")}</td>
