@@ -1,6 +1,6 @@
 (function(){
   const $=id=>document.getElementById(id); let month=new Date();month.setDate(1);let requests=[],technicianNames=[],teams=[],dayLocks=new Map(),bookedTimes=new Map(),multiDayServices=[],multiDayVisits=[],assignmentSaveInFlight=false;
-  const t=(key,fallback,vars={})=>window.PetatoeLocalization?.t?.(key,vars)||fallback;
+  const t=(key,fallback,vars={})=>{const value=window.PetatoeLocalization?.t?.(key,vars);return value&&!/^\[.+\]$/.test(value)?value:fallback};
   const lang=()=>window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en':'ar';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const desktopScheduleIconMode=()=>window.matchMedia?.('(min-width:1024px) and (hover:hover) and (pointer:fine)')?.matches===true&&Number(window.screen?.width||0)>1024;

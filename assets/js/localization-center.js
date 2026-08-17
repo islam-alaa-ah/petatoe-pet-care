@@ -614,6 +614,7 @@
     ["appointments.schedule.kpiPeak","label","أعلى حمل يومي","Peak daily load"],
     ["appointments.schedule.unscheduledTitle","title","طلبات تحتاج جدولة أو إسناد","Appointments requiring scheduling or assignment"],
     ["appointments.schedule.unscheduledNote","help","الطلبات الجديدة أو غير المرتبطة بفرقة تشغيل.","New appointments or appointments not assigned to an operating team."],
+    ["appointments.schedule.noAppointments","empty","لا توجد مواعيد","No appointments"],
     ["appointments.schedule.calendarAria","aria","تقويم جدولة المواعيد","Appointment scheduling calendar"],
     ["appointments.completion.title","title","تأكيد انتهاء المواعيد","Appointment Completion Confirmation"],
     ["appointments.completion.note","help","مراجعة واعتماد انتهاء الموعد وتحويل الطلب إلى فاتورة.","Review and confirm appointment completion, then convert it to an invoice."],

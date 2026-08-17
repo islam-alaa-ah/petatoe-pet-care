@@ -29,10 +29,9 @@
     body.innerHTML=list.length?list.map(r=>{
       let actions='';
       if(r.confirmedHistory){
-        const summary=`<span class="field-hint">زيارة منفذة محفوظة — ${r.quantities?.map(q=>`${esc(q.serviceName)}: ${Number(q.executedQuantity||0)}`).join("، ")||"تم الاعتماد"}</span>`;
         const invoice=can("add","salesInvoices")?`<button class="primary-btn" type="button" data-installation-completion="${esc(r.rowKey||r.id)}">${esc(t("appointments.completion.toInvoice","تحويل إلى فاتورة"))}</button>`:`<span class="field-hint">${esc(t("appointments.completion.noInvoicePermission","لا توجد صلاحية إضافة فاتورة"))}</span>`;
         const cancel=isSuperAdmin()?`<button class="secondary-btn installation-cancel-confirmed-quantity" type="button" data-cancel-confirmed-quantity="${esc(r.rowKey||r.id)}">إلغاء الكمية المنفذة</button>`:'';
-        actions=`${summary}${invoice}${cancel}`;
+        actions=`${invoice}${cancel}`;
       }else if(can("edit","installationCompletion")){
         actions=r.quantityConfirmed?(can("add","salesInvoices")?`<button class="primary-btn" type="button" data-installation-completion="${esc(r.rowKey||r.id)}">${esc(t("appointments.completion.toInvoice","تحويل إلى فاتورة"))}</button>`:`<span class="field-hint">${esc(t("appointments.completion.noInvoicePermission","لا توجد صلاحية إضافة فاتورة"))}</span>`):`<button class="primary-btn" type="button" data-confirm-installation-quantity="${esc(r.rowKey||r.id)}">${esc(t("appointments.completion.confirmQty","تأكيد الكمية المنفذة"))}</button>`;
       }else actions=`<span class="field-hint">${esc(t('appointments.completion.noConfirmPermission','لا توجد صلاحية تأكيد'))}</span>`;

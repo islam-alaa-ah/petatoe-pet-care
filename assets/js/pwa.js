@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const CURRENT_VERSION = "18.55.26";
+  const CURRENT_VERSION = "18.55.27";
   const VERSION_ENDPOINT = "./version.json";
   const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
   const isNative = Boolean(window.Capacitor?.isNativePlatform?.());
@@ -280,7 +280,7 @@
       serviceWorkerRegistration.addEventListener("updatefound", () => {
         const worker = serviceWorkerRegistration.installing;
         worker?.addEventListener("statechange", () => {
-          if (worker.state === "installed" && navigator.serviceWorker.controller) checkForUpdate({ silent: true });
+          if (worker.state === "installed" && navigator.serviceWorker.controller) checkForUpdate({ silent: true, showDialog: false });
         });
       });
     } catch (error) {
@@ -318,11 +318,17 @@
 
   window.addEventListener("online", () => {
     document.documentElement.classList.remove("is-offline");
-    checkForUpdate({ silent: true });
+    checkForUpdate({ silent: true, showDialog: false });
   });
   window.addEventListener("offline", () => document.documentElement.classList.add("is-offline"));
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") checkForUpdate({ silent: true });
+    if (document.visibilityState === "visible") checkForUpdate({ silent: true, showDialog: false });
+  });
+
+  window.addEventListener("kyum-view-changed", () => {
+    if (updateInProgress || document.getElementById("kyumUpdateDialog")?.open) return;
+    if (updateState.latestRelease) showUpdateDialog(updateState.latestRelease);
+    else checkForUpdate({ silent: true, showDialog: true });
   });
 
   document.addEventListener("DOMContentLoaded", async () => {
@@ -330,8 +336,8 @@
     clearCompletedUpdateMarker();
     await registerServiceWorker();
     openShortcutView();
-    checkForUpdate({ silent: true });
-    window.setInterval(() => checkForUpdate({ silent: true }), UPDATE_CHECK_INTERVAL_MS);
+    checkForUpdate({ silent: true, showDialog: true });
+    window.setInterval(() => checkForUpdate({ silent: true, showDialog: false }), UPDATE_CHECK_INTERVAL_MS);
     setTimeout(showIosHint, 1800);
   });
 })();
