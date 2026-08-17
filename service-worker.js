@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-27-schedule-localization-safe-update";
+const CACHE_VERSION = "petatoe-pwa-18-55-28-execution-vat-mobile-certification";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
