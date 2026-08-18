@@ -503,13 +503,15 @@
       throw error;
     }
   }
-  async function completionQuantitySummary(requestId,visitId){
+  async function completionQuantitySummary(requestId,visitId,groupVisitIds=[]){
     requireAction('view','installationCompletion');
     if(!requestId)throw new Error('معرّف الموعد مطلوب.');
-    if(visitId){
-      const {data,error}=await db().rpc('get_installation_execution_visit_quantity_summary',{p_request_id:requestId,p_visit_id:visitId});
-      if(error)throw new Error('تعذر تحديث كميات زيارة التنفيذ: '+error.message);
-      return (data||[]).map(x=>({requestServiceId:x.request_service_id,serviceName:x.service_name,requestedQuantity:Number(x.requested_quantity||0),scheduledCurrentQuantity:Number(x.scheduled_current_quantity||0),executedQuantity:Number(x.executed_quantity||0),remainingQuantity:Number(x.remaining_quantity||0),unitPrice:Number(x.unit_price||0)}));
+    const visitIds=[...new Set((Array.isArray(groupVisitIds)&&groupVisitIds.length?groupVisitIds:[visitId]).filter(Boolean).map(String))];
+    if(visitIds.length){
+      const chunks=await Promise.all(visitIds.map(async id=>{const {data,error}=await db().rpc('get_installation_execution_visit_quantity_summary',{p_request_id:requestId,p_visit_id:id});if(error)throw new Error('تعذر تحديث كميات زيارة التنفيذ: '+error.message);return data||[]}));
+      const merged=new Map();
+      for(const rows of chunks)for(const x of rows){const key=String(x.request_service_id),requested=Number(x.requested_quantity||0),scheduled=Number(x.scheduled_current_quantity||0),executed=Number(x.executed_quantity||0),remaining=Number(x.remaining_quantity||0);let m=merged.get(key);if(!m){m={requestServiceId:x.request_service_id,serviceName:x.service_name,requestedQuantity:requested,scheduledCurrentQuantity:0,executedQuantity:0,remainingQuantity:remaining,unitPrice:Number(x.unit_price||0)};merged.set(key,m)}m.requestedQuantity=Math.max(m.requestedQuantity,requested);m.scheduledCurrentQuantity+=scheduled;m.executedQuantity+=executed;m.remainingQuantity=Math.min(m.remainingQuantity,remaining);}
+      return [...merged.values()].map(m=>({...m,scheduledCurrentQuantity:Math.min(m.requestedQuantity,m.scheduledCurrentQuantity),executedQuantity:Math.min(m.requestedQuantity,m.executedQuantity)}));
     }
     const {data,error}=await db().from('installation_request_services').select('id,quantity,unit_price,service:installation_service_types(name)').eq('installation_request_id',requestId).order('created_at',{ascending:true});
     if(error)throw new Error('تعذر تحديث كميات الموعد: '+error.message);
@@ -529,27 +531,19 @@
     void notifyEvent('installation.request_updated',payload.id,payload.visitId||null,{source:'completion_confirmation',services:services.length},'completion-edit:'+new Date().toISOString());
     return Array.isArray(data)?data[0]:data;
   }
-  async function confirmActualQuantities(payload){requireAction('edit','installationCompletion');const rpc=payload.visitId?'confirm_installation_execution_visit_quantities':'confirm_installation_actual_quantities';const args=payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:{p_request_id:payload.id,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null};const {data,error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر اعتماد التنفيذ الفعلي: '+error.message);void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId||null,{remainingAction:payload.remainingAction},'confirm:'+String(payload.visitId||payload.id));if(payload.remainingAction==='append_to_next_visit')void notifyEvent('installation.remaining_added_to_next',payload.id,payload.visitId||null,{},'remaining-next:'+String(payload.visitId||payload.id));if(payload.remainingAction==='return_to_schedule')void notifyEvent('installation.remaining_to_schedule',payload.id,payload.visitId||null,{},'remaining-schedule:'+String(payload.visitId||payload.id));return data}
+  async function confirmActualQuantities(payload){requireAction('edit','installationCompletion');const groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))];const grouped=Boolean(payload.visitId&&groupIds.length>1);const rpc=grouped?'confirm_installation_execution_group_quantities_v2':(payload.visitId?'confirm_installation_execution_visit_quantities':'confirm_installation_actual_quantities');const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:{p_request_id:payload.id,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null};const {data,error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر اعتماد التنفيذ الفعلي: '+error.message);void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId||null,{remainingAction:payload.remainingAction,grouped},'confirm:'+String(payload.visitId||payload.id));if(payload.remainingAction==='append_to_next_visit')void notifyEvent('installation.remaining_added_to_next',payload.id,payload.visitId||null,{},'remaining-next:'+String(payload.visitId||payload.id));if(payload.remainingAction==='return_to_schedule')void notifyEvent('installation.remaining_to_schedule',payload.id,payload.visitId||null,{},'remaining-schedule:'+String(payload.visitId||payload.id));return data}
   async function confirmActualQuantitiesAndInvoice(payload){
     requireAction('edit','installationCompletion');
     if(!payload?.id||!payload?.visitId)throw new Error('بيانات زيارة التنفيذ غير مكتملة.');
-    const invoiceNumber=String(payload.invoiceNumber||'').trim(),invoiceDate=String(payload.invoiceDate||'').trim(),withoutInvoice=Boolean(payload.withoutInvoice);
+    const invoiceNumber=String(payload.invoiceNumber||'').trim(),invoiceDate=String(payload.invoiceDate||'').trim(),withoutInvoice=Boolean(payload.withoutInvoice),groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))];
     if(!withoutInvoice&&!invoiceNumber)throw new Error('رقم الفاتورة مطلوب أو اختر بدون فاتورة.');
     if(!invoiceDate)throw new Error('تاريخ الفاتورة مطلوب.');
-    const {data,error}=await db().rpc('confirm_installation_execution_visit_and_create_invoice_v3',{
-      p_request_id:payload.id,
-      p_visit_id:payload.visitId,
-      p_lines:payload.lines||[],
-      p_remaining_action:payload.remainingAction,
-      p_schedule:payload.schedule||null,
-      p_notes:payload.notes||null,
-      p_invoice_number:withoutInvoice?null:invoiceNumber,
-      p_invoice_date:invoiceDate,
-      p_without_invoice:withoutInvoice
-    });
+    const grouped=groupIds.length>1,rpc=grouped?'confirm_installation_execution_group_and_create_invoice_v4':'confirm_installation_execution_visit_and_create_invoice_v3';
+    const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice}:{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice};
+    const {data,error}=await db().rpc(rpc,args);
     if(error)throw new Error('تعذر اعتماد الكمية وإنشاء الفاتورة: '+error.message);
-    void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId,{remainingAction:payload.remainingAction,directInvoice:true},'confirm-invoice:'+String(payload.visitId));
-    void notifyEvent('sales_invoice.created',payload.id,payload.visitId,{sourceType:'installation',directConfirmation:true},'invoice:'+String(payload.visitId));
+    void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId,{remainingAction:payload.remainingAction,directInvoice:true,grouped},'confirm-invoice:'+String(payload.visitId));
+    void notifyEvent('sales_invoice.created',payload.id,payload.visitId,{sourceType:'installation',directConfirmation:true,grouped},'invoice:'+String(payload.visitId));
     return data;
   }
   async function cancelConfirmedQuantity(payload){
@@ -588,7 +582,7 @@
     const requestMap=new Map(requests.map(r=>[String(r.id),r]));
     const pendingRequestIds=[...new Set([...pendingVisits,...confirmedHistoryVisits].map(v=>String(v.installation_request_id)))];
     if(pendingRequestIds.length){const {data:extra,error}=await db().from('installation_requests').select('*,customer:customers(id,customer_name,phone),technician:installation_technicians(id,full_name),representative:sales_representatives(id,full_name),team:installation_teams(id,name)').in('id',pendingRequestIds);if(error)throw new Error('تعذر تحميل طلبات زيارات التأكيد: '+error.message);(extra||[]).forEach(r=>requestMap.set(String(r.id),r))}
-    const baseRow=(r,v=null)=>({rowKey:v?`visit:${v.id}`:`request:${r.id}`,id:r.id,visitId:v?.id||'',visitNo:Number(v?.visit_no||0),requestNumber:r.request_number,executionNumber:v?`${r.request_number}-${String(Number(v.visit_no||0)).padStart(2,'0')}`:r.request_number,customerOrderNumber:r.customer_order_number||'',customerName:r.customer?.customer_name||'',customerPhone:r.customer?.phone||'',technicianName:v?.technician_name||r.assigned_technician_name||r.technician?.full_name||'',representativeId:r.representative_id||r.representative?.id||'',representativeName:r.representative?.full_name||'',teamId:v?.installation_team_id||r.installation_team_id||'',teamName:v?.team?.name||r.team?.name||'',installationAddress:r.installation_address||'',requestCreatedAt:r.created_at||'',completedAt:v?.completed_at||r.completed_at||'',invoiceAmount:Number(r.total_services_amount||amountMap.get(r.id)||0),installationExpenses:Number(costMap.get(r.id)||0),report:reportMap.get(r.id)||null,collectionInvoiceNumber:collectionInvoiceMap.get(String(r.id))||'',files:filesMap.get(r.id)||[],executionFiles:executionFilesMap.get(String(r.id))||[],quantityConfirmed:!v});
+    const baseRow=(r,v=null)=>({rowKey:v?`visit:${v.id}`:`request:${r.id}`,id:r.id,visitId:v?.id||'',visitNo:Number(v?.visit_no||0),requestNumber:r.request_number,executionNumber:v?`${r.request_number}-${String(Number(v.visit_no||0)).padStart(2,'0')}`:r.request_number,customerOrderNumber:r.customer_order_number||'',customerName:r.customer?.customer_name||'',customerPhone:r.customer?.phone||'',technicianName:v?.technician_name||r.assigned_technician_name||r.technician?.full_name||'',representativeId:r.representative_id||r.representative?.id||'',representativeName:r.representative?.full_name||'',teamId:v?.installation_team_id||r.installation_team_id||'',teamName:v?.team?.name||r.team?.name||'',installationAddress:r.installation_address||'',requestCreatedAt:r.created_at||'',scheduledDate:v?.scheduled_date||r.scheduled_date||'',scheduledTime:String(v?.scheduled_time||r.scheduled_time||'').slice(0,5),completedAt:v?.completed_at||r.completed_at||'',invoiceAmount:Number(r.total_services_amount||amountMap.get(r.id)||0),installationExpenses:Number(costMap.get(r.id)||0),report:reportMap.get(r.id)||null,collectionInvoiceNumber:collectionInvoiceMap.get(String(r.id))||'',files:filesMap.get(r.id)||[],executionFiles:executionFilesMap.get(String(r.id))||[],quantityConfirmed:!v});
     const out=[];
     const scheduledLinesByVisit=new Map();scheduledVisitLines.forEach(x=>{const a=scheduledLinesByVisit.get(String(x.visit_id))||[];a.push(x);scheduledLinesByVisit.set(String(x.visit_id),a)});
     for(const v of confirmedHistoryVisits){const r=requestMap.get(String(v.installation_request_id));if(!r||legacyInvoicedRequestIds.has(r.id)||invoicedVisitIds.has(v.id))continue;const row=baseRow(r,v);row.quantityConfirmed=true;row.confirmedHistory=true;row.completedAt=v.completed_at||r.completed_at||'';const {data,error}=await db().rpc('get_installation_execution_visit_quantity_summary',{p_request_id:r.id,p_visit_id:v.id});if(!error){row.quantities=(data||[]).map(x=>({requestServiceId:x.request_service_id,serviceName:x.service_name,requestedQuantity:Number(x.requested_quantity||0),scheduledCurrentQuantity:Number(x.scheduled_current_quantity||0),executedQuantity:Number(x.executed_quantity||0),remainingQuantity:Number(x.remaining_quantity||0),unitPrice:Number(x.unit_price||0)}));row.invoiceAmount=row.quantities.reduce((n,q)=>n+(Number(q.executedQuantity||0)*Number(q.unitPrice||0)),0);row.installationExpenses=row.quantities.reduce((n,q)=>n+(Number(q.executedQuantity||0)*Number(serviceCostMap.get(String(q.requestServiceId))||0)),0)}out.push(row)}
@@ -598,22 +592,21 @@
     // completion source, and invoiced visits must stay removed after invoice creation.
     const visitBackedRequestIds=new Set([...pendingVisits,...confirmedHistoryVisits].map(v=>String(v.installation_request_id)));
     requests.filter(r=>!legacyInvoicedRequestIds.has(r.id)&&!visitBackedRequestIds.has(String(r.id))).forEach(r=>out.push(baseRow(r,null)));
-    // Same-day same-team execution slots are one completion/quantity-confirmation row.
+    // Canonical same-day/same-team execution group: one completion row, one quantity confirmation, one invoice.
     const groupedOut=new Map();
     for(const row of out){
       if(!row.visitId){groupedOut.set(row.rowKey,row);continue;}
-      const key=[row.id,row.teamId||'',String(row.completedAt||'').slice(0,10)||row.scheduledDate||''].join('|');
-      const prev=groupedOut.get(key);
-      if(!prev){groupedOut.set(key,{...row,groupVisitIds:[row.visitId],confirmedVisitIds:row.quantityConfirmed||row.confirmedHistory?[row.visitId]:[]});continue;}
-      prev.groupVisitIds.push(row.visitId);
-      if(row.quantityConfirmed||row.confirmedHistory)prev.confirmedVisitIds.push(row.visitId);
-      prev.visitNo=Math.min(Number(prev.visitNo||999999),Number(row.visitNo||999999));
-      prev.executionNumber=`${prev.requestNumber}-${String(Number(prev.visitNo||0)).padStart(2,'0')}`;
-      prev.quantityConfirmed=prev.quantityConfirmed||row.quantityConfirmed;
-      prev.confirmedHistory=prev.confirmedHistory||row.confirmedHistory;
-      if(Array.isArray(row.quantities)){const qmap=new Map((prev.quantities||[]).map(q=>[String(q.requestServiceId),q]));for(const q of row.quantities){const k=String(q.requestServiceId);if(!qmap.has(k)){(prev.quantities||(prev.quantities=[])).push({...q});qmap.set(k,prev.quantities[prev.quantities.length-1]);}else{const x=qmap.get(k);x.scheduledCurrentQuantity=Math.max(Number(x.scheduledCurrentQuantity||0),Number(q.scheduledCurrentQuantity||0));x.executedQuantity=Math.max(Number(x.executedQuantity||0),Number(q.executedQuantity||0));x.remainingQuantity=Math.min(Number(x.remainingQuantity||0),Number(q.remainingQuantity||0));}}}
+      const key=[row.id,row.teamId||'',row.scheduledDate||String(row.completedAt||'').slice(0,10)].join('|');
+      let prev=groupedOut.get(key);
+      if(!prev){prev={...row,groupVisitIds:[row.visitId],confirmedVisitIds:(row.quantityConfirmed||row.confirmedHistory)?[row.visitId]:[],_memberCount:1,_confirmedCount:(row.quantityConfirmed||row.confirmedHistory)?1:0};groupedOut.set(key,prev);continue;}
+      prev.groupVisitIds.push(row.visitId);prev._memberCount++;
+      if(row.quantityConfirmed||row.confirmedHistory){prev.confirmedVisitIds.push(row.visitId);prev._confirmedCount++;}
+      if(Number(row.visitNo||0)<Number(prev.visitNo||999999)){prev.visitNo=Number(row.visitNo||0);prev.visitId=row.visitId;prev.rowKey=`visit:${row.visitId}`;}
+      prev.completedAt=[prev.completedAt,row.completedAt].filter(Boolean).sort().slice(-1)[0]||'';
+      prev.executionFiles=[...(prev.executionFiles||[]),...(row.executionFiles||[])].filter((x,i,a)=>a.findIndex(y=>String(y.id||y.storagePath)===String(x.id||x.storagePath))===i);
+      if(Array.isArray(row.quantities)){const qmap=new Map((prev.quantities||[]).map(q=>[String(q.requestServiceId),q]));for(const q of row.quantities){const k=String(q.requestServiceId),requested=Number(q.requestedQuantity||0);if(!qmap.has(k)){(prev.quantities||(prev.quantities=[])).push({...q});qmap.set(k,prev.quantities[prev.quantities.length-1]);}else{const x=qmap.get(k);x.requestedQuantity=Math.max(Number(x.requestedQuantity||0),requested);x.scheduledCurrentQuantity=Math.min(x.requestedQuantity,Number(x.scheduledCurrentQuantity||0)+Number(q.scheduledCurrentQuantity||0));x.executedQuantity=Math.min(x.requestedQuantity,Number(x.executedQuantity||0)+Number(q.executedQuantity||0));x.remainingQuantity=Math.min(Number(x.remainingQuantity||0),Number(q.remainingQuantity||0));}}}
     }
-    return [...groupedOut.values()];
+    return [...groupedOut.values()].map(row=>{if(!row.visitId)return row;row.groupVisitIds=[...new Set(row.groupVisitIds||[])];row.confirmedVisitIds=[...new Set(row.confirmedVisitIds||[])];row.quantityConfirmed=Number(row._confirmedCount||0)===Number(row._memberCount||1);row.confirmedHistory=row.quantityConfirmed&&row.confirmedVisitIds.length>0;if(row.groupVisitIds.length>1)row.executionNumber=row.requestNumber;delete row._memberCount;delete row._confirmedCount;return row;});
   }
   async function uploadCompletionFile(requestId,fileKind,file){
     if(!file)return null;
@@ -774,12 +767,11 @@
       let item=team.services.get(serviceName);if(!item){item={name:serviceName,entryKeys:new Set(),quantity:0,value:0,expenses:0,profit:0};team.services.set(serviceName,item)}item.entryKeys.add(entryKey);item.quantity+=quantity;item.value+=value;item.expenses+=expenses;item.profit+=profit;
     };
 
-    // Multi-day schedules: use the quantity allocated to each execution visit.
-    for(const line of visitLines||[]){
-      const visit=visitMap.get(line.visit_id),service=serviceMap.get(line.request_service_id);if(!visit||!service)continue;
-      const unitPrice=Number(service.unit_price??service.service?.default_price??(Number(service.quantity||0)?Number(service.line_total||0)/Number(service.quantity||1):0));
-      addLine(visit.installation_team_id,visit.team?.name,'visit:'+visit.id,service.service?.name,Number(line.scheduled_quantity||0),unitPrice,Number(service.service?.default_cost||0));
-    }
+    // Multi-visit schedules: financial reporting is per canonical same-day/same-team execution group.
+    // Quantities are capped by the request-service quantity so duplicated sibling allocations can never double revenue.
+    const financialVisitGroups=new Map();
+    for(const line of visitLines||[]){const visit=visitMap.get(line.visit_id),service=serviceMap.get(line.request_service_id);if(!visit||!service)continue;const key=[visit.installation_request_id,visit.installation_team_id||'',visit.scheduled_date||''].join('|'),svcKey=String(service.id);let g=financialVisitGroups.get(key);if(!g){g={teamId:visit.installation_team_id,teamName:visit.team?.name,services:new Map(),visitIds:new Set()};financialVisitGroups.set(key,g)}g.visitIds.add(visit.id);let x=g.services.get(svcKey);if(!x){x={service,quantity:0};g.services.set(svcKey,x)}x.quantity+=Number(line.scheduled_quantity||0)}
+    for(const [key,g] of financialVisitGroups){for(const x of g.services.values()){const service=x.service,maxQty=Number(service.quantity||0),quantity=maxQty>0?Math.min(maxQty,Number(x.quantity||0)):Number(x.quantity||0),unitPrice=Number(service.unit_price??service.service?.default_price??(maxQty?Number(service.line_total||0)/maxQty:0));addLine(g.teamId,g.teamName,'group:'+key,service.service?.name,quantity,unitPrice,Number(service.service?.default_cost||0))}}
 
     // Single-day schedules: there is no execution-visit row, so use the request's scheduled date/team
     // and the original request-service quantity/value as the reporting source.
@@ -795,7 +787,7 @@
     const executionGrouped=new Map();
     const pushExecution=(teamId,teamName,entryKey,request,scheduledDate,scheduledTime,technicianName,services,executionState=null)=>{
       teamId=String(teamId||'unassigned');teamName=teamName||'غير مسند';
-      const normalizedServices=(services||[]).filter(x=>Number(x.quantity||0)>0).map(x=>({name:x.name||'خدمة غير محددة',quantity:Number(x.quantity||0),value:Number(x.value||0),expenses:Number(x.expenses||0),profit:Number(x.profit||0)}));
+      const normalizedServices=(services||[]).filter(x=>Number(x.quantity||0)>0).map(x=>({requestServiceId:x.requestServiceId||'',maxQuantity:Number(x.maxQuantity||0),unitPrice:Number(x.unitPrice||0),name:x.name||'خدمة غير محددة',quantity:Number(x.quantity||0),value:Number(x.value||0),expenses:Number(x.expenses||0),profit:Number(x.profit||0)}));
       const value=normalizedServices.reduce((a,x)=>a+x.value,0),expenses=normalizedServices.reduce((a,x)=>a+x.expenses,0);
       const geo=geoMap.get(String(request?.neighborhood_id||''))||{};
       const state=executionState||request||{},collection=collectionMap.get(String(request?.id||''))||{};const visitNo=Number(state.visit_no||0);const item={entryKey,requestId:request?.id||'',requestNumber:request?.request_number||'',executionNumber:visitNo?`${request?.request_number||''}-${String(visitNo).padStart(2,'0')}`:(request?.request_number||''),visitId:state.id&&entryKey.startsWith('visit:')?state.id:'',visitNo,customerName:request?.customer?.customer_name||'',customerPhone:request?.customer?.phone||'',representativeName:request?.representative?.full_name||'',teamId,teamName,technicianName:technicianName||request?.assigned_technician_name||'',scheduledDate:scheduledDate||request?.scheduled_date||'',scheduledTime:String(scheduledTime||request?.scheduled_time||'').slice(0,5),status:state.completed_at?'مكتمل':(state.started_at?'قيد التنفيذ':(state.arrived_at?'وصل إلى العميل':(state.on_route_at?'في الطريق':(state.status==='بانتظار التأكيد'?'مكتمل':'مسند')))),neighborhoodId:geo.neighborhoodId||'',neighborhoodName:geo.neighborhoodName||'',cityId:geo.cityId||'',cityName:geo.cityName||'',regionId:geo.regionId||'',regionName:geo.regionName||'',services:normalizedServices,value,expenses,profit:value-expenses,requestFinalAmount:Number(request?.final_amount||0),requestTaxAmount:Number(request?.tax_amount||0),requestDiscountAmount:Number(request?.discount_amount||0),amountCollected:Number(collection.amount_collected||0),paymentMethod:collection.payment_method||'',collectionStatus:collection.collection_status||'',collectedAt:collection.collected_at||'',onRouteAt:state.on_route_at||'',mapOpenedAt:state.map_opened_at||'',arrivedAt:state.arrived_at||'',startedAt:state.started_at||'',collectionAt:state.collection_at||'',completedAt:state.completed_at||''};
@@ -803,14 +795,18 @@
     };
     for(const visit of scopedVisits){
       const serviceLines=[];
-      for(const line of visitLines||[]){if(String(line.visit_id)!==String(visit.id))continue;const service=serviceMap.get(line.request_service_id);if(!service)continue;const quantity=Number(line.scheduled_quantity||0);if(quantity<=0)continue;const unitPrice=Number(service.unit_price??service.service?.default_price??(Number(service.quantity||0)?Number(service.line_total||0)/Number(service.quantity||1):0)),unitCost=Number(service.service?.default_cost||0);serviceLines.push({name:service.service?.name,quantity,value:quantity*unitPrice*1.15,expenses:quantity*unitCost,profit:(quantity*unitPrice*1.15)-(quantity*unitCost)})}
+      for(const line of visitLines||[]){if(String(line.visit_id)!==String(visit.id))continue;const service=serviceMap.get(line.request_service_id);if(!service)continue;const quantity=Number(line.scheduled_quantity||0);if(quantity<=0)continue;const unitPrice=Number(service.unit_price??service.service?.default_price??(Number(service.quantity||0)?Number(service.line_total||0)/Number(service.quantity||1):0)),unitCost=Number(service.service?.default_cost||0);serviceLines.push({requestServiceId:service.id,maxQuantity:Number(service.quantity||0),unitPrice,name:service.service?.name,quantity,value:quantity*unitPrice*1.15,expenses:quantity*unitCost,profit:(quantity*unitPrice*1.15)-(quantity*unitCost)})}
       pushExecution(visit.installation_team_id,visit.team?.name,'visit:'+visit.id,visit.request,visit.scheduled_date,visit.scheduled_time,visit.technician_name,serviceLines,visit);
     }
     for(const request of singleDayRequests){
-      const serviceLines=(servicesByRequest.get(String(request.id||''))||[]).map(service=>{const quantity=Number(service.quantity||0),unitPrice=Number(service.unit_price??service.service?.default_price??(quantity?Number(service.line_total||0)/quantity:0)),unitCost=Number(service.service?.default_cost||0);return {name:service.service?.name,quantity,value:quantity*unitPrice*1.15,expenses:quantity*unitCost,profit:(quantity*unitPrice*1.15)-(quantity*unitCost)}});
+      const serviceLines=(servicesByRequest.get(String(request.id||''))||[]).map(service=>{const quantity=Number(service.quantity||0),unitPrice=Number(service.unit_price??service.service?.default_price??(quantity?Number(service.line_total||0)/quantity:0)),unitCost=Number(service.service?.default_cost||0);return {requestServiceId:service.id,maxQuantity:Number(service.quantity||0),unitPrice,name:service.service?.name,quantity,value:quantity*unitPrice*1.15,expenses:quantity*unitCost,profit:(quantity*unitPrice*1.15)-(quantity*unitCost)}});
       pushExecution(request.installation_team_id,request.team?.name,'request:'+request.id,request,request.scheduled_date,request.scheduled_time,request.assigned_technician_name,serviceLines);
     }
-    const executionGroups=[...executionGrouped.values()].map(group=>({...group,orders:group.orders.sort((a,b)=>String(a.scheduledTime||'').localeCompare(String(b.scheduledTime||''))||String(a.requestNumber||'').localeCompare(String(b.requestNumber||''),'ar'))})).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+    const executionGroups=[...executionGrouped.values()].map(group=>{
+      const canonical=new Map();
+      for(const order of group.orders){const key=[order.requestId,order.teamId||'',order.scheduledDate||''].join('|');let x=canonical.get(key);if(!x){x={...order,visitIds:order.visitId?[order.visitId]:[],_serviceMap:new Map((order.services||[]).map(s=>[String(s.requestServiceId||s.name),{...s}]))};canonical.set(key,x);continue;}if(order.visitId)x.visitIds.push(order.visitId);x.visitNo=Math.min(Number(x.visitNo||999999),Number(order.visitNo||999999));x.executionNumber=x.requestNumber;x.scheduledTime=[x.scheduledTime,order.scheduledTime].filter(Boolean).sort()[0]||'';const earliest=(a,b)=>[a,b].filter(Boolean).sort()[0]||'',latest=(a,b)=>[a,b].filter(Boolean).sort().slice(-1)[0]||'';x.onRouteAt=earliest(x.onRouteAt,order.onRouteAt);x.mapOpenedAt=earliest(x.mapOpenedAt,order.mapOpenedAt);x.arrivedAt=earliest(x.arrivedAt,order.arrivedAt);x.startedAt=earliest(x.startedAt,order.startedAt);x.collectionAt=latest(x.collectionAt,order.collectionAt);x.completedAt=latest(x.completedAt,order.completedAt);for(const svc of order.services||[]){const sk=String(svc.requestServiceId||svc.name),prev=x._serviceMap.get(sk);if(!prev){x._serviceMap.set(sk,{...svc});continue}const maxQty=Math.max(Number(prev.maxQuantity||0),Number(svc.maxQuantity||0)),unitPrice=Number(prev.unitPrice||svc.unitPrice||0),qty=maxQty>0?Math.min(maxQty,Number(prev.quantity||0)+Number(svc.quantity||0)):Number(prev.quantity||0)+Number(svc.quantity||0),expensePerUnit=Number(prev.quantity||0)>0?Number(prev.expenses||0)/Number(prev.quantity||1):(Number(svc.quantity||0)>0?Number(svc.expenses||0)/Number(svc.quantity||1):0);prev.maxQuantity=maxQty;prev.quantity=qty;prev.unitPrice=unitPrice;prev.value=qty*unitPrice*1.15;prev.expenses=qty*expensePerUnit;prev.profit=prev.value-prev.expenses;}x.status=(x.completedAt&&order.completedAt)?'مكتمل':(x.startedAt?'قيد التنفيذ':x.status);}
+      return {...group,orders:[...canonical.values()].map(x=>{x.services=[...x._serviceMap.values()];delete x._serviceMap;x.visitIds=[...new Set(x.visitIds||[])];const rawValue=x.services.reduce((a,s)=>a+Number(s.value||0),0),rawExpenses=x.services.reduce((a,s)=>a+Number(s.expenses||0),0),cap=Number(x.requestFinalAmount||0);x.value=cap>0?Math.min(rawValue,cap):rawValue;x.expenses=rawExpenses;x.profit=x.value-x.expenses;if(x.visitIds.length>1)x.executionNumber=x.requestNumber;return x}).sort((a,b)=>String(a.scheduledTime||'').localeCompare(String(b.scheduledTime||''))||String(a.requestNumber||'').localeCompare(String(b.requestNumber||''),'ar'))};
+    }).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
     const totalQuantity=rows.reduce((a,x)=>a+x.quantity,0),totalValue=rows.reduce((a,x)=>a+x.value,0),totalExpenses=rows.reduce((a,x)=>a+x.expenses,0),totalProfit=totalValue-totalExpenses;
     return {rows,executionGroups,rescheduleEvents:scopedRescheduleEvents,summary:{teams:rows.length,visits:scopedVisits.length+singleDayRequests.length,quantity:totalQuantity,value:totalValue,expenses:totalExpenses,profit:totalProfit,average:totalQuantity?totalValue/totalQuantity:0},teams:(teams||[]).map(x=>({id:x.id,name:x.name})),representatives:(reps||[]).map(x=>({id:x.id,name:x.full_name}))};
   }

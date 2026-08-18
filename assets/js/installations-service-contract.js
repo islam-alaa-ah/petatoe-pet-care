@@ -19,7 +19,7 @@
       }
 
       const script = document.createElement('script');
-      script.src = 'assets/js/installations-service.js?v=18.55.42-atomic-recovery';
+      script.src = 'assets/js/installations-service.js?v=18.55.44-group-recovery';
       script.async = false;
       script.dataset.kyumInstallationsServiceRecovery = 'true';
       script.addEventListener('load', resolve, { once: true });
