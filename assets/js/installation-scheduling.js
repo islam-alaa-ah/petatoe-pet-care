@@ -104,10 +104,32 @@
     const editButton=!completed&&canEditSchedule()?`<button class="primary-btn installation-edit-request-btn" type="button" data-day-edit-request="${esc(r.id)}" title="تعديل بيانات الطلب مع الإبقاء على الجدولة الحالية">تعديل الطلب</button>`:'';
     const cancelButton=canCancelSchedule?`<button class="danger-btn installation-cancel-schedule-btn" type="button" data-day-cancel-schedule="${esc(r.id)}" title="إلغاء جميع مواعيد الطلب وإعادته للطلبات المطلوب جدولتها">إلغاء الجدولة</button>`:'';
     const vehicle=vehicleIdentity(r.teamId);
-    const direction=String(r?.customerMapUrl||'').trim()?`<a class="secondary-btn installation-day-direction-btn" href="${esc(String(r.customerMapUrl).trim())}" target="_blank" rel="noopener noreferrer">اتجاه</a>`:'';
     const vehicleHtml=vehicle.label?`<span class="installation-vehicle-identity ${vehicle.className}"><i class="installation-vehicle-dot" aria-hidden="true"></i><strong>${esc(vehicle.label)}</strong></span>`:'';
     const rescheduleTitle=completed?'تم تنفيذ الموعد؛ لا يمكن إعادة جدولته':(canOperate?'إعادة جدولة الموعد':'موعد خارج نطاقك التشغيلي');
-    return `<article class="installation-day-appointment ${canOperate?'':'is-readonly'} ${vehicle.className}"><div class="installation-day-appointment-head"><time>${esc(formatTime(r.scheduledTime))}</time><strong>${esc(r.executionNumber||r.requestNumber)}</strong><span class="status-badge installation-day-mobile-status">${esc(completed?'مكتمل':r.status)}</span></div>${r.requestNotes?`<div class="installation-day-request-notes"><strong>ملاحظات:</strong><span>${esc(r.requestNotes)}</span></div>`:''}<div class="installation-day-customer">${r.customerMasked===true?'<strong>بيانات العميل محجوبة</strong><small>لا تملك صلاحية عرض اسم العميل أو رقمه</small>':`<strong>${esc(r.customerName||'عميل غير محدد')}</strong><small>رقم العميل: <bdi>${esc(r.customerPhone||'غير مسجل')}</bdi></small>`}<span>${esc(r.installationAddress||'العنوان غير محدد')}</span>${mapBtn(r)}</div><div class="installation-day-meta"><span>السائق: <strong>${esc(teamDriverName(r.teamId)||'غير مسند')}</strong></span><span>الجرومر: <strong>${esc(requestGroomerName(r)||'غير مسند')}</strong></span>${vehicleHtml}<span class="status-badge">${esc(completed?'مكتمل':r.status)}</span></div><div class="installation-day-services"><h5>الخدمات</h5><ul>${servicesHtml(r)}</ul><div class="installation-day-totals"><span>${Number(r.totalServicesCount||0)} خدمة</span><strong>${money(grossTotal(r))}</strong></div></div>${readOnlyNote}<div class="installation-day-primary-actions"><button class="secondary-btn installation-day-view-btn" type="button" data-view-request="${esc(r.id)}">تفاصيل</button>${direction}</div><div class="installation-day-actions">${editButton}<button class="secondary-btn" type="button" data-day-reschedule="${esc(r.id)}" ${canReschedule?'':'disabled aria-disabled="true"'} title="${rescheduleTitle}">إعادة الجدولة</button>${cancelButton}</div></article>`
+    const note=String(r.requestNotes||r.assignmentNotes||'').trim();
+    const requestNumber=esc(r.executionNumber||r.requestNumber);
+    const mapAction=mapBtn(r);
+    const viewButton=`<button class="secondary-btn installation-day-view-btn" type="button" data-view-request="${esc(r.id)}">عرض</button>`;
+    return `<article class="installation-day-appointment installation-day-appointment-classic ${canOperate?'':'is-readonly'} ${vehicle.className}">
+      <div class="installation-day-appointment-head">
+        <time>${esc(formatTime(r.scheduledTime))}</time>
+        <div class="installation-day-request-id-block"><strong>${requestNumber}</strong>${note?`<div class="installation-day-request-notes"><strong>ملاحظات:</strong><span>${esc(note)}</span></div>`:''}</div>
+        <span class="status-badge installation-day-mobile-status">${esc(completed?'مكتمل':r.status)}</span>
+      </div>
+      <div class="installation-day-customer">
+        <div class="installation-day-customer-copy">${r.customerMasked===true?'<strong>بيانات العميل محجوبة</strong><small>لا تملك صلاحية عرض اسم العميل أو رقمه</small>':`<strong>${esc(r.customerName||'عميل غير محدد')}</strong><small>رقم العميل: <bdi>${esc(r.customerPhone||'غير مسجل')}</bdi></small>`}<span>${esc(r.installationAddress||'العنوان غير محدد')}</span></div>
+        ${mapAction?`<div class="installation-day-map-row">${mapAction}</div>`:''}
+      </div>
+      <div class="installation-day-meta">
+        <span>السائق: <strong>${esc(teamDriverName(r.teamId)||'غير مسند')}</strong></span>
+        <span>الجرومر: <strong>${esc(requestGroomerName(r)||'غير مسند')}</strong></span>
+        ${vehicleHtml}
+        <span class="status-badge">${esc(completed?'مكتمل':r.status)}</span>
+      </div>
+      <div class="installation-day-services"><h5>الخدمات</h5><ul>${servicesHtml(r)}</ul><div class="installation-day-totals"><span>${Number(r.totalServicesCount||0)} خدمة</span><strong>${money(grossTotal(r))}</strong></div></div>
+      ${readOnlyNote}
+      <div class="installation-day-actions installation-day-actions-classic">${viewButton}${editButton}<button class="secondary-btn" type="button" data-day-reschedule="${esc(r.id)}" ${canReschedule?'':'disabled aria-disabled="true"'} title="${rescheduleTitle}">إعادة الجدولة</button>${cancelButton}</div>
+    </article>`
   }
   function renderCalendar(){
     const data=filtered(),start=new Date(month),first=new Date(start);first.setDate(1-start.getDay());

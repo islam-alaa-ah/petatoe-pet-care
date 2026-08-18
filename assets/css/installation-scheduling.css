@@ -118,20 +118,27 @@ html[data-theme="light"] #installationAssignmentDialog .data-status:not(.hidden)
 .installation-day-team-column>header h4{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--primary)}
 .installation-day-team-column>header strong{font-size:.75rem;color:var(--muted)}
 .installation-day-team-list{padding:10px;display:grid;gap:10px;overflow-y:auto;overscroll-behavior:contain}
-.installation-day-appointment{border:1px solid var(--border);border-radius:13px;background:var(--surface);padding:12px;display:grid;gap:10px;box-shadow:0 5px 16px rgba(15,23,42,.05)}
-.installation-day-appointment-head,.installation-day-meta,.installation-day-totals{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.installation-day-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.installation-day-appointment-head time{color:var(--primary);font-weight:900}
-.installation-day-appointment-head strong{font-size:.82rem}
-.installation-day-customer{display:grid;gap:3px}
-.installation-day-customer span,.installation-day-meta{font-size:.78rem;color:var(--muted)}
-.installation-day-services{border-top:1px solid var(--border);padding-top:9px;display:grid;gap:7px}
-.installation-day-services h5{margin:0;font-size:.8rem}
-.installation-day-services ul{list-style:none;padding:0;margin:0;display:grid;gap:5px}
-.installation-day-services li{display:flex;justify-content:space-between;gap:10px;font-size:.77rem}
+.installation-day-appointment{border:1px solid var(--border);border-radius:13px;background:var(--surface);padding:14px;display:grid;gap:11px;box-shadow:0 5px 16px rgba(15,23,42,.05)}
+.installation-day-appointment-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:12px}
+.installation-day-request-id-block{display:grid;gap:6px;min-width:0}
+.installation-day-appointment-head time{color:var(--primary);font-weight:900;font-size:1rem}
+.installation-day-appointment-head .installation-day-request-id-block>strong{font-size:.86rem;line-height:1.35;overflow-wrap:anywhere}
+.installation-day-customer{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center}
+.installation-day-customer-copy{display:grid;gap:4px;min-width:0}
+.installation-day-customer-copy>strong{font-size:1rem;color:var(--text)}
+.installation-day-customer-copy small,.installation-day-customer-copy span{font-size:.8rem;color:var(--muted)}
+.installation-day-map-row{display:flex;align-items:center;justify-content:center;min-width:220px}
+.installation-day-map-row .installation-map-primary-action{margin-top:0;min-width:210px;padding:11px 18px;border:1px solid var(--warning,#d9a837);border-radius:12px;box-shadow:0 8px 18px rgba(15,23,42,.08);font-weight:900}
+.installation-day-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:10px 14px;padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:.78rem;color:var(--muted)}
+.installation-day-meta>span{min-width:0}.installation-day-meta>span:nth-child(2){text-align:center}.installation-day-meta>.status-badge{justify-self:start}.installation-day-meta .installation-vehicle-identity{display:none}
+.installation-day-services{padding-top:2px;display:grid;gap:7px}
+.installation-day-services h5{margin:0;font-size:.86rem}
+.installation-day-services ul{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.installation-day-services li{display:flex;justify-content:space-between;gap:12px;padding-bottom:5px;border-bottom:1px dashed color-mix(in srgb,var(--border) 75%,transparent);font-size:.8rem}
 .installation-day-services li strong{color:var(--primary);white-space:nowrap}
-.installation-day-totals{padding-top:7px;border-top:1px dashed var(--border);font-size:.78rem}
-.installation-day-actions button{flex:1;min-width:105px}
+.installation-day-totals{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px dashed var(--border);padding-top:8px;font-size:.8rem;font-weight:800}
+.installation-day-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.installation-day-actions button{min-width:0;min-height:42px;font-weight:900}
 .installation-day-primary-actions{display:none}
 .installation-day-primary-actions>*{min-width:0;text-align:center;text-decoration:none}
 .installation-day-mobile-overview,.installation-day-mobile-status{display:none}
@@ -213,10 +220,10 @@ html[data-theme="light"] #installationAssignmentDialog .data-status:not(.hidden)
   .installation-day-appointment.vehicle-van-a{border-inline-start:3px solid #1688ff!important}
   .installation-day-appointment.vehicle-van-b{border-inline-start:3px solid #a62cf4!important}
   .installation-day-appointment-head{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;gap:8px!important;align-items:center!important}
-  .installation-day-appointment-head time{font-size:13px!important}.installation-day-appointment-head>strong{font-size:9px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .installation-day-appointment-head time{font-size:13px!important}.installation-day-request-id-block>strong{font-size:9px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .installation-day-appointment-head .status-badge{justify-self:end;font-size:8px!important;padding:4px 8px!important;border-radius:999px!important}
-  .installation-day-customer{gap:3px!important;padding:7px 0!important;border-block:1px solid var(--pilot-divider)!important}
-  .installation-day-customer>strong{font-size:12px!important}.installation-day-customer small,.installation-day-customer span{font-size:9px!important}
+  .installation-day-customer{grid-template-columns:1fr!important;gap:7px!important;padding:7px 0!important;border-block:1px solid var(--pilot-divider)!important}
+  .installation-day-customer-copy>strong{font-size:12px!important}.installation-day-customer-copy small,.installation-day-customer-copy span{font-size:9px!important}.installation-day-map-row{min-width:0!important}.installation-day-map-row .installation-map-primary-action{width:100%!important;min-width:0!important}
   .installation-day-meta{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px 8px!important;font-size:8.5px!important}
   .installation-day-meta .installation-vehicle-identity{display:inline-flex!important;grid-column:1/-1;justify-content:flex-start;color:var(--text)!important;font-size:10px!important}
   .installation-day-mobile-status{display:inline-flex!important}.installation-day-meta>.status-badge{display:none!important}
@@ -946,7 +953,7 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
 }
 
 /* P5.12.7 — canonical schedule-card notes and three-action owner */
-.installation-day-request-notes{display:grid;gap:4px;padding:9px 11px;border:1px solid color-mix(in srgb,var(--warning,#d9a837) 45%,var(--border));border-radius:10px;background:color-mix(in srgb,var(--warning,#d9a837) 7%,var(--surface));font-size:.82rem}.installation-day-request-notes strong{color:var(--text,#0f172a)}.installation-day-request-notes span{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text-muted,#64748b)}.installation-day-actions button{min-width:0}.installation-day-actions .installation-edit-request-btn{border-color:rgba(37,99,235,.45)}html[data-theme="dark"] .installation-day-request-notes{background:rgba(217,168,55,.08);border-color:rgba(217,168,55,.38)}@media(max-width:767px){.installation-day-actions{grid-template-columns:1fr}}
+.installation-day-request-notes{display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px 8px;align-items:start;padding:7px 9px;border:1px solid color-mix(in srgb,var(--warning,#d9a837) 42%,var(--border));border-radius:9px;background:color-mix(in srgb,var(--warning,#d9a837) 6%,var(--surface));font-size:.76rem}.installation-day-request-notes strong{color:var(--text,#0f172a)}.installation-day-request-notes span{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text-muted,#64748b);line-height:1.45}.installation-day-actions .installation-edit-request-btn{border-color:rgba(37,99,235,.45)}html[data-theme="dark"] .installation-day-request-notes{background:rgba(217,168,55,.08);border-color:rgba(217,168,55,.38)}@media(max-width:767px){.installation-day-actions{grid-template-columns:1fr}.installation-day-customer{grid-template-columns:1fr}.installation-day-map-row{min-width:0}.installation-day-map-row .installation-map-primary-action{width:100%;min-width:0}.installation-day-meta{grid-template-columns:1fr 1fr}.installation-day-meta>.status-badge{grid-column:1/-1;justify-self:start}}
 
 /* Phase P5.13.8.19 — Completed-day historical schedule retention */
 #installationScheduleView .installation-calendar-day.is-completed-day{border-color:color-mix(in srgb,var(--desk-blue,#338fff) 28%,var(--border))}
