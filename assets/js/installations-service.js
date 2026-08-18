@@ -538,7 +538,7 @@
     const invoiceNumber=String(payload.invoiceNumber||'').trim(),invoiceDate=String(payload.invoiceDate||'').trim(),withoutInvoice=Boolean(payload.withoutInvoice),groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))];
     if(!withoutInvoice&&!invoiceNumber)throw new Error('رقم الفاتورة مطلوب أو اختر بدون فاتورة.');
     if(!invoiceDate)throw new Error('تاريخ الفاتورة مطلوب.');
-    const grouped=groupIds.length>1,rpc=grouped?'confirm_installation_execution_group_and_create_invoice_v4':'confirm_installation_execution_visit_and_create_invoice_v3';
+    const grouped=groupIds.length>1,rpc=grouped?'confirm_installation_execution_group_and_create_invoice_v5':'confirm_installation_execution_visit_and_create_invoice_v4';
     const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice}:{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice};
     const {data,error}=await db().rpc(rpc,args);
     if(error)throw new Error('تعذر اعتماد الكمية وإنشاء الفاتورة: '+error.message);

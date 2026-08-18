@@ -1,13 +1,13 @@
 {
-  "version": "18.55.56",
-  "build": 185556,
+  "version": "18.55.57",
+  "build": 185557,
   "forceUpdate": true,
   "releaseDate": "2026-08-19",
-  "title": "PETATOE Quantity Confirmation Invoice Date & Money Precision Recovery",
+  "title": "PETATOE Completion Collection Stage Reconciliation",
   "notes": [
-    "إضافة تاريخ الفاتورة داخل تأكيد الكمية المنفذة وربطه بالتحويل المباشر إلى الفاتورة.",
-    "توحيد مقارنة المبلغ المحصل والإجمالي النهائي على مستوى الهللة لمنع الرفض الخاطئ للقيم المتساوية.",
-    "تحديث Cache Token لشاشة تأكيد الكمية لضمان تحميل المنطق الحالي بدل نسخة JavaScript قديمة."
+    "إصلاح تعارض مرحلة التحصيل مع تأكيد الكمية المنفذة للزيارات المكتملة تاريخيًا بدون تجاوز شرط التحصيل الإلزامي.",
+    "مزامنة collection_at من حدث التحصيل الموثق collected_at فقط، مع عدم اعتبار المبلغ أو طريقة الدفع وحدهما إثباتًا للمرحلة.",
+    "توجيه التحويل المباشر إلى الفاتورة عبر RPC جديدة آمنة مع Cache Bust لمسار تأكيد الكمية."
   ],
-  "cacheToken": "petatoe-pwa-18-55-56-quantity-confirm-invoice-date-money-precision"
+  "cacheToken": "petatoe-pwa-18-55-57-completion-collection-stage-reconciliation"
 }
