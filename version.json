@@ -1,13 +1,13 @@
 {
-  "version": "18.55.53",
-  "build": 185553,
+  "version": "18.55.54",
+  "build": 185554,
   "forceUpdate": true,
-  "releaseDate": "2026-08-18",
-  "title": "PETATOE Sales Invoice PDF Table Restoration",
+  "releaseDate": "2026-08-19",
+  "title": "PETATOE Summary WhatsApp Share Recovery",
   "notes": [
-    "إعادة تصميم فواتير مبيعات اليوم في PDF إلى الجدول المعتمد بدل البطاقات.",
-    "منع تشوه الفواتير متعددة الخدمات بإلغاء الدمج الرأسي داخل PDF فقط.",
-    "فصل بصري واضح بين كل فاتورة مع الحفاظ على أعمدة التقرير المعتمدة."
+    "إصلاح فتح واتساب بعد تجهيز تقرير ملخص المواعيد بدون فقد user activation.",
+    "استخدام Web Share API لمشاركة ملف PDF مباشرة عندما يدعم الجهاز مشاركة الملفات.",
+    "Fallback آمن: تنزيل PDF وفتح واتساب من نافذة محجوزة مسبقًا لتجاوز Popup Blocker."
   ],
-  "cacheToken": "petatoe-pwa-18-55-52-sales-invoice-block-pdf-layout"
+  "cacheToken": "petatoe-pwa-18-55-54-summary-whatsapp-share-recovery"
 }

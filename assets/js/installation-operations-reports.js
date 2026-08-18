@@ -248,7 +248,48 @@
   }
   async function createSummaryPdf(){await ensureSummaryPdfLibraries();if(!state.summaryData)throw new Error('حمّل ملخص المواعيد أولًا قبل التصدير.');const range=summaryMonthRange(),allTeamIds=new Set(state.summaryTeams.map(x=>String(x.id))),explicitTeamFilter=state.summaryTeamsInitialized&&state.summarySelectedTeams.size!==allTeamIds.size;const monthly=await window.InstallationsServiceSafe.installationSummaryReport({dateFrom:range.dateFrom,dateTo:range.dateTo,representativeId:$('installationSummaryRepresentative')?.value||'',teamIds:[...state.summarySelectedTeams],teamFilterApplied:explicitTeamFilter});const pages=buildSummaryReportPages(state.summaryData,monthly),host=createSummaryPdfHost(pages);try{await document.fonts?.ready;const {jsPDF}=window.jspdf,pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true}),pageWidth=pdf.internal.pageSize.getWidth(),pageHeight=pdf.internal.pageSize.getHeight();for(let i=0;i<pages.length;i++){const el=host.querySelectorAll('.petatoe-report-page')[i],canvas=await window.html2canvas(el,{scale:1.45,useCORS:true,backgroundColor:'#f8fbff',logging:false,windowWidth:1123,windowHeight:794,scrollX:0,scrollY:0});if(!canvas.width||!canvas.height)throw new Error('تعذر تجهيز إحدى صفحات التقرير.');if(i>0)pdf.addPage();pdf.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',0,0,pageWidth,pageHeight,undefined,'FAST')}return {blob:pdf.output('blob'),name:`installation-summary-${summaryDate()}.pdf`}}finally{host.remove()}}
   function downloadSummaryPdf(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
-  async function exportSummaryPdf(button,share=false){const original=button.textContent;if(button.disabled)return;button.disabled=true;button.textContent='جاري تجهيز PDF...';status($('installationSummaryStatus'),'');try{const {blob,name}=await createSummaryPdf(),file=new File([blob],name,{type:'application/pdf'}),message=`ملخص المواعيد بتاريخ ${summaryDate()}`;if(share){const shareData={title:'ملخص المواعيد',text:message,files:[file]};if(navigator.share&&(!navigator.canShare||navigator.canShare(shareData))){button.textContent='تم تجهيز التقرير';await navigator.share(shareData)}else{downloadSummaryPdf(blob,name);window.open(`https://wa.me/?text=${encodeURIComponent(`${message} — تم تنزيل ملف PDF على الجهاز لإرفاقه بالمحادثة.`)}`,'_blank','noopener,noreferrer');button.textContent='تم تنزيل التقرير'}}else{downloadSummaryPdf(blob,name);button.textContent='تم تصدير التقرير'}}catch(e){if(e?.name!=='AbortError')status($('installationSummaryStatus'),e.message||'تعذر تجهيز ملف PDF.','error')}finally{setTimeout(()=>{button.disabled=false;button.textContent=original},1200)}}
+  function canNativeShareSummaryPdf(){
+    if(!navigator.share||!navigator.canShare||typeof File==='undefined')return false;
+    try{return navigator.canShare({files:[new File([new Blob(['pdf'],{type:'application/pdf'})],'petatoe-summary.pdf',{type:'application/pdf'})]})}catch(_){return false}
+  }
+  function openSummaryWhatsappPlaceholder(){
+    try{
+      const popup=window.open('about:blank','petatoeSummaryWhatsapp');
+      if(!popup)return null;
+      popup.document.open();
+      popup.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>PETATOE</title><style>body{font-family:Arial,Tahoma,sans-serif;background:#f6f9fd;color:#0b2f5b;display:grid;place-items:center;min-height:100vh;margin:0}.box{padding:24px 28px;border:1px solid #d5e0ed;border-radius:16px;background:#fff;box-shadow:0 10px 30px rgba(15,64,122,.12);font-weight:700}</style></head><body><div class="box">جاري تجهيز تقرير ملخص المواعيد لواتساب...</div></body></html>');
+      popup.document.close();
+      return popup
+    }catch(_){return null}
+  }
+  async function exportSummaryPdf(button,share=false){
+    const original=button.textContent;if(button.disabled)return;
+    const nativeFileShare=share&&canNativeShareSummaryPdf();
+    const whatsappPopup=share&&!nativeFileShare?openSummaryWhatsappPlaceholder():null;
+    button.disabled=true;button.textContent='جاري تجهيز PDF...';status($('installationSummaryStatus'),'');
+    try{
+      const {blob,name}=await createSummaryPdf(),file=new File([blob],name,{type:'application/pdf'}),message=`ملخص المواعيد بتاريخ ${summaryDate()}`;
+      if(share){
+        const shareData={title:'ملخص المواعيد',text:message,files:[file]};
+        if(nativeFileShare){
+          button.textContent='تم تجهيز التقرير';
+          await navigator.share(shareData)
+        }else{
+          downloadSummaryPdf(blob,name);
+          const whatsappUrl=`https://wa.me/?text=${encodeURIComponent(`${message} — تم تنزيل ملف PDF على الجهاز. أرفق الملف الذي تم تنزيله داخل محادثة واتساب.`)}`;
+          if(whatsappPopup&&!whatsappPopup.closed){whatsappPopup.location.replace(whatsappUrl)}
+          else{
+            const opened=window.open(whatsappUrl,'_blank','noopener,noreferrer');
+            if(!opened)status($('installationSummaryStatus'),'تم تنزيل ملف PDF. تعذر فتح واتساب تلقائيًا بسبب منع النوافذ المنبثقة؛ افتح واتساب وأرفق الملف الذي تم تنزيله.','error')
+          }
+          button.textContent='تم تنزيل التقرير'
+        }
+      }else{downloadSummaryPdf(blob,name);button.textContent='تم تصدير التقرير'}
+    }catch(e){
+      if(whatsappPopup&&!whatsappPopup.closed)whatsappPopup.close();
+      if(e?.name!=='AbortError')status($('installationSummaryStatus'),e.message||'تعذر تجهيز ملف PDF.','error')
+    }finally{setTimeout(()=>{button.disabled=false;button.textContent=original},1200)}
+  }
 
 
   function servicePeriod(){
