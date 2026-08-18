@@ -531,6 +531,26 @@
     void notifyEvent('installation.request_updated',payload.id,payload.visitId||null,{source:'completion_confirmation',services:services.length},'completion-edit:'+new Date().toISOString());
     return Array.isArray(data)?data[0]:data;
   }
+  async function completionCollectionRecoveryState(requestId,visitId){
+    requireAction('edit','installationCompletion');
+    if(!requestId||!visitId)return {eligible:false,confirmed:false,reason:'بيانات زيارة التنفيذ غير مكتملة.'};
+    const {data,error}=await db().rpc('get_installation_completion_collection_recovery_state',{p_request_id:requestId,p_visit_id:visitId});
+    if(error)throw new Error('تعذر التحقق من حالة مرحلة التحصيل: '+error.message);
+    return data||{eligible:false,confirmed:false};
+  }
+  async function recoverCompletionCollectionStage(payload){
+    requireAction('edit','installationCompletion');
+    if(!payload?.id||!payload?.visitId)throw new Error('بيانات زيارة التنفيذ غير مكتملة.');
+    const amount=Math.round(Math.max(0,Number(payload.amountCollected||0))*100)/100;
+    const paymentMethod=String(payload.paymentMethod||'').trim();
+    if(!Number.isFinite(amount)||amount<0)throw new Error('المبلغ المحصل غير صحيح.');
+    if(amount>0&&!paymentMethod)throw new Error('اختر طريقة الدفع قبل تأكيد مرحلة التحصيل.');
+    const {data,error}=await db().rpc('recover_installation_completion_collection_stage',{
+      p_request_id:payload.id,p_visit_id:payload.visitId,p_amount_collected:amount,p_payment_method:paymentMethod||null,p_notes:String(payload.notes||'').trim()||null
+    });
+    if(error)throw new Error('تعذر تأكيد مرحلة التحصيل للحالة العالقة: '+error.message);
+    return data||{};
+  }
   async function confirmActualQuantities(payload){requireAction('edit','installationCompletion');const groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))];const grouped=Boolean(payload.visitId&&groupIds.length>1);const rpc=grouped?'confirm_installation_execution_group_quantities_v2':(payload.visitId?'confirm_installation_execution_visit_quantities':'confirm_installation_actual_quantities');const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:{p_request_id:payload.id,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null};const {data,error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر اعتماد التنفيذ الفعلي: '+error.message);void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId||null,{remainingAction:payload.remainingAction,grouped},'confirm:'+String(payload.visitId||payload.id));if(payload.remainingAction==='append_to_next_visit')void notifyEvent('installation.remaining_added_to_next',payload.id,payload.visitId||null,{},'remaining-next:'+String(payload.visitId||payload.id));if(payload.remainingAction==='return_to_schedule')void notifyEvent('installation.remaining_to_schedule',payload.id,payload.visitId||null,{},'remaining-schedule:'+String(payload.visitId||payload.id));return data}
   async function confirmActualQuantitiesAndInvoice(payload){
     requireAction('edit','installationCompletion');
@@ -866,6 +886,6 @@
 
   async function getSettings(){requireAction('view','installationSettings');const {data,error}=await db().from('installation_settings').select('*').eq('id',1).maybeSingle();if(error)throw new Error('تعذر تحميل إعدادات المواعيد: '+error.message);const r=data||{};return {morningLabel:r.morning_label||'صباحية',eveningLabel:r.evening_label||'مسائية',slaDays:Number(r.sla_days??1),defaultPriority:r.default_priority||'عادية',requireCompletionReport:r.require_completion_report!==false}}
   async function saveSettings(payload){requireAction('edit','installationSettings');const record={id:1,morning_label:payload.morningLabel,evening_label:payload.eveningLabel,sla_days:payload.slaDays,default_priority:payload.defaultPriority,require_completion_report:!!payload.requireCompletionReport,updated_at:new Date().toISOString()};const {error}=await db().from('installation_settings').upsert(record,{onConflict:'id'});if(error)throw new Error('تعذر حفظ إعدادات المواعيد: '+error.message)}
-  window.InstallationsService={list,options,customerAppointmentDefaults,saveCustomerLocationDefaults,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,returnExecutionToSchedule,completeCollectionStage,advanceExecution,subscribeExecutionWorkspace,completionList,completionQuantitySummary,saveCompletionWorkspace,confirmActualQuantities,confirmActualQuantitiesAndInvoice,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
+  window.InstallationsService={list,options,customerAppointmentDefaults,saveCustomerLocationDefaults,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,returnExecutionToSchedule,completeCollectionStage,advanceExecution,subscribeExecutionWorkspace,completionList,completionQuantitySummary,saveCompletionWorkspace,completionCollectionRecoveryState,recoverCompletionCollectionStage,confirmActualQuantities,confirmActualQuantitiesAndInvoice,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
   window.dispatchEvent(new CustomEvent('kyum-installations-service-ready'));
 })();

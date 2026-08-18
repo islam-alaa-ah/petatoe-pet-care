@@ -2,7 +2,7 @@
   'use strict';
 
   const REQUIRED_METHODS = [
-    'list', 'options', 'requestEditDetail', 'requestEditOptions', 'createRequest', 'updateRequest', 'updateRequestServices', 'updateRequestContextServices', 'remove', 'technicians', 'scheduleTeams', 'technicianNameSuggestions', 'scheduleList', 'schedulePlan', 'assignMultiDay', 'cancelSchedule', 'assign', 'executionWorkspace', 'executionIdentity', 'selectExecutionRequest', 'recordMapOpened', 'advanceExecution', 'subscribeExecutionWorkspace', 'completionList', 'confirmActualQuantities', 'confirmActualQuantitiesAndInvoice', 'cancelConfirmedQuantity', 'saveCompletion', 'signedFileUrl', 'exceptionList', 'saveRevisit', 'operationalReport', 'installationSummaryReport', 'settingsCatalog', 'saveSettingItem', 'toggleSettingItem', 'removeSettingItem'
+    'list', 'options', 'requestEditDetail', 'requestEditOptions', 'createRequest', 'updateRequest', 'updateRequestServices', 'updateRequestContextServices', 'remove', 'technicians', 'scheduleTeams', 'technicianNameSuggestions', 'scheduleList', 'schedulePlan', 'assignMultiDay', 'cancelSchedule', 'assign', 'executionWorkspace', 'executionIdentity', 'selectExecutionRequest', 'recordMapOpened', 'advanceExecution', 'subscribeExecutionWorkspace', 'completionList', 'completionCollectionRecoveryState', 'recoverCompletionCollectionStage', 'confirmActualQuantities', 'confirmActualQuantitiesAndInvoice', 'cancelConfirmedQuantity', 'saveCompletion', 'signedFileUrl', 'exceptionList', 'saveRevisit', 'operationalReport', 'installationSummaryReport', 'settingsCatalog', 'saveSettingItem', 'toggleSettingItem', 'removeSettingItem'
   ];
 
   function isValid(service) {
@@ -19,7 +19,7 @@
       }
 
       const script = document.createElement('script');
-      script.src = 'assets/js/installations-service.js?v=18.55.44-group-recovery';
+      script.src = 'assets/js/installations-service.js?v=18.55.58-completion-collection-recovery';
       script.async = false;
       script.dataset.kyumInstallationsServiceRecovery = 'true';
       script.addEventListener('load', resolve, { once: true });
