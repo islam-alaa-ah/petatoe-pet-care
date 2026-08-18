@@ -1,13 +1,13 @@
 {
-  "version": "18.55.49",
-  "build": 185549,
+  "version": "18.55.50",
+  "build": 185550,
   "forceUpdate": true,
   "releaseDate": "2026-08-18",
-  "title": "PETATOE Scheduling Pending Queue Recovery",
+  "title": "PETATOE Collection Canonical Remaining Scope Recovery",
   "notes": [
-    "إصلاح توقف جدول الطلبات التي تحتاج جدولة عند ظهور طلبات معلقة فعليًا.",
-    "استعادة دوال عرض ملخص الخدمات والموقع داخل قائمة انتظار الجدولة من المصدر الأساسي.",
-    "الحفاظ على التقويم والجدولة والقفل والمنطق التشغيلي بدون تغييرات جانبية."
+    "توحيد المتبقي للتحصيل بين الواجهة وقاعدة البيانات على مستوى مجموعة التنفيذ والطلب.",
+    "احتساب أي تحصيل سابق فعليًا بدل إخفائه في مجموعات التنفيذ.",
+    "إصلاح Cache Bust لملفات التنفيذ والخدمة لضمان تحميل الإصلاح."
   ],
-  "cacheToken": "petatoe-pwa-18-55-49-scheduling-pending-queue-recovery"
+  "cacheToken": "petatoe-pwa-18-55-50-collection-canonical-remaining-scope-recovery"
 }
