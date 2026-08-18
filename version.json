@@ -1,13 +1,13 @@
 {
-  "version": "18.55.45",
-  "build": 185545,
+  "version": "18.55.46",
+  "build": 185546,
   "forceUpdate": true,
   "releaseDate": "2026-08-18",
-  "title": "PETATOE Appointment Summary Four-Page PDF",
+  "title": "PETATOE Appointment Summary PDF Runtime Guard",
   "notes": [
-    "توحيد تصدير PDF وإرسال واتساب على تقرير ملخص المواعيد فقط.",
-    "تنظيم التقرير في أربع صفحات A4 Landscape: الملخص والخدمات، مراحل الفريق الأول، مراحل الفريق الثاني، وملخص طرق الدفع حسب الفريق.",
-    "إعادة تصميم هيدر PDF ليحاكي هيدر البرنامج مع منع التداخل والقص داخل الصفحات."
+    "إصلاح Runtime لزر تصدير تقرير ملخص المواعيد PDF وزر إرسال التقرير واتساب.",
+    "إضافة canonical guard للتحقق من توفر html2canvas وjsPDF قبل إنشاء التقرير.",
+    "الحفاظ على تصميم وترتيب صفحات تقرير ملخص المواعيد الحالي بدون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-55-45-appointment-summary-four-page-pdf"
+  "cacheToken": "petatoe-pwa-18-55-46-summary-pdf-runtime-guard"
 }
