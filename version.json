@@ -1,13 +1,13 @@
 {
-  "version": "18.55.47",
-  "build": 185547,
+  "version": "18.55.48",
+  "build": 185548,
   "forceUpdate": true,
   "releaseDate": "2026-08-18",
-  "title": "PETATOE Appointment Summary PDF Screen-Style Service Table Recovery",
+  "title": "PETATOE Collection Money Scope Recovery",
   "notes": [
-    "توحيد الصفحة الأولى من PDF ملخص المواعيد مع جدول الخدمات المعروض داخل البرنامج.",
-    "إزالة الـvisual owner القديم الذي كان يعرض الخدمات ككارتين منفصلين لكل فريق.",
-    "تحديث Cache Token وScript Version لضمان تحميل الـrenderer الجديد وعدم استخدام نسخة Service Worker قديمة."
+    "توحيد التحقق من مبلغ التحصيل مع القيمة المالية المعروضة بدقة هللتين.",
+    "إصلاح التحقق المالي لمجموعات التنفيذ بحيث يستخدم قيمة مجموعة التنفيذ الحالية ولا يرفض المبلغ المطابق للمتبقي.",
+    "الحفاظ على منع أي تحصيل فعلي يتجاوز قيمة الطلب الإجمالية."
   ],
-  "cacheToken": "petatoe-pwa-18-55-47-pdf-summary-screen-sync"
+  "cacheToken": "petatoe-pwa-18-55-48-collection-money-scope-recovery"
 }
