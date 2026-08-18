@@ -179,7 +179,14 @@
     return Array.isArray(data)?data[0]:data;
   }
 
-  async function save(payload){requireAction(payload.id?'edit':'add',payload.id?'installationRequests':'installationRequestNew');if(!payload.id)return createRequest(payload);const record={customer_id:payload.customerId,quotation_id:payload.quotationId||null,representative_id:payload.representativeId||null,scheduled_date:payload.scheduledDate||null,time_slot:payload.timeSlot||null,status:payload.status,priority:payload.priority,installation_address:payload.installationAddress||null,customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,description:payload.description||null,notes:payload.notes||null};const {data,error}=await db().from('installation_requests').update(record).eq('id',payload.id).select('id').single();if(error)throw new Error('تعذر حفظ الموعد: '+error.message);return data}
+  // Compatibility entry point retained for callers that still reference `save`, but edits
+  // must pass through the canonical appointment RPC. Direct status/schedule writes here
+  // previously bypassed the schedule/execution state machine and are intentionally disabled.
+  async function save(payload){
+    requireAction(payload.id?'edit':'add',payload.id?'installationRequests':'installationRequestNew');
+    if(!payload.id)return createRequest(payload);
+    return updateRequest(payload);
+  }
   async function remove(id){requireAction('delete');const {error}=await db().from('installation_requests').delete().eq('id',id);if(error)throw new Error('تعذر حذف الموعد: '+error.message)}
   async function technicians(){requireAction('view','installationSchedule');const {data,error}=await db().from('installation_technicians').select('*').order('full_name');if(error)throw new Error('تعذر تحميل الفنيين: '+error.message);return (data||[]).map(r=>({id:r.id,name:r.full_name,phone:r.phone||'',specialty:r.specialty||'',city:r.city||'',status:r.status||'متاح'}))}
   async function scheduleTeams(){requireAction('view','installationSchedule');const {data,error}=await db().from('installation_teams').select('id,name,status,groomer_name,driver_name,car_name').neq('status','غير نشطة').order('name');if(error)throw new Error('تعذر تحميل فرق المواعيد: '+error.message);return (data||[]).map(x=>({...x,groomerName:x.groomer_name||'',driverName:x.driver_name||'',carName:x.car_name||''}))}

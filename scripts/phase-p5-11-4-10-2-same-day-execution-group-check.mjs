@@ -6,7 +6,7 @@ const sql=read('supabase/migrations/phase_p5_11_4_10_2_same_day_execution_group_
 const checks=[
  ['runtime groups request/team/date',js.includes("[item.id,item.teamId||'',item.scheduledDate||''].join('|')")],
  ['runtime aggregates service quantities',js.includes('x.quantity=Number(x.quantity||0)+Number(svc.quantity||0)')],
- ['completion groups same-day rows',js.includes('Same-day same-team execution slots are one completion/quantity-confirmation row')],
+ ['completion groups same-day rows',js.includes('Canonical same-day/same-team execution group: one completion row, one quantity confirmation, one invoice.')&&js.includes('const groupedOut=new Map()')],
  ['SQL group helper exists',sql.includes('get_installation_execution_group_visit_ids')],
  ['selection marks the whole group',sql.includes('where id=any(ids) and status in (\'مجدولة\',\'قيد التنفيذ\')')],
  ['stage updates the whole group',sql.includes('where id=any(ids);')],
@@ -15,6 +15,6 @@ const checks=[
  ['confirmation marks all group visits confirmed',sql.includes("set status='مؤكدة'")&&sql.includes('where id=any(ids)')],
  ['invoice aggregates group quantities',sql.includes('where vs.visit_id=any(ids)')],
  ['PostgREST cache reload included',sql.includes("notify pgrst,'reload schema'")],
- ['version bumped',JSON.parse(read('version.json')).version==='18.54.34']
+ ['version current or newer',(()=>{const v=JSON.parse(read('version.json')).version.split('.').map(Number),m=[18,54,34];return v[0]>m[0]||v[0]===m[0]&&(v[1]>m[1]||v[1]===m[1]&&v[2]>=m[2])})()]
 ];
 let fail=0;for(const [n,ok] of checks){console.log(`${ok?'PASS':'FAIL'}: ${n}`);if(!ok)fail++;}console.log(`${checks.length-fail}/${checks.length} PASS`);process.exit(fail?1:0);

@@ -1,13 +1,13 @@
 {
-  "version": "18.55.58",
-  "build": 185558,
+  "version": "18.55.59",
+  "build": 185559,
   "forceUpdate": true,
   "releaseDate": "2026-08-19",
-  "title": "PETATOE Scoped Completion Collection Recovery",
+  "title": "PETATOE Appointment Workflow Legacy Guard & Invoice Discount Scope",
   "notes": [
-    "إضافة مسار استرداد محصور للحالات المكتملة العالقة التي فقدت علامة مرحلة التحصيل فقط.",
-    "الحفاظ على شرط التحصيل الإلزامي للطلبات الجديدة وعدم توليد مرحلة التحصيل تلقائيًا من بيانات مالية غير مؤكدة.",
-    "عدم تغيير حالة الموعد أو الكميات أثناء الاسترداد؛ يتم تسجيل collected_at و collection_at فقط بعد تأكيد المستخدم وضمن شروط أمان صارمة."
+    "تحييد مسار الحفظ القديم المباشر وربطه بمسار تعديل الموعد المعتمد دون تغيير دورة الجدولة أو التنفيذ.",
+    "توحيد قيمة فاتورة الموعد مع القيمة النهائية لمجموعة التنفيذ بعد الضريبة والخصم مع الحفاظ على تمثيل invoice_amount قبل الضريبة.",
+    "عدم تغيير واجهات أو حالات الجدولة أو التنفيذ أو التحصيل أو التأكيد."
   ],
-  "cacheToken": "petatoe-pwa-18-55-58-scoped-completion-collection-recovery"
+  "cacheToken": "petatoe-pwa-18-55-59-appointment-workflow-legacy-guard-invoice-discount"
 }
