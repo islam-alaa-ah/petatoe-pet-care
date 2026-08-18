@@ -16,7 +16,7 @@
   function render(){
     const list=filtered();
     $("salesInvoicesCount").textContent=String(list.length);
-    $("salesInvoicesAmount").textContent=money(list.reduce((s,r)=>s+r.invoiceAmount,0));
+    $("salesInvoicesAmount").textContent=wholeMoney(list.reduce((s,r)=>s+r.invoiceAmountInclTax,0));
     $("salesInvoicesInstallationCost").textContent=money(list.reduce((s,r)=>s+r.installationExpenses,0));
     const canEdit=Boolean(window.CustomerPermissions?.canAction?.("salesInvoices","edit"));
     const body=$("salesInvoicesTableBody");
