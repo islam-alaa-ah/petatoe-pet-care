@@ -1,13 +1,13 @@
 {
-  "version": "18.55.55",
-  "build": 185555,
+  "version": "18.55.56",
+  "build": 185556,
   "forceUpdate": true,
   "releaseDate": "2026-08-19",
-  "title": "PETATOE Summary WhatsApp Share Recovery",
+  "title": "PETATOE Quantity Confirmation Invoice Date & Money Precision Recovery",
   "notes": [
-    "إصلاح فتح واتساب بعد تجهيز تقرير ملخص المواعيد بدون فقد user activation.",
-    "استخدام Web Share API لمشاركة ملف PDF مباشرة عندما يدعم الجهاز مشاركة الملفات.",
-    "Fallback آمن: تنزيل PDF وفتح واتساب من نافذة محجوزة مسبقًا لتجاوز Popup Blocker."
+    "إضافة تاريخ الفاتورة داخل تأكيد الكمية المنفذة وربطه بالتحويل المباشر إلى الفاتورة.",
+    "توحيد مقارنة المبلغ المحصل والإجمالي النهائي على مستوى الهللة لمنع الرفض الخاطئ للقيم المتساوية.",
+    "تحديث Cache Token لشاشة تأكيد الكمية لضمان تحميل المنطق الحالي بدل نسخة JavaScript قديمة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-54-summary-whatsapp-share-recovery"
+  "cacheToken": "petatoe-pwa-18-55-56-quantity-confirm-invoice-date-money-precision"
 }

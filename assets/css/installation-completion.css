@@ -432,6 +432,7 @@ html[data-theme="dark"] .installation-completion-dialog .installation-invoice-no
 .installation-quantity-invoice-field .installation-no-invoice-option{display:flex;align-items:center;gap:8px;width:max-content;font-weight:700;cursor:pointer}
 .installation-quantity-invoice-field .installation-no-invoice-option input[type="checkbox"]{width:18px;height:18px;margin:0;accent-color:var(--primary)}
 .installation-quantity-invoice-field input:disabled{opacity:.68;cursor:not-allowed}
+.installation-quantity-invoice-date-field input[type="date"]{min-width:0;width:100%}
 .installation-confirmation-workspace-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .installation-quantity-lines{display:grid;gap:12px}
 .installation-quantity-line{display:grid;gap:12px;padding:16px;border:1px solid var(--border-color,#d8dee9);border-radius:16px;background:var(--surface-color,#fff)}
