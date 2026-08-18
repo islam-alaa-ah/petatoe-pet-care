@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-52-sales-invoice-block-pdf-layout";
+const CACHE_VERSION = "petatoe-pwa-18-55-53-sales-invoice-pdf-table-restoration";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
