@@ -95,6 +95,18 @@
       return `<li><span>${esc(name)} × ${quantity}</span><strong>${money(vat(rawLine))}</strong></li>`;
     }).join('')||'<li><span>لا توجد خدمات</span><strong>—</strong></li>';
   }
+  function servicesSummary(r){
+    const services=Array.isArray(r?.services)?r.services:[];
+    if(!services.length)return '<span>لا توجد خدمات</span>';
+    return services.map(service=>{
+      const name=service?.serviceName||service?.name||'خدمة';
+      const quantity=Math.max(0,Number(service?.quantity||0));
+      return `<span>${esc(name)}${quantity?` × ${quantity}`:''}</span>`;
+    }).join('<br>');
+  }
+  function locationSummary(r){
+    return esc(String(r?.neighborhoodName||r?.installationAddress||'الموقع غير محدد').trim()||'الموقع غير محدد');
+  }
   function appointmentCard(r){
     const completed=isCompletedAppointment(r);
     const canOperate=r.canOperate===true;
