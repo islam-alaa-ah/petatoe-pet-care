@@ -1,6 +1,6 @@
 {
-  "version": "18.55.51",
-  "build": 185551,
+  "version": "18.55.52",
+  "build": 185552,
   "forceUpdate": true,
   "releaseDate": "2026-08-18",
   "title": "PETATOE Daily Sales Invoices Summary Report",
@@ -9,5 +9,5 @@
     "إضافة الصفحة الخامسة إلى PDF بعد ملخص طرق الدفع حسب الفريق.",
     "عرض الفرقة وطريقة الدفع ورقم الفاتورة والخدمة وقيمة الفاتورة شاملة الضريبة مع إجماليات الفرق والإجمالي العام."
   ],
-  "cacheToken": "petatoe-pwa-18-55-51-daily-sales-invoices-summary-report"
+  "cacheToken": "petatoe-pwa-18-55-52-sales-invoice-block-pdf-layout"
 }
