@@ -1,13 +1,13 @@
 {
-  "version": "18.55.46",
-  "build": 185546,
+  "version": "18.55.47",
+  "build": 185547,
   "forceUpdate": true,
   "releaseDate": "2026-08-18",
-  "title": "PETATOE Appointment Summary PDF Runtime Guard",
+  "title": "PETATOE Appointment Summary PDF Screen-Style Service Table Recovery",
   "notes": [
-    "إصلاح Runtime لزر تصدير تقرير ملخص المواعيد PDF وزر إرسال التقرير واتساب.",
-    "إضافة canonical guard للتحقق من توفر html2canvas وjsPDF قبل إنشاء التقرير.",
-    "الحفاظ على تصميم وترتيب صفحات تقرير ملخص المواعيد الحالي بدون تغيير."
+    "توحيد الصفحة الأولى من PDF ملخص المواعيد مع جدول الخدمات المعروض داخل البرنامج.",
+    "إزالة الـvisual owner القديم الذي كان يعرض الخدمات ككارتين منفصلين لكل فريق.",
+    "تحديث Cache Token وScript Version لضمان تحميل الـrenderer الجديد وعدم استخدام نسخة Service Worker قديمة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-46-summary-pdf-runtime-guard"
+  "cacheToken": "petatoe-pwa-18-55-47-pdf-summary-screen-sync"
 }
