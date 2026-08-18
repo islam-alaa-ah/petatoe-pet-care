@@ -86,6 +86,15 @@
   }
   async function refreshBookedTimes(){const date=$('installationAssignmentDate')?.value||'',name=$('installationAssignmentTechnicianName')?.value.trim()||'',teamId=$('installationAssignmentTeam')?.value||'',requestId=$('installationAssignmentRequestId')?.value||null,select=$('installationAssignmentTime');if(!select)return;const current=select.value;bookedTimes=new Map();if(date&&(name||teamId)){const rows=await window.InstallationsServiceSafe.technicianBookedTimes(date,name,requestId,teamId);bookedTimes=new Map(rows.map(x=>[x.time,x]))}Array.from(select.options).forEach(opt=>{if(!opt.value)return;const base=opt.dataset.baseLabel||opt.textContent.replace(/\s+—\s+محجوز.*$/,'');opt.dataset.baseLabel=base;const hit=bookedTimes.get(opt.value);opt.disabled=!!hit;opt.textContent=hit?`${base} — محجوز${hit.requestNumber?` — ${hit.requestNumber}`:''}`:base});if(current&&!select.querySelector(`option[value="${CSS.escape(current)}"]:not(:disabled)`))select.value='';else select.value=current}
   function isCompletedAppointment(r){return ['مؤكدة','مكتمل'].includes(String(r?.status||'').trim())}
+  function servicesHtml(r){
+    const services=Array.isArray(r?.services)?r.services:[];
+    return services.map(service=>{
+      const name=service?.serviceName||service?.name||'خدمة';
+      const quantity=Number(service?.quantity||0);
+      const rawLine=service?.lineTotal??(quantity*Number(service?.unitPrice||0));
+      return `<li><span>${esc(name)} × ${quantity}</span><strong>${money(vat(rawLine))}</strong></li>`;
+    }).join('')||'<li><span>لا توجد خدمات</span><strong>—</strong></li>';
+  }
   function appointmentCard(r){
     const completed=isCompletedAppointment(r);
     const canOperate=r.canOperate===true;
