@@ -1,13 +1,13 @@
 {
-  "version": "18.55.50",
-  "build": 185550,
+  "version": "18.55.51",
+  "build": 185551,
   "forceUpdate": true,
   "releaseDate": "2026-08-18",
-  "title": "PETATOE Collection Canonical Remaining Scope Recovery",
+  "title": "PETATOE Daily Sales Invoices Summary Report",
   "notes": [
-    "توحيد المتبقي للتحصيل بين الواجهة وقاعدة البيانات على مستوى مجموعة التنفيذ والطلب.",
-    "احتساب أي تحصيل سابق فعليًا بدل إخفائه في مجموعات التنفيذ.",
-    "إصلاح Cache Bust لملفات التنفيذ والخدمة لضمان تحميل الإصلاح."
+    "إضافة تقرير فواتير مبيعات اليوم إلى نهاية ملخص المواعيد.",
+    "إضافة الصفحة الخامسة إلى PDF بعد ملخص طرق الدفع حسب الفريق.",
+    "عرض الفرقة وطريقة الدفع ورقم الفاتورة والخدمة وقيمة الفاتورة شاملة الضريبة مع إجماليات الفرق والإجمالي العام."
   ],
-  "cacheToken": "petatoe-pwa-18-55-50-collection-canonical-remaining-scope-recovery"
+  "cacheToken": "petatoe-pwa-18-55-51-daily-sales-invoices-summary-report"
 }
