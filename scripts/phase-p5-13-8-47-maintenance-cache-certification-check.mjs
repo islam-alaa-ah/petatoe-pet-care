@@ -9,7 +9,7 @@ const tokens=[...index.matchAll(/(?:src|href)="assets\/(?:js|css)\/[^"?]+\?v=([^
 const checks=[
  ['release metadata is unified', pkg.version===version && read('assets/js/pwa.js').includes(`CURRENT_VERSION = "${version}"`)],
  ['all local CSS/JS tokens use the release version', tokens.length>0 && tokens.every(v=>v===version)],
- ['service worker cache belongs to release', sw.includes('petatoe-pwa-18-55-66-maintenance-cache-certification')],
+ ['service worker cache belongs to release', sw.includes(`petatoe-pwa-${version.replaceAll('.', '-')}`)],
  ['versioned assets can reuse canonical shell cache', sw.includes('await matchIgnoringVersion(request, APP_SHELL_CACHE)') && !/requestUrl\.search\s*\?\s*null\s*:\s*await matchIgnoringVersion/.test(sw)],
  ['old caches are still evicted on activation', sw.includes(".filter(key => !key.startsWith(CACHE_VERSION))")],
  ['phase 41 compatibility check follows canonical phase 42 DB authority', phase41.includes('invoice group expansion is delegated to canonical DB authority') && phase41.includes('groupAuthorityMigration')],

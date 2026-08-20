@@ -1,0 +1,1020 @@
+{
+  "manifestVersion": 1,
+  "release": {
+    "version": "18.55.67",
+    "build": 185567,
+    "date": "2026-08-21"
+  },
+  "scope": "PETATOE database migration inventory and fresh-deployment guard",
+  "policy": {
+    "historicalMigrationFilesImmutable": true,
+    "blindHistoricalReplayAllowed": false,
+    "lexicographicReplayAllowed": false,
+    "freshDeploymentAuthority": "approved production schema snapshot plus migration ledger; repository historical migrations are an immutable audit inventory, not an automatically ordered replay chain",
+    "foundationBootstrapOrder": [
+      {
+        "path": "supabase/schema.sql",
+        "role": "legacy foundation schema"
+      },
+      {
+        "path": "supabase/seed.sql",
+        "role": "legacy foundation seed"
+      },
+      {
+        "path": "supabase/policies.sql",
+        "role": "legacy foundation policies"
+      },
+      {
+        "path": "supabase/phase2_customer_followups.sql",
+        "role": "legacy phase 2"
+      },
+      {
+        "path": "supabase/phase3_quotations.sql",
+        "role": "legacy phase 3"
+      },
+      {
+        "path": "supabase/phase4_reporting_views.sql",
+        "role": "legacy phase 4"
+      },
+      {
+        "path": "supabase/phase5a_enterprise_foundation.sql",
+        "role": "legacy phase 5A foundation"
+      },
+      {
+        "path": "supabase/phase5a_verify.sql",
+        "role": "verification only"
+      }
+    ],
+    "certifiedRecentTailOrder": [
+      "supabase/migrations/phase_p5_13_8_1_completion_localization_invoice_row_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_2_completion_columns_cash_no_invoice_sales_tax.sql",
+      "supabase/migrations/phase_p5_13_8_3_schedule_empty_localization_and_completion_actions.sql",
+      "supabase/migrations/phase_p5_13_8_11_appointments_list_localization_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_15_invoice_edit_attachments_direct_confirmation.sql",
+      "supabase/migrations/phase_p5_13_8_16_invoice_number_and_confirmation_cancel_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_17_confirmation_group_cancel_and_invoice_payment_edit.sql",
+      "supabase/migrations/phase_p5_13_8_18_atomic_quantity_confirmation_invoice_handoff.sql",
+      "supabase/migrations/phase_p5_13_8_19_completed_schedule_history_retention.sql",
+      "supabase/migrations/phase_p5_13_8_20_canonical_execution_group_invoice_report.sql",
+      "supabase/migrations/phase_p5_13_8_21_schedule_details_invoice_totals_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_28_collection_money_scope_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_30_collection_canonical_remaining_scope_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_37_quantity_confirmation_invoice_date_money_precision.sql",
+      "supabase/migrations/phase_p5_13_8_38_completion_collection_stage_reconciliation.sql",
+      "supabase/migrations/phase_p5_13_8_39_scoped_completion_collection_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_40_invoice_discount_scope_and_legacy_save_guard.sql",
+      "supabase/migrations/phase_p5_13_8_41_completion_invoice_visibility_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_42_completion_group_invoice_authority.sql",
+      "supabase/migrations/phase_p5_13_8_44_revisit_transactional_guard.sql",
+      "supabase/migrations/phase_p5_13_8_45_completion_attachment_permission_safe_read.sql"
+    ]
+  },
+  "inventoryStats": {
+    "historicalMigrationCount": 184,
+    "uppercaseFilenameCount": 4,
+    "shortAliasCount": 5,
+    "allTimestampPrefixed": false
+  },
+  "orderingHazards": {
+    "examples": [
+      "phase_p5_13_8_11_* sorts lexicographically before phase_p5_13_8_1_*",
+      "multiple independent phase families coexist (phase17, phase_m*, phase_p5_*, phase_petatoe_*)",
+      "legacy aliases such as p5113.sql / p5114.sql do not encode a globally comparable timestamp"
+    ],
+    "uppercaseFilenames": [
+      "PETATOE_P3_3_MAKKAH_JEDDAH_NEIGHBORHOODS_SEED.sql",
+      "PETATOE_P5_1_DAILY_OPERATIONS_RELATIONSHIP_RECOVERY.sql",
+      "PETATOE_P5_DAILY_OPERATIONS_GLOBAL_RUNTIME_DIAGNOSTIC.sql",
+      "phase_m14_9_8_16_8_employee_business_activity_timeline_FIXED.sql"
+    ],
+    "shortAliases": [
+      "p5113.sql",
+      "p5114.sql",
+      "p51141.sql",
+      "p51145.sql",
+      "p51146.sql"
+    ]
+  },
+  "historicalInventory": [
+    {
+      "path": "supabase/migrations/p5113.sql",
+      "sha256": "e07133d379e9b3e823c45b35e0382fb5c8da159c9e4d8ac40ba7cccf06ada35b",
+      "bytes": 16399
+    },
+    {
+      "path": "supabase/migrations/p5114.sql",
+      "sha256": "6cbe05edc19ebd1963b05b68c2985cf46f31f3eebb062ea337331ce668a12848",
+      "bytes": 16903
+    },
+    {
+      "path": "supabase/migrations/p51141.sql",
+      "sha256": "7ab37c4ad8de8f94f16f34e5de31a99cbcd44532a0a2b6f74952f52ed1e7dcac",
+      "bytes": 18088
+    },
+    {
+      "path": "supabase/migrations/p51145.sql",
+      "sha256": "b98844654e4e0c60eefff37eb3a332488cebe753b52fcb7c5446b863487f38fd",
+      "bytes": 3838
+    },
+    {
+      "path": "supabase/migrations/p51146.sql",
+      "sha256": "380e6b7a0316df4c949aa3f10fa8d1e82978ba163ff9b090e79758a4a4c3c02b",
+      "bytes": 8732
+    },
+    {
+      "path": "supabase/migrations/p5_6_groomer_driver_team_only_scope.sql",
+      "sha256": "1e24994ee2abfefc69d8645aed13b34d5c85839709bab23f0386640a73199d13",
+      "bytes": 4351
+    },
+    {
+      "path": "supabase/migrations/PETATOE_P3_3_MAKKAH_JEDDAH_NEIGHBORHOODS_SEED.sql",
+      "sha256": "780e66575afac8e0b3073b178989ed28b8772185fd08950658351aa8298bbc24",
+      "bytes": 7129
+    },
+    {
+      "path": "supabase/migrations/PETATOE_P5_1_DAILY_OPERATIONS_RELATIONSHIP_RECOVERY.sql",
+      "sha256": "cf4f108d2eca15023adeffc9965a8d5a3eef6e3ad4cbf0c4d057907b4b906985",
+      "bytes": 8170
+    },
+    {
+      "path": "supabase/migrations/PETATOE_P5_DAILY_OPERATIONS_GLOBAL_RUNTIME_DIAGNOSTIC.sql",
+      "sha256": "a7ee92defe1e147ed21eee3e54fc7f52aa6f69ea498c3bc0a2b8b53de23e944e",
+      "bytes": 15466
+    },
+    {
+      "path": "supabase/migrations/phase07_reference_data_audit.sql",
+      "sha256": "15a4e12bf92b1e293e6506ba1f4b04d729a088549c8ce48cbe19f98e2fad90b8",
+      "bytes": 473
+    },
+    {
+      "path": "supabase/migrations/phase08_customer_audit.sql",
+      "sha256": "7f02efaf7affe7da5af385cb5bd44f3a1bbbd226ebdbc1746362271591272fdd",
+      "bytes": 494
+    },
+    {
+      "path": "supabase/migrations/phase09_followups_audit.sql",
+      "sha256": "77de477f8b51bb351ced3f35f475e31e55ba93d6a18259c35d9a3aa1cc12aa29",
+      "bytes": 521
+    },
+    {
+      "path": "supabase/migrations/phase10_quotations_audit.sql",
+      "sha256": "ae936db4147c1408bd707f334b55f3939e6e89291c814ee27f61ff68127bd55f",
+      "bytes": 540
+    },
+    {
+      "path": "supabase/migrations/phase11_users_permissions.sql",
+      "sha256": "c60d5104a6ab98dd4e5ad525fa9feac2738fcbd3149e2d0a1b057e2bad9f90a3",
+      "bytes": 6225
+    },
+    {
+      "path": "supabase/migrations/phase12_backup_system_settings.sql",
+      "sha256": "c6518b56b69c780fb0c812300106a5439c6d926ca5e81e7edbdf3a79d83b5e0d",
+      "bytes": 2856
+    },
+    {
+      "path": "supabase/migrations/phase13_1_generated_columns_restore_fix.sql",
+      "sha256": "d0ebb5b6ed51295760ad58d6e3ac97d331a059b90e2468205d2d0de8d72dde36",
+      "bytes": 3612
+    },
+    {
+      "path": "supabase/migrations/phase13_1_restore_delete_where_fix.sql",
+      "sha256": "62a171c6f323e0c4bc623f863533cafca8b9cf6910f8f652a5de4f051bf89f2d",
+      "bytes": 6193
+    },
+    {
+      "path": "supabase/migrations/phase13_1_transactional_backup_restore.sql",
+      "sha256": "12162f18b68eedff9eefa61da0e35edae233acb2b0bbace3b7126347e4868514",
+      "bytes": 6081
+    },
+    {
+      "path": "supabase/migrations/phase14_1_system_health_dashboard.sql",
+      "sha256": "f5e9f04e0868ea21579bdce04e9d4f0cd5f2d634f5821340ce4331c3297b91cb",
+      "bytes": 4566
+    },
+    {
+      "path": "supabase/migrations/phase15_1_reports_hub.sql",
+      "sha256": "79a9d8120cebe47500ca4481c3b36136a85412fbb973590bf8501ae169c58b0a",
+      "bytes": 1323
+    },
+    {
+      "path": "supabase/migrations/phase15_4_1_company_contact_person.sql",
+      "sha256": "050b780b8f65bb417c5c71e63f69ba1145e92dd4eb22026870db8b90f34a23cb",
+      "bytes": 375
+    },
+    {
+      "path": "supabase/migrations/phase16_1_daily_operations_center.sql",
+      "sha256": "f8e3011b43be7a30f751cdff0f39c77c1c5cf7901cfebb62b5141a4b2423fe3f",
+      "bytes": 5698
+    },
+    {
+      "path": "supabase/migrations/phase16_2_daily_performance_report.sql",
+      "sha256": "ca8cf755d3bfaae60faa135348f8e161c981ae5e060642d8dba5944faff1bb66",
+      "bytes": 1348
+    },
+    {
+      "path": "supabase/migrations/phase16_3_expanded_daily_checklist_targets.sql",
+      "sha256": "b107f11dfdc920142b4fbf1d14a417ae8798feac99dd3a69026f0770a3aa495d",
+      "bytes": 8651
+    },
+    {
+      "path": "supabase/migrations/phase16_4_expanded_daily_performance_analytics.sql",
+      "sha256": "3ef4dd899db465780790fe8b0de4f8db67cc5a6994bf97dee2d617a1197a442e",
+      "bytes": 1134
+    },
+    {
+      "path": "supabase/migrations/phase16_5_daily_alerts_escalations.sql",
+      "sha256": "63dfa027e69bdae40534ba34aa6046430dde2aef3ad254263390d8647eb33036",
+      "bytes": 9484
+    },
+    {
+      "path": "supabase/migrations/phase16_6_daily_attendance_activity_timeline.sql",
+      "sha256": "a76d033f60745d883d85f23a12c1bff8762f2f8843cd6413a49b267858b7d279",
+      "bytes": 5298
+    },
+    {
+      "path": "supabase/migrations/phase17_0_1_daily_console_relationships_and_audit_policy_fix.sql",
+      "sha256": "1f41ee63f548aed11c6bc2ed97c006a5443b4e297dcecaf94e00fb5ddf6abe82",
+      "bytes": 3486
+    },
+    {
+      "path": "supabase/migrations/phase17_0_daily_task_user_profile_relationship_fix.sql",
+      "sha256": "375872e163209e735a2e9770adbc78876fc3369c3ff77328a7328b1cda4b006f",
+      "bytes": 1104
+    },
+    {
+      "path": "supabase/migrations/phase17_1_critical_stabilization.sql",
+      "sha256": "b55e791b7a2af47f54387a6b7dbe1b4d92d19fab00e96d564ff29fd060db2a78",
+      "bytes": 1451
+    },
+    {
+      "path": "supabase/migrations/phase17_2_d_rls_alignment.sql",
+      "sha256": "e928dce63c725f43f3325af98148bef9b6c459d42b0d34496574dc61855496d0",
+      "bytes": 13229
+    },
+    {
+      "path": "supabase/migrations/phase17_2_enterprise_permissions_source_of_truth.sql",
+      "sha256": "96268bf91cc6122004484a323fe8c0ce49ff066eda8ac1e48260ee74dd301f6d",
+      "bytes": 2309
+    },
+    {
+      "path": "supabase/migrations/phase17_3_a_enterprise_backup_architecture.sql",
+      "sha256": "286218629bbb400dcf0b98a45ff13668dd96e1ab03fabb9791cebdf641190799",
+      "bytes": 3592
+    },
+    {
+      "path": "supabase/migrations/phase17_3_b_enterprise_restore_engine.sql",
+      "sha256": "6fa5d3ab8bb4908297bdaafd9791127aea0530a6fb6598b8cf94ac1feba75d90",
+      "bytes": 11767
+    },
+    {
+      "path": "supabase/migrations/phase17_3_c_database_canonicalization.sql",
+      "sha256": "3c2375484eea3bffcb7b9101f85180a1ecfb0bd261359bfb0255b763c8a86d8a",
+      "bytes": 4566
+    },
+    {
+      "path": "supabase/migrations/phase17_3_d_database_performance.sql",
+      "sha256": "554665b9203fad9a42a1af0ac9efc5bb1c410121c118651b922366bca63bd6de",
+      "bytes": 7842
+    },
+    {
+      "path": "supabase/migrations/phase17_3_e_1_daily_alerts_rpc_fix.sql",
+      "sha256": "ef95132567cf269f2a9a2a7a7ebb3e0131cb774024a72e7fae2a9d97db95ed18",
+      "bytes": 7737
+    },
+    {
+      "path": "supabase/migrations/phase17_4_b_1_audit_log_fk_canonicalization.sql",
+      "sha256": "e959d8891d633aa0dad7dc3a77ade27ed0c5c61c9cc86070a11c046ae08e6d39",
+      "bytes": 2133
+    },
+    {
+      "path": "supabase/migrations/phase_m10_4_global_customer_phone_ownership_lookup.sql",
+      "sha256": "d212262c8142daea6b5f0e1bef63d41056a3c614436cf57d01a87c64109aa402",
+      "bytes": 2626
+    },
+    {
+      "path": "supabase/migrations/phase_m10_6_11_account_linked_suggestions.sql",
+      "sha256": "d53bdd4299abb0e2af72616177855f4e31ef09f80e7dd47aefe245f2aff7b187",
+      "bytes": 4184
+    },
+    {
+      "path": "supabase/migrations/phase_m10_6_1_1_explicit_user_execution_fix.sql",
+      "sha256": "7785d9d89a1bd63d4da45d45625b4dfb5ff2688fa643a46fe74ef58860ab0c68",
+      "bytes": 7388
+    },
+    {
+      "path": "supabase/migrations/phase_m10_6_1_daily_customer_suggestion_engine.sql",
+      "sha256": "0affe37fd64f49f97a81b0ee7a38e826e195a5895eff6f7d097f001c9398197a",
+      "bytes": 9411
+    },
+    {
+      "path": "supabase/migrations/phase_m10_6_4_manager_daily_suggestions_monitoring.sql",
+      "sha256": "99a950078409c859b146cc45297e3d7092e56b734eb60edc1e64dd978d9d00ca",
+      "bytes": 2978
+    },
+    {
+      "path": "supabase/migrations/phase_m10_6_8_customer_multi_request_import.sql",
+      "sha256": "343ffbad689ef88573306e2cfed27623d6029b44a637068a4c2713ce29fa3c3e",
+      "bytes": 2984
+    },
+    {
+      "path": "supabase/migrations/phase_m10_6_9_quotation_and_no_phone_import.sql",
+      "sha256": "0ccc334cf484fc6d4bd2683e452f14a031dbedfede7249f49262033871f8ccdf",
+      "bytes": 1691
+    },
+    {
+      "path": "supabase/migrations/phase_m10_8_11_customer_scope_timeout_fix.sql",
+      "sha256": "3b5b4eb933850e652b9bc710149493381537958eacb5c03cde0ef19b83ef2e07",
+      "bytes": 2813
+    },
+    {
+      "path": "supabase/migrations/phase_m10_8_12_customer_selected_scope_enforcement.sql",
+      "sha256": "aacd80054271626576f5b8df63cee7bba64111917b78a4fbffc21680dea3e1c5",
+      "bytes": 2979
+    },
+    {
+      "path": "supabase/migrations/phase_m10_8_4_admin_import_override.sql",
+      "sha256": "6bfc57d663b254ffda92708daa82a9fa47e08f3a2a247347a16f37a3754a26ca",
+      "bytes": 1299
+    },
+    {
+      "path": "supabase/migrations/phase_m10_8_5_import_override_finalization.sql",
+      "sha256": "2dfe7a64b04e6442f0999d9d22fd3c8886ac4e63d4545554c23bfe1525f2f5dd",
+      "bytes": 1249
+    },
+    {
+      "path": "supabase/migrations/phase_m10_8_6_existing_override_detection_and_team_summary_fix.sql",
+      "sha256": "e33c06914aab3f166679846bcb79275c9f91cf3bbaa91fea45c42d8dc2c2cfad",
+      "bytes": 3072
+    },
+    {
+      "path": "supabase/migrations/phase_m10_9_1_representative_reference_scope_fix.sql",
+      "sha256": "4f5e4801883e9fdfbed1c06eb7d90f4c466bab1ac7d8cbb0a69959c3c26c22fb",
+      "bytes": 1924
+    },
+    {
+      "path": "supabase/migrations/phase_m10_9_enterprise_data_scope_lockdown.sql",
+      "sha256": "0122bf5872dfd3c73bf0ed97e444009e113dac4fbe0c853ebb26d9d7137ffec7",
+      "bytes": 3860
+    },
+    {
+      "path": "supabase/migrations/phase_m10_enterprise_roles_user_data_scope.sql",
+      "sha256": "bccb90f97d5823788c77b5027d46df1194cf75b8d24e95490295321228a80227",
+      "bytes": 13577
+    },
+    {
+      "path": "supabase/migrations/phase_m10_enterprise_roles_user_data_scope_fixed.sql",
+      "sha256": "3192c5b8656a312c5919daf573e5dc7c1d2ec3165cec9392b7b40ef516f75122",
+      "bytes": 14274
+    },
+    {
+      "path": "supabase/migrations/phase_m13_15_personal_whatsapp_template.sql",
+      "sha256": "6e0f1dcba16ed7ca52de0470c82aa9951764c01c8b1c23af27e5b482524fb342",
+      "bytes": 3189
+    },
+    {
+      "path": "supabase/migrations/phase_m13_22_1_dashboard_representative_visibility.sql",
+      "sha256": "b206296219dc8c8786866e39996cc8fa0d8dc076d371955e6c8b2e45004728d1",
+      "bytes": 467
+    },
+    {
+      "path": "supabase/migrations/phase_m13_22_2_sales_representative_create_actions_permission_recovery.sql",
+      "sha256": "72ad2f2ba1532ff29e677b90192575d28353f44c5a526d4e5f739954575f4487",
+      "bytes": 601
+    },
+    {
+      "path": "supabase/migrations/phase_m13_22_4_enterprise_regression_merge_recovery.sql",
+      "sha256": "5f2021dc478e206f8875a5bbcd2d57f0ded85c5901ab851191281eddd50c4c5a",
+      "bytes": 1996
+    },
+    {
+      "path": "supabase/migrations/phase_m13_22_5_sales_representative_create_action_runtime_recovery.sql",
+      "sha256": "838ea8ae2f71a8b76730cd00c24f8ae60d48e14341bac4ecbdebb3ecfa477285",
+      "bytes": 597
+    },
+    {
+      "path": "supabase/migrations/phase_m13_22_employee_targets_report_participation_manager_note_audience.sql",
+      "sha256": "1df662ea6cc53ff82e694c61da28e683a84b3e880f5da32920b90ca1de6bd7b5",
+      "bytes": 3495
+    },
+    {
+      "path": "supabase/migrations/phase_m14_1_installations_module_foundation.sql",
+      "sha256": "43beb77129967a65ee9f42e14433ce60bc27d9eb78736116c54ee7d212f88945",
+      "bytes": 945
+    },
+    {
+      "path": "supabase/migrations/phase_m14_2_installation_requests_data_model.sql",
+      "sha256": "3b685f573126661536c02424839578874151f45b5dae053be9b91611aa12f939",
+      "bytes": 5596
+    },
+    {
+      "path": "supabase/migrations/phase_m14_3_installation_scheduling_assignment.sql",
+      "sha256": "43b50ad6e679670c45b0f084eeff64fd8d195c92ede249ae9cdc90795afefead",
+      "bytes": 4289
+    },
+    {
+      "path": "supabase/migrations/phase_m14_4_technician_mobile_execution.sql",
+      "sha256": "3e4eaa9d9229ae5314c0896d34a588566e39c48fe4a79f3afa5d24593512cecd",
+      "bytes": 3555
+    },
+    {
+      "path": "supabase/migrations/phase_m14_5_installation_completion_report_photos_signature.sql",
+      "sha256": "fb7abb0f784a31bb865e12d6d91990f0a3c74635bc993e40b24a72fac689c321",
+      "bytes": 7627
+    },
+    {
+      "path": "supabase/migrations/phase_m14_6_installation_exceptions_revisits_reports.sql",
+      "sha256": "4df987f894e3c04bdbdef378d1f7881fb6b7c260bceadd7c2008fa3ebbdcd141",
+      "bytes": 3806
+    },
+    {
+      "path": "supabase/migrations/phase_m14_7_installation_dashboard_settings_final_certification.sql",
+      "sha256": "dc42d17f65fb4e25301122c24df5c1152358f7137540e386196174091db7d57d",
+      "bytes": 2014
+    },
+    {
+      "path": "supabase/migrations/phase_m14_8_1_separate_new_installation_request_screen.sql",
+      "sha256": "1b8dd4c49c2be4e414da013b4e6f9508db802faa4913e0d15391b631e56e876c",
+      "bytes": 827
+    },
+    {
+      "path": "supabase/migrations/phase_m14_8_2_installation_request_business_workflow_multi_service.sql",
+      "sha256": "5d0f91bf51b98ae2005089e993e253122c99f25ffe43f6ae9e2b211d62e81b5b",
+      "bytes": 9779
+    },
+    {
+      "path": "supabase/migrations/phase_m14_8_3_installation_settings_navigation_recovery.sql",
+      "sha256": "255553953fe74d097e2ec4c93ddce5ee18b85f5696e57543df1f34f142a08b8f",
+      "bytes": 5029
+    },
+    {
+      "path": "supabase/migrations/phase_m14_8_4_2_scheduling_hourly_technician_names.sql",
+      "sha256": "97d7af6b7946b10bbd7dda0ac3aadb52ef0e849230f549ad10d83aed21d9811c",
+      "bytes": 4276
+    },
+    {
+      "path": "supabase/migrations/phase_m14_8_4_3_scheduling_team_layout.sql",
+      "sha256": "9c7a13c4fedb303de8c309c91672fb882a969031b0a98ccbb168708143e4bac3",
+      "bytes": 1051
+    },
+    {
+      "path": "supabase/migrations/phase_m14_8_5_independent_installation_representative_visibility.sql",
+      "sha256": "f279acc5aa923cb1abc9e3cd699647a6fb09447c85f0648790f057eeda8360e3",
+      "bytes": 14144
+    },
+    {
+      "path": "supabase/migrations/phase_m14_8_6_customer_google_maps_location.sql",
+      "sha256": "276c64e43efd31087f628f49147c8fdf95e712efba0a8c9ae657696dc66dd78b",
+      "bytes": 2950
+    },
+    {
+      "path": "supabase/migrations/phase_m14_8_7_unified_installation_request_create_edit.sql",
+      "sha256": "f870b4e3abf0be5dbc6bf9ab1eaef53f9f75e4a2fee5e52c65356027d972f0ef",
+      "bytes": 3458
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_1_3_active_request_timeline_team_scope.sql",
+      "sha256": "0ca5202b1f1e375dabe6848c04884155ce7f89de775ab62bb11820eda2865a2f",
+      "bytes": 8874
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_1_4_current_request_selection_state_hotfix.sql",
+      "sha256": "ae2a05a5a32b681d42219ffd6d753574dcfb8541c39d037530b340c7ce6882b8",
+      "bytes": 2673
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_1_5_execution_history_recovery.sql",
+      "sha256": "bd8aa89685d82c85b2a795e60a74f208b66bbd34b4c223dba8bba86847f388b8",
+      "bytes": 3291
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_1_team_daily_active_installation_workflow.sql",
+      "sha256": "d5d083be15882d4ac267f0159f4a3ed035c6862ed89db809e5a25b4ef4ec801a",
+      "bytes": 2965
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_2_1_completion_invoice_delivery_authorization.sql",
+      "sha256": "e9dbdf290b473a834f40a5239f1d28a7a1c640654242c1138a4fdbc6fbecafe0",
+      "bytes": 1940
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_2_completion_work_queue_representative_scope.sql",
+      "sha256": "1e04460b54773577ef192804c3825dc6c6e4be871edc59157121de79d8827cfc",
+      "bytes": 3219
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_3_1_operational_reference_dropdown_scope_recovery.sql",
+      "sha256": "0152ddd3cd073e46dc540f9eadd6e9a67cbc865f058f4d45337b8c0255203d10",
+      "bytes": 2391
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_3_installation_rls_consolidation_team_boundary.sql",
+      "sha256": "fd4f2534e382cdb43319f99095d9b45a812c7abc818eeaad993d70bfa4c4f173",
+      "bytes": 12317
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_4_mobile_tables_current_request_ownership.sql",
+      "sha256": "b69b18a94caca782bbe5bdace3797e6fb622c2e93afda421281bde8f4c531c30",
+      "bytes": 4404
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_6_mobile_data_accuracy_filters_scale.sql",
+      "sha256": "ff5747679edf53e13054edc45782482a02afffdc90b2ba2578c5a3a9c4409f12",
+      "bytes": 6719
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_7_6_2_quotation_view_column_order_hotfix.sql",
+      "sha256": "dc8ea250f12f733e247e59cd30e4c9271f7649d8f4844e06809f5c271f5789e5",
+      "bytes": 3144
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_7_6_quotation_customer_order_status_simplification.sql",
+      "sha256": "9407ac9e863723b8e72cc488867f45418c7b88b0e96ce9b0dc79cbd3072e8e61",
+      "bytes": 2275
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_7_8_1_installation_request_rls_create_recovery.sql",
+      "sha256": "93fcb9ba4ec36957e2626c2529764bb9ee5bbdda203fefdb36112152e01ee82d",
+      "bytes": 7957
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_7_8_installation_request_create_permission_recovery.sql",
+      "sha256": "32cce020bde80bf9e43e1a4d8ad32b155e67d2546b0967ab8d53e04d1aa6aafb",
+      "bytes": 1006
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_10_role_agnostic_representative_rls_scope_recovery.sql",
+      "sha256": "e473bae12ef339ab7b64bc3b58bb0af243986c2e6feb10c43d97051d71ac012f",
+      "bytes": 3532
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_11_installation_technician_role_team_binding_scope.sql",
+      "sha256": "0d9cdcb6deaf5efc27cef9910c5dab58439576aea9a6553296e221a41cec9d85",
+      "bytes": 12485
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_14_actual_execution_confirmation_dynamic_rescheduling.sql",
+      "sha256": "5f6d596b8cb51225218a035f7f6bdcac302f8103ec4636b431c54a13315168d3",
+      "bytes": 18993
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_15_3_multi_day_scheduling_workflow_recovery.sql",
+      "sha256": "20e40f298e91aa9f9b1fec5dd656c473110be084f851b8488a57381e9592bd64",
+      "bytes": 8838
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_15_4_1_visit_service_write_permission_hotfix.sql",
+      "sha256": "4e380b92000f10a77ea355f851b8ec00746aadd689390157017418633e641d48",
+      "bytes": 7251
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_15_4_scheduled_request_service_value_sync.sql",
+      "sha256": "dcb8029112a31e2a808a5bb6ed72729b5281061bdd88826229eee64a8c2bfbd7",
+      "bytes": 6242
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_15_installation_day_lock_smart_availability.sql",
+      "sha256": "ec1a52b2b09fc8c1196a66690e1a52805678efcec57d3a8723094f42c87923ce",
+      "bytes": 6352
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_16_8_employee_business_activity_timeline.sql",
+      "sha256": "f011bd8d6e90c266b8684113d6499816bfc101d07f85e5c19f1300ccc44a2ab4",
+      "bytes": 5707
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_16_8_employee_business_activity_timeline_FIXED.sql",
+      "sha256": "3520060fda813915142d1f2b7ee60711001c49f8860a41abbd3026da6284da02",
+      "bytes": 7494
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_16_9_2_scheduling_audit_customer_name_hotfix.sql",
+      "sha256": "8116c33cf62a149830d20ebe35659ecb16dbc2b53da2d02cedc9fd3c51ed4fde",
+      "bytes": 3491
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_16_cancel_scheduled_installation.sql",
+      "sha256": "aeafcc856d8b699bbc886d5dd5c3ae494c1c042661e87004ae4a5645c0aea607",
+      "bytes": 3023
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_3_permission_visibility_consistency_recovery.sql",
+      "sha256": "f2b03c98695d749b1fbb3f7345ecea24c0d29594a8b3e81befd02f954717fa39",
+      "bytes": 2681
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_7_1_quotation_installation_relationship_ambiguity_recovery.sql",
+      "sha256": "0729f3cd9fd274b714c3254d1e0658d6420cccd61af54ddc18b08e13e0ea0866",
+      "bytes": 1646
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_7_2_1_quotation_conversion_uuid_aggregate_hotfix.sql",
+      "sha256": "3a9cd544d8e045b10d72d7dea2adbba5f929641613913aa937fb36bdec3de35b",
+      "bytes": 3385
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_7_2_quotation_conversion_visibility_consistency_recovery.sql",
+      "sha256": "b0b6ebd33c61adf20f86d5a476f150dbcd14f5dd98d7768e0866fbd613a64d5e",
+      "bytes": 3360
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_7_accepted_quotation_installation_workflow.sql",
+      "sha256": "0b7c6d5904c62fcf519663d47892483bdfa70a2abfcf5ef901f35b274fe19e74",
+      "bytes": 3645
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_8_1_scheduling_cross_representative_customer_privacy_masking.sql",
+      "sha256": "b10462f9f154651199427d86eafbe499244bfffaa9f6cc9702afb1f2f185938a",
+      "bytes": 3579
+    },
+    {
+      "path": "supabase/migrations/phase_m14_9_8_8_scheduling_global_readonly_visibility.sql",
+      "sha256": "e30982e0416106c5ff9ce77e9a4523e1331ae518996e7f7671d8dce53ed45c4c",
+      "bytes": 3232
+    },
+    {
+      "path": "supabase/migrations/phase_m15_0_1_unified_invoice_conversion_form.sql",
+      "sha256": "3f00f737ad7ea6ad3122871a00a3d8345b761c777688820a62671d45a1828f11",
+      "bytes": 5395
+    },
+    {
+      "path": "supabase/migrations/phase_m15_0_sales_invoices_registry.sql",
+      "sha256": "e86ccb73aeb54c4c6bda2f1f723b96d3ad9d10103be4d3a9e02538c4126d3215",
+      "bytes": 9418
+    },
+    {
+      "path": "supabase/migrations/phase_m15_11_1_execution_visit_canonicalization.sql",
+      "sha256": "c69fbad2b7400e03e452ce4d7d2aea97b5c7e91abd1d0b3eeec5a116890f63d6",
+      "bytes": 16090
+    },
+    {
+      "path": "supabase/migrations/phase_m15_11_2_completion_handoff_remaining_quantity_routing.sql",
+      "sha256": "0b6aa8fa13ebaf627ba3993391e14a53d23c3e27689aa3b7d1b5a7ecf1cd4a7e",
+      "bytes": 23045
+    },
+    {
+      "path": "supabase/migrations/phase_m15_11_multi_day_execution_visit_isolation.sql",
+      "sha256": "fc87bfb0b841853b44d705f7e5b4f4a8397aebff1a945a3ad638b0d99ef3f919",
+      "bytes": 17662
+    },
+    {
+      "path": "supabase/migrations/phase_m15_12_1_notification_center_dynamic_matrix.sql",
+      "sha256": "c5f1df8848440c147def8217220a07ac93a3bc0b58004663d63896eeb47abf38",
+      "bytes": 12500
+    },
+    {
+      "path": "supabase/migrations/phase_m15_12_2_web_push_external_notifications.sql",
+      "sha256": "18129df4aef6ccd713b1c4ba86fd4b0549df251864c25c057fe7745dfa5671f0",
+      "bytes": 6840
+    },
+    {
+      "path": "supabase/migrations/phase_m15_13_10_remaining_quantity_reschedule_isolation.sql",
+      "sha256": "fc3ac6e8e8bf56f06b6736e634bd1ebee57235f4ce1ccf7a384985ce82d1ebf8",
+      "bytes": 8367
+    },
+    {
+      "path": "supabase/migrations/phase_m15_13_11_confirmed_history_append_reschedule_sync.sql",
+      "sha256": "9ad9ed201a69f17e6963669f13653fcab0c7755f2699051bb3ec840b67bc6ed7",
+      "bytes": 8532
+    },
+    {
+      "path": "supabase/migrations/phase_m15_13_12_confirmed_quantity_superadmin_cancel_visit_invoice_flow.sql",
+      "sha256": "3663e3a43506f320a01af77e76f27a385bd502e18b9215306c7364267a75dfd6",
+      "bytes": 9119
+    },
+    {
+      "path": "supabase/migrations/phase_m15_13_9_completed_visit_reappearance_uuid_selection_hotfix.sql",
+      "sha256": "ac9bbb5297611eab4c5fd25c8e3b64577293e3c4781236e114596ca968598ad5",
+      "bytes": 3981
+    },
+    {
+      "path": "supabase/migrations/phase_m15_1_saudi_geographic_master_data_seed.sql",
+      "sha256": "ef59380ed26b82f14bcbc3192455dac4a12e0f25c41d99bb7640b0aa13d8603b",
+      "bytes": 429820
+    },
+    {
+      "path": "supabase/migrations/phase_m15_geographic_reference_system.sql",
+      "sha256": "281208bacfb994b5cf15f28e2540b11f231031b579bce50508df3f4571745b0e",
+      "bytes": 9194
+    },
+    {
+      "path": "supabase/migrations/phase_m9_5_customer_location_fields.sql",
+      "sha256": "d96f7edcf374e4a7ed438034a0252599c05539d7be3d348d4b3b1ad049bf87df",
+      "bytes": 471
+    },
+    {
+      "path": "supabase/migrations/phase_p5_10_2_customer_neighborhood_prefill_deep_recovery.sql",
+      "sha256": "745817f4d51188a0588fcadc68fc38ab67cf6504e83ddbfe39a85ec81aa5736b",
+      "bytes": 4696
+    },
+    {
+      "path": "supabase/migrations/phase_p5_10_customer_location_appointment_defaults.sql",
+      "sha256": "49b34bb9fe9e61ab2f52620b3e3b1676dad54cbe0c792ec4549544286350b779",
+      "bytes": 3783
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_1_appointment_create_rpc_signature_hotfix.sql",
+      "sha256": "f7bff5b549e090c8a412cffb77548e579b62e8947c4468872cbf9f01b958edd2",
+      "bytes": 16995
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_2_appointment_rpc_dependency_recovery.sql",
+      "sha256": "7d9aa2c43220aaa247f38c8d1491c7b30eca4aafcf93996101735405dd7225bd",
+      "bytes": 7953
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_4_10_1_execution_visit_quantity_summary_rpc_recovery.sql",
+      "sha256": "b43f5f061629cfc22a219d59beeff3a4808c63670ff3effcbd0deaeb6ed1cd92",
+      "bytes": 3063
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_4_10_2_same_day_execution_group_recovery.sql",
+      "sha256": "940bd65d99305a9d894000c39dca8fa902f85579c6a310fb67f4a1eac1be3939",
+      "bytes": 21821
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_4_10_3_execution_slot_capacity_lock_recovery.sql",
+      "sha256": "de3f800843147645ac09246839b53ab3b3833d56763a659320a2e050add07e79",
+      "bytes": 10170
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_4_10_appointment_financials_multi_schedule_date_recovery.sql",
+      "sha256": "7f4ef0f1ab2386e402f0fe419ab3083084bb261714856b45feea51107bb8c5ee",
+      "bytes": 18484
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_4_8_permission_matrix_authority_screen_names.sql",
+      "sha256": "310228e8c387f9bfe289cd36d2007c02701ad427aad94841c28a33f9be07d9b6",
+      "bytes": 7117
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_4_9_permission_matrix_full_authority_recovery.sql",
+      "sha256": "400a8fed3d61ce829a8d8ef99c98187b103856427597b5243352a6b3fb6148f5",
+      "bytes": 10034
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_5_1_daily_suggestions_unified_cycle_recovery.sql",
+      "sha256": "98f2da220594467a204c721cbbf1c558c9f3dcf701e749f0db09e67c6c1f1d6a",
+      "bytes": 13433
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_5_daily_operations_permission_owned_visibility.sql",
+      "sha256": "aad2edc1e11a786b53d81e20fe188f1a41105148f0a4ff9314a6769b3c3b4c28",
+      "bytes": 21781
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_6_1_appointment_vat_map_template_breeds_permission_signature_hotfix.sql",
+      "sha256": "d066bb41d764b1e475db8d3ac1bb853baf6d457d0d9bc18aa90d27ebd6b2e121",
+      "bytes": 4343
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_6_appointment_vat_map_template_breeds.sql",
+      "sha256": "b456afaa0b72feee318cb2041acb3da28d3e78d210559df83b7a3a07f4efe8d2",
+      "bytes": 4398
+    },
+    {
+      "path": "supabase/migrations/phase_p5_11_appointment_cycle_deep_recovery.sql",
+      "sha256": "c91b989ccfdf0315893dd2686995f1dd982988c9ebd088c80633087f1af05aea",
+      "bytes": 9675
+    },
+    {
+      "path": "supabase/migrations/phase_p5_12_10_execution_team_services_notification_portal.sql",
+      "sha256": "578ddcada28c9d58cd173492508b338088a10beb0ae6a0874587b27f1e10ea0f",
+      "bytes": 1818
+    },
+    {
+      "path": "supabase/migrations/phase_p5_12_12_execution_stage_photo_integrity_hotfix.sql",
+      "sha256": "462bedca90305991042109c28b0d110efd6b82c06593c46687174d6485e69c1b",
+      "bytes": 14308
+    },
+    {
+      "path": "supabase/migrations/phase_p5_12_7_appointment_scheduling_live_edit.sql",
+      "sha256": "00cbc9b7c49c40b891575240bbba9a5ec45fb2a4efc1633aff384802a9c9c636",
+      "bytes": 3870
+    },
+    {
+      "path": "supabase/migrations/phase_p5_12_8_daily_suggestions_runtime_definition_recovery.sql",
+      "sha256": "34929c5899b212fd549848a38c6295065592ebafeea53a4a024e4a7445785fb7",
+      "bytes": 9183
+    },
+    {
+      "path": "supabase/migrations/phase_p5_12_8_execution_confirmation_workspace.sql",
+      "sha256": "355e941f6972108b3966fbef79fd934794b976369b00ae09609f0a59e682150c",
+      "bytes": 9816
+    },
+    {
+      "path": "supabase/migrations/phase_p5_12_9_1_free_invoice_number_permission_group_hidden_hotfix.sql",
+      "sha256": "6098382cf9faa755d2133a8d5bb0743edab7f2707d08afff99199a55cff70b20",
+      "bytes": 18821
+    },
+    {
+      "path": "supabase/migrations/phase_p5_12_9_collection_invoice_permission_group_visibility.sql",
+      "sha256": "20dc36706047af16b367cd79532f5758a47c0a8df9388025c9dd4a7068906230",
+      "bytes": 11270
+    },
+    {
+      "path": "supabase/migrations/phase_p5_12_9_mandatory_appointment_collection_stage.sql",
+      "sha256": "952b9787841747516c894c440259b3a5bec2bb5cef521c1bc090c8bd020161bd",
+      "bytes": 15938
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_1_translation_center_execution_pilot.sql",
+      "sha256": "05d6b8070b71269b902a19c883e0e380b3384d9ab9ea983c270636315085fb80",
+      "bytes": 2930
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_2_2_authoritative_neighborhood_full_service_translation_coverage.sql",
+      "sha256": "3ac8a1ba83ff12888ec121d0169bca31fac0625970f72be1f2ab33640768afa6",
+      "bytes": 22294
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_2_4_full_service_catalog.sql",
+      "sha256": "682fd962e1bd5133b155b0ef80f0b90173b1e5d6e348abafca120ac88b1383cd",
+      "bytes": 9736
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_2_global_language_execution_entities_sidebar.sql",
+      "sha256": "055dad404d429c5fb87cec91722bac16399a566fa69b18df4393d9a7a86d6165",
+      "bytes": 4100
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_3_shared_ui_localization_lockdown.sql",
+      "sha256": "9fea7dd25fb2924a957f50671850e69eac0c3234b1c2609d4cbdf0b42dc2fde1",
+      "bytes": 3260
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_4_customer_localization_user_language.sql",
+      "sha256": "deb539501d63aeaafd728392d0d11bef5b86e522824774031ac5f13b906d228d",
+      "bytes": 22748
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_5_2_collection_team_scope_hotfix.sql",
+      "sha256": "7cb30a552e89d5eb075e59608a324f14e782fc57c89ebcd8db66f1d382954bdd",
+      "bytes": 6580
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_5_followups_localization.sql",
+      "sha256": "c91c7a990cbbbaeb772c110646ac1019117cf743389486a2fcb5ab11b08e86d7",
+      "bytes": 5463
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_6_1_dashboard_filter_localization_hotfix.sql",
+      "sha256": "c59e2ca9877c4f1b118c2103c036124cd6f3235a5d962a5b2479d3e02c8ff1ee",
+      "bytes": 940
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_6_dashboard_localization.sql",
+      "sha256": "f4bb9e14895a30384655b88cf5997b9578067bb52f4c3a9680c636a9247be133",
+      "bytes": 11836
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_7_add_appointment_localization_dashboard_calendar.sql",
+      "sha256": "82c7c447e201cf26c6275997406fc2e4395e8f7671bef13c3eb88dbbcb2ce12b",
+      "bytes": 22683
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_11_appointments_list_localization_recovery.sql",
+      "sha256": "ed917967117d594d013290e961cf8d469b1f494e7a41be8e954dca2b43564af2",
+      "bytes": 3361
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_15_invoice_edit_attachments_direct_confirmation.sql",
+      "sha256": "f0ad67682f66aff41585ca1091f61e9c7e696267cdad716b665b5e4aa001f6d7",
+      "bytes": 15739
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_16_invoice_number_and_confirmation_cancel_recovery.sql",
+      "sha256": "fef92c3818dc908d21ca9b5bc0450a74ae8f92a7002af4e109471ab7522b6b18",
+      "bytes": 12573
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_17_confirmation_group_cancel_and_invoice_payment_edit.sql",
+      "sha256": "55a329e4728c9f64c6a2a6abe9fe554a2376cc955acae52b9f10767201632a9e",
+      "bytes": 9449
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_18_atomic_quantity_confirmation_invoice_handoff.sql",
+      "sha256": "f7793f3f9084b664b2f9b984e70e98bd67b122e941a2f384de7c19e3e0605f01",
+      "bytes": 7291
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_19_completed_schedule_history_retention.sql",
+      "sha256": "d7160a09b71077421eedd4728e3517a4b7100c73687318e1a4831d8f21302f1d",
+      "bytes": 3579
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_1_completion_localization_invoice_row_recovery.sql",
+      "sha256": "3be4ab5f8610cbb1b7cd9bcdbd5c1eca1408e764fc760e5cad24ed2bd0867efa",
+      "bytes": 2489
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_20_canonical_execution_group_invoice_report.sql",
+      "sha256": "fe3964406e0953b496e8fac837f412549532938d386ec043b658bec2e987738f",
+      "bytes": 10999
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_21_schedule_details_invoice_totals_recovery.sql",
+      "sha256": "053e2ecd451c34917023a4cde0fb5cb9dcbb5bcfe55e675af66c20f3db7f7124",
+      "bytes": 1924
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_28_collection_money_scope_recovery.sql",
+      "sha256": "3200e6e1be66d5824e531a74b4fcab3dcffeaa13a89d3b5fa256bc7cb22cb7bf",
+      "bytes": 9912
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_2_completion_columns_cash_no_invoice_sales_tax.sql",
+      "sha256": "2ab2b45430848982b00a868217533341db1e7e5cd84afd525209f6242c99e946",
+      "bytes": 1866
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_30_collection_canonical_remaining_scope_recovery.sql",
+      "sha256": "70d1e9dae6828e05df7871a7df318429a10ec5ec861784335c2d7053311a43b6",
+      "bytes": 10208
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_37_quantity_confirmation_invoice_date_money_precision.sql",
+      "sha256": "80b8e632a8168471f7fb634160a30b562a906e2b70b7907686c24009e2bdceb8",
+      "bytes": 10775
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_38_completion_collection_stage_reconciliation.sql",
+      "sha256": "30fa62ad6308c3e1490d29caab70618503cecd11fecef04e4ca957ab5a8fdbda",
+      "bytes": 6229
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_39_scoped_completion_collection_recovery.sql",
+      "sha256": "8c78fb853ba30e8d4584837df689e5b81f84bfaa7a29af8bff7bd50c058f2af2",
+      "bytes": 8620
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_3_schedule_empty_localization_and_completion_actions.sql",
+      "sha256": "151a5aa93ff2c14c62bad2a5d24dae1626e8cd0d0a16c04383250dbdbd3d7003",
+      "bytes": 1007
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_40_invoice_discount_scope_and_legacy_save_guard.sql",
+      "sha256": "5c1e423b6af4a75544c52003ab0a3d437792b3fd16364c8005dcc1f6219b5bcc",
+      "bytes": 19967
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_41_completion_invoice_visibility_recovery.sql",
+      "sha256": "7f4300d860470f1e32e888b74bf25ae9f69d139f31fdb707ed6782598439dc1d",
+      "bytes": 1196
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_42_completion_group_invoice_authority.sql",
+      "sha256": "25b569047509ac0434bdb8ae3fbedc943adff72756452029f30f4976e98e0623",
+      "bytes": 2502
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_44_revisit_transactional_guard.sql",
+      "sha256": "0665492f22fd73c9c9f6e40339bc43c7911dc5457f020b25de48450e4b7d41da",
+      "bytes": 5508
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_45_completion_attachment_permission_safe_read.sql",
+      "sha256": "49b1755c4085b75b1d309468db5434bcb64dbdaf1ef3792709b64ff0ff614317",
+      "bytes": 1836
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_appointment_management_localization.sql",
+      "sha256": "f038098d9540b6cd506baadeae77fc8fed2c5bea9d67bbdf904a7e9ee9dc4823",
+      "bytes": 17001
+    },
+    {
+      "path": "supabase/migrations/phase_petatoe_appointments_contracts_pets_collection.sql",
+      "sha256": "f71566c8b70048c16736207ec5502121897e8619412b91bd3af30a9c9f24f2dc",
+      "bytes": 11944
+    },
+    {
+      "path": "supabase/migrations/phase_petatoe_p2_services_excel_groomer_driver_car.sql",
+      "sha256": "7755858616af1c93f849e51641355dfb41c1fc0ba969bd28fdb313f8287f32f9",
+      "bytes": 2194
+    },
+    {
+      "path": "supabase/migrations/phase_petatoe_p3_2_services_code_tax_inclusive.sql",
+      "sha256": "fc42a99a9e16c905d0c3a53231caf0914d04f4790f3b085858f75ebcfd48dc94",
+      "bytes": 2111
+    },
+    {
+      "path": "supabase/migrations/phase_petatoe_p3_employees_cars_team_master.sql",
+      "sha256": "84c23c60ac1c423dd82fa063f1a3d76e7801080eaf80492ef918e85d7bdea32d",
+      "bytes": 9163
+    },
+    {
+      "path": "supabase/migrations/phase_petatoe_p4_3_customer_override_reauth.sql",
+      "sha256": "a79412fdcbb09ff8e5dae155bbded2455571be8c1d32819c6f3ced419e9978c0",
+      "bytes": 3793
+    },
+    {
+      "path": "supabase/migrations/phase_petatoe_p4_5_customer_import_batch_200.sql",
+      "sha256": "13193d62038bcfc5620c03ee31a7682a42bbb68fd0d3398ffb037c147340e72d",
+      "bytes": 4475
+    },
+    {
+      "path": "supabase/migrations/phase_petatoe_p4_canonical_customer_master.sql",
+      "sha256": "67fe34d9f97c64b46b26c2f5b1d4929d47caa23d86241e5cd7eb8c7cc1dfb094",
+      "bytes": 18097
+    }
+  ]
+}

@@ -1,14 +1,14 @@
 {
-  "version": "18.55.66",
-  "build": 185566,
+  "version": "18.55.67",
+  "build": 185567,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
-  "title": "PETATOE Maintenance Cache & Test Certification",
+  "title": "PETATOE Migration Manifest & Fresh Deployment Guard",
   "notes": [
-    "توحيد جميع version tokens المحلية لملفات CSS/JS على إصدار واحد مع الحفاظ على سياسة التحديث الآمن وعدم تغيير أي Business Logic.",
-    "تصحيح Service Worker بحيث تستطيع الطلبات versioned استخدام App Shell الحالي أثناء أول تشغيل Offline بعد تحديث الإصدار، قبل تسخين Runtime Cache.",
-    "تحديث اختبار Completion التاريخي P5.13.8.41 ليتحقق من السلطة canonical الحالية في Phase 42 بدل المطالبة بإعادة منطق JavaScript القديم.",
-    "عدم المساس بمسارات إنشاء أو جدولة أو تنفيذ أو تحصيل أو تأكيد أو فوترة المواعيد."
+    "إضافة Manifest محكم لكل ملفات SQL التاريخية مع SHA-256 وحجم الملف لمنع فقد أو تعديل Migration تاريخية بدون اكتشاف.",
+    "منع اعتماد الترتيب الأبجدي لمجلد migrations كمسار Fresh Deployment لأن أسماء المراحل لا تمثل Timeline عالميًا واحدًا.",
+    "توثيق Legacy foundation order والـrecent certified migration tail بدون إعادة تسمية أو حذف أي Migration مطبقة.",
+    "إضافة Certification Check آلي يرفض أي Migration غير مسجلة أو أي اختلاف في Fingerprint، بدون أي تعديل على قاعدة البيانات أو Business Logic."
   ],
-  "cacheToken": "petatoe-pwa-18-55-66-maintenance-cache-certification"
+  "cacheToken": "petatoe-pwa-18-55-67-migration-manifest-certification"
 }

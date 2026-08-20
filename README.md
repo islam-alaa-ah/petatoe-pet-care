@@ -36,6 +36,8 @@
 
 ## إعداد Supabase
 
+> **تنبيه قاعدة البيانات الحالية:** ملفات الإعداد الأساسية أدناه تاريخية ولا تمثل وحدها مخطط Production الحالي. لا تقم بتشغيل `supabase/migrations/*.sql` بترتيب أبجدي لإنشاء بيئة جديدة. راجع `docs/database/PETATOE_MIGRATION_MANIFEST_AND_FRESH_DEPLOYMENT.md` و`supabase/migration-manifest.json` قبل أي Fresh Deployment.
+
 نفّذ الملفات التالية بالترتيب داخل SQL Editor:
 
 1. `supabase/schema.sql`
