@@ -1,13 +1,13 @@
 {
-  "version": "18.55.63",
-  "build": 185563,
+  "version": "18.55.64",
+  "build": 185564,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
-  "title": "PETATOE Revisit Transactional Workflow Guard",
+  "title": "PETATOE Completion Attachment Permission-safe Read",
   "notes": [
-    "تحويل حفظ إعادة الزيارة من عمليتي كتابة منفصلتين في المتصفح إلى RPC واحدة ذرية داخل قاعدة البيانات.",
-    "منع مسار الاستثناءات القديم من الكتابة فوق موعد له زيارة تنفيذ نشطة أو مؤكدة، مع احترام قفل يوم الجدولة وصلاحيات النطاق.",
-    "الحفاظ على سلوك شاشة الاستثناءات الحالي دون تعديل الجدولة أو التنفيذ أو التحصيل أو التأكيد أو الفواتير."
+    "قراءة مرفقات التنفيذ والتحصيل داخل شاشة تأكيد انتهاء المواعيد أصبحت عبر RPC مخصصة بصلاحية installationCompletion.view بدل الاعتماد على RLS شاشة التنفيذ.",
+    "الحفاظ على حدود صلاحيات installationExecution كما هي دون توسيع RLS أو خلط صلاحيات الشاشتين.",
+    "الحفاظ على ربط المرفقات بالطلب/الزيارة ومجموعة التنفيذ الحالية دون تغيير الحفظ أو Storage أو شاشة الفواتير."
   ],
-  "cacheToken": "petatoe-pwa-18-55-63-revisit-transactional-guard"
+  "cacheToken": "petatoe-pwa-18-55-64-completion-attachment-permission-safe-read"
 }

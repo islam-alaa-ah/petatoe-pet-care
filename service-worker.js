@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-63-revisit-transactional-guard";
+const CACHE_VERSION = "petatoe-pwa-18-55-64-completion-attachment-permission-safe-read";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
