@@ -1,13 +1,13 @@
 {
-  "version": "18.55.64",
-  "build": 185564,
+  "version": "18.55.65",
+  "build": 185565,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
-  "title": "PETATOE Completion Attachment Permission-safe Read",
+  "title": "PETATOE Operational Report Canonical Revenue",
   "notes": [
-    "قراءة مرفقات التنفيذ والتحصيل داخل شاشة تأكيد انتهاء المواعيد أصبحت عبر RPC مخصصة بصلاحية installationCompletion.view بدل الاعتماد على RLS شاشة التنفيذ.",
-    "الحفاظ على حدود صلاحيات installationExecution كما هي دون توسيع RLS أو خلط صلاحيات الشاشتين.",
-    "الحفاظ على ربط المرفقات بالطلب/الزيارة ومجموعة التنفيذ الحالية دون تغيير الحفظ أو Storage أو شاشة الفواتير."
+    "توحيد مصدر إجمالي الإيراد وقيمة الفاتورة في التقارير التشغيلية على القيمة النهائية canonical للطلب شاملة الضريبة وبعد الخصم.",
+    "منع استخدام sales_invoices.invoice_amount قبل الضريبة كمصدر للإيراد داخل operationalReport مع الحفاظ على تخزين الفاتورة الحالي دون تغيير.",
+    "عدم المساس بالجدولة أو التنفيذ أو التحصيل أو التأكيد أو إنشاء الفاتورة أو باقي التقارير."
   ],
-  "cacheToken": "petatoe-pwa-18-55-64-completion-attachment-permission-safe-read"
+  "cacheToken": "petatoe-pwa-18-55-65-operational-report-canonical-revenue"
 }
