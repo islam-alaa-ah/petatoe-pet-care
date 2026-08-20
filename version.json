@@ -1,13 +1,13 @@
 {
-  "version": "18.55.61",
-  "build": 185561,
+  "version": "18.55.62",
+  "build": 185562,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
-  "title": "PETATOE Completion Invoice Ghost Row Recovery",
+  "title": "PETATOE Completion Attachments Visibility Integrity",
   "notes": [
-    "منع بقاء زيارة مفوترة في شاشة تأكيد انتهاء المواعيد حتى مع حالات state drift القديمة.",
-    "توحيد اكتشاف الفواتير داخل شاشة التأكيد عبر RPC آمن بصلاحية الشاشة بدل الاعتماد على صلاحية شاشة الفواتير.",
-    "عدم تغيير إنشاء أو جدولة أو تنفيذ أو تحصيل أو حساب أو إنشاء الفاتورة."
+    "إظهار جميع مرفقات التنفيذ والتحصيل المرتبطة بالزيارة أو مجموعة التنفيذ داخل شاشة تأكيد انتهاء المواعيد مع تمييز نوع المرفق.",
+    "الحفاظ على مسار حفظ مرفق التحصيل الحالي الذي يسجل file_kind=collection والربط بالزيارة دون تغيير منطق التنفيذ أو الفوترة.",
+    "عدم إجراء Backfill تخميني للملفات التاريخية أو تغيير بيانات أو صلاحيات أو شاشات أخرى."
   ],
-  "cacheToken": "petatoe-pwa-18-55-61-completion-group-invoice-authority"
+  "cacheToken": "petatoe-pwa-18-55-62-completion-attachments-integrity"
 }
