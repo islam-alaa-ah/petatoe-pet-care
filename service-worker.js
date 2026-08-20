@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-65-operational-report-canonical-revenue";
+const CACHE_VERSION = "petatoe-pwa-18-55-66-maintenance-cache-certification";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -186,10 +186,13 @@ async function cacheFirstSameOrigin(request) {
   const requestUrl = new URL(request.url);
   const shellCache = await caches.open(APP_SHELL_CACHE);
   const runtimeCache = await caches.open(RUNTIME_CACHE);
+  // The current-version App Shell is cached with canonical, unversioned URLs.
+  // Versioned index requests must be able to reuse those same current-shell assets
+  // during the first controlled offline boot, before Runtime Cache is warmed.
   const cached = await shellCache.match(request) ||
     await runtimeCache.match(request) ||
-    (requestUrl.search ? null : await matchIgnoringVersion(request, APP_SHELL_CACHE)) ||
-    (requestUrl.search ? null : await matchIgnoringVersion(request, RUNTIME_CACHE));
+    await matchIgnoringVersion(request, APP_SHELL_CACHE) ||
+    await matchIgnoringVersion(request, RUNTIME_CACHE);
 
   const networkPromise = fetch(request, { cache: requestUrl.search ? "reload" : "default" }).then(async response => {
     if (response && response.ok) {

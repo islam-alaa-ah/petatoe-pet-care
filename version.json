@@ -1,13 +1,14 @@
 {
-  "version": "18.55.65",
-  "build": 185565,
+  "version": "18.55.66",
+  "build": 185566,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
-  "title": "PETATOE Operational Report Canonical Revenue",
+  "title": "PETATOE Maintenance Cache & Test Certification",
   "notes": [
-    "توحيد مصدر إجمالي الإيراد وقيمة الفاتورة في التقارير التشغيلية على القيمة النهائية canonical للطلب شاملة الضريبة وبعد الخصم.",
-    "منع استخدام sales_invoices.invoice_amount قبل الضريبة كمصدر للإيراد داخل operationalReport مع الحفاظ على تخزين الفاتورة الحالي دون تغيير.",
-    "عدم المساس بالجدولة أو التنفيذ أو التحصيل أو التأكيد أو إنشاء الفاتورة أو باقي التقارير."
+    "توحيد جميع version tokens المحلية لملفات CSS/JS على إصدار واحد مع الحفاظ على سياسة التحديث الآمن وعدم تغيير أي Business Logic.",
+    "تصحيح Service Worker بحيث تستطيع الطلبات versioned استخدام App Shell الحالي أثناء أول تشغيل Offline بعد تحديث الإصدار، قبل تسخين Runtime Cache.",
+    "تحديث اختبار Completion التاريخي P5.13.8.41 ليتحقق من السلطة canonical الحالية في Phase 42 بدل المطالبة بإعادة منطق JavaScript القديم.",
+    "عدم المساس بمسارات إنشاء أو جدولة أو تنفيذ أو تحصيل أو تأكيد أو فوترة المواعيد."
   ],
-  "cacheToken": "petatoe-pwa-18-55-65-operational-report-canonical-revenue"
+  "cacheToken": "petatoe-pwa-18-55-66-maintenance-cache-certification"
 }

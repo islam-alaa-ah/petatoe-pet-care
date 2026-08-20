@@ -23,6 +23,12 @@ else pass(`All ${uniqueAssets.length} local CSS/JS assets are registered in App 
 if (!sw.includes("ignoreSearch: true")) fail("Service Worker does not normalize versioned asset requests");
 else pass("Version query strings are normalized with ignoreSearch");
 
+if (/requestUrl\.search\s*\?\s*null\s*:\s*await matchIgnoringVersion/.test(sw)) {
+  fail("Versioned requests cannot fall back to canonical App Shell assets on first controlled offline boot");
+} else if (!sw.includes("await matchIgnoringVersion(request, APP_SHELL_CACHE)")) {
+  fail("App Shell has no ignoreSearch fallback for versioned local assets");
+} else pass("Versioned local assets can fall back to the current canonical App Shell cache");
+
 for (const vendor of [
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2",
   "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js",
