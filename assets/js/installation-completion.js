@@ -41,6 +41,19 @@
     }).join(""):`<tr class="installation-completion-empty-row"><td colspan="8"><div class="empty-state">${esc(t('appointments.completion.empty','لا توجد مواعيد مكتملة بانتظار التحويل إلى فاتورة.'))}</div></td></tr>`;
   }
   async function load(){status($("installationCompletionStatus"),t('appointments.completion.loading','جاري تحميل المواعيد المكتملة...'));try{rows=await window.InstallationsServiceSafe.completionList();fillReps();render();status($("installationCompletionStatus"),"")}catch(e){status($("installationCompletionStatus"),e.message,"error")}}
+  function removeInvoicedRowsFromLocalState(detail={}){
+    if(detail?.sourceType!=="installation")return;
+    const requestId=String(detail.requestId||""),visitId=String(detail.visitId||"");
+    if(!requestId)return;
+    rows=rows.filter(r=>{
+      if(String(r.id)!==requestId)return true;
+      if(!visitId)return false;
+      const ids=[r.visitId,...(r.groupVisitIds||[])].filter(Boolean).map(String);
+      return !ids.includes(visitId);
+    });
+    fillReps();
+    render();
+  }
   function setMode(next){
     mode=next;
     const fullInstallation=mode==="installation";
@@ -204,6 +217,7 @@
   function openQuotation(q){if(!can("add","salesInvoices")){alert("لا توجد صلاحية إضافة فواتير المبيعات.");return}setMode("quotation");current=q;$("installationCompletionRequestId").value=q.quotationId;$("installationCompletionRequestLabel").textContent=`${q.quotationCode||q.requestNumber} — ${q.customerName}`;$("installationCompletionCustomer").textContent=q.customerName||"—";$("installationCompletionTechnician").textContent="لا ينطبق";$("installationCompletionDate").textContent="عقد مباشر";$("installationCompletionAddress").textContent=q.customerPhone||"—";$("installationCompletionWorkSummary").value="";$("installationCompletionRecipientName").value="";$("installationCompletionCustomerOrderNumber").value=q.requestNumber||q.quotationCode||"";$("installationCompletionInvoiceNumber").value="";$("installationCompletionInvoiceDate").value=today();$("installationCompletionInvoiceAmount").value=Number(q.invoiceAmount||0).toFixed(2);$("installationCompletionInstallationExpenses").value="0.00";status($("installationCompletionFormStatus"),"");$("installationCompletionDialog").showModal()}
   document.addEventListener("DOMContentLoaded",()=>{
     window.addEventListener("kyum-view-changed",e=>{if(e.detail?.view==="installationCompletion")load()});window.addEventListener("petatoe-language-changed",()=>{if(!document.getElementById("installationCompletionView")?.classList.contains("hidden")){fillReps();render()}});
+    window.addEventListener("kyum-sales-invoice-created",e=>removeInvoicedRowsFromLocalState(e.detail||{}));
     window.addEventListener("kyum-open-unified-invoice-conversion",e=>{if(e.detail?.sourceType==="quotation")openQuotation(e.detail)});
     $("refreshInstallationCompletionBtn")?.addEventListener("click",load);
     ["installationCompletionSearch","installationCompletionRepresentativeFilter","installationCompletionDateFrom","installationCompletionDateTo"].forEach(id=>$(id)?.addEventListener(id.includes("Search")?"input":"change",render));

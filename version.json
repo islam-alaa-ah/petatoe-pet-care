@@ -1,13 +1,13 @@
 {
-  "version": "18.55.59",
-  "build": 185559,
+  "version": "18.55.60",
+  "build": 185560,
   "forceUpdate": true,
-  "releaseDate": "2026-08-19",
-  "title": "PETATOE Appointment Workflow Legacy Guard & Invoice Discount Scope",
+  "releaseDate": "2026-08-21",
+  "title": "PETATOE Completion Invoice Ghost Row Recovery",
   "notes": [
-    "تحييد مسار الحفظ القديم المباشر وربطه بمسار تعديل الموعد المعتمد دون تغيير دورة الجدولة أو التنفيذ.",
-    "توحيد قيمة فاتورة الموعد مع القيمة النهائية لمجموعة التنفيذ بعد الضريبة والخصم مع الحفاظ على تمثيل invoice_amount قبل الضريبة.",
-    "عدم تغيير واجهات أو حالات الجدولة أو التنفيذ أو التحصيل أو التأكيد."
+    "منع بقاء زيارة مفوترة في شاشة تأكيد انتهاء المواعيد حتى مع حالات state drift القديمة.",
+    "توحيد اكتشاف الفواتير داخل شاشة التأكيد عبر RPC آمن بصلاحية الشاشة بدل الاعتماد على صلاحية شاشة الفواتير.",
+    "عدم تغيير إنشاء أو جدولة أو تنفيذ أو تحصيل أو حساب أو إنشاء الفاتورة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-59-appointment-workflow-legacy-guard-invoice-discount"
+  "cacheToken": "petatoe-pwa-18-55-60-completion-invoice-ghost-row-recovery"
 }

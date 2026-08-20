@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-59-appointment-workflow-legacy-guard-invoice-discount";
+const CACHE_VERSION = "petatoe-pwa-18-55-60-completion-invoice-ghost-row-recovery";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

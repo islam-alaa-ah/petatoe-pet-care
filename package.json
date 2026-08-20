@@ -1,6 +1,6 @@
 {
   "name": "petatoe-pet-care-mobile",
-  "version": "18.55.59",
+  "version": "18.55.60",
   "private": true,
   "description": "Native Android/iOS packaging layer for PETATOE.",
   "scripts": {
@@ -48,7 +48,8 @@
     "check:p5.11.7.1": "node scripts/p5-11-7-1-navigation-sizing-alignment-check.mjs",
     "check:p5.11.7.2": "node scripts/p5-11-7-2-reference-header-replacement-check.mjs",
     "check:p5.11.7.3": "node scripts/p5-11-7-3-approved-reference-header-lock-check.mjs",
-    "check:p5.13.4": "node scripts/p5-13-4-localization-lockdown-check.mjs"
+    "check:p5.13.4": "node scripts/p5-13-4-localization-lockdown-check.mjs",
+    "check:p5.13.8.41": "node scripts/phase-p5-13-8-41-completion-invoice-ghost-check.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
