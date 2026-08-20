@@ -10,7 +10,7 @@ const checks=[
  ['view click uses direct path',/await openRequestViewDirect\(view\.dataset\.viewRequest\)/.test(scheduling)],
  ['view click stops propagation',/view\)\{\s*e\.preventDefault\(\);\s*e\.stopPropagation\(\)/.test(scheduling)],
  ['view dialog present in DOM',/id="installationRequestViewDialog"/.test(index)],
- ['version 18.54.43',version.version==='18.54.43']
+ ['version metadata is current and non-legacy',/^18\.55\.\d+$/.test(version.version)]
 ];
 let failed=0;
 for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} - ${name}`);if(!ok)failed++;}

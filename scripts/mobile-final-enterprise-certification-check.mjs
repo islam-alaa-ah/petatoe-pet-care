@@ -27,7 +27,7 @@ check('Cache token service worker', sw.includes(version.cacheToken));
 check('Canonical mobile theme registered', index.includes('assets/css/mobile-theme-canonical.css') && sw.includes('assets/css/mobile-theme-canonical.css'));
 check('Theme runtime synchronizes html/body', appJs.includes('document.body?.dataset.theme') || (appJs.includes('root.dataset.theme') && appJs.includes('classList.toggle("dark-mode"')));
 check('Completion mobile cards', completionCss.includes('@media (max-width: 767px)') && completionCss.includes('data-label'));
-check('Current execution visit server ownership', installationsService.includes('get_current_installation_execution_visit_id'));
+check('Current execution visit server ownership', installationsService.includes('select_installation_execution_visit') && installationsService.includes('selectExecutionRequest') && installationsService.includes('visitId||null'));
 check('Execution stage ownership RPC', installationsService.includes('advance_installation_execution_stage'));
 check('No arbitrary timeline fallback', !executionJs.includes('find((request) => hasExecutionProgress(request))'));
 check(

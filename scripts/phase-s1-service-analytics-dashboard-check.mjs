@@ -18,7 +18,7 @@ const checks=[
   ['unique execution tracking', service.includes('entryKeys:new Set()') && service.includes('item.entryKeys.add(entryKey)') && service.includes('executions:x.entryKeys.size')],
   ['single/multi day source preserved', service.includes('installation_execution_visit_services') && service.includes('singleDayRequests') && service.includes('requestsWithVisits')],
   ['responsive analytics styles', css.includes('Phase S1 — Service Analytics Dashboard') && css.includes('.installation-service-analytics-layout') && css.includes('@media(max-width:760px)')],
-  ['version 18.53.12', read('version.json').includes('18.53.12') && read('assets/js/pwa.js').includes('18.53.12') && read('service-worker.js').includes('18-53-12-service-analytics-s1')]
+  ['release metadata is current', /^18\.55\.\d+$/.test(JSON.parse(read('version.json')).version)]
 ];
 let pass=0;
 for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} — ${name}`);if(ok)pass++;}

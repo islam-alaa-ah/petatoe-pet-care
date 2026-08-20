@@ -1,0 +1,7 @@
+import {spawnSync} from 'node:child_process';
+const scripts=[
+ 'scripts/phase-m14-9-8-9-check.mjs','scripts/phase-m15-0-1-check.mjs','scripts/phase-m15-3-check.mjs','scripts/phase-m15-4-check.mjs','scripts/phase-m15-5-check.mjs','scripts/phase-m15-6-check.mjs','scripts/phase-m15-7-check.mjs','scripts/phase-s1-service-analytics-dashboard-check.mjs','scripts/phase-p5-11-4-10-3-execution-slot-capacity-lock-check.mjs','scripts/phase-p5-11-4-10-4-customer-neighborhood-search-check.mjs','scripts/phase-p5-11-4-10-4-1-geography-schema-compatibility-check.mjs','scripts/p5-11-5-1-daily-suggestions-unified-cycle-check.mjs','scripts/p5-11-6-4-appointment-theme-schedule-view-check.mjs','scripts/p5-11-6-5-schedule-view-direct-dialog-check.mjs','scripts/p5-11-7-1-navigation-sizing-alignment-check.mjs','scripts/p5-11-7-2-reference-header-replacement-check.mjs','scripts/p5-11-7-3-approved-reference-header-lock-check.mjs','scripts/phase-m15-10-installation-summary-execution-timeline-check.mjs','scripts/phase-m15-10-1-installation-summary-timeline-accuracy-check.mjs','scripts/mobile-final-enterprise-certification-check.mjs'
+];
+let failed=0;
+for(const script of scripts){console.log(`\n=== ${script} ===`);const r=spawnSync(process.execPath,[script],{stdio:'inherit'});if(r.status!==0)failed++;}
+console.log(`\nHistorical/current compatibility suite: ${scripts.length-failed}/${scripts.length} PASS`);if(failed)process.exit(1);

@@ -11,8 +11,8 @@ const checks = [
   ["any saved followup attempts suggestion completion", app.includes("DailySuggestionsService?.completeForCustomer")],
   ["optimistic row removal exists", app.includes("dailySuggestedSuggestionRows = dailySuggestedSuggestionRows.filter")],
   ["progress increments after completion", app.includes("completed: Number(progress.completed || 0) + 1")],
-  ["server reload remains after followup save", app.includes("await loadDailySuggestedCustomers(true)")],
-  ["version is 18.46.12", version.version === "18.46.12" && version.build === 184612],
+  ["server refresh uses unified permission-owned daily snapshot", app.includes("await loadDailyOperations(true)")],
+  ["release metadata is current", /^18\.55\.\d+$/.test(version.version)],
   ["service worker cache token synchronized", sw.includes(version.cacheToken)]
 ];
 

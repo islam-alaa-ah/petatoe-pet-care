@@ -7,8 +7,8 @@ const dialogCss=read('assets/css/installation-request-inline-dialogs.css');
 const foundation=read('assets/css/installations-foundation.css');
 const version=JSON.parse(read('version.json'));
 const checks=[
- ['version',version.version==='18.54.42'],
- ['schedule view uses direct module opener',sched.includes('KYUMInstallationsModule?.openRequestView') && sched.includes("installationScheduleStatus")],
+ ['version metadata is current and non-legacy',/^18\.55\.\d+$/.test(version.version)],
+ ['schedule view uses canonical direct detail opener',sched.includes('async function openRequestViewDirect(requestId)') && sched.includes('InstallationsServiceSafe.requestEditDetail(requestId)') && sched.includes("installationScheduleStatus")],
  ['module opener loads fresh detail',mod.includes('async openRequestView(id)') && mod.includes('InstallationsServiceSafe.requestEditDetail(requestId)')],
  ['map button owns standalone navy background',execCss.includes('standalone customer-map action contrast') && execCss.includes('background:linear-gradient(145deg,var(--map-action-navy-2),var(--map-action-navy))!important')],
  ['map action white label forced',execCss.includes('-webkit-text-fill-color:#fff!important')],

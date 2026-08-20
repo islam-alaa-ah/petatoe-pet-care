@@ -12,9 +12,9 @@ const checks=[
   ['single-slot RPC blocks groomer conflicts', /الجرومر محجوز بالفعل في هذا الموعد/.test(sql)],
   ['UI service combines team and groomer bookings', /get_installation_team_booked_times/.test(svc) && /get_installation_technician_booked_times/.test(svc)],
   ['scheduling passes selected team into availability check', /technicianBookedTimes\(date,name,requestId,teamId\)/.test(sched)],
-  ['execution group exposes slot count and range', /executionScheduleLabel/.test(exec) && /مواعيد — من/.test(exec)],
+  ['execution group exposes slot count and range through localized grouped label', /function executionScheduleLabel\(r\)/.test(exec) && /execution\.time\.appointmentRange/.test(exec) && /count:sorted\.length/.test(exec) && /from:fmtTime\(sorted\[0\]\)/.test(exec) && /to:fmtTime\(sorted\[sorted\.length-1\]\)/.test(exec)],
   ['today card uses grouped schedule label', /installation-time[^]*executionScheduleLabel\(r\)/.test(exec)],
-  ['current execution summary uses grouped schedule label', /الوقت المحدد[^]*executionScheduleLabel\(r\)/.test(exec)],
+  ['current execution summary uses grouped schedule label', /execution\.summary\.time/.test(exec) && /executionScheduleLabel\(r\)/.test(exec)],
   ['schema cache reload included', /notify pgrst,'reload schema'/.test(sql)]
 ];
 let failed=0;

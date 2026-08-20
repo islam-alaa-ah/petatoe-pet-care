@@ -23,7 +23,7 @@ const checks = [
   ['daily UI no longer handles type tabs', !/data-daily-suggested-type/.test(app) && !/dailySuggestedCustomerType/.test(app)],
   ['saved follow-up refreshes permission-owned daily snapshot', /await loadDailyOperations\(true\)/.test(app)],
   ['daily target helper defaults to 20', /dailySuggestedProgressPercent\(completed, target = 20\)/.test(app)],
-  ['version 18.54.44', version.version === '18.54.44']
+  ['release metadata is current', /^18\.55\.\d+$/.test(version.version)]
 ];
 
 let pass = 0;

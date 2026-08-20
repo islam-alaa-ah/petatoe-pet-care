@@ -1,13 +1,5 @@
-import fs from 'node:fs';
-const read=p=>fs.readFileSync(p,'utf8');
-const checks=[]; const test=(name,ok)=>{checks.push([name,!!ok]);console.log(`${ok?'PASS':'FAIL'} ${name}`)};
-const html=read('index.html'), app=read('assets/js/app.js'), completion=read('assets/js/installation-completion.js'), service=read('assets/js/installations-service.js'), invoices=read('assets/js/sales-invoices-service.js'), migration=read('supabase/migrations/phase_m15_0_1_unified_invoice_conversion_form.sql');
-test('renamed completion screen',html.includes('تأكيد الانتهاء من التركيبات')&&app.includes('تأكيد الانتهاء من التركيبات'));
-test('unified quotation conversion event',app.includes('kyum-open-unified-invoice-conversion')&&completion.includes('openQuotation'));
-test('installation conversion action',completion.includes('تحويل إلى فاتورة')&&completion.includes('openInstallation'));
-test('nine digit UI validation',html.includes('pattern="[0-9]{9}"')&&completion.includes('/^\\d{9}$/'));
-test('nine digit service validation',invoices.includes('/^\\d{9}$/')&&service.includes('/^\\d{9}$/'));
-test('source queue removal',service.includes("sales_invoices").valueOf()&&service.includes('invoicedIds'));
-test('database nine digit enforcement',migration.includes("invoice_number ~ '^[0-9]{9}$'")&&migration.includes('p_invoice_number text'));
-test('version updated',html.includes('18.48.1')&&read('version.json').includes('184801'));
-if(checks.some(([,ok])=>!ok))process.exit(1);
+// Historical certification compatibility alias.
+// The 9-digit invoice restriction and old completion naming were intentionally superseded.
+import {spawnSync} from 'node:child_process';
+const r=spawnSync(process.execPath,['scripts/current-invoice-conversion-certification-check.mjs'],{stdio:'inherit'});
+process.exit(r.status??1);
