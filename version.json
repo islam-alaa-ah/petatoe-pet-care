@@ -1,6 +1,6 @@
 {
-  "version": "18.55.60",
-  "build": 185560,
+  "version": "18.55.61",
+  "build": 185561,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
   "title": "PETATOE Completion Invoice Ghost Row Recovery",
@@ -9,5 +9,5 @@
     "توحيد اكتشاف الفواتير داخل شاشة التأكيد عبر RPC آمن بصلاحية الشاشة بدل الاعتماد على صلاحية شاشة الفواتير.",
     "عدم تغيير إنشاء أو جدولة أو تنفيذ أو تحصيل أو حساب أو إنشاء الفاتورة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-60-completion-invoice-ghost-row-recovery"
+  "cacheToken": "petatoe-pwa-18-55-61-completion-group-invoice-authority"
 }

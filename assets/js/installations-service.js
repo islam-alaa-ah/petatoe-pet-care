@@ -592,22 +592,12 @@
       fetchPaged((from,to)=>db().from('installation_execution_visit_services').select('visit_id,request_service_id,scheduled_quantity').range(from,to),1000),
       fetchPaged((from,to)=>db().from('installation_request_collection').select('installation_request_id,invoice_number').range(from,to),1000)
     ]);
+    // Invoice visibility is resolved canonically by get_installation_completion_invoice_markers().
+    // For visit-backed invoices the RPC already expands the stored anchor visit to every member of
+    // the same execution group (request + team + scheduled date). Keep this screen as a consumer of
+    // that single authority so confirmation and invoice visibility cannot drift apart.
     const legacyInvoicedRequestIds=new Set(invoices.filter(x=>!x.installation_execution_visit_id).map(x=>x.installation_request_id).filter(Boolean)),invoicedVisitIds=new Set(invoices.map(x=>x.installation_execution_visit_id).filter(Boolean)),reportMap=new Map(reports.map(x=>[x.installation_request_id,x])),collectionInvoiceMap=new Map((collectionRows||[]).map(x=>[String(x.installation_request_id),x.invoice_number||''])),filesMap=new Map(),executionFilesMap=new Map(),amountMap=new Map(),costMap=new Map(),serviceCostMap=new Map();
-    // A sales invoice represents the whole canonical same-day/same-team execution group.
-    // Expand the stored canonical visit id across every completion candidate (pending or confirmed).
-    // This makes invoice existence authoritative even when a legacy/state-drift sibling is still
-    // marked "بانتظار التأكيد" after the group invoice was created.
-    const completionCandidateVisits=[...pendingVisits,...confirmedHistoryVisits];
-    for(const inv of invoices){
-      if(!inv.installation_execution_visit_id)continue;
-      const anchor=completionCandidateVisits.find(v=>String(v.id)===String(inv.installation_execution_visit_id));
-      if(!anchor)continue;
-      completionCandidateVisits.forEach(v=>{
-        if(String(v.installation_request_id)===String(anchor.installation_request_id)
-          &&String(v.installation_team_id||'')===String(anchor.installation_team_id||'')
-          &&String(v.scheduled_date||'')===String(anchor.scheduled_date||''))invoicedVisitIds.add(v.id);
-      });
-    }files.forEach(f=>{const arr=filesMap.get(f.installation_request_id)||[];arr.push(f);filesMap.set(f.installation_request_id,arr)});(executionFiles||[]).forEach(f=>{const arr=executionFilesMap.get(String(f.installation_request_id))||[];arr.push({id:f.id,storagePath:f.storage_path,originalName:f.original_name||'مرفق',mimeType:f.mime_type||'',fileSize:Number(f.file_size||0),fileKind:f.file_kind||'execution',visitId:f.execution_visit_id||'',uploadedAt:f.uploaded_at||''});executionFilesMap.set(String(f.installation_request_id),arr)});serviceRows.forEach(x=>{amountMap.set(x.installation_request_id,(amountMap.get(x.installation_request_id)||0)+Number(x.line_total||0));costMap.set(x.installation_request_id,(costMap.get(x.installation_request_id)||0)+(Number(x.quantity||0)*Number(x.service?.default_cost||0)));serviceCostMap.set(String(x.id),Number(x.service?.default_cost||0))});
+    files.forEach(f=>{const arr=filesMap.get(f.installation_request_id)||[];arr.push(f);filesMap.set(f.installation_request_id,arr)});(executionFiles||[]).forEach(f=>{const arr=executionFilesMap.get(String(f.installation_request_id))||[];arr.push({id:f.id,storagePath:f.storage_path,originalName:f.original_name||'مرفق',mimeType:f.mime_type||'',fileSize:Number(f.file_size||0),fileKind:f.file_kind||'execution',visitId:f.execution_visit_id||'',uploadedAt:f.uploaded_at||''});executionFilesMap.set(String(f.installation_request_id),arr)});serviceRows.forEach(x=>{amountMap.set(x.installation_request_id,(amountMap.get(x.installation_request_id)||0)+Number(x.line_total||0));costMap.set(x.installation_request_id,(costMap.get(x.installation_request_id)||0)+(Number(x.quantity||0)*Number(x.service?.default_cost||0)));serviceCostMap.set(String(x.id),Number(x.service?.default_cost||0))});
     const requestMap=new Map(requests.map(r=>[String(r.id),r]));
     const pendingRequestIds=[...new Set([...pendingVisits,...confirmedHistoryVisits].map(v=>String(v.installation_request_id)))];
     if(pendingRequestIds.length){const {data:extra,error}=await db().from('installation_requests').select('*,customer:customers(id,customer_name,phone),technician:installation_technicians(id,full_name),representative:sales_representatives(id,full_name),team:installation_teams(id,name)').in('id',pendingRequestIds);if(error)throw new Error('تعذر تحميل طلبات زيارات التأكيد: '+error.message);(extra||[]).forEach(r=>requestMap.set(String(r.id),r))}
