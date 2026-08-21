@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-70-invoice-tax-inclusive-rounded-display";
+const CACHE_VERSION = "petatoe-pwa-18-55-71-confirmation-direct-invoice-workflow";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

@@ -17,6 +17,7 @@
   function date(v){return v?new Date(v).toLocaleString(lang()==="en"?"en-US-u-nu-latn":"ar-SA-u-nu-latn",{calendar:"gregory",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}):"—"}
   function today(){const d=new Date(),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`}
   const moneyCents=v=>Math.round((Number(v)||0)*100);
+  const normalizePaymentMethod=value=>{const raw=String(value||'').trim();if(['بطاقة','شبكة','بطاقة / شبكة','بطاقة/شبكة'].includes(raw))return 'بطاقة / شبكة';if(['تحويل','تحويل بنكي'].includes(raw))return 'تحويل بنكي';if(['دفع إلكتروني','دفع الكتروني','الدفع عن طريق الموقع','دفع عن طريق الموقع'].includes(raw))return 'الدفع عن طريق الموقع';return raw};
   function reps(){const map=new Map();rows.forEach(r=>{if(r.representativeId)map.set(r.representativeId,r.representativeName||"مندوب غير محدد")});return [...map].sort((a,b)=>a[1].localeCompare(b[1],"ar"))}
   function fillReps(){const el=$("installationCompletionRepresentativeFilter");if(!el)return;const val=el.value;el.innerHTML=`<option value="">${esc(t('appointments.completion.allAllowedReps','كل المندوبين المسموحين'))}</option>`+reps().map(([id,n])=>`<option value="${esc(id)}">${esc(n)}</option>`).join("");el.value=[...el.options].some(o=>o.value===val)?val:""}
   function filtered(){const q=($("installationCompletionSearch")?.value||"").trim().toLowerCase(),rep=$("installationCompletionRepresentativeFilter")?.value||"",from=$("installationCompletionDateFrom")?.value||"",to=$("installationCompletionDateTo")?.value||"";return rows.filter(r=>(!q||[r.requestNumber,r.customerName,r.customerPhone,r.technicianName].join(" ").toLowerCase().includes(q))&&(!rep||r.representativeId===rep)&&(!from||String(r.completedAt).slice(0,10)>=from)&&(!to||String(r.completedAt).slice(0,10)<=to))}
@@ -148,17 +149,41 @@
   function syncNoInvoiceOption(){
     const checkbox=$("installationQuantityNoInvoice"),invoice=$("installationQuantityInvoiceNumber"),payment=$("installationQuantityPaymentMethod");
     if(!checkbox||!invoice||!payment)return;
-    if(checkbox.checked){
-      invoice.value="";
-      invoice.disabled=true;
-      payment.value="نقدي";
-      payment.disabled=true;
-    }else{
-      invoice.disabled=false;
-      payment.disabled=false;
-    }
+    if(checkbox.checked){invoice.value="";invoice.disabled=true}else invoice.disabled=false;
+    // طريقة الدفع تخص التحصيل نفسه وليست مرتبطة بوجود رقم فاتورة، لذلك تظل قابلة للمراجعة دائمًا.
+    payment.disabled=false;
   }
-  function renderWorkspace(detail){quantityDetail=detail;const body=$('installationQuantityServiceEditorBody');body.innerHTML=(detail.services||[]).map(serviceEditorRowHtml).join('')||serviceEditorRowHtml();$('installationQuantityDiscountAmount').value=Number(detail.discountAmount||0).toFixed(2);$('installationQuantityAmountCollected').value=Number(detail.collection?.amountCollected||0).toFixed(2);$('installationQuantityPaymentMethod').value=detail.collection?.paymentMethod||'';$('installationQuantityInvoiceNumber').value=detail.collection?.invoiceNumber||'';$('installationQuantityInvoiceDate').value=detail.collection?.invoiceDate||today();$('installationQuantityCollectionNotes').value=detail.collection?.notes||'';const noInvoice=$('installationQuantityNoInvoice');if(noInvoice)noInvoice.checked=Boolean(detail.collection?.withoutInvoice);syncNoInvoiceOption();syncWorkspaceFinancials();quantityWorkspaceDirty=false}
+  function renderQuantityAttachmentField(){
+    const input=$("installationQuantityAttachments"),summary=$("installationQuantityAttachmentsSummary"),button=$("viewInstallationQuantityAttachments");
+    if(input)input.value="";
+    const count=quantityCurrent?completionAttachments(quantityCurrent).length:0;
+    if(summary)summary.textContent=count?`المرفقات الحالية: ${count}`:'لا توجد مرفقات حالية';
+    if(button){button.classList.toggle('hidden',count<=0);button.textContent=`عرض المرفقات الحالية (${count})`;}
+  }
+  function renderWorkspace(detail){
+    quantityDetail=detail;
+    const body=$('installationQuantityServiceEditorBody');
+    body.innerHTML=(detail.services||[]).map(serviceEditorRowHtml).join('')||serviceEditorRowHtml();
+    $('installationQuantityDiscountAmount').value=Number(detail.discountAmount||0).toFixed(2);
+    const f=workspaceFinancials();
+    const storedAmount=Math.max(0,Number(detail.collection?.amountCollected||0));
+    const isFullyCollected=String(detail.collection?.collectionStatus||'')==='محصل بالكامل'||moneyCents(storedAmount)>=moneyCents(f.final);
+    $('installationQuantityAmountCollected').value=String(Math.round(isFullyCollected?f.final:storedAmount));
+    const payment=normalizePaymentMethod(detail.collection?.paymentMethod||'');
+    const paymentSelect=$('installationQuantityPaymentMethod');
+    if(paymentSelect){
+      if(payment&&![...paymentSelect.options].some(option=>option.value===payment))paymentSelect.insertAdjacentHTML('beforeend',`<option value="${esc(payment)}">${esc(payment)}</option>`);
+      paymentSelect.value=payment;
+    }
+    $('installationQuantityInvoiceNumber').value=detail.collection?.invoiceNumber||'';
+    $('installationQuantityInvoiceDate').value=detail.collection?.invoiceDate||detail.scheduledDate||quantityCurrent?.scheduledDate||today();
+    $('installationQuantityCollectionNotes').value=detail.collection?.notes||'';
+    const noInvoice=$('installationQuantityNoInvoice');if(noInvoice)noInvoice.checked=Boolean(detail.collection?.withoutInvoice);
+    syncNoInvoiceOption();
+    syncWorkspaceFinancials();
+    renderQuantityAttachmentField();
+    quantityWorkspaceDirty=false;
+  }
   function renderCollectionRecoveryState(state){
     quantityCollectionRecoveryState=state||null;
     const panel=$('installationQuantityCollectionRecovery'),message=$('installationQuantityCollectionRecoveryMessage'),button=$('confirmInstallationQuantityCollectionRecovery');
@@ -175,7 +200,7 @@
     return state;
   }
   async function reloadWorkspaceQuantities(){const quantities=await window.InstallationsServiceSafe.completionQuantitySummary(quantityCurrent.id,quantityCurrent.visitId||null,quantityCurrent.groupVisitIds||[]);quantityCurrent.quantities=quantities;$('installationQuantityLines').innerHTML=quantities.map(quantityLineHtml).join('')||'<p class="empty-state">لا توجد خدمات قابلة للتأكيد.</p>';syncQuantityResults()}
-  async function saveWorkspace(){const services=collectWorkspaceServices();if(!services.length)throw new Error('أضف خدمة واحدة على الأقل.');if(services.some(x=>!x.serviceTypeId||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unitPrice)||x.unitPrice<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');const existingIds=new Set();for(const x of services){if(!x.requestServiceId)continue;if(existingIds.has(x.requestServiceId))throw new Error('تعذر تحديد سطر الخدمة بشكل فريد. أعد فتح النافذة وحاول مرة أخرى.');existingIds.add(x.requestServiceId)}const f=workspaceFinancials();const amount=Math.max(0,Number($('installationQuantityAmountCollected').value||0));if(moneyCents(amount)>moneyCents(f.final))throw new Error('المبلغ المحصل لا يمكن أن يتجاوز الإجمالي النهائي.');const noInvoice=Boolean($('installationQuantityNoInvoice')?.checked);const payment=noInvoice?'نقدي':$('installationQuantityPaymentMethod').value;if(amount>0&&!payment)throw new Error('اختر طريقة الدفع عند وجود مبلغ محصل.');const invoiceNumber=noInvoice?'':$('installationQuantityInvoiceNumber').value.trim();await window.InstallationsServiceSafe.saveCompletionWorkspace({id:quantityCurrent.id,visitId:quantityCurrent.visitId||null,services,discountAmount:f.discount,collection:{amountCollected:amount,paymentMethod:payment,invoiceNumber,notes:$('installationQuantityCollectionNotes').value.trim()}});quantityDetail=await window.InstallationsServiceSafe.requestEditDetail(quantityCurrent.id);renderWorkspace(quantityDetail);await reloadWorkspaceQuantities();quantityWorkspaceDirty=false}
+  async function saveWorkspace(){const services=collectWorkspaceServices();if(!services.length)throw new Error('أضف خدمة واحدة على الأقل.');if(services.some(x=>!x.serviceTypeId||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unitPrice)||x.unitPrice<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');const existingIds=new Set();for(const x of services){if(!x.requestServiceId)continue;if(existingIds.has(x.requestServiceId))throw new Error('تعذر تحديد سطر الخدمة بشكل فريد. أعد فتح النافذة وحاول مرة أخرى.');existingIds.add(x.requestServiceId)}const f=workspaceFinancials();const amountDisplay=Math.max(0,Math.round(Number($('installationQuantityAmountCollected').value||0)));$('installationQuantityAmountCollected').value=String(amountDisplay);const roundedFinal=Math.max(0,Math.round(f.final));if(amountDisplay>roundedFinal)throw new Error('المبلغ المحصل لا يمكن أن يتجاوز الإجمالي النهائي.');const amountForStorage=amountDisplay===roundedFinal?f.final:amountDisplay;const noInvoice=Boolean($('installationQuantityNoInvoice')?.checked);const payment=normalizePaymentMethod($('installationQuantityPaymentMethod').value);if(amountDisplay>0&&!payment)throw new Error('اختر طريقة الدفع عند وجود مبلغ محصل.');const invoiceNumber=noInvoice?'':$('installationQuantityInvoiceNumber').value.trim();await window.InstallationsServiceSafe.saveCompletionWorkspace({id:quantityCurrent.id,visitId:quantityCurrent.visitId||null,services,discountAmount:f.discount,collection:{amountCollected:amountForStorage,paymentMethod:payment,invoiceNumber,notes:$('installationQuantityCollectionNotes').value.trim()}});quantityDetail=await window.InstallationsServiceSafe.requestEditDetail(quantityCurrent.id);renderWorkspace(quantityDetail);await reloadWorkspaceQuantities();quantityWorkspaceDirty=false}
 
   function requireQuantityDialog(){
     const ids=[
@@ -185,7 +210,7 @@
       "installationQuantityConfirmationNotes","installationQuantityConfirmationStatus","saveInstallationQuantityConfirmation",
       "installationQuantityServiceEditorBody","installationQuantityDiscountAmount","installationQuantityAmountCollected",
       "installationQuantityPaymentMethod","installationQuantityCollectionStatus","installationQuantityInvoiceNumber",
-      "installationQuantityInvoiceDate","installationQuantityNoInvoice","saveInstallationQuantityWorkspace",
+      "installationQuantityInvoiceDate","installationQuantityNoInvoice","installationQuantityAttachments","installationQuantityAttachmentsSummary","viewInstallationQuantityAttachments","saveInstallationQuantityWorkspace",
       "installationQuantityCollectionRecovery","confirmInstallationQuantityCollectionRecovery"
     ];
     const missing=ids.filter(id=>!$(id));
@@ -257,8 +282,11 @@
     $("installationQuantityServiceEditorBody")?.addEventListener("change",e=>{if(e.target.matches(".installation-confirmation-service-type")){const opt=quantityOptions.serviceTypes.find(x=>String(x.id)===String(e.target.value));const row=e.target.closest("tr");if(opt&&row&&Number(row.querySelector(".installation-confirmation-service-price").value||0)===0)row.querySelector(".installation-confirmation-service-price").value=Number(opt.default_price||0).toFixed(2);syncWorkspaceFinancials()}});
     $("installationQuantityDiscountAmount")?.addEventListener("input",e=>{normalizeNumericInput(e.target);syncWorkspaceFinancials()});
     $("installationQuantityAmountCollected")?.addEventListener("input",e=>{normalizeNumericInput(e.target);syncWorkspaceFinancials()});
+    $("installationQuantityAmountCollected")?.addEventListener("change",e=>{const f=workspaceFinancials();const value=Math.max(0,Math.round(Number(e.target.value||0)));e.target.value=String(Math.min(value,Math.max(0,Math.round(f.final))));syncWorkspaceFinancials()});
     ["installationQuantityPaymentMethod","installationQuantityInvoiceNumber","installationQuantityCollectionNotes"].forEach(id=>$(id)?.addEventListener(id==="installationQuantityPaymentMethod"?"change":"input",()=>{quantityWorkspaceDirty=true}));
     $("installationQuantityInvoiceDate")?.addEventListener("change",()=>status($("installationQuantityConfirmationStatus"),""));
+    $("viewInstallationQuantityAttachments")?.addEventListener("click",()=>{if(quantityCurrent)openCompletionAttachments(quantityCurrent)});
+    $("installationQuantityAttachments")?.addEventListener("change",e=>{if((e.target.files?.length||0)>6){status($("installationQuantityConfirmationStatus"),"الحد الأقصى 6 مرفقات في عملية التأكيد الواحدة.","error");e.target.value="";return}status($("installationQuantityConfirmationStatus"),"")});
     $("installationQuantityNoInvoice")?.addEventListener("change",()=>{syncNoInvoiceOption();quantityWorkspaceDirty=true});
     $("saveInstallationQuantityWorkspace")?.addEventListener("click",async()=>{const btn=$("saveInstallationQuantityWorkspace");btn.disabled=true;try{status($("installationQuantityConfirmationStatus"),"جاري حفظ تحديثات الخدمات والتحصيل...");await saveWorkspace();status($("installationQuantityConfirmationStatus"),"تم حفظ الخدمات والتحصيل وتحديث كميات الزيارة.")}catch(err){status($("installationQuantityConfirmationStatus"),err.message,"error")}finally{btn.disabled=false}});
     $("confirmInstallationQuantityCollectionRecovery")?.addEventListener("click",async()=>{
@@ -313,6 +341,7 @@
         const directWithoutInvoice=Boolean($("installationQuantityNoInvoice")?.checked);
         const directInvoiceNumber=directWithoutInvoice?'':$("installationQuantityInvoiceNumber")?.value.trim()||'';
         const directInvoiceDate=$("installationQuantityInvoiceDate")?.value||'';
+        const attachments=[...($("installationQuantityAttachments")?.files||[])];
         const shouldCreateInvoice=Boolean(directWithoutInvoice||directInvoiceNumber);
         if(shouldCreateInvoice&&!directInvoiceDate)throw new Error('تاريخ الفاتورة مطلوب عند التحويل إلى فاتورة.');
         if(shouldCreateInvoice&&!quantityCurrent.visitId)throw new Error('التحويل المباشر إلى فاتورة متاح لزيارات التنفيذ فقط.');
@@ -322,7 +351,7 @@
           status($("installationQuantityConfirmationStatus"),"جاري اعتماد الكمية وإنشاء الفاتورة...");
           await window.InstallationsServiceSafe.confirmActualQuantitiesAndInvoice({
             id:quantityCurrent.id,visitId:quantityCurrent.visitId,groupVisitIds:quantityCurrent.groupVisitIds||[],lines,remainingAction:action,schedule,
-            notes:$("installationQuantityConfirmationNotes").value.trim(),
+            notes:$("installationQuantityConfirmationNotes").value.trim(),attachments,
             invoiceNumber:directInvoiceNumber,invoiceDate:directInvoiceDate,withoutInvoice:directWithoutInvoice
           });
           window.dispatchEvent(new CustomEvent("kyum-installation-quantities-confirmed",{detail:{requestId:quantityCurrent.id,action,directInvoice:true}}));
@@ -334,7 +363,7 @@
         status($("installationQuantityConfirmationStatus"),"جاري اعتماد التنفيذ الفعلي...");
         await window.InstallationsServiceSafe.confirmActualQuantities({
           id:quantityCurrent.id,visitId:quantityCurrent.visitId||null,groupVisitIds:quantityCurrent.groupVisitIds||[],lines,remainingAction:action,schedule,
-          notes:$("installationQuantityConfirmationNotes").value.trim()
+          notes:$("installationQuantityConfirmationNotes").value.trim(),attachments
         });
         window.dispatchEvent(new CustomEvent("kyum-installation-quantities-confirmed",{detail:{requestId:quantityCurrent.id,action}}));
         $("installationQuantityConfirmationDialog").close();

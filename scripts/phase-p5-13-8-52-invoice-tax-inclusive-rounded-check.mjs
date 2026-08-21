@@ -9,7 +9,7 @@ const checks=[
   ['invoice display is rounded to whole SAR',completion.includes('invoiceValue=Math.round(Number(financials.finalAmountIncludingTax||0))') && completion.includes('installationCompletionInvoiceAmount").value=String(Math.max(0,invoiceValue))')],
   ['scheduled date remains the invoice date default',completion.includes('r.report?.invoice_date||r.scheduledDate||today()')],
   ['modal async failure is surfaced safely',completion.includes('openInstallation(r).catch(err=>status(')],
-  ['release version updated',version.version==='18.55.70' && version.build===185570]
+  ['release version at or beyond phase 52',Number(version.build||0)>=185570]
 ];
 let failed=0; for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} - ${name}`);if(!ok)failed++;}
 console.log(`\n${checks.length-failed}/${checks.length} checks passed`); process.exit(failed?1:0);

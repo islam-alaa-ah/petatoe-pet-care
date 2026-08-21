@@ -567,20 +567,42 @@
     if(error)throw new Error('تعذر تأكيد مرحلة التحصيل للحالة العالقة: '+error.message);
     return data||{};
   }
-  async function confirmActualQuantities(payload){requireAction('edit','installationCompletion');const groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))];const grouped=Boolean(payload.visitId&&groupIds.length>1);const rpc=grouped?'confirm_installation_execution_group_quantities_v2':(payload.visitId?'confirm_installation_execution_visit_quantities':'confirm_installation_actual_quantities');const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:{p_request_id:payload.id,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null};const {data,error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر اعتماد التنفيذ الفعلي: '+error.message);void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId||null,{remainingAction:payload.remainingAction,grouped},'confirm:'+String(payload.visitId||payload.id));if(payload.remainingAction==='append_to_next_visit')void notifyEvent('installation.remaining_added_to_next',payload.id,payload.visitId||null,{},'remaining-next:'+String(payload.visitId||payload.id));if(payload.remainingAction==='return_to_schedule')void notifyEvent('installation.remaining_to_schedule',payload.id,payload.visitId||null,{},'remaining-schedule:'+String(payload.visitId||payload.id));return data}
+  async function uploadCompletionConfirmationAttachments(requestId,visitId,files=[]){
+    const items=[...(files||[])];
+    if(items.length>6)throw new Error('الحد الأقصى 6 مرفقات في عملية التأكيد الواحدة.');
+    const uploaded=[];
+    try{for(const file of items)uploaded.push(await uploadExecutionFile(requestId,file,'collection',visitId||null));return uploaded}
+    catch(error){if(uploaded.length)await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
+  }
+  async function confirmActualQuantities(payload){
+    requireAction('edit','installationCompletion');
+    const groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))],grouped=Boolean(payload.visitId&&groupIds.length>1),uploaded=[];
+    try{
+      if(payload?.attachments?.length)uploaded.push(...await uploadCompletionConfirmationAttachments(payload.id,payload.visitId||null,payload.attachments));
+      const rpc=grouped?'confirm_installation_execution_group_quantities_v2':(payload.visitId?'confirm_installation_execution_visit_quantities':'confirm_installation_actual_quantities');
+      const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:{p_request_id:payload.id,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null};
+      const {data,error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر اعتماد التنفيذ الفعلي: '+error.message);
+      void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId||null,{remainingAction:payload.remainingAction,grouped,attachments:uploaded.length},'confirm:'+String(payload.visitId||payload.id));
+      if(payload.remainingAction==='append_to_next_visit')void notifyEvent('installation.remaining_added_to_next',payload.id,payload.visitId||null,{},'remaining-next:'+String(payload.visitId||payload.id));
+      if(payload.remainingAction==='return_to_schedule')void notifyEvent('installation.remaining_to_schedule',payload.id,payload.visitId||null,{},'remaining-schedule:'+String(payload.visitId||payload.id));
+      return data;
+    }catch(error){if(uploaded.length)await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
+  }
   async function confirmActualQuantitiesAndInvoice(payload){
     requireAction('edit','installationCompletion');
     if(!payload?.id||!payload?.visitId)throw new Error('بيانات زيارة التنفيذ غير مكتملة.');
-    const invoiceNumber=String(payload.invoiceNumber||'').trim(),invoiceDate=String(payload.invoiceDate||'').trim(),withoutInvoice=Boolean(payload.withoutInvoice),groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))];
+    const invoiceNumber=String(payload.invoiceNumber||'').trim(),invoiceDate=String(payload.invoiceDate||'').trim(),withoutInvoice=Boolean(payload.withoutInvoice),groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))],uploaded=[];
     if(!withoutInvoice&&!invoiceNumber)throw new Error('رقم الفاتورة مطلوب أو اختر بدون فاتورة.');
     if(!invoiceDate)throw new Error('تاريخ الفاتورة مطلوب.');
-    const grouped=groupIds.length>1,rpc=grouped?'confirm_installation_execution_group_and_create_invoice_v5':'confirm_installation_execution_visit_and_create_invoice_v4';
-    const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice}:{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice};
-    const {data,error}=await db().rpc(rpc,args);
-    if(error)throw new Error('تعذر اعتماد الكمية وإنشاء الفاتورة: '+error.message);
-    void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId,{remainingAction:payload.remainingAction,directInvoice:true,grouped},'confirm-invoice:'+String(payload.visitId));
-    void notifyEvent('sales_invoice.created',payload.id,payload.visitId,{sourceType:'installation',directConfirmation:true,grouped},'invoice:'+String(payload.visitId));
-    return data;
+    try{
+      if(payload?.attachments?.length)uploaded.push(...await uploadCompletionConfirmationAttachments(payload.id,payload.visitId,payload.attachments));
+      const grouped=groupIds.length>1,rpc=grouped?'confirm_installation_execution_group_and_create_invoice_v5':'confirm_installation_execution_visit_and_create_invoice_v4';
+      const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice}:{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice};
+      const {data,error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر اعتماد الكمية وإنشاء الفاتورة: '+error.message);
+      void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId,{remainingAction:payload.remainingAction,directInvoice:true,grouped,attachments:uploaded.length},'confirm-invoice:'+String(payload.visitId));
+      void notifyEvent('sales_invoice.created',payload.id,payload.visitId,{sourceType:'installation',directConfirmation:true,grouped},'invoice:'+String(payload.visitId));
+      return data;
+    }catch(error){if(uploaded.length)await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
   }
   async function cancelConfirmedQuantity(payload){
     if(window.CustomerPermissions?.currentRole?.()!=='super_admin')throw new Error('إلغاء الكمية المنفذة متاح لمدير النظام فقط.');
