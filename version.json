@@ -1,12 +1,13 @@
 {
-  "version": "18.55.75",
-  "build": 185575,
+  "version": "18.55.76",
+  "build": 185576,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
-  "title": "PETATOE Sales Invoice Loading Hotfix",
+  "title": "PETATOE Sales Invoice Attachment Preview",
   "notes": [
-    "إصلاح Regression تحميل فواتير المبيعات بإزالة الاعتماد على self-relationship داخل PostgREST schema cache وجلب مرجع الفاتورة باستعلام مستقل وآمن.",
-    "تصحيح تنسيق خيار بدون فاتورة أسفل رقم الفاتورة اليدوية ليظهر في سطر واحد دون تغيير منطق الحفظ."
+    "تكبير نافذة مرفقات فواتير المبيعات داخل نفس الـcanonical attachments dialog دون تغيير مصدر المرفقات.",
+    "عرض الصور مباشرة داخل نافذة المرفقات بمعاينة واضحة مع الإبقاء على زر فتح كخيار إضافي.",
+    "عزل تنسيق المعاينة الموسعة على سياق فواتير المبيعات للحفاظ على استخدامات نافذة المرفقات الأخرى."
   ],
-  "cacheToken": "petatoe-pwa-18-55-75-sales-invoice-loading-hotfix"
+  "cacheToken": "petatoe-pwa-18-55-76-sales-invoice-attachment-preview"
 }
