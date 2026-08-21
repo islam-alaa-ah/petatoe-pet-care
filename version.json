@@ -1,13 +1,13 @@
 {
-  "version": "18.55.78",
-  "build": 185578,
+  "version": "18.55.79",
+  "build": 185579,
   "forceUpdate": true,
   "releaseDate": "2026-08-22",
-  "title": "PETATOE Desktop Header Back Navigation",
+  "title": "PETATOE Update Runtime Version Alignment Hotfix",
   "notes": [
-    "إضافة زر رجوع داخل هيدر الديسكتوب باستخدام سجل تنقل التطبيق الداخلي دون الخروج من البرنامج.",
-    "عزل زر الرجوع عن هيدر الموبايل والحفاظ على RTL/LTR والهوية البصرية الحالية.",
-    "عدم تغيير منطق الشاشات أو الصلاحيات أو البيانات."
+    "إصلاح تكرار إعادة تشغيل التطبيق الناتج عن عدم تطابق إصدار PWA runtime مع version.json بعد المرحلة السابقة.",
+    "توحيد إصدار pwa.js وملف version.json وService Worker cache token على الإصدار نفسه.",
+    "عدم تغيير منطق التنقل أو الجلسة أو الشاشات أو البيانات."
   ],
-  "cacheToken": "petatoe-pwa-18-55-78-desktop-header-back-navigation"
+  "cacheToken": "petatoe-pwa-18-55-79-update-runtime-version-alignment-hotfix"
 }
