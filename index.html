@@ -52,7 +52,7 @@
   <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.55.77" />
   <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.55.77" />
   <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.55.77" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.77" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.55.83" />
   <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.55.77" />
   <link rel="stylesheet" href="assets/css/notification-center.css?v=18.55.77" />
   <link rel="stylesheet" href="assets/css/translation-center.css?v=18.55.77" />
@@ -3444,11 +3444,28 @@
   <dialog id="salesInvoiceEditDialog" class="glass-dialog sales-invoice-edit-dialog">
     <form id="salesInvoiceEditForm" class="dialog-shell">
       <div class="dialog-header"><div><h3 data-petatoe-i18n="invoices.edit.title">تعديل بيانات الفاتورة</h3><p id="salesInvoiceEditRequestLabel">—</p></div><button id="closeSalesInvoiceEditDialog" class="icon-btn" type="button" aria-label="إغلاق">×</button></div>
-      <div class="form-grid sales-invoice-edit-grid">
-        <label><span data-petatoe-i18n="invoices.col.invoice">رقم الفاتورة</span><input id="salesInvoiceEditNumber" type="text" autocomplete="off"></label>
-        <label><span data-petatoe-i18n="invoices.col.date">تاريخ الفاتورة</span><input id="salesInvoiceEditDate" type="date" required></label>
-        <label class="full-span"><span data-petatoe-i18n="execution.collection.method">طريقة الدفع</span><select id="salesInvoiceEditPaymentMethod"><option value="" data-petatoe-i18n="execution.collection.chooseMethod">اختر طريقة الدفع</option><option value="تحويل بنكي" data-petatoe-i18n="execution.collection.bankTransfer">تحويل</option><option value="بطاقة" data-petatoe-i18n="execution.collection.card">بطاقة / شبكة</option><option value="نقدي" data-petatoe-i18n="execution.collection.cash">نقدي</option><option value="دفع إلكتروني" data-petatoe-i18n="execution.collection.online">دفع عن طريق الموقع</option></select></label>
-        <label class="full-span sales-invoice-no-invoice"><input id="salesInvoiceEditNoInvoice" type="checkbox"><span data-petatoe-i18n="appointments.completion.noInvoice">بدون فاتورة</span></label>
+      <div class="sales-invoice-edit-body">
+        <section class="sales-invoice-edit-section">
+          <h4 data-petatoe-i18n="invoices.edit.invoiceSection">بيانات الفاتورة والتحصيل</h4>
+          <div class="form-grid sales-invoice-edit-grid">
+            <label><span data-petatoe-i18n="invoices.col.invoice">رقم الفاتورة</span><input id="salesInvoiceEditNumber" type="text" autocomplete="off"></label>
+            <label><span data-petatoe-i18n="invoices.col.date">تاريخ الفاتورة</span><input id="salesInvoiceEditDate" type="date" required></label>
+            <label><span data-petatoe-i18n="execution.collection.method">طريقة الدفع</span><select id="salesInvoiceEditPaymentMethod" required><option value="" data-petatoe-i18n="execution.collection.chooseMethod">اختر طريقة الدفع</option><option value="تحويل بنكي" data-petatoe-i18n="execution.collection.bankTransfer">تحويل</option><option value="بطاقة" data-petatoe-i18n="execution.collection.card">بطاقة / شبكة</option><option value="نقدي" data-petatoe-i18n="execution.collection.cash">نقدي</option><option value="دفع إلكتروني" data-petatoe-i18n="execution.collection.online">دفع عن طريق الموقع</option></select></label>
+            <label><span data-petatoe-i18n="invoices.edit.collectedAmount">المبلغ المحصل</span><input id="salesInvoiceEditCollectedAmount" type="text" readonly></label>
+            <label class="full-span sales-invoice-no-invoice"><input id="salesInvoiceEditNoInvoice" type="checkbox"><span data-petatoe-i18n="appointments.completion.noInvoice">بدون فاتورة</span></label>
+            <label class="full-span"><span data-petatoe-i18n="invoices.edit.collectionNotes">ملاحظات التحصيل</span><textarea id="salesInvoiceEditCollectionNotes" rows="3"></textarea></label>
+          </div>
+        </section>
+        <section class="sales-invoice-edit-section">
+          <div class="sales-invoice-edit-section-head"><div><h4 data-petatoe-i18n="invoices.edit.servicesSection">الخدمات</h4><p data-petatoe-i18n="invoices.edit.servicesHint">يمكن إضافة أو حذف أو تعديل الخدمة والعدد والسعر. فواتير المواعيد تُحدّث بيانات الطلب والتنفيذ المرتبطة تلقائيًا.</p></div><button id="addSalesInvoiceEditService" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="appointmentNew.services.add">إضافة خدمة</button></div>
+          <div class="sales-invoice-edit-services-wrap"><table class="sales-invoice-edit-services"><thead><tr><th data-petatoe-i18n="appointmentNew.services.type">الخدمة</th><th data-petatoe-i18n="appointmentNew.services.quantity">العدد</th><th data-petatoe-i18n="appointmentNew.services.unitPrice">سعر الوحدة</th><th data-petatoe-i18n="appointmentNew.services.total">الإجمالي</th><th data-petatoe-i18n="appointmentNew.services.action">إجراء</th></tr></thead><tbody id="salesInvoiceEditServicesBody"></tbody></table></div>
+          <div class="sales-invoice-edit-total"><span data-petatoe-i18n="invoices.edit.servicesTotal">إجمالي الخدمات</span><strong id="salesInvoiceEditServicesTotal">SAR 0.00</strong></div>
+        </section>
+        <section id="salesInvoiceEditAttachmentsSection" class="sales-invoice-edit-section">
+          <h4 data-petatoe-i18n="invoices.edit.collectionAttachments">مرفقات التحصيل</h4>
+          <div id="salesInvoiceEditExistingAttachments" class="sales-invoice-edit-attachments"></div>
+          <label class="sales-invoice-edit-new-files"><span data-petatoe-i18n="invoices.edit.addAttachments">إضافة مرفقات تحصيل</span><input id="salesInvoiceEditNewAttachments" type="file" accept="image/jpeg,image/png,image/webp" multiple><small data-petatoe-i18n="invoices.edit.attachmentsHint">يمكن إضافة صور جديدة أو تحديد المرفقات الحالية للحذف.</small></label>
+        </section>
       </div>
       <div id="salesInvoiceEditStatus" class="data-status hidden" aria-live="polite"></div>
       <div class="dialog-actions"><button id="cancelSalesInvoiceEdit" class="secondary-btn" type="button" data-petatoe-i18n="common.cancel">إلغاء</button><button id="saveSalesInvoiceEdit" class="primary-btn" type="submit" data-petatoe-i18n="common.save">حفظ</button></div>
@@ -3641,7 +3658,7 @@
   <script src="assets/js/permissions.js?v=18.55.77"></script>
   <script src="assets/js/permission-engine.js?v=18.55.77"></script>
   <script src="assets/js/localization-center-service.js?v=18.55.77"></script>
-  <script src="assets/js/localization-center.js?v=18.55.82"></script>
+  <script src="assets/js/localization-center.js?v=18.55.83"></script>
   <script src="assets/js/translation-center.js?v=18.55.77"></script>
   <script src="assets/js/data-access-scope.js?v=18.55.77"></script>
   <script src="assets/js/smart-cache.js?v=18.55.77"></script>
@@ -3653,7 +3670,7 @@
   <script src="assets/js/customers-service.js?v=18.55.77"></script>
   <script src="assets/js/followups-service.js?v=18.55.77"></script>
   <script src="assets/js/quotations-service.js?v=18.55.77"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.55.77"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.55.83"></script>
   <script src="assets/js/users-service.js?v=18.55.77"></script>
   <script src="assets/js/activity-service.js?v=18.55.77"></script>
   <script src="assets/js/backup-service.js?v=18.55.77"></script>
@@ -3662,7 +3679,7 @@
   <script src="assets/js/offline-read-cache.js?v=18.55.77"></script>
   <script src="assets/js/cache-dependency-engine.js?v=18.55.77"></script>
   <script src="assets/js/daily-operations-service.js?v=18.55.77"></script>
-  <script src="assets/js/installations-service.js?v=18.55.82"></script>
+  <script src="assets/js/installations-service.js?v=18.55.83"></script>
   <script src="assets/js/installations-service-contract.js?v=18.55.77"></script>
   <script src="assets/js/employee-report-settings-service.js?v=18.55.77"></script>
   <script src="assets/js/whatsapp-template-service.js?v=18.55.77"></script>
@@ -3683,16 +3700,16 @@
   <script src="assets/js/app.js?v=18.55.78"></script>
   <script src="assets/js/customer-excel-actions-hotfix.js?v=18.55.77"></script>
   <script src="assets/js/notification-center.js?v=18.55.77"></script>
-  <script src="assets/js/sales-invoices.js?v=18.55.77"></script>
-  <script src="assets/js/installations-module.js?v=18.55.82"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.55.82"></script>
-  <script src="assets/js/installation-execution.js?v=18.55.82"></script>
+  <script src="assets/js/sales-invoices.js?v=18.55.83"></script>
+  <script src="assets/js/installations-module.js?v=18.55.83"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.55.83"></script>
+  <script src="assets/js/installation-execution.js?v=18.55.83"></script>
   <script src="assets/js/installation-completion.js?v=18.55.80"></script>
   <script src="assets/js/installation-operations-reports.js?v=18.55.77"></script>
   <script src="assets/js/installation-dashboard-settings.js?v=18.55.77"></script>
   <script src="assets/js/installation-settings-management.js?v=18.55.77"></script>
   <script src="assets/js/mobile.js?v=18.55.77"></script>
-  <script src="assets/js/pwa.js?v=18.55.82"></script>
+  <script src="assets/js/pwa.js?v=18.55.83"></script>
   <script src="assets/js/native.js?v=18.55.77"></script>
 </body>
 </html>

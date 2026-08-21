@@ -52,6 +52,54 @@
   }
   async function createFromQuotation(payload){requireAction("add");const invoiceNumber=String(payload?.invoiceNumber||"").trim(),invoiceDate=String(payload?.invoiceDate||"").trim();if(!invoiceNumber)throw new Error("رقم الفاتورة مطلوب.");if(!invoiceDate)throw new Error("تاريخ الفاتورة مطلوب.");const {data,error}=await db().rpc("create_sales_invoice_from_quotation",{p_quotation_id:payload.quotationId,p_invoice_number:invoiceNumber,p_invoice_date:invoiceDate});if(error)throw new Error("تعذر تحويل العقد إلى فاتورة: "+error.message);return Array.isArray(data)?data[0]:data}
   async function createFromInstallationVisit(payload){requireAction("add");const invoiceNumber=String(payload?.invoiceNumber||"").trim(),invoiceDate=String(payload?.invoiceDate||"").trim(),withoutInvoice=Boolean(payload?.withoutInvoice);if(!payload?.installationRequestId||!payload?.visitId)throw new Error("بيانات زيارة التركيب غير مكتملة.");if(!withoutInvoice&&!invoiceNumber)throw new Error("رقم الفاتورة مطلوب أو اختر بدون فاتورة.");if(!invoiceDate)throw new Error("تاريخ الفاتورة مطلوب.");const {data,error}=await db().rpc("create_sales_invoice_from_installation_group_v3",{p_installation_request_id:payload.installationRequestId,p_visit_id:payload.visitId,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice});if(error)throw new Error("تعذر تحويل الكمية المنفذة إلى فاتورة: "+error.message);return Array.isArray(data)?data[0]:data}
+
+  async function editWorkspace(invoiceId){
+    requireAction("edit");
+    if(!invoiceId)throw new Error("معرّف الفاتورة مطلوب.");
+    const {data,error}=await db().rpc("get_sales_invoice_edit_workspace",{p_invoice_id:invoiceId});
+    if(error)throw new Error("تعذر تحميل بيانات تعديل الفاتورة: "+error.message);
+    const x=data&&typeof data==="object"?data:{};
+    return {sourceType:x.sourceType||"",requestId:x.requestId||"",visitId:x.visitId||"",serviceCatalog:Array.isArray(x.serviceCatalog)?x.serviceCatalog:[],services:Array.isArray(x.services)?x.services:[],collection:x.collection&&typeof x.collection==="object"?x.collection:{},attachments:Array.isArray(x.attachments)?x.attachments:[]};
+  }
+  async function uploadCollectionAttachment(requestId,visitId,file){
+    if(!file)return null;
+    if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw new Error("صيغة الصورة غير مدعومة.");
+    if(file.size<1||file.size>10485760)throw new Error("حجم الصورة يجب أن يكون بين 1 بايت و10 ميجابايت.");
+    const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
+    const path=`${requestId}/execution/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const bucket=db().storage.from("installation-evidence");
+    const {error:up}=await bucket.upload(path,file,{contentType:file.type,upsert:false});
+    if(up)throw new Error("تعذر رفع مرفق التحصيل: "+up.message);
+    const {data:record,error}=await db().from("installation_execution_files").insert({installation_request_id:requestId,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size,file_kind:"collection",execution_visit_id:visitId||null}).select("id,storage_path").single();
+    if(error){await bucket.remove([path]).catch(()=>{});throw new Error("تعذر تسجيل مرفق التحصيل: "+error.message);}
+    return {id:record?.id||null,path};
+  }
+  async function rollbackUploadedAttachments(files){
+    const list=(files||[]).filter(Boolean);if(!list.length)return;
+    const ids=list.map(x=>x.id).filter(Boolean),paths=list.map(x=>x.path).filter(Boolean);
+    if(ids.length)await db().from("installation_execution_files").delete().in("id",ids).catch(()=>{});
+    if(paths.length)await db().storage.from("installation-evidence").remove(paths).catch(()=>{});
+  }
+  async function updateFullInvoice(payload){
+    requireAction("edit");
+    if(!payload?.id)throw new Error("معرّف الفاتورة مطلوب.");
+    const invoiceNumber=String(payload.invoiceNumber||"").trim(),invoiceDate=String(payload.invoiceDate||"").trim(),withoutInvoice=Boolean(payload.withoutInvoice),paymentMethod=String(payload.paymentMethod||"").trim();
+    if(!withoutInvoice&&!invoiceNumber)throw new Error("رقم الفاتورة مطلوب أو اختر بدون فاتورة.");
+    if(!invoiceDate)throw new Error("تاريخ الفاتورة مطلوب.");
+    if(!paymentMethod)throw new Error("اختر طريقة الدفع.");
+    if(!Array.isArray(payload.services)||!payload.services.length)throw new Error("أضف خدمة واحدة على الأقل.");
+    const services=payload.services.map(x=>({request_service_id:x.requestServiceId||null,service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));
+    if(services.some(x=>!x.service_type_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_price)||x.unit_price<0))throw new Error("راجع نوع الخدمة والعدد والسعر في جميع الخدمات.");
+    const uploaded=[];
+    try{
+      if(payload.sourceType==="installation"&&payload.requestId&&Array.isArray(payload.newAttachments)){for(const file of payload.newAttachments)uploaded.push(await uploadCollectionAttachment(payload.requestId,payload.visitId||null,file));}
+      const {data,error}=await db().rpc("update_sales_invoice_full_v1",{p_invoice_id:payload.id,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice,p_payment_method:paymentMethod,p_services:services,p_collection_notes:String(payload.collectionNotes||"").trim()||null,p_removed_attachment_ids:Array.isArray(payload.removedAttachmentIds)?payload.removedAttachmentIds:[]});
+      if(error)throw new Error("تعذر حفظ تعديل الفاتورة: "+error.message);
+      const removedPaths=Array.isArray(data?.removedStoragePaths)?data.removedStoragePaths:[];
+      if(removedPaths.length)await db().storage.from("installation-evidence").remove(removedPaths).catch(()=>{});
+      return data||{};
+    }catch(error){if(uploaded.length)await rollbackUploadedAttachments(uploaded);throw error;}
+  }
   async function updateInvoice(payload){requireAction("edit");const invoiceNumber=String(payload?.invoiceNumber||"").trim(),invoiceDate=String(payload?.invoiceDate||"").trim(),withoutInvoice=Boolean(payload?.withoutInvoice),paymentMethod=String(payload?.paymentMethod||"").trim();if(!payload?.id)throw new Error("معرّف الفاتورة مطلوب.");if(!withoutInvoice&&!invoiceNumber)throw new Error("رقم الفاتورة مطلوب أو اختر بدون فاتورة.");if(!invoiceDate)throw new Error("تاريخ الفاتورة مطلوب.");if(payload?.sourceType==="installation"&&!paymentMethod)throw new Error("طريقة الدفع مطلوبة لفاتورة الموعد.");const {data,error}=await db().rpc("update_sales_invoice_registry_v2",{p_invoice_id:payload.id,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice,p_payment_method:payload?.sourceType==="installation"?paymentMethod:null});if(error)throw new Error("تعذر تعديل بيانات الفاتورة: "+error.message);return Array.isArray(data)?data[0]:data}
-  window.SalesInvoicesService={list,manualCatalog,createManual,createFromQuotation,createFromInstallationVisit,updateInvoice};
+  window.SalesInvoicesService={list,manualCatalog,createManual,createFromQuotation,createFromInstallationVisit,editWorkspace,updateFullInvoice,updateInvoice};
 })();
