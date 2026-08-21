@@ -616,6 +616,7 @@
     ["appointments.requests.kpiScheduled","label","مجدولة","Scheduled"],
     ["appointments.requests.kpiInProgress","label","قيد التنفيذ","In progress"],
     ["appointments.requests.kpiOverdue","label","متأخرة","Overdue"],
+    ["appointments.requests.filterOverdue","filter","متأخر","Overdue"],
     ["appointments.requests.loading","status","جاري تحميل المواعيد...","Loading appointments..."],
     ["appointments.common.view","button","عرض","View"],
     ["appointments.common.editServices","button","تعديل الخدمات","Edit services"],

@@ -510,16 +510,39 @@
     return `${hour - 12}:${minute} مساءً`;
   }
 
+  const INSTALLATION_OVERDUE_FILTER = "overdue";
+  const INSTALLATION_OVERDUE_CLOSED_STATUSES = new Set(["مكتمل", "ملغي"]);
+
+  function installationScheduledDeadline(row) {
+    const dateMatch = String(row?.scheduledDate || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!dateMatch) return null;
+    const year = Number(dateMatch[1]), month = Number(dateMatch[2]) - 1, day = Number(dateMatch[3]);
+    const timeMatch = String(row?.scheduledTime || "").match(/^(\d{1,2}):(\d{2})/);
+    if (timeMatch) {
+      const hour = Number(timeMatch[1]), minute = Number(timeMatch[2]);
+      if (hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) return new Date(year, month, day, hour, minute, 0, 0).getTime();
+    }
+    // Legacy rows without an exact scheduled time become overdue only after their scheduled day has fully passed.
+    return new Date(year, month, day + 1, 0, 0, 0, 0).getTime();
+  }
+
+  function isInstallationRequestOverdue(row, nowMs = Date.now()) {
+    if (!row?.scheduledDate || INSTALLATION_OVERDUE_CLOSED_STATUSES.has(row.status)) return false;
+    const deadline = installationScheduledDeadline(row);
+    return Number.isFinite(deadline) && deadline < nowMs;
+  }
+
   function filtered() {
     const query = ($("installationRequestSearch")?.value || "").trim().toLowerCase();
     const team = $("installationRequestRepresentativeFilter")?.value || "";
     const state = $("installationRequestStatusFilter")?.value || "";
     const dateFrom = $("installationRequestDateFrom")?.value || "";
     const dateTo = $("installationRequestDateTo")?.value || "";
+    const nowMs = Date.now();
     return rows.filter(row =>
       (!query || [row.requestNumber, row.customerName, row.customerPhone, row.quotationNumber, row.services.map(service => service.serviceName).join(" ")].join(" ").toLowerCase().includes(query)) &&
       (!team || row.teamId === team) &&
-      (!state || row.status === state) &&
+      (!state || (state === INSTALLATION_OVERDUE_FILTER ? isInstallationRequestOverdue(row, nowMs) : row.status === state)) &&
       (!dateFrom || row.scheduledDate >= dateFrom) &&
       (!dateTo || row.scheduledDate <= dateTo)
     );
@@ -527,11 +550,11 @@
 
   function render() {
     const data = filtered();
-    const today = new Date().toISOString().slice(0, 10);
+    const nowMs = Date.now();
     $("installationKpiTotal").textContent = rows.length;
     $("installationKpiScheduled").textContent = rows.filter(row => ["مجدول", "مسند"].includes(row.status)).length;
     $("installationKpiInProgress").textContent = rows.filter(row => ["في الطريق", "وصل إلى العميل", "قيد التنفيذ"].includes(row.status)).length;
-    $("installationKpiOverdue").textContent = rows.filter(row => row.scheduledDate && row.scheduledDate < today && !["مكتمل", "ملغي"].includes(row.status)).length;
+    $("installationKpiOverdue").textContent = rows.filter(row => isInstallationRequestOverdue(row, nowMs)).length;
 
     $("installationRequestsBody").innerHTML = data.length ? data.map(row => {
       const serviceSummary = row.services.length

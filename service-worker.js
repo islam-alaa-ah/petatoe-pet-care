@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-71-confirmation-direct-invoice-workflow";
+const CACHE_VERSION = "petatoe-pwa-18-55-72-appointment-overdue-filter";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
