@@ -15,7 +15,7 @@
 
 /* P5.13.8.15 — canonical invoice actions, edit dialog, and execution attachments. */
 .sales-invoices-table td:nth-child(4){font-variant-numeric:tabular-nums;white-space:nowrap}
-.sales-invoices-table td:nth-child(8),.sales-invoices-table td:nth-child(9){text-align:center;vertical-align:middle}
+.sales-invoices-table td:nth-child(9),.sales-invoices-table td:nth-child(10){text-align:center;vertical-align:middle}
 .sales-invoice-edit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .sales-invoice-no-invoice{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border-color,#d7dee8);border-radius:12px}
 .appointment-attachments-dialog{width:min(680px,calc(100vw - 28px))}
@@ -24,3 +24,27 @@
 .sales-invoice-attachment-item>div{min-width:0;display:grid;gap:3px}.sales-invoice-attachment-item small{color:var(--muted-text,#64748b);overflow-wrap:anywhere}
 html[data-theme="dark"] .sales-invoice-no-invoice,html[data-theme="dark"] .sales-invoice-attachment-item,body.dark-mode .sales-invoice-no-invoice,body.dark-mode .sales-invoice-attachment-item{background:var(--dark-surface,#0f1f35);color:#f8fafc;border-color:rgba(148,163,184,.24)}
 @media(max-width:767px){.sales-invoice-edit-grid{grid-template-columns:1fr}.sales-invoice-attachment-item{align-items:stretch;flex-direction:column}.sales-invoice-attachment-item .secondary-btn{width:100%}}
+
+/* P5.13.8.55 — Manual sales invoice canonical UI owner. */
+.sales-invoices-head-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.manual-sales-invoice-dialog{width:min(1080px,calc(100vw - 28px));max-height:min(92vh,920px)}
+.manual-sales-invoice-body{display:grid;gap:16px;max-height:68vh;overflow:auto;padding:2px 4px 2px 2px}
+.manual-sales-invoice-section{padding:16px;border:1px solid var(--border-color,#d7dee8);border-radius:16px;background:var(--card-bg,#fff)}
+.manual-sales-invoice-section>h4,.manual-sales-invoice-section-head h4{margin:0;color:var(--text-color,inherit)}
+.manual-sales-invoice-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.manual-sales-invoice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.manual-sales-invoice-customer-results{position:absolute;z-index:80;inset-inline:0;top:calc(100% + 6px);max-height:260px;overflow:auto;padding:6px;border:1px solid var(--border-color,#d7dee8);border-radius:14px;background:var(--card-bg,#fff);box-shadow:0 18px 38px rgba(15,23,42,.16)}
+.manual-sales-invoice-grid label.full-span{position:relative}
+.manual-sales-invoice-customer-results button{width:100%;display:grid;gap:3px;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:inherit;text-align:start;cursor:pointer}
+.manual-sales-invoice-customer-results button:hover,.manual-sales-invoice-customer-results button:focus-visible{background:rgba(59,130,246,.1);outline:none}
+.manual-sales-invoice-customer-results small{color:var(--muted-text,#64748b)}
+.manual-sales-invoice-services-wrap{overflow:auto;border:1px solid var(--border-color,#d7dee8);border-radius:14px}
+.manual-sales-invoice-services{width:100%;border-collapse:collapse;min-width:720px}
+.manual-sales-invoice-services th,.manual-sales-invoice-services td{padding:10px;border-bottom:1px solid var(--border-color,#d7dee8);vertical-align:middle}
+.manual-sales-invoice-services tbody tr:last-child td{border-bottom:0}
+.manual-sales-invoice-services select,.manual-sales-invoice-services input{width:100%;min-width:120px}
+.manual-sales-invoice-services td:nth-child(2){width:130px}.manual-sales-invoice-services td:nth-child(3){width:180px}.manual-sales-invoice-services td:nth-child(4){width:160px;white-space:nowrap}.manual-sales-invoice-services td:nth-child(5){width:110px;text-align:center}
+.manual-sales-invoice-financials{display:grid;grid-template-columns:minmax(280px,.75fr) minmax(360px,1.25fr);gap:16px;align-items:start;margin-top:14px}
+.manual-sales-invoice-discount{margin:0}.manual-sales-invoice-summary{margin:0}
+html[data-theme="dark"] .manual-sales-invoice-section,html[data-theme="dark"] .manual-sales-invoice-customer-results,body.dark-mode .manual-sales-invoice-section,body.dark-mode .manual-sales-invoice-customer-results{background:var(--dark-surface,#0f1f35);color:#f8fafc;border-color:rgba(148,163,184,.24)}
+@media(max-width:767px){.sales-invoices-head-actions{width:100%}.sales-invoices-head-actions .primary-btn,.sales-invoices-head-actions .secondary-btn{flex:1}.manual-sales-invoice-body{max-height:70vh}.manual-sales-invoice-grid{grid-template-columns:1fr}.manual-sales-invoice-section-head{align-items:stretch;flex-direction:column}.manual-sales-invoice-financials{grid-template-columns:1fr}.manual-sales-invoice-section{padding:12px}.manual-sales-invoice-dialog{width:calc(100vw - 18px)}}
