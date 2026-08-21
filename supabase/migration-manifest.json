@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.55.67",
-    "build": 185567,
+    "version": "18.55.68",
+    "build": 185568,
     "date": "2026-08-21"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -67,10 +67,13 @@
       "supabase/migrations/phase_p5_13_8_42_completion_group_invoice_authority.sql",
       "supabase/migrations/phase_p5_13_8_44_revisit_transactional_guard.sql",
       "supabase/migrations/phase_p5_13_8_45_completion_attachment_permission_safe_read.sql"
+    ],
+    "recentCertifiedTail": [
+      "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql"
     ]
   },
   "inventoryStats": {
-    "historicalMigrationCount": 184,
+    "historicalMigrationCount": 185,
     "uppercaseFilenameCount": 4,
     "shortAliasCount": 5,
     "allTimestampPrefixed": false
@@ -1015,6 +1018,11 @@
       "path": "supabase/migrations/phase_petatoe_p4_canonical_customer_master.sql",
       "sha256": "67fe34d9f97c64b46b26c2f5b1d4929d47caa23d86241e5cd7eb8c7cc1dfb094",
       "bytes": 18097
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
+      "sha256": "5196bcf2881028971f989c59adb2ffd715eb0dcdf5027ebaf4ef6ab37a234b07",
+      "bytes": 13268
     }
   ]
 }

@@ -528,7 +528,7 @@
     requireAction('edit','installationCompletion');
     if(!payload?.id)throw new Error('معرّف الموعد مطلوب.');
     if(!Array.isArray(payload.services)||!payload.services.length)throw new Error('أضف خدمة واحدة على الأقل.');
-    const services=payload.services.map(x=>({service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));
+    const services=payload.services.map(x=>({request_service_id:x.requestServiceId||null,service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));
     if(services.some(x=>!x.service_type_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_price)||x.unit_price<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');
     const amount=Number(payload.collection?.amountCollected||0),discount=Number(payload.discountAmount||0);
     if(!Number.isFinite(amount)||amount<0)throw new Error('المبلغ المحصل غير صحيح.');

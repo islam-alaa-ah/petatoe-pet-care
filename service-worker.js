@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-67-migration-manifest-certification";
+const CACHE_VERSION = "petatoe-pwa-18-55-68-request-service-identity-recovery";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

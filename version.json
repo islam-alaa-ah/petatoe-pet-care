@@ -1,14 +1,14 @@
 {
-  "version": "18.55.67",
-  "build": 185567,
+  "version": "18.55.68",
+  "build": 185568,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
-  "title": "PETATOE Migration Manifest & Fresh Deployment Guard",
+  "title": "PETATOE Completion Workspace Request-Service Identity Recovery",
   "notes": [
-    "إضافة Manifest محكم لكل ملفات SQL التاريخية مع SHA-256 وحجم الملف لمنع فقد أو تعديل Migration تاريخية بدون اكتشاف.",
-    "منع اعتماد الترتيب الأبجدي لمجلد migrations كمسار Fresh Deployment لأن أسماء المراحل لا تمثل Timeline عالميًا واحدًا.",
-    "توثيق Legacy foundation order والـrecent certified migration tail بدون إعادة تسمية أو حذف أي Migration مطبقة.",
-    "إضافة Certification Check آلي يرفض أي Migration غير مسجلة أو أي اختلاف في Fingerprint، بدون أي تعديل على قاعدة البيانات أو Business Logic."
+    "اعتماد request_service_id كهوية Canonical لسطر الخدمة داخل تأكيد الكمية المنفذة بدل service_type_id.",
+    "السماح بوجود أكثر من سطر لنفس نوع الخدمة مع حفظ وتعديل وحذف كل سطر بشكل مستقل بدون مضاعفة الكميات.",
+    "إعادة بناء توزيعات الزيارات حسب request_service_id مع حماية الكميات المنفذة والمؤكدة وعدم المساس بمسارات الجدولة أو الفوترة.",
+    "إضافة Regression Certification لمسار 1+1 ثم الدمج والإلغاء وإعادة الحفظ بدون عودة 2+2."
   ],
-  "cacheToken": "petatoe-pwa-18-55-67-migration-manifest-certification"
+  "cacheToken": "petatoe-pwa-18-55-68-request-service-identity-recovery"
 }
