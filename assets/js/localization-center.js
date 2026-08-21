@@ -106,6 +106,7 @@
     ['execution.summary.customer','label','العميل','Customer'],
     ['execution.summary.phone','label','الهاتف','Phone'],
     ['execution.summary.time','label','الوقت المحدد','Scheduled time'],
+    ['execution.summary.date','label','التاريخ','Date'],
     ['execution.summary.services','label','عدد الخدمات','Service count'],
     ['execution.summary.address','label','العنوان','Address'],
     ['execution.action.returnSchedule','button','إلغاء وإعادة إلى شاشة الجدولة','Cancel and return to scheduling'],

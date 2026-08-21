@@ -1,13 +1,13 @@
 {
-  "version": "18.55.76",
-  "build": 185576,
+  "version": "18.55.77",
+  "build": 185577,
   "forceUpdate": true,
-  "releaseDate": "2026-08-21",
-  "title": "PETATOE Sales Invoice Attachment Preview",
+  "releaseDate": "2026-08-22",
+  "title": "PETATOE Execution Dark Action & Schedule Date",
   "notes": [
-    "تكبير نافذة مرفقات فواتير المبيعات داخل نفس الـcanonical attachments dialog دون تغيير مصدر المرفقات.",
-    "عرض الصور مباشرة داخل نافذة المرفقات بمعاينة واضحة مع الإبقاء على زر فتح كخيار إضافي.",
-    "عزل تنسيق المعاينة الموسعة على سياق فواتير المبيعات للحفاظ على استخدامات نافذة المرفقات الأخرى."
+    "إصلاح تباين زر إلغاء وإعادة إلى شاشة الجدولة في الوضع الداكن داخل الـcanonical execution visual owner.",
+    "إظهار تاريخ الموعد أسفل الوقت المحدد في ملخص الطلب الحالي باستخدام نفس scheduledDate ومركز الترجمة المعتمد.",
+    "الحفاظ على منطق التنفيذ والجدولة والصلاحيات بدون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-55-76-sales-invoice-attachment-preview"
+  "cacheToken": "petatoe-pwa-18-55-77-execution-dark-action-schedule-date"
 }
