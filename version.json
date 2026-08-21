@@ -1,14 +1,13 @@
 {
-  "version": "18.55.68",
-  "build": 185568,
+  "version": "18.55.69",
+  "build": 185569,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
-  "title": "PETATOE Completion Workspace Request-Service Identity Recovery",
+  "title": "PETATOE Invoice Conversion Value & Scheduled Date Recovery",
   "notes": [
-    "اعتماد request_service_id كهوية Canonical لسطر الخدمة داخل تأكيد الكمية المنفذة بدل service_type_id.",
-    "السماح بوجود أكثر من سطر لنفس نوع الخدمة مع حفظ وتعديل وحذف كل سطر بشكل مستقل بدون مضاعفة الكميات.",
-    "إعادة بناء توزيعات الزيارات حسب request_service_id مع حماية الكميات المنفذة والمؤكدة وعدم المساس بمسارات الجدولة أو الفوترة.",
-    "إضافة Regression Certification لمسار 1+1 ثم الدمج والإلغاء وإعادة الحفظ بدون عودة 2+2."
+    "إصلاح قيمة الفاتورة في نافذة تحويل الكمية المؤكدة باستخدام الكميات المنفذة الفعلية للزيارة بدل ملخص يستبعد الزيارة الحالية.",
+    "إعادة حساب قيمة مجموعة التنفيذ بعد دمج الزيارات لضمان ظهور قيمة الطلب الصحيحة في الطلبات متعددة المواعيد.",
+    "جعل تاريخ الفاتورة الافتراضي هو تاريخ الموعد المجدول مع إبقائه قابلًا للتعديل قبل إنشاء الفاتورة."
   ],
-  "cacheToken": "petatoe-pwa-18-55-68-request-service-identity-recovery"
+  "cacheToken": "petatoe-pwa-18-55-69-invoice-conversion-display-date"
 }
