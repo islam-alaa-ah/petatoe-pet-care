@@ -21,7 +21,7 @@
   function formatTime(value){if(!value)return t('appointments.common.notSpecified','غير محدد');const [h,m='00']=String(value).slice(0,5).split(':').map(Number);if(lang()==='en'){const period=h>=12?'PM':'AM',hour=h%12||12;return `${hour}:${String(m).padStart(2,'0')} ${period}`}if(h===12)return `12:${String(m).padStart(2,'0')} ظهرًا`;if(h<12)return `${h}:${String(m).padStart(2,'0')} صباحًا`;return `${h-12}:${String(m).padStart(2,'0')} مساءً`}
   function money(value){return `SAR ${Number(value||0).toFixed(2)}`}
   function vat(value){return Math.round(Number(value||0)*1.15*100)/100}
-  function grossTotal(r){return Number(r?.grossServicesAmount??(Number(r?.totalServicesAmount||0)+Number(r?.taxAmount||0)))}
+  function grossTotal(r){const final=Number(r?.finalAmount);if(Number.isFinite(final)&&final>=0)return final;const gross=Number(r?.grossServicesAmount??(Number(r?.totalServicesAmount||0)+Number(r?.taxAmount||0))),discount=Math.max(0,Number(r?.discountAmount||0));return Math.max(0,Math.round((gross-discount)*100)/100)}
   function mapBtn(r,cls='execution-primary-action installation-map-primary-action'){const url=String(r?.customerMapUrl||'').trim();return url?`<a class="${cls}" href="${esc(url)}" target="_blank" rel="noopener noreferrer">فتح موقع العميل <span class="execution-arrow">◀</span></a>`:''}
   async function openRequestViewDirect(requestId){
     if(!requestId)throw new Error('معرّف الموعد مطلوب.');
