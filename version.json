@@ -1,12 +1,12 @@
 {
-  "version": "18.55.74",
-  "build": 185574,
+  "version": "18.55.75",
+  "build": 185575,
   "forceUpdate": true,
   "releaseDate": "2026-08-21",
-  "title": "PETATOE Manual Invoice Without Invoice",
+  "title": "PETATOE Sales Invoice Loading Hotfix",
   "notes": [
-    "إضافة خيار بدون فاتورة أسفل رقم الفاتورة داخل إضافة الفاتورة اليدوية.",
-    "عند تفعيل بدون فاتورة يصبح رقم الفاتورة غير مطلوب ويتم الحفظ باستخدام is_without_invoice بدون تغيير منطق الخدمات أو الخصم أو المرجع."
+    "إصلاح Regression تحميل فواتير المبيعات بإزالة الاعتماد على self-relationship داخل PostgREST schema cache وجلب مرجع الفاتورة باستعلام مستقل وآمن.",
+    "تصحيح تنسيق خيار بدون فاتورة أسفل رقم الفاتورة اليدوية ليظهر في سطر واحد دون تغيير منطق الحفظ."
   ],
-  "cacheToken": "petatoe-pwa-18-55-74-manual-invoice-without-invoice"
+  "cacheToken": "petatoe-pwa-18-55-75-sales-invoice-loading-hotfix"
 }

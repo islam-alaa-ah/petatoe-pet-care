@@ -5,8 +5,15 @@
   const normalize=r=>{const invoiceAmount=Number(r.invoice_amount||0),finalAmount=r.final_amount==null?null:Number(r.final_amount||0);return {id:r.id,requestNumber:r.request_number||"—",customerId:r.customer?.id||r.customer_id||"",customerName:r.customer?.customer_name||"—",invoiceNumber:r.is_without_invoice?"بدون فاتورة":(r.invoice_number||""),storedInvoiceNumber:r.invoice_number||"",isWithoutInvoice:Boolean(r.is_without_invoice),invoiceAmount,invoiceAmountInclTax:finalAmount==null?Math.round(invoiceAmount*1.15):finalAmount,installationExpenses:Number(r.installation_expenses||0),representativeName:r.representative?.full_name||"—",invoiceDate:r.invoice_date||"",sourceType:r.source_type||"quotation",status:r.status||"صادرة",quotationId:r.quotation_id||"",installationRequestId:r.installation_request_id||"",installationExecutionVisitId:r.installation_execution_visit_id||"",paymentMethod:r.payment_method||"",referenceInvoiceId:r.reference_sales_invoice_id||"",referenceInvoice:r.reference_invoice?{id:r.reference_invoice.id||"",requestNumber:r.reference_invoice.request_number||"",invoiceNumber:r.reference_invoice.is_without_invoice?"بدون فاتورة":(r.reference_invoice.invoice_number||""),invoiceDate:r.reference_invoice.invoice_date||""}:null,attachments:Array.isArray(r.attachments)?r.attachments:[]}};
   async function list(){
     requireAction("view");
-    const {data,error}=await db().from("sales_invoices").select("id,request_number,customer_id,invoice_number,is_without_invoice,invoice_amount,final_amount,installation_expenses,invoice_date,source_type,status,quotation_id,installation_request_id,installation_execution_visit_id,payment_method,reference_sales_invoice_id,customer:customers(id,customer_name),representative:sales_representatives(id,full_name),reference_invoice:sales_invoices!sales_invoices_reference_sales_invoice_id_fkey(id,request_number,invoice_number,is_without_invoice,invoice_date)").order("invoice_date",{ascending:false}).order("created_at",{ascending:false});
+    const {data,error}=await db().from("sales_invoices").select("id,request_number,customer_id,invoice_number,is_without_invoice,invoice_amount,final_amount,installation_expenses,invoice_date,source_type,status,quotation_id,installation_request_id,installation_execution_visit_id,payment_method,reference_sales_invoice_id,customer:customers(id,customer_name),representative:sales_representatives(id,full_name)").order("invoice_date",{ascending:false}).order("created_at",{ascending:false});
     if(error)throw new Error("تعذر تحميل فواتير المبيعات: "+error.message);
+    const referenceIds=[...new Set((data||[]).map(x=>x.reference_sales_invoice_id).filter(Boolean))];
+    let referenceById=new Map();
+    if(referenceIds.length){
+      const {data:referenceRows,error:referenceError}=await db().from("sales_invoices").select("id,request_number,invoice_number,is_without_invoice,invoice_date").in("id",referenceIds);
+      if(referenceError)throw new Error("تعذر تحميل مراجع الفواتير: "+referenceError.message);
+      referenceById=new Map((referenceRows||[]).map(row=>[String(row.id),row]));
+    }
     const requestIds=[...new Set((data||[]).map(x=>x.installation_request_id).filter(Boolean))];
     let attachments=[],collections=[];
     if(requestIds.length){
@@ -20,7 +27,7 @@
     }
     const byRequest=new Map();attachments.forEach(f=>{const a=byRequest.get(String(f.installation_request_id))||[];a.push({id:f.id,storagePath:f.storage_path,originalName:f.original_name||"مرفق",mimeType:f.mime_type||"",fileSize:Number(f.file_size||0),fileKind:f.file_kind||"execution",visitId:f.execution_visit_id||"",uploadedAt:f.uploaded_at||""});byRequest.set(String(f.installation_request_id),a)});
     const paymentByRequest=new Map(collections.map(c=>[String(c.installation_request_id),c.payment_method||""]));
-    return (data||[]).map(r=>{const all=byRequest.get(String(r.installation_request_id))||[];const rowAttachments=r.installation_execution_visit_id?all.filter(f=>!f.visitId||String(f.visitId)===String(r.installation_execution_visit_id)):all;return normalize({...r,payment_method:r.source_type==="manual"?(r.payment_method||""):(paymentByRequest.get(String(r.installation_request_id))||r.payment_method||""),attachments:rowAttachments})})
+    return (data||[]).map(r=>{const all=byRequest.get(String(r.installation_request_id))||[];const rowAttachments=r.installation_execution_visit_id?all.filter(f=>!f.visitId||String(f.visitId)===String(r.installation_execution_visit_id)):all;const referenceInvoice=r.reference_sales_invoice_id?referenceById.get(String(r.reference_sales_invoice_id))||null:null;return normalize({...r,reference_invoice:referenceInvoice,payment_method:r.source_type==="manual"?(r.payment_method||""):(paymentByRequest.get(String(r.installation_request_id))||r.payment_method||""),attachments:rowAttachments})})
   }
   async function manualCatalog(){
     requireAction("add");
