@@ -10,6 +10,7 @@ check('workspace DOM preserves request_service_id',completion.includes('data-req
 check('workspace no longer rejects duplicate service types',!completion.includes("throw new Error('لا يمكن تكرار نفس الخدمة أكثر من مرة.')"));
 check('client sends request_service_id',service.includes('request_service_id:x.requestServiceId||null'));
 check('RPC payload has canonical request-service identity',migration.includes('request_service_id uuid')&&migration.includes('resolved_request_service_id uuid'));
+check('RPC preserves existing PostgREST return contract',migration.includes('returns table(id uuid,request_number text,final_amount numeric,discount_amount numeric)')&&!migration.includes('returns table(request_id uuid,request_number text,final_amount numeric,discount_amount numeric)'));
 check('RPC updates exact service row by ID',migration.includes('s.id=t.request_service_id'));
 check('RPC deletes only omitted persisted IDs',migration.includes('where t.request_service_id=s.id'));
 check('new duplicate service type rows remain independently insertable',migration.includes('where request_service_id is null')&&migration.includes('returning id into v_new_service_id'));

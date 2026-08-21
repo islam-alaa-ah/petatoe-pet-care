@@ -13,7 +13,7 @@ create or replace function public.update_installation_completion_workspace(
   p_discount_amount numeric,
   p_collection jsonb
 )
-returns table(request_id uuid,request_number text,final_amount numeric,discount_amount numeric)
+returns table(id uuid,request_number text,final_amount numeric,discount_amount numeric)
 language plpgsql
 security definer
 set search_path=public
