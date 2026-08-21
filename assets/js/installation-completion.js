@@ -20,7 +20,13 @@
   const normalizePaymentMethod=value=>{const raw=String(value||'').trim();if(['بطاقة','شبكة','بطاقة / شبكة','بطاقة/شبكة'].includes(raw))return 'بطاقة / شبكة';if(['تحويل','تحويل بنكي'].includes(raw))return 'تحويل بنكي';if(['دفع إلكتروني','دفع الكتروني','الدفع عن طريق الموقع','دفع عن طريق الموقع'].includes(raw))return 'الدفع عن طريق الموقع';return raw};
   function reps(){const map=new Map();rows.forEach(r=>{if(r.representativeId)map.set(r.representativeId,r.representativeName||"مندوب غير محدد")});return [...map].sort((a,b)=>a[1].localeCompare(b[1],"ar"))}
   function fillReps(){const el=$("installationCompletionRepresentativeFilter");if(!el)return;const val=el.value;el.innerHTML=`<option value="">${esc(t('appointments.completion.allAllowedReps','كل المندوبين المسموحين'))}</option>`+reps().map(([id,n])=>`<option value="${esc(id)}">${esc(n)}</option>`).join("");el.value=[...el.options].some(o=>o.value===val)?val:""}
-  function filtered(){const q=($("installationCompletionSearch")?.value||"").trim().toLowerCase(),rep=$("installationCompletionRepresentativeFilter")?.value||"",from=$("installationCompletionDateFrom")?.value||"",to=$("installationCompletionDateTo")?.value||"";return rows.filter(r=>(!q||[r.requestNumber,r.customerName,r.customerPhone,r.technicianName].join(" ").toLowerCase().includes(q))&&(!rep||r.representativeId===rep)&&(!from||String(r.completedAt).slice(0,10)>=from)&&(!to||String(r.completedAt).slice(0,10)<=to))}
+  function requestDateKey(row){return String(row?.requestCreatedAt||"").slice(0,10)}
+  function compareCompletionRows(a,b){
+    const dateOrder=requestDateKey(b).localeCompare(requestDateKey(a));
+    if(dateOrder)return dateOrder;
+    return String(b?.requestNumber||"").localeCompare(String(a?.requestNumber||""),"en",{numeric:true,sensitivity:"base"});
+  }
+  function filtered(){const q=($("installationCompletionSearch")?.value||"").trim().toLowerCase(),rep=$("installationCompletionRepresentativeFilter")?.value||"",from=$("installationCompletionDateFrom")?.value||"",to=$("installationCompletionDateTo")?.value||"";return rows.filter(r=>(!q||[r.requestNumber,r.customerName,r.customerPhone,r.technicianName].join(" ").toLowerCase().includes(q))&&(!rep||r.representativeId===rep)&&(!from||String(r.completedAt).slice(0,10)>=from)&&(!to||String(r.completedAt).slice(0,10)<=to)).sort(compareCompletionRows)}
   function can(action,screen){return Boolean(window.CustomerPermissions?.canAction?.(screen,action))}
   function isSuperAdmin(){return window.CustomerPermissions?.currentRole?.()==="super_admin"}
   function render(){

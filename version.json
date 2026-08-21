@@ -1,13 +1,13 @@
 {
-  "version": "18.55.79",
-  "build": 185579,
+  "version": "18.55.80",
+  "build": 185580,
   "forceUpdate": true,
   "releaseDate": "2026-08-22",
-  "title": "PETATOE Update Runtime Version Alignment Hotfix",
+  "title": "PETATOE Appointment Completion Descending Sort",
   "notes": [
-    "إصلاح تكرار إعادة تشغيل التطبيق الناتج عن عدم تطابق إصدار PWA runtime مع version.json بعد المرحلة السابقة.",
-    "توحيد إصدار pwa.js وملف version.json وService Worker cache token على الإصدار نفسه.",
-    "عدم تغيير منطق التنقل أو الجلسة أو الشاشات أو البيانات."
+    "ترتيب شاشة تأكيد انتهاء المواعيد تنازليًا حسب تاريخ الطلب بحيث يظهر الأحدث أولًا.",
+    "داخل نفس تاريخ الطلب يتم ترتيب السجلات تنازليًا حسب رقم الطلب.",
+    "عدم تغيير الفلاتر أو حالات التأكيد أو التحويل إلى فاتورة أو أي منطق بيانات آخر."
   ],
-  "cacheToken": "petatoe-pwa-18-55-79-update-runtime-version-alignment-hotfix"
+  "cacheToken": "petatoe-pwa-18-55-80-completion-sort-desc"
 }
