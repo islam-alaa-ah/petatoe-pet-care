@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-83-full-invoice-edit-reverse-sync";
+const CACHE_VERSION = "petatoe-pwa-18-55-84-invoice-edit-discount-ui-hotfix";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

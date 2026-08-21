@@ -241,6 +241,7 @@
     ["appointmentNew.services.type","label","نوع الخدمة","Service Type"],
     ["appointmentNew.services.quantity","label","عدد الخدمات","Quantity"],
     ["appointmentNew.services.price","label","سعر الخدمة","Service Price"],
+    ["appointmentNew.services.unitPrice","label","سعر الوحدة","Unit Price"],
     ["appointmentNew.services.total","label","الإجمالي","Total"],
     ["appointmentNew.services.action","label","إجراء","Action"],
     ["appointmentNew.services.add","button","إضافة خدمة أخرى","Add Another Service"],

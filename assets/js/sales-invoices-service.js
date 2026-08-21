@@ -59,7 +59,7 @@
     const {data,error}=await db().rpc("get_sales_invoice_edit_workspace",{p_invoice_id:invoiceId});
     if(error)throw new Error("تعذر تحميل بيانات تعديل الفاتورة: "+error.message);
     const x=data&&typeof data==="object"?data:{};
-    return {sourceType:x.sourceType||"",requestId:x.requestId||"",visitId:x.visitId||"",serviceCatalog:Array.isArray(x.serviceCatalog)?x.serviceCatalog:[],services:Array.isArray(x.services)?x.services:[],collection:x.collection&&typeof x.collection==="object"?x.collection:{},attachments:Array.isArray(x.attachments)?x.attachments:[]};
+    return {sourceType:x.sourceType||"",requestId:x.requestId||"",visitId:x.visitId||"",serviceCatalog:Array.isArray(x.serviceCatalog)?x.serviceCatalog:[],services:Array.isArray(x.services)?x.services:[],discount:x.discount&&typeof x.discount==="object"?x.discount:{type:"amount",value:0,amount:0},collection:x.collection&&typeof x.collection==="object"?x.collection:{},attachments:Array.isArray(x.attachments)?x.attachments:[]};
   }
   async function uploadCollectionAttachment(requestId,visitId,file){
     if(!file)return null;
@@ -83,7 +83,7 @@
   async function updateFullInvoice(payload){
     requireAction("edit");
     if(!payload?.id)throw new Error("معرّف الفاتورة مطلوب.");
-    const invoiceNumber=String(payload.invoiceNumber||"").trim(),invoiceDate=String(payload.invoiceDate||"").trim(),withoutInvoice=Boolean(payload.withoutInvoice),paymentMethod=String(payload.paymentMethod||"").trim();
+    const invoiceNumber=String(payload.invoiceNumber||"").trim(),invoiceDate=String(payload.invoiceDate||"").trim(),withoutInvoice=Boolean(payload.withoutInvoice),paymentMethod=String(payload.paymentMethod||"").trim(),discountType=payload.discountType==="percentage"?"percentage":"amount",discountValue=Math.max(0,Number(payload.discountValue||0));
     if(!withoutInvoice&&!invoiceNumber)throw new Error("رقم الفاتورة مطلوب أو اختر بدون فاتورة.");
     if(!invoiceDate)throw new Error("تاريخ الفاتورة مطلوب.");
     if(!paymentMethod)throw new Error("اختر طريقة الدفع.");
@@ -93,7 +93,7 @@
     const uploaded=[];
     try{
       if(payload.sourceType==="installation"&&payload.requestId&&Array.isArray(payload.newAttachments)){for(const file of payload.newAttachments)uploaded.push(await uploadCollectionAttachment(payload.requestId,payload.visitId||null,file));}
-      const {data,error}=await db().rpc("update_sales_invoice_full_v1",{p_invoice_id:payload.id,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice,p_payment_method:paymentMethod,p_services:services,p_collection_notes:String(payload.collectionNotes||"").trim()||null,p_removed_attachment_ids:Array.isArray(payload.removedAttachmentIds)?payload.removedAttachmentIds:[]});
+      const {data,error}=await db().rpc("update_sales_invoice_full_v1",{p_invoice_id:payload.id,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice,p_payment_method:paymentMethod,p_services:services,p_discount_type:discountType,p_discount_value:discountValue,p_collection_notes:String(payload.collectionNotes||"").trim()||null,p_removed_attachment_ids:Array.isArray(payload.removedAttachmentIds)?payload.removedAttachmentIds:[]});
       if(error)throw new Error("تعذر حفظ تعديل الفاتورة: "+error.message);
       const removedPaths=Array.isArray(data?.removedStoragePaths)?data.removedStoragePaths:[];
       if(removedPaths.length)await db().storage.from("installation-evidence").remove(removedPaths).catch(()=>{});
