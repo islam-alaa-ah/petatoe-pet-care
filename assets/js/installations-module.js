@@ -224,8 +224,10 @@
     if(!customer)return;
     const localNeighborhoodId=matchNeighborhoodId(customer);
     const localMapUrl=String(customer?.google_maps_url||'').trim();
+    const localLocationNotes=String(customer?.location_notes||'').trim();
     setInstallationGeoFromNeighborhood('new',localNeighborhoodId||'');
     if($('newInstallationCustomerMapUrl'))$('newInstallationCustomerMapUrl').value=localMapUrl;
+    if($('newInstallationCustomerLocationNotes'))$('newInstallationCustomerLocationNotes').value=localLocationNotes;
     try{
       const defaults=await window.InstallationsServiceSafe.customerAppointmentDefaults(customerId);
       if(token!==customerDefaultsSelectionToken || String($('newInstallationCustomerId')?.value||'')!==String(customerId))return;
@@ -238,6 +240,7 @@
         }
       }
       if($('newInstallationCustomerMapUrl'))$('newInstallationCustomerMapUrl').value=mapUrl;
+      if($('newInstallationCustomerLocationNotes'))$('newInstallationCustomerLocationNotes').value=defaults?.locationNotes??localLocationNotes;
       if(defaults?.quotationId){quotationOptions(customerId,'newInstallationQuotationId',defaults.quotationId);$('newInstallationQuotationId').value=defaults.quotationId;}
       if(defaults?.services?.length){$('newInstallationServicesBody').innerHTML='';defaults.services.forEach(addServiceRow);}
       if($('newInstallationDiscountType'))$('newInstallationDiscountType').value=defaults?.discountType||'amount';
@@ -651,6 +654,14 @@
       $("newInstallationQuotationId").value = row.quotationId || "";
       setInstallationGeoFromNeighborhood('new', row.neighborhoodId || '');
       $("newInstallationCustomerMapUrl").value = row.customerMapUrl || "";
+      let customerLocationNotes = row.customerLocationNotes || "";
+      try {
+        const customerDefaults = await window.InstallationsServiceSafe.customerAppointmentDefaults(row.customerId);
+        customerLocationNotes = customerDefaults?.locationNotes ?? customerLocationNotes;
+      } catch (error) {
+        console.warn('[Appointments] Customer location notes edit prefill skipped:', error);
+      }
+      if ($("newInstallationCustomerLocationNotes")) $("newInstallationCustomerLocationNotes").value = customerLocationNotes || "";
       $("newInstallationNotes").value = row.notes || "";
       $("newInstallationDiscountType").value = row.discountType || "amount";
       $("newInstallationDiscount").value = Number(row.discountValue ?? row.discountAmount ?? 0).toFixed(2);
@@ -1121,6 +1132,7 @@
         neighborhoodId: $("newInstallationNeighborhoodId").value,
         installationAddress: neighborhood?.name || "",
         customerMapUrl: $("newInstallationCustomerMapUrl").value.trim(),
+        locationNotes: $("newInstallationCustomerLocationNotes")?.value.trim() || "",
         notes: $("newInstallationNotes").value.trim(),
         services,
         discountType: financials.discountType,

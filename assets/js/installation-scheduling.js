@@ -39,6 +39,7 @@
       <div><span>رقم العقد</span><strong>${esc(row.quotationNumber||'بدون عقد')}</strong></div>
       <div><span>المندوب</span><strong>${esc(row.representativeName||'—')}</strong></div>
       <div><span>الحي</span><strong>${esc(row.installationAddress||row.district||'—')}</strong></div>
+      <div><span>${esc(t('appointmentNew.customer.locationNotes','ملاحظات الموقع'))}</span><strong>${esc(row.customerLocationNotes||'—')}</strong></div>
       <div><span>الحالة</span><strong>${esc(row.status||'—')}</strong></div>
       <div><span>تاريخ الموعد</span><strong>${esc(row.scheduledDate||'غير محدد')} ${row.scheduledTime?`— ${esc(row.scheduledTime)}`:''}</strong></div>
       <div><span>الإجمالي شامل الضريبة قبل الخصم</span><strong>${money(grossTotal(row))}</strong></div>
@@ -130,7 +131,7 @@
       </div>
       <div class="installation-day-customer">
         <div class="installation-day-customer-copy">${r.customerMasked===true?'<strong>بيانات العميل محجوبة</strong><small>لا تملك صلاحية عرض اسم العميل أو رقمه</small>':`<strong>${esc(r.customerName||'عميل غير محدد')}</strong><small>رقم العميل: <bdi>${esc(r.customerPhone||'غير مسجل')}</bdi></small>`}<span>${esc(r.installationAddress||'العنوان غير محدد')}</span></div>
-        ${mapAction?`<div class="installation-day-map-row">${mapAction}</div>`:''}
+        ${mapAction?`<div class="installation-day-map-row">${mapAction}</div>`:''}${r.customerLocationNotes?`<div class="installation-day-request-notes"><strong>${esc(t('appointmentNew.customer.locationNotes','ملاحظات الموقع'))}:</strong><span>${esc(r.customerLocationNotes)}</span></div>`:''}
       </div>
       <div class="installation-day-meta">
         <span>السائق: <strong>${esc(teamDriverName(r.teamId)||'غير مسند')}</strong></span>
