@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-81-customer-location-notes";
+const CACHE_VERSION = "petatoe-pwa-18-55-82-overdue-completion-service-hotfix";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

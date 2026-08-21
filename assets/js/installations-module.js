@@ -514,25 +514,22 @@
   }
 
   const INSTALLATION_OVERDUE_FILTER = "overdue";
-  const INSTALLATION_OVERDUE_CLOSED_STATUSES = new Set(["مكتمل", "ملغي"]);
+  const INSTALLATION_OVERDUE_NOT_STARTED_STATUSES = new Set(["مجدول", "مسند"]);
 
-  function installationScheduledDeadline(row) {
+  function installationScheduledDayStart(row) {
     const dateMatch = String(row?.scheduledDate || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (!dateMatch) return null;
     const year = Number(dateMatch[1]), month = Number(dateMatch[2]) - 1, day = Number(dateMatch[3]);
-    const timeMatch = String(row?.scheduledTime || "").match(/^(\d{1,2}):(\d{2})/);
-    if (timeMatch) {
-      const hour = Number(timeMatch[1]), minute = Number(timeMatch[2]);
-      if (hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) return new Date(year, month, day, hour, minute, 0, 0).getTime();
-    }
-    // Legacy rows without an exact scheduled time become overdue only after their scheduled day has fully passed.
-    return new Date(year, month, day + 1, 0, 0, 0, 0).getTime();
+    return new Date(year, month, day, 0, 0, 0, 0).getTime();
   }
 
   function isInstallationRequestOverdue(row, nowMs = Date.now()) {
-    if (!row?.scheduledDate || INSTALLATION_OVERDUE_CLOSED_STATUSES.has(row.status)) return false;
-    const deadline = installationScheduledDeadline(row);
-    return Number.isFinite(deadline) && deadline < nowMs;
+    if (!row?.scheduledDate || !INSTALLATION_OVERDUE_NOT_STARTED_STATUSES.has(row.status)) return false;
+    const scheduledDayStart = installationScheduledDayStart(row);
+    if (!Number.isFinite(scheduledDayStart)) return false;
+    const now = new Date(nowMs);
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0).getTime();
+    return scheduledDayStart < todayStart;
   }
 
   function filtered() {
