@@ -31,15 +31,15 @@
   }
   async function createManual(payload){
     requireAction("add");
-    const invoiceNumber=String(payload?.invoiceNumber||"").trim(),invoiceDate=String(payload?.invoiceDate||"").trim(),paymentMethod=String(payload?.paymentMethod||"").trim();
+    const invoiceNumber=String(payload?.invoiceNumber||"").trim(),withoutInvoice=Boolean(payload?.withoutInvoice),invoiceDate=String(payload?.invoiceDate||"").trim(),paymentMethod=String(payload?.paymentMethod||"").trim();
     if(!payload?.customerId)throw new Error("اختر العميل.");
-    if(!invoiceNumber)throw new Error("رقم الفاتورة مطلوب.");
+    if(!withoutInvoice&&!invoiceNumber)throw new Error("رقم الفاتورة مطلوب أو اختر بدون فاتورة.");
     if(!invoiceDate)throw new Error("تاريخ الفاتورة مطلوب.");
     if(!paymentMethod)throw new Error("اختر طريقة الدفع.");
     if(!Array.isArray(payload?.services)||!payload.services.length)throw new Error("أضف خدمة واحدة على الأقل.");
     const services=payload.services.map(x=>({service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));
     if(services.some(x=>!x.service_type_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_price)||x.unit_price<0))throw new Error("راجع نوع الخدمة والعدد والسعر في جميع الخدمات.");
-    const {data,error}=await db().rpc("create_manual_sales_invoice",{p_customer_id:payload.customerId,p_invoice_number:invoiceNumber,p_invoice_date:invoiceDate,p_payment_method:paymentMethod,p_reference_sales_invoice_id:payload.referenceInvoiceId||null,p_services:services,p_discount_type:payload.discountType==="percentage"?"percentage":"amount",p_discount_value:Number(payload.discountValue||0),p_notes:String(payload.notes||"").trim()||null});
+    const {data,error}=await db().rpc("create_manual_sales_invoice",{p_customer_id:payload.customerId,p_invoice_number:withoutInvoice?null:invoiceNumber,p_without_invoice:withoutInvoice,p_invoice_date:invoiceDate,p_payment_method:paymentMethod,p_reference_sales_invoice_id:payload.referenceInvoiceId||null,p_services:services,p_discount_type:payload.discountType==="percentage"?"percentage":"amount",p_discount_value:Number(payload.discountValue||0),p_notes:String(payload.notes||"").trim()||null});
     if(error)throw new Error("تعذر إنشاء الفاتورة اليدوية: "+error.message);
     return Array.isArray(data)?data[0]:data;
   }

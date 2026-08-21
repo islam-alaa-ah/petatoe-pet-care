@@ -562,7 +562,7 @@
     ["invoices.manual.customerNone","empty","لا توجد نتائج مطابقة.","No matching customers."],
     ["invoices.manual.catalogLoading","status","جاري تحميل العملاء والخدمات...","Loading customers and services..."],
     ["invoices.manual.customerValidation","validation","اختر العميل من نتائج البحث.","Select the customer from the search results."],
-    ["invoices.manual.numberValidation","validation","رقم الفاتورة مطلوب.","Invoice number is required."],
+    ["invoices.manual.numberValidation","validation","رقم الفاتورة مطلوب أو اختر بدون فاتورة.","Invoice number is required, or select No invoice."],
     ["invoices.manual.dateValidation","validation","تاريخ الفاتورة مطلوب.","Invoice date is required."],
     ["invoices.manual.paymentValidation","validation","اختر طريقة الدفع.","Select a payment method."],
     ["invoices.manual.servicesValidation","validation","راجع نوع الخدمة والعدد والسعر في جميع الخدمات.","Review the service, quantity, and price for every service line."],
