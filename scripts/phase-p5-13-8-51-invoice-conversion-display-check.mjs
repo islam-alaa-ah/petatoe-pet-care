@@ -10,7 +10,7 @@ const checks=[
   ['grouped invoice amount recalculated after merge',service.includes('row.invoiceAmount=row.quantities.reduce')&&service.includes('row.groupVisitIds=[...new Set(row.groupVisitIds||[])]')],
   ['invoice date defaults to scheduled date',completion.includes('r.report?.invoice_date||r.scheduledDate||today()')],
   ['invoice date remains user editable',!completion.includes('installationCompletionInvoiceDate").readOnly=true')&&!completion.includes('installationCompletionInvoiceDate").disabled=true')],
-  ['version bumped',version.version==='18.55.69'&&version.build===185569]
+  ['version at or beyond phase 51',Number(version.build||0)>=185569]
 ];
 let pass=0;
 for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} - ${name}`);if(ok)pass++;}

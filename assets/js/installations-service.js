@@ -524,6 +524,15 @@
     if(error)throw new Error('تعذر تحديث كميات الموعد: '+error.message);
     return (data||[]).map(x=>({requestServiceId:x.id,serviceName:x.service?.name||'خدمة',requestedQuantity:Number(x.quantity||0),scheduledCurrentQuantity:Number(x.quantity||0),executedQuantity:0,remainingQuantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0)}));
   }
+  async function completionInvoiceFinancials(requestId,visitId){
+    requireAction('view','installationCompletion');
+    if(!requestId||!visitId)throw new Error('بيانات زيارة الفاتورة غير مكتملة.');
+    const {data,error}=await db().rpc('get_installation_execution_group_invoice_financials',{p_installation_request_id:requestId,p_visit_id:visitId});
+    if(error)throw new Error('تعذر حساب قيمة الفاتورة شاملة الضريبة: '+error.message);
+    const row=Array.isArray(data)?data[0]:data;
+    if(!row)throw new Error('تعذر حساب قيمة الفاتورة شاملة الضريبة.');
+    return {invoiceAmountBeforeTax:Number(row.invoice_amount||0),finalAmountIncludingTax:Number(row.final_amount_including_tax||0),installationCost:Number(row.installation_cost||0)};
+  }
   async function saveCompletionWorkspace(payload){
     requireAction('edit','installationCompletion');
     if(!payload?.id)throw new Error('معرّف الموعد مطلوب.');
@@ -897,6 +906,6 @@
 
   async function getSettings(){requireAction('view','installationSettings');const {data,error}=await db().from('installation_settings').select('*').eq('id',1).maybeSingle();if(error)throw new Error('تعذر تحميل إعدادات المواعيد: '+error.message);const r=data||{};return {morningLabel:r.morning_label||'صباحية',eveningLabel:r.evening_label||'مسائية',slaDays:Number(r.sla_days??1),defaultPriority:r.default_priority||'عادية',requireCompletionReport:r.require_completion_report!==false}}
   async function saveSettings(payload){requireAction('edit','installationSettings');const record={id:1,morning_label:payload.morningLabel,evening_label:payload.eveningLabel,sla_days:payload.slaDays,default_priority:payload.defaultPriority,require_completion_report:!!payload.requireCompletionReport,updated_at:new Date().toISOString()};const {error}=await db().from('installation_settings').upsert(record,{onConflict:'id'});if(error)throw new Error('تعذر حفظ إعدادات المواعيد: '+error.message)}
-  window.InstallationsService={list,options,customerAppointmentDefaults,saveCustomerLocationDefaults,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,returnExecutionToSchedule,completeCollectionStage,advanceExecution,subscribeExecutionWorkspace,completionList,completionQuantitySummary,saveCompletionWorkspace,completionCollectionRecoveryState,recoverCompletionCollectionStage,confirmActualQuantities,confirmActualQuantitiesAndInvoice,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
+  window.InstallationsService={list,options,customerAppointmentDefaults,saveCustomerLocationDefaults,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,returnExecutionToSchedule,completeCollectionStage,advanceExecution,subscribeExecutionWorkspace,completionList,completionQuantitySummary,completionInvoiceFinancials,saveCompletionWorkspace,completionCollectionRecoveryState,recoverCompletionCollectionStage,confirmActualQuantities,confirmActualQuantitiesAndInvoice,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
   window.dispatchEvent(new CustomEvent('kyum-installations-service-ready'));
 })();
