@@ -188,6 +188,7 @@
     ['sidebar.logout','navigation','تسجيل الخروج','Log out'],
     ['sidebar.close','navigation','إغلاق القائمة','Close menu'],
     ['shared.header.menu','label','فتح القائمة','Open menu'],
+    ['shared.header.back','button','رجوع','Back'],
     ['shared.header.notifications','label','الإشعارات','Notifications'],
     ['shared.header.markAllRead','button','تحديد الكل كمقروء','Mark all as read'],
     ['shared.header.systemUser','label','مستخدم النظام','System user'],

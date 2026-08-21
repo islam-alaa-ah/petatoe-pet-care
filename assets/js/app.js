@@ -1275,12 +1275,29 @@ function routeFromLocation() {
   return raw || null;
 }
 
+function currentAppHistoryDepth() {
+  const depth = Number(window.history.state?.kyumDepth);
+  return Number.isInteger(depth) && depth >= 0 ? depth : 0;
+}
+
+function updateHeaderBackButton() {
+  const button = document.getElementById("headerBackButton");
+  if (!button) return;
+  button.disabled = currentAppHistoryDepth() <= 0;
+}
+
 function syncRouteLocation(viewKey, replace = false) {
   if (!viewKey) return;
   const nextHash = `#/${encodeURIComponent(viewKey)}`;
-  if (window.location.hash === nextHash) return;
+  if (window.location.hash === nextHash) {
+    updateHeaderBackButton();
+    return;
+  }
   const method = replace ? "replaceState" : "pushState";
-  window.history[method]({ kyumView: viewKey }, "", nextHash);
+  const currentDepth = currentAppHistoryDepth();
+  const nextDepth = replace ? currentDepth : currentDepth + 1;
+  window.history[method]({ kyumView: viewKey, kyumDepth: nextDepth }, "", nextHash);
+  updateHeaderBackButton();
 }
 
 function switchView(requestedName, options = {}) {
@@ -1425,6 +1442,7 @@ function switchView(requestedName, options = {}) {
   if (!options.fromHistory) {
     syncRouteLocation(name, Boolean(options.replaceHistory || options.permissionFallback));
   }
+  updateHeaderBackButton();
   window.dispatchEvent(new CustomEvent("kyum-view-changed", { detail: { view: name } }));
   return true;
 }
@@ -7306,6 +7324,19 @@ window.KYUMNavigateTo = (viewKey, options = {}) => {
     trustedNavigation: normalizedView === "dailyOperations"
   });
 };
+
+function initializeHeaderBackButton() {
+  const button = document.getElementById("headerBackButton");
+  if (!button || button.dataset.initialized === "true") return;
+  button.dataset.initialized = "true";
+  button.addEventListener("click", () => {
+    if (button.disabled || currentAppHistoryDepth() <= 0) return;
+    window.history.back();
+  });
+  updateHeaderBackButton();
+}
+
+initializeHeaderBackButton();
 
 function setHeaderUserMenuOpen(isOpen) {
   const menu = document.getElementById("headerUserMenu");

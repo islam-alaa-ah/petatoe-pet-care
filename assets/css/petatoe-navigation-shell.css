@@ -284,6 +284,7 @@
   min-width:0!important;
   direction:ltr!important;
 }
+#appHeader .header-back-button,
 #appHeader .notification-bell-btn,
 #appHeader .theme-toggle-button{
   width:52px!important;
@@ -302,6 +303,7 @@
   background:linear-gradient(145deg,#071a32,#041224)!important;
   box-shadow:0 8px 20px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.025)!important;
 }
+#appHeader .header-back-button:hover:not(:disabled),
 #appHeader .notification-bell-btn:hover,
 #appHeader .theme-toggle-button:hover{
   color:#e2f7ff!important;
@@ -310,6 +312,13 @@
 }
 #appHeader .notification-bell-btn > svg{
   width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;max-width:20px!important;max-height:20px!important;flex:0 0 20px!important
+}
+#appHeader .header-back-button > svg{
+  width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;max-width:22px!important;max-height:22px!important;flex:0 0 22px!important
+}
+html[dir="rtl"] #appHeader .header-back-button > svg{transform:scaleX(-1)!important}
+#appHeader .header-back-button:disabled{
+  opacity:.34!important;cursor:default!important;box-shadow:none!important
 }
 #appHeader .theme-toggle-button .theme-icon{
   width:21px!important;height:21px!important;min-width:21px!important;min-height:21px!important;max-width:21px!important;max-height:21px!important
@@ -1007,7 +1016,8 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   #appHeader .topbar-brand,
   #appHeader .topbar-watermark,
   #appHeader .header-user-menu,
-  #appHeader .notification-bell-wrap{
+  #appHeader .notification-bell-wrap,
+  #appHeader #headerBackButton{
     display:none!important;
   }
 

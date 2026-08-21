@@ -1,13 +1,13 @@
 {
-  "version": "18.55.77",
-  "build": 185577,
+  "version": "18.55.78",
+  "build": 185578,
   "forceUpdate": true,
   "releaseDate": "2026-08-22",
-  "title": "PETATOE Execution Dark Action & Schedule Date",
+  "title": "PETATOE Desktop Header Back Navigation",
   "notes": [
-    "إصلاح تباين زر إلغاء وإعادة إلى شاشة الجدولة في الوضع الداكن داخل الـcanonical execution visual owner.",
-    "إظهار تاريخ الموعد أسفل الوقت المحدد في ملخص الطلب الحالي باستخدام نفس scheduledDate ومركز الترجمة المعتمد.",
-    "الحفاظ على منطق التنفيذ والجدولة والصلاحيات بدون تغيير."
+    "إضافة زر رجوع داخل هيدر الديسكتوب باستخدام سجل تنقل التطبيق الداخلي دون الخروج من البرنامج.",
+    "عزل زر الرجوع عن هيدر الموبايل والحفاظ على RTL/LTR والهوية البصرية الحالية.",
+    "عدم تغيير منطق الشاشات أو الصلاحيات أو البيانات."
   ],
-  "cacheToken": "petatoe-pwa-18-55-77-execution-dark-action-schedule-date"
+  "cacheToken": "petatoe-pwa-18-55-78-desktop-header-back-navigation"
 }
