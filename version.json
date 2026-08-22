@@ -1,13 +1,13 @@
 {
-  "version": "18.55.86",
-  "build": 185586,
+  "version": "18.55.87",
+  "build": 185587,
   "forceUpdate": true,
-  "releaseDate": "2026-08-22",
-  "title": "PETATOE SEA VIBE Foundation",
+  "releaseDate": "2026-08-23",
+  "title": "PETATOE Manual Invoice Without-Invoice Hotfix",
   "notes": [
-    "إضافة قسم SEA VIBE بين إدارة المواعيد والتقارير والتحليلات بهوية PETATOE الحالية على الديسكتوب والموبايل.",
-    "إدارة الرحلات والمصروفات والأصول والبيانات المرجعية ورسوم تصريح الإبحار والتقارير مع Smart Cache وOffline Queue.",
-    "مصروفات الأصول تُرسمل على قيمة الأصل ولا تدخل في صافي الربح التشغيلي."
+    "إصلاح إنشاء الفاتورة اليدوية عند اختيار بدون فاتورة مع الحفاظ على قيد invoice_number الحالي في قاعدة البيانات.",
+    "استخدام معرف داخلي NOINV غير ظاهر للمستخدم مثل مسارات فواتير المواعيد الحالية، مع بقاء is_without_invoice هو المصدر الدلالي للحالة.",
+    "لا تغيير في SEA VIBE أو الخدمات أو الخصم أو المرفقات أو مسارات الفوترة الأخرى."
   ],
-  "cacheToken": "petatoe-pwa-18-55-86-sea-vibe-foundation"
+  "cacheToken": "petatoe-pwa-18-55-87-manual-invoice-without-invoice-hotfix"
 }
