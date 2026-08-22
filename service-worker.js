@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-90-sea-vibe-zawel-topup-date-r2";
+const CACHE_VERSION = "petatoe-pwa-18-55-91-sea-vibe-zawel-actions-r3";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
