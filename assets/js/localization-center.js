@@ -865,6 +865,7 @@
     ["seaVibe.treasury.editOrDelete","label","حذف أو تعديل","Edit or Delete"],
     ["seaVibe.treasury.systemManaged","label","تلقائي","System Managed"],
     ["seaVibe.treasury.deleteMovementConfirm","dialog","حذف حركة المصروف بالكامل؟ سيتم حذف كل البنود التابعة لنفس سيريال الحركة.","Delete the entire expense movement? All lines sharing the same movement serial will be deleted."],
+    ["seaVibe.treasury.movementDeleted","status","تم حذف حركة المصروف بالكامل.","Expense movement deleted successfully."],
     ["seaVibe.zawel.title","title","رصيد زاول (النقاط)","Zawel Balance (Points)"],
     ["seaVibe.zawel.subtitle","subtitle","شحن وخصم رصيد زاول المستخدم في رسوم تصريح الإبحار.","Top up and deduct Zawel points used for sailing permit fees."],
     ["seaVibe.zawel.topup","button","شحن رصيد زاول","Top Up Zawel"],
