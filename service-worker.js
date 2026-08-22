@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-85-canonical-discount-values";
+const CACHE_VERSION = "petatoe-pwa-18-55-86-sea-vibe-foundation";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -29,6 +29,7 @@ const CORE_APP_SHELL = [
   "./assets/css/installation-dashboard-settings.css",
   "./assets/css/mobile-theme-canonical.css",
   "./assets/css/sales-invoices.css",
+  "./assets/css/sea-vibe.css",
   "./assets/css/global-typography-certification.css",
   "./assets/css/notification-center.css",
   "./assets/css/translation-center.css",
@@ -57,7 +58,9 @@ const CORE_APP_SHELL = [
   "./assets/js/quotations-service.js",
   "./assets/js/installations-service.js",
   "./assets/js/sales-invoices.js",
+  "./assets/js/sea-vibe.js",
   "./assets/js/sales-invoices-service.js",
+  "./assets/js/sea-vibe-service.js",
   "./assets/js/installations-service-contract.js",
   "./assets/js/app.js",
   "./assets/js/customer-excel-actions-hotfix.js",

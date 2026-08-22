@@ -151,6 +151,11 @@
       "file": "assets/js/localization-center-service.js",
       "mode": "online_write_cached_runtime_fallback",
       "status": "accepted_online_only_with_bundled_fallback"
+    },
+    "sea_vibe": {
+      "file": "assets/js/sea-vibe-service.js",
+      "mode": "full_offline_create_update",
+      "status": "compliant"
     }
   },
   "registeredDirectDataFiles": [
@@ -189,7 +194,8 @@
     "assets/js/system-health-service.js",
     "assets/js/system-settings-service.js",
     "assets/js/users-service.js",
-    "assets/js/whatsapp-template-service.js"
+    "assets/js/whatsapp-template-service.js",
+    "assets/js/sea-vibe-service.js"
   ],
   "temporaryDirectUiDebt": {
     "assets/js/app.js": [

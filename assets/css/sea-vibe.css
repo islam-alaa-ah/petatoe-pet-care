@@ -1,0 +1,24 @@
+/* PETATOE P5.13.8.68 — SEA VIBE canonical module styling */
+.sea-vibe-view{display:block;direction:rtl}
+.sea-vibe-view.hidden{display:none}
+.sea-vibe-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.sea-vibe-toolbar h3{margin:0;font-size:1.25rem}.sea-vibe-toolbar p{margin:5px 0 0;color:var(--muted,#7183a0)}
+.sea-vibe-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.sea-vibe-kpis .panel{min-height:108px;display:flex;flex-direction:column;justify-content:center;gap:10px}.sea-vibe-kpis strong{font-size:1.35rem}
+.sea-vibe-filters,.sea-vibe-scope-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:end;margin-bottom:16px}
+.sea-vibe-scope-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin:0 0 18px}
+.sea-vibe-form{padding:18px}.sea-vibe-form .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.sea-vibe-form .full-span{grid-column:1/-1}
+.sea-vibe-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:8px;margin:8px 0 12px}.sea-vibe-section-head h4{margin:0}
+.sea-vibe-expense-row{border:1px solid var(--border,#dbe6f4);border-radius:18px;padding:16px;margin-bottom:14px;background:var(--card,#fff)}
+.sea-vibe-expense-row-grid{display:grid;grid-template-columns:1.2fr .75fr .9fr .85fr;gap:12px}.sea-vibe-expense-row-grid .wide{grid-column:span 2}.sea-vibe-expense-row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sea-vibe-table td,.sea-vibe-table th{white-space:nowrap}.sea-vibe-money{font-variant-numeric:tabular-nums;font-weight:700}.sea-vibe-profit-positive{color:#178642}.sea-vibe-profit-negative{color:#c43f3f}
+.sea-vibe-status{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 10px;font-weight:700;font-size:.82rem}.sea-vibe-status.open{background:rgba(31,160,91,.12);color:#178642}.sea-vibe-status.closed{background:rgba(100,116,139,.12);color:#52637c}
+.sea-vibe-actions{display:flex;gap:6px;flex-wrap:wrap}.sea-vibe-actions button{min-width:auto}
+.sea-vibe-detail-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}.sea-vibe-summary-card{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.sea-vibe-summary-card>div{padding:12px;border:1px solid var(--border,#dbe6f4);border-radius:14px}
+.sea-vibe-reference-editor{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:14px}.sea-vibe-permit-wrap{overflow:auto}.sea-vibe-permit-table input{width:90px;min-width:90px;text-align:center}
+.sea-vibe-report-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}.sea-vibe-report-grid .panel{min-height:115px}.sea-vibe-report-split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sea-vibe-asset-note{font-size:.82rem;color:var(--muted,#7183a0);margin-top:6px}
+[data-theme="dark"] .sea-vibe-expense-row{background:var(--surface,#0f1d33)}
+@media (max-width:1180px){.sea-vibe-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.sea-vibe-filters{grid-template-columns:repeat(3,minmax(0,1fr))}.sea-vibe-report-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:767px){.sea-vibe-view{padding-inline:0}.sea-vibe-toolbar{align-items:flex-start;flex-direction:column}.sea-vibe-toolbar>button{width:100%}.sea-vibe-kpis,.sea-vibe-report-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sea-vibe-filters,.sea-vibe-scope-grid,.sea-vibe-form .form-grid,.sea-vibe-expense-row-grid,.sea-vibe-detail-grid,.sea-vibe-report-split,.sea-vibe-reference-editor{grid-template-columns:1fr}.sea-vibe-expense-row-grid .wide,.sea-vibe-form .full-span{grid-column:auto}.sea-vibe-summary-card{grid-template-columns:1fr 1fr}.sea-vibe-view .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.sea-vibe-view .data-table{min-width:820px}.sea-vibe-section-head{align-items:stretch;flex-direction:column}.sea-vibe-section-head button{width:100%}}
+@media (max-width:420px){.sea-vibe-kpis,.sea-vibe-report-grid,.sea-vibe-summary-card{grid-template-columns:1fr}}

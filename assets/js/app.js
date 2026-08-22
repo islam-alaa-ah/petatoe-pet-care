@@ -184,6 +184,14 @@ const views = {
   installationCompletion: document.getElementById("installationCompletionView"),
   installationExceptions: document.getElementById("installationExceptionsView"),
   installationReports: document.getElementById("installationReportsView"),
+  seaVibeTrips: document.getElementById("seaVibeTripsView"),
+  seaVibeTripNew: document.getElementById("seaVibeTripNewView"),
+  seaVibeTripDetails: document.getElementById("seaVibeTripDetailsView"),
+  seaVibeExpenseNew: document.getElementById("seaVibeExpenseNewView"),
+  seaVibeGeneralExpenses: document.getElementById("seaVibeGeneralExpensesView"),
+  seaVibeAssets: document.getElementById("seaVibeAssetsView"),
+  seaVibeReference: document.getElementById("seaVibeReferenceView"),
+  seaVibeReports: document.getElementById("seaVibeReportsView"),
   users: document.getElementById("usersView"),
   permissions: document.getElementById("permissionsView"),
   activityLog: document.getElementById("activityLogView"),
@@ -215,6 +223,14 @@ const pageMeta = {
   installationCompletion: ["تأكيد انتهاء المواعيد", "مراجعة واعتماد انتهاء الموعد وتحويله إلى فاتورة"],
   installationExceptions: ["الاستثناءات وإعادة الزيارة", "متابعة التعثر وجدولة الزيارات اللاحقة"],
   installationReports: ["تقارير المواعيد", "تحليل الإنتاجية والالتزام وأسباب التعثر"],
+  seaVibeTrips: ["SEA VIBE — الرحلات", "إدارة الرحلات والقيم والمصروفات وصافي الربح"],
+  seaVibeTripNew: ["إضافة رحلة SEA VIBE", "إنشاء أو تعديل رحلة وحساب رسوم تصريح الإبحار تلقائيًا"],
+  seaVibeTripDetails: ["تفاصيل رحلة SEA VIBE", "بيانات الرحلة ومصروفاتها وحالتها المالية"],
+  seaVibeExpenseNew: ["إضافة مصروف SEA VIBE", "إضافة مصروف عام أو مصروف رحلة أو مصروف أصل"],
+  seaVibeGeneralExpenses: ["المصاريف العامة — SEA VIBE", "المصاريف التشغيلية غير المرتبطة برحلة أو أصل"],
+  seaVibeAssets: ["أصول SEA VIBE", "إدارة الأصول والقيمة الرأسمالية الحالية"],
+  seaVibeReference: ["البيانات المرجعية — SEA VIBE", "إدارة المصروفات وأنواع الرحلات وطرق الدفع ورسوم التصريح"],
+  seaVibeReports: ["تقارير وتحليلات SEA VIBE", "متابعة إيرادات الرحلات والمصروفات وصافي الربح التشغيلي"],
   users: ["المستخدمون", "إدارة حسابات مستخدمي النظام"],
   permissions: ["الصلاحيات", "إدارة الأدوار وصلاحيات الوصول"],
   activityLog: ["سجل النشاط", "متابعة العمليات والتغييرات داخل النظام"],
@@ -1399,7 +1415,11 @@ function switchView(requestedName, options = {}) {
     loadSystemSettings();
   }
 
-  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"] };
+  if (name.startsWith("seaVibe")) {
+    window.SeaVibeUI?.activate?.(name);
+  }
+
+  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
   const localizedMetaKeys = localizedPageMetaKeys[name];
   const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map((key,index)=>customerT(key,pageMeta[name][index])) : pageMeta[name];
   document.getElementById("pageTitle").textContent = activePageMeta[0];
@@ -1451,7 +1471,7 @@ function switchView(requestedName, options = {}) {
 window.addEventListener("petatoe-language-changed", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
   const current = activeViewKey;
-  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"] };
+  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
   let meta = null;
   if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
   else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map((key,index)=>customerT(key,pageMeta[current][index]));
