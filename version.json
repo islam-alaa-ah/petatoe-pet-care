@@ -1,14 +1,13 @@
 {
-  "version": "18.55.89",
-  "build": 185589,
+  "version": "18.55.90",
+  "build": 185590,
   "forceUpdate": true,
   "releaseDate": "2026-08-23",
-  "title": "SEA VIBE Treasury & Zawel Deployment Recovery",
+  "title": "Zawel Top-up Date & Reset Hotfix",
   "notes": [
-    "إصلاح عدم ظهور الخزنة ورصيد زاول بسبب بقاء Cache-Busting وPWA runtime على إصدار أقدم من الملفات الجديدة.",
-    "توحيد version.json وpwa.js وService Worker وملفات SEA VIBE المعدلة على الإصدار 18.55.89 لمنع دورة التحديث وإعادة التحميل المتكررة.",
-    "الحفاظ على تنفيذ الخزنة ورصيد زاول وصلاحياتهما وSQL الخاص بهما دون تغيير Business Logic.",
-    "إجبار المتصفح على جلب app.js وlocalization-center.js وsea-vibe.js وsea-vibe-service.js وsea-vibe.css الجديدة بدل النسخ المخزنة القديمة."
+    "إصلاح خطأ Cannot read properties of null (reading reset) بعد نجاح شحن رصيد زاول.",
+    "إضافة تاريخ حركة الشحن كحقل مطلوب وتسجيله داخل حركة زاول والخزنة.",
+    "الحفاظ على رصيد النقاط وتكلفة الشحن والـOffline Queue ونظام SEA VIBE الحالي دون تغيير منطق الربحية."
   ],
-  "cacheToken": "petatoe-pwa-18-55-89-sea-vibe-treasury-zawel-r1"
+  "cacheToken": "petatoe-pwa-18-55-90-sea-vibe-zawel-topup-date-r2"
 }
