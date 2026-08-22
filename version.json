@@ -1,13 +1,13 @@
 {
-  "version": "18.55.91",
-  "build": 185591,
+  "version": "18.55.92",
+  "build": 185592,
   "forceUpdate": true,
   "releaseDate": "2026-08-23",
-  "title": "Zawel Top-up Date & Reset Hotfix",
+  "title": "SEA VIBE Treasury Movement Serial & Actions",
   "notes": [
-    "إصلاح خطأ Cannot read properties of null (reading reset) بعد نجاح شحن رصيد زاول.",
-    "إضافة تاريخ حركة الشحن كحقل مطلوب وتسجيله داخل حركة زاول والخزنة.",
-    "الحفاظ على رصيد النقاط وتكلفة الشحن والـOffline Queue ونظام SEA VIBE الحالي دون تغيير منطق الربحية."
+    "إضافة سيريال مستقل لكل حركة خزنة مع تجميع بنود المصروفات المدخلة دفعة واحدة تحت نفس السيريال.",
+    "إضافة عمود حذف أو تعديل في الخزنة وربط التعديل بالمصدر الأصلي للحركة.",
+    "دعم تعديل حركة المصروف كاملة بما يشمل النوع والرحلة أو الأصل والتاريخ والقيمة والمصروف وطريقة الدفع والملاحظات، مع حذف الحركة كاملة من الخزنة عند الطلب."
   ],
-  "cacheToken": "petatoe-pwa-18-55-90-sea-vibe-zawel-topup-date-r2"
+  "cacheToken": "petatoe-pwa-18-55-92-sea-vibe-treasury-movement-actions-r4"
 }
