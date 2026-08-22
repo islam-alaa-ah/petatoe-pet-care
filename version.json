@@ -1,13 +1,13 @@
 {
-  "version": "18.55.93",
-  "build": 185593,
+  "version": "18.55.94",
+  "build": 185594,
   "forceUpdate": true,
   "releaseDate": "2026-08-23",
-  "title": "SEA VIBE Treasury Actions Runtime Fix",
+  "title": "SEA VIBE Treasury Expense Edit In-Place Recovery",
   "notes": [
-    "إصلاح زر تعديل حركة المصروف في الخزنة بإعادة ربطه مباشرة بشاشة المصروف الأصلية.",
-    "إضافة المالك المفقود syncExpenseScope الذي كان يسبب ReferenceError ويوقف فتح شاشة التعديل.",
-    "تقوية تحميل حركة المصروف من Supabase عند عدم وجود تفاصيلها في Smart Cache، مع التحقق من مسار الحذف وإظهار نتيجة العملية."
+    "إصلاح حفظ تعديل حركة المصروف بحيث يعدل نفس الحركة ولا ينشئ حركة جديدة.",
+    "تثبيت هوية حركة التعديل داخل نموذج المصروف نفسه بدل الاعتماد على حالة JavaScript مؤقتة قد تُفقد أثناء التنقل أو إعادة التفعيل.",
+    "الحفاظ على نفس movement_group_id وmovement_serial واستخدام RPC التعديل الحالي دون تغيير منطق الخزنة أو المصروفات الأخرى."
   ],
-  "cacheToken": "petatoe-pwa-18-55-93-sea-vibe-treasury-actions-runtime-r4r2"
+  "cacheToken": "petatoe-pwa-18-55-94-sea-vibe-expense-edit-in-place-r4r3"
 }
