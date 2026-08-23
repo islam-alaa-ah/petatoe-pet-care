@@ -1,13 +1,13 @@
 {
-  "version": "18.55.94",
-  "build": 185594,
+  "version": "18.55.95",
+  "build": 185595,
   "forceUpdate": true,
   "releaseDate": "2026-08-23",
-  "title": "SEA VIBE Treasury Expense Edit In-Place Recovery",
+  "title": "SEA VIBE Date Consistency Recovery",
   "notes": [
-    "إصلاح حفظ تعديل حركة المصروف بحيث يعدل نفس الحركة ولا ينشئ حركة جديدة.",
-    "تثبيت هوية حركة التعديل داخل نموذج المصروف نفسه بدل الاعتماد على حالة JavaScript مؤقتة قد تُفقد أثناء التنقل أو إعادة التفعيل.",
-    "الحفاظ على نفس movement_group_id وmovement_serial واستخدام RPC التعديل الحالي دون تغيير منطق الخزنة أو المصروفات الأخرى."
+    "توحيد تاريخ الحركة المحاسبي في SEA VIBE بين الرحلات والمصروفات وشحن زاول والخزنة.",
+    "منع خلط transaction_date وexpense_date وtrip_date مع created_at أو تحويلات المنطقة الزمنية في العرض والفلاتر.",
+    "ربط رسوم تصريح الإبحار وتسويات زاول دائمًا بتاريخ الرحلة، مع إصلاح ترتيب حركات زاول والخزنة ودعم نفس المنطق في الحالة Offline."
   ],
-  "cacheToken": "petatoe-pwa-18-55-94-sea-vibe-expense-edit-in-place-r4r3"
+  "cacheToken": "petatoe-pwa-18-55-95-sea-vibe-date-consistency-r5"
 }
