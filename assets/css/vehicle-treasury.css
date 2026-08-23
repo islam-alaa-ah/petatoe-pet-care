@@ -1,0 +1,19 @@
+#vehicleTreasuryView{--vt-blue:#0f4fa8;--vt-blue2:#1f73e8;--vt-green:#0f9f6e;--vt-red:#d44949}
+#vehicleTreasuryView .vehicle-treasury-toolbar{display:grid;grid-template-columns:minmax(220px,1fr) minmax(180px,.7fr) minmax(180px,.7fr) minmax(220px,1fr) auto auto;gap:12px;align-items:end;margin-bottom:16px}
+#vehicleTreasuryView .vehicle-treasury-kpis{display:grid;grid-template-columns:1.25fr repeat(3,1fr);gap:14px;margin-bottom:16px}
+#vehicleTreasuryView .vehicle-treasury-kpis .panel{min-height:126px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+#vehicleTreasuryView .vehicle-treasury-kpis .balance{background:linear-gradient(135deg,#061b43,#0d3f91);color:#fff;border-color:rgba(255,255,255,.12)}
+#vehicleTreasuryView .vehicle-treasury-kpis strong{font-size:1.7rem}
+#vehicleTreasuryView .vehicle-treasury-table{overflow:auto}
+#vehicleTreasuryView .vehicle-treasury-type{display:inline-flex;padding:5px 10px;border-radius:999px;font-weight:800;font-size:.83rem}
+#vehicleTreasuryView .vehicle-treasury-type.income{color:var(--vt-green);background:rgba(15,159,110,.1)}
+#vehicleTreasuryView .vehicle-treasury-type.expense{color:var(--vt-red);background:rgba(212,73,73,.1)}
+#vehicleTreasuryView .vehicle-treasury-money-in{color:var(--vt-green);font-weight:800;white-space:nowrap}
+#vehicleTreasuryView .vehicle-treasury-money-out{color:var(--vt-red);font-weight:800;white-space:nowrap}
+#vehicleTreasuryView .vehicle-treasury-actions{display:flex;gap:7px;white-space:nowrap}
+#vehicleTreasuryView .vehicle-treasury-actions .danger{color:var(--vt-red)}
+.vehicle-treasury-expense-dialog .dialog-shell{max-width:760px}
+@media(max-width:1100px){#vehicleTreasuryView .vehicle-treasury-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}#vehicleTreasuryView .vehicle-treasury-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){#vehicleTreasuryView .vehicle-treasury-toolbar{grid-template-columns:1fr}#vehicleTreasuryView .vehicle-treasury-kpis{grid-template-columns:1fr 1fr;gap:10px}#vehicleTreasuryView .vehicle-treasury-kpis .panel{min-height:104px;padding:14px}#vehicleTreasuryView .vehicle-treasury-kpis strong{font-size:1.25rem}#vehicleTreasuryView .vehicle-treasury-kpis .balance{grid-column:1/-1}#vehicleTreasuryView .vehicle-treasury-table table{min-width:1050px}}
+html[data-theme="dark"] #vehicleTreasuryView .vehicle-treasury-type.income,body.dark-mode #vehicleTreasuryView .vehicle-treasury-type.income{background:rgba(15,159,110,.16)}
+html[data-theme="dark"] #vehicleTreasuryView .vehicle-treasury-type.expense,body.dark-mode #vehicleTreasuryView .vehicle-treasury-type.expense{background:rgba(212,73,73,.16)}

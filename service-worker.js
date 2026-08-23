@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-96-sea-vibe-permit-matrix-r6";
+const CACHE_VERSION = "petatoe-pwa-18-55-97-vehicle-treasury-p5-13-8-70";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -30,6 +30,7 @@ const CORE_APP_SHELL = [
   "./assets/css/mobile-theme-canonical.css",
   "./assets/css/sales-invoices.css",
   "./assets/css/sea-vibe.css",
+  "./assets/css/vehicle-treasury.css",
   "./assets/css/global-typography-certification.css",
   "./assets/css/notification-center.css",
   "./assets/css/translation-center.css",
@@ -58,8 +59,10 @@ const CORE_APP_SHELL = [
   "./assets/js/quotations-service.js",
   "./assets/js/installations-service.js",
   "./assets/js/sales-invoices.js",
+  "./assets/js/vehicle-treasury.js",
   "./assets/js/sea-vibe.js",
   "./assets/js/sales-invoices-service.js",
+  "./assets/js/vehicle-treasury-service.js",
   "./assets/js/sea-vibe-service.js",
   "./assets/js/installations-service-contract.js",
   "./assets/js/app.js",
