@@ -200,7 +200,7 @@
     ['vehicleTreasury.kpi.count','label','عدد الحركات','Movements'],
     ['vehicleTreasury.col.date','table','التاريخ','Date'],
     ['vehicleTreasury.col.type','table','نوع الحركة','Movement Type'],
-    ['vehicleTreasury.col.reference','table','المرجع','Reference'],
+    ['vehicleTreasury.col.reference','table','رقم الفاتورة / المرجع','Invoice No. / Reference'],
     ['vehicleTreasury.col.description','table','البيان','Description'],
     ['vehicleTreasury.col.amount','table','القيمة','Amount'],
     ['vehicleTreasury.col.car','table','السيارة','Vehicle'],

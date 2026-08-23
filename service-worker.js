@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-55-97-vehicle-treasury-p5-13-8-70";
+const CACHE_VERSION = "petatoe-pwa-18-55-98-vehicle-treasury-reference-p5-13-8-70r3";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
