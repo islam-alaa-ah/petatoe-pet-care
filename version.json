@@ -1,13 +1,13 @@
 {
-  "version": "18.55.95",
-  "build": 185595,
+  "version": "18.55.96",
+  "build": 185596,
   "forceUpdate": true,
   "releaseDate": "2026-08-23",
-  "title": "SEA VIBE Date Consistency Recovery",
+  "title": "SEA VIBE Sailing Permit Matrix Recovery",
   "notes": [
-    "توحيد تاريخ الحركة المحاسبي في SEA VIBE بين الرحلات والمصروفات وشحن زاول والخزنة.",
-    "منع خلط transaction_date وexpense_date وtrip_date مع created_at أو تحويلات المنطقة الزمنية في العرض والفلاتر.",
-    "ربط رسوم تصريح الإبحار وتسويات زاول دائمًا بتاريخ الرحلة، مع إصلاح ترتيب حركات زاول والخزنة ودعم نفس المنطق في الحالة Offline."
+    "اعتماد نقاط زاول كمصدر واحد لرسوم تصريح الإبحار، مع إظهار النقاط والقيمة بالريال داخل كل خلية في المصفوفة.",
+    "تطبيق تعريفة 5 ساعات تلقائيًا على الرحلات من 6 إلى 10 ساعات لنفس عدد الأفراد.",
+    "إتاحة تعديل كل خلية من مصفوفة النقاط، مع حساب القيمة بالريال تلقائيًا وفق 2500 نقطة = 575 ر.س."
   ],
-  "cacheToken": "petatoe-pwa-18-55-95-sea-vibe-date-consistency-r5"
+  "cacheToken": "petatoe-pwa-18-55-96-sea-vibe-permit-matrix-r6"
 }

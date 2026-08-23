@@ -1,6 +1,6 @@
 {
   "name": "petatoe-pet-care-mobile",
-  "version": "18.55.95",
+  "version": "18.55.96",
   "private": true,
   "description": "Native Android/iOS packaging layer for PETATOE.",
   "scripts": {
