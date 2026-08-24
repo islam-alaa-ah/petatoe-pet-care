@@ -1402,7 +1402,13 @@
   const CARD_TABLE_SELECTORS = [
     "#installationReportsView .installation-report-panel table",
     "#installationSettingsView .installation-settings-section .table-wrap table",
-    "#installationScheduleView .table-wrap table"
+    "#installationScheduleView .table-wrap table",
+    "#payrollManagementView .payroll-table",
+    "#salaryStatementView .payroll-history-table",
+    "#commissionManagementView .commission-table",
+    "#commissionStatementView .payroll-history-table",
+    "#commissionStatementView .commission-statement-tier-table",
+    "#payrollReferenceView .payroll-table"
   ];
   const PERMISSION_LABELS = ["عرض","إضافة","تعديل","حذف","تصدير"];
   const NOTIFICATION_LABELS = ["الحدث","تفعيل الحدث","داخل البرنامج","Push","صاحب الطلب","إرسال للدور المحدد"];
@@ -1430,6 +1436,16 @@
           const previous=row.previousElementSibling?.dataset.mobileGroup;
           if(previous)row.dataset.mobileGroup=previous;
           offset=1;
+        }
+      }
+      if(table.classList.contains("commission-table")){
+        if(cells.length===labels.length){
+          row.dataset.mobileGroup=(cells[1]?.textContent||"").replace(/\s+/g," ").trim();
+          offset=0;
+        }else{
+          const previous=row.previousElementSibling?.dataset.mobileGroup;
+          if(previous)row.dataset.mobileGroup=previous;
+          offset=3;
         }
       }
       cells.forEach((cell,index)=>{
