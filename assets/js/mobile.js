@@ -1408,7 +1408,8 @@
     "#commissionManagementView .commission-table",
     "#commissionStatementView .payroll-history-table",
     "#commissionStatementView .commission-statement-tier-table",
-    "#payrollReferenceView .payroll-table"
+    "#payrollReferenceView .payroll-table",
+    ".sea-vibe-view .table-wrap .data-table"
   ];
   const PERMISSION_LABELS = ["عرض","إضافة","تعديل","حذف","تصدير"];
   const NOTIFICATION_LABELS = ["الحدث","تفعيل الحدث","داخل البرنامج","Push","صاحب الطلب","إرسال للدور المحدد"];
@@ -1416,10 +1417,37 @@
   function headerLabels(table){
     return [...table.querySelectorAll("thead th")].map(th => (th.textContent || "").replace(/\s+/g," ").trim());
   }
+  function annotatePermitTable(table){
+    const labels=headerLabels(table);
+    if(!labels.length)return;
+    table.classList.add("sea-vibe-mobile-permit-cards");
+    table.querySelectorAll("tbody tr").forEach(row=>{
+      const cells=[...row.children];
+      const peopleCell=cells.shift();
+      const people=(peopleCell?.textContent||"").replace(/\s+/g," ").trim();
+      row.dataset.mobileGroup=`${labels[0]||""}: ${people}`.trim();
+      if(peopleCell)peopleCell.dataset.mobileLabel="";
+      cells.forEach((cell,index)=>{cell.dataset.mobileLabel=labels[index+1]||"";});
+    });
+  }
+  function enhanceSeaVibeActionCells(table){
+    if(!table.closest(".sea-vibe-view"))return;
+    table.querySelectorAll("tbody td").forEach(cell=>{
+      if(cell.querySelector(":scope > .petatoe-mobile-sea-vibe-actions"))return;
+      const buttons=[...cell.children].filter(node=>node.tagName==="BUTTON");
+      if(buttons.length<2)return;
+      const wrap=document.createElement("div");
+      wrap.className="sea-vibe-actions petatoe-mobile-sea-vibe-actions";
+      cell.insertBefore(wrap,buttons[0]);
+      buttons.forEach(button=>wrap.appendChild(button));
+    });
+  }
   function annotateSimpleTable(table){
+    if(table.classList.contains("sea-vibe-permit-table")){annotatePermitTable(table);return;}
     const labels=headerLabels(table);
     if(!labels.length)return;
     table.classList.add("petatoe-mobile-card-table");
+    enhanceSeaVibeActionCells(table);
     table.querySelectorAll("tbody tr").forEach(row=>{
       const cells=[...row.children];
       if(cells.length===1 && Number(cells[0].getAttribute("colspan")||1)>1){
@@ -1456,6 +1484,7 @@
   }
   function annotateTables(){
     CARD_TABLE_SELECTORS.forEach(sel=>document.querySelectorAll(sel).forEach(annotateSimpleTable));
+    document.querySelectorAll(".sea-vibe-view .sea-vibe-permit-table").forEach(annotatePermitTable);
   }
   function enhancePermissions(){
     document.querySelectorAll('#permissionsView .permission-row[data-screen-key]').forEach(row=>{
@@ -1487,6 +1516,13 @@
   }
   function cleanupDesktop(){
     document.querySelectorAll('.petatoe-mobile-card-table').forEach(table=>table.classList.remove('petatoe-mobile-card-table'));
+    document.querySelectorAll('.sea-vibe-mobile-permit-cards').forEach(table=>table.classList.remove('sea-vibe-mobile-permit-cards'));
+    document.querySelectorAll('.petatoe-mobile-sea-vibe-actions').forEach(wrap=>{
+      const parent=wrap.parentElement;
+      if(!parent)return;
+      [...wrap.children].forEach(child=>parent.insertBefore(child,wrap));
+      wrap.remove();
+    });
     document.querySelectorAll('.petatoe-mobile-notification-cards').forEach(table=>table.classList.remove('petatoe-mobile-notification-cards'));
     restorePermissions();
   }

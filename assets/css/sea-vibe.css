@@ -20,8 +20,6 @@
 .sea-vibe-asset-note{font-size:.82rem;color:var(--muted,#7183a0);margin-top:6px}
 [data-theme="dark"] .sea-vibe-expense-row{background:var(--surface,#0f1d33)}
 @media (max-width:1180px){.sea-vibe-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.sea-vibe-filters{grid-template-columns:repeat(3,minmax(0,1fr))}.sea-vibe-report-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:767px){.sea-vibe-view{padding-inline:0}.sea-vibe-toolbar{align-items:flex-start;flex-direction:column}.sea-vibe-toolbar>button{width:100%}.sea-vibe-kpis,.sea-vibe-report-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.sea-vibe-filters,.sea-vibe-scope-grid,.sea-vibe-form .form-grid,.sea-vibe-expense-row-grid,.sea-vibe-detail-grid,.sea-vibe-report-split,.sea-vibe-reference-editor{grid-template-columns:1fr}.sea-vibe-expense-row-grid .wide,.sea-vibe-form .full-span{grid-column:auto}.sea-vibe-summary-card{grid-template-columns:1fr 1fr}.sea-vibe-view .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.sea-vibe-view .data-table{min-width:820px}.sea-vibe-section-head{align-items:stretch;flex-direction:column}.sea-vibe-section-head button{width:100%}}
-@media (max-width:420px){.sea-vibe-kpis,.sea-vibe-report-grid,.sea-vibe-summary-card{grid-template-columns:1fr}}
 /* P5.13.8.69 — canonical SEA VIBE treasury / Zawel additions */
 .sea-vibe-zawel-kpis{display:grid;grid-template-columns:1.25fr repeat(3,minmax(0,1fr));gap:14px;margin-bottom:16px}
 .sea-vibe-zawel-kpis .panel{min-height:118px;display:flex;flex-direction:column;justify-content:center;gap:9px}
@@ -29,5 +27,86 @@
 .sea-vibe-zawel-balance{background:linear-gradient(145deg,rgba(10,52,105,.98),rgba(8,31,66,.98));color:#fff;border-color:rgba(58,145,255,.45)}
 .sea-vibe-zawel-balance small{color:rgba(255,255,255,.78)}
 @media (max-width:1180px){.sea-vibe-zawel-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:767px){.sea-vibe-zawel-kpis{grid-template-columns:1fr 1fr;gap:10px}.sea-vibe-zawel-balance{grid-column:1/-1}.sea-vibe-zawel-kpis .panel{min-height:105px}}
-@media (max-width:420px){.sea-vibe-zawel-kpis{grid-template-columns:1fr}.sea-vibe-zawel-balance{grid-column:auto}}
+
+/* P5.13.8.71R5 — SEA VIBE mobile-only certification. Desktop/tablet rules above remain canonical. */
+@media (max-width:767px),
+       (orientation:landscape) and (pointer:coarse) and (max-device-width:1024px) and (max-height:520px){
+  .sea-vibe-view{padding-inline:0;min-width:0;overflow-x:hidden;direction:inherit}
+  .sea-vibe-view>*{min-width:0;max-width:100%}
+  .sea-vibe-toolbar{align-items:stretch;flex-direction:column;gap:10px;margin-bottom:12px}
+  .sea-vibe-toolbar h3{font-size:1.08rem;line-height:1.35}
+  .sea-vibe-toolbar p{font-size:.78rem;line-height:1.55}
+  .sea-vibe-toolbar>button{width:100%;min-height:44px}
+
+  .sea-vibe-kpis,.sea-vibe-report-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+  .sea-vibe-kpis .panel,.sea-vibe-report-grid .panel{min-height:92px;padding:12px;gap:7px}
+  .sea-vibe-kpis .panel span,.sea-vibe-report-grid .panel span{font-size:.72rem;line-height:1.4}
+  .sea-vibe-kpis strong,.sea-vibe-report-grid strong{font-size:1rem;line-height:1.35;overflow-wrap:anywhere}
+
+  .sea-vibe-filters,.sea-vibe-scope-grid,.sea-vibe-form .form-grid,.sea-vibe-expense-row-grid,.sea-vibe-detail-grid,.sea-vibe-report-split,.sea-vibe-reference-editor{grid-template-columns:minmax(0,1fr);gap:10px}
+  .sea-vibe-filters,.sea-vibe-scope-grid{padding:12px;margin-bottom:12px}
+  .sea-vibe-filters label,.sea-vibe-scope-grid label,.sea-vibe-form label,.sea-vibe-reference-editor label{min-width:0;width:100%}
+  .sea-vibe-expense-row-grid .wide,.sea-vibe-form .full-span{grid-column:auto}
+  .sea-vibe-form{padding:12px}
+  .sea-vibe-form .dialog-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .sea-vibe-form .dialog-actions button{width:100%;min-height:44px}
+
+  .sea-vibe-section-head{align-items:stretch;flex-direction:column;gap:8px;margin:4px 0 10px;padding-top:4px}
+  .sea-vibe-section-head h4{font-size:.98rem}
+  .sea-vibe-section-head button{width:100%;min-height:44px}
+
+  .sea-vibe-expense-row{padding:12px;margin-bottom:10px;border-radius:16px}
+  .sea-vibe-expense-row-head{margin-bottom:10px}
+  .sea-vibe-expense-row-head .icon-btn{width:40px;height:40px;min-width:40px}
+
+  .sea-vibe-summary-card{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .sea-vibe-summary-card>div{padding:10px;border-radius:13px;min-width:0}
+  .sea-vibe-summary-card span{font-size:.7rem;color:var(--muted,#7183a0)}
+  .sea-vibe-summary-card strong{display:block;margin-top:5px;font-size:.92rem;line-height:1.4;overflow-wrap:anywhere}
+  .sea-vibe-detail-grid>.panel{min-width:0}
+  .sea-vibe-detail-grid>.panel>button{width:100%;min-height:44px}
+
+  .sea-vibe-view .table-wrap{max-width:100%}
+  .sea-vibe-view .petatoe-mobile-card-table{min-width:0}
+  .sea-vibe-view .petatoe-mobile-card-table .sea-vibe-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;width:100%}
+  .sea-vibe-view .petatoe-mobile-card-table .sea-vibe-actions button{width:100%;min-width:0;min-height:40px}
+  .sea-vibe-view .petatoe-mobile-card-table td>button{min-height:40px}
+
+  .sea-vibe-reference-editor{padding:0;margin-bottom:12px}
+  .sea-vibe-reference-editor button{width:100%;min-height:44px}
+  .sea-vibe-permit-wrap{overflow:visible;padding:12px}
+  .sea-vibe-permit-note{font-size:.76rem;line-height:1.55}
+  .sea-vibe-mobile-permit-cards{display:block;width:100%;min-width:0;border-collapse:separate}
+  .sea-vibe-mobile-permit-cards thead{display:none}
+  .sea-vibe-mobile-permit-cards tbody{display:grid;gap:12px;width:100%}
+  .sea-vibe-mobile-permit-cards tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;padding:12px;border:1px solid var(--kyum-mobile-border,var(--border,#dbe6f4));border-radius:16px;background:var(--kyum-mobile-surface,var(--surface,#fff));box-shadow:var(--kyum-mobile-shadow,0 8px 18px rgba(15,23,42,.06))}
+  .sea-vibe-mobile-permit-cards tbody tr::before{content:attr(data-mobile-group);grid-column:1/-1;display:block;padding-bottom:9px;border-bottom:1px solid var(--kyum-mobile-border,var(--border,#dbe6f4));color:var(--kyum-mobile-text,var(--text,#0f172a));font-size:.84rem;font-weight:900}
+  .sea-vibe-mobile-permit-cards tbody th{display:none}
+  .sea-vibe-mobile-permit-cards tbody td{display:block;min-width:0;padding:9px;border:1px solid var(--kyum-mobile-border,var(--border,#dbe6f4));border-radius:12px;background:var(--surface-2,var(--surface,#fff));white-space:normal}
+  .sea-vibe-mobile-permit-cards tbody td::before{content:attr(data-mobile-label);display:block;margin-bottom:7px;color:var(--kyum-mobile-muted,var(--muted,#7183a0));font-size:.68rem;font-weight:900;line-height:1.35}
+  .sea-vibe-mobile-permit-cards .sea-vibe-permit-cell{min-width:0;gap:6px}
+  .sea-vibe-mobile-permit-cards .sea-vibe-permit-cell.is-linked{padding-inline-start:6px}
+  .sea-vibe-mobile-permit-cards input{min-width:0;width:100%;text-align:center}
+  .sea-vibe-mobile-permit-cards .sea-vibe-permit-amount{align-items:flex-start;flex-direction:column;gap:3px}
+  .sea-vibe-mobile-permit-cards .sea-vibe-permit-amount strong{white-space:normal;font-size:.78rem}
+  .sea-vibe-permit-wrap>.dialog-actions{display:grid;grid-template-columns:1fr;margin-top:12px}
+  .sea-vibe-permit-wrap>.dialog-actions button{width:100%;min-height:44px}
+
+  .sea-vibe-zawel-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+  .sea-vibe-zawel-balance{grid-column:1/-1}
+  .sea-vibe-zawel-kpis .panel{min-height:92px;padding:12px;gap:6px}
+  .sea-vibe-zawel-kpis strong{font-size:1rem;overflow-wrap:anywhere}
+  .sea-vibe-zawel-kpis small{font-size:.72rem}
+
+  .sea-vibe-report-split>.panel{padding:12px}
+  .sea-vibe-report-split h4{margin-top:0;font-size:.95rem}
+  .sea-vibe-asset-note{font-size:.74rem;line-height:1.55}
+}
+
+@media (max-width:380px){
+  .sea-vibe-kpis,.sea-vibe-report-grid,.sea-vibe-zawel-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sea-vibe-summary-card{grid-template-columns:1fr}
+  .sea-vibe-form .dialog-actions{grid-template-columns:1fr}
+  .sea-vibe-mobile-permit-cards tbody tr{grid-template-columns:1fr}
+  .sea-vibe-mobile-permit-cards tbody tr::before{grid-column:1}
+}
