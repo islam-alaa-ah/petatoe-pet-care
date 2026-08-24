@@ -1638,28 +1638,35 @@
       </section>
 
       <section id="payrollManagementView" class="view-section hidden payroll-view" aria-hidden="true">
-        <div class="payroll-toolbar">
-          <div class="payroll-toolbar-title"><h3 data-petatoe-i18n="payroll.management.title">إدارة الرواتب</h3><p data-petatoe-i18n="payroll.management.subtitle">تجهيز واعتماد وصرف الرواتب الشهرية.</p></div>
-          <div class="payroll-commission-period panel" id="payrollCommissionPeriodCard">
-            <div class="payroll-commission-period-head"><strong data-petatoe-i18n="payroll.commissionPeriod.title">فترة احتساب عمولات الراتب</strong><small data-petatoe-i18n="payroll.commissionPeriod.applyHint">يتم اعتماد الفترة عند تجهيز رواتب الشهر.</small></div>
-            <div class="payroll-commission-period-fields">
-              <label><span data-petatoe-i18n="payroll.commissionPeriod.from">من تاريخ</span><input id="payrollCommissionFrom" type="date"></label>
-              <label><span data-petatoe-i18n="payroll.commissionPeriod.to">إلى تاريخ</span><input id="payrollCommissionTo" type="date"></label>
+        <div class="panel payroll-management-hero">
+          <div class="payroll-management-hero-head">
+            <div class="payroll-toolbar-title payroll-management-title-block"><h3 data-petatoe-i18n="payroll.management.title">إدارة الرواتب</h3><p data-petatoe-i18n="payroll.management.subtitle">تجهيز واعتماد وصرف الرواتب الشهرية.</p></div>
+            <div class="payroll-management-month-card">
+              <div class="payroll-management-month-copy"><span data-petatoe-i18n="payroll.common.month">الشهر</span><strong id="payrollManagementMonthDisplay">—</strong></div>
+              <div class="payroll-management-month-actions"><label class="payroll-management-month-input"><span data-petatoe-i18n="payroll.common.monthPicker">اختيار الشهر</span><input id="payrollManagementMonth" type="month"></label><button id="payrollPrepareMonth" class="primary-btn" type="button" data-permission-screen="payrollManagement" data-permission-action="add" data-petatoe-i18n="payroll.management.prepare">تجهيز رواتب الشهر</button><button id="payrollManagementRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
             </div>
-            <div id="payrollCommissionPeriodInfo" class="payroll-commission-period-info" aria-live="polite"></div>
           </div>
-          <div class="payroll-toolbar-actions"><label><span data-petatoe-i18n="payroll.common.month">الشهر</span><input id="payrollManagementMonth" type="month"></label><button id="payrollPrepareMonth" class="primary-btn" type="button" data-permission-screen="payrollManagement" data-permission-action="add" data-petatoe-i18n="payroll.management.prepare">تجهيز رواتب الشهر</button><button id="payrollManagementRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
+          <div class="payroll-management-hero-body">
+            <div class="payroll-commission-period" id="payrollCommissionPeriodCard">
+              <div class="payroll-commission-period-head"><strong data-petatoe-i18n="payroll.commissionPeriod.title">فترة احتساب عمولات الراتب</strong><small data-petatoe-i18n="payroll.commissionPeriod.applyHint">يتم اعتماد الفترة عند تجهيز رواتب الشهر.</small></div>
+              <div class="payroll-commission-period-fields">
+                <label><span data-petatoe-i18n="payroll.commissionPeriod.from">من تاريخ</span><input id="payrollCommissionFrom" type="date"></label>
+                <label><span data-petatoe-i18n="payroll.commissionPeriod.to">إلى تاريخ</span><input id="payrollCommissionTo" type="date"></label>
+              </div>
+              <div id="payrollCommissionPeriodInfo" class="payroll-commission-period-info" aria-live="polite"></div>
+            </div>
+            <div class="payroll-kpis">
+              <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.employees">عدد الموظفين</span><strong id="payrollKpiEmployees">0</strong></article>
+              <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.base">إجمالي الأساسي</span><strong id="payrollKpiBase">0</strong></article>
+              <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.allowances">إجمالي البدلات</span><strong id="payrollKpiAllowances">0</strong></article>
+              <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.commissions">إجمالي العمولات</span><strong id="payrollKpiCommissions">0</strong></article>
+              <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.deductions">إجمالي الخصومات</span><strong id="payrollKpiDeductions">0</strong></article>
+              <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.net">صافي الرواتب</span><strong id="payrollKpiNet">0</strong></article>
+            </div>
+          </div>
+          <div class="payroll-tabs" id="payrollManagementTabs"><button class="payroll-tab active" type="button" data-payroll-tab="current" data-petatoe-i18n="payroll.management.current">الرواتب الجارية</button><button class="payroll-tab" type="button" data-payroll-tab="reports" data-petatoe-i18n="payroll.management.reports">تقارير الرواتب</button></div>
         </div>
         <div id="payrollManagementStatus" class="data-status hidden" aria-live="polite"></div>
-        <div class="payroll-kpis">
-          <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.employees">عدد الموظفين</span><strong id="payrollKpiEmployees">0</strong></article>
-          <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.base">إجمالي الأساسي</span><strong id="payrollKpiBase">0</strong></article>
-          <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.allowances">إجمالي البدلات</span><strong id="payrollKpiAllowances">0</strong></article>
-          <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.commissions">إجمالي العمولات</span><strong id="payrollKpiCommissions">0</strong></article>
-          <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.deductions">إجمالي الخصومات</span><strong id="payrollKpiDeductions">0</strong></article>
-          <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.net">صافي الرواتب</span><strong id="payrollKpiNet">0</strong></article>
-        </div>
-        <div class="payroll-tabs" id="payrollManagementTabs"><button class="payroll-tab active" type="button" data-payroll-tab="current" data-petatoe-i18n="payroll.management.current">الرواتب الجارية</button><button class="payroll-tab" type="button" data-payroll-tab="reports" data-petatoe-i18n="payroll.management.reports">تقارير الرواتب</button></div>
         <div class="panel payroll-filters">
           <label class="search-box"><span data-petatoe-i18n="payroll.common.search">بحث</span><input id="payrollManagementSearch" type="search" data-petatoe-i18n-placeholder="payroll.management.searchPlaceholder" placeholder="اسم الموظف..."></label>
           <label><span data-petatoe-i18n="payroll.employee.paymentMethod">طريقة الدفع</span><select id="payrollPaymentFilter"><option value="" data-petatoe-i18n="payroll.common.all">الكل</option></select></label>
