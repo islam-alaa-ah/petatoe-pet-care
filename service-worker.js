@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-00-payroll-commissions-p5-13-8-71";
+const CACHE_VERSION = "petatoe-pwa-18-56-01-payroll-commissions-r1-p5-13-8-71";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
