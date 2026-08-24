@@ -45,11 +45,29 @@
   async function listMine(limit=50){const uid=profile()?.id;if(!uid)return[];const {data,error}=await db().from('notifications').select('id,event_key,title,body,target_view,request_id,visit_id,is_read,created_at,metadata').eq('user_id',uid).eq('in_app_delivery',true).order('created_at',{ascending:false}).limit(limit);if(error)throw new Error('تعذر تحميل الإشعارات: '+error.message);return data||[]}
   async function markRead(id){const uid=profile()?.id;if(!uid)return;const {error}=await db().from('notifications').update({is_read:true,read_at:new Date().toISOString()}).eq('id',id).eq('user_id',uid);if(error)throw new Error(error.message)}
   async function markAllRead(){const uid=profile()?.id;if(!uid)return;const {error}=await db().from('notifications').update({is_read:true,read_at:new Date().toISOString()}).eq('user_id',uid).eq('is_read',false).eq('in_app_delivery',true);if(error)throw new Error(error.message)}
-  async function dispatchPending(){try{await db().functions.invoke('notification-push-dispatch',{body:{action:'dispatch'}})}catch(e){console.warn('[Notifications] push dispatch deferred',e?.message||e)}}
+  let pushConfigCache=null,pushConfigExpiresAt=0;
+  async function getPushConfig(force=false){
+    if(!pushSupported())return{supported:false,configured:false,publicKey:'',permission:typeof Notification==='undefined'?'unsupported':Notification.permission};
+    const now=Date.now();
+    if(!force&&pushConfigCache&&now<pushConfigExpiresAt)return{...pushConfigCache,permission:Notification.permission};
+    const {data,error}=await db().functions.invoke('notification-push-dispatch',{body:{action:'config'}});
+    if(error)throw new Error('تعذر تحميل إعداد Web Push: '+error.message);
+    pushConfigCache={supported:true,configured:!!data?.configured&&!!data?.publicKey,publicKey:data?.publicKey||''};
+    pushConfigExpiresAt=now+5*60*1000;
+    return{...pushConfigCache,permission:Notification.permission};
+  }
+  async function dispatchPending(){
+    try{
+      const cfg=await getPushConfig();
+      if(!cfg.supported||!cfg.configured)return{skipped:true,reason:cfg.supported?'not-configured':'unsupported'};
+      const {data,error}=await db().functions.invoke('notification-push-dispatch',{body:{action:'dispatch'}});
+      if(error)throw error;
+      return data||null;
+    }catch(e){console.warn('[Notifications] push dispatch deferred',e?.message||e);return null}
+  }
   async function emit(eventKey,{requestId=null,visitId=null,metadata={},occurrenceKey=null}={}){if(!profile()?.id)return;const {error}=await db().rpc('emit_notification_event',{p_event_key:eventKey,p_request_id:requestId,p_visit_id:visitId,p_metadata:metadata||{},p_occurrence_key:occurrenceKey||null});if(error){console.warn('[Notifications] emit failed',eventKey,error.message);return}dispatchPending()}
   function subscribe(handler){const uid=profile()?.id;if(!uid)return()=>{};const channel=db().channel('kyum-notifications-'+uid).on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+uid},payload=>{if(payload.new?.in_app_delivery!==false)handler?.(payload.new)}).subscribe();return()=>db().removeChannel(channel)}
   function pushSupported(){return !!(window.isSecureContext&&'serviceWorker'in navigator&&'PushManager'in window&&'Notification'in window)}
-  async function getPushConfig(){if(!pushSupported())return{supported:false,configured:false,permission:typeof Notification==='undefined'?'unsupported':Notification.permission};const {data,error}=await db().functions.invoke('notification-push-dispatch',{body:{action:'config'}});if(error)throw new Error('تعذر تحميل إعداد Web Push: '+error.message);return{supported:true,configured:!!data?.publicKey,publicKey:data?.publicKey||'',permission:Notification.permission}}
   async function getPushStatus(){
     const base={supported:pushSupported(),permission:typeof Notification==='undefined'?'unsupported':Notification.permission,configured:false,subscribed:false,endpoint:null};if(!base.supported)return base;
     const cfg=await getPushConfig();base.configured=cfg.configured;if(!cfg.configured)return base;

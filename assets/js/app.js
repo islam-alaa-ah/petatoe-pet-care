@@ -7019,6 +7019,10 @@ function setSidebarOpen(isOpen) {
     else header.prepend(launcher);
   }
 
+  if (!isOpen && sidebar.contains(document.activeElement)) {
+    launcher.focus({ preventScroll: true });
+  }
+  if ("inert" in sidebar) sidebar.inert = !isOpen;
   sidebar.classList.toggle("is-open", isOpen);
   sidebar.setAttribute("aria-hidden", String(!isOpen));
   launcher.setAttribute("aria-expanded", String(isOpen));

@@ -1,6 +1,8 @@
 (function(){
 'use strict';
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function sharedT(key,fallback=''){const value=window.PetatoeLocalization?.t?.(key);return value&&value!==key?value:fallback}
+function sharedFormat(key,count,fallback=''){return sharedT(key,fallback).replace('{count}',String(count))}
 let config=null,notifications=[],unsub=null,selectedRoleKey='';
 function roleLabel(r){return window.CustomerPermissions?.roleLabels?.[r]||r}
 function availableRoles(){

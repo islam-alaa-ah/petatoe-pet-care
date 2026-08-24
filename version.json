@@ -1,13 +1,13 @@
 {
-  "version": "18.56.05",
-  "build": 185605,
+  "version": "18.56.06",
+  "build": 185606,
   "forceUpdate": true,
   "releaseDate": "2026-08-25",
-  "title": "SEA VIBE Mobile UI Certification R5",
+  "title": "Notification Runtime & Mobile Sidebar Accessibility R6",
   "notes": [
-    "مراجعة وتحسين واجهات قسم SEA VIBE على الموبايل فقط دون تغيير الديسكتوب أو التابلت.",
-    "تحويل جداول الرحلات والمصاريف والأصول والخزنة وزاول والتقارير إلى بطاقات موبايل قابلة للقراءة بدون تمرير أفقي.",
-    "إعادة تنظيم مصفوفة رسوم تصريح الإبحار والنماذج والفلاتر والبطاقات بما يتوافق مع الهوية البصرية المعتمدة للموبايل."
+    "إصلاح ReferenceError في مركز الإشعارات عند العرض وتغيير اللغة باستخدام مصدر الترجمة المركزي.",
+    "منع استدعاء Push dispatch عندما تكون مفاتيح Web Push غير مهيأة لتفادي 503 غير الضرورية.",
+    "إصلاح إدارة focus وaria-hidden للقائمة الجانبية على الموبايل دون تغيير التصميم."
   ],
-  "cacheToken": "petatoe-pwa-18-56-05-sea-vibe-mobile-certification-r5-p5-13-8-71"
+  "cacheToken": "petatoe-pwa-18-56-06-notification-runtime-sidebar-accessibility-r6-p5-13-8-71"
 }
