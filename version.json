@@ -1,13 +1,13 @@
 {
-  "version": "18.56.06",
-  "build": 185606,
+  "version": "18.56.07",
+  "build": 185607,
   "forceUpdate": true,
   "releaseDate": "2026-08-25",
-  "title": "Notification Runtime & Mobile Sidebar Accessibility R6",
+  "title": "Commission Management Desktop Visual Recovery R7",
   "notes": [
-    "إصلاح ReferenceError في مركز الإشعارات عند العرض وتغيير اللغة باستخدام مصدر الترجمة المركزي.",
-    "منع استدعاء Push dispatch عندما تكون مفاتيح Web Push غير مهيأة لتفادي 503 غير الضرورية.",
-    "إصلاح إدارة focus وaria-hidden للقائمة الجانبية على الموبايل دون تغيير التصميم."
+    "استعادة تخطيط بطاقات ملخص إدارة العمولات في نسخة الديسكتوب فقط دون التأثير على الموبايل أو التابلت.",
+    "تحسين الفصل البصري بين مجموعات السيارات وصفوف الأدوار داخل جدول إدارة العمولات على الديسكتوب.",
+    "لا تغيير في احتساب العمولات أو الشرائح أو الفلاتر أو الصلاحيات."
   ],
-  "cacheToken": "petatoe-pwa-18-56-06-notification-runtime-sidebar-accessibility-r6-p5-13-8-71"
+  "cacheToken": "petatoe-pwa-18-56-07-commission-management-desktop-visual-recovery-r7-p5-13-8-71"
 }
