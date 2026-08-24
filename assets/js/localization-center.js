@@ -969,6 +969,7 @@
     ["appointments.completion.completedAt","label","تاريخ الإكمال","Completion date"],
     ["appointments.completion.attachments","label","مرفقات التحصيل","Collection attachments"],
     ["appointments.completion.collectionAttachment","label","مرفق التحصيل","Collection attachment"],
+    ["appointments.completion.validation.collectionExceedsFinal","error","تعذر الحفظ: المبلغ المحصل أكبر من الإجمالي النهائي بعد تعديل الخدمات أو الأسعار أو الخصم. راجع قيمة التحصيل قبل الحفظ.","Unable to save: the collected amount exceeds the final appointment total after the service, price, or discount changes. Review the collected amount before saving."],
     ["appointments.weekday.sun","label","الأحد","Sunday"],
     ["appointments.weekday.mon","label","الاثنين","Monday"],
     ["appointments.weekday.tue","label","الثلاثاء","Tuesday"],
