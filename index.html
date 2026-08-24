@@ -1641,19 +1641,21 @@
         <div class="panel payroll-management-hero">
           <div class="payroll-management-hero-head">
             <div class="payroll-toolbar-title payroll-management-title-block"><h3 data-petatoe-i18n="payroll.management.title">إدارة الرواتب</h3><p data-petatoe-i18n="payroll.management.subtitle">تجهيز واعتماد وصرف الرواتب الشهرية.</p></div>
-            <div class="payroll-management-month-card">
-              <div class="payroll-management-month-copy"><span data-petatoe-i18n="payroll.common.month">الشهر</span><strong id="payrollManagementMonthDisplay">—</strong></div>
-              <div class="payroll-management-month-actions"><label class="payroll-management-month-input"><span data-petatoe-i18n="payroll.common.monthPicker">اختيار الشهر</span><input id="payrollManagementMonth" type="month"></label><button id="payrollPrepareMonth" class="primary-btn" type="button" data-permission-screen="payrollManagement" data-permission-action="add" data-petatoe-i18n="payroll.management.prepare">تجهيز رواتب الشهر</button><button id="payrollManagementRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
-            </div>
           </div>
           <div class="payroll-management-hero-body">
-            <div class="payroll-commission-period" id="payrollCommissionPeriodCard">
-              <div class="payroll-commission-period-head"><strong data-petatoe-i18n="payroll.commissionPeriod.title">فترة احتساب عمولات الراتب</strong><small data-petatoe-i18n="payroll.commissionPeriod.applyHint">يتم اعتماد الفترة عند تجهيز رواتب الشهر.</small></div>
-              <div class="payroll-commission-period-fields">
-                <label><span data-petatoe-i18n="payroll.commissionPeriod.from">من تاريخ</span><input id="payrollCommissionFrom" type="date"></label>
-                <label><span data-petatoe-i18n="payroll.commissionPeriod.to">إلى تاريخ</span><input id="payrollCommissionTo" type="date"></label>
+            <div class="payroll-hero-period-row">
+              <div class="payroll-management-month-card">
+                <div class="payroll-management-month-copy"><span data-petatoe-i18n="payroll.common.month">الشهر</span><strong id="payrollManagementMonthDisplay">—</strong></div>
+                <div class="payroll-management-month-actions"><label class="payroll-management-month-input"><span data-petatoe-i18n="payroll.common.monthPicker">اختيار الشهر</span><input id="payrollManagementMonth" type="month"></label><button id="payrollPrepareMonth" class="primary-btn" type="button" data-permission-screen="payrollManagement" data-permission-action="add" data-petatoe-i18n="payroll.management.prepare">تجهيز رواتب الشهر</button><button id="payrollManagementRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
               </div>
-              <div id="payrollCommissionPeriodInfo" class="payroll-commission-period-info" aria-live="polite"></div>
+              <div class="payroll-commission-period" id="payrollCommissionPeriodCard">
+                <div class="payroll-commission-period-head"><strong data-petatoe-i18n="payroll.commissionPeriod.title">فترة احتساب عمولات الراتب</strong><small data-petatoe-i18n="payroll.commissionPeriod.applyHint">يتم اعتماد الفترة عند تجهيز رواتب الشهر.</small></div>
+                <div class="payroll-commission-period-fields">
+                  <label><span data-petatoe-i18n="payroll.commissionPeriod.from">من تاريخ</span><input id="payrollCommissionFrom" type="date"></label>
+                  <label><span data-petatoe-i18n="payroll.commissionPeriod.to">إلى تاريخ</span><input id="payrollCommissionTo" type="date"></label>
+                </div>
+                <div id="payrollCommissionPeriodInfo" class="payroll-commission-period-info" aria-live="polite"></div>
+              </div>
             </div>
             <div class="payroll-kpis">
               <article class="panel payroll-kpi"><span data-petatoe-i18n="payroll.kpi.employees">عدد الموظفين</span><strong id="payrollKpiEmployees">0</strong></article>
