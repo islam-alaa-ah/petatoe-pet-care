@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-08-commission-management-date-range-r8-p5-13-8-71";
+const CACHE_VERSION = "petatoe-pwa-18-56-09-salary-commission-period-adjustment-items-r9-p5-13-8-71";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

@@ -9,6 +9,8 @@
   const number=value=>new Intl.NumberFormat(lang()==='en'?'en-US':'ar-SA-u-nu-latn',{maximumFractionDigits:2}).format(Number(value||0));
   const monthLabel=value=>{if(!value)return '—';const d=new Date(`${String(value).slice(0,7)}-01T12:00:00`);return new Intl.DateTimeFormat(lang()==='en'?'en-US':'ar-SA-u-ca-gregory-nu-latn',{month:'long',year:'numeric'}).format(d);};
   const dateTime=value=>value?new Intl.DateTimeFormat(lang()==='en'?'en-GB':'ar-SA-u-ca-gregory-nu-latn',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value)):'—';
+  const dateLabel=value=>value?new Intl.DateTimeFormat(lang()==='en'?'en-GB':'ar-SA-u-ca-gregory-nu-latn',{day:'2-digit',month:'long',year:'numeric'}).format(new Date(`${String(value).slice(0,10)}T12:00:00`)):'—';
+  const addDays=(value,days)=>{const d=new Date(`${String(value).slice(0,10)}T12:00:00`);d.setDate(d.getDate()+Number(days||0));return d.toISOString().slice(0,10);};
   const currentMonth=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;};
   const monthBounds=value=>{const raw=/^\d{4}-\d{2}$/.test(String(value||''))?String(value):currentMonth();const [year,month]=raw.split('-').map(Number);return{from:`${raw}-01`,to:`${raw}-${String(new Date(year,month,0).getDate()).padStart(2,'0')}`};};
   const roleOrder={representative:1,driver:2,groomer:3};
@@ -54,15 +56,58 @@
   }
   function isFullCommissionMonth(range){return Boolean(range&&range.from===range.bounds.from&&range.to===range.bounds.to);}
 
+  function payrollCommissionPeriod(reset=false){
+    const month=$('payrollManagementMonth')?.value||currentMonth();
+    const bounds=monthBounds(month),saved=state.management?.commissionPeriod||{},previous=state.management?.previousCommissionPeriod||null;
+    const fromInput=$('payrollCommissionFrom'),toInput=$('payrollCommissionTo');
+    const suggestedFrom=previous?.toDate?addDays(previous.toDate,1):bounds.from;
+    const preferredFrom=saved?.fromDate||suggestedFrom||bounds.from;
+    const preferredTo=saved?.toDate||bounds.to;
+    if(fromInput&&(reset||!fromInput.value))fromInput.value=preferredFrom;
+    if(toInput&&(reset||!toInput.value))toInput.value=preferredTo;
+    const locked=Boolean(saved?.locked);
+    if(fromInput)fromInput.disabled=locked;
+    if(toInput)toInput.disabled=locked;
+    const range={month,from:fromInput?.value||preferredFrom,to:toInput?.value||preferredTo,bounds,previous,saved,locked,suggestedFrom};
+    renderPayrollCommissionPeriodInfo(range);
+    return range;
+  }
+  function payrollCommissionPeriodWarnings(range){
+    const warnings=[];
+    if(!range?.previous?.toDate)return warnings;
+    const previousTo=String(range.previous.toDate).slice(0,10),next=addDays(previousTo,1);
+    if(range.from&&range.from<=previousTo){warnings.push(t('payroll.commissionPeriod.overlap','تنبيه: الفترة المختارة تتداخل مع عمولات سبق احتسابها حتى {date}.',{date:dateLabel(previousTo)}));}
+    else if(range.from&&range.from>next){warnings.push(t('payroll.commissionPeriod.gap','تنبيه: توجد أيام غير محتسبة من {from} إلى {to}.',{from:dateLabel(next),to:dateLabel(addDays(range.from,-1))}));}
+    return warnings;
+  }
+  function renderPayrollCommissionPeriodInfo(range){
+    const el=$('payrollCommissionPeriodInfo');if(!el)return;
+    const lines=[];
+    if(range?.previous?.toDate){
+      lines.push(`<span>${esc(t('payroll.commissionPeriod.previous','آخر فترة محتسبة في راتب {month}: من {from} إلى {to}.',{month:monthLabel(range.previous.payrollMonth),from:dateLabel(range.previous.fromDate),to:dateLabel(range.previous.toDate)}))}</span>`);
+      lines.push(`<span class="suggested">${esc(t('payroll.commissionPeriod.suggested','بداية الفترة التالية المقترحة: {date}.',{date:dateLabel(range.suggestedFrom)}))}</span>`);
+    }else lines.push(`<span>${esc(t('payroll.commissionPeriod.noPrevious','لا توجد فترة عمولات سابقة.'))}</span>`);
+    payrollCommissionPeriodWarnings(range).forEach(message=>lines.push(`<span class="warning">${esc(message)}</span>`));
+    if(range?.locked)lines.push(`<span class="locked">${esc(t('payroll.commissionPeriod.locked','تم تثبيت فترة العمولات لأن بعض رواتب الشهر خرجت من مرحلة التجهيز.'))}</span>`);
+    el.innerHTML=lines.join('');
+  }
+  function validPayrollCommissionPeriod(range,showError=true){
+    let message='';
+    if(!range?.from||!range?.to||range.from>range.to)message=t('payroll.commissionPeriod.invalid','يجب أن يكون تاريخ بداية عمولات الراتب قبل أو مساويًا لتاريخ النهاية.');
+    else if(range.to>range.bounds.to)message=t('payroll.commissionPeriod.endAfterMonth','لا يمكن أن تنتهي فترة عمولات الراتب بعد نهاية شهر الراتب.');
+    if(message&&showError)setStatus('payrollManagementStatus',message,'error');
+    return !message;
+  }
+
   // -----------------------------------------------------------------------
   // Payroll management
   // -----------------------------------------------------------------------
-  async function loadManagement(forceStatus=true){
+  async function loadManagement(forceStatus=true,resetPeriod=false){
     const month=$('payrollManagementMonth')?.value||currentMonth();
     if(forceStatus)setStatus('payrollManagementStatus',t('payroll.loading','جاري تحميل الرواتب...'));
     try{
       state.management=await svc().loadManagement(month);
-      setStatus('payrollManagementStatus','');renderManagement();
+      setStatus('payrollManagementStatus','');payrollCommissionPeriod(resetPeriod);renderManagement();
     }catch(error){setStatus('payrollManagementStatus',error.message,'error');renderManagementEmpty();}
   }
   function renderManagementEmpty(){if($('payrollManagementBody'))$('payrollManagementBody').innerHTML=`<tr><td colspan="10" class="payroll-empty">${esc(t('payroll.empty','لا توجد بيانات.'))}</td></tr>`;}
@@ -89,10 +134,20 @@
     $('payrollManagementTabs')?.querySelectorAll('[data-payroll-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.payrollTab===state.managementTab));
     const rows=managementRows();
     $('payrollManagementBody').innerHTML=rows.length?rows.map(renderSalaryRow).join(''):`<tr><td colspan="10" class="payroll-empty">${esc(state.managementTab==='reports'?t('payroll.reports.empty','لا توجد رواتب مصروفة في هذا الشهر.'):t('payroll.current.empty','لا توجد رواتب جارية ضمن الفلاتر الحالية.'))}</td></tr>`;
+    renderManagementTotals(rows);
     window.CustomerPermissions?.applyActionVisibility?.($('payrollManagementView'));
   }
   function renderSalaryRow(row){
     return `<tr data-salary-id="${esc(row.id)}"><td data-label="${esc(t('payroll.col.employee','الموظف'))}"><strong>${esc(row.employeeName)}</strong></td><td data-label="${esc(t('payroll.employee.paymentMethod','طريقة الدفع'))}">${esc(row.paymentMethod||'—')}</td><td data-label="${esc(t('payroll.col.base','الأساسي'))}" class="money">${money(row.baseSalary)}</td><td data-label="${esc(t('payroll.col.allowances','البدلات'))}" class="money">${money(row.allowances)}</td><td data-label="${esc(t('payroll.col.commissions','العمولات'))}" class="money">${money(row.commissions)}</td><td data-label="${esc(t('payroll.col.overtime','الإضافي'))}" class="money">${money(row.overtime)}</td><td data-label="${esc(t('payroll.col.deductions','الخصومات'))}" class="money">${money(row.deductions)}</td><td data-label="${esc(t('payroll.col.net','الصافي'))}" class="money net">${money(row.netSalary)}</td><td data-label="${esc(t('payroll.common.status','الحالة'))}">${statusBadge(row.status)}</td><td data-label="${esc(t('payroll.common.actions','الإجراءات'))}"><div class="payroll-row-actions">${salaryActions(row)}</div></td></tr>`;
+  }
+  function renderManagementTotals(rows){
+    const el=$('payrollManagementTotals');if(!el)return;
+    const totals=(rows||[]).reduce((sum,row)=>({
+      base:sum.base+Number(row.baseSalary||0),allowances:sum.allowances+Number(row.allowances||0),commissions:sum.commissions+Number(row.commissions||0),
+      overtime:sum.overtime+Number(row.overtime||0),deductions:sum.deductions+Number(row.deductions||0),net:sum.net+Number(row.netSalary||0)
+    }),{base:0,allowances:0,commissions:0,overtime:0,deductions:0,net:0});
+    const totalLabel=t('payroll.table.total','الإجمالي');
+    el.innerHTML=`<tr class="payroll-totals-row"><th data-label="${esc(totalLabel)}"><strong>${esc(totalLabel)} (${number((rows||[]).length)})</strong></th><th data-label="${esc(t('payroll.employee.paymentMethod','طريقة الدفع'))}">—</th><th data-label="${esc(t('payroll.col.base','الأساسي'))}">${money(totals.base)}</th><th data-label="${esc(t('payroll.col.allowances','البدلات'))}">${money(totals.allowances)}</th><th data-label="${esc(t('payroll.col.commissions','العمولات'))}">${money(totals.commissions)}</th><th data-label="${esc(t('payroll.col.overtime','الإضافي'))}">${money(totals.overtime)}</th><th data-label="${esc(t('payroll.col.deductions','الخصومات'))}">${money(totals.deductions)}</th><th data-label="${esc(t('payroll.col.net','الصافي'))}" class="net">${money(totals.net)}</th><th data-label="${esc(t('payroll.common.status','الحالة'))}">—</th><th data-label="${esc(t('payroll.common.actions','الإجراءات'))}">—</th></tr>`;
   }
   function actionButton(action,label,cls='payroll-action-primary',permission='edit'){return `<button type="button" class="${cls}" data-salary-action="${action}" data-permission-screen="payrollManagement" data-permission-action="${permission}">${esc(label)}</button>`;}
   function salaryActions(row){
@@ -103,8 +158,45 @@
     if(row.status==='paid')return actionButton('reverse_paid',t('payroll.action.reversePaid','إلغاء الصرف'),'payroll-action-danger','delete');
     return '';
   }
+  function adjustmentItemRow(type,item={}){
+    const typeLabel=type==='addition'?t('payroll.adjustment.additions','بنود الإضافي'):t('payroll.adjustment.deductions','بنود الخصومات');
+    return `<div class="salary-adjustment-item" data-adjustment-type="${esc(type)}"><div class="salary-adjustment-item-grid"><label><span>${esc(t('payroll.adjustment.itemName','البيان'))}</span><input class="salary-adjustment-item-name" maxlength="200" required value="${esc(item.name||'')}" placeholder="${esc(typeLabel)}"></label><label><span>${esc(t('payroll.adjustment.itemAmount','القيمة'))}</span><input class="salary-adjustment-item-amount" type="number" min="0.01" step="0.01" required value="${item.amount?esc(Number(item.amount).toFixed(2)):''}"></label><label class="salary-adjustment-item-notes"><span>${esc(t('payroll.adjustment.itemNotes','ملاحظات البند'))}</span><input class="salary-adjustment-item-note" maxlength="500" value="${esc(item.notes||'')}"></label><button class="salary-adjustment-remove" type="button" data-adjustment-remove aria-label="${esc(t('payroll.adjustment.remove','حذف البند'))}">×</button></div></div>`;
+  }
+  function adjustmentItemsFor(row,type){
+    const items=(row?.adjustmentItems||[]).filter(item=>item.type===type);
+    if(items.length)return items;
+    const legacy=type==='addition'?Number(row?.overtime||0):Number(row?.deductions||0);
+    return legacy>0?[{type,name:type==='addition'?t('payroll.col.overtime','الإضافي'):t('payroll.col.deductions','الخصومات'),amount:legacy,notes:''}]:[];
+  }
+  function renderAdjustmentEditor(row){
+    $('payrollAdditionItems').innerHTML=adjustmentItemsFor(row,'addition').map(item=>adjustmentItemRow('addition',item)).join('');
+    $('payrollDeductionItems').innerHTML=adjustmentItemsFor(row,'deduction').map(item=>adjustmentItemRow('deduction',item)).join('');
+    updateAdjustmentTotals();
+  }
+  function addAdjustmentItem(type,item={}){
+    const target=type==='addition'?$('payrollAdditionItems'):$('payrollDeductionItems');if(!target)return;
+    target.insertAdjacentHTML('beforeend',adjustmentItemRow(type,item));
+    target.querySelector('.salary-adjustment-item:last-child .salary-adjustment-item-name')?.focus();
+    updateAdjustmentTotals();
+  }
+  function collectAdjustmentItems(){
+    return [...document.querySelectorAll('#payrollAdjustmentDialog .salary-adjustment-item')].map((row,index)=>({
+      type:row.dataset.adjustmentType,
+      name:row.querySelector('.salary-adjustment-item-name')?.value.trim()||'',
+      amount:Number(row.querySelector('.salary-adjustment-item-amount')?.value||0),
+      notes:row.querySelector('.salary-adjustment-item-note')?.value.trim()||'',
+      sortOrder:index+1
+    })).filter(item=>item.name||item.amount||item.notes);
+  }
+  function updateAdjustmentTotals(){
+    const items=collectAdjustmentItems();
+    const additions=items.filter(x=>x.type==='addition').reduce((sum,x)=>sum+Number(x.amount||0),0);
+    const deductions=items.filter(x=>x.type==='deduction').reduce((sum,x)=>sum+Number(x.amount||0),0);
+    if($('payrollAdjustmentAdditionTotal'))$('payrollAdjustmentAdditionTotal').textContent=money(additions);
+    if($('payrollAdjustmentDeductionTotal'))$('payrollAdjustmentDeductionTotal').textContent=money(deductions);
+  }
   function openAdjustment(row){
-    $('payrollAdjustmentId').value=row.id;$('payrollAdjustmentEmployee').textContent=`${row.employeeName} — ${monthLabel(state.management?.month)}`;$('payrollAdjustmentOvertime').value=Number(row.overtime||0).toFixed(2);$('payrollAdjustmentDeductions').value=Number(row.deductions||0).toFixed(2);$('payrollAdjustmentNotes').value=row.notes||'';updateStatic();$('payrollAdjustmentDialog')?.showModal();
+    $('payrollAdjustmentId').value=row.id;$('payrollAdjustmentEmployee').textContent=`${row.employeeName} — ${monthLabel(state.management?.month)}`;$('payrollAdjustmentNotes').value=row.notes||'';renderAdjustmentEditor(row);updateStatic();$('payrollAdjustmentDialog')?.showModal();
   }
   async function handleSalaryAction(id,action){
     const row=(state.management?.rows||[]).find(x=>x.id===id);if(!row)return;
@@ -122,6 +214,20 @@
   // Salary self-service
   // -----------------------------------------------------------------------
   async function loadSalaryStatement(){setStatus('salaryStatementStatus',t('payroll.loading','جاري التحميل...'));try{state.salary=await svc().loadSalaryStatement();setStatus('salaryStatementStatus','');renderSalaryStatement();}catch(error){setStatus('salaryStatementStatus',error.message,'error');}}
+  function salaryAdjustmentList(items,type,compact=false){
+    const rows=(items||[]).filter(item=>item.type===type);
+    if(!rows.length)return compact?'—':'';
+    return `<div class="${compact?'salary-adjustment-mini':'salary-adjustment-detail-list'}">${rows.map(item=>`<div class="salary-adjustment-detail-row"><span>${esc(item.name||'—')}${item.notes?`<small>${esc(item.notes)}</small>`:''}</span><strong>${money(item.amount)}</strong></div>`).join('')}</div>`;
+  }
+  function salaryCommissionPeriodNote(statement){
+    if(!statement?.commissionFrom||!statement?.commissionTo)return '';
+    return `<div class="salary-commission-period-note">${esc(t('payroll.commissionPeriod.statementNote','تم احتساب العمولات عن الفترة من {from} إلى {to}.',{from:dateLabel(statement.commissionFrom),to:dateLabel(statement.commissionTo)}))}</div>`;
+  }
+  function salaryAdjustmentDetails(statement){
+    const items=statement?.adjustmentItems||[];
+    if(!items.length)return '';
+    return `<div class="salary-adjustment-details"><h4>${esc(t('salaryStatement.adjustmentDetails','تفاصيل الإضافات والخصومات'))}</h4><div class="salary-adjustment-details-grid"><section><strong>${esc(t('payroll.adjustment.additions','بنود الإضافي'))}</strong>${salaryAdjustmentList(items,'addition')}</section><section><strong>${esc(t('payroll.adjustment.deductions','بنود الخصومات'))}</strong>${salaryAdjustmentList(items,'deduction')}</section></div></div>`;
+  }
   function renderSalaryStatement(){
     const current=state.salary?.current, employee=state.salary?.employee;
     $('salaryStatementTabs')?.querySelectorAll('[data-salary-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.salaryTab===state.salaryTab));
@@ -131,11 +237,11 @@
     else{
       const steps=[['pending_chairman',t('payroll.flow.chairman','اعتماد رئيس مجلس الإدارة')],['pending_employee',t('payroll.flow.employee','موافقة الموظف')],['ready_for_payment',t('payroll.flow.ready','جاهز للصرف')],['paid',t('payroll.flow.paid','تم الصرف')]];
       const rank={pending_chairman:0,pending_employee:1,ready_for_payment:2,paid:3};const activeRank=rank[current.status]??0;
-      $('salaryStatementCurrent').innerHTML=`<div class="payroll-statement-shell"><div class="payroll-statement-hero"><article class="panel payroll-statement-card"><div class="panel-header"><div><strong>${esc(employee.name)}</strong><div class="payroll-form-hint">${esc(monthLabel(current.payrollMonth))} · ${esc(current.paymentMethod||'—')}</div></div>${statusBadge(current.status)}</div><div class="payroll-statement-main"><div class="payroll-value"><span>${esc(t('payroll.col.base','الأساسي'))}</span><strong>${money(current.baseSalary)}</strong></div><div class="payroll-value"><span>${esc(t('payroll.col.allowances','البدلات'))}</span><strong>${money(current.allowances)}</strong></div><div class="payroll-value"><span>${esc(t('payroll.col.commissions','العمولات'))}</span><strong>${money(current.commissions)}</strong></div><div class="payroll-value"><span>${esc(t('payroll.col.overtime','الإضافي'))}</span><strong>${money(current.overtime)}</strong></div><div class="payroll-value"><span>${esc(t('payroll.col.deductions','الخصومات'))}</span><strong>${money(current.deductions)}</strong></div><div class="payroll-value net"><span>${esc(t('payroll.col.net','صافي الراتب'))}</span><strong>${money(current.netSalary)}</strong></div></div>${current.status==='pending_employee'?`<div class="payroll-current-actions"><button id="salaryEmployeeApprove" class="primary-btn" type="button">${esc(t('salaryStatement.approve','أوافق على كشف الراتب'))}</button></div>`:''}</article><article class="panel"><h3>${esc(t('payroll.flow.title','مسار الاعتماد'))}</h3><div class="payroll-flow">${steps.map((step,i)=>`<div class="payroll-flow-step ${i<activeRank?'done':i===activeRank?'active':''}"><span class="payroll-flow-dot">${i<activeRank?'✓':i+1}</span><div class="payroll-flow-copy"><strong>${esc(step[1])}</strong><small>${i===1&&current.employeeApprovedAt?dateTime(current.employeeApprovedAt):i===0&&current.chairmanApprovedAt?dateTime(current.chairmanApprovedAt):''}</small></div></div>`).join('')}</div></article></div></div>`;
+      $('salaryStatementCurrent').innerHTML=`<div class="payroll-statement-shell"><div class="payroll-statement-hero"><article class="panel payroll-statement-card"><div class="panel-header"><div><strong>${esc(employee.name)}</strong><div class="payroll-form-hint">${esc(monthLabel(current.payrollMonth))} · ${esc(current.paymentMethod||'—')}</div></div>${statusBadge(current.status)}</div>${salaryCommissionPeriodNote(current)}<div class="payroll-statement-main"><div class="payroll-value"><span>${esc(t('payroll.col.base','الأساسي'))}</span><strong>${money(current.baseSalary)}</strong></div><div class="payroll-value"><span>${esc(t('payroll.col.allowances','البدلات'))}</span><strong>${money(current.allowances)}</strong></div><div class="payroll-value"><span>${esc(t('payroll.col.commissions','العمولات'))}</span><strong>${money(current.commissions)}</strong></div><div class="payroll-value"><span>${esc(t('payroll.col.overtime','الإضافي'))}</span><strong>${money(current.overtime)}</strong></div><div class="payroll-value"><span>${esc(t('payroll.col.deductions','الخصومات'))}</span><strong>${money(current.deductions)}</strong></div><div class="payroll-value net"><span>${esc(t('payroll.col.net','صافي الراتب'))}</span><strong>${money(current.netSalary)}</strong></div></div>${salaryAdjustmentDetails(current)}${current.status==='pending_employee'?`<div class="payroll-current-actions"><button id="salaryEmployeeApprove" class="primary-btn" type="button">${esc(t('salaryStatement.approve','أوافق على كشف الراتب'))}</button></div>`:''}</article><article class="panel"><h3>${esc(t('payroll.flow.title','مسار الاعتماد'))}</h3><div class="payroll-flow">${steps.map((step,i)=>`<div class="payroll-flow-step ${i<activeRank?'done':i===activeRank?'active':''}"><span class="payroll-flow-dot">${i<activeRank?'✓':i+1}</span><div class="payroll-flow-copy"><strong>${esc(step[1])}</strong><small>${i===1&&current.employeeApprovedAt?dateTime(current.employeeApprovedAt):i===0&&current.chairmanApprovedAt?dateTime(current.chairmanApprovedAt):''}</small></div></div>`).join('')}</div></article></div></div>`;
       $('salaryEmployeeApprove')?.addEventListener('click',async()=>{if(!confirm(t('salaryStatement.approveConfirm','أؤكد موافقتي على كشف الراتب الموضح. هل تريد المتابعة؟')))return;setStatus('salaryStatementStatus',t('payroll.saving','جاري حفظ الموافقة...'));try{await svc().transition(current.id,'employee_approve');await loadSalaryStatement();setStatus('salaryStatementStatus',t('salaryStatement.approved','تم اعتماد كشف الراتب وأصبح جاهزًا للصرف.'),'success');}catch(error){setStatus('salaryStatementStatus',error.message,'error');}});
     }
     const history=state.salary?.history||[];
-    $('salaryStatementHistory').innerHTML=`<div class="panel payroll-table-wrap"><table class="data-table payroll-history-table"><thead><tr><th>${esc(t('payroll.common.month','الشهر'))}</th><th>${esc(t('payroll.employee.paymentMethod','طريقة الدفع'))}</th><th>${esc(t('payroll.col.base','الأساسي'))}</th><th>${esc(t('payroll.col.allowances','البدلات'))}</th><th>${esc(t('payroll.col.commissions','العمولات'))}</th><th>${esc(t('payroll.col.overtime','الإضافي'))}</th><th>${esc(t('payroll.col.deductions','الخصومات'))}</th><th>${esc(t('payroll.col.net','الصافي'))}</th><th>${esc(t('payroll.status.paid','تم الصرف'))}</th></tr></thead><tbody>${history.length?history.map(x=>`<tr><td data-label="${esc(t('payroll.common.month','الشهر'))}">${esc(monthLabel(x.payrollMonth))}</td><td data-label="${esc(t('payroll.employee.paymentMethod','طريقة الدفع'))}">${esc(x.paymentMethod||'—')}</td><td data-label="${esc(t('payroll.col.base','الأساسي'))}">${money(x.baseSalary)}</td><td data-label="${esc(t('payroll.col.allowances','البدلات'))}">${money(x.allowances)}</td><td data-label="${esc(t('payroll.col.commissions','العمولات'))}">${money(x.commissions)}</td><td data-label="${esc(t('payroll.col.overtime','الإضافي'))}">${money(x.overtime)}</td><td data-label="${esc(t('payroll.col.deductions','الخصومات'))}">${money(x.deductions)}</td><td data-label="${esc(t('payroll.col.net','الصافي'))}" class="net">${money(x.netSalary)}</td><td data-label="${esc(t('payroll.status.paid','تم الصرف'))}">${dateTime(x.paidAt)}</td></tr>`).join(''):`<tr><td colspan="9" class="payroll-empty">${esc(t('salaryStatement.noHistory','لا توجد رواتب سابقة مصروفة.'))}</td></tr>`}</tbody></table></div>`;
+    $('salaryStatementHistory').innerHTML=`<div class="panel payroll-table-wrap"><table class="data-table payroll-history-table"><thead><tr><th>${esc(t('payroll.common.month','الشهر'))}</th><th>${esc(t('payroll.employee.paymentMethod','طريقة الدفع'))}</th><th>${esc(t('payroll.commissionPeriod.title','فترة احتساب عمولات الراتب'))}</th><th>${esc(t('payroll.col.base','الأساسي'))}</th><th>${esc(t('payroll.col.allowances','البدلات'))}</th><th>${esc(t('payroll.col.commissions','العمولات'))}</th><th>${esc(t('payroll.col.overtime','الإضافي'))}</th><th>${esc(t('payroll.col.deductions','الخصومات'))}</th><th>${esc(t('payroll.col.net','الصافي'))}</th><th>${esc(t('payroll.status.paid','تم الصرف'))}</th></tr></thead><tbody>${history.length?history.map(x=>`<tr><td data-label="${esc(t('payroll.common.month','الشهر'))}">${esc(monthLabel(x.payrollMonth))}</td><td data-label="${esc(t('payroll.employee.paymentMethod','طريقة الدفع'))}">${esc(x.paymentMethod||'—')}</td><td data-label="${esc(t('payroll.commissionPeriod.title','فترة احتساب عمولات الراتب'))}">${x.commissionFrom&&x.commissionTo?`${esc(dateLabel(x.commissionFrom))}<br>→ ${esc(dateLabel(x.commissionTo))}`:'—'}</td><td data-label="${esc(t('payroll.col.base','الأساسي'))}">${money(x.baseSalary)}</td><td data-label="${esc(t('payroll.col.allowances','البدلات'))}">${money(x.allowances)}</td><td data-label="${esc(t('payroll.col.commissions','العمولات'))}">${money(x.commissions)}</td><td data-label="${esc(t('payroll.col.overtime','الإضافي'))}">${money(x.overtime)}${salaryAdjustmentList(x.adjustmentItems,'addition',true)}</td><td data-label="${esc(t('payroll.col.deductions','الخصومات'))}">${money(x.deductions)}${salaryAdjustmentList(x.adjustmentItems,'deduction',true)}</td><td data-label="${esc(t('payroll.col.net','الصافي'))}" class="net">${money(x.netSalary)}</td><td data-label="${esc(t('payroll.status.paid','تم الصرف'))}">${dateTime(x.paidAt)}</td></tr>`).join(''):`<tr><td colspan="10" class="payroll-empty">${esc(t('salaryStatement.noHistory','لا توجد رواتب سابقة مصروفة.'))}</td></tr>`}</tbody></table></div>`;
   }
 
   // -----------------------------------------------------------------------
@@ -229,7 +335,7 @@
   async function activate(view){
     if(!['payrollManagement','salaryStatement','commissionManagement','commissionStatement','payrollReference'].includes(view))return;
     updateStatic();
-    if(view==='payrollManagement'){if(!$('payrollManagementMonth').value)$('payrollManagementMonth').value=currentMonth();await loadManagement();}
+    if(view==='payrollManagement'){if(!$('payrollManagementMonth').value)$('payrollManagementMonth').value=currentMonth();await loadManagement(true,true);}
     if(view==='salaryStatement')await loadSalaryStatement();
     if(view==='commissionManagement'){if(!$('commissionManagementMonth').value)$('commissionManagementMonth').value=currentMonth();commissionRange(true);await loadCommissions();}
     if(view==='commissionStatement')await loadCommissionStatement();
@@ -237,9 +343,9 @@
   }
   function bind(){
     if(document.documentElement.dataset.payrollBound==='true')return;document.documentElement.dataset.payrollBound='true';
-    $('payrollManagementMonth')?.addEventListener('change',()=>loadManagement());$('payrollManagementRefresh')?.addEventListener('click',()=>loadManagement());$('payrollPrepareMonth')?.addEventListener('click',async()=>{if(!confirm(t('payroll.prepare.confirm','سيتم تجهيز أو تحديث مسودات رواتب الشهر من البيانات المرجعية والعمولات الحالية. هل تريد المتابعة؟')))return;setStatus('payrollManagementStatus',t('payroll.preparing','جاري تجهيز رواتب الشهر...'));try{state.management=await svc().prepareMonth($('payrollManagementMonth').value);renderManagement();setStatus('payrollManagementStatus',t('payroll.prepared','تم تجهيز رواتب الشهر بنجاح.'),'success');}catch(error){setStatus('payrollManagementStatus',error.message,'error');}});
+    $('payrollManagementMonth')?.addEventListener('change',()=>loadManagement(true,true));$('payrollManagementRefresh')?.addEventListener('click',()=>loadManagement());['payrollCommissionFrom','payrollCommissionTo'].forEach(id=>$(id)?.addEventListener('change',()=>{const range=payrollCommissionPeriod(false);validPayrollCommissionPeriod(range,false);}));$('payrollPrepareMonth')?.addEventListener('click',async()=>{const range=payrollCommissionPeriod(false);if(!validPayrollCommissionPeriod(range))return;const warnings=payrollCommissionPeriodWarnings(range);const warningText=warnings.length?`\n\n${warnings.join('\n')}`:'';if(!confirm(`${t('payroll.prepare.confirm','سيتم تجهيز أو تحديث مسودات رواتب الشهر من البيانات المرجعية وفترة العمولات المحددة. هل تريد المتابعة؟')}${warningText}`))return;setStatus('payrollManagementStatus',t('payroll.preparing','جاري تجهيز رواتب الشهر...'));try{state.management=await svc().prepareMonth($('payrollManagementMonth').value,range.from,range.to);payrollCommissionPeriod(true);renderManagement();setStatus('payrollManagementStatus',t('payroll.prepared','تم تجهيز رواتب الشهر بنجاح.'),'success');}catch(error){setStatus('payrollManagementStatus',error.message,'error');}});
     ['payrollManagementSearch','payrollPaymentFilter','payrollStatusFilter'].forEach(id=>$(id)?.addEventListener(id==='payrollManagementSearch'?'input':'change',renderManagement));$('payrollClearFilters')?.addEventListener('click',()=>{$('payrollManagementSearch').value='';$('payrollPaymentFilter').value='';$('payrollStatusFilter').value='';renderManagement();});$('payrollManagementTabs')?.addEventListener('click',e=>{const btn=e.target.closest('[data-payroll-tab]');if(!btn)return;state.managementTab=btn.dataset.payrollTab;renderManagement();});$('payrollManagementBody')?.addEventListener('click',e=>{const btn=e.target.closest('[data-salary-action]');if(!btn)return;handleSalaryAction(btn.closest('tr')?.dataset.salaryId,btn.dataset.salaryAction);});
-    $('payrollAdjustmentClose')?.addEventListener('click',()=> $('payrollAdjustmentDialog')?.close());$('payrollAdjustmentCancel')?.addEventListener('click',()=> $('payrollAdjustmentDialog')?.close());$('payrollAdjustmentForm')?.addEventListener('submit',async e=>{e.preventDefault();try{await svc().saveAdjustments($('payrollAdjustmentId').value,$('payrollAdjustmentOvertime').value,$('payrollAdjustmentDeductions').value,$('payrollAdjustmentNotes').value);$('payrollAdjustmentDialog')?.close();await loadManagement(false);setStatus('payrollManagementStatus',t('payroll.adjustment.saved','تم حفظ الإضافي والخصومات.'),'success');}catch(error){setStatus('payrollManagementStatus',error.message,'error');}});
+    $('payrollAdjustmentClose')?.addEventListener('click',()=> $('payrollAdjustmentDialog')?.close());$('payrollAdjustmentCancel')?.addEventListener('click',()=> $('payrollAdjustmentDialog')?.close());$('payrollAddAdditionItem')?.addEventListener('click',()=>addAdjustmentItem('addition'));$('payrollAddDeductionItem')?.addEventListener('click',()=>addAdjustmentItem('deduction'));$('payrollAdjustmentDialog')?.addEventListener('click',e=>{const remove=e.target.closest('[data-adjustment-remove]');if(!remove)return;remove.closest('.salary-adjustment-item')?.remove();updateAdjustmentTotals();});$('payrollAdjustmentDialog')?.addEventListener('input',e=>{if(e.target.matches('.salary-adjustment-item-amount'))updateAdjustmentTotals();});$('payrollAdjustmentForm')?.addEventListener('submit',async e=>{e.preventDefault();const items=collectAdjustmentItems();if(items.some(item=>!item.name||item.amount<=0)){setStatus('payrollManagementStatus',t('payroll.adjustment.invalidItems','اكتب بيانًا وقيمة أكبر من صفر لكل بند.'),'error');return;}try{await svc().saveAdjustmentItems($('payrollAdjustmentId').value,items,$('payrollAdjustmentNotes').value);$('payrollAdjustmentDialog')?.close();await loadManagement(false);setStatus('payrollManagementStatus',t('payroll.adjustment.saved','تم حفظ بنود الإضافي والخصومات.'),'success');}catch(error){setStatus('payrollManagementStatus',error.message,'error');}});
     $('salaryStatementRefresh')?.addEventListener('click',loadSalaryStatement);$('salaryStatementTabs')?.addEventListener('click',e=>{const btn=e.target.closest('[data-salary-tab]');if(!btn)return;state.salaryTab=btn.dataset.salaryTab;renderSalaryStatement();});
     $('commissionManagementMonth')?.addEventListener('change',()=>loadCommissions({resetRange:true}));['commissionManagementFrom','commissionManagementTo'].forEach(id=>$(id)?.addEventListener('change',()=>loadCommissions()));$('commissionManagementRefresh')?.addEventListener('click',()=>loadCommissions());$('commissionRecalculate')?.addEventListener('click',async()=>{const range=commissionRange(false);if(!validCommissionRange(range))return;if(!isFullCommissionMonth(range)){setStatus('commissionManagementStatus',t('commission.recalculate.fullMonthOnly','إعادة احتساب العمولات وربطها بالرواتب متاحة عند اختيار الشهر كاملًا فقط.'),'error');return;}if(!confirm(t('commission.recalculate.confirm','سيتم إعادة احتساب عمولات الشهر من القيمة النهائية للفواتير بعد الخصم ÷ 1.15 والشرائح الحالية. هل تريد المتابعة؟')))return;setStatus('commissionManagementStatus',t('commission.recalculating','جاري إعادة احتساب العمولات...'));try{state.commissions=await svc().refreshCommissions(range.month,range.from,range.to);renderCommissions();setStatus('commissionManagementStatus',t('commission.recalculated','تم تحديث العمولات بنجاح.'),'success');}catch(error){setStatus('commissionManagementStatus',error.message,'error');}});['commissionSearch','commissionCarFilter','commissionRoleFilter','commissionEligibilityFilter'].forEach(id=>$(id)?.addEventListener(id==='commissionSearch'?'input':'change',renderCommissions));
     $('commissionStatementRefresh')?.addEventListener('click',loadCommissionStatement);$('commissionStatementTabs')?.addEventListener('click',e=>{const btn=e.target.closest('[data-commission-tab]');if(!btn)return;state.commissionTab=btn.dataset.commissionTab;renderCommissionStatement();});

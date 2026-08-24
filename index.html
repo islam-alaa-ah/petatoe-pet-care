@@ -36,30 +36,30 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/vehicle-treasury.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.56.08" />
-  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.56.08" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/vehicle-treasury.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.56.09" />
+  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.56.09" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
@@ -1640,6 +1640,14 @@
       <section id="payrollManagementView" class="view-section hidden payroll-view" aria-hidden="true">
         <div class="payroll-toolbar">
           <div class="payroll-toolbar-title"><h3 data-petatoe-i18n="payroll.management.title">إدارة الرواتب</h3><p data-petatoe-i18n="payroll.management.subtitle">تجهيز واعتماد وصرف الرواتب الشهرية.</p></div>
+          <div class="payroll-commission-period panel" id="payrollCommissionPeriodCard">
+            <div class="payroll-commission-period-head"><strong data-petatoe-i18n="payroll.commissionPeriod.title">فترة احتساب عمولات الراتب</strong><small data-petatoe-i18n="payroll.commissionPeriod.applyHint">يتم اعتماد الفترة عند تجهيز رواتب الشهر.</small></div>
+            <div class="payroll-commission-period-fields">
+              <label><span data-petatoe-i18n="payroll.commissionPeriod.from">من تاريخ</span><input id="payrollCommissionFrom" type="date"></label>
+              <label><span data-petatoe-i18n="payroll.commissionPeriod.to">إلى تاريخ</span><input id="payrollCommissionTo" type="date"></label>
+            </div>
+            <div id="payrollCommissionPeriodInfo" class="payroll-commission-period-info" aria-live="polite"></div>
+          </div>
           <div class="payroll-toolbar-actions"><label><span data-petatoe-i18n="payroll.common.month">الشهر</span><input id="payrollManagementMonth" type="month"></label><button id="payrollPrepareMonth" class="primary-btn" type="button" data-permission-screen="payrollManagement" data-permission-action="add" data-petatoe-i18n="payroll.management.prepare">تجهيز رواتب الشهر</button><button id="payrollManagementRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
         </div>
         <div id="payrollManagementStatus" class="data-status hidden" aria-live="polite"></div>
@@ -1658,7 +1666,7 @@
           <label><span data-petatoe-i18n="payroll.common.status">الحالة</span><select id="payrollStatusFilter"><option value="" data-petatoe-i18n="payroll.common.all">الكل</option><option value="draft" data-petatoe-i18n="payroll.status.draft">قيد التجهيز</option><option value="pending_chairman" data-petatoe-i18n="payroll.status.pendingChairman">بانتظار رئيس مجلس الإدارة</option><option value="pending_employee" data-petatoe-i18n="payroll.status.pendingEmployee">بانتظار الموظف</option><option value="ready_for_payment" data-petatoe-i18n="payroll.status.ready">جاهز للصرف</option><option value="paid" data-petatoe-i18n="payroll.status.paid">تم الصرف</option></select></label>
           <button id="payrollClearFilters" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.reset">إعادة تعيين</button>
         </div>
-        <div class="panel payroll-table-wrap"><table class="data-table payroll-table"><thead><tr><th data-petatoe-i18n="payroll.col.employee">الموظف</th><th data-petatoe-i18n="payroll.employee.paymentMethod">طريقة الدفع</th><th data-petatoe-i18n="payroll.col.base">الأساسي</th><th data-petatoe-i18n="payroll.col.allowances">البدلات</th><th data-petatoe-i18n="payroll.col.commissions">العمولات</th><th data-petatoe-i18n="payroll.col.overtime">الإضافي</th><th data-petatoe-i18n="payroll.col.deductions">الخصومات</th><th data-petatoe-i18n="payroll.col.net">الصافي</th><th data-petatoe-i18n="payroll.common.status">الحالة</th><th data-petatoe-i18n="payroll.common.actions">الإجراءات</th></tr></thead><tbody id="payrollManagementBody"></tbody></table></div>
+        <div class="panel payroll-table-wrap"><table class="data-table payroll-table"><thead><tr><th data-petatoe-i18n="payroll.col.employee">الموظف</th><th data-petatoe-i18n="payroll.employee.paymentMethod">طريقة الدفع</th><th data-petatoe-i18n="payroll.col.base">الأساسي</th><th data-petatoe-i18n="payroll.col.allowances">البدلات</th><th data-petatoe-i18n="payroll.col.commissions">العمولات</th><th data-petatoe-i18n="payroll.col.overtime">الإضافي</th><th data-petatoe-i18n="payroll.col.deductions">الخصومات</th><th data-petatoe-i18n="payroll.col.net">الصافي</th><th data-petatoe-i18n="payroll.common.status">الحالة</th><th data-petatoe-i18n="payroll.common.actions">الإجراءات</th></tr></thead><tbody id="payrollManagementBody"></tbody><tfoot id="payrollManagementTotals"></tfoot></table></div>
       </section>
 
       <section id="salaryStatementView" class="view-section hidden payroll-view" aria-hidden="true">
@@ -3307,10 +3315,10 @@
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.56.08"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.56.08"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.56.08"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.56.08"></script>
+  <script src="assets/js/performance-monitor.js?v=18.56.09"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.56.09"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.56.09"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.56.09"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -3833,7 +3841,18 @@
   <dialog id="payrollAdjustmentDialog" class="glass-dialog payroll-dialog-wide">
     <form id="payrollAdjustmentForm" class="dialog-shell">
       <div class="dialog-header"><div><h3 data-petatoe-i18n="payroll.adjustment.title">تعديل تجهيز الراتب</h3><p id="payrollAdjustmentEmployee"></p></div><button id="payrollAdjustmentClose" class="icon-btn" type="button" data-petatoe-i18n-aria="common.close" aria-label="إغلاق">×</button></div>
-      <input id="payrollAdjustmentId" type="hidden"><div class="form-grid"><label><span data-petatoe-i18n="payroll.col.overtime">الإضافي</span><input id="payrollAdjustmentOvertime" type="number" min="0" step="0.01"></label><label><span data-petatoe-i18n="payroll.col.deductions">الخصومات</span><input id="payrollAdjustmentDeductions" type="number" min="0" step="0.01"></label><label class="full-span"><span data-petatoe-i18n="payroll.common.notes">ملاحظات</span><textarea id="payrollAdjustmentNotes" rows="3"></textarea></label></div>
+      <input id="payrollAdjustmentId" type="hidden">
+      <div class="salary-adjustment-editor">
+        <section class="salary-adjustment-section addition">
+          <div class="salary-adjustment-section-head"><div><h4 data-petatoe-i18n="payroll.adjustment.additions">بنود الإضافي</h4><strong id="payrollAdjustmentAdditionTotal">0.00 ر.س</strong></div><button id="payrollAddAdditionItem" class="secondary-btn" type="button" data-petatoe-i18n="payroll.adjustment.addAddition">+ إضافة بند إضافي</button></div>
+          <div id="payrollAdditionItems" class="salary-adjustment-items"></div>
+        </section>
+        <section class="salary-adjustment-section deduction">
+          <div class="salary-adjustment-section-head"><div><h4 data-petatoe-i18n="payroll.adjustment.deductions">بنود الخصومات</h4><strong id="payrollAdjustmentDeductionTotal">0.00 ر.س</strong></div><button id="payrollAddDeductionItem" class="secondary-btn" type="button" data-petatoe-i18n="payroll.adjustment.addDeduction">+ إضافة بند خصم</button></div>
+          <div id="payrollDeductionItems" class="salary-adjustment-items"></div>
+        </section>
+        <label class="full-span"><span data-petatoe-i18n="payroll.common.notes">ملاحظات</span><textarea id="payrollAdjustmentNotes" rows="3"></textarea></label>
+      </div>
       <div class="dialog-actions"><button id="payrollAdjustmentCancel" class="secondary-btn" type="button" data-petatoe-i18n="common.cancel">إلغاء</button><button class="primary-btn" type="submit" data-petatoe-i18n="common.save">حفظ</button></div>
     </form>
   </dialog>
@@ -3868,71 +3887,71 @@
     </form>
   </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.56.08"></script>
-  <script src="assets/js/offline-session-store.js?v=18.56.08"></script>
-  <script src="assets/js/supabase-client.js?v=18.56.08"></script>
-  <script src="assets/js/geographic-address.js?v=18.56.08"></script>
-  <script src="assets/js/permissions.js?v=18.56.08"></script>
-  <script src="assets/js/permission-engine.js?v=18.56.08"></script>
-  <script src="assets/js/localization-center-service.js?v=18.56.08"></script>
-  <script src="assets/js/localization-center.js?v=18.56.08"></script>
-  <script src="assets/js/translation-center.js?v=18.56.08"></script>
-  <script src="assets/js/data-access-scope.js?v=18.56.08"></script>
-  <script src="assets/js/smart-cache.js?v=18.56.08"></script>
-  <script src="assets/js/sync-engine.js?v=18.56.08"></script>
-  <script src="assets/js/offline-queue.js?v=18.56.08"></script>
-  <script src="assets/js/permissions-service.js?v=18.56.08"></script>
-  <script src="assets/js/auth-session.js?v=18.56.08"></script>
-  <script src="assets/js/reference-data-service.js?v=18.56.08"></script>
-  <script src="assets/js/customers-service.js?v=18.56.08"></script>
-  <script src="assets/js/followups-service.js?v=18.56.08"></script>
-  <script src="assets/js/quotations-service.js?v=18.56.08"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.56.08"></script>
-  <script src="assets/js/vehicle-treasury-service.js?v=18.56.08"></script>
-  <script src="assets/js/payroll-service.js?v=18.56.08"></script>
-  <script src="assets/js/sea-vibe-service.js?v=18.56.08"></script>
-  <script src="assets/js/users-service.js?v=18.56.08"></script>
-  <script src="assets/js/activity-service.js?v=18.56.08"></script>
-  <script src="assets/js/backup-service.js?v=18.56.08"></script>
-  <script src="assets/js/system-settings-service.js?v=18.56.08"></script>
-  <script src="assets/js/system-health-service.js?v=18.56.08"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.56.08"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.56.08"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.56.08"></script>
-  <script src="assets/js/installations-service.js?v=18.56.08"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.56.08"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.56.08"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.56.08"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.56.08"></script>
+  <script src="assets/js/supabase-config.js?v=18.56.09"></script>
+  <script src="assets/js/offline-session-store.js?v=18.56.09"></script>
+  <script src="assets/js/supabase-client.js?v=18.56.09"></script>
+  <script src="assets/js/geographic-address.js?v=18.56.09"></script>
+  <script src="assets/js/permissions.js?v=18.56.09"></script>
+  <script src="assets/js/permission-engine.js?v=18.56.09"></script>
+  <script src="assets/js/localization-center-service.js?v=18.56.09"></script>
+  <script src="assets/js/localization-center.js?v=18.56.09"></script>
+  <script src="assets/js/translation-center.js?v=18.56.09"></script>
+  <script src="assets/js/data-access-scope.js?v=18.56.09"></script>
+  <script src="assets/js/smart-cache.js?v=18.56.09"></script>
+  <script src="assets/js/sync-engine.js?v=18.56.09"></script>
+  <script src="assets/js/offline-queue.js?v=18.56.09"></script>
+  <script src="assets/js/permissions-service.js?v=18.56.09"></script>
+  <script src="assets/js/auth-session.js?v=18.56.09"></script>
+  <script src="assets/js/reference-data-service.js?v=18.56.09"></script>
+  <script src="assets/js/customers-service.js?v=18.56.09"></script>
+  <script src="assets/js/followups-service.js?v=18.56.09"></script>
+  <script src="assets/js/quotations-service.js?v=18.56.09"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.56.09"></script>
+  <script src="assets/js/vehicle-treasury-service.js?v=18.56.09"></script>
+  <script src="assets/js/payroll-service.js?v=18.56.09"></script>
+  <script src="assets/js/sea-vibe-service.js?v=18.56.09"></script>
+  <script src="assets/js/users-service.js?v=18.56.09"></script>
+  <script src="assets/js/activity-service.js?v=18.56.09"></script>
+  <script src="assets/js/backup-service.js?v=18.56.09"></script>
+  <script src="assets/js/system-settings-service.js?v=18.56.09"></script>
+  <script src="assets/js/system-health-service.js?v=18.56.09"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.56.09"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.56.09"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.56.09"></script>
+  <script src="assets/js/installations-service.js?v=18.56.09"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.56.09"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.56.09"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.56.09"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.56.09"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.56.08"></script>
-  <script src="assets/js/export-center.js?v=18.56.08"></script>
-  <script src="assets/js/customer360-engine.js?v=18.56.08"></script>
-  <script src="assets/js/customer360-export.js?v=18.56.08"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.56.08"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.56.08"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.56.08"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.56.08"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.56.08"></script>
-  <script src="assets/js/notification-center-service.js?v=18.56.08"></script>
-  <script src="assets/js/app.js?v=18.56.08"></script>
-  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.56.08"></script>
-  <script src="assets/js/notification-center.js?v=18.56.08"></script>
-  <script src="assets/js/sales-invoices.js?v=18.56.08"></script>
-  <script src="assets/js/vehicle-treasury.js?v=18.56.08"></script>
-  <script src="assets/js/payroll.js?v=18.56.08"></script>
-  <script src="assets/js/sea-vibe.js?v=18.56.08"></script>
-  <script src="assets/js/installations-module.js?v=18.56.08"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.56.08"></script>
-  <script src="assets/js/installation-execution.js?v=18.56.08"></script>
-  <script src="assets/js/installation-completion.js?v=18.56.08"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.56.08"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.56.08"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.56.08"></script>
-  <script src="assets/js/mobile.js?v=18.56.08"></script>
-  <script src="assets/js/pwa.js?v=18.56.08"></script>
-  <script src="assets/js/native.js?v=18.56.08"></script>
+  <script src="assets/js/reports-engine.js?v=18.56.09"></script>
+  <script src="assets/js/export-center.js?v=18.56.09"></script>
+  <script src="assets/js/customer360-engine.js?v=18.56.09"></script>
+  <script src="assets/js/customer360-export.js?v=18.56.09"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.56.09"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.56.09"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.56.09"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.56.09"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.56.09"></script>
+  <script src="assets/js/notification-center-service.js?v=18.56.09"></script>
+  <script src="assets/js/app.js?v=18.56.09"></script>
+  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.56.09"></script>
+  <script src="assets/js/notification-center.js?v=18.56.09"></script>
+  <script src="assets/js/sales-invoices.js?v=18.56.09"></script>
+  <script src="assets/js/vehicle-treasury.js?v=18.56.09"></script>
+  <script src="assets/js/payroll.js?v=18.56.09"></script>
+  <script src="assets/js/sea-vibe.js?v=18.56.09"></script>
+  <script src="assets/js/installations-module.js?v=18.56.09"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.56.09"></script>
+  <script src="assets/js/installation-execution.js?v=18.56.09"></script>
+  <script src="assets/js/installation-completion.js?v=18.56.09"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.56.09"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.56.09"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.56.09"></script>
+  <script src="assets/js/mobile.js?v=18.56.09"></script>
+  <script src="assets/js/pwa.js?v=18.56.09"></script>
+  <script src="assets/js/native.js?v=18.56.09"></script>
 </body>
 </html>

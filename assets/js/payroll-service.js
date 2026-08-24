@@ -16,8 +16,21 @@
     return data;
   }
   async function loadManagement(month){cache.management=await rpc('get_payroll_management_workspace',{p_month:monthStart(month)},'payroll.error.loadManagement','تعذر تحميل إدارة الرواتب');return cache.management;}
-  async function prepareMonth(month){await rpc('prepare_payroll_month',{p_month:monthStart(month)},'payroll.error.prepareMonth','تعذر تجهيز رواتب الشهر');return loadManagement(month);}
-  async function saveAdjustments(id,overtime,deductions,notes){await rpc('save_payroll_salary_adjustments',{p_statement_id:id,p_overtime:Number(overtime||0),p_deductions:Number(deductions||0),p_notes:notes||null},'payroll.error.saveAdjustments','تعذر حفظ تعديلات الراتب');}
+  async function prepareMonth(month,commissionFrom,commissionTo){
+    const from=isoDate(commissionFrom),to=isoDate(commissionTo);
+    if(!from||!to||from>to)throw new Error(t('payroll.commissionPeriod.invalid','فترة عمولات الراتب غير صالحة.'));
+    await rpc('prepare_payroll_month_range',{p_month:monthStart(month),p_commission_from:from,p_commission_to:to},'payroll.error.prepareMonth','تعذر تجهيز رواتب الشهر');
+    return loadManagement(month);
+  }
+  async function saveAdjustmentItems(id,items,notes){
+    await rpc('save_payroll_salary_adjustment_items',{p_statement_id:id,p_items:Array.isArray(items)?items:[],p_notes:notes||null},'payroll.error.saveAdjustments','تعذر حفظ تعديلات الراتب');
+  }
+  async function saveAdjustments(id,overtime,deductions,notes){
+    const items=[];
+    if(Number(overtime||0)>0)items.push({type:'addition',name:t('payroll.col.overtime','الإضافي'),amount:Number(overtime),notes:''});
+    if(Number(deductions||0)>0)items.push({type:'deduction',name:t('payroll.col.deductions','الخصومات'),amount:Number(deductions),notes:''});
+    return saveAdjustmentItems(id,items,notes);
+  }
   async function transition(id,action,reference=''){return rpc('payroll_salary_transition',{p_statement_id:id,p_action:action,p_reference:reference||null},'payroll.error.transition','تعذر تحديث حالة الراتب');}
   async function loadSalaryStatement(){cache.salary=await rpc('get_salary_statement_workspace',{},'payroll.error.loadSalaryStatement','تعذر تحميل كشف الراتب');return cache.salary;}
   async function loadCommissions(month){cache.commissions=await rpc('get_commission_management_workspace',{p_month:monthStart(month)},'payroll.error.loadCommissionManagement','تعذر تحميل إدارة العمولات');return cache.commissions;}
@@ -35,5 +48,5 @@
   async function loadReference(){cache.reference=await rpc('get_payroll_reference_workspace',{},'payroll.error.loadReference','تعذر تحميل البيانات المرجعية');return cache.reference;}
   async function saveEmployee(record){await rpc('save_payroll_employee',{p_record:record},'payroll.error.saveEmployee','تعذر حفظ الموظف');return loadReference();}
   async function saveTier(record){await rpc('save_payroll_commission_tier',{p_record:record},'payroll.error.saveTier','تعذر حفظ شريحة العمولة');return loadReference();}
-  window.PayrollService=Object.freeze({monthStart,loadManagement,prepareMonth,saveAdjustments,transition,loadSalaryStatement,loadCommissions,loadCommissionsRange,refreshCommissions,loadCommissionStatement,loadReference,saveEmployee,saveTier,getCache:()=>cache});
+  window.PayrollService=Object.freeze({monthStart,loadManagement,prepareMonth,saveAdjustmentItems,saveAdjustments,transition,loadSalaryStatement,loadCommissions,loadCommissionsRange,refreshCommissions,loadCommissionStatement,loadReference,saveEmployee,saveTier,getCache:()=>cache});
 })();
