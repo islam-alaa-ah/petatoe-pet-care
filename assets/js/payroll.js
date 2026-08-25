@@ -101,7 +101,7 @@
     if(range?.previous?.toDate){
       lines.push(`<span>${esc(t('payroll.commissionPeriod.previous','آخر فترة محتسبة في راتب {month}: من {from} إلى {to}.',{month:monthLabel(range.previous.payrollMonth),from:dateLabel(range.previous.fromDate),to:dateLabel(range.previous.toDate)}))}</span>`);
       lines.push(`<span class="suggested">${esc(t('payroll.commissionPeriod.suggested','بداية الفترة التالية المقترحة: {date}.',{date:dateLabel(range.suggestedFrom)}))}</span>`);
-    }else lines.push(`<span>${esc(t('payroll.commissionPeriod.noPrevious','لا توجد فترة عمولات سابقة.'))}</span>`);
+    }else lines.push(`<span class="no-previous">${esc(t('payroll.commissionPeriod.noPrevious','لا توجد فترة عمولات سابقة.'))}</span>`);
     payrollCommissionPeriodWarnings(range).forEach(message=>lines.push(`<span class="warning">${esc(message)}</span>`));
     if(range?.locked)lines.push(`<span class="locked">${esc(t('payroll.commissionPeriod.locked','تم تثبيت فترة العمولات لأن بعض رواتب الشهر خرجت من مرحلة التجهيز.'))}</span>`);
     el.innerHTML=lines.join('');

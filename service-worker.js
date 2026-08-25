@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-10-payroll-header-layout-translation-cleanup-r10-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-11-payroll-spacing-kpi-layout-r12-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
