@@ -68,22 +68,22 @@
   .sidebar-brand{min-height:52px}
   .sidebar-nav{padding:4px 2px 18px;gap:8px}
   .sidebar .nav-item,.sidebar .nav-group-toggle{min-height:48px;border-radius:14px;font-size:14px}
-  .sidebar-backdrop{background:rgba(2,6,23,.58);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-
   
 
-  
-  
-  
-  
-  
-  
   
 
   
   
+  
+  
+  
+  
+  
 
-  dialog{max-width:calc(100vw - 20px)}
+  
+  
+
+  
 }
 
 @media (max-width: 360px){
@@ -173,10 +173,10 @@
     align-items:center;gap:2px 9px;min-height:92px;padding:11px 12px;border:1px solid var(--pilot-line);border-radius:18px;
     background:linear-gradient(150deg,var(--pilot-card),var(--pilot-card-2));box-shadow:var(--pilot-shadow);overflow:hidden;
   }
-  #dashboardView .dashboard-stats .stat-card:nth-child(4n),#dashboardView .dashboard-stats .stat-card:nth-child(4n+1){border-color:var(--pilot-gold-line);box-shadow:var(--pilot-gold-shadow)}
+  #dashboardView .dashboard-stats .stat-card:nth-child(4n),#dashboardView .dashboard-stats .stat-card:nth-child(4n/**/+1){border-color:var(--pilot-gold-line);box-shadow:var(--pilot-gold-shadow)}
   #dashboardView .dashboard-stats .stat-card::after{content:"";position:absolute;inset:auto -24px -26px auto;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--pilot-blue) 16%,transparent),transparent 72%);pointer-events:none}
   #dashboardView .dashboard-stats .stat-card .petatoe-kpi-icon{grid-area:icon;display:grid;place-items:center;width:38px;height:38px;border:1px solid color-mix(in srgb,var(--pilot-blue) 45%,var(--border));border-radius:13px;background:color-mix(in srgb,var(--pilot-blue) 8%,var(--pilot-card));color:var(--pilot-blue);box-shadow:0 0 16px rgba(22,136,255,.10)}
-  #dashboardView .dashboard-stats .stat-card:nth-child(4n) .petatoe-kpi-icon,#dashboardView .dashboard-stats .stat-card:nth-child(4n+1) .petatoe-kpi-icon{border-color:var(--pilot-gold-line);background:color-mix(in srgb,var(--pilot-gold) 12%,var(--pilot-card));color:var(--pilot-gold);box-shadow:0 0 16px rgba(233,173,55,.13)}
+  #dashboardView .dashboard-stats .stat-card:nth-child(4n) .petatoe-kpi-icon,#dashboardView .dashboard-stats .stat-card:nth-child(4n/**/+1) .petatoe-kpi-icon{border-color:var(--pilot-gold-line);background:color-mix(in srgb,var(--pilot-gold) 12%,var(--pilot-card));color:var(--pilot-gold);box-shadow:0 0 16px rgba(233,173,55,.13)}
   #dashboardView .dashboard-stats .petatoe-kpi-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
   #dashboardView .dashboard-stats .stat-card span:not(.petatoe-kpi-icon){grid-area:label;display:block;max-width:100%;font-size:10px;line-height:1.4;color:var(--muted);font-weight:800}
   #dashboardView .dashboard-stats .stat-card strong{grid-area:value;font-size:20px;line-height:1.16;margin:2px 0 0;color:var(--text);overflow-wrap:anywhere}
@@ -271,26 +271,26 @@
 /* KYUM Mobile Enterprise — Phase M4: Customer 360 */
 @media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
   body.mobile-customer360-open{overflow:hidden}
-  #customerDetailsDialog.customer360-dialog{inset:0;width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:var(--surface)}
+  #customerDetailsDialog.customer360-dialog{inset:0;width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:var(--kyum-mobile-surface)}
   #customerDetailsDialog::backdrop{background:rgba(15,23,42,.56);backdrop-filter:blur(5px)}
-  #customerDetailsDialog .customer360-shell{display:flex;flex-direction:column;height:100dvh;max-height:none;border-radius:0;background:var(--surface)}
-  #customerDetailsDialog .customer360-header{position:relative;flex:0 0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px 12px;gap:10px;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(18px)}
+  #customerDetailsDialog .customer360-shell{display:flex;flex-direction:column;height:100dvh;max-height:none;border-radius:0;background:var(--kyum-mobile-surface)}
+  #customerDetailsDialog .customer360-header{position:relative;flex:0 0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px 12px;gap:10px;background:color-mix(in srgb,var(--kyum-mobile-surface) 94%,transparent);backdrop-filter:blur(18px)}
   #customerDetailsDialog .customer360-header>div:first-child{min-width:0;padding-inline-end:44px}
   #customerDetailsDialog .customer360-title-row{gap:7px}
   #customerDetailsDialog .customer360-title-row h3{max-width:100%;font-size:17px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #customerDetailsDialog #customerDetailsSubtitle{margin:5px 0 0;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+  #customerDetailsDialog #customerDetailsSubtitle{margin:5px 0 0;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--kyum-mobile-muted)}
   #customerDetailsDialog #closeCustomerDetailsBtn{position:absolute;top:calc(10px + env(safe-area-inset-top));left:12px;width:38px;height:38px;border-radius:12px}
   #customerDetailsDialog .customer360-header-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:7px}
   #customerDetailsDialog .customer360-header-actions #closeCustomerDetailsBtn{display:flex}
   #customerDetailsDialog .customer360-header-actions button:not(#closeCustomerDetailsBtn){min-height:40px;padding:8px 7px;font-size:10px;white-space:nowrap}
   #customerDetailsDialog #customerDetailsContent{flex:1 1 auto;max-height:none;min-height:0;padding:12px 12px calc(96px + env(safe-area-inset-bottom));overflow:auto;overscroll-behavior:contain;scroll-behavior:smooth}
   #customerDetailsDialog .mobile-customer360-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 12px}
-  #customerDetailsDialog .mobile-customer360-actions a{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2);color:var(--text);font-size:12px;font-weight:900;text-decoration:none}
-  #customerDetailsDialog .mobile-customer360-actions a[data-kind="whatsapp"]{border-color:color-mix(in srgb,#22c55e 48%,var(--border));background:color-mix(in srgb,#22c55e 11%,var(--surface));color:#15803d}
+  #customerDetailsDialog .mobile-customer360-actions a{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;border:1px solid var(--kyum-mobile-border);border-radius:14px;background:var(--kyum-mobile-surface-alt);color:var(--kyum-mobile-text);font-size:12px;font-weight:900;text-decoration:none}
+  #customerDetailsDialog .mobile-customer360-actions a[data-kind="whatsapp"]{border-color:color-mix(in srgb,#22c55e 48%,var(--border));background:color-mix(in srgb,#22c55e 11%,var(--kyum-mobile-surface));color:#15803d}
   [data-theme="dark"] #customerDetailsDialog .mobile-customer360-actions a[data-kind="whatsapp"]{color:#86efac}
-  #customerDetailsDialog .mobile-customer360-jumpnav{position:sticky;top:-1px;z-index:4;display:flex;gap:7px;margin:0 -12px 12px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  #customerDetailsDialog .mobile-customer360-jumpnav{position:sticky;top:-1px;z-index:4;display:flex;gap:7px;margin:0 -12px 12px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;background:color-mix(in srgb,var(--kyum-mobile-surface) 92%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
   #customerDetailsDialog .mobile-customer360-jumpnav::-webkit-scrollbar{display:none}
-  #customerDetailsDialog .mobile-customer360-jumpnav button{flex:0 0 auto;min-height:34px;padding:6px 11px;border:1px solid var(--border);border-radius:999px;background:var(--surface-2);color:var(--muted);font-size:10px;font-weight:900}
+  #customerDetailsDialog .mobile-customer360-jumpnav button{flex:0 0 auto;min-height:34px;padding:6px 11px;border:1px solid var(--kyum-mobile-border);border-radius:999px;background:var(--kyum-mobile-surface-alt);color:var(--kyum-mobile-muted);font-size:10px;font-weight:900}
   #customerDetailsDialog .customer360-overview{gap:10px;margin-bottom:12px}
   #customerDetailsDialog .customer360-status-card{grid-template-columns:1fr 1fr;gap:10px;padding:13px;border-radius:14px}
   #customerDetailsDialog .customer360-status-card strong{font-size:16px}
@@ -412,9 +412,9 @@
 
   #followupDialog{width:calc(100vw - 20px);max-width:none;max-height:calc(100dvh - 20px);margin:auto;border-radius:20px}
   #followupDialog form{max-height:calc(100dvh - 20px);overflow:auto}
-  #followupDialog .dialog-header{position:sticky;top:0;z-index:3;padding-top:calc(12px + env(safe-area-inset-top));background:var(--surface)}
+  #followupDialog .dialog-header{position:sticky;top:0;z-index:3;padding-top:calc(12px + env(safe-area-inset-top))}
   #followupDialog .form-grid{grid-template-columns:1fr}
-  #followupDialog .dialog-actions{position:sticky;bottom:0;z-index:3;padding-bottom:calc(12px + env(safe-area-inset-bottom));background:var(--surface)}
+  #followupDialog .dialog-actions{position:sticky;bottom:0;z-index:3;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 
   /* P5.11.16 identity continuity: buttons, fields, separators and empty states inside the three pilot screens. */
   #dashboardView :is(input,select,textarea),#customersView :is(input,select,textarea),#followupsView :is(input,select,textarea){border-color:color-mix(in srgb,var(--pilot-line) 76%,var(--border))!important;background:linear-gradient(145deg,var(--pilot-card-2),color-mix(in srgb,var(--pilot-blue) 3%,var(--pilot-card)))!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)}
@@ -904,7 +904,7 @@
 
   #quotationDialog { width: min(100% - 16px, 560px); max-height: calc(100dvh - 20px); border-radius: 20px; }
   #quotationDialog .form-grid { grid-template-columns: 1fr; }
-  #quotationDialog .dialog-actions { position: sticky; bottom: 0; padding-top: 12px; background: var(--surface, #fff); }
+  #quotationDialog .dialog-actions { position: sticky; bottom: 0; padding-top: 12px; }
   #quotationDialog .dialog-actions button { min-height: 46px; }
 }
 
@@ -923,93 +923,28 @@
     padding-bottom:calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 20px);
   }
 
-  #appHeader.topbar{
-    position:sticky;
-    z-index:1050;
-    top:0;
-    display:grid;
-    grid-template-columns:44px minmax(0,1fr) 44px;
-    grid-template-areas:"menu brand actions";
-    align-items:center;
-    min-height:calc(var(--mobile-header-height) + var(--mobile-safe-top));
-    margin:-10px -10px 12px;
-    padding:calc(7px + var(--mobile-safe-top)) 10px 7px;
-    border:0;
-    border-bottom:1px solid var(--header-border);
-    border-radius:0 0 18px 18px;
-    background:color-mix(in srgb,var(--surface) 92%,transparent);
-    box-shadow:0 8px 24px rgba(15,23,42,.10);
-    overflow:visible;
-  }
+  
 
-  #appHeader.topbar.is-scrolled{
-    min-height:calc(54px + var(--mobile-safe-top));
-    padding:calc(5px + var(--mobile-safe-top)) 10px 5px;
-  }
+  
 
-  #appHeader .sidebar-menu-launcher{
-    grid-area:menu;
-    display:grid;
-    place-items:center;
-    width:42px;
-    height:42px;
-    min-width:42px;
-    padding:0;
-    border:1px solid var(--header-border);
-    border-radius:13px;
-    background:color-mix(in srgb,var(--surface) 88%,transparent);
-    color:var(--text);
-  }
+  
 
-  #appHeader .mobile-menu-icon{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
-  #appHeader .topbar-title{display:none!important}
+  
+  
 
-  #appHeader .mobile-app-brand{
-    grid-area:brand;
-    min-width:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    direction:ltr;
-    color:var(--text);
-    user-select:none;
-  }
+  
 
-  #appHeader .mobile-app-brand img{
-    width:36px;
-    height:36px;
-    flex:0 0 36px;
-    border-radius:11px;
-    object-fit:cover;
-    box-shadow:0 5px 14px rgba(67,56,202,.22);
-  }
+  
 
-  #appHeader .mobile-app-brand span{display:flex;align-items:baseline;gap:5px;min-width:0;line-height:1}
-  #appHeader .mobile-app-brand strong{font-size:16px;letter-spacing:.4px;white-space:nowrap}
-  #appHeader .mobile-app-brand small{font-size:9px;font-weight:800;letter-spacing:1.2px;color:var(--primary)}
+  
+  
+  
 
-  #appHeader .topbar-user-actions{
-    grid-area:actions;
-    width:42px;
-    min-width:42px;
-    justify-content:flex-end;
-  }
+  
 
-  #appHeader .theme-toggle-button,
-  #appHeader .theme-toggle-button.is-visible{
-    width:42px;
-    height:42px;
-    flex:0 0 42px;
-    border:1px solid var(--header-border);
-    border-radius:13px;
-    background:color-mix(in srgb,var(--surface) 88%,transparent);
-  }
+  
 
-  #appHeader .topbar-brand,
-  #appHeader .topbar-watermark,
-  #appHeader .header-user-menu,
-  #appHeader .kyum-scroll-control{display:none!important}
+  
 
   .view-section:not(.hidden){scroll-margin-top:calc(var(--mobile-header-height) + var(--mobile-safe-top) + 12px)}
   .view-section>.view-header:first-child,
@@ -1023,18 +958,16 @@
 }
 
 @media (max-width: 340px){
-  #appHeader .mobile-app-brand img{width:32px;height:32px;flex-basis:32px}
-  #appHeader .mobile-app-brand strong{font-size:14px}
-  #appHeader .mobile-app-brand small{font-size:8px}
+  
+  
+  
   #dashboardView .dashboard-stats{grid-template-columns:1fr}
 }
 
 @media (orientation:landscape) and (max-height:520px) and (max-width:900px){
-  #appHeader.topbar{--mobile-header-height:50px;padding-top:calc(4px + var(--mobile-safe-top));padding-bottom:4px;border-radius:0 0 14px 14px}
-  #appHeader .mobile-app-brand img{width:32px;height:32px;flex-basis:32px}
-  #appHeader .sidebar-menu-launcher,
-  #appHeader .theme-toggle-button,
-  #appHeader .theme-toggle-button.is-visible{width:38px;height:38px;min-width:38px;flex-basis:38px}
+  
+  
+  
 }
 
 /* KYUM Company CRM Mobile Enterprise — Phase M8 Mobile Reports */
@@ -1187,9 +1120,9 @@
 
   #reportsExportDialog{width:min(100% - 14px,620px);max-height:calc(100dvh - 18px);border-radius:22px}
   #reportsExportDialog form{max-height:calc(100dvh - 18px);overflow-y:auto}
-  #reportsExportDialog .dialog-header{position:sticky;top:0;z-index:2;padding-bottom:10px;background:var(--surface,#fff)}
+  #reportsExportDialog .dialog-header{position:sticky;top:0;z-index:2;padding-bottom:10px}
   #reportsExportDialog .export-center-grid{grid-template-columns:1fr;gap:10px}
-  #reportsExportDialog .dialog-actions{position:sticky;bottom:0;padding-top:10px;background:var(--surface,#fff)}
+  #reportsExportDialog .dialog-actions{position:sticky;bottom:0;padding-top:10px}
 
   #reportsOverviewView.mobile-reports-loading .reports-kpi-grid,
   #reportsOverviewView.mobile-reports-loading .reports-dashboard-grid,
@@ -1378,23 +1311,7 @@ html.is-offline body::before {
     box-sizing:border-box;
   }
 
-  #appView.app-shell,
-  #appView.app-shell:not(.hidden),
-  .main-content,
-  #appHeader,
-  .view-section,
-  .view-section:not(.hidden),
-  .view-section > *,
-  .actions-row,
-  .panel,
-  .panel-grid,
-  .settings-grid,
-  .table-card,
-  .table-wrap{
-    width:100%;
-    max-width:100%;
-    min-width:0;
-  }
+  
 
   #appView.app-shell{
     overflow-x:clip;
@@ -1513,26 +1430,8 @@ html.is-offline body::before {
   html,body,#appView,.main-content{width:100%;max-width:100%;overflow-x:hidden}
 
   /* Full-bleed application header, including iPhone safe area. */
-  #appHeader.topbar{
-    width:100vw;
-    max-width:none;
-    margin-top:-10px;
-    margin-right:calc(50% - 50vw);
-    margin-left:calc(50% - 50vw);
-    margin-bottom:14px;
-    padding-top:calc(10px + var(--mobile-safe-top));
-    padding-right:max(12px,env(safe-area-inset-right));
-    padding-bottom:10px;
-    padding-left:max(12px,env(safe-area-inset-left));
-    min-height:calc(70px + var(--mobile-safe-top));
-    border-radius:0 0 20px 20px;
-    box-sizing:border-box;
-  }
-  #appHeader.topbar.is-scrolled{
-    min-height:calc(62px + var(--mobile-safe-top));
-    padding-top:calc(7px + var(--mobile-safe-top));
-    padding-bottom:7px;
-  }
+  
+  
 /* All views must clear the fixed mobile navigation. */
   .view-section{min-width:0;max-width:100%;padding-bottom:calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 24px)}
   .panel,.table-card,.table-wrap{max-width:100%;min-width:0}
@@ -1606,18 +1505,7 @@ html.is-offline body::before {
   }
   html[data-theme="dark"] body::before{background:#061a2d}
 
-  #appHeader.topbar,
-  #appHeader.topbar.is-scrolled{
-    top:0!important;
-    width:100%!important;
-    max-width:100%!important;
-    margin:0 0 14px!important;
-    padding-top:calc(10px + env(safe-area-inset-top))!important;
-    padding-right:max(12px,env(safe-area-inset-right))!important;
-    padding-left:max(12px,env(safe-area-inset-left))!important;
-    min-height:calc(82px + env(safe-area-inset-top))!important;
-    border-radius:0 0 22px 22px!important;
-  }
+  
 .main-content{
     padding-right:10px!important;
     padding-left:10px!important;
@@ -1716,15 +1604,8 @@ html.is-offline body::before {
   }
   #appView.app-shell{margin:0!important;padding:0!important;width:100%!important;max-width:none!important}
   .main-content{margin:0!important;padding:0 10px calc(104px + env(safe-area-inset-bottom))!important;width:100%!important;max-width:none!important}
-  #appHeader.topbar,#appHeader.topbar.is-scrolled{
-    position:relative!important;inset:auto!important;width:calc(100% + 20px)!important;max-width:none!important;
-    margin:0 -10px 12px!important;padding:calc(10px + env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 10px max(14px,env(safe-area-inset-left))!important;
-    min-height:calc(90px + env(safe-area-inset-top))!important;border-radius:0 0 22px 22px!important;
-    background:var(--kyum-mobile-header-bg)!important;color:#fff!important;box-sizing:border-box!important
-  }
-  .is-capacitor-native #appHeader.topbar,.is-capacitor-native #appHeader.topbar.is-scrolled{
-    padding-top:calc(12px + env(safe-area-inset-top))!important
-  }
+  
+  
   .view-section:not(.hidden){display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:visible!important}
   .view-section.hidden{display:none!important}
   .view-section *{box-sizing:border-box;min-width:0}
@@ -1755,46 +1636,11 @@ html.is-offline body::before {
 
 /* Phase M7.3.4 — sidebar first-row hit-target isolation */
 @media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
-  #mainSidebar.sidebar{
-    display:flex!important;
-    flex-direction:column!important;
-    overflow:hidden!important;
-  }
-  #mainSidebar .sidebar-launcher-host{
-    position:relative!important;
-    z-index:1!important;
-    flex:0 0 auto!important;
-    min-height:58px!important;
-    height:58px!important;
-    margin:0 0 14px!important;
-    overflow:hidden!important;
-    pointer-events:none!important;
-  }
-  #mainSidebar .sidebar-launcher-host .sidebar-menu-launcher{
-    position:relative!important;
-    inset:auto!important;
-    width:100%!important;
-    height:54px!important;
-    max-height:54px!important;
-    pointer-events:auto!important;
-  }
-  #mainSidebar .sidebar-nav{
-    position:relative!important;
-    z-index:2!important;
-    flex:1 1 auto!important;
-    min-height:0!important;
-    overflow-y:auto!important;
-    overflow-x:hidden!important;
-    padding:4px 2px calc(18px + var(--mobile-safe-bottom))!important;
-    pointer-events:auto!important;
-  }
-  #mainSidebar .nav-item[data-view]{
-    position:relative!important;
-    z-index:3!important;
-    pointer-events:auto!important;
-    touch-action:manipulation!important;
-    -webkit-tap-highlight-color:transparent;
-  }
+  
+  
+  
+  
+  
   #dailyOperationsNavButton{
     margin-top:0!important;
     isolation:isolate!important;
@@ -1803,137 +1649,39 @@ html.is-offline body::before {
 
 /* Phase M8.2 — compact mobile main menu */
 @media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
-  #mainSidebar.sidebar{
-    width:min(88vw,360px)!important;
-    padding:calc(10px + var(--mobile-safe-top)) 12px calc(12px + var(--mobile-safe-bottom))!important;
-    gap:0!important;
-    border-radius:24px 0 0 24px!important;
-    background:var(--surface, #0f172a)!important;
-  }
+  
 
-  #mainSidebar .sidebar-launcher-host{
-    min-height:68px!important;
-    height:68px!important;
-    margin:0 0 10px!important;
-    padding:0!important;
-    border-bottom:1px solid var(--border, rgba(148,163,184,.2));
-    overflow:visible!important;
-  }
+  
 
-  #mainSidebar .sidebar-launcher-host .sidebar-menu-launcher{
-    width:100%!important;
-    height:58px!important;
-    min-height:58px!important;
-    padding:7px 10px!important;
-    border-radius:16px!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-start!important;
-    gap:10px!important;
-    background:rgba(255,255,255,.055)!important;
-  }
+  
 
-  #mainSidebar .sidebar-launcher-host .sidebar-menu-launcher-text{
-    display:grid!important;
-    min-width:0!important;
-    text-align:right!important;
-    line-height:1.25!important;
-  }
+  
 
-  #mainSidebar .sidebar-launcher-host .sidebar-menu-launcher-text strong{
-    display:block!important;
-    font-size:14px!important;
-  }
+  
 
-  #mainSidebar .sidebar-launcher-host .sidebar-menu-launcher-text small{
-    display:block!important;
-    font-size:10px!important;
-    opacity:.72!important;
-  }
+  
 
-  #mainSidebar .sidebar-nav{
-    display:grid!important;
-    align-content:start!important;
-    gap:8px!important;
-    padding:0 0 calc(10px + var(--mobile-safe-bottom))!important;
-    overscroll-behavior:contain!important;
-  }
+  
 
-  #mainSidebar .nav-group{
-    display:grid!important;
-    gap:4px!important;
-    margin:0!important;
-  }
+  
 
-  #mainSidebar .nav-group-toggle{
-    min-height:54px!important;
-    padding:11px 14px!important;
-    border-radius:16px!important;
-    font-size:15px!important;
-    line-height:1.25!important;
-    background:rgba(255,255,255,.055)!important;
-    border:1px solid rgba(148,163,184,.13)!important;
-    box-shadow:none!important;
-  }
+  
 
-  #mainSidebar .nav-group-toggle[aria-expanded="true"]{
-    background:rgba(99,102,241,.15)!important;
-    border-color:rgba(129,140,248,.32)!important;
-  }
+  
 
-  #mainSidebar .nav-chevron{
-    width:18px!important;
-    height:18px!important;
-    flex:0 0 18px!important;
-    transition:transform .2s ease!important;
-  }
+  
 
-  #mainSidebar .nav-group-content{
-    display:grid!important;
-    gap:4px!important;
-    padding:4px 6px 2px!important;
-    max-height:540px!important;
-    transition:max-height .2s ease,opacity .16s ease,padding .2s ease!important;
-  }
+  
 
-  #mainSidebar .nav-group.is-collapsed .nav-group-content{
-    max-height:0!important;
-    opacity:0!important;
-    padding-top:0!important;
-    padding-bottom:0!important;
-  }
+  
 
-  #mainSidebar .nav-group-content .nav-item{
-    min-height:44px!important;
-    padding:9px 14px 9px 30px!important;
-    border-radius:13px!important;
-    font-size:13px!important;
-    line-height:1.25!important;
-    background:transparent!important;
-    border:1px solid transparent!important;
-  }
+  
 
-  #mainSidebar .nav-group-content .nav-item::before{
-    right:auto!important;
-    left:12px!important;
-    width:7px!important;
-    height:7px!important;
-    background:currentColor!important;
-    opacity:.45!important;
-  }
+  
 
-  #mainSidebar .nav-group-content .nav-item:hover,
-  #mainSidebar .nav-group-content .nav-item.active{
-    transform:none!important;
-    color:var(--primary, #818cf8)!important;
-    background:rgba(99,102,241,.12)!important;
-    border-color:rgba(129,140,248,.22)!important;
-  }
+  
 
-  #mainSidebar .nav-group-content .nav-item.active::before{
-    opacity:1!important;
-    box-shadow:0 0 0 4px rgba(99,102,241,.12)!important;
-  }
+  
 }
 
 
@@ -2052,82 +1800,22 @@ html.is-offline body::before {
     --mobile-nav-compact-height:58px;
   }
 
-  #appHeader.topbar{
-    position:sticky;
-    top:0;
-    isolation:isolate;
-    display:block;
-    min-height:calc(66px + var(--mobile-safe-top));
-    margin-top:-14px;
-    padding-top:calc(7px + var(--mobile-safe-top));
-    padding-bottom:7px;
-    overflow:visible;
-  }
+  
 
-  #appHeader .sidebar-menu-launcher,
-  #appHeader .theme-toggle-button,
-  #appHeader .theme-toggle-button.is-visible,
-  #appHeader .kyum-scroll-control.mobile-floating-logo{
-    position:absolute;
-    top:calc(var(--mobile-safe-top) + 8px);
-    z-index:3;
-    width:44px;
-    height:44px;
-    min-width:44px;
-    border:1px solid color-mix(in srgb,var(--header-border) 72%,transparent);
-    border-radius:15px;
-    background:color-mix(in srgb,var(--surface) 68%,transparent);
-    box-shadow:0 10px 24px rgba(15,23,42,.14),inset 0 1px 0 rgba(255,255,255,.5);
-    backdrop-filter:blur(18px) saturate(165%);
-    -webkit-backdrop-filter:blur(18px) saturate(165%);
-  }
+  
 
-  #appHeader .sidebar-menu-launcher{left:max(12px,env(safe-area-inset-left));right:auto}
-  #appHeader .kyum-scroll-control.mobile-floating-logo{
-    display:grid!important;
-    place-items:center;
-    left:calc(max(12px,env(safe-area-inset-left)) + 52px);
-    right:auto;
-    padding:5px;
-    color:inherit;
-  }
-  #appHeader .kyum-scroll-control.mobile-floating-logo img{
-    width:32px;
-    height:32px;
-    border-radius:10px;
-    object-fit:cover;
-    box-shadow:0 6px 14px rgba(37,99,235,.22);
-  }
-  #appHeader .theme-toggle-button,
-  #appHeader .theme-toggle-button.is-visible{right:max(12px,env(safe-area-inset-right));left:auto}
+  
+  
+  
+  
 
-  #appHeader .mobile-app-brand{
-    position:absolute;
-    z-index:2;
-    top:calc(var(--mobile-safe-top) + 8px);
-    left:50%;
-    width:max-content;
-    max-width:38vw;
-    height:44px;
-    transform:translateX(-50%);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    pointer-events:none;
-  }
-  #appHeader .mobile-app-brand img{display:none!important}
-  #appHeader .mobile-app-brand span{justify-content:center}
-  #appHeader .mobile-app-brand strong{font-size:17px;letter-spacing:.7px}
-  #appHeader .mobile-app-brand small{font-size:9px;letter-spacing:1.35px}
+  
+  
+  
+  
+  
 
-  html[data-theme="dark"] #appHeader .sidebar-menu-launcher,
-  html[data-theme="dark"] #appHeader .theme-toggle-button,
-  html[data-theme="dark"] #appHeader .theme-toggle-button.is-visible,
-  html[data-theme="dark"] #appHeader .kyum-scroll-control.mobile-floating-logo{
-    background:rgba(15,23,42,.52);
-    border-color:rgba(148,163,184,.24);
-    box-shadow:0 12px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.08);
-  }
+  
 
   
 
@@ -2160,71 +1848,28 @@ html.is-offline body::before {
 }
 
 @media (max-width: 360px){
-  #appHeader .mobile-app-brand{max-width:34vw}
-  #appHeader .mobile-app-brand strong{font-size:15px}
-  #appHeader .sidebar-menu-launcher,
-  #appHeader .theme-toggle-button,
-  #appHeader .theme-toggle-button.is-visible,
-  #appHeader .kyum-scroll-control.mobile-floating-logo{width:40px;height:40px;min-width:40px}
-  #appHeader .kyum-scroll-control.mobile-floating-logo{left:calc(max(10px,env(safe-area-inset-left)) + 46px)}
-  #appHeader .sidebar-menu-launcher{left:max(10px,env(safe-area-inset-left))}
-  #appHeader .theme-toggle-button,
-  #appHeader .theme-toggle-button.is-visible{right:max(10px,env(safe-area-inset-right))}
+  
+  
+  
+  
+  
+  
 }
 
 /* Phase M8.3.1 — Header & Glass Navigation Regression Fix */
 @media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
   /* Keep the header visible and keep every control inside its own bounds. */
-  #appHeader.topbar,
-  #appHeader.topbar.is-scrolled{
-    position:sticky!important;
-    z-index:1050!important;
-    top:0!important;
-    width:calc(100% + 20px)!important;
-    min-height:calc(72px + var(--mobile-safe-top))!important;
-    margin:0 -10px 12px!important;
-    padding:calc(8px + var(--mobile-safe-top)) 10px 8px!important;
-    overflow:hidden!important;
-    transform:none!important;
-  }
+  
 
-  #appHeader .sidebar-menu-launcher,
-  #appHeader .theme-toggle-button,
-  #appHeader .theme-toggle-button.is-visible,
-  #appHeader .kyum-scroll-control.mobile-floating-logo{
-    top:calc(var(--mobile-safe-top) + 10px)!important;
-    width:44px!important;
-    height:44px!important;
-    min-width:44px!important;
-    margin:0!important;
-    transform:none!important;
-  }
+  
 
-  #appHeader .sidebar-menu-launcher{
-    left:max(12px,env(safe-area-inset-left))!important;
-    right:auto!important;
-  }
+  
 
-  #appHeader .kyum-scroll-control.mobile-floating-logo{
-    left:calc(max(12px,env(safe-area-inset-left)) + 52px)!important;
-    right:auto!important;
-    display:grid!important;
-    place-items:center!important;
-  }
+  
 
-  #appHeader .theme-toggle-button,
-  #appHeader .theme-toggle-button.is-visible{
-    right:max(12px,env(safe-area-inset-right))!important;
-    left:auto!important;
-  }
+  
 
-  #appHeader .mobile-app-brand{
-    top:calc(var(--mobile-safe-top) + 10px)!important;
-    left:50%!important;
-    right:auto!important;
-    height:44px!important;
-    transform:translateX(-50%)!important;
-  }
+  
 
   /* Genuine translucent glass surface; no solid navy fill. */
   
@@ -2245,31 +1890,13 @@ html.is-offline body::before {
 /* Phase M8.3.2 — Mobile Header Controls & Finger-Tracking Indicator Fix */
 @media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
   /* Keep the two requested header controls visible and positioned relative to the header itself. */
-  #appHeader .topbar-user-actions{
-    display:contents!important;
-    width:auto!important;
-    min-width:0!important;
-  }
+  
 
-  #appHeader #kyumScrollControl.mobile-floating-logo,
-  #appHeader #themeToggleButton,
-  #appHeader #themeToggleButton.is-visible{
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-    pointer-events:auto!important;
-  }
+  
 
-  #appHeader #kyumScrollControl.mobile-floating-logo{
-    left:calc(max(12px,env(safe-area-inset-left)) + 52px)!important;
-    right:auto!important;
-  }
+  
 
-  #appHeader #themeToggleButton,
-  #appHeader #themeToggleButton.is-visible{
-    right:max(12px,env(safe-area-inset-right))!important;
-    left:auto!important;
-  }
+  
 
   /* During press-and-drag, the bubble must stay directly under the finger with zero lag. */
   
@@ -2281,18 +1908,7 @@ html.is-offline body::before {
 /* Phase M8.3.3 — Persistent Header & Live Finger Tracking Fix */
 @media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
   /* Use a fixed mobile header so it cannot disappear inside a scrolling ancestor. */
-  #appHeader.topbar,
-  #appHeader.topbar.is-scrolled{
-    position:fixed!important;
-    top:0!important;
-    right:0!important;
-    left:0!important;
-    width:100vw!important;
-    max-width:100vw!important;
-    margin:0!important;
-    transform:none!important;
-    z-index:1100!important;
-  }
+  
 
   /* Reserve exactly the header space after taking it out of document flow. */
   .main-content{
@@ -2300,145 +1916,11 @@ html.is-offline body::before {
   }
 
   /* Keep the requested controls visibly inside the fixed header. */
-  #appHeader #sidebarMenuToggle{
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-    left:max(12px,env(safe-area-inset-left))!important;
-    right:auto!important;
-  }
-  #appHeader #kyumScrollControl.mobile-floating-logo{
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-    left:calc(max(12px,env(safe-area-inset-left)) + 52px)!important;
-    right:auto!important;
-  }
-  #appHeader #themeToggleButton,
-  #appHeader #themeToggleButton.is-visible{
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-    right:max(12px,env(safe-area-inset-right))!important;
-    left:auto!important;
-  }
+  
+  
+  
 
   /* While dragging, remove every easing delay so the bubble follows the finger 1:1. */
-  
-}
-
-/* Phase M8.3.4 — Stable Header & Direct Finger-Tracking Glass Navigation */
-@media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
-  :root{
-    --kyum-stable-header-height:96px;
-  }
-
-  #appHeader.topbar,
-  #appHeader.topbar.is-scrolled,
-  #appHeader.topbar.mobile-header-stable{
-    position:fixed!important;
-    inset:0 0 auto 0!important;
-    width:100%!important;
-    max-width:none!important;
-    min-height:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top))!important;
-    height:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top))!important;
-    margin:0!important;
-    padding:env(safe-area-inset-top) 14px 0!important;
-    overflow:hidden!important;
-    transform:translateZ(0)!important;
-    z-index:1200!important;
-    contain:paint!important;
-  }
-
-  .main-content{
-    padding-top:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top) + 14px)!important;
-  }
-
-  #appHeader #sidebarMenuToggle,
-  #appHeader #kyumScrollControl.mobile-floating-logo,
-  #appHeader #themeToggleButton,
-  #appHeader #themeToggleButton.is-visible{
-    top:calc(env(safe-area-inset-top) + 24px)!important;
-    width:48px!important;
-    height:48px!important;
-    min-width:48px!important;
-    border-radius:16px!important;
-  }
-
-  #appHeader #sidebarMenuToggle{
-    left:max(14px,env(safe-area-inset-left))!important;
-    right:auto!important;
-  }
-
-  #appHeader #kyumScrollControl.mobile-floating-logo{
-    left:calc(max(14px,env(safe-area-inset-left)) + 58px)!important;
-    right:auto!important;
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-  }
-
-  #appHeader #kyumScrollControl.mobile-floating-logo img{
-    width:36px!important;
-    height:36px!important;
-  }
-
-  #appHeader #themeToggleButton,
-  #appHeader #themeToggleButton.is-visible{
-    right:max(14px,env(safe-area-inset-right))!important;
-    left:auto!important;
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-  }
-
-  #appHeader .mobile-app-brand{
-    top:calc(env(safe-area-inset-top) + 24px)!important;
-    left:50%!important;
-    right:auto!important;
-    height:48px!important;
-    transform:translateX(-50%)!important;
-    max-width:34vw!important;
-  }
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-}
-
-/* Phase M8.3.5 — Mobile Scroll & Navigation Performance Recovery */
-@media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
-  #appHeader.topbar,
-  #appHeader.topbar.is-scrolled,
-  #appHeader.topbar.mobile-header-stable{
-    contain:layout style!important;
-    backface-visibility:hidden!important;
-    -webkit-backface-visibility:hidden!important;
-    will-change:auto!important;
-  }
-
-  
-
-  
-
-  
-
-  
-
-  
-
   
 }
 
@@ -2472,227 +1954,14 @@ html.is-offline body::before {
   }
 }
 
-/* Phase M9.3 — Mobile Header Position, Compact Bottom Bar & Logout Action */
+/* Phase M9.3.1 — Mobile interaction utilities (navigation visuals moved to canonical shell) */
 @media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
-  :root{
-    --kyum-stable-header-height:90px;
-    --mobile-nav-height:68px;
-    --mobile-nav-compact-height:50px;
-  }
-
-  #appHeader.topbar,
-  #appHeader.topbar.is-scrolled,
-  #appHeader.topbar.mobile-header-stable{
-    min-height:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top))!important;
-    height:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top))!important;
-  }
-
-  .main-content{
-    padding-top:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top) + 10px)!important;
-    padding-bottom:calc(var(--mobile-nav-height) + var(--mobile-safe-bottom) + 20px)!important;
-  }
-
-  #appHeader #sidebarMenuToggle,
-  #appHeader #kyumScrollControl.mobile-floating-logo,
-  #appHeader #themeToggleButton,
-  #appHeader #themeToggleButton.is-visible{
-    top:calc(env(safe-area-inset-top) + 18px)!important;
-  }
-
-  #appHeader .mobile-app-brand{
-    top:calc(env(safe-area-inset-top) + 18px)!important;
-  }
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  html.mobile-nav-is-compact .main-content{
-    padding-bottom:calc(var(--mobile-nav-compact-height) + var(--mobile-safe-bottom) + 18px)!important;
-  }
-
-  #mainSidebar.sidebar{
-    display:flex!important;
-    flex-direction:column!important;
-  }
-
-  #mainSidebar .sidebar-nav{
-    flex:1 1 auto!important;
-    min-height:0!important;
-    overflow-y:auto!important;
-    padding-bottom:12px!important;
-  }
-
-  #mainSidebar .mobile-sidebar-footer{
-    display:block!important;
-    flex:0 0 auto!important;
-    padding:10px 0 calc(10px + var(--mobile-safe-bottom))!important;
-    border-top:1px solid rgba(148,163,184,.18)!important;
-    background:inherit!important;
-  }
-
-  #mainSidebar .mobile-sidebar-logout{
-    width:100%!important;
-    min-height:48px!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    gap:9px!important;
-    border:1px solid rgba(239,68,68,.26)!important;
-    border-radius:15px!important;
-    color:#fecaca!important;
-    background:rgba(239,68,68,.10)!important;
-    font:inherit!important;
-    font-weight:700!important;
-    cursor:pointer!important;
-    -webkit-tap-highlight-color:transparent!important;
-  }
-
-  #mainSidebar .mobile-sidebar-logout svg{
-    width:21px!important;
-    height:21px!important;
-    flex:0 0 21px!important;
-  }
-
-  #mainSidebar .mobile-sidebar-logout:active{
-    transform:scale(.985)!important;
-  }
-}
-
-@media (min-width: 768px){
-  .mobile-sidebar-footer{display:none!important}
-}
-
-/* Phase M9.3.1 — Mobile Header Offset, Follow-ups Spacing & Zoom Lock */
-@media (max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px){
-  :root{
-    --kyum-stable-header-height:84px;
-  }
-
-  html,
-  body,
-  #appView{
-    touch-action:manipulation;
-    -webkit-text-size-adjust:100%;
-    text-size-adjust:100%;
-  }
-
-  input,
-  select,
-  textarea{
-    font-size:16px!important;
-  }
-
-  #appHeader.topbar,
-  #appHeader.topbar.is-scrolled,
-  #appHeader.topbar.mobile-header-stable{
-    min-height:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top))!important;
-    height:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top))!important;
-  }
-
-  #appHeader #sidebarMenuToggle,
-  #appHeader #kyumScrollControl.mobile-floating-logo,
-  #appHeader #translationCenterHeaderBtn,
-  #appHeader #themeToggleButton,
-  #appHeader #themeToggleButton.is-visible,
-  #appHeader .mobile-app-brand{
-    top:calc(env(safe-area-inset-top) + 12px)!important;
-  }
-
-  #appHeader #translationCenterHeaderBtn{
-    display:grid!important;
-    visibility:visible!important;
-    opacity:1!important;
-    pointer-events:auto!important;
-    position:absolute!important;
-    right:calc(max(12px,env(safe-area-inset-right)) + 52px)!important;
-    left:auto!important;
-    width:44px!important;
-    height:44px!important;
-    min-width:44px!important;
-    min-height:44px!important;
-    place-items:center!important;
-    margin:0!important;
-    padding:0!important;
-    border-radius:14px!important;
-    border:1px solid rgba(47,131,255,.28)!important;
-    background:rgba(255,255,255,.78)!important;
-    color:#0f4f9e!important;
-    box-shadow:0 8px 22px rgba(20,70,130,.12)!important;
-    -webkit-backdrop-filter:blur(14px) saturate(145%)!important;
-    backdrop-filter:blur(14px) saturate(145%)!important;
-    z-index:4!important;
-  }
-
-  #appHeader #translationCenterHeaderBtn svg{
-    width:22px!important;
-    height:22px!important;
-    fill:none!important;
-    stroke:currentColor!important;
-    stroke-width:1.8!important;
-    stroke-linecap:round!important;
-    stroke-linejoin:round!important;
-  }
-
-  html[data-theme="dark"] #appHeader #translationCenterHeaderBtn,
-  body.dark-mode #appHeader #translationCenterHeaderBtn{
-    border-color:rgba(100,167,255,.32)!important;
-    background:rgba(10,28,50,.82)!important;
-    color:#8fc1ff!important;
-    box-shadow:0 8px 22px rgba(0,0,0,.26)!important;
-  }
-
-  .main-content{
-    padding-top:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top) + 10px)!important;
-  }
-
-  /* Keep the opened drawer completely below the fixed header. */
-  #mainSidebar.sidebar{
-    top:calc(var(--kyum-stable-header-height) + env(safe-area-inset-top) + 6px)!important;
-    height:calc(100dvh - var(--kyum-stable-header-height) - env(safe-area-inset-top) - 6px)!important;
-    max-height:calc(100dvh - var(--kyum-stable-header-height) - env(safe-area-inset-top) - 6px)!important;
-    border-radius:22px 0 0 0!important;
-  }
-
-  /* Separate the dashboard attention title from its action button. */
-  #dashboardView .dashboard-attention-panel .panel-header{
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr) auto!important;
-    align-items:center!important;
-    column-gap:12px!important;
-    row-gap:8px!important;
-    margin-bottom:14px!important;
-  }
-
-  #dashboardView .dashboard-attention-panel .panel-header h3{
-    min-width:0!important;
-    margin:0!important;
-    line-height:1.45!important;
-  }
-
-  #dashboardView .dashboard-attention-panel .panel-header .text-btn{
-    position:static!important;
-    margin:0!important;
-    white-space:nowrap!important;
-    align-self:center!important;
-  }
-
-  #dashboardView .dashboard-attention-panel #attentionFollowups{
-    clear:both!important;
-    padding-top:2px!important;
-  }
+  html,body,#appView{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  input,select,textarea{font-size:16px!important}
+  #dashboardView .dashboard-attention-panel .panel-header{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;column-gap:12px!important;row-gap:8px!important;margin-bottom:14px!important}
+  #dashboardView .dashboard-attention-panel .panel-header h3{min-width:0!important;margin:0!important;line-height:1.45!important}
+  #dashboardView .dashboard-attention-panel .panel-header .text-btn{position:static!important;margin:0!important;white-space:nowrap!important;align-self:center!important}
+  #dashboardView .dashboard-attention-panel #attentionFollowups{clear:both!important;padding-top:2px!important}
 }
 
 /* Phase M9.3.2 — Mobile Quotes Layout, Menu Branding & Landscape Persistence */
@@ -2788,32 +2057,6 @@ html.is-offline body::before {
   }
 
   /* Mobile drawer branding: replace the unused launcher rectangle with the KYUM desktop logo. */
-  #mainSidebar .sidebar-launcher-host {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-height: 112px !important;
-    height: 112px !important;
-    margin: 0 0 14px !important;
-    padding: 10px 14px !important;
-    overflow: hidden !important;
-    pointer-events: none !important;
-    border: 1px solid rgba(148,163,184,.18) !important;
-    border-radius: 18px !important;
-    background: rgba(255,255,255,.045) !important;
-  }
-
-  #mainSidebar .sidebar-launcher-host .sidebar-menu-launcher {
-    display: none !important;
-  }
-
-  #mainSidebar .mobile-drawer-brand-logo {
-    display: block !important;
-    width: min(100%, 230px) !important;
-    max-height: 92px !important;
-    object-fit: contain !important;
-    filter: drop-shadow(0 12px 24px rgba(0,0,0,.22)) !important;
-  }
 /* Keep the mobile shell stretched across the full landscape viewport. */
   .app-shell,
   .main-content,
@@ -2831,33 +2074,15 @@ html.is-offline body::before {
     --mobile-nav-compact-height: 44px;
   }
 
-  #appHeader.topbar,
-  #appHeader.topbar.is-scrolled,
-  #appHeader.topbar.mobile-header-stable {
-    min-height: calc(var(--kyum-stable-header-height) + env(safe-area-inset-top)) !important;
-    height: calc(var(--kyum-stable-header-height) + env(safe-area-inset-top)) !important;
-  }
+  
 
   .main-content {
     padding-top: calc(var(--kyum-stable-header-height) + env(safe-area-inset-top) + 8px) !important;
     padding-inline: max(14px, env(safe-area-inset-left)) max(14px, env(safe-area-inset-right)) !important;
   }
 
-  #mainSidebar.sidebar {
-    top: calc(var(--kyum-stable-header-height) + env(safe-area-inset-top) + 4px) !important;
-    height: calc(100dvh - var(--kyum-stable-header-height) - env(safe-area-inset-top) - 4px) !important;
-    max-height: calc(100dvh - var(--kyum-stable-header-height) - env(safe-area-inset-top) - 4px) !important;
-  }
+  
 
-  #mainSidebar .sidebar-launcher-host {
-    min-height: 82px !important;
-    height: 82px !important;
-    padding-block: 6px !important;
-  }
-
-  #mainSidebar .mobile-drawer-brand-logo {
-    max-height: 68px !important;
-  }
 
   #quotationsView .mobile-quotations-filter-sheet {
     width: min(calc(100vw - 48px), 620px) !important;
@@ -2868,9 +2093,7 @@ html.is-offline body::before {
 /* Phase M9.3.2 — restore mobile-only controls in touch landscape after desktop guards */
 @media (orientation: landscape) and (pointer: coarse) and (max-device-width: 1024px),
        (orientation: landscape) and (hover: none) and (max-device-width: 1024px) {
-  #mainSidebar .mobile-sidebar-footer {
-    display: block !important;
-  }
+  
 
   .mobile-admin-toolbar {
     display: flex !important;
@@ -2932,22 +2155,6 @@ html.is-offline body::before {
     gap: 10px !important;
   }
 
-  #mainSidebar .sidebar-launcher-host {
-    padding: 0 !important;
-    min-height: 126px !important;
-    height: 126px !important;
-  }
-
-  #mainSidebar .mobile-drawer-brand-logo {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: none !important;
-    max-height: none !important;
-    object-fit: fill !important;
-    object-position: center !important;
-    border-radius: inherit !important;
-    filter: none !important;
-  }
 
   #quotationsView .quotation-value,
   #quotationsView #quotationStats strong,
@@ -2960,51 +2167,10 @@ html.is-offline body::before {
 
 /* Phase M9.4.1 — Desktop drawer logo sizing only */
 @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
-  #mainSidebar .sidebar-launcher-host {
-    min-height: 84px !important;
-    height: 84px !important;
-    padding: 8px 12px !important;
-    overflow: hidden !important;
-  }
-
-  #mainSidebar .mobile-drawer-brand-logo {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 210px !important;
-    max-height: 66px !important;
-    margin: 0 auto !important;
-    object-fit: contain !important;
-    object-position: center !important;
-    border-radius: 10px !important;
-    filter: none !important;
-    transform: none !important;
-  }
 }
 
 /* Phase M9.4.2 — Desktop drawer logo proportional fit refinement */
 @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
-  #mainSidebar .sidebar-launcher-host {
-    min-height: 112px !important;
-    height: 112px !important;
-    padding: 10px 12px !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-  }
-
-  #mainSidebar .mobile-drawer-brand-logo {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    max-width: 100% !important;
-    max-height: 92px !important;
-    margin: 0 auto !important;
-    object-fit: contain !important;
-    object-position: center !important;
-    border-radius: 12px !important;
-    filter: none !important;
-    transform: none !important;
-  }
 }
 
 
@@ -3022,22 +2188,9 @@ html.is-offline body::before {
 
   
 
-  html.kyum-android #appHeader.topbar,
-  html.kyum-android #appHeader.topbar.is-scrolled,
-  html.kyum-android #appHeader.topbar.mobile-header-stable {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    background: var(--surface) !important;
-    box-shadow: 0 5px 16px rgba(15,23,42,.10) !important;
-    transition: none !important;
-  }
+  
 
-  html.kyum-android .sidebar-backdrop,
-  html.kyum-android dialog::backdrop,
-  html.kyum-android #customerDetailsDialog::backdrop {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
+  
 
   
 }
@@ -3080,10 +2233,7 @@ html.is-offline body::before {
     overflow-x: auto !important;
   }
 
-  html.kyum-android #mainSidebar .nav-group[hidden],
-  html.kyum-android #mainSidebar .nav-group.hidden {
-    display: none !important;
-  }
+  
 }
 
 
@@ -3499,7 +2649,7 @@ html.is-offline body::before {
   #customersView .customers-desktop-table{display:none!important}
   #customersView .customers-mobile-cards{display:grid!important;gap:10px;width:100%;margin-top:10px}
   #customersView .customer-mobile-card{position:relative;display:grid;gap:0;width:100%;min-width:0;overflow:hidden;border:1px solid var(--pilot-line);border-radius:19px;background:linear-gradient(150deg,var(--pilot-card),var(--pilot-card-2));box-shadow:var(--pilot-shadow)}
-  #customersView .customer-mobile-card:nth-child(3n+1){border-color:color-mix(in srgb,var(--pilot-gold) 58%,var(--pilot-line));box-shadow:var(--pilot-gold-shadow)}
+  #customersView .customer-mobile-card:nth-child(3n/**/+1){border-color:color-mix(in srgb,var(--pilot-gold) 58%,var(--pilot-line));box-shadow:var(--pilot-gold-shadow)}
   #customersView .customer-mobile-card::before{content:"";position:absolute;right:0;top:12px;bottom:12px;width:3px;border-radius:999px;background:linear-gradient(var(--pilot-blue),var(--pilot-gold))}
   #customersView .customer-mobile-card::after{content:"";position:absolute;left:-28px;bottom:-36px;width:78px;height:78px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--pilot-blue) 12%,transparent),transparent 70%);pointer-events:none}
   #customersView .customer-mobile-card-head{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;gap:10px;padding:12px 13px 10px;border-bottom:1px solid var(--pilot-divider)}
@@ -3704,23 +2854,13 @@ html.is-offline body::before {
     box-shadow:0 9px 20px rgba(8,70,146,.09),inset 0 1px 0 rgba(255,255,255,.30)!important;
   }
 
-  dialog{
-    border-color:var(--pilot-line)!important;background:var(--pilot-glass)!important;color:var(--text)!important;
-    -webkit-backdrop-filter:var(--pilot-blur);backdrop-filter:var(--pilot-blur);
-    box-shadow:0 28px 72px rgba(2,13,30,.34),0 0 24px rgba(22,136,255,.16),inset 0 1px 0 rgba(255,255,255,.20)!important;
-  }
-  dialog::backdrop{background:rgba(2,13,30,.48);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
-  dialog :is(input,select,textarea){
-    border-color:color-mix(in srgb,var(--pilot-line) 72%,var(--border))!important;
-    background:linear-gradient(145deg,color-mix(in srgb,var(--pilot-card) 82%,transparent),color-mix(in srgb,var(--pilot-blue) 6%,var(--pilot-card-2)))!important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 5px 12px rgba(9,70,145,.05)!important;
-  }
-  dialog :is(.primary-btn,.secondary-btn,.text-btn,.compact-btn,.icon-btn,.delete-btn,button[class*="btn"]){
-    border-radius:14px!important;font-weight:900!important;-webkit-backdrop-filter:blur(10px) saturate(140%);backdrop-filter:blur(10px) saturate(140%);
-  }
-  dialog .primary-btn{border:1px solid #45a7ff!important;background:linear-gradient(145deg,#198cff,#075fdc 68%,#064fbd)!important;color:#fff!important;box-shadow:0 10px 20px rgba(22,136,255,.25),inset 0 1px 0 rgba(255,255,255,.32)!important}
-  dialog :is(.secondary-btn,.text-btn,.compact-btn,.icon-btn,button[class*="btn"]):not(.primary-btn):not(.delete-btn){border-color:color-mix(in srgb,var(--pilot-line) 76%,var(--border))!important;background:var(--pilot-glass-soft)!important;color:var(--text)!important;box-shadow:0 8px 16px rgba(8,74,154,.10),inset 0 1px 0 rgba(255,255,255,.40)!important}
-  dialog .delete-btn{border-color:rgba(239,68,68,.38)!important;background:linear-gradient(145deg,color-mix(in srgb,#ef4444 9%,var(--pilot-card)),color-mix(in srgb,#ef4444 3%,var(--pilot-card-2)))!important}
+  
+  
+  
+  
+  
+  
+  
 
   /* P5.11.21 — report/table/chart recovery: readable mobile representations, never compressed desktop grids. */
   #dailyPerformanceReportView .daily-performance-table-panel .table-wrap{overflow:visible!important}
@@ -3792,10 +2932,10 @@ html.is-offline body::before {
   #dashboardView :is(.analytics-grid>.panel,.analytics-grid>.full-span-panel)::before,#customersView .customer-mobile-card::before,#followupsView :is(.mobile-followups-toolbar,tbody tr)::before{filter:drop-shadow(0 0 5px rgba(22,136,255,.30))}
 
   #dashboardView .dashboard-stats .stat-card,#followupsView .followup-stat{background:var(--pilot-glass-blue)!important}
-  #dashboardView .dashboard-stats .stat-card:nth-child(4n),#dashboardView .dashboard-stats .stat-card:nth-child(4n+1),#followupsView .followup-stat:nth-child(3n){background:var(--pilot-glass-gold)!important;border-color:var(--pilot-gold-line)!important;box-shadow:var(--pilot-gold-shadow)!important}
+  #dashboardView .dashboard-stats .stat-card:nth-child(4n),#dashboardView .dashboard-stats .stat-card:nth-child(4n/**/+1),#followupsView .followup-stat:nth-child(3n){background:var(--pilot-glass-gold)!important;border-color:var(--pilot-gold-line)!important;box-shadow:var(--pilot-gold-shadow)!important}
   #dashboardView .dashboard-stats .stat-card .petatoe-kpi-icon,#followupsView .petatoe-followup-kpi-icon,#customersView .customer-mobile-avatar{background:linear-gradient(145deg,rgba(255,255,255,.44),color-mix(in srgb,var(--pilot-blue) 15%,var(--pilot-card-2)))!important;border-color:color-mix(in srgb,var(--pilot-blue) 78%,transparent)!important;box-shadow:var(--pilot-icon-shadow)!important;text-shadow:0 1px 0 rgba(255,255,255,.16)}
   html[data-theme="dark"] #dashboardView .dashboard-stats .stat-card .petatoe-kpi-icon,html[data-theme="dark"] #followupsView .petatoe-followup-kpi-icon,html[data-theme="dark"] #customersView .customer-mobile-avatar{background:linear-gradient(145deg,rgba(24,102,177,.38),rgba(5,27,52,.70))!important}
-  #dashboardView .dashboard-stats .stat-card:nth-child(4n) .petatoe-kpi-icon,#dashboardView .dashboard-stats .stat-card:nth-child(4n+1) .petatoe-kpi-icon,#followupsView .followup-stat:nth-child(3n) .petatoe-followup-kpi-icon{background:linear-gradient(145deg,rgba(255,225,147,.35),color-mix(in srgb,var(--pilot-gold) 13%,var(--pilot-card-2)))!important;border-color:var(--pilot-gold-line)!important;color:var(--pilot-gold)!important;box-shadow:0 8px 16px rgba(166,108,6,.14),inset 0 1px 0 rgba(255,244,205,.45)!important}
+  #dashboardView .dashboard-stats .stat-card:nth-child(4n) .petatoe-kpi-icon,#dashboardView .dashboard-stats .stat-card:nth-child(4n/**/+1) .petatoe-kpi-icon,#followupsView .followup-stat:nth-child(3n) .petatoe-followup-kpi-icon{background:linear-gradient(145deg,rgba(255,225,147,.35),color-mix(in srgb,var(--pilot-gold) 13%,var(--pilot-card-2)))!important;border-color:var(--pilot-gold-line)!important;color:var(--pilot-gold)!important;box-shadow:0 8px 16px rgba(166,108,6,.14),inset 0 1px 0 rgba(255,244,205,.45)!important}
 
   #dashboardView :is(.performance-card,.performance-metric,.simple-item,.attention-item),#followupsView .empty-state,#customersView .customer-mobile-empty{background:var(--pilot-glass-soft)!important;box-shadow:0 8px 18px rgba(8,67,139,.08),inset 0 1px 0 rgba(255,255,255,.35)!important}
 
@@ -3813,7 +2953,7 @@ html.is-offline body::before {
   #dashboardView :is(.primary-btn,.secondary-btn,.text-btn,.mobile-dashboard-action)::after,#customersView :is(.primary-btn,.secondary-btn,.customer-main-actions button,.customer-mobile-card-actions button,.customer-mobile-card-actions a,.table-pagination button)::after,#followupsView :is(.primary-btn,.secondary-btn,.text-btn,.report-export-actions button,.mobile-followups-quicknav button,.table-pagination button)::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(118deg,rgba(255,255,255,.16),transparent 28%,transparent 68%,rgba(233,173,55,.08));opacity:.72}
 
   #customersView .customer-mobile-card{background:var(--pilot-glass)!important;box-shadow:var(--pilot-shadow)!important}
-  #customersView .customer-mobile-card:nth-child(3n+1){border-color:var(--pilot-gold-line)!important;box-shadow:var(--pilot-gold-shadow)!important}
+  #customersView .customer-mobile-card:nth-child(3n/**/+1){border-color:var(--pilot-gold-line)!important;box-shadow:var(--pilot-gold-shadow)!important}
   #customersView .customer-mobile-card::after{background:radial-gradient(circle,color-mix(in srgb,var(--pilot-blue) 18%,transparent),transparent 70%)!important;opacity:.75}
   #customersView .customer-mobile-card-head,#customersView .customer-mobile-card-actions,#customersView .customer-mobile-details>div{border-color:var(--pilot-divider)!important}
   #customersView .customer-mobile-card-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}

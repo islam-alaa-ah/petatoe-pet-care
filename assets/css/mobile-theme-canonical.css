@@ -68,7 +68,7 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   option{background:var(--kyum-mobile-field);color:var(--kyum-mobile-text)}
 
   /* Canonical dialog surface and top-layer placement. */
-  dialog,.dialog,.modal,.modal-card,.dialog-card{
+  dialog,.dialog,.modal,.modal-card,.dialog-card,dialog>.dialog-shell,.dialog>.dialog-shell,.modal>.dialog-shell{
     color:var(--kyum-mobile-text)!important;
     background:var(--kyum-mobile-surface)!important;
     border-color:var(--kyum-mobile-border)!important;
@@ -76,8 +76,9 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
     backdrop-filter:none!important;
     -webkit-backdrop-filter:none!important;
   }
+  dialog>.dialog-shell{background:var(--petatoe-card-gradient)!important;color:var(--kyum-mobile-text)!important;border-color:var(--petatoe-content-line-strong)!important}
   dialog::backdrop{background:var(--kyum-mobile-overlay)!important;backdrop-filter:blur(2px)}
-  dialog header,dialog footer,.dialog-header,.dialog-footer,.modal-header,.modal-footer{
+  dialog header,dialog footer,.dialog-header,.dialog-footer,.modal-header,.modal-footer,dialog>.dialog-shell>.dialog-header,dialog>.dialog-shell>.dialog-actions{
     background:var(--kyum-mobile-surface)!important;
     color:var(--kyum-mobile-text)!important;
     border-color:var(--kyum-mobile-border)!important;
@@ -359,129 +360,6 @@ html[data-theme="light"],html[data-theme="light"] body{color-scheme:light}
   .view-section :where(p,small,.muted,.helper-text,.installation-card-muted){color:var(--kyum-mobile-muted)!important}
   .execution-primary-action .execution-arrow{color:var(--kyum-mobile-navy)!important;-webkit-text-fill-color:var(--kyum-mobile-navy)!important}
 
-}
-
-/* KYUM Phase M14.9.7.1 — Mobile quotation dialog viewport and safe footer */
-@media (max-width: 767px),
-       (pointer: coarse) and (max-device-width: 1024px),
-       (hover: none) and (max-device-width: 1024px) {
-  #quotationDialog {
-    box-sizing: border-box;
-    width: min(100% - 12px, 620px);
-    height: calc(100dvh - 12px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-    max-height: calc(100dvh - 12px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-    margin: auto;
-    padding: 0;
-    overflow: hidden !important;
-    border-radius: 22px;
-    overscroll-behavior: contain;
-  }
-
-  @supports not (height: 100dvh) {
-    #quotationDialog {
-      height: calc(100vh - 12px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-      max-height: calc(100vh - 12px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-    }
-  }
-
-  #quotationDialog > #quotationForm {
-    box-sizing: border-box;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    padding: 0;
-    overflow: hidden !important;
-  }
-
-  #quotationDialog .dialog-header {
-    position: relative;
-    z-index: 3;
-    margin: 0;
-    padding: 18px 18px 14px;
-    background: var(--surface, #ffffff);
-  }
-
-  #quotationDialog .form-grid {
-    box-sizing: border-box;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-content: start;
-    gap: 16px;
-    min-width: 0;
-    min-height: 0;
-    margin: 0;
-    padding: 18px;
-    padding-bottom: 28px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-gutter: stable;
-  }
-
-  #quotationDialog .form-grid > *,
-  #quotationDialog .form-grid label,
-  #quotationDialog .quotation-customer-field,
-  #quotationDialog .searchable-select,
-  #quotationDialog input,
-  #quotationDialog select,
-  #quotationDialog textarea {
-    box-sizing: border-box;
-    min-width: 0;
-    max-width: 100%;
-    width: 100%;
-  }
-
-  #quotationDialog input[type="date"],
-  #quotationDialog input[type="number"] {
-    inline-size: 100%;
-  }
-
-  #quotationDialog .dialog-actions {
-    position: relative !important;
-    z-index: 4;
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr);
-    gap: 10px;
-    margin: 0;
-    padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
-    border-top: 1px solid var(--border, rgba(148, 163, 184, 0.28));
-    background: var(--surface, #ffffff);
-    box-shadow: 0 -12px 30px rgba(15, 23, 42, 0.10);
-  }
-
-  #quotationDialog .dialog-actions button {
-    min-width: 0;
-    width: 100%;
-    min-height: 50px;
-    margin: 0;
-  }
-
-  html[data-theme="dark"] #quotationDialog .dialog-header,
-  html[data-theme="dark"] #quotationDialog .dialog-actions,
-  body.dark-mode #quotationDialog .dialog-header,
-  body.dark-mode #quotationDialog .dialog-actions {
-    background: var(--dark-surface, #0f1f35);
-    border-color: var(--dark-control-border, rgba(148, 163, 184, 0.24));
-  }
-}
-
-@media (max-width: 380px) {
-  #quotationDialog {
-    width: calc(100% - 8px);
-    border-radius: 18px;
-  }
-
-  #quotationDialog .dialog-header,
-  #quotationDialog .form-grid {
-    padding-inline: 14px;
-  }
-
-  #quotationDialog .dialog-actions {
-    padding-inline: 14px;
-  }
 }
 
 /* Phase M14.9.7.2 — Mobile quotations filter/KPI stacking hotfix */

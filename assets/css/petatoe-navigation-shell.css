@@ -424,6 +424,8 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   #appHeader .petatoe-menu-icon{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;max-width:20px!important;max-height:20px!important}
   #appHeader .topbar-user-actions{gap:4px!important}
   #appHeader .header-user-menu{display:none!important}
+  #appHeader #translationCenterHeaderBtn{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;max-width:40px!important;max-height:40px!important;padding:0!important;place-items:center!important;border:1px solid rgba(58,133,230,.26)!important;border-radius:12px!important;background:linear-gradient(145deg,#071a32,#041224)!important;color:#71b8ff!important;box-shadow:0 8px 20px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.025)!important}
+  #appHeader #translationCenterHeaderBtn svg{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important;fill:none!important;stroke:currentColor!important}
   #appHeader .notification-bell-btn,#appHeader .theme-toggle-button{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;max-width:40px!important;max-height:40px!important;flex-basis:40px!important;border-radius:12px!important}
   #appHeader .notification-bell-btn > svg,#appHeader .theme-toggle-button .theme-icon{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;max-width:18px!important;max-height:18px!important}
 }

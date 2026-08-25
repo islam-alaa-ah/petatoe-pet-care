@@ -78,9 +78,8 @@ html[data-theme="dark"] .installation-services-edit-dialog .installation-geo-sel
 html[data-theme="dark"] .installation-services-edit-dialog .installation-geo-select .geo-searchable-option:hover,html[data-theme="dark"] .installation-services-edit-dialog .installation-geo-select .geo-searchable-option:focus,html[data-theme="dark"] .installation-services-edit-dialog .installation-geo-select .geo-searchable-option.is-selected{background:rgba(59,130,246,.22);color:#bfdbfe}
 @media(max-width:520px){.installation-services-edit-dialog .installation-geo-select .geo-searchable-options{max-height:min(32vh,230px)}}
 
-
-/* P5.11.6.4 — appointment dialog theme contract (non-desktop only; desktop uses global dialog-shell). */
-@media(max-width:1023px){
+/* P5.11.6.4 — appointment dialog theme contract (tablet compatibility only; desktop uses global dialog-shell). */
+@media(min-width:768px) and (max-width:1023px){
 
 .installation-request-view-dialog .dialog-shell,
 .installation-services-edit-dialog .dialog-shell{

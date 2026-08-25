@@ -1,14 +1,13 @@
 {
-  "version": "18.56.15",
-  "build": 185615,
+  "version": "18.56.16",
+  "build": 185616,
   "forceUpdate": true,
   "releaseDate": "2026-08-26",
-  "title": "Payroll & SEA VIBE Mobile Dark Mode Certification R16",
+  "title": "Mobile Full Visual Ownership & Dialog Certification R18",
   "notes": [
-    "توسيع المالك البصري للموبايل في الرواتب والعمولات ليغطي جميع مقاسات الهاتف والوضع الأفقي بدل الاقتصار على الشاشات الأصغر من 520px.",
-    "تحديث كارت الشهر في إدارة الرواتب ليتبع نفس هوية PETATOE المعتمدة بصريًا مع السطح الداكن والحواف والـglow وترتيب أزرار مناسب للموبايل.",
-    "توحيد أسطح بطاقات وجداول الرواتب وكشف العمولة وSEA VIBE في الموبايل مع متغيرات الهوية الدلالية للـLight/Dark بدون طبقات CSS إضافية.",
-    "الحفاظ على Desktop/Tablet وBusiness Logic والحسابات والصلاحيات دون تغيير."
+    "تنظيف طبقات التنسيق القديمة في نسخة الموبايل ونقل ملكية الهيدر والقائمة والتنقل السفلي إلى المالك البصري المعتمد فقط.",
+    "توحيد الهوية البصرية لكل نوافذ الإضافة والتعديل والتأكيد والاعتماد على الموبايل من خلال mobile-theme-canonical مع الحفاظ على تخطيطات كل نافذة.",
+    "إلغاء عقود Theme المتكررة الخاصة بنوافذ المواعيد على الموبايل مع إبقائها كتوافق Tablet فقط، والحفاظ على Desktop/Tablet وBusiness Logic دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-15-payroll-seavibe-mobile-dark-certification-r16-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-16-mobile-full-visual-dialog-certification-r18-p5-13-8-72"
 }

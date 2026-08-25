@@ -154,8 +154,8 @@
   }
 }
 
-/* Phase M14.9.2.3 — completion modal theme surface contract (non-desktop only; desktop is owned by global dialog-shell). */
-@media(max-width:1023px){
+/* Phase M14.9.2.3 — completion modal theme surface contract (tablet compatibility only; desktop is owned by global dialog-shell; mobile by mobile-theme-canonical). */
+@media(min-width:768px) and (max-width:1023px){
 
 .installation-completion-dialog .dialog-shell,
 .installation-completion-dialog .installation-completion-body,
@@ -309,6 +309,7 @@ html[data-theme="dark"] .installation-completion-dialog .installation-invoice-no
 
 
 }
+
 
 /* Phase M14.9.4 — mobile completion queue certification */
 @media (max-width: 767px){

@@ -13,8 +13,8 @@
 .installation-assignment-dialog .dialog-actions{display:flex;justify-content:flex-start;gap:10px}
 @media(max-width:767px){.installation-assignment-dialog .dialog-shell{border-radius:18px}.installation-assignment-dialog .dialog-header{padding-bottom:12px}.installation-assignment-grid input,.installation-assignment-grid select{min-height:48px}}
 
-/* Phase M14.8.7.1 — assignment modal legacy theme contract (non-desktop only; desktop uses global dialog-shell). */
-@media(max-width:1023px){
+/* Phase M14.8.7.1 — assignment modal legacy theme contract (tablet compatibility only; desktop uses global dialog-shell). */
+@media(min-width:768px) and (max-width:1023px){
 
 html[data-theme="light"] #installationAssignmentDialog.installation-assignment-dialog {
   color-scheme: light;
@@ -92,6 +92,7 @@ html[data-theme="light"] #installationAssignmentDialog .data-status:not(.hidden)
 
 
 }
+
 
 /* Phase M14.9.0 — Calendar team summary and dynamic daily details */
 .installation-calendar-day{appearance:none;font:inherit;color:inherit;text-align:initial;cursor:default;display:flex;flex-direction:column;gap:8px;width:100%}
