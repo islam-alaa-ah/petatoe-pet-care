@@ -716,7 +716,9 @@
     if(filters.dateFrom)q=q.gte('scheduled_date',filters.dateFrom);
     if(filters.dateTo)q=q.lte('scheduled_date',filters.dateTo);
     if(filters.technicianId)q=q.eq('technician_id',filters.technicianId);
-    if(filters.teamId)q=q.eq('installation_team_id',filters.teamId);
+    // Team filtering is applied after resolving the canonical execution-team assignment.
+    // Filtering installation_requests.installation_team_id here would incorrectly drop requests
+    // whose parent team is stale/empty while their execution visit is assigned to a real team.
     if(filters.representativeId)q=q.eq('representative_id',filters.representativeId);
     if(filters.status)q=q.eq('status',filters.status);
     const [{data:rows,error:re},{data:revisits,error:ve},{data:techs,error:te},{data:teams,error:tme},{data:reps,error:rpe},{data:invoices,error:ie},{data:services,error:se}]=await Promise.all([
@@ -733,6 +735,40 @@
     if(te||tme||rpe)throw new Error('تعذر تحميل قوائم تصفية تقارير المواعيد.');
     if(ie)throw new Error('تعذر تحميل القيم المالية للفواتير: '+ie.message);
     if(se)throw new Error('تعذر تحميل تكاليف خدمات المواعيد: '+se.message);
+
+    // P5.13.8.73: reports must attribute a request to the team that actually owns its execution visit.
+    // Parent installation_requests.installation_team_id can legitimately be empty/stale after visit-based
+    // scheduling. Resolve the execution visit first, then fall back to the parent request assignment.
+    const operationalVisitStatuses=new Set(['مجدولة','قيد التنفيذ','بانتظار التأكيد','مؤكدة']);
+    const visitTeamByRequest=new Map();
+    const requestIds=(rows||[]).map(r=>r.id).filter(Boolean);
+    const visitRows=[];
+    for(let i=0;i<requestIds.length;i+=200){
+      const chunk=requestIds.slice(i,i+200);
+      const {data:page,error:visitTeamError}=await db().from('installation_execution_visits')
+        .select('id,installation_request_id,visit_no,status,scheduled_date,completed_at,installation_team_id,team:installation_teams(id,name)')
+        .in('installation_request_id',chunk);
+      if(visitTeamError&&visitTeamError.code!=='42P01')throw new Error('تعذر تحميل إسناد فرق التنفيذ للتقرير: '+visitTeamError.message);
+      if(!visitTeamError)visitRows.push(...(page||[]));
+    }
+    const visitStatusRank=status=>status==='مؤكدة'?4:status==='بانتظار التأكيد'?3:status==='قيد التنفيذ'?2:status==='مجدولة'?1:0;
+    const visitCandidates=new Map();
+    for(const visit of visitRows){
+      if(!operationalVisitStatuses.has(String(visit.status||'').trim())||!visit.installation_team_id)continue;
+      const key=String(visit.installation_request_id||'');
+      const list=visitCandidates.get(key)||[];list.push(visit);visitCandidates.set(key,list);
+    }
+    for(const [requestId,list] of visitCandidates){
+      list.sort((a,b)=>{
+        const completedDiff=Number(Boolean(b.completed_at))-Number(Boolean(a.completed_at));if(completedDiff)return completedDiff;
+        const statusDiff=visitStatusRank(String(b.status||''))-visitStatusRank(String(a.status||''));if(statusDiff)return statusDiff;
+        const visitDiff=Number(b.visit_no||0)-Number(a.visit_no||0);if(visitDiff)return visitDiff;
+        return String(b.scheduled_date||'').localeCompare(String(a.scheduled_date||''));
+      });
+      const chosen=list[0];
+      visitTeamByRequest.set(String(requestId),{teamId:chosen.installation_team_id||'',teamName:chosen.team?.name||''});
+    }
+
     const revisitCount=new Map();(revisits||[]).forEach(v=>revisitCount.set(v.installation_request_id,(revisitCount.get(v.installation_request_id)||0)+1));
     const invoiceMap=new Map();(invoices||[]).forEach(x=>invoiceMap.set(x.installation_request_id,x));
     const serviceAmount=new Map(),serviceCost=new Map(),serviceQuantity=new Map();(services||[]).forEach(x=>{serviceAmount.set(x.installation_request_id,(serviceAmount.get(x.installation_request_id)||0)+Number(x.line_total||0));serviceCost.set(x.installation_request_id,(serviceCost.get(x.installation_request_id)||0)+Number(x.quantity||0)*Number(x.service?.default_cost||0));serviceQuantity.set(x.installation_request_id,(serviceQuantity.get(x.installation_request_id)||0)+Number(x.quantity||0));});
@@ -747,7 +783,7 @@
       if(hasRequestFinancials){const n=Number(subtotalRaw||0)+Number(taxRaw||0)-Number(discountRaw||0);if(Number.isFinite(n))return Math.round(Math.max(n,0)*100)/100}
       const fallback=Number(serviceSubtotal||0),taxRate=Number(r?.tax_rate??15),discount=Number(r?.discount_amount||0);const n=fallback*(1+(Number.isFinite(taxRate)?Math.max(taxRate,0):15)/100)-discount;return Number.isFinite(n)?Math.round(Math.max(n,0)*100)/100:0
     };
-    const normalized=(rows||[]).map(r=>{const inv=invoiceMap.get(r.id);const revenue=canonicalRequestRevenue(r,serviceAmount.get(r.id));const expenses=Number(inv?.installation_expenses??serviceCost.get(r.id)??0);const profit=revenue-expenses;const duration=r.started_at&&r.completed_at?(new Date(r.completed_at)-new Date(r.started_at))/60000:null;return {id:r.id,requestNumber:r.request_number,customerName:r.customer?.customer_name||'',representativeId:r.representative_id||'',representativeName:r.representative?.full_name||'غير محدد',teamId:r.installation_team_id||'',teamName:r.team?.name||'غير مسند',technicianId:r.technician_id||'',technicianName:r.assigned_technician_name||r.technician?.full_name||'غير مسند',status:r.status||'',scheduledDate:r.scheduled_date||'',failureReason:r.execution_failure_reason||'',startedAt:r.started_at||'',completedAt:r.completed_at||'',durationMinutes:Number.isFinite(duration)&&duration>=0?duration:null,revisitCount:revisitCount.get(r.id)||0,invoiceNumber:inv?.invoice_number||'',invoiceDate:inv?.invoice_date||'',invoiceStatus:inv?.status||'',isInvoiced:Boolean(inv),revenue,expenses,profit,margin:revenue?profit/revenue*100:0,requestedQuantity:Number(serviceQuantity.get(r.id)||0),executedQuantity:(r.status==='مكتمل'||Boolean(inv))?Number(serviceQuantity.get(r.id)||0):0,remainingQuantity:(r.status==='مكتمل'||Boolean(inv))?0:Number(serviceQuantity.get(r.id)||0),executionRate:(r.status==='مكتمل'||Boolean(inv))?100:0};});
+    const normalized=(rows||[]).map(r=>{const inv=invoiceMap.get(r.id);const revenue=canonicalRequestRevenue(r,serviceAmount.get(r.id));const expenses=Number(inv?.installation_expenses??serviceCost.get(r.id)??0);const profit=revenue-expenses;const duration=r.started_at&&r.completed_at?(new Date(r.completed_at)-new Date(r.started_at))/60000:null;const visitTeam=visitTeamByRequest.get(String(r.id));const effectiveTeamId=visitTeam?.teamId||r.installation_team_id||'',effectiveTeamName=visitTeam?.teamName||r.team?.name||'غير مسند';return {id:r.id,requestNumber:r.request_number,customerName:r.customer?.customer_name||'',representativeId:r.representative_id||'',representativeName:r.representative?.full_name||'غير محدد',teamId:effectiveTeamId,teamName:effectiveTeamName,technicianId:r.technician_id||'',technicianName:r.assigned_technician_name||r.technician?.full_name||'غير مسند',status:r.status||'',scheduledDate:r.scheduled_date||'',failureReason:r.execution_failure_reason||'',startedAt:r.started_at||'',completedAt:r.completed_at||'',durationMinutes:Number.isFinite(duration)&&duration>=0?duration:null,revisitCount:revisitCount.get(r.id)||0,invoiceNumber:inv?.invoice_number||'',invoiceDate:inv?.invoice_date||'',invoiceStatus:inv?.status||'',isInvoiced:Boolean(inv),revenue,expenses,profit,margin:revenue?profit/revenue*100:0,requestedQuantity:Number(serviceQuantity.get(r.id)||0),executedQuantity:(r.status==='مكتمل'||Boolean(inv))?Number(serviceQuantity.get(r.id)||0):0,remainingQuantity:(r.status==='مكتمل'||Boolean(inv))?0:Number(serviceQuantity.get(r.id)||0),executionRate:(r.status==='مكتمل'||Boolean(inv))?100:0};}).filter(r=>!filters.teamId||String(r.teamId||'')===String(filters.teamId));
     const sum=(arr,key)=>arr.reduce((a,x)=>a+Number(x[key]||0),0),avg=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
     const total=normalized.length,completed=normalized.filter(r=>r.status==='مكتمل'||r.isInvoiced).length,revisitTotal=normalized.filter(r=>r.revisitCount>0).length,revenue=sum(normalized,'revenue'),expenses=sum(normalized,'expenses'),profit=revenue-expenses;
     const durations=normalized.map(r=>r.durationMinutes).filter(Number.isFinite);
