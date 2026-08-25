@@ -32,7 +32,7 @@
 .installation-inline-services-table output{display:block;white-space:normal;overflow-wrap:anywhere;font-weight:700}
 .installation-inline-services-table .inline-service-remove{width:100%;padding-inline:8px}
 .installation-inline-services-footer{padding-top:2px}
-.installation-services-edit-dialog .dialog-actions{position:sticky;bottom:0;background:var(--surface,#fff);z-index:2;padding-top:12px}
+.installation-services-edit-dialog .dialog-actions{position:sticky;bottom:0;background:var(--dialog-chrome-surface,var(--surface,#fff));z-index:2;padding-top:12px}
 @media(max-width:900px){.installation-services-edit-context{grid-template-columns:repeat(2,minmax(0,1fr))}.installation-services-edit-dialog{width:min(760px,calc(100vw - 24px))}}
 @media(max-width:760px){
  .installation-services-edit-context{grid-template-columns:1fr 1fr}
@@ -79,7 +79,9 @@ html[data-theme="dark"] .installation-services-edit-dialog .installation-geo-sel
 @media(max-width:520px){.installation-services-edit-dialog .installation-geo-select .geo-searchable-options{max-height:min(32vh,230px)}}
 
 
-/* P5.11.6.4 — appointment dialogs canonical light/dark surface contract */
+/* P5.11.6.4 — appointment dialog theme contract (non-desktop only; desktop uses global dialog-shell). */
+@media(max-width:1023px){
+
 .installation-request-view-dialog .dialog-shell,
 .installation-services-edit-dialog .dialog-shell{
   background:var(--surface,#fff)!important;
@@ -145,4 +147,6 @@ html[data-theme="dark"] .installation-services-edit-dialog .installation-inline-
   background:var(--surface,#111c2f)!important;
   color:var(--text,#edf4ff)!important;
   border-color:var(--border,#263650)!important;
+}
+
 }

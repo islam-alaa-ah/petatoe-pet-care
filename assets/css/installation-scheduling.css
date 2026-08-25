@@ -1,4 +1,4 @@
-.installation-schedule-actions,.installation-schedule-toolbar,.installation-schedule-kpis{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.installation-schedule-toolbar{padding:16px;margin-bottom:16px}.installation-schedule-toolbar>div{display:grid;gap:2px;min-width:180px}.installation-schedule-toolbar label{min-width:180px}.installation-schedule-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}.installation-schedule-kpis article{padding:18px;display:grid;gap:8px}.installation-schedule-kpis strong{font-size:1.8rem}.installation-calendar-shell{padding:12px;overflow:hidden}.installation-calendar-weekdays,.installation-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.installation-calendar-weekdays span{padding:10px;text-align:center;font-weight:700;color:var(--muted)}.installation-calendar-day{min-height:128px;border:1px solid var(--border);padding:8px;overflow:hidden;background:var(--surface)}.installation-calendar-day.is-outside{opacity:.45}.installation-calendar-day.is-today{outline:2px solid var(--primary);outline-offset:-2px}.installation-calendar-day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.installation-calendar-day-header button{border:0;background:transparent;color:inherit;font-weight:800;cursor:pointer}.installation-calendar-items{display:grid;gap:5px}.installation-calendar-item{width:100%;border:0;border-radius:8px;padding:7px;text-align:right;background:var(--surface-soft);color:var(--text);cursor:pointer;display:grid;gap:2px}.installation-calendar-item strong{font-size:.78rem}.installation-calendar-item span{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.installation-calendar-more{font-size:.75rem;color:var(--primary);font-weight:700}.installation-unscheduled-panel{margin-top:16px;padding:16px}.installation-technicians-dialog .dialog-shell{width:min(920px,calc(100vw - 24px));max-height:min(90vh,900px);overflow:auto}.installation-assignment-dialog{max-width:none;padding:0;border:0;background:transparent;overflow:visible}.installation-assignment-dialog .dialog-shell{box-sizing:border-box;width:min(760px,calc(100vw - 32px));max-width:100%;max-height:min(90dvh,820px);overflow-y:auto;overflow-x:hidden;padding:22px}.installation-assignment-dialog .dialog-header{align-items:flex-start;gap:16px}.installation-assignment-dialog .dialog-header>div{min-width:0}.installation-assignment-dialog .dialog-header p{overflow-wrap:anywhere}.installation-assignment-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.installation-assignment-grid label{min-width:0}.installation-assignment-grid input,.installation-assignment-grid select,.installation-assignment-grid textarea{box-sizing:border-box;width:100%;max-width:100%}.installation-assignment-grid textarea{resize:vertical;min-height:110px}.installation-assignment-dialog .dialog-actions{position:sticky;bottom:-22px;z-index:2;margin:18px -22px -22px;padding:14px 22px;background:var(--surface);border-top:1px solid var(--border)}.field-hint{display:block;margin-top:6px;color:var(--muted);font-size:.78rem}.installation-technician-form{margin-bottom:16px}.technician-status-badge{display:inline-flex;padding:4px 9px;border-radius:999px;background:var(--surface-soft);font-size:.78rem;font-weight:700}
+.installation-schedule-actions,.installation-schedule-toolbar,.installation-schedule-kpis{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.installation-schedule-toolbar{padding:16px;margin-bottom:16px}.installation-schedule-toolbar>div{display:grid;gap:2px;min-width:180px}.installation-schedule-toolbar label{min-width:180px}.installation-schedule-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}.installation-schedule-kpis article{padding:18px;display:grid;gap:8px}.installation-schedule-kpis strong{font-size:1.8rem}.installation-calendar-shell{padding:12px;overflow:hidden}.installation-calendar-weekdays,.installation-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.installation-calendar-weekdays span{padding:10px;text-align:center;font-weight:700;color:var(--muted)}.installation-calendar-day{min-height:128px;border:1px solid var(--border);padding:8px;overflow:hidden;background:var(--surface)}.installation-calendar-day.is-outside{opacity:.45}.installation-calendar-day.is-today{outline:2px solid var(--primary);outline-offset:-2px}.installation-calendar-day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.installation-calendar-day-header button{border:0;background:transparent;color:inherit;font-weight:800;cursor:pointer}.installation-calendar-items{display:grid;gap:5px}.installation-calendar-item{width:100%;border:0;border-radius:8px;padding:7px;text-align:right;background:var(--surface-soft);color:var(--text);cursor:pointer;display:grid;gap:2px}.installation-calendar-item strong{font-size:.78rem}.installation-calendar-item span{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.installation-calendar-more{font-size:.75rem;color:var(--primary);font-weight:700}.installation-unscheduled-panel{margin-top:16px;padding:16px}.installation-technicians-dialog .dialog-shell{width:min(920px,calc(100vw - 24px));max-height:min(90vh,900px);overflow:auto}.installation-assignment-dialog{max-width:none;padding:0;border:0;background:transparent;overflow:visible}.installation-assignment-dialog .dialog-shell{box-sizing:border-box;width:min(760px,calc(100vw - 32px));max-width:100%;max-height:min(90dvh,820px);overflow-y:auto;overflow-x:hidden;padding:22px}.installation-assignment-dialog .dialog-header{align-items:flex-start;gap:16px}.installation-assignment-dialog .dialog-header>div{min-width:0}.installation-assignment-dialog .dialog-header p{overflow-wrap:anywhere}.installation-assignment-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.installation-assignment-grid label{min-width:0}.installation-assignment-grid input,.installation-assignment-grid select,.installation-assignment-grid textarea{box-sizing:border-box;width:100%;max-width:100%}.installation-assignment-grid textarea{resize:vertical;min-height:110px}.installation-assignment-dialog .dialog-actions{position:sticky;bottom:-22px;z-index:2;margin:18px -22px -22px;padding:14px 22px;background:var(--dialog-chrome-surface,var(--surface));border-top:1px solid var(--border)}.field-hint{display:block;margin-top:6px;color:var(--muted);font-size:.78rem}.installation-technician-form{margin-bottom:16px}.technician-status-badge{display:inline-flex;padding:4px 9px;border-radius:999px;background:var(--surface-soft);font-size:.78rem;font-weight:700}
 @media(max-width:1023px){.installation-schedule-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.installation-calendar-shell{overflow-x:auto}.installation-calendar-weekdays,.installation-calendar-grid{min-width:860px}}
 @media(max-width:767px){.installation-schedule-header{align-items:stretch}.installation-schedule-actions{width:100%}.installation-schedule-actions button{flex:1}.installation-schedule-toolbar>*{flex:1 1 140px}.installation-schedule-kpis{grid-template-columns:1fr 1fr}.installation-calendar-day{min-height:112px}.installation-technicians-dialog .table-wrap{max-height:42vh}.installation-assignment-dialog .dialog-shell{width:calc(100vw - 16px);padding:16px;max-height:92dvh}.installation-assignment-grid{grid-template-columns:1fr;gap:12px}.installation-assignment-dialog .dialog-actions{bottom:-16px;margin:16px -16px -16px;padding:12px 16px}.installation-assignment-dialog .dialog-actions button{flex:1}}
 
@@ -13,7 +13,9 @@
 .installation-assignment-dialog .dialog-actions{display:flex;justify-content:flex-start;gap:10px}
 @media(max-width:767px){.installation-assignment-dialog .dialog-shell{border-radius:18px}.installation-assignment-dialog .dialog-header{padding-bottom:12px}.installation-assignment-grid input,.installation-assignment-grid select{min-height:48px}}
 
-/* Phase M14.8.7.1 — Scheduling modal light-mode contrast hotfix */
+/* Phase M14.8.7.1 — assignment modal legacy theme contract (non-desktop only; desktop uses global dialog-shell). */
+@media(max-width:1023px){
+
 html[data-theme="light"] #installationAssignmentDialog.installation-assignment-dialog {
   color-scheme: light;
 }
@@ -88,6 +90,8 @@ html[data-theme="light"] #installationAssignmentDialog .data-status:not(.hidden)
   border-color: #bfdbfe;
 }
 
+
+}
 
 /* Phase M14.9.0 — Calendar team summary and dynamic daily details */
 .installation-calendar-day{appearance:none;font:inherit;color:inherit;text-align:initial;cursor:default;display:flex;flex-direction:column;gap:8px;width:100%}
@@ -253,9 +257,11 @@ html[data-theme="light"] #installationAssignmentDialog .data-status:not(.hidden)
 #installationDayDetailsDialog.installation-day-details-dialog[open] {
   display: block;
 }
+@media(max-width:1023px){
 #installationDayDetailsDialog.installation-day-details-dialog::backdrop {
   background: rgba(15, 23, 42, 0.58);
   backdrop-filter: blur(5px);
+}
 }
 #installationDayDetailsDialog .dialog-shell {
   width: min(1500px, calc(100vw - 48px));
@@ -264,10 +270,10 @@ html[data-theme="light"] #installationAssignmentDialog .data-status:not(.hidden)
   margin: 0;
   border-radius: 22px;
   overflow: hidden;
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.34);
+  background: var(--dialog-shell-surface, var(--surface));
+  color: var(--dialog-shell-text, var(--text));
+  border: 1px solid var(--dialog-shell-border, var(--border));
+  box-shadow: var(--dialog-shell-shadow, 0 30px 90px rgba(15, 23, 42, 0.34));
 }
 #installationDayDetailsDialog .dialog-header {
   flex: 0 0 auto;
@@ -285,6 +291,7 @@ html[data-theme="light"] #installationAssignmentDialog .data-status:not(.hidden)
   width: auto;
 }
 
+@media(max-width:1023px){
 html[data-theme="light"] #installationDayDetailsDialog.installation-day-details-dialog {
   color-scheme: light;
 }
@@ -339,6 +346,8 @@ html[data-theme="light"] #installationDayDetailsDialog .secondary-btn {
 html[data-theme="light"] #installationDayDetailsDialog .icon-btn:hover,
 html[data-theme="light"] #installationDayDetailsDialog .secondary-btn:hover {
   background: #e2e8f0;
+}
+
 }
 
 @media (min-width: 1200px) {
@@ -587,7 +596,7 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
 .installation-allocation-summary span{white-space:normal;overflow-wrap:anywhere}
 .installation-assignment-services-section,
 .installation-assignment-grid>label.full-span{min-width:0}
-.installation-assignment-dialog .dialog-actions{position:sticky;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--border);padding-top:14px}
+.installation-assignment-dialog .dialog-actions{position:sticky;bottom:0;z-index:5;background:var(--dialog-chrome-surface,var(--surface));border-top:1px solid var(--border);padding-top:14px}
 
 @media(max-width:1180px){
   .installation-assignment-context{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -824,7 +833,7 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
   margin:0;
   padding:18px 22px 16px;
   border-bottom:1px solid var(--border);
-  background:var(--surface);
+  background:var(--dialog-chrome-surface,var(--surface));
 }
 .installation-assignment-dialog .installation-assignment-scroll-body{
   min-height:0;
@@ -850,7 +859,7 @@ html[data-theme="dark"] .installation-day-actions .installation-cancel-schedule-
   margin:0!important;
   padding:14px 22px 16px!important;
   border-top:1px solid var(--border);
-  background:color-mix(in srgb,var(--surface) 94%,transparent);
+  background:var(--dialog-chrome-surface,color-mix(in srgb,var(--surface) 94%,transparent));
   backdrop-filter:blur(14px);
   box-shadow:0 -10px 26px rgba(15,23,42,.08);
 }
