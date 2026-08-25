@@ -14,7 +14,7 @@
   const currentMonth=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;};
   const monthBounds=value=>{const raw=/^\d{4}-\d{2}$/.test(String(value||''))?String(value):currentMonth();const [year,month]=raw.split('-').map(Number);return{from:`${raw}-01`,to:`${raw}-${String(new Date(year,month,0).getDate()).padStart(2,'0')}`};};
   const roleOrder={representative:1,driver:2,groomer:3};
-  const state={management:null,managementTab:'current',salary:null,salaryTab:'current',commissions:null,commissionStatement:null,commissionTab:'current',reference:null,referenceType:'employees'};
+  const state={management:null,managementTab:'current',salary:null,salaryTab:'current',commissions:null,commissionStatement:null,commissionTab:'current',reference:null,referenceType:'employees',adjustmentCatalog:[]};
 
   function setStatus(id,message='',type='info'){
     const el=$(id);if(!el)return;el.textContent=message||'';el.classList.toggle('hidden',!message);el.classList.toggle('error',type==='error');el.classList.toggle('success',type==='success');
@@ -174,9 +174,24 @@
     if(row.status==='paid')return actionButton('reverse_paid',t('payroll.action.reversePaid','إلغاء الصرف'),'payroll-action-danger','delete');
     return '';
   }
+  function adjustmentCatalogFor(type){
+    const seen=new Set();
+    return (Array.isArray(state.adjustmentCatalog)?state.adjustmentCatalog:[]).filter(item=>item?.type===type&&String(item?.name||'').trim()).map(item=>String(item.name).trim()).filter(name=>{const key=name.toLocaleLowerCase();if(seen.has(key))return false;seen.add(key);return true;}).sort((a,b)=>a.localeCompare(b,lang()==='en'?'en':'ar'));
+  }
+  function renderAdjustmentCatalog(){
+    const addition=$('payrollAdditionCatalog'),deduction=$('payrollDeductionCatalog');
+    if(addition)addition.innerHTML=adjustmentCatalogFor('addition').map(name=>`<option value="${esc(name)}"></option>`).join('');
+    if(deduction)deduction.innerHTML=adjustmentCatalogFor('deduction').map(name=>`<option value="${esc(name)}"></option>`).join('');
+  }
+  async function ensureAdjustmentCatalog(force=false){
+    state.adjustmentCatalog=await svc().loadAdjustmentCatalog(force);
+    renderAdjustmentCatalog();
+    return state.adjustmentCatalog;
+  }
   function adjustmentItemRow(type,item={}){
     const typeLabel=type==='addition'?t('payroll.adjustment.additions','بنود الإضافي'):t('payroll.adjustment.deductions','بنود الخصومات');
-    return `<div class="salary-adjustment-item" data-adjustment-type="${esc(type)}"><div class="salary-adjustment-item-grid"><label><span>${esc(t('payroll.adjustment.itemName','البيان'))}</span><input class="salary-adjustment-item-name" maxlength="200" required value="${esc(item.name||'')}" placeholder="${esc(typeLabel)}"></label><label><span>${esc(t('payroll.adjustment.itemAmount','القيمة'))}</span><input class="salary-adjustment-item-amount" type="number" min="0.01" step="0.01" required value="${item.amount?esc(Number(item.amount).toFixed(2)):''}"></label><label class="salary-adjustment-item-notes"><span>${esc(t('payroll.adjustment.itemNotes','ملاحظات البند'))}</span><input class="salary-adjustment-item-note" maxlength="500" value="${esc(item.notes||'')}"></label><button class="salary-adjustment-remove" type="button" data-adjustment-remove aria-label="${esc(t('payroll.adjustment.remove','حذف البند'))}">×</button></div></div>`;
+    const catalogId=type==='addition'?'payrollAdditionCatalog':'payrollDeductionCatalog';
+    return `<div class="salary-adjustment-item" data-adjustment-type="${esc(type)}"><div class="salary-adjustment-item-grid"><label><span>${esc(t('payroll.adjustment.itemName','البيان'))}</span><input class="salary-adjustment-item-name" list="${catalogId}" autocomplete="off" maxlength="200" required value="${esc(item.name||'')}" placeholder="${esc(typeLabel)}"></label><label><span>${esc(t('payroll.adjustment.itemAmount','القيمة'))}</span><input class="salary-adjustment-item-amount" type="number" min="0.01" step="0.01" required value="${item.amount?esc(Number(item.amount).toFixed(2)):''}"></label><label class="salary-adjustment-item-notes"><span>${esc(t('payroll.adjustment.itemNotes','ملاحظات البند'))}</span><input class="salary-adjustment-item-note" maxlength="500" value="${esc(item.notes||'')}"></label><button class="salary-adjustment-remove" type="button" data-adjustment-remove aria-label="${esc(t('payroll.adjustment.remove','حذف البند'))}">×</button></div></div>`;
   }
   function adjustmentItemsFor(row,type){
     const items=(row?.adjustmentItems||[]).filter(item=>item.type===type);
@@ -185,6 +200,7 @@
     return legacy>0?[{type,name:type==='addition'?t('payroll.col.overtime','الإضافي'):t('payroll.col.deductions','الخصومات'),amount:legacy,notes:''}]:[];
   }
   function renderAdjustmentEditor(row){
+    renderAdjustmentCatalog();
     $('payrollAdditionItems').innerHTML=adjustmentItemsFor(row,'addition').map(item=>adjustmentItemRow('addition',item)).join('');
     $('payrollDeductionItems').innerHTML=adjustmentItemsFor(row,'deduction').map(item=>adjustmentItemRow('deduction',item)).join('');
     updateAdjustmentTotals();
@@ -216,7 +232,11 @@
   }
   async function handleSalaryAction(id,action){
     const row=(state.management?.rows||[]).find(x=>x.id===id);if(!row)return;
-    if(action==='adjust'){openAdjustment(row);return;}
+    if(action==='adjust'){
+      try{await ensureAdjustmentCatalog();}
+      catch(error){state.adjustmentCatalog=[];renderAdjustmentCatalog();console.warn('Payroll adjustment catalog unavailable:',error);}
+      openAdjustment(row);return;
+    }
     const reverse=action.startsWith('reverse_');
     const confirmation=reverse?t('payroll.confirm.reverse','سيتم إلغاء المرحلة الحالية والرجوع خطوة واحدة فقط حسب التسلسل العكسي. هل تريد المتابعة؟'):t('payroll.confirm.transition','هل تريد تنفيذ هذا الإجراء؟');
     if(!window.confirm(confirmation))return;
@@ -367,7 +387,7 @@
     $('commissionStatementRefresh')?.addEventListener('click',loadCommissionStatement);$('commissionStatementTabs')?.addEventListener('click',e=>{const btn=e.target.closest('[data-commission-tab]');if(!btn)return;state.commissionTab=btn.dataset.commissionTab;renderCommissionStatement();});
     $('payrollReferenceRefresh')?.addEventListener('click',loadReference);$('payrollReferenceType')?.addEventListener('change',renderReference);$('payrollEmployeeAdd')?.addEventListener('click',()=>openEmployeeDialog());$('payrollReferenceContent')?.addEventListener('click',e=>{const btn=e.target.closest('[data-payroll-employee-edit]');if(!btn)return;openEmployeeDialog((state.reference?.employees||[]).find(x=>x.id===btn.dataset.payrollEmployeeEdit));});$('payrollReferenceContent')?.addEventListener('submit',async e=>{const form=e.target.closest('[data-tier-form]');if(!form)return;e.preventDefault();const record={role:form.dataset.role,tierNo:Number(form.dataset.tierNo),fromAmount:Number(form.elements.from.value||0),toAmount:form.elements.to.value===''?null:Number(form.elements.to.value),ratePercent:Number(form.elements.rate.value||0),isActive:form.elements.active.checked};setStatus('payrollReferenceStatus',t('payroll.saving','جاري الحفظ...'));try{state.reference=await svc().saveTier(record);renderReference();setStatus('payrollReferenceStatus',t('commission.tier.saved','تم حفظ الشريحة.'),'success');}catch(error){setStatus('payrollReferenceStatus',error.message,'error');}});
     $('payrollEmployeeCommissionRole')?.addEventListener('change',syncEmployeeSourceFields);$('payrollEmployeeClose')?.addEventListener('click',()=> $('payrollEmployeeDialog')?.close());$('payrollEmployeeCancel')?.addEventListener('click',()=> $('payrollEmployeeDialog')?.close());$('payrollEmployeeForm')?.addEventListener('submit',async e=>{e.preventDefault();const role=$('payrollEmployeeCommissionRole').value;const record={id:$('payrollEmployeeId').value||null,fullName:$('payrollEmployeeName').value.trim(),userId:$('payrollEmployeeUser').value||null,baseSalary:Number($('payrollEmployeeBase').value||0),allowances:Number($('payrollEmployeeAllowances').value||0),paymentMethod:$('payrollEmployeePaymentMethod').value.trim(),commissionRole:role||null,appointmentEmployeeId:['driver','groomer'].includes(role)?$('payrollEmployeeAppointmentSource').value||null:null,representativeId:role==='representative'?$('payrollEmployeeRepresentative').value||null:null,commissionEligible:$('payrollEmployeeEligible').checked,isActive:$('payrollEmployeeActive').checked,notes:$('payrollEmployeeNotes').value.trim()};setStatus('payrollReferenceStatus',t('payroll.saving','جاري الحفظ...'));try{state.reference=await svc().saveEmployee(record);$('payrollEmployeeDialog')?.close();renderReference();setStatus('payrollReferenceStatus',t('payroll.employee.saved','تم حفظ بيانات الموظف.'),'success');}catch(error){setStatus('payrollReferenceStatus',error.message,'error');}});
-    window.addEventListener('petatoe-language-changed',()=>{updateStatic();if(state.management)renderManagement();if(state.salary)renderSalaryStatement();if(state.commissions)renderCommissions();if(state.commissionStatement)renderCommissionStatement();if(state.reference)renderReference();});
+    window.addEventListener('petatoe-language-changed',()=>{updateStatic();renderAdjustmentCatalog();if(state.management)renderManagement();if(state.salary)renderSalaryStatement();if(state.commissions)renderCommissions();if(state.commissionStatement)renderCommissionStatement();if(state.reference)renderReference();});
   }
   bind();
   window.PayrollUI=Object.freeze({activate,refreshManagement:loadManagement,refreshCommissions:loadCommissions,refreshReference:loadReference});

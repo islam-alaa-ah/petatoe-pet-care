@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  const cache = { management:null, salary:null, commissions:null, commissionStatement:null, reference:null };
+  const cache = { management:null, salary:null, commissions:null, commissionStatement:null, reference:null, adjustmentCatalog:null };
   const t=(key,fallback)=>{const value=window.PetatoeLocalization?.t?.(key);return value&&!/^\[.+\]$/.test(value)?value:fallback;};
   const translateMessage=message=>window.PetatoeLocalization?.translateMessage?.(message)||String(message||'');
   const db=()=>{if(!window.customerSupabase)throw new Error(t('payroll.error.databaseNotReady','خدمة قاعدة البيانات غير جاهزة.'));return window.customerSupabase;};
@@ -22,8 +22,14 @@
     await rpc('prepare_payroll_month_range',{p_month:monthStart(month),p_commission_from:from,p_commission_to:to},'payroll.error.prepareMonth','تعذر تجهيز رواتب الشهر');
     return loadManagement(month);
   }
+  async function loadAdjustmentCatalog(force=false){
+    if(!force&&Array.isArray(cache.adjustmentCatalog))return cache.adjustmentCatalog;
+    cache.adjustmentCatalog=await rpc('get_payroll_adjustment_catalog',{},'payroll.error.loadAdjustmentCatalog','تعذر تحميل بنود الإضافات والخصومات المحفوظة');
+    return cache.adjustmentCatalog;
+  }
   async function saveAdjustmentItems(id,items,notes){
     await rpc('save_payroll_salary_adjustment_items',{p_statement_id:id,p_items:Array.isArray(items)?items:[],p_notes:notes||null},'payroll.error.saveAdjustments','تعذر حفظ تعديلات الراتب');
+    cache.adjustmentCatalog=null;
   }
   async function saveAdjustments(id,overtime,deductions,notes){
     const items=[];
@@ -48,5 +54,5 @@
   async function loadReference(){cache.reference=await rpc('get_payroll_reference_workspace',{},'payroll.error.loadReference','تعذر تحميل البيانات المرجعية');return cache.reference;}
   async function saveEmployee(record){await rpc('save_payroll_employee',{p_record:record},'payroll.error.saveEmployee','تعذر حفظ الموظف');return loadReference();}
   async function saveTier(record){await rpc('save_payroll_commission_tier',{p_record:record},'payroll.error.saveTier','تعذر حفظ شريحة العمولة');return loadReference();}
-  window.PayrollService=Object.freeze({monthStart,loadManagement,prepareMonth,saveAdjustmentItems,saveAdjustments,transition,loadSalaryStatement,loadCommissions,loadCommissionsRange,refreshCommissions,loadCommissionStatement,loadReference,saveEmployee,saveTier,getCache:()=>cache});
+  window.PayrollService=Object.freeze({monthStart,loadManagement,prepareMonth,loadAdjustmentCatalog,saveAdjustmentItems,saveAdjustments,transition,loadSalaryStatement,loadCommissions,loadCommissionsRange,refreshCommissions,loadCommissionStatement,loadReference,saveEmployee,saveTier,getCache:()=>cache});
 })();
