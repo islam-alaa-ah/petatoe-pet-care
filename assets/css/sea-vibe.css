@@ -1,3 +1,14 @@
+/* P5.13.8.72R15 — canonical SEA VIBE theme tokens. */
+:root{
+  --sea-vibe-positive:#178642;--sea-vibe-negative:#c43f3f;
+  --sea-vibe-open-bg:rgba(31,160,91,.12);--sea-vibe-open-text:#178642;
+  --sea-vibe-closed-bg:rgba(100,116,139,.12);--sea-vibe-closed-text:#52637c;
+}
+html[data-theme="dark"]{
+  --sea-vibe-positive:#86efac;--sea-vibe-negative:#fca5a5;
+  --sea-vibe-open-bg:rgba(34,197,94,.18);--sea-vibe-open-text:#bbf7d0;
+  --sea-vibe-closed-bg:rgba(148,163,184,.16);--sea-vibe-closed-text:#dbe7f5;
+}
 /* PETATOE P5.13.8.68 — SEA VIBE canonical module styling */
 .sea-vibe-view{display:block;direction:rtl}
 .sea-vibe-view.hidden{display:none}
@@ -9,16 +20,15 @@
 .sea-vibe-scope-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin:0 0 18px}
 .sea-vibe-form{padding:18px}.sea-vibe-form .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.sea-vibe-form .full-span{grid-column:1/-1}
 .sea-vibe-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:8px;margin:8px 0 12px}.sea-vibe-section-head h4{margin:0}
-.sea-vibe-expense-row{border:1px solid var(--border,#dbe6f4);border-radius:18px;padding:16px;margin-bottom:14px;background:var(--card,#fff)}
+.sea-vibe-expense-row{border:1px solid var(--border,#dbe6f4);border-radius:18px;padding:16px;margin-bottom:14px;background:var(--surface,#fff)}
 .sea-vibe-expense-row-grid{display:grid;grid-template-columns:1.2fr .75fr .9fr .85fr;gap:12px}.sea-vibe-expense-row-grid .wide{grid-column:span 2}.sea-vibe-expense-row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.sea-vibe-table td,.sea-vibe-table th{white-space:nowrap}.sea-vibe-money{font-variant-numeric:tabular-nums;font-weight:700}.sea-vibe-profit-positive{color:#178642}.sea-vibe-profit-negative{color:#c43f3f}
-.sea-vibe-status{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 10px;font-weight:700;font-size:.82rem}.sea-vibe-status.open{background:rgba(31,160,91,.12);color:#178642}.sea-vibe-status.closed{background:rgba(100,116,139,.12);color:#52637c}
+.sea-vibe-table td,.sea-vibe-table th{white-space:nowrap}.sea-vibe-money{font-variant-numeric:tabular-nums;font-weight:700}.sea-vibe-profit-positive{color:var(--sea-vibe-positive)}.sea-vibe-profit-negative{color:var(--sea-vibe-negative)}
+.sea-vibe-status{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 10px;font-weight:700;font-size:.82rem}.sea-vibe-status.open{background:var(--sea-vibe-open-bg);color:var(--sea-vibe-open-text)}.sea-vibe-status.closed{background:var(--sea-vibe-closed-bg);color:var(--sea-vibe-closed-text)}
 .sea-vibe-actions{display:flex;gap:6px;flex-wrap:wrap}.sea-vibe-actions button{min-width:auto}
-.sea-vibe-detail-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}.sea-vibe-summary-card{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.sea-vibe-summary-card>div{padding:12px;border:1px solid var(--border,#dbe6f4);border-radius:14px}
+.sea-vibe-detail-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}.sea-vibe-summary-card{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.sea-vibe-summary-card>div{padding:12px;border:1px solid var(--border,#dbe6f4);border-radius:14px;background:var(--surface-2,var(--surface,#fff))}
 .sea-vibe-reference-editor{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:14px}.sea-vibe-permit-wrap{overflow:auto}.sea-vibe-permit-note{margin:0 0 12px;color:var(--muted,#7183a0);font-size:.9rem}.sea-vibe-permit-table td{min-width:132px}.sea-vibe-permit-cell{display:grid;gap:7px;min-width:116px}.sea-vibe-permit-cell label{display:grid;gap:4px}.sea-vibe-permit-cell label span,.sea-vibe-permit-amount span,.sea-vibe-permit-cell small{font-size:.72rem;color:var(--muted,#7183a0)}.sea-vibe-permit-table input{width:100%;min-width:100px;text-align:center}.sea-vibe-permit-amount{display:flex;justify-content:space-between;align-items:center;gap:8px}.sea-vibe-permit-amount strong{font-size:.82rem;white-space:nowrap}.sea-vibe-permit-cell.is-linked{border-inline-start:2px solid rgba(43,125,246,.24);padding-inline-start:8px}
 .sea-vibe-report-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}.sea-vibe-report-grid .panel{min-height:115px}.sea-vibe-report-split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .sea-vibe-asset-note{font-size:.82rem;color:var(--muted,#7183a0);margin-top:6px}
-[data-theme="dark"] .sea-vibe-expense-row{background:var(--surface,#0f1d33)}
 @media (max-width:1180px){.sea-vibe-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.sea-vibe-filters{grid-template-columns:repeat(3,minmax(0,1fr))}.sea-vibe-report-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* P5.13.8.69 — canonical SEA VIBE treasury / Zawel additions */
 .sea-vibe-zawel-kpis{display:grid;grid-template-columns:1.25fr repeat(3,minmax(0,1fr));gap:14px;margin-bottom:16px}
