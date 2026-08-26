@@ -770,16 +770,6 @@ body.sidebar-menu-open{overflow:hidden}
 /* =========================
    Tablet / mobile shell
    ========================= */
-@media (max-width:1380px){
-  #appHeader.topbar{grid-template-columns:250px 58px minmax(300px,1fr) auto!important;gap:18px!important;min-height:150px!important;padding:20px 26px 34px!important}
-  #appHeader .topbar-logo-banner .petatoe-header-brand-icon{width:76px!important;height:76px!important;flex-basis:76px!important;border-radius:21px!important}
-  .petatoe-header-brand-copy strong{font-size:23px!important}.petatoe-header-brand-copy span{font-size:14px!important}
-  #appHeader .sidebar-menu-launcher{width:58px!important;height:58px!important;min-width:58px!important;border-radius:18px!important}
-  #appHeader .compact-user-chip{width:225px!important;min-width:225px!important;height:68px!important;min-height:68px!important;grid-template-columns:minmax(0,1fr) 50px 18px!important}
-  #appHeader .compact-user-chip .avatar{width:50px!important;height:50px!important;flex-basis:50px!important}
-  #appHeader .notification-bell-btn,#appHeader .theme-toggle-button{width:58px!important;height:58px!important;flex-basis:58px!important;border-radius:18px!important}
-}
-
 @media (max-width:1050px){
   #appHeader.topbar{grid-template-columns:58px minmax(0,1fr) auto!important;grid-template-areas:"menu title actions"!important;min-height:118px!important;margin:-20px -20px 24px!important;padding:18px 20px 28px!important;border-radius:0 0 30px 30px!important}
   #appHeader .topbar-brand{display:none!important}
@@ -837,12 +827,16 @@ body.sidebar-menu-open{overflow:hidden}
    ============================================================ */
 @media (min-width:1051px){
   #appHeader.topbar{
+    direction:ltr;
     grid-template-columns:286px 262px minmax(360px,1fr) 70px!important;
     grid-template-areas:"brand actions title menu"!important;
     column-gap:12px!important;
   }
 
   /* Keep the title visually centered across the full desktop header. */
+  html[dir="rtl"] #appHeader .topbar-title{direction:rtl}
+  html[dir="ltr"] #appHeader .topbar-title{direction:ltr}
+
   #appHeader .topbar-title{
     position:absolute!important;
     left:50%!important;

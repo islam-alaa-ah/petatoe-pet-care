@@ -1,13 +1,13 @@
 {
-  "version": "18.56.17",
-  "build": 185617,
+  "version": "18.56.18",
+  "build": 185618,
   "forceUpdate": true,
   "releaseDate": "2026-08-26",
-  "title": "Navigation Drawer Structural Recovery R19",
+  "title": "Desktop Header Approved Order Recovery R20",
   "notes": [
-    "استعادة ميكانيكا فتح وإغلاق القائمة الجانبية بعد فقدها أثناء تنظيف ملكية CSS في R17/R18.",
-    "نقل حالة القائمة المغلقة والمفتوحة والـBackdrop وقفل تمرير الصفحة إلى petatoe-navigation-shell باعتباره المالك المعتمد.",
-    "إزالة بقايا قواعد Sidebar الهيكلية القديمة من style.css وmobile.css لمنع تداخل أو تراكم طبقات التنسيق."
+    "استعادة ترتيب مجموعات وأيقونات هيدر الديسكتوب المعتمد بعد انعكاسها بتأثير اتجاه RTL على CSS Grid.",
+    "إزالة كتلة responsive قديمة مكررة كانت تكبر الهيدر واللوجو داخل نطاق الديسكتوب المتوسط.",
+    "الحفاظ على ميكانيكا القائمة الجانبية المستعادة في R19 وعلى هيدر الموبايل دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-17-navigation-drawer-structural-recovery-r19-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-18-desktop-header-approved-order-recovery-r20-p5-13-8-72"
 }
