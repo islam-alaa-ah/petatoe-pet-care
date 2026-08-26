@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-20-payroll-unlinked-employee-approval-skip-r22-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-21-desktop-header-user-menu-recovery-r23-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
