@@ -159,6 +159,19 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 
+  .main-content {
+    margin-inline: 0 !important;
+    width: 100% !important;
+  }
+
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+}
+
+/* Tablet landscape preservation: keep the pre-existing tablet drawer geometry out of the phone contract. */
+@media (orientation: landscape) and (min-width:768px) and (min-height:501px) and (pointer: coarse) and (max-device-width: 1024px),
+       (orientation: landscape) and (min-width:768px) and (min-height:501px) and (hover: none) and (max-device-width: 1024px) {
   #mainSidebar {
     position: fixed !important;
     width: min(88vw, 360px) !important;
@@ -167,15 +180,6 @@
     bottom: var(--kyum-safe-bottom) !important;
     height: auto !important;
     max-height: calc(var(--kyum-visual-viewport-height) - var(--kyum-stable-header-height, 76px) - var(--kyum-safe-top) - var(--kyum-safe-bottom)) !important;
-  }
-
-  .main-content {
-    margin-inline: 0 !important;
-    width: 100% !important;
-  }
-
-  .mobile-bottom-nav {
-    display: flex !important;
   }
 }
 

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-18-desktop-header-approved-order-recovery-r20-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-19-mobile-navigation-canonical-recovery-r21-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

@@ -408,33 +408,7 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   #appHeader .petatoe-header-reference-top-arc{left:31px!important;right:31px!important;top:7px!important;width:calc(100% - 62px)!important;height:4px!important}
   #appHeader .petatoe-header-reference-arc{height:34px!important}
 }
-@media (max-width:767px), (pointer:coarse) and (max-device-width:1024px), (hover:none) and (max-device-width:1024px){
-  #appHeader.topbar{grid-template-columns:44px minmax(0,1fr) auto!important;grid-template-areas:"menu title actions"!important;min-height:82px!important;margin:-10px -10px 16px!important;padding:calc(8px + env(safe-area-inset-top)) 9px 14px!important;column-gap:7px!important;border-radius:18px 18px 21px 21px!important}
-  #appHeader.topbar.is-scrolled{min-height:76px!important;padding-top:calc(6px + env(safe-area-inset-top))!important;padding-bottom:12px!important}
-  #appHeader .petatoe-header-gold-rail{top:7px!important;bottom:12px!important;width:12px!important}
-  #appHeader .petatoe-header-gold-rail--left{left:5px!important;border-width:2px!important;border-right:0!important}
-  #appHeader .petatoe-header-gold-rail--right{right:5px!important;border-width:2px!important;border-left:0!important}
-  #appHeader .petatoe-header-reference-top-arc{top:5px!important;height:4px!important;left:17px!important;right:17px!important;width:calc(100% - 34px)!important}
-  #appHeader .petatoe-header-reference-arc{bottom:-2px!important;height:25px!important;left:10px!important;right:10px!important;width:calc(100% - 20px)!important}
-  #appHeader .topbar-title{padding:0 3px!important;text-align:right!important;justify-self:stretch!important}
-  #appHeader .topbar-title h2{font-size:18px!important;line-height:1.15!important}
-  #appHeader .topbar-title p{display:block!important;margin-top:2px!important;font-size:8.5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-  #appHeader .topbar-title p::after{width:4px!important;height:4px!important;margin-inline-start:4px!important}
-  #appHeader .sidebar-menu-launcher{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;max-width:44px!important;max-height:44px!important;border-radius:13px!important}
-  #appHeader .petatoe-menu-icon{width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;max-width:20px!important;max-height:20px!important}
-  #appHeader .topbar-user-actions{gap:4px!important}
-  #appHeader .header-user-menu{display:none!important}
-  #appHeader #translationCenterHeaderBtn{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;max-width:40px!important;max-height:40px!important;padding:0!important;place-items:center!important;border:1px solid rgba(58,133,230,.26)!important;border-radius:12px!important;background:linear-gradient(145deg,#071a32,#041224)!important;color:#71b8ff!important;box-shadow:0 8px 20px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.025)!important}
-  #appHeader #translationCenterHeaderBtn svg{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important;fill:none!important;stroke:currentColor!important}
-  #appHeader .notification-bell-btn,#appHeader .theme-toggle-button{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;max-width:40px!important;max-height:40px!important;flex-basis:40px!important;border-radius:12px!important}
-  #appHeader .notification-bell-btn > svg,#appHeader .theme-toggle-button .theme-icon{width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;max-width:18px!important;max-height:18px!important}
-}
-@media (max-width:430px){
-  #appHeader .topbar-title p{display:none!important}
-  #appHeader.topbar{grid-template-columns:42px minmax(0,1fr) auto!important;min-height:72px!important}
-  #appHeader .topbar-title h2{font-size:16.5px!important}
-  #appHeader .notification-bell-btn{display:none!important}
-}
+/* Mobile header geometry is owned exclusively by the canonical P5.11.7.8 section below. */
 
 /* =========================
    Premium sidebar / drawer
@@ -443,12 +417,12 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   --sidebar-edge:rgba(0,212,255,.5);
   position:fixed;
   z-index:1100;
-  top:0;
+  top:var(--pet-sidebar-top,0);
   right:0;
   display:flex;
   flex-direction:column;
   width:min(330px,calc(100vw - 24px))!important;
-  height:100dvh!important;
+  height:var(--pet-sidebar-height,100dvh)!important;
   padding:14px 12px 10px!important;
   gap:10px!important;
   color:var(--pet-nav-text)!important;
@@ -780,22 +754,6 @@ body.sidebar-menu-open{overflow:hidden}
 }
 
 @media (max-width:767px), (pointer:coarse) and (max-device-width:1024px), (hover:none) and (max-device-width:1024px){
-  #appHeader.topbar{grid-template-columns:46px minmax(0,1fr) auto!important;grid-template-areas:"menu title actions"!important;min-height:84px!important;margin:-16px -16px 16px!important;padding:calc(8px + env(safe-area-inset-top)) 10px 13px!important;gap:8px!important;border-radius:0 0 22px 22px!important}
-  #appHeader.topbar.is-scrolled{min-height:78px!important;padding-top:calc(6px + env(safe-area-inset-top))!important}
-  #appHeader.topbar::after{inset:7px 6px 12px!important;border-radius:18px!important;background:linear-gradient(180deg,rgba(255,220,123,.82),transparent 80%) left top/2px 70% no-repeat,linear-gradient(180deg,rgba(255,220,123,.82),transparent 80%) right top/2px 70% no-repeat!important}
-  #appHeader.topbar::before{bottom:-108px!important;border-top-width:2px!important}
-  #appHeader .topbar-watermark{bottom:6px!important;transform:translateX(-50%) scale(.68)!important}
-  #appHeader .topbar-title{padding:0 5px!important;text-align:right!important;justify-self:stretch!important}
-  #appHeader .topbar-title h2{font-size:19px!important;line-height:1.2!important}
-  #appHeader .topbar-title p{display:block!important;margin-top:3px!important;font-size:9px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-  #appHeader .topbar-title p::after{width:4px!important;height:4px!important;margin-inline-start:5px!important}
-  #appHeader .sidebar-menu-launcher{width:46px!important;height:46px!important;min-width:46px!important;border-radius:14px!important}
-  #appHeader .petatoe-menu-icon{width:21px!important;height:21px!important}
-  #appHeader .topbar-user-actions{gap:5px!important}
-  #appHeader .header-user-menu{display:none!important}
-  #appHeader .notification-bell-btn,#appHeader .theme-toggle-button{width:42px!important;height:42px!important;flex-basis:42px!important;border-radius:13px!important}
-  #appHeader .notification-bell-btn svg,#appHeader .theme-toggle-button svg{width:20px!important;height:20px!important}
-
   #mainSidebar.sidebar{width:min(90vw,330px)!important;padding:calc(10px + env(safe-area-inset-top)) 12px calc(var(--mobile-nav-height,78px) + env(safe-area-inset-bottom,0px) + 30px)!important;border-radius:26px 0 0 26px!important;box-sizing:border-box!important}
   #mainSidebar .sidebar-launcher-host{min-height:96px!important;height:auto!important;margin-bottom:4px!important;padding:5px 5px 10px!important;pointer-events:auto!important}
   #mainSidebar .petatoe-sidebar-brand-icon{width:56px!important;height:56px!important;flex-basis:56px!important;border-radius:16px!important}
@@ -808,10 +766,6 @@ body.sidebar-menu-open{overflow:hidden}
 }
 
 @media (max-width:430px){
-  #appHeader .topbar-title p{display:none!important}
-  #appHeader.topbar{grid-template-columns:44px minmax(0,1fr) auto!important;min-height:76px!important}
-  #appHeader .topbar-title h2{font-size:17px!important}
-  #appHeader .notification-bell-btn{display:none!important}
   #mainSidebar.sidebar{width:min(92vw,330px)!important}
 }
 
@@ -1000,8 +954,8 @@ body.sidebar-menu-open{overflow:hidden}
 
 /* ============================================================
    P5.11.7.8 — MOBILE ONLY header layout recovery
-   Scope lock: phone/touch header only. Desktop >= 768px is untouched.
-   Canonical row: Menu | Scroll logo | centered PETATOE brand | Theme.
+   Scope lock: existing touch/tablet baseline plus an explicit phone-only action lane.
+   Canonical phone row: Menu | PETATOE icon | centered PETATOE brand | Language | Notifications | Theme.
    ============================================================ */
 @media (max-width:767px),
        (pointer:coarse) and (max-device-width:1024px),
@@ -1036,7 +990,6 @@ body.sidebar-menu-open{overflow:hidden}
   #appHeader .topbar-brand,
   #appHeader .topbar-watermark,
   #appHeader .header-user-menu,
-  #appHeader .notification-bell-wrap,
   #appHeader #headerBackButton{
     display:none!important;
   }
@@ -1046,6 +999,12 @@ body.sidebar-menu-open{overflow:hidden}
     width:auto!important;
     min-width:0!important;
   }
+
+  /* Translation ownership migrated from the retired legacy mobile-header block. */
+  #appHeader #translationCenterHeaderBtn{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;max-width:40px!important;max-height:40px!important;padding:0!important;place-items:center!important;border:1px solid rgba(58,133,230,.26)!important;border-radius:12px!important;background:linear-gradient(145deg,#071a32,#041224)!important;color:#71b8ff!important;box-shadow:0 8px 20px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.025)!important}
+  #appHeader #translationCenterHeaderBtn svg{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important;fill:none!important;stroke:currentColor!important}
+
+  #appHeader .notification-bell-wrap{display:var(--pet-mobile-notification-display,none)!important}
 
   /* One canonical control size and baseline for all visible mobile controls. */
   #appHeader #sidebarMenuToggle,
@@ -1186,8 +1145,62 @@ body.sidebar-menu-open{overflow:hidden}
   }
 }
 
+/* Canonical phone-only navigation geometry. This is a breakpoint variant of the same owner, not a hotfix layer. */
+@media (max-width:767px),
+       (orientation:landscape) and (max-height:500px) and (pointer:coarse){
+  :root{
+    --pet-sidebar-top:calc(var(--pet-mobile-header-h) + env(safe-area-inset-top));
+    --pet-sidebar-height:calc(100dvh - var(--pet-mobile-header-h) - env(safe-area-inset-top));
+  }
+  #appHeader{--pet-mobile-notification-display:block}
+
+  #appHeader #translationCenterHeaderBtn{
+    position:absolute;
+    top:calc(env(safe-area-inset-top) + 16px);
+    right:calc(max(10px,env(safe-area-inset-right)) + 96px);
+    left:auto;
+    z-index:7;
+  }
+
+  #appHeader .notification-bell-wrap{
+    position:absolute;
+    top:calc(env(safe-area-inset-top) + 14px);
+    right:calc(max(10px,env(safe-area-inset-right)) + 48px);
+    bottom:auto;
+    left:auto;
+    width:44px;
+    height:44px;
+    min-width:44px;
+    min-height:44px;
+    margin:0;
+    z-index:7;
+    pointer-events:auto;
+  }
+
+  #appHeader #notificationBellBtn{
+    width:44px!important;
+    height:44px!important;
+    min-width:44px!important;
+    min-height:44px!important;
+    max-width:44px!important;
+    max-height:44px!important;
+    border-radius:14px!important;
+    margin:0;
+    position:relative;
+    inset:auto;
+    z-index:2;
+    pointer-events:auto;
+    touch-action:manipulation;
+  }
+  #appHeader #notificationBellBtn>*{pointer-events:none}
+}
+
+@media (max-width:430px){
+  #appHeader .mobile-app-brand{max-width:22vw!important}
+}
+
 @media (max-width:380px){
-  #appHeader .mobile-app-brand{max-width:34vw!important}
+  #appHeader .mobile-app-brand{max-width:22vw!important}
   #appHeader .mobile-app-brand strong{font-size:14px!important}
   #appHeader .mobile-app-brand small{font-size:7.5px!important}
   #appHeader #sidebarMenuToggle,
@@ -1202,6 +1215,9 @@ body.sidebar-menu-open{overflow:hidden}
   }
   #appHeader #sidebarMenuToggle{left:max(8px,env(safe-area-inset-left))!important}
   #appHeader #themeToggleButton,#appHeader #themeToggleButton.is-visible{right:max(8px,env(safe-area-inset-right))!important}
+  #appHeader #translationCenterHeaderBtn{top:calc(env(safe-area-inset-top) + 16px);right:calc(max(8px,env(safe-area-inset-right)) + 88px)}
+  #appHeader .notification-bell-wrap{top:calc(env(safe-area-inset-top) + 16px);right:calc(max(8px,env(safe-area-inset-right)) + 44px);width:40px;height:40px;min-width:40px;min-height:40px}
+  #appHeader #notificationBellBtn{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;max-width:40px!important;max-height:40px!important;border-radius:13px!important}
   #appHeader #kyumScrollControl.mobile-floating-logo .petatoe-scroll-control-icon{width:29px!important;height:29px!important;min-width:29px!important;min-height:29px!important;max-width:29px!important;max-height:29px!important}
 }
 
@@ -1230,6 +1246,8 @@ body.sidebar-menu-open{overflow:hidden}
 
   html[data-theme="light"] #appHeader #sidebarMenuToggle,
   html[data-theme="light"] #appHeader #kyumScrollControl.mobile-floating-logo,
+  html[data-theme="light"] #appHeader #translationCenterHeaderBtn,
+  html[data-theme="light"] #appHeader #notificationBellBtn,
   html[data-theme="light"] #appHeader #themeToggleButton,
   html[data-theme="light"] #appHeader #themeToggleButton.is-visible{
     color:#103464!important;
@@ -1239,6 +1257,8 @@ body.sidebar-menu-open{overflow:hidden}
   }
   html[data-theme="light"] #appHeader #sidebarMenuToggle .petatoe-menu-icon,
   html[data-theme="light"] #appHeader #sidebarMenuToggle .mobile-menu-icon,
+  html[data-theme="light"] #appHeader #translationCenterHeaderBtn svg,
+  html[data-theme="light"] #appHeader #notificationBellBtn svg,
   html[data-theme="light"] #appHeader #themeToggleButton .theme-icon{
     color:#17457d!important;
     stroke:#17457d!important;

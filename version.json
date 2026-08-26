@@ -1,13 +1,13 @@
 {
-  "version": "18.56.18",
-  "build": 185618,
+  "version": "18.56.19",
+  "build": 185619,
   "forceUpdate": true,
   "releaseDate": "2026-08-26",
-  "title": "Desktop Header Approved Order Recovery R20",
+  "title": "Mobile Navigation Canonical Recovery R21",
   "notes": [
-    "استعادة ترتيب مجموعات وأيقونات هيدر الديسكتوب المعتمد بعد انعكاسها بتأثير اتجاه RTL على CSS Grid.",
-    "إزالة كتلة responsive قديمة مكررة كانت تكبر الهيدر واللوجو داخل نطاق الديسكتوب المتوسط.",
-    "الحفاظ على ميكانيكا القائمة الجانبية المستعادة في R19 وعلى هيدر الموبايل دون تغيير."
+    "استعادة ترتيب عناصر هيدر الموبايل المعتمد مع ظهور زر اللغة والإشعارات والثيم دون تداخل أو تكرار للهوية.",
+    "استعادة سلوك القائمة الجانبية Off-canvas أسفل هيدر الموبايل مع الحفاظ على الإغلاق والـBackdrop وقفل تمرير الخلفية.",
+    "تنظيف ملكية CSS المتراكمة للهيدر والقائمة ودمج القواعد داخل المالك canonical دون إضافة طبقة Hotfix أو !important جديدة."
   ],
-  "cacheToken": "petatoe-pwa-18-56-18-desktop-header-approved-order-recovery-r20-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-19-mobile-navigation-canonical-recovery-r21-p5-13-8-72"
 }

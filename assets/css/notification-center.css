@@ -2,7 +2,7 @@
 .notification-center-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.notification-master-card{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(14,165,233,.04));border:1px solid rgba(37,99,235,.18);margin-bottom:16px}.notification-matrix-wrap{overflow:auto}.notification-matrix{min-width:1040px}.notification-matrix td:first-child strong,.notification-matrix td:first-child small{display:block}.notification-matrix td:first-child small{color:var(--muted,#64748b);font-size:11px;margin-top:3px}.notification-matrix select[multiple]{min-width:180px;min-height:84px;border-radius:12px;padding:6px}.matrix-toggle{width:18px;height:18px;accent-color:#2563eb}.phase-two-badge{font-size:11px;padding:5px 8px;border-radius:999px;background:#eef2ff;color:#4338ca;white-space:nowrap}@media(max-width:760px){.notification-center-header{align-items:flex-start;flex-direction:column}.notification-dropdown{position:fixed;top:72px;left:12px;right:12px;width:auto}.notification-master-card{align-items:flex-start;flex-direction:column}}
 .notification-push-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 18px;border:1px solid var(--border-color,#d9e2ec);border-radius:18px;background:var(--surface,#fff);margin-bottom:16px}.notification-push-copy strong{display:block;margin-bottom:5px}.notification-push-copy p{margin:0 0 8px;color:var(--muted,#64748b);font-size:13px}.notification-push-status{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:700}.notification-push-status[data-state="active"]{background:#dcfce7;color:#166534}.notification-push-status[data-state="ready"]{background:#eff6ff;color:#1d4ed8}.notification-push-status[data-state="unsupported"],.notification-push-status[data-state="error"]{background:#fef2f2;color:#b91c1c}.notification-push-actions{display:flex;gap:9px;flex-wrap:wrap}.notification-push-actions button:disabled{opacity:.55;cursor:not-allowed}.notification-matrix th:nth-child(4),.notification-matrix td:nth-child(4){text-align:center}@media(max-width:760px){.notification-push-card{align-items:flex-start;flex-direction:column}.notification-push-actions{width:100%}.notification-push-actions button{flex:1 1 180px}}
 
-/* Phase M15.12.2.1 — Notification Bell Header Placement & Emphasis Hotfix */
+/* Notification bell component emphasis. Header geometry belongs to petatoe-navigation-shell.css. */
 .notification-bell-btn{
   width:46px;
   height:46px;
@@ -34,100 +34,7 @@
 }
 html[data-theme="dark"] .notification-unread-badge{border-color:#071a2e}
 
-@media (max-width:767px),
-       (pointer:coarse) and (max-device-width:1024px),
-       (hover:none) and (max-device-width:1024px){
-  #appHeader .notification-bell-wrap{
-    position:absolute!important;
-    top:calc(env(safe-area-inset-top) + 12px)!important;
-    right:calc(max(12px,env(safe-area-inset-right)) + 52px)!important;
-    left:auto!important;
-    z-index:6!important;
-    width:44px!important;
-    height:44px!important;
-    display:block!important;
-  }
-  #appHeader .notification-bell-btn{
-    width:44px!important;
-    height:44px!important;
-    min-width:44px!important;
-    min-height:44px!important;
-    border-radius:15px!important;
-    border:1px solid rgba(125,211,252,.76)!important;
-    background:linear-gradient(145deg,#2563eb,#0ea5e9)!important;
-    color:#fff!important;
-    box-shadow:0 8px 20px rgba(37,99,235,.30),inset 0 1px 0 rgba(255,255,255,.26)!important;
-    backdrop-filter:none!important;
-    -webkit-backdrop-filter:none!important;
-  }
-  #appHeader .notification-bell-btn:hover,
-  #appHeader .notification-bell-btn:focus-visible{transform:none!important}
-}
-
-
-/* Phase M15.12.2.2 — Notification Center Navigation & Mobile Bell Interaction Hotfix */
-@media (max-width:767px),
-       (pointer:coarse) and (max-device-width:1024px),
-       (hover:none) and (max-device-width:1024px){
-  /* Keep the mobile brand visually centered while reserving a real, touchable
-     action lane for both Notifications and Theme. No absolute overlap. */
-  #appHeader.topbar{
-    grid-template-columns:96px minmax(0,1fr) 96px!important;
-    grid-template-areas:"menu brand actions"!important;
-  }
-  #appHeader .sidebar-menu-launcher{
-    justify-self:start!important;
-  }
-  #appHeader .topbar-user-actions{
-    position:relative!important;
-    grid-area:actions!important;
-    width:96px!important;
-    min-width:96px!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-end!important;
-    gap:10px!important;
-    overflow:visible!important;
-    z-index:8!important;
-    pointer-events:auto!important;
-  }
-  #appHeader .notification-bell-wrap{
-    position:relative!important;
-    inset:auto!important;
-    top:auto!important;
-    right:auto!important;
-    bottom:auto!important;
-    left:auto!important;
-    flex:0 0 44px!important;
-    width:44px!important;
-    height:44px!important;
-    display:block!important;
-    z-index:9!important;
-    pointer-events:auto!important;
-  }
-  #appHeader .notification-bell-btn{
-    position:relative!important;
-    z-index:2!important;
-    pointer-events:auto!important;
-    touch-action:manipulation!important;
-    -webkit-tap-highlight-color:transparent!important;
-  }
-  #appHeader .theme-toggle-button,
-  #appHeader .theme-toggle-button.is-visible{
-    position:relative!important;
-    z-index:1!important;
-    flex:0 0 42px!important;
-    margin:0!important;
-  }
-}
-
-@media (max-width:390px){
-  #appHeader.topbar{
-    grid-template-columns:92px minmax(0,1fr) 92px!important;
-    padding-inline:max(8px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-right))!important;
-  }
-  #appHeader .topbar-user-actions{width:92px!important;min-width:92px!important;gap:6px!important}
-}
+/* Mobile header placement is owned by petatoe-navigation-shell.css. */
 
 /* Phase M15.12.2.3 — Role-First Notification Matrix */
 .notification-role-filter{
@@ -164,118 +71,7 @@ html[data-theme="dark"] .notification-unread-badge{border-color:#071a2e}
 .notification-matrix thead th:not(:first-child){vertical-align:middle;text-align:center}
 @media(max-width:760px){.notification-column-toggle{gap:6px}.notification-column-toggle input{width:19px;height:19px}}
 
-/* Phase M15.12.2.5 — Mobile Header Layout Recovery
-   Restore the certified mobile header positioning model (fixed/absolute controls).
-   The notification bell gets its own physical lane immediately beside Theme,
-   without converting the header or user-actions container into a grid/flex layout. */
-@media (max-width:767px),
-       (pointer:coarse) and (max-device-width:1024px),
-       (hover:none) and (max-device-width:1024px){
-  /* Undo the M15.12.2.2 grid override. The certified mobile header in mobile.css
-     is intentionally display:block with individually positioned controls. */
-  #appHeader.topbar,
-  #appHeader.topbar.is-scrolled,
-  #appHeader.topbar.mobile-header-stable{
-    display:block!important;
-    grid-template-columns:none!important;
-    grid-template-areas:none!important;
-  }
-
-  /* Keep the original mobile behavior where header action children participate
-     directly in the header positioning context. */
-  #appHeader .topbar-user-actions{
-    display:contents!important;
-    position:static!important;
-    width:auto!important;
-    min-width:0!important;
-    overflow:visible!important;
-  }
-
-  /* Theme remains in its certified far-right position. */
-  #appHeader #themeToggleButton,
-  #appHeader #themeToggleButton.is-visible{
-    position:absolute!important;
-    top:calc(env(safe-area-inset-top) + 24px)!important;
-    right:max(14px,env(safe-area-inset-right))!important;
-    left:auto!important;
-    width:48px!important;
-    height:48px!important;
-    min-width:48px!important;
-    min-height:48px!important;
-    margin:0!important;
-    z-index:4!important;
-  }
-
-  /* Notification bell occupies a separate lane 60px to the left of Theme.
-     This preserves an explicit 12px gap between two 48px touch targets. */
-  #appHeader .notification-bell-wrap{
-    position:absolute!important;
-    top:calc(env(safe-area-inset-top) + 24px)!important;
-    right:calc(max(14px,env(safe-area-inset-right)) + 60px)!important;
-    bottom:auto!important;
-    left:auto!important;
-    width:48px!important;
-    height:48px!important;
-    min-width:48px!important;
-    min-height:48px!important;
-    margin:0!important;
-    display:block!important;
-    z-index:7!important;
-    pointer-events:auto!important;
-  }
-
-  #appHeader .notification-bell-btn{
-    width:48px!important;
-    height:48px!important;
-    min-width:48px!important;
-    min-height:48px!important;
-    border-radius:16px!important;
-    margin:0!important;
-    position:relative!important;
-    inset:auto!important;
-    z-index:2!important;
-    pointer-events:auto!important;
-    touch-action:manipulation!important;
-  }
-}
-
-@media (max-width:360px){
-  /* Compact phones keep the same relationship with slightly smaller targets,
-     matching the existing compact header rules. */
-  #appHeader #themeToggleButton,
-  #appHeader #themeToggleButton.is-visible{
-    top:calc(env(safe-area-inset-top) + 24px)!important;
-    right:max(10px,env(safe-area-inset-right))!important;
-    width:44px!important;
-    height:44px!important;
-    min-width:44px!important;
-    min-height:44px!important;
-  }
-  #appHeader .notification-bell-wrap{
-    top:calc(env(safe-area-inset-top) + 24px)!important;
-    right:calc(max(10px,env(safe-area-inset-right)) + 54px)!important;
-    width:44px!important;
-    height:44px!important;
-    min-width:44px!important;
-    min-height:44px!important;
-  }
-  #appHeader .notification-bell-btn{
-    width:44px!important;
-    height:44px!important;
-    min-width:44px!important;
-    min-height:44px!important;
-    border-radius:15px!important;
-  }
-}
-
-
-/* Phase M15.13.6R — guarantee a real touch surface and visible mobile dropdown. */
-@media (max-width:767px), (pointer:coarse) and (max-device-width:1024px), (hover:none) and (max-device-width:1024px){
-  #appHeader .notification-bell-wrap{pointer-events:auto!important;z-index:90!important}
-  #appHeader #notificationBellBtn{pointer-events:auto!important;z-index:91!important;touch-action:manipulation!important}
-  #appHeader #notificationBellBtn>*{pointer-events:none!important}
-}
-
+/* Mobile bell touch geometry is owned by petatoe-navigation-shell.css. */
 
 /* P5.12.10 — Notification dropdown universal portal owner.
    The header is intentionally overflow:hidden, so the dropdown is always portaled to body.
