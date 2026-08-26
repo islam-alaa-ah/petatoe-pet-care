@@ -170,7 +170,13 @@
     if(row.status==='draft')return actionButton('adjust',t('payroll.action.adjust','تعديل'),'payroll-action-neutral','add')+actionButton('submit',t('payroll.action.submit','إرسال للاعتماد'),'payroll-action-primary','add');
     if(row.status==='pending_chairman')return actionButton('chairman_approve',t('payroll.action.chairmanApprove','اعتماد رئيس مجلس الإدارة'),'payroll-action-success','edit')+actionButton('reverse_submit',t('payroll.action.reverseSubmit','إرجاع للتجهيز'),'payroll-action-danger','delete');
     if(row.status==='pending_employee')return actionButton('reverse_chairman',t('payroll.action.reverseChairman','إلغاء اعتماد رئيس مجلس الإدارة'),'payroll-action-danger','delete');
-    if(row.status==='ready_for_payment')return actionButton('mark_paid',t('payroll.action.markPaid','تم الصرف'),'payroll-action-success','edit')+actionButton('reverse_employee',t('payroll.action.reverseEmployee','إلغاء موافقة الموظف'),'payroll-action-danger','delete');
+    if(row.status==='ready_for_payment'){
+      const requiresEmployeeApproval=row.requiresEmployeeApproval!==undefined?row.requiresEmployeeApproval:Boolean(row.employeeApprovedAt);
+      const reverseAction=requiresEmployeeApproval
+        ?actionButton('reverse_employee',t('payroll.action.reverseEmployee','إلغاء موافقة الموظف'),'payroll-action-danger','delete')
+        :actionButton('reverse_chairman_ready',t('payroll.action.reverseChairman','إلغاء اعتماد رئيس مجلس الإدارة'),'payroll-action-danger','delete');
+      return actionButton('mark_paid',t('payroll.action.markPaid','تم الصرف'),'payroll-action-success','edit')+reverseAction;
+    }
     if(row.status==='paid')return actionButton('reverse_paid',t('payroll.action.reversePaid','إلغاء الصرف'),'payroll-action-danger','delete');
     return '';
   }
