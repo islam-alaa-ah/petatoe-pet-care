@@ -144,8 +144,8 @@
     },
     "sales_invoices": {
       "file": "assets/js/sales-invoices-service.js",
-      "mode": "online_only_financial_operations",
-      "status": "accepted_online_only"
+      "mode": "offline_read_online_write",
+      "status": "compliant"
     },
     "payroll": {
       "file": "assets/js/payroll-service.js",
