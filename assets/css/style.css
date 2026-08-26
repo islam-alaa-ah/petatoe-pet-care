@@ -155,9 +155,6 @@ select[multiple]{min-height:120px}
 }
 @media(max-width:768px){
   .app-shell{grid-template-columns:1fr}
-  .sidebar{position:static;display:block;padding:12px}
-  .sidebar-brand{margin-bottom:12px}
-  .sidebar-nav{display:grid;overflow:visible}
   .nav-item{white-space:normal}
   .nav-group-content{max-height:420px}
   .logout-btn{width:100%;margin-top:10px}

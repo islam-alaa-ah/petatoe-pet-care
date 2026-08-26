@@ -1,14 +1,13 @@
 {
-  "version": "18.56.15",
-  "build": 185615,
+  "version": "18.56.17",
+  "build": 185617,
   "forceUpdate": true,
   "releaseDate": "2026-08-26",
-  "title": "Payroll & SEA VIBE Mobile Dark Mode Certification R16",
+  "title": "Navigation Drawer Structural Recovery R19",
   "notes": [
-    "توسيع المالك البصري للموبايل في الرواتب والعمولات ليغطي جميع مقاسات الهاتف والوضع الأفقي بدل الاقتصار على الشاشات الأصغر من 520px.",
-    "تحديث كارت الشهر في إدارة الرواتب ليتبع نفس هوية PETATOE المعتمدة بصريًا مع السطح الداكن والحواف والـglow وترتيب أزرار مناسب للموبايل.",
-    "توحيد أسطح بطاقات وجداول الرواتب وكشف العمولة وSEA VIBE في الموبايل مع متغيرات الهوية الدلالية للـLight/Dark بدون طبقات CSS إضافية.",
-    "الحفاظ على Desktop/Tablet وBusiness Logic والحسابات والصلاحيات دون تغيير."
+    "استعادة ميكانيكا فتح وإغلاق القائمة الجانبية بعد فقدها أثناء تنظيف ملكية CSS في R17/R18.",
+    "نقل حالة القائمة المغلقة والمفتوحة والـBackdrop وقفل تمرير الصفحة إلى petatoe-navigation-shell باعتباره المالك المعتمد.",
+    "إزالة بقايا قواعد Sidebar الهيكلية القديمة من style.css وmobile.css لمنع تداخل أو تراكم طبقات التنسيق."
   ],
-  "cacheToken": "petatoe-pwa-18-56-15-payroll-seavibe-mobile-dark-certification-r16-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-17-navigation-drawer-structural-recovery-r19-p5-13-8-72"
 }

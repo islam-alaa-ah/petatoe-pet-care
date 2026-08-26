@@ -441,6 +441,12 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
    ========================= */
 #mainSidebar.sidebar{
   --sidebar-edge:rgba(0,212,255,.5);
+  position:fixed;
+  z-index:1100;
+  top:0;
+  right:0;
+  display:flex;
+  flex-direction:column;
   width:min(330px,calc(100vw - 24px))!important;
   height:100dvh!important;
   padding:14px 12px 10px!important;
@@ -455,6 +461,18 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   box-shadow:
     -18px 0 52px rgba(1,8,20,.42),
     inset 1px 0 0 rgba(0,212,255,.08)!important;
+  transform:translateX(105%);
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
+  overflow:hidden;
+  transition:transform .26s ease,opacity .2s ease,visibility .26s ease;
+}
+#mainSidebar.sidebar.is-open{
+  transform:translateX(0);
+  visibility:visible;
+  opacity:1;
+  pointer-events:auto;
 }
 #mainSidebar.sidebar::before{
   content:"";
@@ -575,6 +593,7 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   padding-top:0!important;
   padding-bottom:0!important;
   opacity:0!important;
+  pointer-events:none;
 }
 #mainSidebar .nav-group-content .nav-item{
   position:relative!important;
@@ -737,10 +756,15 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
 }
 
 .sidebar-backdrop{
+  position:fixed;
+  z-index:1080;
+  inset:0;
   background:rgba(1,8,20,.62)!important;
   backdrop-filter:blur(7px)!important;
   -webkit-backdrop-filter:blur(7px)!important;
 }
+body.sidebar-menu-open{overflow:hidden}
+#appView > .main-content{width:100%;min-width:0}
 
 
 /* =========================
