@@ -69,7 +69,7 @@
 
   async function submitExpense(e){ e.preventDefault(); status('', 'info'); try{
     const id=$('vehicleTreasuryExpenseId').value||'';
-    await window.VehicleTreasuryService.saveExpense({id:id||null,teamId:$('vehicleTreasuryExpenseTeam').value,date:$('vehicleTreasuryExpenseDate').value,description:$('vehicleTreasuryExpenseDescription').value,amount:$('vehicleTreasuryExpenseAmount').value,notes:$('vehicleTreasuryExpenseNotes').value});
+    await window.VehicleTreasuryService.saveExpense({id:id||null,teamId:$('vehicleTreasuryExpenseTeam').value,date:$('vehicleTreasuryExpenseDate').value,description:$('vehicleTreasuryExpenseDescription').value,amount:$('vehicleTreasuryExpenseAmount').value,notes:$('vehicleTreasuryExpenseNotes').value,baseUpdatedAt:state.editing?.updatedAt||''});
     closeExpense(); await load(false); status(t('vehicleTreasury.saved','تم حفظ حركة الصرف بنجاح.'),'success');
   }catch(err){ const el=$('vehicleTreasuryExpenseStatus'); if(el){el.textContent=err.message||String(err);el.className='data-status error';} }}
 

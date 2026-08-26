@@ -159,7 +159,7 @@
     },
     "vehicle_treasury": {
       "file": "assets/js/vehicle-treasury-service.js",
-      "mode": "offline_cached_read_queued_create_update_online_delete",
+      "mode": "smart_cache_scoped_read_queued_create_update_conflict_guarded_online_delete",
       "status": "compliant"
     }
   },
