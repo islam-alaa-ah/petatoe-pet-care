@@ -374,7 +374,11 @@
   // -----------------------------------------------------------------------
   // Activation and bindings
   // -----------------------------------------------------------------------
+  function syncReferenceHeaderMode(view){
+    document.getElementById('appHeader')?.classList.toggle('payroll-reference-title-near-menu',view==='payrollReference');
+  }
   async function activate(view){
+    syncReferenceHeaderMode(view);
     if(!['payrollManagement','salaryStatement','commissionManagement','commissionStatement','payrollReference'].includes(view))return;
     updateStatic();
     if(view==='payrollManagement'){if(!$('payrollManagementMonth').value)$('payrollManagementMonth').value=currentMonth();await loadManagement(true,true);}
@@ -393,7 +397,9 @@
     $('commissionStatementRefresh')?.addEventListener('click',loadCommissionStatement);$('commissionStatementTabs')?.addEventListener('click',e=>{const btn=e.target.closest('[data-commission-tab]');if(!btn)return;state.commissionTab=btn.dataset.commissionTab;renderCommissionStatement();});
     $('payrollReferenceRefresh')?.addEventListener('click',loadReference);$('payrollReferenceType')?.addEventListener('change',renderReference);$('payrollEmployeeAdd')?.addEventListener('click',()=>openEmployeeDialog());$('payrollReferenceContent')?.addEventListener('click',e=>{const btn=e.target.closest('[data-payroll-employee-edit]');if(!btn)return;openEmployeeDialog((state.reference?.employees||[]).find(x=>x.id===btn.dataset.payrollEmployeeEdit));});$('payrollReferenceContent')?.addEventListener('submit',async e=>{const form=e.target.closest('[data-tier-form]');if(!form)return;e.preventDefault();const record={role:form.dataset.role,tierNo:Number(form.dataset.tierNo),fromAmount:Number(form.elements.from.value||0),toAmount:form.elements.to.value===''?null:Number(form.elements.to.value),ratePercent:Number(form.elements.rate.value||0),isActive:form.elements.active.checked};setStatus('payrollReferenceStatus',t('payroll.saving','جاري الحفظ...'));try{state.reference=await svc().saveTier(record);renderReference();setStatus('payrollReferenceStatus',t('commission.tier.saved','تم حفظ الشريحة.'),'success');}catch(error){setStatus('payrollReferenceStatus',error.message,'error');}});
     $('payrollEmployeeCommissionRole')?.addEventListener('change',syncEmployeeSourceFields);$('payrollEmployeeClose')?.addEventListener('click',()=> $('payrollEmployeeDialog')?.close());$('payrollEmployeeCancel')?.addEventListener('click',()=> $('payrollEmployeeDialog')?.close());$('payrollEmployeeForm')?.addEventListener('submit',async e=>{e.preventDefault();const role=$('payrollEmployeeCommissionRole').value;const record={id:$('payrollEmployeeId').value||null,fullName:$('payrollEmployeeName').value.trim(),userId:$('payrollEmployeeUser').value||null,baseSalary:Number($('payrollEmployeeBase').value||0),allowances:Number($('payrollEmployeeAllowances').value||0),paymentMethod:$('payrollEmployeePaymentMethod').value.trim(),commissionRole:role||null,appointmentEmployeeId:['driver','groomer'].includes(role)?$('payrollEmployeeAppointmentSource').value||null:null,representativeId:role==='representative'?$('payrollEmployeeRepresentative').value||null:null,commissionEligible:$('payrollEmployeeEligible').checked,isActive:$('payrollEmployeeActive').checked,notes:$('payrollEmployeeNotes').value.trim()};setStatus('payrollReferenceStatus',t('payroll.saving','جاري الحفظ...'));try{state.reference=await svc().saveEmployee(record);$('payrollEmployeeDialog')?.close();renderReference();setStatus('payrollReferenceStatus',t('payroll.employee.saved','تم حفظ بيانات الموظف.'),'success');}catch(error){setStatus('payrollReferenceStatus',error.message,'error');}});
+    window.addEventListener('kyum-view-changed',e=>syncReferenceHeaderMode(e.detail?.view));
     window.addEventListener('petatoe-language-changed',()=>{updateStatic();renderAdjustmentCatalog();if(state.management)renderManagement();if(state.salary)renderSalaryStatement();if(state.commissions)renderCommissions();if(state.commissionStatement)renderCommissionStatement();if(state.reference)renderReference();});
+    syncReferenceHeaderMode(window.KYUMNavigation?.current?.());
   }
   bind();
   window.PayrollUI=Object.freeze({activate,refreshManagement:loadManagement,refreshCommissions:loadCommissions,refreshReference:loadReference});

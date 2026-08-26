@@ -1,13 +1,13 @@
 {
-  "version": "18.56.21",
-  "build": 185621,
+  "version": "18.56.22",
+  "build": 185622,
   "forceUpdate": true,
   "releaseDate": "2026-08-26",
-  "title": "Desktop Header Geometry and User Menu Recovery R23",
+  "title": "Payroll Reference Header Title Alignment R24",
   "notes": [
-    "استعادة أبعاد الهيدر في نطاق Desktop المتوسط لتطابق القيم الفعلية المعتمدة في النسخة المرجعية القديمة دون الرجوع بأي كود أو منطق وظيفي.",
-    "إصلاح قائمة المستخدم في الهيدر من الـcanonical navigation owner لتظهر كقائمة منبثقة مستقلة دون زيادة ارتفاع الهيدر أو تشويه زر تسجيل الخروج وأيقونته.",
-    "الحفاظ على أبعاد Tablet/Mobile الحالية ومنطق فتح وإغلاق قائمة المستخدم دون تعديل app.js أو mobile.js أو أي Business Logic."
+    "تغيير مسمى شاشة البيانات المرجعية ضمن الرواتب إلى «البيانات المرجعية للرواتب» في العنوان والهيدر ومصدر الترجمة المركزي.",
+    "محاذاة عنوان شاشة البيانات المرجعية للرواتب بجوار زر القائمة على Desktop بنفس نمط هيدر KYUM، مع إبقاء بقية شاشات PETATOE على تموضع R23 المعتمد.",
+    "الحفاظ على Mobile/Tablet وباقي الهيدر ووظائف الرواتب والعمولات والصلاحيات دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-21-desktop-header-user-menu-recovery-r23-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-22-payroll-reference-header-title-r24-p5-13-8-72"
 }

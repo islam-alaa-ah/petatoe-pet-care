@@ -239,10 +239,10 @@
   grid-area:title!important;
   position:relative!important;
   z-index:4!important;
-  justify-self:center!important;
-  width:min(100%,650px)!important;
-  padding:0 16px!important;
-  text-align:center!important;
+  justify-self:var(--pet-header-title-justify,center)!important;
+  width:var(--pet-header-title-width,min(100%,650px))!important;
+  padding:var(--pet-header-title-padding,0 16px)!important;
+  text-align:var(--pet-header-title-align,center)!important;
 }
 #appHeader .topbar-title h2{
   margin:0!important;
@@ -845,15 +845,29 @@ body.sidebar-menu-open{overflow:hidden}
   html[dir="ltr"] #appHeader .topbar-title{direction:ltr}
 
   #appHeader .topbar-title{
-    position:absolute!important;
-    left:50%!important;
-    top:50%!important;
-    transform:translate(-50%,-50%)!important;
-    width:min(620px,38vw)!important;
-    justify-self:auto!important;
-    margin-top:-3px!important;
+    position:var(--pet-header-title-position,absolute)!important;
+    left:var(--pet-header-title-left,50%)!important;
+    top:var(--pet-header-title-top,50%)!important;
+    transform:var(--pet-header-title-transform,translate(-50%,-50%))!important;
+    width:var(--pet-header-title-desktop-width,min(620px,38vw))!important;
+    justify-self:var(--pet-header-title-desktop-justify,auto)!important;
+    margin-top:var(--pet-header-title-margin-top,-3px)!important;
     pointer-events:none!important;
   }
+
+  /* Payroll reference uses the approved KYUM title placement: beside the menu, not centered. */
+  #appHeader.payroll-reference-title-near-menu{
+    --pet-header-title-position:relative;
+    --pet-header-title-left:auto;
+    --pet-header-title-top:auto;
+    --pet-header-title-transform:none;
+    --pet-header-title-desktop-width:min(100%,620px);
+    --pet-header-title-desktop-justify:end;
+    --pet-header-title-margin-top:0;
+    --pet-header-title-align:end;
+    --pet-header-title-padding:0 8px;
+  }
+  #appHeader.payroll-reference-title-near-menu .topbar-title h2{white-space:nowrap}
 
   /* Menu lives alone at the far right, as in the approved reference. */
   #appHeader .sidebar-menu-launcher{
