@@ -147,6 +147,11 @@
       "mode": "online_only_financial_operations",
       "status": "accepted_online_only"
     },
+    "payroll": {
+      "file": "assets/js/payroll-service.js",
+      "mode": "offline_read_online_write",
+      "status": "compliant"
+    },
     "localization_center": {
       "file": "assets/js/localization-center-service.js",
       "mode": "online_write_cached_runtime_fallback",
@@ -189,6 +194,7 @@
     "assets/js/offline-queue.js",
     "assets/js/offline-read-cache.js",
     "assets/js/permissions-service.js",
+    "assets/js/payroll-service.js",
     "assets/js/quotations-service.js",
     "assets/js/reference-data-service.js",
     "assets/js/sales-invoices-service.js",
