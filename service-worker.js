@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-25-sales-invoices-offline-read-r27-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-26-appointments-offline-read-r28-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

@@ -159,6 +159,7 @@
   }
 
   async function fetchQuotationPrefill(quotationId) {
+    if (navigator.onLine === false) throw new Error("تحميل بيانات العقد يحتاج اتصالًا بالإنترنت.");
     if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
     const { data, error } = await window.customerSupabase
       .from("quotations")
@@ -622,7 +623,8 @@
         teamFilter.value = teams.some(([id]) => id === current) ? current : "";
       }
       render();
-      clearStatus($("installationRequestsStatus"));
+      const cachedMessage=window.InstallationsService?.getReadStatusMessage?.("requests")||window.InstallationsService?.getReadStatusMessage?.("options")||"";
+      if(cachedMessage)status($("installationRequestsStatus"),cachedMessage);else clearStatus($("installationRequestsStatus"));
     } catch (error) {
       status($("installationRequestsStatus"), error.message, "error");
       $("installationRequestsBody").innerHTML = '<tr><td colspan="11" class="empty-cell">تعذر تحميل البيانات.</td></tr>';
@@ -909,14 +911,15 @@
     const action = isEditing ? "edit" : "add";
     const engine = window.PermissionEngine;
     const loaded = engine?.isLoaded?.() === true || window.CustomerPermissions?.permissionsLoaded === true || window.CustomerPermissions?.currentRole?.() === "super_admin";
-    const allowed = loaded && (engine?.can?.(screenKey, action) === true || window.CustomerPermissions?.canScreen?.(screenKey, action) === true);
+    const online = navigator.onLine !== false;
+    const allowed = online && loaded && (engine?.can?.(screenKey, action) === true || window.CustomerPermissions?.canScreen?.(screenKey, action) === true);
 
     button.hidden = false;
     button.classList.remove("hidden");
     button.setAttribute("aria-hidden", "false");
     button.disabled = !allowed;
     button.setAttribute("aria-disabled", String(!allowed));
-    button.title = allowed ? "" : (loaded ? "لا توجد صلاحية حفظ الموعد." : "جارٍ تحميل الصلاحيات...");
+    button.title = allowed ? "" : (!online ? "حفظ الموعد يحتاج اتصالًا بالإنترنت." : (loaded ? "لا توجد صلاحية حفظ الموعد." : "جارٍ تحميل الصلاحيات..."));
 
     if (loaded && !allowed) {
       status($("newInstallationRequestFormStatus"), isEditing

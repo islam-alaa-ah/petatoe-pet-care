@@ -104,8 +104,8 @@
     },
     "installation_requests": {
       "file": "assets/js/installations-service.js",
-      "mode": "online_only_operational_setup",
-      "status": "accepted_online_only"
+      "mode": "offline_read_online_write",
+      "status": "compliant"
     },
     "geographic_reference": {
       "file": "assets/js/geographic-address.js",
@@ -119,13 +119,13 @@
     },
     "installation_operations_reports": {
       "file": "assets/js/installation-operations-reports.js",
-      "mode": "online_only_operational_reports",
-      "status": "accepted_online_only"
+      "mode": "offline_read_via_installations_service_online_write",
+      "status": "compliant"
     },
     "installation_scheduling": {
       "file": "assets/js/installation-scheduling.js",
-      "mode": "online_only_operational_setup",
-      "status": "accepted_online_only"
+      "mode": "offline_read_via_installations_service_online_write",
+      "status": "compliant"
     },
     "installation_settings_management": {
       "file": "assets/js/installation-settings-management.js",
@@ -134,8 +134,8 @@
     },
     "installations_module": {
       "file": "assets/js/installations-module.js",
-      "mode": "online_only_operational_ui",
-      "status": "accepted_online_only"
+      "mode": "offline_read_via_installations_service_online_write",
+      "status": "compliant"
     },
     "notification_center": {
       "file": "assets/js/notification-center-service.js",

@@ -4,6 +4,155 @@
   async function hasExecutionVisit(requestId){if(!requestId)return false;const {data,error}=await db().from('installation_execution_visits').select('id').eq('installation_request_id',requestId).limit(1);return !error&&Array.isArray(data)&&data.length>0}
   async function fetchPaged(factory,pageSize=500){const all=[];for(let start=0;;start+=pageSize){const {data,error}=await factory(start,start+pageSize-1);if(error)throw error;const page=data||[];all.push(...page);if(page.length<pageSize)break}return all}
   function requireAction(action,screen='installationRequests'){const p=window.CustomerPermissions;if(p?.requireAction && !p.requireAction(screen,action,{silent:true})) throw new Error('ليس لديك صلاحية لتنفيذ هذا الإجراء.');}
+  const APPOINTMENTS_CACHE_PREFIX='appointments:v1:data:';
+  const APPOINTMENTS_SCOPE_KEY='appointments:v1:scope';
+  const APPOINTMENTS_CACHE_TTL_MS=5*60*1000;
+  const APPOINTMENTS_CACHE_STALE_MAX_MS=45*24*60*60*1000;
+  const APPOINTMENTS_SCOPE_TTL_MS=60*1000;
+  const APPOINTMENTS_SCOPE_STALE_MAX_MS=365*24*60*60*1000;
+  const APPOINTMENTS_CACHE_SCHEMA_VERSION=1;
+  const APPOINTMENT_SCREENS=['installationsOverview','installationRequestNew','installationRequests','installationSchedule','installationExecution','installationCompletion','installationExceptions','installationReports','installationSettings'];
+  const appointmentReadStatus={};
+  const appointmentActiveContexts=new Map();
+  const appointmentRefreshes=new Map();
+  const appointmentScopeMemory=new Map();
+
+  function appointmentOnlineRequired(){return 'هذه العملية تحتاج اتصالًا بالإنترنت.'}
+  function ensureAppointmentOnline(){if(navigator.onLine===false)throw new Error(appointmentOnlineRequired());}
+  function currentAppointmentUserId(){return window.KYUMOfflineSessionStore?.currentUserId?.()||window.CustomerAuth?.getState?.().user?.id||window.CustomerAuth?.getState?.().profile?.id||null}
+  function currentAppointmentProfile(){const auth=window.CustomerAuth?.getState?.()||{},userId=currentAppointmentUserId();return auth.profile||window.KYUMOfflineSessionStore?.loadProfile?.(userId)||{};}
+  async function appointmentNamespace(){
+    const userId=currentAppointmentUserId();
+    if(userId)return `user:${userId}`;
+    if(navigator.onLine!==false){
+      try{const result=await db().auth?.getUser?.(),id=result?.data?.user?.id;if(id)return `user:${id}`;}catch(_){}
+    }
+    throw new Error(appointmentOnlineRequired());
+  }
+  function appointmentPermissionRows(rows){
+    return (Array.isArray(rows)?rows:[]).filter(row=>APPOINTMENT_SCREENS.includes(String(row?.screenKey||row?.screen_key||''))).map(row=>({
+      screenKey:String(row?.screenKey||row?.screen_key||''),
+      canView:Boolean(row?.can_view??row?.canView),canAdd:Boolean(row?.can_add??row?.canAdd),canEdit:Boolean(row?.can_edit??row?.canEdit),canDelete:Boolean(row?.can_delete??row?.canDelete),canExport:Boolean(row?.can_export??row?.canExport)
+    })).sort((a,b)=>a.screenKey.localeCompare(b.screenKey));
+  }
+  function appointmentPermissionFingerprint(){
+    const auth=window.CustomerAuth?.getState?.()||{},profile=currentAppointmentProfile(),role=String(profile?.role||window.CustomerPermissions?.currentRole?.()||'viewer');
+    const snapshot=window.PermissionEngine?.snapshot?.();let rows=appointmentPermissionRows(snapshot?.rows||[]);
+    if(!rows.length&&role!=='super_admin')rows=appointmentPermissionRows(window.KYUMOfflineSessionStore?.loadPermissions?.(currentAppointmentUserId())||[]);
+    return window.KYUMSmartCache?.hashValue?.({role,rows})||`role-${encodeURIComponent(role)}`;
+  }
+  function appointmentCan(screen,action='view'){
+    const pe=window.PermissionEngine?.can?.(screen,action);if(pe!==undefined&&pe!==null)return pe===true;
+    const cp=window.CustomerPermissions?.canScreen?.(screen,action);if(cp!==undefined&&cp!==null)return cp===true;
+    return window.CustomerPermissions?.canAction?.(screen,action)===true;
+  }
+  function requireAnyAppointmentAction(actions=[]){if((actions||[]).some(([screen,action])=>appointmentCan(screen,action)))return true;throw new Error('ليس لديك صلاحية عرض هذه البيانات.');}
+  function appointmentToken(parts=[]){return (parts||[]).map(value=>encodeURIComponent(String(value??'').trim()||'*')).join('|');}
+  function normalizeAppointmentScope(snapshot={}){
+    const repIds=[...new Set((snapshot.representativeIds||[]).filter(Boolean).map(String))].sort();
+    const customerRepIds=[...new Set((snapshot.customerRepresentativeIds||[]).filter(Boolean).map(String))].sort();
+    const teamIds=[...new Set((snapshot.teamIds||[]).filter(Boolean).map(String))].sort();
+    return {role:String(snapshot.role||'viewer'),accessMode:String(snapshot.accessMode||'own'),representativeIds:repIds,customerAccessMode:String(snapshot.customerAccessMode||'own'),customerRepresentativeIds:customerRepIds,teamIds,representativeId:String(snapshot.representativeId||''),bindingTeamId:String(snapshot.bindingTeamId||''),technicianName:String(snapshot.technicianName||'').trim()};
+  }
+  async function readAppointmentScopeCache(namespace){
+    if(!window.KYUMSmartCache)return null;
+    const hit=await window.KYUMSmartCache.get(APPOINTMENTS_SCOPE_KEY,{namespace,allowStale:true,allowStaleAnyAge:true,staleMaxMs:APPOINTMENTS_SCOPE_STALE_MAX_MS});
+    return hit?.hit?hit:null;
+  }
+  async function persistAppointmentScope(namespace,snapshot){
+    if(!window.KYUMSmartCache)return null;
+    return window.KYUMSmartCache.set(APPOINTMENTS_SCOPE_KEY,snapshot,{namespace,ttlMs:APPOINTMENTS_SCOPE_TTL_MS,staleMaxMs:APPOINTMENTS_SCOPE_STALE_MAX_MS,source:'supabase-scope',schemaVersion:APPOINTMENTS_CACHE_SCHEMA_VERSION});
+  }
+  async function fetchAppointmentScopeOnline(namespace){
+    ensureAppointmentOnline();
+    const profile=currentAppointmentProfile(),userId=currentAppointmentUserId(),role=String(profile?.role||window.CustomerPermissions?.currentRole?.()||'viewer');
+    if(!userId)throw new Error(appointmentOnlineRequired());
+    let snapshot;
+    if(role==='super_admin')snapshot=normalizeAppointmentScope({role,accessMode:'all',representativeIds:[],customerAccessMode:'all',customerRepresentativeIds:[],teamIds:[],representativeId:profile?.representative_id||''});
+    else{
+      const [profileResult,repsResult,teamsResult,bindingResult,customerProfileResult,customerRepsResult]=await Promise.all([
+        db().from('installation_data_access_profiles').select('access_mode,updated_at').eq('user_id',userId).maybeSingle(),
+        db().from('installation_data_access_representatives').select('representative_id').eq('user_id',userId),
+        db().from('installation_team_access').select('installation_team_id').eq('user_id',userId),
+        db().from('installation_user_technician_bindings').select('installation_team_id,technician_name,updated_at').eq('user_id',userId).maybeSingle(),
+        db().from('user_data_access_profiles').select('access_mode,updated_at').eq('user_id',userId).maybeSingle(),
+        db().from('user_data_access_representatives').select('representative_id').eq('user_id',userId)
+      ]);
+      const errors=[profileResult.error,repsResult.error,teamsResult.error,bindingResult.error,customerProfileResult.error,customerRepsResult.error].filter(error=>error&&error.code!=='PGRST116');
+      if(errors.length)throw new Error('تعذر تحديث نطاق الوصول للمواعيد: '+String(errors[0]?.message||errors[0]));
+      const accessMode=String(profileResult.data?.access_mode||'own').trim().toLowerCase(),customerAccessMode=String(customerProfileResult.data?.access_mode||'own').trim().toLowerCase();
+      const representativeIds=[profile?.representative_id,...(repsResult.data||[]).map(row=>row.representative_id)].filter(Boolean),customerRepresentativeIds=[profile?.representative_id,...(customerRepsResult.data||[]).map(row=>row.representative_id)].filter(Boolean);
+      snapshot=normalizeAppointmentScope({role,accessMode,representativeIds,customerAccessMode,customerRepresentativeIds,teamIds:(teamsResult.data||[]).map(row=>row.installation_team_id),representativeId:profile?.representative_id||'',bindingTeamId:bindingResult.data?.installation_team_id||'',technicianName:bindingResult.data?.technician_name||''});
+    }
+    const previous=await readAppointmentScopeCache(namespace).catch(()=>null),previousHash=previous?.data?window.KYUMSmartCache?.hashValue?.(normalizeAppointmentScope(previous.data)):null,nextHash=window.KYUMSmartCache?.hashValue?.(snapshot);
+    if(previousHash&&nextHash&&previousHash!==nextHash&&window.KYUMSmartCache)await window.KYUMSmartCache.removePrefix(APPOINTMENTS_CACHE_PREFIX,{namespace});
+    await persistAppointmentScope(namespace,snapshot);
+    appointmentScopeMemory.set(namespace,{snapshot,loadedAt:Date.now()});
+    return snapshot;
+  }
+  async function appointmentScopeSnapshot({force=false}={}){
+    const namespace=await appointmentNamespace(),memo=appointmentScopeMemory.get(namespace);
+    if(!force&&memo&&Date.now()-memo.loadedAt<APPOINTMENTS_SCOPE_TTL_MS)return memo.snapshot;
+    if(navigator.onLine!==false)return fetchAppointmentScopeOnline(namespace);
+    const cached=await readAppointmentScopeCache(namespace);
+    if(cached?.data){const snapshot=normalizeAppointmentScope(cached.data);appointmentScopeMemory.set(namespace,{snapshot,loadedAt:Date.now()});return snapshot;}
+    throw new Error('لا توجد بيانات نطاق مواعيد محفوظة لهذا المستخدم. افتح إدارة المواعيد مرة واحدة أثناء الاتصال بالإنترنت.');
+  }
+  function appointmentScopeFingerprint(snapshot){return window.KYUMSmartCache?.hashValue?.(normalizeAppointmentScope(snapshot))||appointmentToken([snapshot?.role,snapshot?.accessMode,...(snapshot?.representativeIds||[]),snapshot?.customerAccessMode,...(snapshot?.customerRepresentativeIds||[]),...(snapshot?.teamIds||[]),snapshot?.bindingTeamId,snapshot?.technicianName]);}
+  async function appointmentContext(kind,actions,parts=[]){
+    requireAnyAppointmentAction(actions);
+    const namespace=await appointmentNamespace(),scope=await appointmentScopeSnapshot(),permissionHash=appointmentPermissionFingerprint(),scopeHash=appointmentScopeFingerprint(scope),contextToken=appointmentToken(parts);
+    return {kind,actions,parts,namespace,permissionHash,scopeHash,scope,contextToken,key:`${APPOINTMENTS_CACHE_PREFIX}${permissionHash}:${scopeHash}:${kind}:${contextToken}`};
+  }
+  function setAppointmentReadStatus(kind,source,metadata=null,stale=false){appointmentReadStatus[kind]={source,stale:Boolean(stale),metadata:metadata||null,updatedAt:Number(metadata?.updatedAt||Date.now())};return appointmentReadStatus[kind];}
+  function appointmentCacheStatusMessage(kind){
+    const state=appointmentReadStatus[kind];if(state?.source!=='cache')return '';
+    const tr=(key,fallback,vars={})=>{const value=window.PetatoeLocalization?.t?.(key,vars);return value&&!/^\[.+\]$/.test(value)?value:fallback;};
+    const updatedAt=Number(state?.metadata?.updatedAt||state?.updatedAt||0);if(!updatedAt)return tr('shared.cache.local','يتم عرض آخر بيانات محفوظة محليًا.');
+    const minutes=Math.max(0,Math.floor((Date.now()-updatedAt)/60000));if(minutes<1)return tr('shared.cache.lessMinute','يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ أقل من دقيقة.');
+    if(minutes<60)return tr('shared.cache.minutes',`يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ ${minutes} دقيقة.`,{count:minutes});
+    const hours=Math.floor(minutes/60);if(hours<24)return tr('shared.cache.hours',`يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ ${hours} ساعة.`,{count:hours});
+    const days=Math.floor(hours/24);return tr('shared.cache.days',`يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ ${days} يوم.`,{count:days});
+  }
+  function emitAppointmentUpdate(kind,context,data,source){window.dispatchEvent?.(new CustomEvent('appointments-data-updated',{detail:{kind,contextKey:context?.key||'',data,source,updatedAt:Date.now()}}));}
+  async function persistAppointmentWorkspace(context,data,source='supabase'){
+    if(!window.KYUMSmartCache)return null;
+    return window.KYUMSmartCache.set(context.key,data,{namespace:context.namespace,ttlMs:APPOINTMENTS_CACHE_TTL_MS,staleMaxMs:APPOINTMENTS_CACHE_STALE_MAX_MS,source,schemaVersion:APPOINTMENTS_CACHE_SCHEMA_VERSION});
+  }
+  async function readAppointmentWorkspace(context){
+    if(!window.KYUMSmartCache)return null;
+    const hit=await window.KYUMSmartCache.get(context.key,{namespace:context.namespace,allowStale:true,staleMaxMs:APPOINTMENTS_CACHE_STALE_MAX_MS});
+    return hit?.hit?hit:null;
+  }
+  async function fetchAndPersistAppointment(kind,context,fetcher,{emit=false}={}){
+    ensureAppointmentOnline();if(appointmentRefreshes.has(context.key))return appointmentRefreshes.get(context.key);
+    const operation=(async()=>{const data=await fetcher();const meta=await persistAppointmentWorkspace(context,data,'supabase');setAppointmentReadStatus(kind,'network',{updatedAt:meta?.updatedAt||Date.now(),recordCount:meta?.recordCount??null},false);if(emit)emitAppointmentUpdate(kind,context,data,'network-background');return data;})();
+    appointmentRefreshes.set(context.key,operation);try{return await operation;}finally{appointmentRefreshes.delete(context.key);}
+  }
+  async function appointmentCachedRead({kind,actions,parts=[],fetcher}){
+    const context=await appointmentContext(kind,actions,parts),cached=await readAppointmentWorkspace(context);appointmentActiveContexts.set(context.key,{kind,actions,parts,context,fetcher});
+    if(cached){setAppointmentReadStatus(kind,'cache',cached.metadata||null,Boolean(cached.stale));if(navigator.onLine!==false)fetchAndPersistAppointment(kind,context,fetcher,{emit:true}).catch(error=>console.warn(`[Appointments] ${kind} background refresh skipped:`,error));return cached.data;}
+    if(navigator.onLine===false)throw new Error('لا توجد بيانات محفوظة لهذه الشاشة. افتحها مرة واحدة أثناء الاتصال بالإنترنت.');
+    return fetchAndPersistAppointment(kind,context,fetcher,{emit:false});
+  }
+  async function invalidateAppointmentCache(){
+    const namespace=await appointmentNamespace().catch(()=>null);if(namespace&&window.KYUMSmartCache)await window.KYUMSmartCache.removePrefix(APPOINTMENTS_CACHE_PREFIX,{namespace});
+    Object.keys(appointmentReadStatus).forEach(key=>delete appointmentReadStatus[key]);appointmentActiveContexts.clear();
+  }
+  function appointmentOnlineWrite(fn){return async function(...args){ensureAppointmentOnline();const result=await fn(...args);await invalidateAppointmentCache();return result;};}
+  function appointmentOnlineRead(fn){return async function(...args){ensureAppointmentOnline();return fn(...args);};}
+  async function refreshActiveAppointmentContexts(){
+    if(navigator.onLine===false)return;
+    await appointmentScopeSnapshot({force:true});
+    const entries=[...appointmentActiveContexts.values()];
+    for(const entry of entries){
+      try{
+        const next=await appointmentContext(entry.kind,entry.actions,entry.parts);
+        if(next.key!==entry.context.key){await window.KYUMSmartCache?.remove?.(entry.context.key,{namespace:entry.context.namespace});appointmentActiveContexts.delete(entry.context.key);appointmentActiveContexts.set(next.key,{...entry,context:next});}
+        await fetchAndPersistAppointment(entry.kind,next,entry.fetcher,{emit:true});
+      }catch(error){console.warn(`[Appointments] ${entry.kind} sync refresh skipped:`,error);}
+    }
+  }
   function completionWorkspaceError(message){const raw=String(message||'').trim();if(!raw.includes('Collected amount cannot exceed appointment total'))return null;const key='appointments.completion.validation.collectionExceedsFinal',translated=window.PetatoeLocalization?.t?.(key);if(translated&&!/^\[.+\]$/.test(translated))return translated;return window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'Unable to save: the collected amount exceeds the final appointment total after the service, price, or discount changes. Review the collected amount before saving.':'تعذر الحفظ: المبلغ المحصل أكبر من الإجمالي النهائي بعد تعديل الخدمات أو الأسعار أو الخصم. راجع قيمة التحصيل قبل الحفظ.'}
   function normalize(row){return {id:row.id,requestNumber:row.request_number,customerOrderNumber:row.customer_order_number||'',customerId:row.customer_id,customerName:row.customer?.customer_name||'',customerPhone:row.customer?.phone||'',customerLocationNotes:row.customer?.location_notes||'',quotationId:row.quotation_id,quotationNumber:row.quotation?.quotation_number||'',representativeId:row.representative_id,representativeName:row.representative?.full_name||'',teamId:row.installation_team_id||'',teamName:row.team?.name||'',scheduledDate:row.scheduled_date||'',scheduledTime:row.scheduled_time||'',timeSlot:row.time_slot||'',status:row.status||'بانتظار المراجعة',priority:row.priority||'عادية',technicianName:row.assigned_technician_name||'',assignmentNotes:row.assignment_notes||'',installationAddress:row.installation_address||'',customerMapUrl:row.customer_map_url||'',neighborhoodId:row.neighborhood_id||'',city:row.customer?.city||'',district:row.customer?.district||'',description:row.description||'',notes:row.notes||'',totalServicesCount:Number(row.total_services_count||0),totalServicesAmount:Number(row.total_services_amount||0),discountType:row.discount_type||'amount',discountValue:Number(row.discount_value??row.discount_amount??0),discountAmount:Number(row.discount_amount||0),taxRate:Number(row.tax_rate??15),taxAmount:Number(row.tax_amount||0),finalAmount:Number(row.final_amount||row.total_services_amount||0),services:row.services||[],animals:row.animals||[],collection:row.collection||null,createdAt:row.created_at||'',updatedAt:row.updated_at||''}}
   async function list(){requireAction('view');const [data,serviceRows]=await Promise.all([fetchPaged((from,to)=>db().from('installation_requests').select('*,customer:customers(id,customer_number,customer_name,phone,address,location_notes),quotation:quotations!installation_requests_quotation_id_fkey(id,quotation_number),representative:sales_representatives(id,full_name),team:installation_teams(id,name)').order('created_at',{ascending:false}).range(from,to)),fetchPaged((from,to)=>db().from('installation_request_services').select('installation_request_id,quantity,unit_price,line_total,service:installation_service_types(id,name)').range(from,to),1000)]);const byRequest=new Map();serviceRows.forEach(x=>{const arr=byRequest.get(x.installation_request_id)||[];arr.push({serviceTypeId:x.service?.id||'',serviceName:x.service?.name||'',quantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0),lineTotal:Number(x.line_total||0)});byRequest.set(x.installation_request_id,arr)});return data.map(row=>normalize({...row,services:byRequest.get(row.id)||[]}))}
@@ -518,7 +667,7 @@
       throw error;
     }
   }
-  async function completionQuantitySummary(requestId,visitId,groupVisitIds=[]){
+  async function rawCompletionQuantitySummary(requestId,visitId,groupVisitIds=[]){
     requireAction('view','installationCompletion');
     if(!requestId)throw new Error('معرّف الموعد مطلوب.');
     const visitIds=[...new Set((Array.isArray(groupVisitIds)&&groupVisitIds.length?groupVisitIds:[visitId]).filter(Boolean).map(String))];
@@ -532,7 +681,7 @@
     if(error)throw new Error('تعذر تحديث كميات الموعد: '+error.message);
     return (data||[]).map(x=>({requestServiceId:x.id,serviceName:x.service?.name||'خدمة',requestedQuantity:Number(x.quantity||0),scheduledCurrentQuantity:Number(x.quantity||0),executedQuantity:0,remainingQuantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0)}));
   }
-  async function completionInvoiceFinancials(requestId,visitId){
+  async function rawCompletionInvoiceFinancials(requestId,visitId){
     requireAction('view','installationCompletion');
     if(!requestId||!visitId)throw new Error('بيانات زيارة الفاتورة غير مكتملة.');
     const {data,error}=await db().rpc('get_installation_execution_group_invoice_financials',{p_installation_request_id:requestId,p_visit_id:visitId});
@@ -541,7 +690,7 @@
     if(!row)throw new Error('تعذر حساب قيمة الفاتورة شاملة الضريبة.');
     return {invoiceAmountBeforeTax:Number(row.invoice_amount||0),finalAmountIncludingTax:Number(row.final_amount_including_tax||0),installationCost:Number(row.installation_cost||0)};
   }
-  async function saveCompletionWorkspace(payload){
+  async function rawSaveCompletionWorkspace(payload){
     requireAction('edit','installationCompletion');
     if(!payload?.id)throw new Error('معرّف الموعد مطلوب.');
     if(!Array.isArray(payload.services)||!payload.services.length)throw new Error('أضف خدمة واحدة على الأقل.');
@@ -980,6 +1129,34 @@
 
   async function getSettings(){requireAction('view','installationSettings');const {data,error}=await db().from('installation_settings').select('*').eq('id',1).maybeSingle();if(error)throw new Error('تعذر تحميل إعدادات المواعيد: '+error.message);const r=data||{};return {morningLabel:r.morning_label||'صباحية',eveningLabel:r.evening_label||'مسائية',slaDays:Number(r.sla_days??1),defaultPriority:r.default_priority||'عادية',requireCompletionReport:r.require_completion_report!==false}}
   async function saveSettings(payload){requireAction('edit','installationSettings');const record={id:1,morning_label:payload.morningLabel,evening_label:payload.eveningLabel,sla_days:payload.slaDays,default_priority:payload.defaultPriority,require_completion_report:!!payload.requireCompletionReport,updated_at:new Date().toISOString()};const {error}=await db().from('installation_settings').upsert(record,{onConflict:'id'});if(error)throw new Error('تعذر حفظ إعدادات المواعيد: '+error.message)}
-  window.InstallationsService={list,options,customerAppointmentDefaults,saveCustomerLocationDefaults,requestEditDetail,requestEditOptions,createRequest,updateRequest,updateRequestServices,updateRequestContextServices,save,remove,technicians,scheduleTeams,technicianNameSuggestions,scheduleList,schedulePlan,assignMultiDay,cancelSchedule,scheduleDayLocks,setScheduleDayLock,technicianBookedTimes,assign,saveTechnician,removeTechnician,executionWorkspace,executionIdentity,selectExecutionRequest,recordMapOpened,returnExecutionToSchedule,completeCollectionStage,advanceExecution,subscribeExecutionWorkspace,completionList,completionQuantitySummary,completionInvoiceFinancials,saveCompletionWorkspace,completionCollectionRecoveryState,recoverCompletionCollectionStage,confirmActualQuantities,confirmActualQuantitiesAndInvoice,cancelConfirmedQuantity,saveCompletion,signedFileUrl,exceptionList,saveRevisit,operationalReport,installationSummaryReport,getSettings,saveSettings,settingsCatalog,saveSettingItem,toggleSettingItem,removeSettingItem};
+  const readInstallationList=()=>appointmentCachedRead({kind:'requests',actions:[['installationRequests','view']],parts:['all'],fetcher:()=>list()});
+  const readInstallationOptions=()=>appointmentCachedRead({kind:'options',actions:[['installationRequests','view'],['installationRequestNew','view'],['installationRequestNew','add']],parts:['catalog'],fetcher:()=>options()});
+  const readCustomerAppointmentDefaults=customerId=>appointmentCachedRead({kind:'customerDefaults',actions:[['installationRequests','view'],['installationRequestNew','view'],['installationRequestNew','add']],parts:['customer',customerId],fetcher:()=>customerAppointmentDefaults(customerId)});
+  const readRequestEditDetail=requestId=>appointmentCachedRead({kind:'requestDetail',actions:[['installationRequests','view'],['installationSchedule','view']],parts:['request',requestId],fetcher:()=>requestEditDetail(requestId)});
+  const readRequestEditOptions=customerId=>appointmentCachedRead({kind:'requestEditOptions',actions:[['installationRequests','view'],['installationSchedule','view']],parts:['customer',customerId||'all'],fetcher:()=>requestEditOptions(customerId)});
+  const readTechnicians=()=>appointmentCachedRead({kind:'technicians',actions:[['installationSchedule','view']],parts:['all'],fetcher:()=>technicians()});
+  const readScheduleTeams=()=>appointmentCachedRead({kind:'scheduleTeams',actions:[['installationSchedule','view']],parts:['active'],fetcher:()=>scheduleTeams()});
+  const readTechnicianNameSuggestions=()=>appointmentCachedRead({kind:'technicianSuggestions',actions:[['installationSchedule','view']],parts:['active'],fetcher:()=>technicianNameSuggestions()});
+  const readScheduleList=()=>appointmentCachedRead({kind:'schedule',actions:[['installationSchedule','view']],parts:['global'],fetcher:()=>scheduleList()});
+  const readSchedulePlan=requestId=>appointmentCachedRead({kind:'schedulePlan',actions:[['installationSchedule','view']],parts:['request',requestId],fetcher:()=>schedulePlan(requestId)});
+  const readScheduleDayLocks=(dateFrom,dateTo)=>appointmentCachedRead({kind:'scheduleDayLocks',actions:[['installationSchedule','view']],parts:['range',dateFrom||'',dateTo||''],fetcher:()=>scheduleDayLocks(dateFrom,dateTo)});
+  const readExecutionWorkspace=()=>appointmentCachedRead({kind:'execution',actions:[['installationExecution','view']],parts:['workspace'],fetcher:()=>executionWorkspace()});
+  const readExecutionIdentity=async()=>{const data=await appointmentCachedRead({kind:'executionIdentity',actions:[['installationExecution','view']],parts:['identity'],fetcher:()=>executionIdentity()});return navigator.onLine===false?{...(data||{}),canEdit:false,canReturnToSchedule:false}:data;};
+  const readCompletionList=()=>appointmentCachedRead({kind:'completion',actions:[['installationCompletion','view']],parts:['workspace'],fetcher:()=>completionList()});
+  const readExceptionList=()=>appointmentCachedRead({kind:'exceptions',actions:[['installationExceptions','view']],parts:['workspace'],fetcher:()=>exceptionList()});
+  const readOperationalReport=(filters={})=>appointmentCachedRead({kind:'operationalReport',actions:[['installationReports','view']],parts:['filters',JSON.stringify(filters||{})],fetcher:()=>operationalReport(filters)});
+  const readInstallationSummaryReport=(filters={})=>appointmentCachedRead({kind:'summaryReport',actions:[['installationReports','view']],parts:['filters',JSON.stringify(filters||{})],fetcher:()=>installationSummaryReport(filters)});
+
+  const writeSaveCustomerLocationDefaults=appointmentOnlineWrite(saveCustomerLocationDefaults);
+  const writeCreateRequest=appointmentOnlineWrite(createRequest),writeUpdateRequest=appointmentOnlineWrite(updateRequest),writeUpdateRequestServices=appointmentOnlineWrite(updateRequestServices),writeUpdateRequestContextServices=appointmentOnlineWrite(updateRequestContextServices),writeSave=appointmentOnlineWrite(save),writeRemove=appointmentOnlineWrite(remove);
+  const writeAssignMultiDay=appointmentOnlineWrite(assignMultiDay),writeCancelSchedule=appointmentOnlineWrite(cancelSchedule),writeSetScheduleDayLock=appointmentOnlineWrite(setScheduleDayLock),writeAssign=appointmentOnlineWrite(assign),writeSaveTechnician=appointmentOnlineWrite(saveTechnician),writeRemoveTechnician=appointmentOnlineWrite(removeTechnician);
+  const writeSelectExecutionRequest=appointmentOnlineWrite(selectExecutionRequest),writeRecordMapOpened=appointmentOnlineWrite(recordMapOpened),writeReturnExecutionToSchedule=appointmentOnlineWrite(returnExecutionToSchedule),writeCompleteCollectionStage=appointmentOnlineWrite(completeCollectionStage),writeAdvanceExecution=appointmentOnlineWrite(advanceExecution);
+  const completionQuantitySummary=appointmentOnlineRead(rawCompletionQuantitySummary),completionInvoiceFinancials=appointmentOnlineRead(rawCompletionInvoiceFinancials),saveCompletionWorkspace=appointmentOnlineWrite(rawSaveCompletionWorkspace);
+  const writeRecoverCompletionCollectionStage=appointmentOnlineWrite(recoverCompletionCollectionStage),writeConfirmActualQuantities=appointmentOnlineWrite(confirmActualQuantities),writeConfirmActualQuantitiesAndInvoice=appointmentOnlineWrite(confirmActualQuantitiesAndInvoice),writeCancelConfirmedQuantity=appointmentOnlineWrite(cancelConfirmedQuantity),writeSaveCompletion=appointmentOnlineWrite(saveCompletion),writeSaveRevisit=appointmentOnlineWrite(saveRevisit);
+  const writeSaveSettings=appointmentOnlineWrite(saveSettings),writeSaveSettingItem=appointmentOnlineWrite(saveSettingItem),writeToggleSettingItem=appointmentOnlineWrite(toggleSettingItem),writeRemoveSettingItem=appointmentOnlineWrite(removeSettingItem);
+  const onlineTechnicianBookedTimes=appointmentOnlineRead(technicianBookedTimes),onlineCompletionCollectionRecoveryState=appointmentOnlineRead(completionCollectionRecoveryState),onlineSignedFileUrl=appointmentOnlineRead(signedFileUrl),onlineSettingsCatalog=appointmentOnlineRead(settingsCatalog),onlineGetSettings=appointmentOnlineRead(getSettings);
+
+  if(window.KYUMSyncEngine?.register)window.KYUMSyncEngine.register('appointments_read',()=>refreshActiveAppointmentContexts());
+  window.InstallationsService={list:readInstallationList,options:readInstallationOptions,customerAppointmentDefaults:readCustomerAppointmentDefaults,saveCustomerLocationDefaults:writeSaveCustomerLocationDefaults,requestEditDetail:readRequestEditDetail,requestEditOptions:readRequestEditOptions,createRequest:writeCreateRequest,updateRequest:writeUpdateRequest,updateRequestServices:writeUpdateRequestServices,updateRequestContextServices:writeUpdateRequestContextServices,save:writeSave,remove:writeRemove,technicians:readTechnicians,scheduleTeams:readScheduleTeams,technicianNameSuggestions:readTechnicianNameSuggestions,scheduleList:readScheduleList,schedulePlan:readSchedulePlan,assignMultiDay:writeAssignMultiDay,cancelSchedule:writeCancelSchedule,scheduleDayLocks:readScheduleDayLocks,setScheduleDayLock:writeSetScheduleDayLock,technicianBookedTimes:onlineTechnicianBookedTimes,assign:writeAssign,saveTechnician:writeSaveTechnician,removeTechnician:writeRemoveTechnician,executionWorkspace:readExecutionWorkspace,executionIdentity:readExecutionIdentity,selectExecutionRequest:writeSelectExecutionRequest,recordMapOpened:writeRecordMapOpened,returnExecutionToSchedule:writeReturnExecutionToSchedule,completeCollectionStage:writeCompleteCollectionStage,advanceExecution:writeAdvanceExecution,subscribeExecutionWorkspace,completionList:readCompletionList,completionQuantitySummary,completionInvoiceFinancials,saveCompletionWorkspace,completionCollectionRecoveryState:onlineCompletionCollectionRecoveryState,recoverCompletionCollectionStage:writeRecoverCompletionCollectionStage,confirmActualQuantities:writeConfirmActualQuantities,confirmActualQuantitiesAndInvoice:writeConfirmActualQuantitiesAndInvoice,cancelConfirmedQuantity:writeCancelConfirmedQuantity,saveCompletion:writeSaveCompletion,signedFileUrl:onlineSignedFileUrl,exceptionList:readExceptionList,saveRevisit:writeSaveRevisit,operationalReport:readOperationalReport,installationSummaryReport:readInstallationSummaryReport,getSettings:onlineGetSettings,saveSettings:writeSaveSettings,settingsCatalog:onlineSettingsCatalog,saveSettingItem:writeSaveSettingItem,toggleSettingItem:writeToggleSettingItem,removeSettingItem:writeRemoveSettingItem,invalidateCache:invalidateAppointmentCache,getReadStatus:kind=>kind?appointmentReadStatus[kind]||null:{...appointmentReadStatus},getReadStatusMessage:appointmentCacheStatusMessage,refreshActiveContexts:refreshActiveAppointmentContexts,getScopeSnapshot:()=>appointmentScopeSnapshot()};
   window.dispatchEvent(new CustomEvent('kyum-installations-service-ready'));
 })();
