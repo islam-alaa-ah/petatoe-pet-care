@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-27-safe-execution-queue-r29-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-28-financial-boundary-r30-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

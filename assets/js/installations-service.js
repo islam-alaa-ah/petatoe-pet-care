@@ -18,6 +18,7 @@
   const appointmentScopeMemory=new Map();
   const EXECUTION_QUEUE_ENTITY='installation_execution';
   const EXECUTION_SELECTION_CANONICAL_RPC='select_installation_execution_visit'; // Invoked server-side by sync_installation_execution_transition.
+  const FINANCIAL_GROUP_INVOICE_CANONICAL_RPC='confirm_installation_execution_group_and_create_invoice_v5'; // Invoked server-side by confirm_installation_execution_and_create_invoice_safe_v1.
   const SAFE_EXECUTION_TRANSITIONS=Object.freeze(['select','on_route','map_opened','arrived','start']);
   const EXECUTION_TRANSITION_ORDER=Object.freeze({select:0,on_route:1,map_opened:2,arrived:3,start:4});
 
@@ -796,18 +797,78 @@
     void notifyEvent('installation.execution_returned_to_schedule',id,null,{source:'current_execution',reason,stage:data?.stage||''},'return-schedule:'+id+':'+Date.now());
     return data;
   }
-  async function uploadExecutionFile(requestId,file,fileKind='execution',visitId=null){
+  function stableFinancialStringify(value){
+    if(value===null||typeof value!=='object')return JSON.stringify(value);
+    if(Array.isArray(value))return `[${value.map(stableFinancialStringify).join(',')}]`;
+    const keys=Object.keys(value).sort();return `{${keys.map(key=>`${JSON.stringify(key)}:${stableFinancialStringify(value[key])}`).join(',')}}`;
+  }
+  async function financialPayloadDigest(value){
+    const input=stableFinancialStringify(value),bytes=new TextEncoder().encode(input);
+    if(globalThis.crypto?.subtle?.digest){const digest=await globalThis.crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+    return String(window.KYUMSmartCache?.hashValue?.(value)||appointmentToken([input]));
+  }
+  async function financialOperationKey(action,payload={}){
+    const requestId=String(payload.requestId||payload.id||'').trim(),visitId=String(payload.visitId||'legacy').trim()||'legacy';
+    const digest=await financialPayloadDigest(payload);return `appointments:financial:${String(action||'operation')}:${requestId}:${visitId}:${digest}`;
+  }
+  async function financialFileDigest(file){
+    if(globalThis.crypto?.subtle?.digest&&file?.arrayBuffer){
+      const digest=await globalThis.crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+      return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');
+    }
+    return financialPayloadDigest({name:String(file?.name||''),type:String(file?.type||''),size:Number(file?.size||0),lastModified:Number(file?.lastModified||0)});
+  }
+  async function financialEvidenceKey(operationKey,file,fileKind='evidence'){
+    const [namespace,fileDigest]=await Promise.all([appointmentNamespace(),financialFileDigest(file)]);
+    const digest=await financialPayloadDigest({namespace,operationKey:String(operationKey||''),fileKind:String(fileKind||'evidence'),fileDigest});
+    return `financial-evidence:${digest}`;
+  }
+  async function ensureFinancialBoundaryReady({requestId,visitId=null,groupVisitIds=[]}={}){
+    ensureAppointmentOnline();
+    if(!requestId)throw new Error('معرّف الموعد مطلوب.');
+    const namespace=await appointmentNamespace(),visitIds=new Set([visitId,...(groupVisitIds||[])].filter(Boolean).map(String));
+    const operations=await executionQueueOperations(namespace,{includeBlocking:true});
+    const blockers=(operations||[]).filter(operation=>{
+      if(!['pending','retry','processing','failed','conflict'].includes(operation.status))return false;
+      const payload=operation.payload||{};if(String(payload.requestId||'')!==String(requestId))return false;
+      if(!visitIds.size)return true;const opVisit=String(payload.visitId||'');return !opVisit||visitIds.has(opVisit);
+    });
+    if(!blockers.length)return true;
+    if(blockers.some(x=>['failed','conflict'].includes(x.status)))throw new Error('توجد مشكلة مزامنة في مراحل تنفيذ هذا الموعد. عالجها من مركز المزامنة قبل أي تحصيل أو اعتماد مالي.');
+    throw new Error('توجد مراحل تنفيذ معلقة للمزامنة لهذا الموعد. انتظر اكتمال المزامنة قبل التحصيل أو اعتماد الكميات أو إنشاء الفاتورة.');
+  }
+  function isRetryableFinancialError(error){
+    if(window.KYUMOfflineQueue?.isRetryableError?.(error))return true;
+    const text=String(error?.message||error||'').toLowerCase();return /network|fetch|timeout|connection|failed to fetch|load failed|networkerror/.test(text);
+  }
+  async function uploadExecutionFile(requestId,file,fileKind='execution',visitId=null,evidenceKey=null){
     if(!file)return null;
     if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('صيغة الصورة غير مدعومة.');
     if(file.size<1||file.size>10485760)throw new Error('حجم الصورة يجب أن يكون بين 1 بايت و10 ميجابايت.');
+    if(evidenceKey){
+      const {data:existing,error:existingError}=await db().from('installation_execution_files').select('id,storage_path').eq('client_evidence_key',evidenceKey).maybeSingle();
+      if(existingError)throw new Error('تعذر التحقق من مرفق التنفيذ السابق: '+existingError.message);
+      if(existing)return {id:existing.id||null,path:existing.storage_path,reused:true};
+    }
     const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
-    const path=`${requestId}/execution/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const safeEvidenceToken=evidenceKey?String(evidenceKey).replace(/[^a-zA-Z0-9_-]/g,'-'):'';
+    const path=evidenceKey?`${requestId}/execution/financial/${safeEvidenceToken}.${ext}`:`${requestId}/execution/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const bucket=db().storage.from('installation-evidence');
     const {error:up}=await bucket.upload(path,file,{contentType:file.type,upsert:false});
-    if(up)throw new Error('تعذر رفع صورة التنفيذ: '+up.message);
-    const {data:record,error}=await db().from('installation_execution_files').insert({installation_request_id:requestId,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size,file_kind:fileKind,execution_visit_id:visitId||null}).select('id,storage_path').single();
-    if(error){await bucket.remove([path]);throw new Error('تعذر تسجيل صورة التنفيذ: '+error.message);}
-    return {id:record?.id||null,path};
+    if(up&&!(evidenceKey&&/(already|exists|duplicate|409)/i.test(String(up.message||up.statusCode||up))))throw new Error('تعذر رفع صورة التنفيذ: '+up.message);
+    const row={installation_request_id:requestId,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size,file_kind:fileKind,execution_visit_id:visitId||null};
+    if(evidenceKey)row.client_evidence_key=evidenceKey;
+    const {data:record,error}=await db().from('installation_execution_files').insert(row).select('id,storage_path').single();
+    if(error){
+      if(evidenceKey){
+        const {data:existing}=await db().from('installation_execution_files').select('id,storage_path').eq('client_evidence_key',evidenceKey).maybeSingle().catch(()=>({data:null}));
+        if(existing)return {id:existing.id||null,path:existing.storage_path,reused:true};
+        if(isRetryableFinancialError(error))throw new Error('تعذر تأكيد تسجيل صورة التنفيذ بسبب الاتصال. أعد المحاولة بنفس البيانات.');
+      }
+      if(!up)await bucket.remove([path]);
+      throw new Error('تعذر تسجيل صورة التنفيذ: '+error.message);
+    }
+    return {id:record?.id||null,path:record?.storage_path||path,reused:false};
   }
   async function rollbackExecutionFiles(files){
     const saved=(files||[]).filter(Boolean);
@@ -820,13 +881,16 @@
     requireAction('edit','installationExecution');
     const amount=Number(payload.amountCollected||0);if(!Number.isFinite(amount)||amount<0)throw new Error('المبلغ المستلم غير صحيح.');
     const paymentMethod=String(payload.paymentMethod||'').trim();if(amount>0&&!paymentMethod)throw new Error('طريقة التحصيل مطلوبة.');
+    await ensureFinancialBoundaryReady({requestId:payload.id,visitId:payload.visitId||null});
+    const operationKey=await financialOperationKey('collection',{requestId:payload.id,visitId:payload.visitId||null,amountReceived:Math.round(amount*100)/100,paymentMethod,reference:String(payload.reference||'').trim(),notes:String(payload.notes||'').trim()});
     let uploaded=null;
     try{
-      if(payload.attachment)uploaded=await uploadExecutionFile(payload.id,payload.attachment,'collection',payload.visitId||null);
-      const {error}=await db().rpc('complete_installation_collection_stage',{p_request_id:payload.id,p_visit_id:payload.visitId||null,p_amount_received:amount,p_payment_method:paymentMethod||null,p_reference:String(payload.reference||'').trim()||null,p_notes:String(payload.notes||'').trim()||null});
+      if(payload.attachment){const evidenceKey=await financialEvidenceKey(operationKey,payload.attachment,'collection');uploaded=await uploadExecutionFile(payload.id,payload.attachment,'collection',payload.visitId||null,evidenceKey);}
+      const {data,error}=await db().rpc('complete_installation_collection_stage_safe_v1',{p_request_id:payload.id,p_visit_id:payload.visitId||null,p_amount_received:amount,p_payment_method:paymentMethod||null,p_reference:String(payload.reference||'').trim()||null,p_notes:String(payload.notes||'').trim()||null,p_operation_key:operationKey});
       if(error)throw new Error('تعذر تأكيد مرحلة التحصيل: '+error.message);
-      void notifyEvent('installation.collection_completed',payload.id,payload.visitId||null,{amountCollected:amount,paymentMethod,hasAttachment:Boolean(uploaded)},'collection:'+String(payload.visitId||payload.id));
-    }catch(error){if(uploaded)await rollbackExecutionFiles([uploaded]).catch(()=>{});throw error}
+      void notifyEvent('installation.collection_completed',payload.id,payload.visitId||null,{amountCollected:amount,paymentMethod,hasAttachment:Boolean(uploaded),idempotentReplay:Boolean(data?.idempotentReplay)},'collection:'+operationKey);
+      return data||{};
+    }catch(error){if(uploaded&&!isRetryableFinancialError(error))await rollbackExecutionFiles([uploaded]).catch(()=>{});throw error}
   }
   async function advanceExecution(payload){
     requireAction('edit','installationExecution');
@@ -873,6 +937,7 @@
   }
   async function rawSaveCompletionWorkspace(payload){
     requireAction('edit','installationCompletion');
+    await ensureFinancialBoundaryReady({requestId:payload?.id,visitId:payload?.visitId||null});
     if(!payload?.id)throw new Error('معرّف الموعد مطلوب.');
     if(!Array.isArray(payload.services)||!payload.services.length)throw new Error('أضف خدمة واحدة على الأقل.');
     const services=payload.services.map(x=>({request_service_id:x.requestServiceId||null,service_type_id:x.serviceTypeId,quantity:Number(x.quantity),unit_price:Number(x.unitPrice)}));
@@ -899,32 +964,34 @@
     const paymentMethod=String(payload.paymentMethod||'').trim();
     if(!Number.isFinite(amount)||amount<0)throw new Error('المبلغ المحصل غير صحيح.');
     if(amount>0&&!paymentMethod)throw new Error('اختر طريقة الدفع قبل تأكيد مرحلة التحصيل.');
-    const {data,error}=await db().rpc('recover_installation_completion_collection_stage',{
-      p_request_id:payload.id,p_visit_id:payload.visitId,p_amount_collected:amount,p_payment_method:paymentMethod||null,p_notes:String(payload.notes||'').trim()||null
-    });
+    await ensureFinancialBoundaryReady({requestId:payload.id,visitId:payload.visitId});
+    const operationKey=await financialOperationKey('collection_recovery',{requestId:payload.id,visitId:payload.visitId,amountCollected:amount,paymentMethod,notes:String(payload.notes||'').trim()});
+    const {data,error}=await db().rpc('recover_installation_completion_collection_stage_safe_v1',{p_request_id:payload.id,p_visit_id:payload.visitId,p_amount_collected:amount,p_payment_method:paymentMethod||null,p_notes:String(payload.notes||'').trim()||null,p_operation_key:operationKey});
     if(error)throw new Error('تعذر تأكيد مرحلة التحصيل للحالة العالقة: '+error.message);
     return data||{};
   }
-  async function uploadCompletionConfirmationAttachments(requestId,visitId,files=[]){
+  async function uploadCompletionConfirmationAttachments(requestId,visitId,files=[],operationKey=null){
     const items=[...(files||[])];
     if(items.length>6)throw new Error('الحد الأقصى 6 مرفقات في عملية التأكيد الواحدة.');
     const uploaded=[];
-    try{for(const file of items)uploaded.push(await uploadExecutionFile(requestId,file,'collection',visitId||null));return uploaded}
-    catch(error){if(uploaded.length)await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
+    try{for(const file of items){const evidenceKey=operationKey?await financialEvidenceKey(operationKey,file,'quantity_confirmation'):null;uploaded.push(await uploadExecutionFile(requestId,file,'collection',visitId||null,evidenceKey));}return uploaded}
+    catch(error){if(uploaded.length&&!isRetryableFinancialError(error))await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
   }
   async function confirmActualQuantities(payload){
     requireAction('edit','installationCompletion');
     const groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))],grouped=Boolean(payload.visitId&&groupIds.length>1),uploaded=[];
+    await ensureFinancialBoundaryReady({requestId:payload.id,visitId:payload.visitId||null,groupVisitIds:groupIds});
+    const normalizedLines=[...(payload.lines||[])].map(x=>({requestServiceId:String(x.requestServiceId||''),scheduledQuantity:Number(x.scheduledQuantity||0),executedQuantity:Number(x.executedQuantity||0)})).sort((a,b)=>a.requestServiceId.localeCompare(b.requestServiceId));
+    const operationKey=await financialOperationKey('quantity_confirmation',{requestId:payload.id,visitId:payload.visitId||null,groupVisitIds:[...groupIds].map(String).sort(),lines:normalizedLines,remainingAction:payload.remainingAction||'',schedule:payload.schedule||null,notes:String(payload.notes||'').trim()});
     try{
-      if(payload?.attachments?.length)uploaded.push(...await uploadCompletionConfirmationAttachments(payload.id,payload.visitId||null,payload.attachments));
-      const rpc=grouped?'confirm_installation_execution_group_quantities_v2':(payload.visitId?'confirm_installation_execution_visit_quantities':'confirm_installation_actual_quantities');
-      const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null}:{p_request_id:payload.id,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null};
-      const {data,error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر اعتماد التنفيذ الفعلي: '+error.message);
-      void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId||null,{remainingAction:payload.remainingAction,grouped,attachments:uploaded.length},'confirm:'+String(payload.visitId||payload.id));
-      if(payload.remainingAction==='append_to_next_visit')void notifyEvent('installation.remaining_added_to_next',payload.id,payload.visitId||null,{},'remaining-next:'+String(payload.visitId||payload.id));
-      if(payload.remainingAction==='return_to_schedule')void notifyEvent('installation.remaining_to_schedule',payload.id,payload.visitId||null,{},'remaining-schedule:'+String(payload.visitId||payload.id));
+      if(payload?.attachments?.length)uploaded.push(...await uploadCompletionConfirmationAttachments(payload.id,payload.visitId||null,payload.attachments,operationKey));
+      const {data,error}=await db().rpc('confirm_installation_actual_quantities_safe_v1',{p_request_id:payload.id,p_visit_id:payload.visitId||null,p_grouped:grouped,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_operation_key:operationKey});
+      if(error)throw new Error('تعذر اعتماد التنفيذ الفعلي: '+error.message);
+      void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId||null,{remainingAction:payload.remainingAction,grouped,attachments:uploaded.length,idempotentReplay:Boolean(data?.idempotentReplay)},'confirm:'+operationKey);
+      if(payload.remainingAction==='append_to_next_visit')void notifyEvent('installation.remaining_added_to_next',payload.id,payload.visitId||null,{},'remaining-next:'+operationKey);
+      if(payload.remainingAction==='return_to_schedule')void notifyEvent('installation.remaining_to_schedule',payload.id,payload.visitId||null,{},'remaining-schedule:'+operationKey);
       return data;
-    }catch(error){if(uploaded.length)await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
+    }catch(error){if(uploaded.length&&!isRetryableFinancialError(error))await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
   }
   async function confirmActualQuantitiesAndInvoice(payload){
     requireAction('edit','installationCompletion');
@@ -932,23 +999,27 @@
     const invoiceNumber=String(payload.invoiceNumber||'').trim(),invoiceDate=String(payload.invoiceDate||'').trim(),withoutInvoice=Boolean(payload.withoutInvoice),groupIds=[...new Set((payload?.groupVisitIds||[]).filter(Boolean))],uploaded=[];
     if(!withoutInvoice&&!invoiceNumber)throw new Error('رقم الفاتورة مطلوب أو اختر بدون فاتورة.');
     if(!invoiceDate)throw new Error('تاريخ الفاتورة مطلوب.');
+    await ensureFinancialBoundaryReady({requestId:payload.id,visitId:payload.visitId,groupVisitIds:groupIds});
+    const grouped=groupIds.length>1,normalizedLines=[...(payload.lines||[])].map(x=>({requestServiceId:String(x.requestServiceId||''),scheduledQuantity:Number(x.scheduledQuantity||0),executedQuantity:Number(x.executedQuantity||0)})).sort((a,b)=>a.requestServiceId.localeCompare(b.requestServiceId));
+    const operationKey=await financialOperationKey('quantity_invoice',{requestId:payload.id,visitId:payload.visitId,groupVisitIds:[...groupIds].map(String).sort(),lines:normalizedLines,remainingAction:payload.remainingAction||'',schedule:payload.schedule||null,notes:String(payload.notes||'').trim(),invoiceNumber:withoutInvoice?'':invoiceNumber,invoiceDate,withoutInvoice});
     try{
-      if(payload?.attachments?.length)uploaded.push(...await uploadCompletionConfirmationAttachments(payload.id,payload.visitId,payload.attachments));
-      const grouped=groupIds.length>1,rpc=grouped?'confirm_installation_execution_group_and_create_invoice_v5':'confirm_installation_execution_visit_and_create_invoice_v4';
-      const args=grouped?{p_request_id:payload.id,p_anchor_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice}:{p_request_id:payload.id,p_visit_id:payload.visitId,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice};
-      const {data,error}=await db().rpc(rpc,args);if(error)throw new Error('تعذر اعتماد الكمية وإنشاء الفاتورة: '+error.message);
-      void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId,{remainingAction:payload.remainingAction,directInvoice:true,grouped,attachments:uploaded.length},'confirm-invoice:'+String(payload.visitId));
-      void notifyEvent('sales_invoice.created',payload.id,payload.visitId,{sourceType:'installation',directConfirmation:true,grouped},'invoice:'+String(payload.visitId));
+      if(payload?.attachments?.length)uploaded.push(...await uploadCompletionConfirmationAttachments(payload.id,payload.visitId,payload.attachments,operationKey));
+      const {data,error}=await db().rpc('confirm_installation_execution_and_create_invoice_safe_v1',{p_request_id:payload.id,p_visit_id:payload.visitId,p_grouped:grouped,p_lines:payload.lines||[],p_remaining_action:payload.remainingAction,p_schedule:payload.schedule||null,p_notes:payload.notes||null,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice,p_operation_key:operationKey});
+      if(error)throw new Error('تعذر اعتماد الكمية وإنشاء الفاتورة: '+error.message);
+      void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId,{remainingAction:payload.remainingAction,directInvoice:true,grouped,attachments:uploaded.length,idempotentReplay:Boolean(data?.idempotentReplay)},'confirm-invoice:'+operationKey);
+      void notifyEvent('sales_invoice.created',payload.id,payload.visitId,{sourceType:'installation',directConfirmation:true,grouped,idempotentReplay:Boolean(data?.idempotentReplay)},'invoice:'+operationKey);
       return data;
-    }catch(error){if(uploaded.length)await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
+    }catch(error){if(uploaded.length&&!isRetryableFinancialError(error))await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
   }
   async function cancelConfirmedQuantity(payload){
     if(window.CustomerPermissions?.currentRole?.()!=='super_admin')throw new Error('إلغاء الكمية المنفذة متاح لمدير النظام فقط.');
+    await ensureFinancialBoundaryReady({requestId:payload?.id,visitId:payload?.visitId||null,groupVisitIds:payload?.visitIds||[]});
     const visitIds=[...new Set((payload?.visitIds?.length?payload.visitIds:[payload?.visitId]).filter(Boolean))];
     if(!payload?.id||!visitIds.length)throw new Error('بيانات زيارة التنفيذ غير مكتملة.');
-    const {error}=await db().rpc('cancel_installation_execution_visit_confirmation_group',{p_request_id:payload.id,p_visit_ids:visitIds,p_reason:payload.reason||null});
+    const operationKey=await financialOperationKey('quantity_confirmation_cancel',{requestId:payload.id,visitId:payload.visitId||visitIds[0]||null,visitIds:[...visitIds].map(String).sort(),reason:String(payload.reason||'').trim()});
+    const {data,error}=await db().rpc('cancel_installation_execution_visit_confirmation_safe_v1',{p_request_id:payload.id,p_visit_ids:visitIds,p_reason:payload.reason||null,p_operation_key:operationKey});
     if(error)throw new Error('تعذر إلغاء تأكيد الكمية المنفذة: '+error.message);
-    return true;
+    return data||true;
   }
   async function completionList(){
     requireAction('view','installationCompletion');
@@ -997,18 +1068,26 @@
     }
     return [...groupedOut.values()].map(row=>{if(!row.visitId)return row;row.groupVisitIds=[...new Set(row.groupVisitIds||[])];row.confirmedVisitIds=[...new Set(row.confirmedVisitIds||[])];row.quantityConfirmed=Number(row._confirmedCount||0)===Number(row._memberCount||1);row.confirmedHistory=row.quantityConfirmed&&row.confirmedVisitIds.length>0;if(Array.isArray(row.quantities)&&row.quantities.length){row.invoiceAmount=row.quantities.reduce((n,q)=>n+(Number(q.executedQuantity||0)*Number(q.unitPrice||servicePriceMap.get(String(q.requestServiceId))||0)),0);row.installationExpenses=row.quantities.reduce((n,q)=>n+(Number(q.executedQuantity||0)*Number(serviceCostMap.get(String(q.requestServiceId))||0)),0)}if(row.groupVisitIds.length>1)row.executionNumber=row.requestNumber;delete row._memberCount;delete row._confirmedCount;return row;});
   }
-  async function uploadCompletionFile(requestId,fileKind,file){
+  async function uploadCompletionFile(requestId,fileKind,file,evidenceKey=null){
     if(!file)return null;
     if(!['before','after','delivery_authorization'].includes(fileKind))throw new Error('نوع مرفق محضر الموعد غير مدعوم.');
     if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('صيغة الصورة غير مدعومة. استخدم JPG أو PNG أو WEBP.');
     if(file.size<1||file.size>10485760)throw new Error('حجم الصورة يجب أن يكون بين 1 بايت و10 ميجابايت.');
-    const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
-    const path=`${requestId}/completion/${fileKind}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const {error:uploadError}=await db().storage.from('installation-evidence').upload(path,file,{contentType:file.type,upsert:false});
-    if(uploadError)throw new Error('تعذر رفع مرفق محضر الموعد: '+uploadError.message);
-    const {error:recordError}=await db().from('installation_completion_files').insert({installation_request_id:requestId,file_kind:fileKind,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size});
+    if(evidenceKey){
+      const {data:existing,error:existingError}=await db().from('installation_completion_files').select('id,storage_path').eq('client_evidence_key',evidenceKey).maybeSingle();
+      if(existingError)throw new Error('تعذر التحقق من مرفق محضر الموعد السابق: '+existingError.message);
+      if(existing)return existing.storage_path;
+    }
+    const ext=(file.name.split('.').pop()||'jpg').toLowerCase(),safeEvidenceToken=evidenceKey?String(evidenceKey).replace(/[^a-zA-Z0-9_-]/g,'-'):'';
+    const path=evidenceKey?`${requestId}/completion/${fileKind}/financial/${safeEvidenceToken}.${ext}`:`${requestId}/completion/${fileKind}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const bucket=db().storage.from('installation-evidence');
+    const {error:uploadError}=await bucket.upload(path,file,{contentType:file.type,upsert:false});
+    if(uploadError&&!(evidenceKey&&/(already|exists|duplicate|409)/i.test(String(uploadError.message||uploadError.statusCode||uploadError))))throw new Error('تعذر رفع مرفق محضر الموعد: '+uploadError.message);
+    const row={installation_request_id:requestId,file_kind:fileKind,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size};if(evidenceKey)row.client_evidence_key=evidenceKey;
+    const {error:recordError}=await db().from('installation_completion_files').insert(row);
     if(recordError){
-      await db().storage.from('installation-evidence').remove([path]);
+      if(evidenceKey){const {data:existing}=await db().from('installation_completion_files').select('storage_path').eq('client_evidence_key',evidenceKey).maybeSingle().catch(()=>({data:null}));if(existing?.storage_path)return existing.storage_path;if(isRetryableFinancialError(recordError))throw new Error('تعذر تأكيد تسجيل مرفق محضر الموعد بسبب الاتصال. أعد المحاولة بنفس البيانات.');}
+      if(!uploadError)await bucket.remove([path]);
       throw new Error('تعذر تسجيل مرفق محضر الموعد: '+recordError.message);
     }
     return path;
@@ -1025,17 +1104,23 @@
     if(!recipientName)throw new Error('اسم مستلم الأعمال مطلوب.');
     if(!invoiceNumber)throw new Error('رقم الفاتورة مطلوب.');
     if(!invoiceDate)throw new Error('تاريخ الفاتورة مطلوب.');
-    const report={installation_request_id:payload.id,work_summary:workSummary,recipient_name:recipientName,invoice_number:invoiceNumber,invoice_date:invoiceDate,recipient_role:null,customer_notes:null,signed_at:null};
-    const {error:reportError}=await db().from('installation_completion_reports').upsert(report,{onConflict:'installation_request_id'});
-    if(reportError)throw new Error('تعذر حفظ محضر إكمال الموعد: '+reportError.message);
-    const {error:invoiceSyncError}=await db().rpc('sync_sales_invoice_from_installation',{p_installation_request_id:payload.id});
-    if(invoiceSyncError)throw new Error('تم حفظ المحضر لكن تعذر تسجيل فاتورة المبيعات: '+invoiceSyncError.message);
-    const jobs=[];
-    for(const file of (payload.beforePhotos||[]))jobs.push(uploadCompletionFile(payload.id,'before',file));
-    for(const file of (payload.afterPhotos||[]))jobs.push(uploadCompletionFile(payload.id,'after',file));
-    if(payload.deliveryAuthorizationFile)jobs.push(uploadCompletionFile(payload.id,'delivery_authorization',payload.deliveryAuthorizationFile));
-    for(const job of jobs)await job;
-    return true;
+    await ensureFinancialBoundaryReady({requestId:payload.id});
+    const operationKey=await financialOperationKey('legacy_completion_invoice',{requestId:payload.id,workSummary,recipientName,invoiceNumber,invoiceDate});
+    const uploaded=[];
+    try{
+      for(const file of (payload.beforePhotos||[])){const evidenceKey=await financialEvidenceKey(operationKey,file,'legacy_completion:before');uploaded.push(await uploadCompletionFile(payload.id,'before',file,evidenceKey));}
+      for(const file of (payload.afterPhotos||[])){const evidenceKey=await financialEvidenceKey(operationKey,file,'legacy_completion:after');uploaded.push(await uploadCompletionFile(payload.id,'after',file,evidenceKey));}
+      if(payload.deliveryAuthorizationFile){const evidenceKey=await financialEvidenceKey(operationKey,payload.deliveryAuthorizationFile,'legacy_completion:delivery_authorization');uploaded.push(await uploadCompletionFile(payload.id,'delivery_authorization',payload.deliveryAuthorizationFile,evidenceKey));}
+      const {data,error}=await db().rpc('save_installation_completion_and_invoice_safe_v1',{p_request_id:payload.id,p_work_summary:workSummary,p_recipient_name:recipientName,p_invoice_number:invoiceNumber,p_invoice_date:invoiceDate,p_operation_key:operationKey});
+      if(error)throw new Error('تعذر حفظ محضر إكمال الموعد وإنشاء الفاتورة: '+error.message);
+      return data||true;
+    }catch(error){
+      if(uploaded.length&&!isRetryableFinancialError(error)){
+        const paths=uploaded.filter(Boolean);if(paths.length)await db().storage.from('installation-evidence').remove(paths).catch(()=>{});
+        if(paths.length)await db().from('installation_completion_files').delete().eq('installation_request_id',payload.id).in('storage_path',paths).catch(()=>{});
+      }
+      throw error;
+    }
   }
   async function signedFileUrl(path,expiresIn=900){const {data,error}=await db().storage.from('installation-evidence').createSignedUrl(path,expiresIn);if(error)throw new Error('تعذر فتح المرفق: '+error.message);return data?.signedUrl||''}
   async function exceptionList(){requireAction('view','installationExceptions');const [{data:requests,error:re},{data:revisits,error:ve}]=await Promise.all([db().from('installation_requests').select('*,customer:customers(id,customer_name,phone),technician:installation_technicians(id,full_name)').in('status',['مؤجل','متعذر']).order('last_status_changed_at',{ascending:false,nullsFirst:false}),db().from('installation_revisits').select('*').order('created_at',{ascending:false})]);if(re)throw new Error('تعذر تحميل استثناءات المواعيد: '+re.message);if(ve)throw new Error('تعذر تحميل إعادة الزيارات: '+ve.message);const map=new Map();(revisits||[]).forEach(v=>{if(!map.has(v.installation_request_id)||v.status==='مجدولة')map.set(v.installation_request_id,v)});return (requests||[]).map(r=>({id:r.id,requestNumber:r.request_number,customerName:r.customer?.customer_name||'',customerPhone:r.customer?.phone||'',technicianId:r.technician_id||'',technicianName:r.assigned_technician_name||r.technician?.full_name||'',scheduledDate:r.scheduled_date||'',status:r.status||'',failureReason:r.execution_failure_reason||'',executionNotes:r.execution_notes||'',activeRevisit:(()=>{const v=map.get(r.id);return v?{id:v.id,scheduledDate:v.scheduled_date||'',timeSlot:v.time_slot||'',technicianId:v.technician_id||'',actionType:v.action_type||'إعادة زيارة',notes:v.notes||'',status:v.status||'مجدولة'}:null})()}))}
@@ -1351,6 +1436,6 @@
   });
 
   if(window.KYUMSyncEngine?.register)window.KYUMSyncEngine.register('appointments_read',()=>refreshActiveAppointmentContexts());
-  window.InstallationsService={list:readInstallationList,options:readInstallationOptions,customerAppointmentDefaults:readCustomerAppointmentDefaults,saveCustomerLocationDefaults:writeSaveCustomerLocationDefaults,requestEditDetail:readRequestEditDetail,requestEditOptions:readRequestEditOptions,createRequest:writeCreateRequest,updateRequest:writeUpdateRequest,updateRequestServices:writeUpdateRequestServices,updateRequestContextServices:writeUpdateRequestContextServices,save:writeSave,remove:writeRemove,technicians:readTechnicians,scheduleTeams:readScheduleTeams,technicianNameSuggestions:readTechnicianNameSuggestions,scheduleList:readScheduleList,schedulePlan:readSchedulePlan,assignMultiDay:writeAssignMultiDay,cancelSchedule:writeCancelSchedule,scheduleDayLocks:readScheduleDayLocks,setScheduleDayLock:writeSetScheduleDayLock,technicianBookedTimes:onlineTechnicianBookedTimes,assign:writeAssign,saveTechnician:writeSaveTechnician,removeTechnician:writeRemoveTechnician,executionWorkspace:readExecutionWorkspace,executionIdentity:readExecutionIdentity,selectExecutionRequest:writeSelectExecutionRequest,recordMapOpened:writeRecordMapOpened,returnExecutionToSchedule:writeReturnExecutionToSchedule,completeCollectionStage:writeCompleteCollectionStage,advanceExecution:writeAdvanceExecution,subscribeExecutionWorkspace,completionList:readCompletionList,completionQuantitySummary,completionInvoiceFinancials,saveCompletionWorkspace,completionCollectionRecoveryState:onlineCompletionCollectionRecoveryState,recoverCompletionCollectionStage:writeRecoverCompletionCollectionStage,confirmActualQuantities:writeConfirmActualQuantities,confirmActualQuantitiesAndInvoice:writeConfirmActualQuantitiesAndInvoice,cancelConfirmedQuantity:writeCancelConfirmedQuantity,saveCompletion:writeSaveCompletion,signedFileUrl:onlineSignedFileUrl,exceptionList:readExceptionList,saveRevisit:writeSaveRevisit,operationalReport:readOperationalReport,installationSummaryReport:readInstallationSummaryReport,getSettings:onlineGetSettings,saveSettings:writeSaveSettings,settingsCatalog:onlineSettingsCatalog,saveSettingItem:writeSaveSettingItem,toggleSettingItem:writeToggleSettingItem,removeSettingItem:writeRemoveSettingItem,invalidateCache:invalidateAppointmentCache,getReadStatus:kind=>kind?appointmentReadStatus[kind]||null:{...appointmentReadStatus},getReadStatusMessage:appointmentCacheStatusMessage,refreshActiveContexts:refreshActiveAppointmentContexts,getScopeSnapshot:()=>appointmentScopeSnapshot()};
+  window.InstallationsService={list:readInstallationList,options:readInstallationOptions,customerAppointmentDefaults:readCustomerAppointmentDefaults,saveCustomerLocationDefaults:writeSaveCustomerLocationDefaults,requestEditDetail:readRequestEditDetail,requestEditOptions:readRequestEditOptions,createRequest:writeCreateRequest,updateRequest:writeUpdateRequest,updateRequestServices:writeUpdateRequestServices,updateRequestContextServices:writeUpdateRequestContextServices,save:writeSave,remove:writeRemove,technicians:readTechnicians,scheduleTeams:readScheduleTeams,technicianNameSuggestions:readTechnicianNameSuggestions,scheduleList:readScheduleList,schedulePlan:readSchedulePlan,assignMultiDay:writeAssignMultiDay,cancelSchedule:writeCancelSchedule,scheduleDayLocks:readScheduleDayLocks,setScheduleDayLock:writeSetScheduleDayLock,technicianBookedTimes:onlineTechnicianBookedTimes,assign:writeAssign,saveTechnician:writeSaveTechnician,removeTechnician:writeRemoveTechnician,executionWorkspace:readExecutionWorkspace,executionIdentity:readExecutionIdentity,selectExecutionRequest:writeSelectExecutionRequest,recordMapOpened:writeRecordMapOpened,returnExecutionToSchedule:writeReturnExecutionToSchedule,completeCollectionStage:writeCompleteCollectionStage,advanceExecution:writeAdvanceExecution,subscribeExecutionWorkspace,completionList:readCompletionList,completionQuantitySummary,completionInvoiceFinancials,saveCompletionWorkspace,completionCollectionRecoveryState:onlineCompletionCollectionRecoveryState,recoverCompletionCollectionStage:writeRecoverCompletionCollectionStage,confirmActualQuantities:writeConfirmActualQuantities,confirmActualQuantitiesAndInvoice:writeConfirmActualQuantitiesAndInvoice,cancelConfirmedQuantity:writeCancelConfirmedQuantity,saveCompletion:writeSaveCompletion,signedFileUrl:onlineSignedFileUrl,exceptionList:readExceptionList,saveRevisit:writeSaveRevisit,operationalReport:readOperationalReport,installationSummaryReport:readInstallationSummaryReport,getSettings:onlineGetSettings,saveSettings:writeSaveSettings,settingsCatalog:onlineSettingsCatalog,saveSettingItem:writeSaveSettingItem,toggleSettingItem:writeToggleSettingItem,removeSettingItem:writeRemoveSettingItem,invalidateCache:invalidateAppointmentCache,getReadStatus:kind=>kind?appointmentReadStatus[kind]||null:{...appointmentReadStatus},getReadStatusMessage:appointmentCacheStatusMessage,refreshActiveContexts:refreshActiveAppointmentContexts,getScopeSnapshot:()=>appointmentScopeSnapshot(),assertFinancialBoundaryReady:ensureFinancialBoundaryReady,buildFinancialOperationKey:financialOperationKey};
   window.dispatchEvent(new CustomEvent('kyum-installations-service-ready'));
 })();

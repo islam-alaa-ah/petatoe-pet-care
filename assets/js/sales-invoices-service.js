@@ -197,10 +197,12 @@
     requireAction("add");ensureOnline();
     const invoiceNumber=String(payload?.invoiceNumber||"").trim(),invoiceDate=String(payload?.invoiceDate||"").trim(),withoutInvoice=Boolean(payload?.withoutInvoice);
     if(!payload?.installationRequestId||!payload?.visitId)throw new Error("بيانات زيارة التركيب غير مكتملة.");if(!withoutInvoice&&!invoiceNumber)throw new Error("رقم الفاتورة مطلوب أو اختر بدون فاتورة.");if(!invoiceDate)throw new Error("تاريخ الفاتورة مطلوب.");
-    const {data,error}=await db().rpc("create_sales_invoice_from_installation_group_v3",{p_installation_request_id:payload.installationRequestId,p_visit_id:payload.visitId,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice});
+    if(window.InstallationsService?.assertFinancialBoundaryReady)await window.InstallationsService.assertFinancialBoundaryReady({requestId:payload.installationRequestId,visitId:payload.visitId,groupVisitIds:payload.groupVisitIds||[]});
+    const operationKey=window.InstallationsService?.buildFinancialOperationKey?await window.InstallationsService.buildFinancialOperationKey("visit_invoice",{requestId:payload.installationRequestId,visitId:payload.visitId,groupVisitIds:[...(payload.groupVisitIds||[])].map(String).sort(),invoiceNumber:withoutInvoice?"":invoiceNumber,invoiceDate,withoutInvoice}):`visit-invoice:${payload.installationRequestId}:${payload.visitId}:${invoiceDate}:${withoutInvoice?'without':invoiceNumber}`;
+    const {data,error}=await db().rpc("create_sales_invoice_from_installation_visit_safe_v1",{p_installation_request_id:payload.installationRequestId,p_visit_id:payload.visitId,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice,p_operation_key:operationKey});
     if(error)throw new Error("تعذر تحويل الكمية المنفذة إلى فاتورة: "+error.message);
     await invalidateCache();
-    return Array.isArray(data)?data[0]:data;
+    return data||{};
   }
 
   async function fetchEditWorkspaceFromNetwork(invoiceId){
