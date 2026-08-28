@@ -16,6 +16,10 @@
   const appointmentActiveContexts=new Map();
   const appointmentRefreshes=new Map();
   const appointmentScopeMemory=new Map();
+  const EXECUTION_QUEUE_ENTITY='installation_execution';
+  const EXECUTION_SELECTION_CANONICAL_RPC='select_installation_execution_visit'; // Invoked server-side by sync_installation_execution_transition.
+  const SAFE_EXECUTION_TRANSITIONS=Object.freeze(['select','on_route','map_opened','arrived','start']);
+  const EXECUTION_TRANSITION_ORDER=Object.freeze({select:0,on_route:1,map_opened:2,arrived:3,start:4});
 
   function appointmentOnlineRequired(){return 'هذه العملية تحتاج اتصالًا بالإنترنت.'}
   function ensureAppointmentOnline(){if(navigator.onLine===false)throw new Error(appointmentOnlineRequired());}
@@ -457,7 +461,7 @@
     requireAction('view','installationExecution');
     const [requestResult,visitResult,anyVisitResult,lineResult]=await Promise.all([
       db().from('installation_requests').select('*,customer:customers(id,customer_name,phone,location_notes),team:installation_teams(id,name,status,groomer_name,driver_name),representative:sales_representatives(id,full_name),services:installation_request_services(id,service_type_id,quantity,unit_price,line_total,service_type:installation_service_types(id,name,service_code)),collection:installation_request_collection(amount_collected,collection_status,payment_method,collection_reference,collection_notes,collected_at)').or('installation_team_id.not.is.null,assigned_technician_name.not.is.null').order('scheduled_date',{ascending:true,nullsFirst:false}).order('scheduled_time',{ascending:true,nullsFirst:false}),
-      db().from('installation_execution_visits').select('id,installation_request_id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status,selected_for_execution_at,selected_for_execution_by,on_route_at,map_opened_at,arrived_at,started_at,collection_at,completed_at,execution_notes,team:installation_teams(id,name,groomer_name,driver_name)').in('status',['مجدولة','قيد التنفيذ','بانتظار التأكيد']).order('scheduled_date',{ascending:true}).order('scheduled_time',{ascending:true}),
+      db().from('installation_execution_visits').select('id,installation_request_id,visit_no,scheduled_date,scheduled_time,installation_team_id,technician_name,status,selected_for_execution_at,selected_for_execution_by,on_route_at,map_opened_at,arrived_at,started_at,collection_at,completed_at,execution_notes,updated_at,team:installation_teams(id,name,groomer_name,driver_name)').in('status',['مجدولة','قيد التنفيذ','بانتظار التأكيد']).order('scheduled_date',{ascending:true}).order('scheduled_time',{ascending:true}),
       db().from('installation_execution_visits').select('id,installation_request_id,scheduled_date,installation_team_id,status'),
       db().from('installation_execution_visit_services').select('visit_id,request_service_id,scheduled_quantity')
     ]);
@@ -522,7 +526,7 @@
     const visitsByRequest=new Map();
     visits.forEach(v=>{const a=visitsByRequest.get(v.installation_request_id)||[];a.push(v);visitsByRequest.set(v.installation_request_id,a)});
     const normalizeRequest=(r)=>({
-      id:r.id,requestNumber:r.request_number,customerName:r.customer?.customer_name||'',customerPhone:r.customer?.phone||'',customerLocationNotes:r.customer?.location_notes||'',representativeId:r.representative_id||'',representativeName:r.representative?.full_name||'',scheduledDate:r.scheduled_date||'',scheduledTime:String(r.scheduled_time||'').slice(0,5),status:r.status||'مسند',priority:r.priority||'عادية',technicianName:r.assigned_technician_name||'',teamId:r.installation_team_id||'',teamName:r.team?.name||'',groomerName:r.team?.groomer_name||r.assigned_technician_name||'',driverName:r.team?.driver_name||'',installationAddress:r.installation_address||'',neighborhoodId:r.neighborhood_id||'',neighborhoodName:executionNeighborhoods.get(String(r.neighborhood_id||''))?.name||r.installation_address||'',customerMapUrl:r.customer_map_url||'',assignmentNotes:r.assignment_notes||'',requestNotes:r.notes||'',displayNotes:r.assignment_notes||r.notes||'',executionNotes:r.execution_notes||'',selectedForExecutionAt:r.selected_for_execution_at||'',selectedForExecutionBy:r.selected_for_execution_by||'',isCurrentUserSelection:false,mapOpenedAt:r.map_opened_at||'',onRouteAt:r.on_route_at||'',arrivedAt:r.arrived_at||'',startedAt:r.started_at||'',collectionAt:r.collection_at||'',completedAt:r.completed_at||'',collection:{amountCollected:Number(r.collection?.amount_collected||0),collectionStatus:r.collection?.collection_status||'غير محصل',paymentMethod:r.collection?.payment_method||'',reference:r.collection?.collection_reference||'',notes:r.collection?.collection_notes||'',collectedAt:r.collection?.collected_at||''},totalServicesCount:Number(r.total_services_count||0),totalServicesAmount:Number(r.total_services_amount||0),taxRate:Number(r.tax_rate??15),taxAmount:Number(r.tax_amount||0),discountAmount:Number(r.discount_amount||0),finalAmount:Number(r.final_amount||0),requestFinalAmount:Number(r.final_amount||0),requestAmountCollected:Number(r.collection?.amount_collected||0),grossServicesAmount:Number(r.total_services_amount||0)+Number(r.tax_amount||0),services:(r.services||[]).map(x=>({id:x.id,serviceTypeId:x.service_type_id||x.service_type?.id||'',serviceCode:x.service_type?.service_code||'',name:x.service_type?.name||'خدمة',quantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0),lineTotal:Number(x.line_total||0)}))
+      id:r.id,requestNumber:r.request_number,customerName:r.customer?.customer_name||'',customerPhone:r.customer?.phone||'',customerLocationNotes:r.customer?.location_notes||'',representativeId:r.representative_id||'',representativeName:r.representative?.full_name||'',scheduledDate:r.scheduled_date||'',scheduledTime:String(r.scheduled_time||'').slice(0,5),status:r.status||'مسند',priority:r.priority||'عادية',technicianName:r.assigned_technician_name||'',teamId:r.installation_team_id||'',teamName:r.team?.name||'',groomerName:r.team?.groomer_name||r.assigned_technician_name||'',driverName:r.team?.driver_name||'',installationAddress:r.installation_address||'',neighborhoodId:r.neighborhood_id||'',neighborhoodName:executionNeighborhoods.get(String(r.neighborhood_id||''))?.name||r.installation_address||'',customerMapUrl:r.customer_map_url||'',assignmentNotes:r.assignment_notes||'',requestNotes:r.notes||'',displayNotes:r.assignment_notes||r.notes||'',executionNotes:r.execution_notes||'',selectedForExecutionAt:r.selected_for_execution_at||'',selectedForExecutionBy:r.selected_for_execution_by||'',isCurrentUserSelection:false,mapOpenedAt:r.map_opened_at||'',onRouteAt:r.on_route_at||'',arrivedAt:r.arrived_at||'',startedAt:r.started_at||'',collectionAt:r.collection_at||'',completedAt:r.completed_at||'',collection:{amountCollected:Number(r.collection?.amount_collected||0),collectionStatus:r.collection?.collection_status||'غير محصل',paymentMethod:r.collection?.payment_method||'',reference:r.collection?.collection_reference||'',notes:r.collection?.collection_notes||'',collectedAt:r.collection?.collected_at||''},totalServicesCount:Number(r.total_services_count||0),totalServicesAmount:Number(r.total_services_amount||0),taxRate:Number(r.tax_rate??15),taxAmount:Number(r.tax_amount||0),discountAmount:Number(r.discount_amount||0),finalAmount:Number(r.final_amount||0),requestFinalAmount:Number(r.final_amount||0),requestAmountCollected:Number(r.collection?.amount_collected||0),grossServicesAmount:Number(r.total_services_amount||0)+Number(r.tax_amount||0),updatedAt:r.updated_at||'',executionBaseUpdatedAt:r.updated_at||'',services:(r.services||[]).map(x=>({id:x.id,serviceTypeId:x.service_type_id||x.service_type?.id||'',serviceCode:x.service_type?.service_code||'',name:x.service_type?.name||'خدمة',quantity:Number(x.quantity||0),unitPrice:Number(x.unit_price||0),lineTotal:Number(x.line_total||0)}))
     });
     const output=[];
     requests.forEach(r=>{
@@ -538,7 +542,7 @@
         const allocations=new Map((lineMap.get(v.id)||[]).map(x=>[x.request_service_id,Number(x.scheduled_quantity||0)]));
         const allocated=base.services.map(x=>{const quantity=allocations.has(x.id)?allocations.get(x.id):0;return {...x,quantity,lineTotal:quantity*Number(x.unitPrice||0)}}).filter(x=>x.quantity>0);
         const services=allocated.length?allocated:base.services;
-        output.push({...base,scheduleEntryId:v.id,visitId:v.id,visitNo:Number(v.visit_no||0),executionNumber:`${base.requestNumber}-${String(Number(v.visit_no||0)).padStart(2,'0')}`,scheduledDate:v.scheduled_date||base.scheduledDate,scheduledTime:String(v.scheduled_time||base.scheduledTime||'').slice(0,5),teamId:v.installation_team_id||base.teamId,teamName:v.team?.name||base.teamName,groomerName:v.team?.groomer_name||v.technician_name||base.groomerName||base.technicianName,driverName:v.team?.driver_name||base.driverName,technicianName:v.technician_name||base.technicianName,visitStatus:v.status||'',status:v.completed_at?'مكتمل':(v.started_at?'قيد التنفيذ':(v.arrived_at?'وصل إلى العميل':(v.on_route_at?'في الطريق':'مسند'))),selectedForExecutionAt:v.selected_for_execution_at||'',selectedForExecutionBy:v.selected_for_execution_by||'',isCurrentUserSelection:Boolean(v.selected_for_execution_at)&&!v.completed_at&&['مجدولة','قيد التنفيذ'].includes(String(v.status||'')),onRouteAt:v.on_route_at||'',mapOpenedAt:v.map_opened_at||'',arrivedAt:v.arrived_at||'',startedAt:v.started_at||'',collectionAt:v.collection_at||'',completedAt:v.completed_at||'',executionNotes:v.execution_notes||'',services,totalServicesCount:services.reduce((a,x)=>a+Number(x.quantity||0),0),totalServicesAmount:services.reduce((a,x)=>a+Number(x.lineTotal||0),0)});
+        output.push({...base,scheduleEntryId:v.id,visitId:v.id,visitNo:Number(v.visit_no||0),executionNumber:`${base.requestNumber}-${String(Number(v.visit_no||0)).padStart(2,'0')}`,scheduledDate:v.scheduled_date||base.scheduledDate,scheduledTime:String(v.scheduled_time||base.scheduledTime||'').slice(0,5),teamId:v.installation_team_id||base.teamId,teamName:v.team?.name||base.teamName,groomerName:v.team?.groomer_name||v.technician_name||base.groomerName||base.technicianName,driverName:v.team?.driver_name||base.driverName,technicianName:v.technician_name||base.technicianName,visitStatus:v.status||'',status:v.completed_at?'مكتمل':(v.started_at?'قيد التنفيذ':(v.arrived_at?'وصل إلى العميل':(v.on_route_at?'في الطريق':'مسند'))),selectedForExecutionAt:v.selected_for_execution_at||'',selectedForExecutionBy:v.selected_for_execution_by||'',isCurrentUserSelection:Boolean(v.selected_for_execution_at)&&!v.completed_at&&['مجدولة','قيد التنفيذ'].includes(String(v.status||'')),onRouteAt:v.on_route_at||'',mapOpenedAt:v.map_opened_at||'',arrivedAt:v.arrived_at||'',startedAt:v.started_at||'',collectionAt:v.collection_at||'',completedAt:v.completed_at||'',executionNotes:v.execution_notes||'',executionUpdatedAt:v.updated_at||'',executionBaseUpdatedAt:v.updated_at||'',services,totalServicesCount:services.reduce((a,x)=>a+Number(x.quantity||0),0),totalServicesAmount:services.reduce((a,x)=>a+Number(x.lineTotal||0),0)});
       });
     });
     // P5.11.4.10.2: same request + same team + same local date executes as one workflow.
@@ -547,8 +551,9 @@
       if(!item.visitId){grouped.set(`legacy:${item.id}`,item);continue;}
       const key=[item.id,item.teamId||'',item.scheduledDate||''].join('|');
       const existing=grouped.get(key);
-      if(!existing){grouped.set(key,{...item,groupVisitIds:[item.visitId],slotTimes:[item.scheduledTime],services:(item.services||[]).map(x=>({...x}))});continue;}
+      if(!existing){grouped.set(key,{...item,groupVisitIds:[item.visitId],groupExecutionUpdatedAts:[item.executionUpdatedAt||item.executionBaseUpdatedAt].filter(Boolean),slotTimes:[item.scheduledTime],services:(item.services||[]).map(x=>({...x}))});continue;}
       existing.groupVisitIds.push(item.visitId);
+      if(item.executionUpdatedAt||item.executionBaseUpdatedAt)existing.groupExecutionUpdatedAts.push(item.executionUpdatedAt||item.executionBaseUpdatedAt);
       existing.slotTimes.push(item.scheduledTime);
       existing.visitNo=Math.min(Number(existing.visitNo||999999),Number(item.visitNo||999999));
       existing.executionNumber=`${existing.requestNumber}-${String(Number(existing.visitNo||0)).padStart(2,'0')}`;
@@ -562,6 +567,7 @@
       existing.totalServicesAmount=(existing.services||[]).reduce((a,x)=>a+Number(x.lineTotal||0),0);
     }
     return [...grouped.values()].map(x=>{
+      if(Array.isArray(x.groupExecutionUpdatedAts)){x.executionBaseUpdatedAt=x.groupExecutionUpdatedAts.filter(Boolean).sort().slice(-1)[0]||x.executionBaseUpdatedAt||x.updatedAt||'';delete x.groupExecutionUpdatedAts;}
       if(Array.isArray(x.slotTimes)){x.slotTimes=[...new Set(x.slotTimes.filter(Boolean))].sort();x.scheduledTime=x.slotTimes[0]||x.scheduledTime;x.executionSlotLabel=x.slotTimes.length>1?`${x.slotTimes[0]} - ${x.slotTimes[x.slotTimes.length-1]} (${x.slotTimes.length} مواعيد)`:x.scheduledTime;}
       if(x.visitId){
         const financialKey=[String(x.id||''),String(x.teamId||''),String(x.scheduledDate||'')].join('|');
@@ -604,8 +610,181 @@
       canObserveInProgress:['super_admin','customer_service','sales_manager','sales_supervisor','sales_representative','viewer'].includes(role)
     };
   }
-  async function selectExecutionRequest(id,visitId){requireAction('edit','installationExecution');const {error}=await db().rpc('select_installation_execution_visit',{p_request_id:id,p_visit_id:visitId||null});if(error)throw new Error('تعذر اختيار زيارة التنفيذ الحالية: '+error.message);void notifyEvent('installation.execution_selected',id,visitId||null,{source:'execution_selection'},'selected:'+String(visitId||id))}
-  async function recordMapOpened(id,visitId){requireAction('edit','installationExecution');if(visitId){const {error}=await db().rpc('record_installation_visit_map_opened',{p_request_id:id,p_visit_id:visitId});if(error)throw new Error('تعذر تسجيل فتح موقع العميل: '+error.message);void notifyEvent('installation.map_opened',id,visitId,{source:'execution'},'map:'+visitId);return}const {error}=await db().rpc('record_installation_map_opened',{p_request_id:id});if(error)throw new Error('تعذر تسجيل فتح موقع العميل: '+error.message);void notifyEvent('installation.map_opened',id,null,{source:'execution'},'map:'+id)}
+  function executionTransitionForStatus(nextStatus){
+    return {'في الطريق':'on_route','وصل إلى العميل':'arrived','قيد التنفيذ':'start'}[String(nextStatus||'').trim()]||'';
+  }
+  function executionTransitionTarget(rowOrPayload={}){
+    return `${String(rowOrPayload.id||rowOrPayload.requestId||'')}:${String(rowOrPayload.visitId||'legacy')}`;
+  }
+  function executionRowMatches(row,requestId,visitId){
+    if(String(row?.id||'')!==String(requestId||''))return false;
+    if(!visitId)return !row?.visitId;
+    return String(row?.visitId||'')===String(visitId)||(Array.isArray(row?.groupVisitIds)&&row.groupVisitIds.map(String).includes(String(visitId)));
+  }
+  function executionTransitionAlreadyApplied(row,transition){
+    if(!row)return false;
+    return transition==='select'?Boolean(row.selectedForExecutionAt):
+      transition==='on_route'?Boolean(row.onRouteAt):
+      transition==='map_opened'?Boolean(row.mapOpenedAt):
+      transition==='arrived'?Boolean(row.arrivedAt):
+      transition==='start'?Boolean(row.startedAt):false;
+  }
+  function executionTransitionPrerequisite(row,transition){
+    if(!row)return 'تعذر العثور على الموعد في بيانات التنفيذ المحفوظة.';
+    if(row.completedAt||['مكتمل','ملغي','بانتظار التأكيد'].includes(String(row.status||'').trim()))return 'حالة الموعد الحالية لا تسمح بمتابعة التنفيذ دون اتصال.';
+    if(transition==='select')return '';
+    if(!row.selectedForExecutionAt)return 'اختر الموعد للتنفيذ أولًا.';
+    if(transition==='on_route')return '';
+    if(transition==='map_opened'&&!row.onRouteAt)return 'ابدأ التحرك أولًا قبل فتح موقع العميل.';
+    if(transition==='arrived'&&(!row.onRouteAt||!row.mapOpenedAt))return 'يجب تنفيذ التحرك وفتح الموقع قبل تسجيل الوصول.';
+    if(transition==='start'&&(!row.onRouteAt||!row.mapOpenedAt||!row.arrivedAt))return 'يجب تسجيل الوصول قبل بدء التنفيذ.';
+    return '';
+  }
+  function executionOperationTimestamp(operation){
+    try{return new Date(Number(operation?.createdAt||Date.now())).toISOString()}catch(_){return new Date().toISOString()}
+  }
+  function applyExecutionOperation(row,operation){
+    const payload=operation?.payload||{},transition=String(payload.transition||''),stamp=executionOperationTimestamp(operation),next={...row};
+    const pending=new Set(Array.isArray(next.offlinePendingTransitions)?next.offlinePendingTransitions:[]);
+    pending.add(transition);next.offlinePendingTransitions=[...pending];next.offlinePendingSync=true;
+    if(transition==='select'){
+      next.selectedForExecutionAt=next.selectedForExecutionAt||stamp;next.selectedForExecutionBy=currentAppointmentUserId()||next.selectedForExecutionBy||'';next.isCurrentUserSelection=true;
+    }else{
+      next.selectedForExecutionAt=next.selectedForExecutionAt||stamp;next.isCurrentUserSelection=true;
+      if(transition==='on_route'){next.onRouteAt=next.onRouteAt||stamp;next.status='في الطريق';next.visitStatus=next.visitStatus||'قيد التنفيذ';}
+      if(transition==='map_opened')next.mapOpenedAt=next.mapOpenedAt||stamp;
+      if(transition==='arrived'){next.arrivedAt=next.arrivedAt||stamp;next.status='وصل إلى العميل';next.visitStatus='قيد التنفيذ';}
+      if(transition==='start'){next.startedAt=next.startedAt||stamp;next.status='قيد التنفيذ';next.visitStatus='قيد التنفيذ';}
+      if(payload.notes&&transition!=='map_opened')next.executionNotes=String(payload.notes);
+    }
+    return next;
+  }
+  async function executionQueueOperations(namespace,{includeBlocking=true}={}){
+    if(!window.KYUMOfflineQueue?.list)return [];
+    const statuses=includeBlocking?['pending','retry','processing','failed','conflict']:['pending','retry','processing'];
+    const rows=await window.KYUMOfflineQueue.list({namespace,statuses}).catch(()=>[]);
+    return (rows||[]).filter(row=>row.entity===EXECUTION_QUEUE_ENTITY).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
+  }
+  function applyPendingExecutionOperations(rows,operations){
+    const active=(operations||[]).filter(op=>['pending','retry','processing'].includes(op.status));
+    if(!active.length)return rows;
+    return (rows||[]).map(source=>{
+      let row={...source};
+      for(const operation of active){
+        const payload=operation.payload||{};
+        if(executionRowMatches(row,payload.requestId,payload.visitId))row=applyExecutionOperation(row,operation);
+      }
+      return row;
+    });
+  }
+  function executionQueueCycleToken(row){
+    if(row?.visitId)return `visit:${row.visitId}`;
+    return `legacy:${String(row?.id||'')}:${String(row?.scheduledDate||'')}:${String(row?.scheduledTime||'')}:${String(row?.teamId||'')}:${String(row?.executionBaseUpdatedAt||row?.updatedAt||'')}`;
+  }
+  function executionOperationKey(namespace,row,transition){
+    const seed={namespace,target:executionTransitionTarget(row),cycle:executionQueueCycleToken(row),transition};
+    const hash=window.KYUMSmartCache?.hashValue?.(seed)||appointmentToken(Object.values(seed));
+    return `appointments:execution:${hash}:${transition}`;
+  }
+  function executionConflictError(message,details={}){
+    if(window.KYUMOfflineQueue?.ConflictError)return new window.KYUMOfflineQueue.ConflictError(message,details);
+    const error=new Error(message);error.code='OFFLINE_CONFLICT';error.details=details;return error;
+  }
+  function executionBlockingOperation(operations,row,transition){
+    const target=executionTransitionTarget(row),targetIndex=EXECUTION_TRANSITION_ORDER[transition]??99;
+    return (operations||[]).find(op=>{
+      if(!['failed','conflict'].includes(op.status))return false;
+      const payload=op.payload||{};if(executionTransitionTarget({requestId:payload.requestId,visitId:payload.visitId})!==target)return false;
+      return (EXECUTION_TRANSITION_ORDER[payload.transition]??99)<=targetIndex;
+    })||null;
+  }
+  function executionPredecessorOperation(operations,row,transition){
+    const target=executionTransitionTarget(row),targetIndex=EXECUTION_TRANSITION_ORDER[transition]??99;
+    return (operations||[]).filter(op=>{
+      if(!['pending','retry','processing'].includes(op.status))return false;
+      const payload=op.payload||{};if(executionTransitionTarget({requestId:payload.requestId,visitId:payload.visitId})!==target)return false;
+      return (EXECUTION_TRANSITION_ORDER[payload.transition]??99)<targetIndex;
+    }).sort((a,b)=>(EXECUTION_TRANSITION_ORDER[a.payload?.transition]??-1)-(EXECUTION_TRANSITION_ORDER[b.payload?.transition]??-1)||Number(a.createdAt||0)-Number(b.createdAt||0)).slice(-1)[0]||null;
+  }
+  async function executionMutationSnapshot(requestId,visitId){
+    const context=await appointmentContext('execution',[['installationExecution','view']],['workspace']);
+    let cached=await readAppointmentWorkspace(context),baseRows=cached?.data;
+    if(!baseRows){
+      if(navigator.onLine===false)throw new Error('لا توجد بيانات تنفيذ محفوظة لهذا الموعد. افتح شاشة التنفيذ مرة واحدة أثناء الاتصال بالإنترنت.');
+      baseRows=await fetchAndPersistAppointment('execution',context,()=>executionWorkspace(),{emit:false});
+    }
+    const operations=await executionQueueOperations(context.namespace),rows=applyPendingExecutionOperations(baseRows,operations);
+    const row=(rows||[]).find(item=>executionRowMatches(item,requestId,visitId));
+    if(!row)throw new Error('تعذر العثور على الموعد في مساحة التنفيذ الحالية.');
+    return {context,row,operations};
+  }
+  async function callSafeExecutionTransitionServer(payload,operationKey){
+    const {data,error}=await db().rpc('sync_installation_execution_transition',{
+      p_request_id:payload.requestId,
+      p_visit_id:payload.visitId||null,
+      p_transition:payload.transition,
+      p_operation_key:operationKey,
+      p_predecessor_operation_key:payload.predecessorOperationKey||null,
+      p_base_updated_at:payload.baseUpdatedAt||null,
+      p_notes:payload.notes||null
+    });
+    if(error)throw new Error('تعذر مزامنة مرحلة التنفيذ: '+error.message);
+    const result=Array.isArray(data)?data[0]:data;
+    if(result?.conflict===true||result?.ok===false)throw executionConflictError(result?.message||'تعارضت مرحلة التنفيذ المحفوظة مع الحالة الحالية على الخادم.',result||{});
+    return result||{ok:true};
+  }
+  function notifySafeExecutionTransition(payload,result,operationKey){
+    if(result?.applied!==true)return;
+    const visitId=result?.visitId||payload.visitId||null,metadata={source:'execution_sync',offlineReplay:Boolean(payload.fromQueue),transition:payload.transition};
+    const map={
+      select:['installation.execution_selected','selected'],
+      on_route:['installation.on_route','في الطريق'],
+      map_opened:['installation.map_opened','map'],
+      arrived:['installation.arrived','وصل إلى العميل'],
+      start:['installation.work_started','قيد التنفيذ']
+    };
+    const item=map[payload.transition];if(!item)return;
+    void notifyEvent(item[0],payload.requestId,visitId,metadata,`execution-sync:${operationKey}`);
+  }
+  async function queueSafeExecutionTransition(payload,operationKey,predecessor){
+    if(!window.KYUMOfflineQueue?.enqueue)throw new Error('نظام المزامنة غير جاهز لتنفيذ هذه المرحلة دون اتصال.');
+    const namespace=await appointmentNamespace();
+    const queued=await window.KYUMOfflineQueue.enqueue({
+      namespace,entity:EXECUTION_QUEUE_ENTITY,action:'update',
+      localEntityId:`execution:${payload.requestId}:${payload.visitId||'legacy'}`,
+      payload:{...payload,operationKey},
+      baseUpdatedAt:payload.baseUpdatedAt||'',
+      dependsOn:predecessor?.id?[predecessor.id]:[],
+      idempotencyKey:operationKey
+    });
+    if(navigator.onLine!==false)window.KYUMOfflineQueue.process({namespace}).catch(()=>{});
+    return {queued:true,operationId:queued.operationId,duplicate:Boolean(queued.duplicate),transition:payload.transition};
+  }
+  async function safeExecutionTransition({requestId,visitId=null,transition,notes=''}){
+    requireAction('edit','installationExecution');
+    if(!SAFE_EXECUTION_TRANSITIONS.includes(transition))throw new Error('مرحلة التنفيذ غير مسموحة للمزامنة دون اتصال.');
+    const {context,row,operations}=await executionMutationSnapshot(requestId,visitId);
+    if(executionTransitionAlreadyApplied(row,transition))return {ok:true,alreadyApplied:true,transition};
+    const prerequisite=executionTransitionPrerequisite(row,transition);if(prerequisite)throw new Error(prerequisite);
+    const blocking=executionBlockingOperation(operations,row,transition);
+    if(blocking)throw new Error('توجد مشكلة مزامنة سابقة لهذا الموعد. عالجها من مركز المزامنة قبل متابعة التنفيذ.');
+    const predecessor=executionPredecessorOperation(operations,row,transition),operationKey=executionOperationKey(context.namespace,row,transition);
+    const payload={requestId:String(requestId||''),visitId:visitId||null,transition,notes:String(notes||'').trim()||'',baseUpdatedAt:row.executionBaseUpdatedAt||row.updatedAt||'',predecessorOperationKey:predecessor?.idempotencyKey||'',fromQueue:false};
+    if(navigator.onLine===false||predecessor)return queueSafeExecutionTransition(payload,operationKey,predecessor);
+    try{
+      const result=await callSafeExecutionTransitionServer(payload,operationKey);
+      notifySafeExecutionTransition(payload,result,operationKey);
+      await invalidateAppointmentCache();
+      return result;
+    }catch(error){
+      if(window.KYUMOfflineQueue?.isRetryableError?.(error)){
+        return queueSafeExecutionTransition(payload,operationKey,predecessor);
+      }
+      throw error;
+    }
+  }
+  async function selectExecutionRequest(id,visitId){return safeExecutionTransition({requestId:id,visitId:visitId||null,transition:'select'});}
+  async function recordMapOpened(id,visitId){return safeExecutionTransition({requestId:id,visitId:visitId||null,transition:'map_opened'});}
   async function returnExecutionToSchedule(id,reason){
     const role=String(window.CustomerPermissions?.currentRole?.()||window.CustomerAuth?.getState?.().profile?.role||'').trim();
     if(!['super_admin','sales_manager'].includes(role))throw new Error('إلغاء الطلب وإعادته للجدولة متاح للسوبر أدمن ومدير المبيعات فقط.');
@@ -651,17 +830,19 @@
   }
   async function advanceExecution(payload){
     requireAction('edit','installationExecution');
-    const allowed=['في الطريق','وصل إلى العميل','قيد التنفيذ','مكتمل'];
-    if(!allowed.includes(payload.nextStatus))throw new Error('مرحلة التنفيذ غير مسموحة.');
+    const safeTransition=executionTransitionForStatus(payload?.nextStatus);
+    if(safeTransition)return safeExecutionTransition({requestId:payload.id,visitId:payload.visitId||null,transition:safeTransition,notes:payload.notes||''});
+    if(payload?.nextStatus!=='مكتمل')throw new Error('مرحلة التنفيذ غير مسموحة.');
+    ensureAppointmentOnline();
     const uploaded=[];
     try{
-      if(payload.nextStatus==='مكتمل'&&payload.photos?.length){for(const f of payload.photos)uploaded.push(await uploadExecutionFile(payload.id,f,'execution',payload.visitId||null));}
+      if(payload.photos?.length){for(const f of payload.photos)uploaded.push(await uploadExecutionFile(payload.id,f,'execution',payload.visitId||null));}
       const rpc=payload.visitId?'advance_installation_execution_visit_stage':'advance_installation_execution_stage';
-      const args=payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_next_status:payload.nextStatus,p_notes:payload.notes||null}:{p_request_id:payload.id,p_next_status:payload.nextStatus,p_notes:payload.notes||null};
+      const args=payload.visitId?{p_request_id:payload.id,p_visit_id:payload.visitId,p_next_status:'مكتمل',p_notes:payload.notes||null}:{p_request_id:payload.id,p_next_status:'مكتمل',p_notes:payload.notes||null};
       const {error}=await db().rpc(rpc,args);
       if(error)throw new Error('تعذر تحديث مرحلة التنفيذ: '+error.message);
-      const eventKey={'في الطريق':'installation.on_route','وصل إلى العميل':'installation.arrived','قيد التنفيذ':'installation.work_started','مكتمل':'installation.completed'}[payload.nextStatus];
-      if(eventKey)void notifyEvent(eventKey,payload.id,payload.visitId||null,{status:payload.nextStatus},payload.nextStatus+':'+String(payload.visitId||payload.id));
+      void notifyEvent('installation.completed',payload.id,payload.visitId||null,{status:'مكتمل'},'مكتمل:'+String(payload.visitId||payload.id));
+      await invalidateAppointmentCache();
     }catch(error){
       if(uploaded.length)await rollbackExecutionFiles(uploaded).catch(()=>{});
       throw error;
@@ -1140,8 +1321,8 @@
   const readScheduleList=()=>appointmentCachedRead({kind:'schedule',actions:[['installationSchedule','view']],parts:['global'],fetcher:()=>scheduleList()});
   const readSchedulePlan=requestId=>appointmentCachedRead({kind:'schedulePlan',actions:[['installationSchedule','view']],parts:['request',requestId],fetcher:()=>schedulePlan(requestId)});
   const readScheduleDayLocks=(dateFrom,dateTo)=>appointmentCachedRead({kind:'scheduleDayLocks',actions:[['installationSchedule','view']],parts:['range',dateFrom||'',dateTo||''],fetcher:()=>scheduleDayLocks(dateFrom,dateTo)});
-  const readExecutionWorkspace=()=>appointmentCachedRead({kind:'execution',actions:[['installationExecution','view']],parts:['workspace'],fetcher:()=>executionWorkspace()});
-  const readExecutionIdentity=async()=>{const data=await appointmentCachedRead({kind:'executionIdentity',actions:[['installationExecution','view']],parts:['identity'],fetcher:()=>executionIdentity()});return navigator.onLine===false?{...(data||{}),canEdit:false,canReturnToSchedule:false}:data;};
+  const readExecutionWorkspace=async()=>{const data=await appointmentCachedRead({kind:'execution',actions:[['installationExecution','view']],parts:['workspace'],fetcher:()=>executionWorkspace()});const namespace=await appointmentNamespace();return applyPendingExecutionOperations(data,await executionQueueOperations(namespace,{includeBlocking:false}));};
+  const readExecutionIdentity=async()=>{const data=await appointmentCachedRead({kind:'executionIdentity',actions:[['installationExecution','view']],parts:['identity'],fetcher:()=>executionIdentity()});return navigator.onLine===false?{...(data||{}),canEdit:false,canReturnToSchedule:false,canQueueSafeTransitions:Boolean(data?.canEdit&&window.KYUMOfflineQueue?.enqueue)}:{...(data||{}),canQueueSafeTransitions:false};};
   const readCompletionList=()=>appointmentCachedRead({kind:'completion',actions:[['installationCompletion','view']],parts:['workspace'],fetcher:()=>completionList()});
   const readExceptionList=()=>appointmentCachedRead({kind:'exceptions',actions:[['installationExceptions','view']],parts:['workspace'],fetcher:()=>exceptionList()});
   const readOperationalReport=(filters={})=>appointmentCachedRead({kind:'operationalReport',actions:[['installationReports','view']],parts:['filters',JSON.stringify(filters||{})],fetcher:()=>operationalReport(filters)});
@@ -1150,11 +1331,24 @@
   const writeSaveCustomerLocationDefaults=appointmentOnlineWrite(saveCustomerLocationDefaults);
   const writeCreateRequest=appointmentOnlineWrite(createRequest),writeUpdateRequest=appointmentOnlineWrite(updateRequest),writeUpdateRequestServices=appointmentOnlineWrite(updateRequestServices),writeUpdateRequestContextServices=appointmentOnlineWrite(updateRequestContextServices),writeSave=appointmentOnlineWrite(save),writeRemove=appointmentOnlineWrite(remove);
   const writeAssignMultiDay=appointmentOnlineWrite(assignMultiDay),writeCancelSchedule=appointmentOnlineWrite(cancelSchedule),writeSetScheduleDayLock=appointmentOnlineWrite(setScheduleDayLock),writeAssign=appointmentOnlineWrite(assign),writeSaveTechnician=appointmentOnlineWrite(saveTechnician),writeRemoveTechnician=appointmentOnlineWrite(removeTechnician);
-  const writeSelectExecutionRequest=appointmentOnlineWrite(selectExecutionRequest),writeRecordMapOpened=appointmentOnlineWrite(recordMapOpened),writeReturnExecutionToSchedule=appointmentOnlineWrite(returnExecutionToSchedule),writeCompleteCollectionStage=appointmentOnlineWrite(completeCollectionStage),writeAdvanceExecution=appointmentOnlineWrite(advanceExecution);
+  const writeSelectExecutionRequest=selectExecutionRequest,writeRecordMapOpened=recordMapOpened,writeReturnExecutionToSchedule=appointmentOnlineWrite(returnExecutionToSchedule),writeCompleteCollectionStage=appointmentOnlineWrite(completeCollectionStage),writeAdvanceExecution=advanceExecution;
   const completionQuantitySummary=appointmentOnlineRead(rawCompletionQuantitySummary),completionInvoiceFinancials=appointmentOnlineRead(rawCompletionInvoiceFinancials),saveCompletionWorkspace=appointmentOnlineWrite(rawSaveCompletionWorkspace);
   const writeRecoverCompletionCollectionStage=appointmentOnlineWrite(recoverCompletionCollectionStage),writeConfirmActualQuantities=appointmentOnlineWrite(confirmActualQuantities),writeConfirmActualQuantitiesAndInvoice=appointmentOnlineWrite(confirmActualQuantitiesAndInvoice),writeCancelConfirmedQuantity=appointmentOnlineWrite(cancelConfirmedQuantity),writeSaveCompletion=appointmentOnlineWrite(saveCompletion),writeSaveRevisit=appointmentOnlineWrite(saveRevisit);
   const writeSaveSettings=appointmentOnlineWrite(saveSettings),writeSaveSettingItem=appointmentOnlineWrite(saveSettingItem),writeToggleSettingItem=appointmentOnlineWrite(toggleSettingItem),writeRemoveSettingItem=appointmentOnlineWrite(removeSettingItem);
   const onlineTechnicianBookedTimes=appointmentOnlineRead(technicianBookedTimes),onlineCompletionCollectionRecoveryState=appointmentOnlineRead(completionCollectionRecoveryState),onlineSignedFileUrl=appointmentOnlineRead(signedFileUrl),onlineSettingsCatalog=appointmentOnlineRead(settingsCatalog),onlineGetSettings=appointmentOnlineRead(getSettings);
+
+  window.KYUMOfflineQueue?.register?.(EXECUTION_QUEUE_ENTITY,async operation=>{
+    if(operation.action!=='update')throw new Error('عملية مزامنة تنفيذ غير مدعومة.');
+    const payload={...(operation.payload||{}),fromQueue:true};
+    if(!SAFE_EXECUTION_TRANSITIONS.includes(String(payload.transition||'')))throw new Error('مرحلة التنفيذ المحفوظة غير مسموحة.');
+    const result=await callSafeExecutionTransitionServer(payload,operation.idempotencyKey||payload.operationKey);
+    notifySafeExecutionTransition(payload,result,operation.idempotencyKey||payload.operationKey);
+    return {id:result?.visitId||payload.visitId||payload.requestId,...(result||{})};
+  });
+  window.addEventListener?.('kyum-offline-conflict-created',event=>{
+    if(event?.detail?.conflict?.entity!==EXECUTION_QUEUE_ENTITY||navigator.onLine===false)return;
+    refreshActiveAppointmentContexts().catch(error=>console.warn('[Appointments] execution conflict refresh skipped:',error));
+  });
 
   if(window.KYUMSyncEngine?.register)window.KYUMSyncEngine.register('appointments_read',()=>refreshActiveAppointmentContexts());
   window.InstallationsService={list:readInstallationList,options:readInstallationOptions,customerAppointmentDefaults:readCustomerAppointmentDefaults,saveCustomerLocationDefaults:writeSaveCustomerLocationDefaults,requestEditDetail:readRequestEditDetail,requestEditOptions:readRequestEditOptions,createRequest:writeCreateRequest,updateRequest:writeUpdateRequest,updateRequestServices:writeUpdateRequestServices,updateRequestContextServices:writeUpdateRequestContextServices,save:writeSave,remove:writeRemove,technicians:readTechnicians,scheduleTeams:readScheduleTeams,technicianNameSuggestions:readTechnicianNameSuggestions,scheduleList:readScheduleList,schedulePlan:readSchedulePlan,assignMultiDay:writeAssignMultiDay,cancelSchedule:writeCancelSchedule,scheduleDayLocks:readScheduleDayLocks,setScheduleDayLock:writeSetScheduleDayLock,technicianBookedTimes:onlineTechnicianBookedTimes,assign:writeAssign,saveTechnician:writeSaveTechnician,removeTechnician:writeRemoveTechnician,executionWorkspace:readExecutionWorkspace,executionIdentity:readExecutionIdentity,selectExecutionRequest:writeSelectExecutionRequest,recordMapOpened:writeRecordMapOpened,returnExecutionToSchedule:writeReturnExecutionToSchedule,completeCollectionStage:writeCompleteCollectionStage,advanceExecution:writeAdvanceExecution,subscribeExecutionWorkspace,completionList:readCompletionList,completionQuantitySummary,completionInvoiceFinancials,saveCompletionWorkspace,completionCollectionRecoveryState:onlineCompletionCollectionRecoveryState,recoverCompletionCollectionStage:writeRecoverCompletionCollectionStage,confirmActualQuantities:writeConfirmActualQuantities,confirmActualQuantitiesAndInvoice:writeConfirmActualQuantitiesAndInvoice,cancelConfirmedQuantity:writeCancelConfirmedQuantity,saveCompletion:writeSaveCompletion,signedFileUrl:onlineSignedFileUrl,exceptionList:readExceptionList,saveRevisit:writeSaveRevisit,operationalReport:readOperationalReport,installationSummaryReport:readInstallationSummaryReport,getSettings:onlineGetSettings,saveSettings:writeSaveSettings,settingsCatalog:onlineSettingsCatalog,saveSettingItem:writeSaveSettingItem,toggleSettingItem:writeToggleSettingItem,removeSettingItem:writeRemoveSettingItem,invalidateCache:invalidateAppointmentCache,getReadStatus:kind=>kind?appointmentReadStatus[kind]||null:{...appointmentReadStatus},getReadStatusMessage:appointmentCacheStatusMessage,refreshActiveContexts:refreshActiveAppointmentContexts,getScopeSnapshot:()=>appointmentScopeSnapshot()};

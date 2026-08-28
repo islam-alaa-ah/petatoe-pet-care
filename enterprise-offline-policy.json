@@ -104,7 +104,7 @@
     },
     "installation_requests": {
       "file": "assets/js/installations-service.js",
-      "mode": "offline_read_online_write",
+      "mode": "offline_read_safe_execution_queue_online_financial_write",
       "status": "compliant"
     },
     "geographic_reference": {

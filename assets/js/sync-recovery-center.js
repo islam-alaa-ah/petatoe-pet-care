@@ -4,7 +4,7 @@
 
   const statusLabels = { pending: "معلقة", retry: "بانتظار إعادة المحاولة", processing: "قيد المزامنة", failed: "فشلت", conflict: "تعارض", synced: "تمت" };
   const actionLabels = { create: "إضافة", update: "تعديل", delete: "حذف" };
-  const entityLabels = { customers: "العملاء", followups: "المتابعات", quotations: "عروض الأسعار" };
+  const entityLabels = { customers: "العملاء", followups: "المتابعات", quotations: "عروض الأسعار", installation_execution: "تنفيذ المواعيد" };
   let refreshTimer = null;
 
   function text(value) {
