@@ -159,7 +159,7 @@
     },
     "sea_vibe": {
       "file": "assets/js/sea-vibe-service.js",
-      "mode": "full_offline_create_update",
+      "mode": "scoped_smart_cache_queued_create_update_idempotent_conflict_guarded_entity_refresh",
       "status": "compliant"
     },
     "vehicle_treasury": {
