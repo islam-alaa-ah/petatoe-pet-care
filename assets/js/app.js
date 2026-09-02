@@ -121,6 +121,9 @@ let backupHistoryRecords = [];
 let backupHistoryLoaded = false;
 let systemSettingsLoaded = false;
 let systemHealthSnapshot = null;
+let syncRetentionObservabilitySnapshot = null;
+let syncRetentionObservabilityError = "";
+let syncRetentionObservabilityLoadedAt = 0;
 let latestDiagnosticsReport = null;
 let diagnosticsRunning = false;
 let currentReportsSnapshot = null;
@@ -1444,7 +1447,7 @@ function switchView(requestedName, options = {}) {
     loadBackupHistory();
   }
   if (name === "systemHealth") {
-    loadSystemHealth(true);
+    loadSystemHealth(true, { refreshRetention: true });
     startSystemHealthAutoRefresh();
   }
   if (name === "reportsOverview") {
@@ -2699,7 +2702,7 @@ function calculateHealthScore(snapshot) {
   return evaluation?.score ?? 0;
 }
 
-async function loadSystemHealth(force = false) {
+async function loadSystemHealth(force = false, options = {}) {
   if (systemHealthLoading || (!force && systemHealthSnapshot)) return;
   if (!window.SystemHealthService) return;
   if (!canScreenAction("systemHealth", "view")) {
@@ -2710,7 +2713,24 @@ async function loadSystemHealth(force = false) {
   systemHealthLoading = true;
   showDataStatus("systemHealthStatus", "جاري تنفيذ الفحص الصحي...", "info");
   try {
-    systemHealthSnapshot = await window.SystemHealthService.getSnapshot();
+    const healthPromise = window.SystemHealthService.getSnapshot();
+    const canLoadRetention = currentRole() === "super_admin" && window.SystemHealthService.getSyncRetentionObservability;
+    const refreshRetention = Boolean(canLoadRetention) && (
+      options.refreshRetention === true
+      || !syncRetentionObservabilitySnapshot
+      || Date.now() - syncRetentionObservabilityLoadedAt >= 120000
+    );
+    const retentionPromise = canLoadRetention
+      ? (refreshRetention ? window.SystemHealthService.getSyncRetentionObservability() : Promise.resolve(syncRetentionObservabilitySnapshot))
+      : Promise.resolve(null);
+    const [healthResult, retentionResult] = await Promise.allSettled([healthPromise, retentionPromise]);
+    if (healthResult.status !== "fulfilled") throw healthResult.reason;
+    systemHealthSnapshot = healthResult.value;
+    syncRetentionObservabilitySnapshot = retentionResult.status === "fulfilled" ? retentionResult.value : null;
+    if (refreshRetention && retentionResult.status === "fulfilled") syncRetentionObservabilityLoadedAt = Date.now();
+    syncRetentionObservabilityError = retentionResult.status === "rejected"
+      ? (retentionResult.reason?.message || "تعذر تحميل حالة المزامنة والاحتفاظ.")
+      : "";
     renderSystemHealth();
     showDataStatus("systemHealthStatus", "");
   } catch (error) {
@@ -2782,8 +2802,160 @@ function renderSystemHealth() {
     a.detail || ""
   )).join("") || healthStatusItem("لا توجد تنبيهات حرجة", "سليم", true, "آخر 24 ساعة");
 
+  renderSyncRetentionObservability();
   renderSmartHealthInsights(healthEvaluation);
   renderPerformanceMonitor();
+}
+
+function healthAgeLabel(value) {
+  if (!value) return "لا توجد";
+  const stamp = Date.parse(String(value));
+  if (!Number.isFinite(stamp)) return "—";
+  const serverNow = Date.parse(String(syncRetentionObservabilitySnapshot?.serverTime || ""));
+  const referenceNow = Number.isFinite(serverNow) ? serverNow : Date.now();
+  const diff = Math.max(0, referenceNow - stamp);
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+  if (diff < minute) return "الآن";
+  if (diff < hour) return `${Math.max(1, Math.floor(diff / minute))} دقيقة`;
+  if (diff < day) return `${Math.max(1, Math.floor(diff / hour))} ساعة`;
+  const days = diff / day;
+  return `${days < 10 ? days.toFixed(1) : Math.floor(days)} يوم`;
+}
+
+function healthDateTimeLabel(value) {
+  if (!value) return "—";
+  const stamp = Date.parse(String(value));
+  if (!Number.isFinite(stamp)) return "—";
+  return new Date(stamp).toLocaleString("ar-SA-u-ca-gregory-nu-latn");
+}
+
+function renderSyncRetentionObservability() {
+  const content = document.getElementById("syncRetentionObservabilityContent");
+  const status = document.getElementById("syncRetentionObservabilityStatus");
+  const badge = document.getElementById("syncRetentionPruningBadge");
+  if (!content || !status || !badge) return;
+
+  if (currentRole() !== "super_admin") {
+    badge.className = "record-status inactive";
+    badge.textContent = "مدير النظام فقط";
+    showDataStatus("syncRetentionObservabilityStatus", "");
+    content.innerHTML = '<div class="empty-state">بيانات المزامنة والاحتفاظ التفصيلية متاحة لمدير النظام فقط.</div>';
+    return;
+  }
+
+  if (syncRetentionObservabilityError) {
+    badge.className = "record-status inactive";
+    badge.textContent = "غير متاح";
+    showDataStatus("syncRetentionObservabilityStatus", syncRetentionObservabilityError, "error");
+    content.innerHTML = '<div class="empty-state">تعذر تحميل بيانات المراقبة الحالية.</div>';
+    return;
+  }
+
+  const snapshot = syncRetentionObservabilitySnapshot;
+  if (!snapshot) {
+    badge.className = "record-status inactive";
+    badge.textContent = "بانتظار البيانات";
+    showDataStatus("syncRetentionObservabilityStatus", "");
+    content.innerHTML = '<div class="empty-state">لا توجد بيانات مراقبة متاحة بعد.</div>';
+    return;
+  }
+
+  const queue = snapshot.queueDomains || {};
+  const execution = queue.installationExecution || {};
+  const seaVibe = queue.seaVibe || {};
+  const crm = snapshot.crmRetention || {};
+  const ledgers = snapshot.ledgers || {};
+  const openOperations = Number(execution.openOperations || 0) + Number(seaVibe.openOperations || 0);
+  const issueOperations = Number(execution.failed || 0) + Number(execution.conflict || 0) + Number(seaVibe.failed || 0) + Number(seaVibe.conflict || 0);
+  const observationAge = healthAgeLabel(snapshot.observationStartedAt);
+  const pruningEnabled = snapshot.pruningEnabled === true;
+  const readinessText = snapshot.readinessReason === "QUEUE_REPLAY_HORIZON_NOT_YET_BOUNDED"
+    ? "نافذة إعادة المحاولة لم تُثبت بعد"
+    : String(snapshot.readinessReason || "غير محدد");
+
+  badge.className = `record-status ${pruningEnabled ? "active" : "inactive"}`;
+  badge.textContent = pruningEnabled ? "Pruning مفعّل" : "Pruning معطّل";
+  showDataStatus("syncRetentionObservabilityStatus", "");
+
+  const queueRows = [
+    ["تنفيذ المواعيد", execution],
+    ["SEA VIBE", seaVibe]
+  ].map(([label, item]) => `
+    <tr>
+      <td><strong>${escapeHtml(label)}</strong></td>
+      <td>${Number(item.activeClients || 0)}</td>
+      <td>${Number(item.openOperations || 0)}</td>
+      <td>${Number(item.pending || 0)} / ${Number(item.retry || 0)}</td>
+      <td>${Number(item.failed || 0)} / ${Number(item.conflict || 0)}</td>
+      <td>${escapeHtml(healthAgeLabel(item.oldestOpenAt))}</td>
+      <td>${escapeHtml(healthDateTimeLabel(item.lastSeenAt))}</td>
+    </tr>`).join("");
+
+  const ledgerRows = [
+    ["Execution", ledgers.installationExecution || {}],
+    ["Financial", ledgers.installationFinancial || {}],
+    ["SEA VIBE", ledgers.seaVibe || {}]
+  ].map(([label, item]) => `
+    <tr>
+      <td><strong>${escapeHtml(label)}</strong></td>
+      <td>${Number(item.rows || 0)}</td>
+      <td>${escapeHtml(healthAgeLabel(item.oldestAt))}</td>
+      <td>${item.queueBacked ? "Queue-backed" : "Online retry"}</td>
+      <td><span class="record-status inactive">محمي من الحذف</span></td>
+    </tr>`).join("");
+
+  const crmEntities = crm.entities || {};
+  const crmRows = [
+    ["العملاء", crmEntities.customers || {}],
+    ["المتابعات", crmEntities.followups || {}],
+    ["العقود", crmEntities.quotations || {}]
+  ].map(([label, item]) => `
+    <tr>
+      <td><strong>${escapeHtml(label)}</strong></td>
+      <td>${Number(item.activeClients || 0)}</td>
+      <td>${Number(item.watermarkRows || 0)}</td>
+      <td>${escapeHtml(healthAgeLabel(item.oldestCursorAt))}</td>
+      <td>${escapeHtml(healthAgeLabel(item.oldestFullSyncAt))}</td>
+      <td>${escapeHtml(healthDateTimeLabel(item.lastSeenAt))}</td>
+    </tr>`).join("");
+
+  content.innerHTML = `
+    <div class="diagnostics-summary-grid">
+      <article><span>نافذة المراقبة</span><strong>${escapeHtml(observationAge)}</strong><small>من أول Queue watermark</small></article>
+      <article><span>عمليات Queue مفتوحة</span><strong>${openOperations}</strong><small>Execution + SEA VIBE</small></article>
+      <article><span>فشل / تعارض</span><strong>${issueOperations}</strong><small>تحتاج متابعة إذا كانت أكبر من صفر</small></article>
+      <article><span>CRM Tombstones</span><strong>${Number(crm.tombstones || 0)}</strong><small>الأقدم: ${escapeHtml(healthAgeLabel(crm.oldestTombstoneAt))}</small></article>
+      <article><span>جاهزية Ledger Pruning</span><strong>${pruningEnabled ? "جاهز" : "غير جاهز"}</strong><small>${escapeHtml(readinessText)}</small></article>
+    </div>
+
+    <div class="panel-header"><div><h3>Queue Watermarks</h3><p>أعمار وحالات العمليات المفتوحة من الأجهزة النشطة خلال آخر 45 يومًا.</p></div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الدومين</th><th>Clients نشطة</th><th>مفتوحة</th><th>Pending / Retry</th><th>Failed / Conflict</th><th>أقدم عملية</th><th>آخر إشارة</th></tr></thead>
+      <tbody>${queueRows}</tbody>
+    </table></div>
+
+    <div class="panel-header"><div><h3>Idempotency Ledgers</h3><p>المراقبة فقط؛ الحذف الفعلي يظل معطلًا في R36.</p></div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Ledger</th><th>الصفوف</th><th>عمر الأقدم</th><th>مصدر Retry</th><th>Retention</th></tr></thead>
+      <tbody>${ledgerRows}</tbody>
+    </table></div>
+
+    <div class="health-metrics-grid">
+      <article><span>CRM Clients نشطة</span><strong>${Number(crm.activeClients || 0)}</strong></article>
+      <article><span>Watermark Rows النشطة</span><strong>${Number(crm.activeWatermarkRows || 0)}</strong></article>
+      <article><span>Tombstones أقدم من 60 يوم</span><strong>${Number(crm.olderThanMinimumRetention || 0)}</strong></article>
+      <article><span>جاهزة للصيانة التالية</span><strong>${Number(crm.eligibleForNextMaintenance || 0)}</strong></article>
+      <article><span>محجوبة بسبب Clients متأخرة</span><strong>${Number(crm.blockedByActiveClients || 0)}</strong></article>
+      <article><span>حد الاحتفاظ الأدنى</span><strong>${Number(snapshot.retentionPolicy?.crmTombstoneMinimumDays || 60)} يوم</strong></article>
+    </div>
+
+    <div class="panel-header"><div><h3>CRM Sync Watermarks</h3><p>لا يتم عرض User IDs أو Client IDs أو Scope IDs؛ أرقام مجمعة فقط.</p></div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الكيان</th><th>Clients نشطة</th><th>Watermarks</th><th>أقدم Cursor</th><th>أقدم Full Sync</th><th>آخر إشارة</th></tr></thead>
+      <tbody>${crmRows}</tbody>
+    </table></div>`;
 }
 
 function reportCurrency(value) {
@@ -3582,7 +3754,7 @@ function startSystemHealthAutoRefresh() {
   systemHealthTimer = window.setInterval(() => {
     const view = document.getElementById("systemHealthView");
     if (view && !view.classList.contains("hidden")) {
-      loadSystemHealth(true);
+      loadSystemHealth(true, { refreshRetention: false });
       renderPerformanceMonitor();
     }
   }, 30000);
@@ -9162,7 +9334,7 @@ document.getElementById("refreshBackupHistoryBtn")?.addEventListener("click", ()
 document.getElementById("saveSystemSettingsBtn")?.addEventListener("click", saveSystemSettings);
 document.getElementById("systemSettingsForm")?.addEventListener("submit", saveSystemSettings);
 
-document.getElementById("refreshSystemHealthBtn")?.addEventListener("click", () => loadSystemHealth(true));
+document.getElementById("refreshSystemHealthBtn")?.addEventListener("click", () => loadSystemHealth(true, { refreshRetention: true }));
 document.getElementById("refreshReportsBtn")?.addEventListener("click", async () => {
   await Promise.all([
     loadCustomersFromSupabase(true),

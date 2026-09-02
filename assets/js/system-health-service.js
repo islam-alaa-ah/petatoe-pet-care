@@ -13,5 +13,11 @@
     return { ...data, latency_ms: latencyMs };
   }
 
-  window.SystemHealthService = Object.freeze({ getSnapshot });
+  async function getSyncRetentionObservability() {
+    const { data, error } = await client().rpc("get_sync_retention_observability_snapshot");
+    if (error) throw new Error(`تعذر تحميل حالة المزامنة والاحتفاظ: ${error.message}`);
+    return data || null;
+  }
+
+  window.SystemHealthService = Object.freeze({ getSnapshot, getSyncRetentionObservability });
 })();

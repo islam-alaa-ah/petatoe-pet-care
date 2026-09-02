@@ -1,15 +1,14 @@
 {
-  "version": "18.56.33",
-  "build": 185633,
+  "version": "18.56.34",
+  "build": 185634,
   "forceUpdate": true,
-  "releaseDate": "2026-09-02",
-  "title": "Idempotency Retention Readiness R35",
+  "releaseDate": "2026-09-03",
+  "title": "Sync Retention Observability R36",
   "notes": [
-    "إضافة Queue-age watermarks لكل Browser/PWA لمتابعة أقدم عمليات تنفيذ المواعيد وSEA VIBE المعلقة بدون تخزين payloads أو operation keys.",
-    "إصلاح تنظيف Offline Queue بحيث لا يتم حذف أي synced predecessor ما زالت عملية معلقة تعتمد عليه عبر dependsOn.",
-    "تنظيف resolved conflict metadata محليًا بعد 30 يوم فقط مع الإبقاء على open conflicts وID mapping بدون تغيير.",
-    "إضافة Super Admin readiness report لمراقبة أحجام وأعمار execution/financial/SEA VIBE idempotency ledgers بدون حذف أي سجل منها.",
-    "الإبقاء على ledger pruning معطلًا صراحةً حتى تثبت نافذة مراقبة فعلية أقصى عمر آمن لإعادة المحاولة."
+    "إضافة لوحة Read-only داخل مراقبة النظام لعرض صحة المزامنة والاحتفاظ بصورة مجمعة للسوبر أدمن.",
+    "عرض أعمار وحالات Queue Watermarks لتنفيذ المواعيد وSEA VIBE بدون User IDs أو Client IDs أو Payloads أو Operation Keys.",
+    "عرض أحجام وأعمار Idempotency Ledgers وحالة CRM Tombstones/Watermarks مع الإبقاء على Ledger pruning معطلًا بالكامل.",
+    "عدم تغيير محركات Offline Queue أو Smart Cache أو Sync Engine أو أي Business Logic مالي أو تشغيلي."
   ],
-  "cacheToken": "petatoe-pwa-18-56-33-idempotency-retention-readiness-r35-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-34-sync-retention-observability-r36-p5-13-8-72"
 }
