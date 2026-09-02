@@ -1,15 +1,15 @@
 {
-  "version": "18.56.36",
-  "build": 185636,
+  "version": "18.56.37",
+  "build": 185637,
   "forceUpdate": true,
   "releaseDate": "2026-09-03",
-  "title": "Replay Horizon Policy R38",
+  "title": "Server Replay Enforcement Cutover R39",
   "notes": [
-    "اعتماد Replay Horizon لمدة 90 يومًا لعمليات تنفيذ المواعيد وSEA VIBE من أول محاولة فعلية للسيرفر.",
-    "منع Auto/Manual Retry بعد انتهاء المهلة مع إبقاء العملية في Recovery Center للمراجعة اليدوية والتجاهل بعد التحقق.",
-    "منح عمليات R37 وما قبلها Grace لمدة 90 يومًا عند أول تعامل مع R38 بدل إسقاط حق إعادة المحاولة فورًا.",
-    "إضافة Watermark v2 لقياس Replayable مقابل Expired وإظهار Candidate Retention 120 يومًا مع بقاء Ledger pruning معطلًا.",
-    "Financial retry horizon وServer-side enforcement للأجهزة القديمة يظلان بوابات مستقلة قبل أي Idempotency Ledger pruning."
+    "تفعيل Server-side Replay Enforcement لمدة 90 يومًا لعمليات تنفيذ المواعيد وSEA VIBE مع Replay Anchor مثبتة على الخادم.",
+    "إضافة RPC v2 للنسخة الحالية مع منع إعادة ضبط مهلة Replay لكل User + Domain + Operation Key.",
+    "الإبقاء على RPC القديمة لمدة Grace عالمية 90 يومًا فقط؛ بعدها العمليات المجهولة من الإصدارات القديمة تُرفض حتى يتم تحديث التطبيق.",
+    "الحفاظ على Idempotent replay للعمليات الموجودة بالفعل في الـLedgers وعدم تفعيل أي Ledger pruning في R39.",
+    "تحديث شاشة مراقبة النظام لإظهار أن Server enforcement نشط مع استمرار Decision Gate بحالة HOLD."
   ],
-  "cacheToken": "petatoe-pwa-18-56-36-replay-horizon-policy-r38-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-37-server-replay-enforcement-r39-p5-13-8-72"
 }

@@ -2883,6 +2883,7 @@ function renderSyncRetentionObservability() {
     REPLAY_POLICY_DECISION_REQUIRED: "مطلوب اعتماد سياسة قصوى لعمر إعادة المحاولة",
     REPLAY_POLICY_ROLLOUT_INCOMPLETE: "ما زالت هناك أجهزة نشطة لم تثبت تطبيق سياسة Replay الجديدة",
     SERVER_REPLAY_ENFORCEMENT_PENDING: "يلزم Server-side enforcement قبل السماح بحذف الـLedgers",
+    SERVER_LEGACY_REPLAY_GRACE_ACTIVE: "Server enforcement يعمل؛ ما زالت مهلة توافق الأجهزة القديمة نشطة",
     FINANCIAL_RETRY_POLICY_REQUIRED: "السياسة المالية تحتاج قرار Retry مستقل",
     LEDGER_PRUNING_REMAINS_DISABLED: "حذف Idempotency Ledgers ما زال معطلًا"
   };
@@ -2893,7 +2894,11 @@ function renderSyncRetentionObservability() {
       ? "مطلوب تحديد الحد الأقصى لعمر Replay قبل أي Pruning"
       : (decisionGate.nextDecisionRequired === "ENFORCE_REPLAY_POLICY_SERVER_SIDE"
         ? "تم تحديد Replay بـ90 يومًا؛ ما زال يلزم Server-side enforcement قبل Pruning"
-        : String(snapshot.readinessReason || "غير محدد")));
+        : (decisionGate.nextDecisionRequired === "WAIT_SERVER_LEGACY_REPLAY_GRACE"
+          ? "Server enforcement نشط؛ ننتظر انتهاء مهلة توافق الأجهزة القديمة قبل أي Pruning"
+          : (decisionGate.nextDecisionRequired === "DEFINE_FINANCIAL_RETRY_POLICY"
+            ? "Server enforcement مكتمل للـExecution وSEA VIBE؛ المتبقي تحديد سياسة Financial Retry"
+            : String(snapshot.readinessReason || "غير محدد")))));
 
   badge.className = `record-status ${gateReady ? "active" : "inactive"}`;
   badge.textContent = gateReady ? "Decision Gate READY" : "Decision Gate HOLD";

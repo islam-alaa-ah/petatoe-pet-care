@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.7.0",
+  "policyVersion": "1.8.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -14,7 +14,7 @@
   "domains": {
     "sync_retention": {
       "file": "assets/js/sync-retention.js",
-      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_bounded_replay_horizon_readiness",
+      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_bounded_replay_horizon_server_enforced_readiness",
       "status": "compliant"
     },
     "customers": {
@@ -227,6 +227,8 @@
     "offlineDeleteMustUseServerTombstoneFeed": true,
     "offlineDeleteMustUseBaseVersionConflictGuard": true,
     "idempotencyLedgerPruningRequiresBoundedReplayHorizon": true,
-    "expiredQueueReplayRequiresManualRecovery": true
+    "expiredQueueReplayRequiresManualRecovery": true,
+    "queueBackedReplayHorizonMustBeServerEnforced": true,
+    "legacyReplayRpcMustHaveBoundedCutoverGrace": true
   }
 }

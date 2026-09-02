@@ -719,17 +719,23 @@
     if(!row)throw new Error('تعذر العثور على الموعد في مساحة التنفيذ الحالية.');
     return {context,row,operations};
   }
-  async function callSafeExecutionTransitionServer(payload,operationKey){
-    const {data,error}=await db().rpc('sync_installation_execution_transition',{
+  async function callSafeExecutionTransitionServer(payload,operationKey,replayAnchorAt=''){
+    const anchor=String(replayAnchorAt||payload?.replayAnchorAt||new Date().toISOString());
+    const {data,error}=await db().rpc('sync_installation_execution_transition_v2',{
       p_request_id:payload.requestId,
       p_visit_id:payload.visitId||null,
       p_transition:payload.transition,
       p_operation_key:operationKey,
       p_predecessor_operation_key:payload.predecessorOperationKey||null,
       p_base_updated_at:payload.baseUpdatedAt||null,
-      p_notes:payload.notes||null
+      p_notes:payload.notes||null,
+      p_replay_anchor_at:anchor,
+      p_replay_policy_version:'r38-90d-v1'
     });
-    if(error)throw new Error('تعذر مزامنة مرحلة التنفيذ: '+error.message);
+    if(error){
+      const code=String(error?.message||'').includes('SYNC_REPLAY_HORIZON_EXPIRED')?'OFFLINE_REPLAY_HORIZON_EXPIRED':String(error?.message||'').includes('SYNC_CLIENT_REPLAY_POLICY_UPGRADE_REQUIRED')?'SYNC_CLIENT_REPLAY_POLICY_UPGRADE_REQUIRED':'';
+      const e=new Error(code||('تعذر مزامنة مرحلة التنفيذ: '+error.message));if(code)e.code=code;throw e;
+    }
     const result=Array.isArray(data)?data[0]:data;
     if(result?.conflict===true||result?.ok===false)throw executionConflictError(result?.message||'تعارضت مرحلة التنفيذ المحفوظة مع الحالة الحالية على الخادم.',result||{});
     return result||{ok:true};
@@ -773,7 +779,8 @@
     const payload={requestId:String(requestId||''),visitId:visitId||null,transition,notes:String(notes||'').trim()||'',baseUpdatedAt:row.executionBaseUpdatedAt||row.updatedAt||'',predecessorOperationKey:predecessor?.idempotencyKey||'',fromQueue:false};
     if(navigator.onLine===false||predecessor)return queueSafeExecutionTransition(payload,operationKey,predecessor);
     try{
-      const result=await callSafeExecutionTransitionServer(payload,operationKey);
+      payload.replayAnchorAt=new Date().toISOString();
+      const result=await callSafeExecutionTransitionServer(payload,operationKey,payload.replayAnchorAt);
       notifySafeExecutionTransition(payload,result,operationKey);
       await invalidateAppointmentCache();
       return result;
@@ -1426,7 +1433,9 @@
     if(operation.action!=='update')throw new Error('عملية مزامنة تنفيذ غير مدعومة.');
     const payload={...(operation.payload||{}),fromQueue:true};
     if(!SAFE_EXECUTION_TRANSITIONS.includes(String(payload.transition||'')))throw new Error('مرحلة التنفيذ المحفوظة غير مسموحة.');
-    const result=await callSafeExecutionTransitionServer(payload,operation.idempotencyKey||payload.operationKey);
+    const replayMs=Number(operation.firstAttemptAt||operation.replayHorizonStartedAt||Date.now());
+    payload.replayAnchorAt=payload.replayAnchorAt||new Date(replayMs).toISOString();
+    const result=await callSafeExecutionTransitionServer(payload,operation.idempotencyKey||payload.operationKey,payload.replayAnchorAt);
     notifySafeExecutionTransition(payload,result,operation.idempotencyKey||payload.operationKey);
     return {id:result?.visitId||payload.visitId||payload.requestId,...(result||{})};
   });

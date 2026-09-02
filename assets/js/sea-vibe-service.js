@@ -80,8 +80,11 @@
   async function audit(action,entity,id,payload){ try{ const u=(await client().auth.getUser()).data.user?.id||null; await client().from('audit_logs').insert({user_id:u,action,entity_type:entity,entity_id:String(id||''),new_data:payload,metadata:{source:'petatoe-web',phase:'P5.13.8.72R31',module:'sea-vibe'}});}catch(e){console.warn('SEA VIBE audit skipped',e);} }
   function optimistic(mutator){ const s=structuredClone(memory||blank()); mutator(s); memory=s; namespace().then(ns=>window.KYUMSmartCache?.set?.(CACHE_KEY,s,{namespace:ns,ttlMs:CACHE_TTL,staleMaxMs:STALE_MAX,source:'offline-optimistic',schemaVersion:1})); window.dispatchEvent(new CustomEvent('sea-vibe-data-updated',{detail:{source:'offline-optimistic'}})); return s; }
   function newOperationKey(kind){const suffix=globalThis.crypto?.randomUUID?.()||`${Date.now()}:${Math.random().toString(36).slice(2)}`;return `sea_vibe:${kind}:${suffix}`;}
+  const serverReplayAnchors=new Map();
+  function replayAnchorIso(value){const n=Number(value||0);if(n>0)return new Date(n).toISOString();const parsed=Date.parse(String(value||''));return Number.isFinite(parsed)?new Date(parsed).toISOString():new Date().toISOString();}
+  function queueReplayAnchor(operation){return operation?.payload?.replayAnchorAt||replayAnchorIso(operation?.firstAttemptAt||operation?.replayHorizonStartedAt||Date.now());}
   function conflictError(message,details={}){const C=window.KYUMOfflineQueue?.ConflictError;if(C)return new C(message||'SEA VIBE sync conflict',details);const e=new Error(message||'SEA VIBE sync conflict');e.code='OFFLINE_CONFLICT';e.details=details;return e;}
-  async function enqueue(action,payload,localEntityId,dependsOn=[],baseUpdatedAt='',idempotencyKey=''){ if(!window.KYUMOfflineQueue) throw new Error('نظام المزامنة غير جاهز.'); return window.KYUMOfflineQueue.enqueue({entity:'sea_vibe',action,payload,localEntityId,dependsOn,baseUpdatedAt,idempotencyKey:idempotencyKey||`sea_vibe:${action}:${localEntityId||payload?.id||Date.now()}`}); }
+  async function enqueue(action,payload,localEntityId,dependsOn=[],baseUpdatedAt='',idempotencyKey=''){ if(!window.KYUMOfflineQueue) throw new Error('نظام المزامنة غير جاهز.'); const key=idempotencyKey||`sea_vibe:${action}:${localEntityId||payload?.id||Date.now()}`;const replayAnchorAt=payload?.replayAnchorAt||serverReplayAnchors.get(key)||'';return window.KYUMOfflineQueue.enqueue({entity:'sea_vibe',action,payload:{...(payload||{}),replayAnchorAt},localEntityId,dependsOn,baseUpdatedAt,idempotencyKey:key}); }
   async function findSeaVibeCreateOperation(localId,namespaceValue){
     const standard=await window.KYUMOfflineQueue?.findCreateOperationByLocalId?.(localId,namespaceValue);if(standard?.id)return standard;
     const rows=await window.KYUMOfflineQueue?.list?.({namespace:namespaceValue,statuses:['pending','retry','processing','synced']}).catch(()=>[])||[];
@@ -97,8 +100,15 @@
     throw new Error('SEA_VIBE_LOCAL_ID_MAPPING_MISSING');
   }
   async function syncMutationOnline(kind,mutation,operationKey,entityId,payload={},baseUpdatedAt=''){
-    const data=await unwrap(client().rpc('sync_sea_vibe_mutation',{p_kind:kind,p_mutation:mutation,p_operation_key:operationKey,p_entity_id:entityId||null,p_payload:payload||{},p_base_updated_at:baseUpdatedAt||null}),'تعذر مزامنة بيانات SEA VIBE');
-    if(data?.conflict)throw conflictError(data.message||'تم تعديل البيانات على الخادم بعد آخر مزامنة.',data);
+    const replayAnchorAt=serverReplayAnchors.get(operationKey)||new Date().toISOString();serverReplayAnchors.set(operationKey,replayAnchorAt);
+    let data;try{
+      data=await unwrap(client().rpc('sync_sea_vibe_mutation_v2',{p_kind:kind,p_mutation:mutation,p_operation_key:operationKey,p_entity_id:entityId||null,p_payload:payload||{},p_base_updated_at:baseUpdatedAt||null,p_replay_anchor_at:replayAnchorAt,p_replay_policy_version:'r38-90d-v1'}),'تعذر مزامنة بيانات SEA VIBE');
+    }catch(error){
+      if(String(error?.message||'').includes('SYNC_REPLAY_HORIZON_EXPIRED')){error.code='OFFLINE_REPLAY_HORIZON_EXPIRED';}
+      throw error;
+    }
+    if(data?.conflict){serverReplayAnchors.delete(operationKey);throw conflictError(data.message||'تم تعديل البيانات على الخادم بعد آخر مزامنة.',data);}
+    serverReplayAnchors.delete(operationKey);
     return data||{};
   }
 
@@ -255,6 +265,7 @@
     const p={...operation.payload};
     if(operation.action==='create'||operation.action==='update'){
       const kind=p.kind,mutation=p.mutation||operation.action,operationKey=p.operationKey||operation.idempotencyKey;
+      serverReplayAnchors.set(operationKey,queueReplayAnchor(operation));
       if(kind==='trip'){
         const r={...(p.record||{})};if(r.tripTypeId)r.tripTypeId=await resolveQueuedId(r.tripTypeId,operation,helpers);let id=operation.action==='update'?await resolveQueuedId(r.id||operation.localEntityId,operation,helpers):null;let base=operation.baseUpdatedAt||'';if(operation.action==='update'&&String(r.id||'').startsWith('local:'))base=await queueServerBase('trip',id);const result=await syncMutationOnline('trip',mutation,operationKey,id,mutation==='status'?{status:p.status||r.status}:{date:r.date,startTime:r.startTime,durationHours:num(r.durationHours),peopleCount:num(r.peopleCount),tripTypeId:r.tripTypeId,totalValue:num(r.totalValue),notes:String(r.notes||'').trim()},base);markSyncSections(mutation==='status'?['trips']:['trips','expenses','zawelTransactions','zawelBalance','treasuryMovements']);return{id:result.id};
       }
@@ -273,6 +284,7 @@
 
     // Backward-compatible replay for operations queued before R31.
     const legacyKey=operation.idempotencyKey||`legacy:${operation.id}`;
+    serverReplayAnchors.set(legacyKey,queueReplayAnchor(operation));
     if(operation.action==='trip_create'||operation.action==='trip_update'){const r={...p};if(r.tripTypeId)r.tripTypeId=await resolveQueuedId(r.tripTypeId,operation,helpers);const localRef=r.id||operation.localEntityId,id=operation.action==='trip_update'?await resolveQueuedId(localRef,operation,helpers):null,base=operation.action==='trip_update'?(String(localRef||'').startsWith('local:')?await queueServerBase('trip',id):operation.baseUpdatedAt||r.updatedAt||''):'';const result=await syncMutationOnline('trip',operation.action==='trip_update'?'update':'create',legacyKey,id,{date:r.date,startTime:r.startTime,durationHours:num(r.durationHours),peopleCount:num(r.peopleCount),tripTypeId:r.tripTypeId,totalValue:num(r.totalValue),notes:String(r.notes||'').trim()},base);markSyncSections(['trips','expenses','zawelTransactions','zawelBalance','treasuryMovements']);return{id:result.id};}
     if(operation.action==='trip_close'||operation.action==='trip_reopen'){const localRef=p.id||operation.localEntityId,id=await resolveQueuedId(localRef,operation,helpers),base=String(localRef||'').startsWith('local:')?await queueServerBase('trip',id):operation.baseUpdatedAt||'';const result=await syncMutationOnline('trip','status',legacyKey,id,{status:operation.action==='trip_close'?'closed':'open'},base);markSyncSections(['trips']);return{id:result.id};}
     if(operation.action==='asset_create'||operation.action==='asset_update'){const localRef=p.id||operation.localEntityId,id=operation.action==='asset_update'?await resolveQueuedId(localRef,operation,helpers):null,base=operation.action==='asset_update'?(String(localRef||'').startsWith('local:')?await queueServerBase('asset',id):operation.baseUpdatedAt||p.updatedAt||''):'';const result=await syncMutationOnline('asset',operation.action==='asset_update'?'update':'create',legacyKey,id,{name:String(p.name||'').trim(),initialValue:num(p.initialValue),notes:String(p.notes||'').trim(),isActive:p.isActive!==false},base);markSyncSections(['assets']);return{id:result.id};}
