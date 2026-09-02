@@ -1,15 +1,15 @@
 {
-  "version": "18.56.38",
-  "build": 185638,
+  "version": "18.56.39",
+  "build": 185639,
   "forceUpdate": true,
   "releaseDate": "2026-09-03",
-  "title": "Financial Retry Horizon Policy R40",
+  "title": "Ledger Pruning Dry-Run Guard R41",
   "notes": [
-    "تحديد Financial Retry Horizon لمدة 90 يومًا للعمليات المالية الخاصة بالمواعيد مع enforcement على الخادم.",
-    "إضافة Compact Financial Replay Guards لكل عملية مالية ومنع إعادة التنفيذ القديمة بعد انتهاء المهلة إذا لم يعد Result Ledger موجودًا.",
-    "عمل Backfill تلقائي للعمليات المالية السابقة مع إبقاء الـResult Ledger الحالي مرجعًا للـIdempotent replay.",
-    "اعتماد Candidate Retention قدره 120 يومًا للـFinancial result ledger دون تفعيل أي Ledger pruning في R40.",
-    "تحديث شاشة مراقبة النظام وDecision Gate لإظهار أن سياسة Financial Retry أصبحت محددة بينما Pruning ما زال HOLD."
+    "إضافة Ledger Pruning Dry-Run للسوبر أدمن لحساب المرشحين دون تنفيذ أي DELETE.",
+    "اعتبار الصفوف مؤهلة تقنيًا فقط بعد انتهاء Replay Horizon + Safety Buffer وبوجود Replay Guard مطابق.",
+    "كشف صفوف Execution وSEA VIBE القديمة التي لا تملك Server Replay Guard واستبعادها تلقائيًا من أي ترشيح.",
+    "إضافة Fail-closed Eligibility Guard لا يمكنه السماح بأي Pruning طالما Production Decision Gate ليست READY أو مفتاح Pruning معطل.",
+    "الإبقاء على جميع Idempotency Ledgers وReplay Guards بدون حذف في R41."
   ],
-  "cacheToken": "petatoe-pwa-18-56-38-financial-retry-horizon-r40-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-39-ledger-pruning-dry-run-r41-p5-13-8-72"
 }

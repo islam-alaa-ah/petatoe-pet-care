@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.38",
-    "build": 185638,
+    "version": "18.56.39",
+    "build": 185639,
     "date": "2026-09-03"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -66,16 +66,18 @@
       "supabase/migrations/phase_p5_13_8_41_completion_invoice_visibility_recovery.sql",
       "supabase/migrations/phase_p5_13_8_42_completion_group_invoice_authority.sql",
       "supabase/migrations/phase_p5_13_8_44_revisit_transactional_guard.sql",
-      "supabase/migrations/phase_p5_13_8_45_completion_attachment_permission_safe_read.sql"
+      "supabase/migrations/phase_p5_13_8_45_completion_attachment_permission_safe_read.sql",
+      "supabase/migrations/phase_p5_13_8_72_r41_ledger_pruning_dry_run_guard.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
       "supabase/migrations/phase_p5_13_8_72_r39_server_replay_enforcement.sql",
-      "supabase/migrations/phase_p5_13_8_72_r40_financial_retry_horizon_policy.sql"
+      "supabase/migrations/phase_p5_13_8_72_r40_financial_retry_horizon_policy.sql",
+      "supabase/migrations/phase_p5_13_8_72_r41_ledger_pruning_dry_run_guard.sql"
     ]
   },
   "inventoryStats": {
-    "historicalMigrationCount": 224,
+    "historicalMigrationCount": 225,
     "uppercaseFilenameCount": 4,
     "shortAliasCount": 5,
     "allTimestampPrefixed": false
@@ -1220,6 +1222,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r40_financial_retry_horizon_policy.sql",
       "sha256": "dd72247fddd5d2caaf333a1c9f61cf36ee3784eec9505f6991341bdeeb671661",
       "bytes": 32238
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r41_ledger_pruning_dry_run_guard.sql",
+      "sha256": "8c892421a82035597a722ec7c5f4c28e5e7b611360c8d383b28e835619cfc4de",
+      "bytes": 16832
     }
   ]
 }

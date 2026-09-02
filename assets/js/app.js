@@ -2867,6 +2867,8 @@ function renderSyncRetentionObservability() {
   const seaVibe = queue.seaVibe || {};
   const crm = snapshot.crmRetention || {};
   const ledgers = snapshot.ledgers || {};
+  const pruningDryRun = snapshot.ledgerPruningDryRun || {};
+  const pruningDryRunDomains = pruningDryRun.domains || {};
   const openOperations = Number(execution.openOperations || 0) + Number(seaVibe.openOperations || 0);
   const issueOperations = Number(execution.failed || 0) + Number(execution.conflict || 0) + Number(seaVibe.failed || 0) + Number(seaVibe.conflict || 0);
   const observationAge = healthAgeLabel(snapshot.observationStartedAt);
@@ -2886,7 +2888,12 @@ function renderSyncRetentionObservability() {
     SERVER_LEGACY_REPLAY_GRACE_ACTIVE: "Server enforcement يعمل؛ ما زالت مهلة توافق الأجهزة القديمة نشطة",
     FINANCIAL_RETRY_POLICY_REQUIRED: "السياسة المالية تحتاج قرار Retry مستقل",
     FINANCIAL_REPLAY_HORIZON_EXPIRED: "انتهت مهلة إعادة المحاولة المالية وتحتاج مراجعة حالة الخادم",
-    LEDGER_PRUNING_REMAINS_DISABLED: "حذف Idempotency Ledgers ما زال معطلًا"
+    LEDGER_PRUNING_REMAINS_DISABLED: "حذف Idempotency Ledgers ما زال معطلًا",
+    DECISION_GATE_NOT_READY: "بوابة Production Retention ليست READY",
+    LEDGER_PRUNING_DISABLED: "مفتاح Ledger Pruning ما زال معطلًا",
+    UNPROTECTED_LEDGER_ROWS: "توجد صفوف Ledger بدون Replay Guard مطابق",
+    REPLAY_GUARD_POLICY_MISMATCH: "توجد Replay Guards بإصدار سياسة غير مطابق",
+    REPLAY_GUARD_CONTENT_MISMATCH: "توجد Financial Guards لا تطابق نوع/بصمة العملية"
   };
   const labelBlocker = code => blockerLabels[String(code || "")] || String(code || "غير محدد");
   const readinessText = gateReady
@@ -2938,6 +2945,30 @@ function renderSyncRetentionObservability() {
       <td><span class="record-status inactive">محمي من الحذف</span></td>
     </tr>`).join("");
 
+  const pruningDryRunRows = [
+    ["Execution", pruningDryRunDomains.installationExecution || {}],
+    ["Financial", pruningDryRunDomains.installationFinancial || {}],
+    ["SEA VIBE", pruningDryRunDomains.seaVibe || {}]
+  ].map(([label, item]) => {
+    const blockers = Array.isArray(item.blockers) ? item.blockers : [];
+    const coverage = Number(item.totalRows || 0) > 0
+      ? `${Math.round((Number(item.guardedRows || 0) / Number(item.totalRows || 1)) * 100)}%`
+      : "100%";
+    return `
+      <tr>
+        <td><strong>${escapeHtml(label)}</strong></td>
+        <td>${Number(item.totalRows || 0)}</td>
+        <td>${Number(item.guardedRows || 0)} (${coverage})</td>
+        <td>${Number(item.unprotectedRows || 0)}</td>
+        <td>${Number(item.technicalCandidateRows || 0)}</td>
+        <td>${escapeHtml(healthAgeLabel(item.oldestCandidateAt))}</td>
+        <td>${Number(item.candidateRetentionDays || 0) || "—"} يوم</td>
+        <td><span class="record-status inactive">Dry-run فقط</span></td>
+        <td>${escapeHtml(blockers.map(labelBlocker).join("، ") || "لا توجد فجوة Guard")}</td>
+      </tr>`;
+  }).join("");
+
+  const pruningDryRunBlockers = Array.isArray(pruningDryRun.blockers) ? pruningDryRun.blockers : [];
   const gateDomains = decisionGate.domains || {};
   const gateRows = [
     ["تنفيذ المواعيد", gateDomains.installationExecution || {}],
@@ -3008,6 +3039,19 @@ function renderSyncRetentionObservability() {
     <div class="table-wrap"><table>
       <thead><tr><th>Ledger</th><th>الصفوف</th><th>عمر الأقدم</th><th>مصدر Retry</th><th>Retention</th></tr></thead>
       <tbody>${ledgerRows}</tbody>
+    </table></div>
+
+    <div class="panel-header"><div><h3>Ledger Pruning Dry-Run</h3><p>حساب فقط لما قد يصبح مؤهلًا بعد اجتياز Production Gate. لا يتم تنفيذ أي DELETE في R41.</p></div></div>
+    <div class="health-metrics-grid">
+      <article><span>Technical Candidates</span><strong>${Number(pruningDryRun.technicalCandidateRows || 0)}</strong><small>بعد Replay Horizon + Safety Buffer وبوجود Guard مطابق</small></article>
+      <article><span>Unprotected Rows</span><strong>${Number(pruningDryRun.unprotectedRows || 0)}</strong><small>لا تدخل ضمن المرشحين مهما كان عمرها</small></article>
+      <article><span>Pruning Allowed Now</span><strong>NO</strong><small>${pruningDryRun.decisionGateStatus === "READY" ? "Pruning switch ما زال معطلًا" : "Decision Gate ما زالت HOLD"}</small></article>
+      <article><span>Execution Mode</span><strong>DRY-RUN</strong><small>deleteExecuted = ${pruningDryRun.deleteExecuted === true ? "true" : "false"}</small></article>
+    </div>
+    <div class="data-status info">${escapeHtml(pruningDryRunBlockers.map(labelBlocker).join(" — ") || "Dry-run نشط؛ لا توجد فجوات Guard مرصودة في البيانات الحالية")}</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Ledger</th><th>Rows</th><th>Guarded</th><th>Unprotected</th><th>Technical Candidates</th><th>أقدم Candidate</th><th>Candidate Retention</th><th>الحذف الآن</th><th>Guard Notes</th></tr></thead>
+      <tbody>${pruningDryRunRows}</tbody>
     </table></div>
 
     <div class="health-metrics-grid">

@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.9.0",
+  "policyVersion": "1.10.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -14,7 +14,7 @@
   "domains": {
     "sync_retention": {
       "file": "assets/js/sync-retention.js",
-      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_bounded_replay_horizon_server_enforced_readiness",
+      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_bounded_replay_horizon_server_enforced_readiness_pruning_dry_run_guarded",
       "status": "compliant"
     },
     "customers": {
@@ -232,6 +232,9 @@
     "legacyReplayRpcMustHaveBoundedCutoverGrace": true,
     "financialRetryHorizonMustBeServerEnforced": true,
     "financialResultLedgerPruningRequiresExpiredReplayGuard": true,
-    "financialReplayGuardMustOutliveResultLedger": true
+    "financialReplayGuardMustOutliveResultLedger": true,
+    "ledgerPruningMustUseServerEligibilityGuard": true,
+    "ledgerPruningRequiresReplayGuardCoverage": true,
+    "ledgerPruningDryRunMustPrecedeDeleteEnablement": true
   }
 }
