@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.11.0",
+  "policyVersion": "1.12.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -14,7 +14,7 @@
   "domains": {
     "sync_retention": {
       "file": "assets/js/sync-retention.js",
-      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_bounded_replay_horizon_server_enforced_readiness_pruning_dry_run_guarded_execution_historical_guard_backfill",
+      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_bounded_replay_horizon_server_enforced_readiness_pruning_dry_run_guarded_execution_historical_guard_backfill_production_rollout_gate",
       "status": "compliant"
     },
     "customers": {

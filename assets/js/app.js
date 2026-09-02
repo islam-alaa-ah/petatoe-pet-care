@@ -2868,15 +2868,16 @@ function renderSyncRetentionObservability() {
   const crm = snapshot.crmRetention || {};
   const ledgers = snapshot.ledgers || {};
   const pruningDryRun = snapshot.ledgerPruningDryRun || {};
+  const productionReadiness = snapshot.productionRetentionReadiness || {};
+  const productionReadinessDomains = productionReadiness.domains || {};
   const pruningDryRunDomains = pruningDryRun.domains || {};
   const openOperations = Number(execution.openOperations || 0) + Number(seaVibe.openOperations || 0);
   const issueOperations = Number(execution.failed || 0) + Number(execution.conflict || 0) + Number(seaVibe.failed || 0) + Number(seaVibe.conflict || 0);
   const observationAge = healthAgeLabel(snapshot.observationStartedAt);
-  const pruningEnabled = snapshot.pruningEnabled === true;
   const decisionGate = snapshot.decisionGate || {};
   const observationDays = Number(decisionGate.observationDays || 0);
   const requiredObservationDays = Number(decisionGate.requiredObservationDays || 60);
-  const gateReady = decisionGate.status === "READY" && pruningEnabled;
+  const gateReady = decisionGate.status === "READY";
   const blockerLabels = {
     OBSERVATION_WINDOW_INCOMPLETE: "نافذة المراقبة لم تكتمل بعد",
     QUEUE_REPLAY_HORIZON_UNBOUNDED: "إعادة تشغيل Queue القديمة غير محددة بحد زمني",
@@ -2893,24 +2894,31 @@ function renderSyncRetentionObservability() {
     LEDGER_PRUNING_DISABLED: "مفتاح Ledger Pruning ما زال معطلًا",
     UNPROTECTED_LEDGER_ROWS: "توجد صفوف Ledger بدون Replay Guard مطابق",
     REPLAY_GUARD_POLICY_MISMATCH: "توجد Replay Guards بإصدار سياسة غير مطابق",
-    REPLAY_GUARD_CONTENT_MISMATCH: "توجد Financial Guards لا تطابق نوع/بصمة العملية"
+    REPLAY_GUARD_CONTENT_MISMATCH: "توجد Financial Guards لا تطابق نوع/بصمة العملية",
+    ACTIVE_CLIENT_REPLAY_POLICY_ROLLOUT_INCOMPLETE: "ما زالت هناك أجهزة نشطة تستخدم Replay Policy قديمة أو غير مثبتة",
+    EXECUTION_REPLAY_GUARD_COVERAGE_INCOMPLETE: "تغطية Replay Guards الخاصة بالتنفيذ غير مكتملة",
+    SEA_VIBE_REPLAY_GUARD_COVERAGE_INCOMPLETE: "تغطية Replay Guards الخاصة بـ SEA VIBE غير مكتملة",
+    FINANCIAL_REPLAY_GUARD_COVERAGE_INCOMPLETE: "تغطية Financial Replay Guards غير مكتملة",
+    SERVER_REPLAY_POLICY_MISSING: "عقد Server Replay Policy غير متاح",
+    FINANCIAL_REPLAY_POLICY_MISSING: "عقد Financial Replay Policy غير متاح"
   };
   const labelBlocker = code => blockerLabels[String(code || "")] || String(code || "غير محدد");
+  const readinessMessages = {
+    DEFINE_MAX_REPLAY_AGE_POLICY: "مطلوب تحديد الحد الأقصى لعمر Replay قبل أي Pruning",
+    ENFORCE_REPLAY_POLICY_SERVER_SIDE: "تم تحديد Replay بـ90 يومًا؛ ما زال يلزم Server-side enforcement قبل Pruning",
+    WAIT_SERVER_LEGACY_REPLAY_GRACE: "Server enforcement نشط؛ ننتظر انتهاء مهلة توافق الأجهزة القديمة قبل أي Pruning",
+    DEFINE_FINANCIAL_RETRY_POLICY: "Server enforcement مكتمل للـExecution وSEA VIBE؛ المتبقي تحديد سياسة Financial Retry",
+    WAIT_RETENTION_GATE_REQUIREMENTS: "تم تحديد كل سياسات Replay؛ ننتظر اكتمال Observation/Rollout قبل Retention",
+    WAIT_OBSERVATION_WINDOW: "كل الحمايات الأساسية موجودة؛ ننتظر اكتمال نافذة المراقبة",
+    WAIT_ACTIVE_CLIENT_ROLLOUT: "ننتظر تحديث الأجهزة النشطة المتبقية إلى Replay Policy الجديدة",
+    BOUNDED_PRUNING_IMPLEMENTATION_PENDING: "Production Gate اجتازت الشروط؛ Pruning ما زال يحتاج مرحلة تنفيذ مستقلة",
+    RETENTION_PRUNING_IMPLEMENTATION_PENDING: "سياسات Replay مكتملة؛ Pruning ما زال يحتاج مرحلة تنفيذ مستقلة",
+    REPLAY_GUARD_COVERAGE_INCOMPLETE: "تغطية Replay Guards غير مكتملة بعد",
+    REPLAY_POLICY_SERVER_CONTRACT_INCOMPLETE: "عقد Replay Policy على الخادم غير مكتمل"
+  };
   const readinessText = gateReady
     ? "اجتاز بوابة القرار"
-    : (decisionGate.nextDecisionRequired === "DEFINE_MAX_REPLAY_AGE_POLICY"
-      ? "مطلوب تحديد الحد الأقصى لعمر Replay قبل أي Pruning"
-      : (decisionGate.nextDecisionRequired === "ENFORCE_REPLAY_POLICY_SERVER_SIDE"
-        ? "تم تحديد Replay بـ90 يومًا؛ ما زال يلزم Server-side enforcement قبل Pruning"
-        : (decisionGate.nextDecisionRequired === "WAIT_SERVER_LEGACY_REPLAY_GRACE"
-          ? "Server enforcement نشط؛ ننتظر انتهاء مهلة توافق الأجهزة القديمة قبل أي Pruning"
-          : (decisionGate.nextDecisionRequired === "DEFINE_FINANCIAL_RETRY_POLICY"
-            ? "Server enforcement مكتمل للـExecution وSEA VIBE؛ المتبقي تحديد سياسة Financial Retry"
-            : (decisionGate.nextDecisionRequired === "WAIT_RETENTION_GATE_REQUIREMENTS"
-              ? "تم تحديد كل سياسات Replay؛ ننتظر اكتمال Observation/Rollout قبل Retention"
-              : (decisionGate.nextDecisionRequired === "RETENTION_PRUNING_IMPLEMENTATION_PENDING"
-                ? "سياسات Replay مكتملة؛ Pruning ما زال يحتاج مرحلة تنفيذ مستقلة"
-                : String(snapshot.readinessReason || "غير محدد")))))));
+    : (readinessMessages[decisionGate.nextDecisionRequired] || String(snapshot.readinessReason || "غير محدد"));
 
   badge.className = `record-status ${gateReady ? "active" : "inactive"}`;
   badge.textContent = gateReady ? "Decision Gate READY" : "Decision Gate HOLD";
@@ -2990,6 +2998,30 @@ function renderSyncRetentionObservability() {
       </tr>`;
   }).join("");
 
+  const rolloutRows = [
+    ["Execution", productionReadinessDomains.installationExecution || {}],
+    ["SEA VIBE", productionReadinessDomains.seaVibe || {}],
+    ["Financial", productionReadinessDomains.installationFinancial || {}]
+  ].map(([label, item]) => {
+    const blockers = Array.isArray(item.blockers) ? item.blockers : [];
+    const activeClients = item.activeClients == null ? "—" : Number(item.activeClients || 0);
+    const policyClients = item.activePolicyClients == null ? "—" : Number(item.activePolicyClients || 0);
+    const legacyClients = item.legacyOrUnboundedActiveClients == null ? "—" : Number(item.legacyOrUnboundedActiveClients || 0);
+    const rollout = item.rolloutCoveragePercent == null ? "Server-only" : `${Number(item.rolloutCoveragePercent || 0)}%`;
+    return `
+      <tr>
+        <td><strong>${escapeHtml(label)}</strong></td>
+        <td><span class="record-status ${item.status === "READY" ? "active" : "inactive"}">${escapeHtml(item.status || "HOLD")}</span></td>
+        <td>${activeClients}</td>
+        <td>${policyClients}</td>
+        <td>${legacyClients}</td>
+        <td>${escapeHtml(rollout)}</td>
+        <td>${item.guardCoverageSatisfied ? "100%" : "غير مكتملة"}</td>
+        <td>${escapeHtml(healthDateTimeLabel(item.allCurrentRowsSafetyMaturityAt))}</td>
+        <td>${escapeHtml(blockers.map(labelBlocker).join("، ") || "لا توجد موانع")}</td>
+      </tr>`;
+  }).join("");
+
   const overallBlockers = Array.isArray(decisionGate.blockers) ? decisionGate.blockers : [];
   const crmEntities = crm.entities || {};
   const crmRows = [
@@ -3029,6 +3061,19 @@ function renderSyncRetentionObservability() {
       <tbody>${gateRows}</tbody>
     </table></div>
 
+    <div class="panel-header"><div><h3>Production Rollout Readiness</h3><p>بوابة قراءة فقط تعتمد على وقت الخادم، انتهاء Legacy Grace، Rollout الأجهزة النشطة، وتغطية Replay Guards. لا تفعّل الحذف.</p></div></div>
+    <div class="health-metrics-grid">
+      <article><span>Production Gate</span><strong>${escapeHtml(productionReadiness.status || "HOLD")}</strong><small>${gateReady ? "اجتازت شروط الجاهزية" : "ما زالت تحت المراقبة"}</small></article>
+      <article><span>Observation Ready At</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.observationReadyAt))}</strong><small>${Number(productionReadiness.observationDays || 0)} / ${Number(productionReadiness.requiredObservationDays || 60)} يوم</small></article>
+      <article><span>Legacy Grace Ends</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.legacyV1AcceptUntil))}</strong><small>${productionReadiness.legacyV1GraceActive ? "ما زالت نشطة" : "انتهت"}</small></article>
+      <article><span>أقرب Time Gate</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.timeConditionsReadyAt))}</strong><small>أقصى Observation Ready / Legacy Grace End</small></article>
+      <article><span>Pruning Switch</span><strong>OFF</strong><small>حتى لو أصبحت Gate = READY</small></article>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Domain</th><th>Gate</th><th>Active Clients</th><th>Policy Clients</th><th>Legacy/Unbounded</th><th>Rollout</th><th>Guard Coverage</th><th>كل الصفوف الحالية آمنة بعد</th><th>الموانع</th></tr></thead>
+      <tbody>${rolloutRows}</tbody>
+    </table></div>
+
     <div class="panel-header"><div><h3>Queue Watermarks</h3><p>أعمار وحالات العمليات المفتوحة من الأجهزة النشطة خلال آخر 45 يومًا.</p></div></div>
     <div class="table-wrap"><table>
       <thead><tr><th>الدومين</th><th>Clients نشطة</th><th>مفتوحة</th><th>Pending / Retry</th><th>Failed / Conflict</th><th>Expired / Replayable</th><th>Replay Policy</th><th>أقدم عملية</th><th>آخر إشارة</th></tr></thead>
@@ -3041,7 +3086,7 @@ function renderSyncRetentionObservability() {
       <tbody>${ledgerRows}</tbody>
     </table></div>
 
-    <div class="panel-header"><div><h3>Ledger Pruning Dry-Run</h3><p>حساب فقط لما قد يصبح مؤهلًا بعد اجتياز Production Gate. لا يتم تنفيذ أي DELETE في R41.</p></div></div>
+    <div class="panel-header"><div><h3>Ledger Pruning Dry-Run</h3><p>حساب فقط لما قد يصبح مؤهلًا بعد اجتياز Production Gate. لا يتم تنفيذ أي DELETE في R43.</p></div></div>
     <div class="health-metrics-grid">
       <article><span>Technical Candidates</span><strong>${Number(pruningDryRun.technicalCandidateRows || 0)}</strong><small>بعد Replay Horizon + Safety Buffer وبوجود Guard مطابق</small></article>
       <article><span>Unprotected Rows</span><strong>${Number(pruningDryRun.unprotectedRows || 0)}</strong><small>لا تدخل ضمن المرشحين مهما كان عمرها</small></article>

@@ -1,15 +1,15 @@
 {
-  "version": "18.56.40",
-  "build": 185640,
+  "version": "18.56.41",
+  "build": 185641,
   "forceUpdate": true,
   "releaseDate": "2026-09-03",
-  "title": "Execution Replay Guard Backfill R42",
+  "title": "Production Retention Readiness Gate R43",
   "notes": [
-    "إضافة Backfill محافظ لـ Server Replay Guards لكل سجلات Execution التاريخية غير المحمية.",
-    "منح الصفوف التي تم Backfill لها Replay Grace جديدة 90 يوم من وقت تشغيل Migration بدل استخدام تاريخ السجل القديم.",
-    "عدم تعديل أو تمديد أي Replay Guard موجودة مسبقًا، مع تنفيذ Missing-only Idempotent Backfill.",
-    "إضافة حالة تحقق Read-only للسوبر أدمن لقياس Guard Coverage وUnprotected Rows بعد Backfill.",
-    "الإبقاء على Ledger Pruning معطلًا وProduction Decision Gate في HOLD بدون أي DELETE."
+    "إضافة Production Retention Gate نهائية Read-only تجمع Observation Window وLegacy Grace وRollout الأجهزة النشطة وReplay Guard Coverage.",
+    "حساب نسبة الأجهزة النشطة التي أثبتت Replay Policy الجديدة لكل من Execution وSEA VIBE بدون عرض User IDs أو Client IDs.",
+    "عرض Observation Ready At وLegacy Grace End وTime Conditions Ready At ومواعيد Safety Maturity للصفوف الحالية.",
+    "السماح للـDecision Gate بالتحول إلى READY تلقائيًا فقط بعد تحقق كل الشروط الفعلية مع إبقاء Ledger Pruning معطلًا.",
+    "عدم تنفيذ أي DELETE أو تعديل Queue/SmartCache/Business Services في R43."
   ],
-  "cacheToken": "petatoe-pwa-18-56-40-execution-guard-backfill-r42-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-41-production-retention-readiness-r43-p5-13-8-72"
 }
