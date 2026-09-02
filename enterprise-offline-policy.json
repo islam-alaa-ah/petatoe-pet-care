@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.5.0",
+  "policyVersion": "1.6.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -14,7 +14,7 @@
   "domains": {
     "sync_retention": {
       "file": "assets/js/sync-retention.js",
-      "mode": "online_sync_metadata_ack_bounded_tombstone_retention",
+      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_readiness",
       "status": "compliant"
     },
     "customers": {

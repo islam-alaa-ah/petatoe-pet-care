@@ -1,4 +1,4 @@
-// PETATOE R34 — CRM sync client watermark + safe tombstone retention coordinator
+// PETATOE R35 — Sync retention coordinator: CRM tombstones + queue-age readiness
 (function () {
   "use strict";
 
@@ -6,8 +6,17 @@
   const MAINTENANCE_PREFIX = "kyum:sync-retention:v1:last-maintenance";
   const MAINTENANCE_INTERVAL_MS = 24 * 60 * 60 * 1000;
   const ACK_THROTTLE_MS = 15 * 1000;
+  const QUEUE_ACK_THROTTLE_MS = 60 * 1000;
+  const QUEUE_OPEN_STATUSES = new Set(["pending", "retry", "processing", "failed", "conflict"]);
+  const QUEUE_DOMAINS = Object.freeze({
+    installation_execution: new Set(["installation_execution"]),
+    sea_vibe: new Set(["sea_vibe"])
+  });
   const inflightAcks = new Map();
   const lastAckAt = new Map();
+  const inflightQueueAcks = new Map();
+  const lastQueueAckAt = new Map();
+  let queueAckTimer = null;
 
   function hashText(value) {
     const input = String(value || "");
@@ -77,6 +86,8 @@
     try { localStorage.setItem(key, String(Date.now())); } catch (_) { /* optional */ }
     const { error } = await window.customerSupabase.rpc("prune_crm_sync_tombstones_safe", { p_batch_size: 250 });
     if (error) throw new Error(error.message || "sync_retention_maintenance_failed");
+    const queueMaintenance = await window.customerSupabase.rpc("prune_sync_queue_watermark_metadata_safe", { p_batch_size: 500 });
+    if (queueMaintenance?.error) throw new Error(queueMaintenance.error.message || "sync_queue_retention_metadata_maintenance_failed");
     return true;
   }
 
@@ -115,11 +126,97 @@
     try { return await operation; } finally { inflightAcks.delete(key); }
   }
 
+
+  function queueDomainRows(rows, domain) {
+    const entities = QUEUE_DOMAINS[domain];
+    if (!entities) return [];
+    return (rows || []).filter(row => entities.has(String(row?.entity || "")) && QUEUE_OPEN_STATUSES.has(String(row?.status || "")));
+  }
+
+  function queueSummary(rows) {
+    const counts = { pending: 0, retry: 0, processing: 0, failed: 0, conflict: 0 };
+    let oldest = null;
+    let newest = null;
+    for (const row of rows || []) {
+      const status = String(row?.status || "");
+      if (Object.prototype.hasOwnProperty.call(counts, status)) counts[status] += 1;
+      const created = Number(row?.createdAt || 0);
+      if (!created) continue;
+      oldest = oldest == null ? created : Math.min(oldest, created);
+      newest = newest == null ? created : Math.max(newest, created);
+    }
+    return {
+      openCount: Object.values(counts).reduce((sum, value) => sum + value, 0),
+      counts,
+      oldestOpenAt: isoTimestamp(oldest),
+      newestOpenAt: isoTimestamp(newest)
+    };
+  }
+
+  async function ackQueueDomain(domain, rows, options = {}) {
+    const userId = currentUserId();
+    if (!userId || navigator.onLine === false || !window.customerSupabase?.rpc) return false;
+    const summary = queueSummary(queueDomainRows(rows, domain));
+    const key = `${userId}:${domain}`;
+    const now = Date.now();
+    if (!options.force && now - Number(lastQueueAckAt.get(key) || 0) < QUEUE_ACK_THROTTLE_MS) return true;
+    if (inflightQueueAcks.has(key)) return inflightQueueAcks.get(key);
+
+    const operation = (async () => {
+      const { error } = await window.customerSupabase.rpc("ack_sync_queue_watermark", {
+        p_client_id: clientId(),
+        p_domain: domain,
+        p_open_count: summary.openCount,
+        p_pending_count: summary.counts.pending,
+        p_retry_count: summary.counts.retry,
+        p_processing_count: summary.counts.processing,
+        p_failed_count: summary.counts.failed,
+        p_conflict_count: summary.counts.conflict,
+        p_oldest_open_at: summary.oldestOpenAt,
+        p_newest_open_at: summary.newestOpenAt
+      });
+      if (error) throw new Error(error.message || "sync_queue_watermark_ack_failed");
+      lastQueueAckAt.set(key, Date.now());
+      return true;
+    })();
+
+    inflightQueueAcks.set(key, operation);
+    try { return await operation; } finally { inflightQueueAcks.delete(key); }
+  }
+
+  async function ackQueueWatermarks(options = {}) {
+    if (navigator.onLine === false || !window.KYUMOfflineQueue?.list) return false;
+    let rows = [];
+    try { rows = await window.KYUMOfflineQueue.list(); }
+    catch (_) { return false; }
+    await Promise.all(Object.keys(QUEUE_DOMAINS).map(domain => ackQueueDomain(domain, rows, options)));
+    return true;
+  }
+
+  function scheduleQueueAck(force = false) {
+    clearTimeout(queueAckTimer);
+    queueAckTimer = setTimeout(() => {
+      ackQueueWatermarks({ force }).catch(error => console.warn("Sync queue watermark skipped:", error));
+    }, 350);
+  }
+
+  function installQueueWatermarkLifecycle() {
+    ["kyum-offline-queue-changed", "kyum-auth-state-changed", "online"].forEach(type => {
+      window.addEventListener(type, () => scheduleQueueAck(type === "online"));
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") scheduleQueueAck(false);
+    });
+    setTimeout(() => scheduleQueueAck(true), 2200);
+  }
+
   window.KYUMSyncRetention = Object.freeze({
-    version: "R34",
+    version: "R35",
     clientId,
     scopeFingerprint,
     ack,
+    ackQueueWatermarks,
     maybeRunMaintenance
   });
+  installQueueWatermarkLifecycle();
 })();

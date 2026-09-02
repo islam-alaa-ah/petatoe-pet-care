@@ -1,15 +1,15 @@
 {
-  "version": "18.56.32",
-  "build": 185632,
+  "version": "18.56.33",
+  "build": 185633,
   "forceUpdate": true,
   "releaseDate": "2026-09-02",
-  "title": "Sync Retention Watermarks R34",
+  "title": "Idempotency Retention Readiness R35",
   "notes": [
-    "إضافة Client Watermark ثابت لكل Browser/PWA لمتابعة تقدم مزامنة العملاء والمتابعات والعقود بدون تخزين نطاقات الصلاحيات الخام.",
-    "إضافة Tombstone Retention آمن بحد أدنى 60 يوم مع منع الحذف إذا كان أي Sync Client نشط ما زال خلف وقت الحذف.",
-    "تشغيل صيانة CRM bounded مرة يوميًا وبحد أقصى 500 Tombstone مع Advisory Lock لمنع تكرار أعمال الصيانة من أكثر من جلسة.",
-    "تنظيف Watermark metadata غير النشطة بعد 180 يوم فقط، مع الاعتماد على Full Reconciliation الإلزامي عند عودة الأجهزة القديمة.",
-    "عدم حذف أو تقليص أي Execution/Financial/SEA VIBE idempotency ledger وعدم تعديل Offline Queue أو Smart Cache أو Sync Engine المشتركة."
+    "إضافة Queue-age watermarks لكل Browser/PWA لمتابعة أقدم عمليات تنفيذ المواعيد وSEA VIBE المعلقة بدون تخزين payloads أو operation keys.",
+    "إصلاح تنظيف Offline Queue بحيث لا يتم حذف أي synced predecessor ما زالت عملية معلقة تعتمد عليه عبر dependsOn.",
+    "تنظيف resolved conflict metadata محليًا بعد 30 يوم فقط مع الإبقاء على open conflicts وID mapping بدون تغيير.",
+    "إضافة Super Admin readiness report لمراقبة أحجام وأعمار execution/financial/SEA VIBE idempotency ledgers بدون حذف أي سجل منها.",
+    "الإبقاء على ledger pruning معطلًا صراحةً حتى تثبت نافذة مراقبة فعلية أقصى عمر آمن لإعادة المحاولة."
   ],
-  "cacheToken": "petatoe-pwa-18-56-32-sync-retention-watermarks-r34-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-33-idempotency-retention-readiness-r35-p5-13-8-72"
 }

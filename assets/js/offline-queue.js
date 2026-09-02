@@ -10,6 +10,8 @@
   const MAX_ATTEMPTS = 8;
   const PROCESSING_TIMEOUT_MS = 2 * 60 * 1000;
   const COMPLETED_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
+  const RESOLVED_CONFLICT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+  const OPEN_OPERATION_STATUSES = ["pending", "retry", "processing", "failed", "conflict"];
   const handlers = new Map();
   const processors = new Map();
   let dbPromise = null;
@@ -431,13 +433,29 @@
   async function cleanup(options = {}) {
     const namespace = options.namespace || await getNamespace({ allowNetwork: false });
     const cutoff = Date.now() - Number(options.retentionMs || COMPLETED_RETENTION_MS);
+    const openRows = await list({ namespace, statuses: OPEN_OPERATION_STATUSES });
+    const protectedDependencyIds = new Set();
+    for (const row of openRows) {
+      for (const dependencyId of row.dependsOn || []) if (dependencyId) protectedDependencyIds.add(dependencyId);
+    }
+
     const rows = await list({ namespace, statuses: ["synced"] });
     let removed = 0;
     for (const row of rows) {
+      if (protectedDependencyIds.has(row.id)) continue;
       if (Number(row.syncedAt || row.updatedAt || 0) < cutoff) {
         await transaction(OPS_STORE, "readwrite", store => store.delete(row.id));
         removed += 1;
       }
+    }
+
+    // Resolved conflicts are recovery history only. Keeping open conflicts is mandatory,
+    // but resolved rows can be bounded independently without affecting replay or ID mapping.
+    const conflictCutoff = Date.now() - Number(options.resolvedConflictRetentionMs || RESOLVED_CONFLICT_RETENTION_MS);
+    const resolvedConflicts = await listConflicts({ namespace, statuses: ["resolved"] }).catch(() => []);
+    for (const conflict of resolvedConflicts) {
+      if (Number(conflict.resolvedAt || conflict.updatedAt || 0) >= conflictCutoff) continue;
+      await transaction(CONFLICTS_STORE, "readwrite", store => store.delete(conflict.id));
     }
     return removed;
   }
