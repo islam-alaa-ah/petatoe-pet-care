@@ -245,6 +245,9 @@
         : { rows: await fetchQuotationsFromNetwork(scope), mode: "full" };
       const rows = result.rows;
       await persistQuotations(cacheKey, rows, namespace);
+      window.KYUMSyncRetention?.ack?.({ entity: "quotations", scopeKey: cacheKey, state: result.state }).catch(error => {
+        console.warn("Quotations sync watermark ack skipped:", error);
+      });
       const previousHash = window.KYUMSmartCache?.hashValue?.(previousRows);
       const nextHash = window.KYUMSmartCache?.hashValue?.(rows);
       if (previousHash !== nextHash) {
@@ -333,6 +336,9 @@
         : { rows: await fetchQuotationsFromNetwork(scope), mode: "full" };
       const rows = result.rows;
       await persistQuotations(cacheKey, rows, namespace);
+      window.KYUMSyncRetention?.ack?.({ entity: "quotations", scopeKey: cacheKey, state: result.state }).catch(error => {
+        console.warn("Quotations sync watermark ack skipped:", error);
+      });
       const visible = await visibleQuotationRows(rows, namespace);
       lastReadStatus = { source: "network", stale: false, metadata: { updatedAt: Date.now(), recordCount: visible.length } };
       return visible;

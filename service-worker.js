@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-31-crm-tombstone-delete-r33-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-32-sync-retention-watermarks-r34-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -49,6 +49,7 @@ const CORE_APP_SHELL = [
   "./assets/js/offline-read-cache.js",
   "./assets/js/cache-dependency-engine.js",
   "./assets/js/sync-engine.js",
+  "./assets/js/sync-retention.js",
   "./assets/js/offline-queue.js",
   "./assets/js/sync-recovery-center.js",
   "./assets/js/permissions-service.js",

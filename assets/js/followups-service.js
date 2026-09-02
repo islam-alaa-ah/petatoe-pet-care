@@ -216,6 +216,9 @@
         : { rows: await fetchFollowupsFromNetwork(scope), mode: "full" };
       const rows = result.rows;
       await persistFollowups(cacheKey, rows, namespace);
+      window.KYUMSyncRetention?.ack?.({ entity: "followups", scopeKey: cacheKey, state: result.state }).catch(error => {
+        console.warn("Followups sync watermark ack skipped:", error);
+      });
       const previousHash = window.KYUMSmartCache?.hashValue?.(previousRows);
       const nextHash = window.KYUMSmartCache?.hashValue?.(rows);
       if (previousHash !== nextHash) {
@@ -314,6 +317,9 @@
         : { rows: await fetchFollowupsFromNetwork(scope), mode: "full" };
       const rows = result.rows;
       await persistFollowups(cacheKey, rows, namespace);
+      window.KYUMSyncRetention?.ack?.({ entity: "followups", scopeKey: cacheKey, state: result.state }).catch(error => {
+        console.warn("Followups sync watermark ack skipped:", error);
+      });
       const visible = await visibleFollowupRows(rows, namespace);
       lastReadStatus = { source: "network", stale: false, metadata: { updatedAt: Date.now(), recordCount: visible.length } };
       return visible;

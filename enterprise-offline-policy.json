@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.4.0",
+  "policyVersion": "1.5.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -12,6 +12,11 @@
     "runtime-and-static-certification"
   ],
   "domains": {
+    "sync_retention": {
+      "file": "assets/js/sync-retention.js",
+      "mode": "online_sync_metadata_ack_bounded_tombstone_retention",
+      "status": "compliant"
+    },
     "customers": {
       "file": "assets/js/customers-service.js",
       "mode": "full_offline_create_update_delete_tombstone_delta_conflict_guarded",
@@ -202,6 +207,7 @@
     "assets/js/supabase-client.js",
     "assets/js/supabase-config.js",
     "assets/js/sync-engine.js",
+    "assets/js/sync-retention.js",
     "assets/js/system-health-service.js",
     "assets/js/system-settings-service.js",
     "assets/js/users-service.js",

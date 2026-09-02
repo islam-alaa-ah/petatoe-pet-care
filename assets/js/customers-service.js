@@ -239,6 +239,9 @@
         : { rows: await fetchCustomersFromNetwork(scope), mode: "full" };
       const rows = result.rows;
       await persistCustomers(cacheKey, rows, namespace);
+      window.KYUMSyncRetention?.ack?.({ entity: "customers", scopeKey: cacheKey, state: result.state }).catch(error => {
+        console.warn("Customers sync watermark ack skipped:", error);
+      });
       const previousHash = window.KYUMSmartCache?.hashValue?.(previousRows);
       const nextHash = window.KYUMSmartCache?.hashValue?.(rows);
       if (previousHash !== nextHash) {
@@ -314,6 +317,9 @@
         : { rows: await fetchCustomersFromNetwork(scope), mode: "full" };
       const rows = result.rows;
       await persistCustomers(cacheKey, rows, namespace);
+      window.KYUMSyncRetention?.ack?.({ entity: "customers", scopeKey: cacheKey, state: result.state }).catch(error => {
+        console.warn("Customers sync watermark ack skipped:", error);
+      });
       const visible = await visibleCustomerRows(rows, namespace);
       lastReadStatus = { source: "network", stale: false, metadata: { updatedAt: Date.now(), recordCount: visible.length } };
       return visible;
