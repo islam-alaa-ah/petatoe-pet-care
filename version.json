@@ -1,15 +1,15 @@
 {
-  "version": "18.56.39",
-  "build": 185639,
+  "version": "18.56.40",
+  "build": 185640,
   "forceUpdate": true,
   "releaseDate": "2026-09-03",
-  "title": "Ledger Pruning Dry-Run Guard R41",
+  "title": "Execution Replay Guard Backfill R42",
   "notes": [
-    "إضافة Ledger Pruning Dry-Run للسوبر أدمن لحساب المرشحين دون تنفيذ أي DELETE.",
-    "اعتبار الصفوف مؤهلة تقنيًا فقط بعد انتهاء Replay Horizon + Safety Buffer وبوجود Replay Guard مطابق.",
-    "كشف صفوف Execution وSEA VIBE القديمة التي لا تملك Server Replay Guard واستبعادها تلقائيًا من أي ترشيح.",
-    "إضافة Fail-closed Eligibility Guard لا يمكنه السماح بأي Pruning طالما Production Decision Gate ليست READY أو مفتاح Pruning معطل.",
-    "الإبقاء على جميع Idempotency Ledgers وReplay Guards بدون حذف في R41."
+    "إضافة Backfill محافظ لـ Server Replay Guards لكل سجلات Execution التاريخية غير المحمية.",
+    "منح الصفوف التي تم Backfill لها Replay Grace جديدة 90 يوم من وقت تشغيل Migration بدل استخدام تاريخ السجل القديم.",
+    "عدم تعديل أو تمديد أي Replay Guard موجودة مسبقًا، مع تنفيذ Missing-only Idempotent Backfill.",
+    "إضافة حالة تحقق Read-only للسوبر أدمن لقياس Guard Coverage وUnprotected Rows بعد Backfill.",
+    "الإبقاء على Ledger Pruning معطلًا وProduction Decision Gate في HOLD بدون أي DELETE."
   ],
-  "cacheToken": "petatoe-pwa-18-56-39-ledger-pruning-dry-run-r41-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-40-execution-guard-backfill-r42-p5-13-8-72"
 }
