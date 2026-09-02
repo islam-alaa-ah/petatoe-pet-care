@@ -1,14 +1,14 @@
 {
-  "version": "18.56.34",
-  "build": 185634,
+  "version": "18.56.35",
+  "build": 185635,
   "forceUpdate": true,
   "releaseDate": "2026-09-03",
-  "title": "Sync Retention Observability R36",
+  "title": "Production Retention Decision Gate R37",
   "notes": [
-    "إضافة لوحة Read-only داخل مراقبة النظام لعرض صحة المزامنة والاحتفاظ بصورة مجمعة للسوبر أدمن.",
-    "عرض أعمار وحالات Queue Watermarks لتنفيذ المواعيد وSEA VIBE بدون User IDs أو Client IDs أو Payloads أو Operation Keys.",
-    "عرض أحجام وأعمار Idempotency Ledgers وحالة CRM Tombstones/Watermarks مع الإبقاء على Ledger pruning معطلًا بالكامل.",
-    "عدم تغيير محركات Offline Queue أو Smart Cache أو Sync Engine أو أي Business Logic مالي أو تشغيلي."
+    "إضافة Production Retention Decision Gate داخل مراقبة النظام لقياس جاهزية Idempotency Ledger Pruning بالأدلة بدل التقدير.",
+    "اشتراط نافذة مراقبة لا تقل عن 60 يومًا مع فصل Queue replay horizon عن Financial retry horizon.",
+    "الإبقاء على Replay Horizon غير محددة وCandidate Retention فارغة، لذلك تظل حالة القرار HOLD وLedger pruning معطلًا.",
+    "عدم تغيير Offline Queue أو Recovery Center أو Smart Cache أو Sync Engine أو أي Business Logic مالي أو تشغيلي."
   ],
-  "cacheToken": "petatoe-pwa-18-56-34-sync-retention-observability-r36-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-35-retention-decision-gate-r37-p5-13-8-72"
 }

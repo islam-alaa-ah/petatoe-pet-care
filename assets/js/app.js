@@ -2871,12 +2871,27 @@ function renderSyncRetentionObservability() {
   const issueOperations = Number(execution.failed || 0) + Number(execution.conflict || 0) + Number(seaVibe.failed || 0) + Number(seaVibe.conflict || 0);
   const observationAge = healthAgeLabel(snapshot.observationStartedAt);
   const pruningEnabled = snapshot.pruningEnabled === true;
-  const readinessText = snapshot.readinessReason === "QUEUE_REPLAY_HORIZON_NOT_YET_BOUNDED"
-    ? "نافذة إعادة المحاولة لم تُثبت بعد"
-    : String(snapshot.readinessReason || "غير محدد");
+  const decisionGate = snapshot.decisionGate || {};
+  const observationDays = Number(decisionGate.observationDays || 0);
+  const requiredObservationDays = Number(decisionGate.requiredObservationDays || 60);
+  const gateReady = decisionGate.status === "READY" && pruningEnabled;
+  const blockerLabels = {
+    OBSERVATION_WINDOW_INCOMPLETE: "نافذة المراقبة لم تكتمل بعد",
+    QUEUE_REPLAY_HORIZON_UNBOUNDED: "إعادة تشغيل Queue القديمة غير محددة بحد زمني",
+    FINANCIAL_RETRY_HORIZON_UNBOUNDED: "إعادة المحاولة المالية غير محددة بحد زمني",
+    OPEN_FAILED_OR_CONFLICT_OPERATIONS: "توجد عمليات Failed/Conflict مفتوحة",
+    REPLAY_POLICY_DECISION_REQUIRED: "مطلوب اعتماد سياسة قصوى لعمر إعادة المحاولة",
+    LEDGER_PRUNING_REMAINS_DISABLED: "حذف Idempotency Ledgers ما زال معطلًا"
+  };
+  const labelBlocker = code => blockerLabels[String(code || "")] || String(code || "غير محدد");
+  const readinessText = gateReady
+    ? "اجتاز بوابة القرار"
+    : (decisionGate.nextDecisionRequired === "DEFINE_MAX_REPLAY_AGE_POLICY"
+      ? "مطلوب تحديد الحد الأقصى لعمر Replay قبل أي Pruning"
+      : String(snapshot.readinessReason || "غير محدد"));
 
-  badge.className = `record-status ${pruningEnabled ? "active" : "inactive"}`;
-  badge.textContent = pruningEnabled ? "Pruning مفعّل" : "Pruning معطّل";
+  badge.className = `record-status ${gateReady ? "active" : "inactive"}`;
+  badge.textContent = gateReady ? "Decision Gate READY" : "Decision Gate HOLD";
   showDataStatus("syncRetentionObservabilityStatus", "");
 
   const queueRows = [
@@ -2906,6 +2921,28 @@ function renderSyncRetentionObservability() {
       <td><span class="record-status inactive">محمي من الحذف</span></td>
     </tr>`).join("");
 
+  const gateDomains = decisionGate.domains || {};
+  const gateRows = [
+    ["تنفيذ المواعيد", gateDomains.installationExecution || {}],
+    ["SEA VIBE", gateDomains.seaVibe || {}],
+    ["Financial", gateDomains.installationFinancial || {}]
+  ].map(([label, item]) => {
+    const blockers = Array.isArray(item.blockers) ? item.blockers : [];
+    const state = item.status === "READY" ? "active" : "inactive";
+    const oldest = item.queueBacked ? healthAgeLabel(item.oldestOpenAt) : "—";
+    return `
+      <tr>
+        <td><strong>${escapeHtml(label)}</strong></td>
+        <td><span class="record-status ${state}">${escapeHtml(item.status || "HOLD")}</span></td>
+        <td>${item.replayHorizonBounded ? "محدد" : "غير محدد"}</td>
+        <td>${item.queueBacked ? Number(item.openOperations || 0) : "—"}</td>
+        <td>${item.queueBacked ? Number(item.failedOrConflict || 0) : "—"}</td>
+        <td>${escapeHtml(oldest)}</td>
+        <td>${escapeHtml(blockers.map(labelBlocker).join("، ") || "لا توجد موانع")}</td>
+      </tr>`;
+  }).join("");
+
+  const overallBlockers = Array.isArray(decisionGate.blockers) ? decisionGate.blockers : [];
   const crmEntities = crm.entities || {};
   const crmRows = [
     ["العملاء", crmEntities.customers || {}],
@@ -2923,12 +2960,26 @@ function renderSyncRetentionObservability() {
 
   content.innerHTML = `
     <div class="diagnostics-summary-grid">
-      <article><span>نافذة المراقبة</span><strong>${escapeHtml(observationAge)}</strong><small>من أول Queue watermark</small></article>
+      <article><span>نافذة المراقبة</span><strong>${escapeHtml(observationAge)}</strong><small>${observationDays} / ${requiredObservationDays} يوم حد أدنى للقرار</small></article>
       <article><span>عمليات Queue مفتوحة</span><strong>${openOperations}</strong><small>Execution + SEA VIBE</small></article>
       <article><span>فشل / تعارض</span><strong>${issueOperations}</strong><small>تحتاج متابعة إذا كانت أكبر من صفر</small></article>
       <article><span>CRM Tombstones</span><strong>${Number(crm.tombstones || 0)}</strong><small>الأقدم: ${escapeHtml(healthAgeLabel(crm.oldestTombstoneAt))}</small></article>
-      <article><span>جاهزية Ledger Pruning</span><strong>${pruningEnabled ? "جاهز" : "غير جاهز"}</strong><small>${escapeHtml(readinessText)}</small></article>
+      <article><span>Retention Decision Gate</span><strong>${gateReady ? "READY" : "HOLD"}</strong><small>${escapeHtml(readinessText)}</small></article>
     </div>
+
+    <div class="panel-header"><div><h3>Production Retention Decision Gate</h3><p>القرار يعتمد على Evidence فعلية + سياسة Replay محددة؛ المراقبة وحدها لا تفعّل الحذف.</p></div></div>
+    <div class="health-metrics-grid">
+      <article><span>Observation Window</span><strong>${decisionGate.observationWindowSatisfied ? "مكتملة" : "غير مكتملة"}</strong><small>${observationDays} / ${requiredObservationDays} يوم</small></article>
+      <article><span>Queue Replay Horizon</span><strong>${decisionGate.queueReplayHorizonBounded ? "محدد" : "غير محدد"}</strong><small>Execution + SEA VIBE</small></article>
+      <article><span>Financial Retry Horizon</span><strong>${decisionGate.financialRetryHorizonBounded ? "محدد" : "غير محدد"}</strong><small>Online idempotent retries</small></article>
+      <article><span>أقدم Replay حي مرصود</span><strong>${escapeHtml(healthAgeLabel(decisionGate.observedOldestOpenOperationAt))}</strong><small>Evidence فقط وليست Retention recommendation</small></article>
+      <article><span>Candidate Retention</span><strong>${decisionGate.candidateRetentionDays ? `${Number(decisionGate.candidateRetentionDays)} يوم` : "غير محدد"}</strong><small>يبقى فارغًا حتى اعتماد Replay policy</small></article>
+    </div>
+    <div class="data-status info">${escapeHtml(overallBlockers.map(labelBlocker).join(" — ") || "لا توجد موانع حالية")}</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الدومين</th><th>قرار</th><th>Replay Horizon</th><th>Open</th><th>Failed/Conflict</th><th>أقدم عملية</th><th>الموانع</th></tr></thead>
+      <tbody>${gateRows}</tbody>
+    </table></div>
 
     <div class="panel-header"><div><h3>Queue Watermarks</h3><p>أعمار وحالات العمليات المفتوحة من الأجهزة النشطة خلال آخر 45 يومًا.</p></div></div>
     <div class="table-wrap"><table>
@@ -2936,7 +2987,7 @@ function renderSyncRetentionObservability() {
       <tbody>${queueRows}</tbody>
     </table></div>
 
-    <div class="panel-header"><div><h3>Idempotency Ledgers</h3><p>المراقبة فقط؛ الحذف الفعلي يظل معطلًا في R36.</p></div></div>
+    <div class="panel-header"><div><h3>Idempotency Ledgers</h3><p>المراقبة فقط؛ الحذف الفعلي يظل معطلًا في R37 حتى اجتياز Decision Gate.</p></div></div>
     <div class="table-wrap"><table>
       <thead><tr><th>Ledger</th><th>الصفوف</th><th>عمر الأقدم</th><th>مصدر Retry</th><th>Retention</th></tr></thead>
       <tbody>${ledgerRows}</tbody>
