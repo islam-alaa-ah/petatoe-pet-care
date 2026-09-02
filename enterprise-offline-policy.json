@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.6.0",
+  "policyVersion": "1.7.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -14,7 +14,7 @@
   "domains": {
     "sync_retention": {
       "file": "assets/js/sync-retention.js",
-      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_readiness",
+      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_bounded_replay_horizon_readiness",
       "status": "compliant"
     },
     "customers": {
@@ -225,6 +225,8 @@
     "offlineDeleteRequiresExplicitDesignAndTombstoneStrategy": true,
     "securitySensitiveAdminWritesRemainOnlineOnlyUnlessSeparatelyApproved": true,
     "offlineDeleteMustUseServerTombstoneFeed": true,
-    "offlineDeleteMustUseBaseVersionConflictGuard": true
+    "offlineDeleteMustUseBaseVersionConflictGuard": true,
+    "idempotencyLedgerPruningRequiresBoundedReplayHorizon": true,
+    "expiredQueueReplayRequiresManualRecovery": true
   }
 }

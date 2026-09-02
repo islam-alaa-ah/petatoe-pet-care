@@ -2881,6 +2881,9 @@ function renderSyncRetentionObservability() {
     FINANCIAL_RETRY_HORIZON_UNBOUNDED: "إعادة المحاولة المالية غير محددة بحد زمني",
     OPEN_FAILED_OR_CONFLICT_OPERATIONS: "توجد عمليات Failed/Conflict مفتوحة",
     REPLAY_POLICY_DECISION_REQUIRED: "مطلوب اعتماد سياسة قصوى لعمر إعادة المحاولة",
+    REPLAY_POLICY_ROLLOUT_INCOMPLETE: "ما زالت هناك أجهزة نشطة لم تثبت تطبيق سياسة Replay الجديدة",
+    SERVER_REPLAY_ENFORCEMENT_PENDING: "يلزم Server-side enforcement قبل السماح بحذف الـLedgers",
+    FINANCIAL_RETRY_POLICY_REQUIRED: "السياسة المالية تحتاج قرار Retry مستقل",
     LEDGER_PRUNING_REMAINS_DISABLED: "حذف Idempotency Ledgers ما زال معطلًا"
   };
   const labelBlocker = code => blockerLabels[String(code || "")] || String(code || "غير محدد");
@@ -2888,7 +2891,9 @@ function renderSyncRetentionObservability() {
     ? "اجتاز بوابة القرار"
     : (decisionGate.nextDecisionRequired === "DEFINE_MAX_REPLAY_AGE_POLICY"
       ? "مطلوب تحديد الحد الأقصى لعمر Replay قبل أي Pruning"
-      : String(snapshot.readinessReason || "غير محدد"));
+      : (decisionGate.nextDecisionRequired === "ENFORCE_REPLAY_POLICY_SERVER_SIDE"
+        ? "تم تحديد Replay بـ90 يومًا؛ ما زال يلزم Server-side enforcement قبل Pruning"
+        : String(snapshot.readinessReason || "غير محدد")));
 
   badge.className = `record-status ${gateReady ? "active" : "inactive"}`;
   badge.textContent = gateReady ? "Decision Gate READY" : "Decision Gate HOLD";
@@ -2904,6 +2909,8 @@ function renderSyncRetentionObservability() {
       <td>${Number(item.openOperations || 0)}</td>
       <td>${Number(item.pending || 0)} / ${Number(item.retry || 0)}</td>
       <td>${Number(item.failed || 0)} / ${Number(item.conflict || 0)}</td>
+      <td>${Number(item.expiredFailedOrConflict || 0)} / ${Number(item.replayableFailedOrConflict || 0)}</td>
+      <td>${item.replayPolicyObserved ? `${Number(item.replayHorizonDays || 90)} يوم` : "بانتظار Rollout"}</td>
       <td>${escapeHtml(healthAgeLabel(item.oldestOpenAt))}</td>
       <td>${escapeHtml(healthDateTimeLabel(item.lastSeenAt))}</td>
     </tr>`).join("");
@@ -2934,7 +2941,7 @@ function renderSyncRetentionObservability() {
       <tr>
         <td><strong>${escapeHtml(label)}</strong></td>
         <td><span class="record-status ${state}">${escapeHtml(item.status || "HOLD")}</span></td>
-        <td>${item.replayHorizonBounded ? "محدد" : "غير محدد"}</td>
+        <td>${item.replayHorizonBounded ? `${Number(item.replayHorizonDays || decisionGate.queueReplayHorizonDays || 90)} يوم` : "غير محدد"}</td>
         <td>${item.queueBacked ? Number(item.openOperations || 0) : "—"}</td>
         <td>${item.queueBacked ? Number(item.failedOrConflict || 0) : "—"}</td>
         <td>${escapeHtml(oldest)}</td>
@@ -2970,10 +2977,10 @@ function renderSyncRetentionObservability() {
     <div class="panel-header"><div><h3>Production Retention Decision Gate</h3><p>القرار يعتمد على Evidence فعلية + سياسة Replay محددة؛ المراقبة وحدها لا تفعّل الحذف.</p></div></div>
     <div class="health-metrics-grid">
       <article><span>Observation Window</span><strong>${decisionGate.observationWindowSatisfied ? "مكتملة" : "غير مكتملة"}</strong><small>${observationDays} / ${requiredObservationDays} يوم</small></article>
-      <article><span>Queue Replay Horizon</span><strong>${decisionGate.queueReplayHorizonBounded ? "محدد" : "غير محدد"}</strong><small>Execution + SEA VIBE</small></article>
+      <article><span>Queue Replay Horizon</span><strong>${decisionGate.queueReplayHorizonBounded ? `${Number(decisionGate.queueReplayHorizonDays || 90)} يوم` : "غير محدد"}</strong><small>Execution + SEA VIBE — من أول محاولة فعلية للسيرفر</small></article>
       <article><span>Financial Retry Horizon</span><strong>${decisionGate.financialRetryHorizonBounded ? "محدد" : "غير محدد"}</strong><small>Online idempotent retries</small></article>
       <article><span>أقدم Replay حي مرصود</span><strong>${escapeHtml(healthAgeLabel(decisionGate.observedOldestOpenOperationAt))}</strong><small>Evidence فقط وليست Retention recommendation</small></article>
-      <article><span>Candidate Retention</span><strong>${decisionGate.candidateRetentionDays ? `${Number(decisionGate.candidateRetentionDays)} يوم` : "غير محدد"}</strong><small>يبقى فارغًا حتى اعتماد Replay policy</small></article>
+      <article><span>Candidate Retention</span><strong>${decisionGate.candidateRetentionDays ? `${Number(decisionGate.candidateRetentionDays)} يوم` : "غير محدد"}</strong><small>Queue-backed فقط: Replay + Safety Buffer؛ لا يتم تطبيق الحذف في R38</small></article>
     </div>
     <div class="data-status info">${escapeHtml(overallBlockers.map(labelBlocker).join(" — ") || "لا توجد موانع حالية")}</div>
     <div class="table-wrap"><table>
@@ -2983,11 +2990,11 @@ function renderSyncRetentionObservability() {
 
     <div class="panel-header"><div><h3>Queue Watermarks</h3><p>أعمار وحالات العمليات المفتوحة من الأجهزة النشطة خلال آخر 45 يومًا.</p></div></div>
     <div class="table-wrap"><table>
-      <thead><tr><th>الدومين</th><th>Clients نشطة</th><th>مفتوحة</th><th>Pending / Retry</th><th>Failed / Conflict</th><th>أقدم عملية</th><th>آخر إشارة</th></tr></thead>
+      <thead><tr><th>الدومين</th><th>Clients نشطة</th><th>مفتوحة</th><th>Pending / Retry</th><th>Failed / Conflict</th><th>Expired / Replayable</th><th>Replay Policy</th><th>أقدم عملية</th><th>آخر إشارة</th></tr></thead>
       <tbody>${queueRows}</tbody>
     </table></div>
 
-    <div class="panel-header"><div><h3>Idempotency Ledgers</h3><p>المراقبة فقط؛ الحذف الفعلي يظل معطلًا في R37 حتى اجتياز Decision Gate.</p></div></div>
+    <div class="panel-header"><div><h3>Idempotency Ledgers</h3><p>المراقبة فقط؛ الحذف الفعلي يظل معطلًا في R38 حتى اكتمال Server-side replay enforcement والبوابات المتبقية.</p></div></div>
     <div class="table-wrap"><table>
       <thead><tr><th>Ledger</th><th>الصفوف</th><th>عمر الأقدم</th><th>مصدر Retry</th><th>Retention</th></tr></thead>
       <tbody>${ledgerRows}</tbody>

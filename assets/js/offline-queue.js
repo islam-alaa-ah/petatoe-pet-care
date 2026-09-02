@@ -11,6 +11,9 @@
   const PROCESSING_TIMEOUT_MS = 2 * 60 * 1000;
   const COMPLETED_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
   const RESOLVED_CONFLICT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+  const REPLAY_POLICY_VERSION = "r38-90d-v1";
+  const REPLAY_HORIZON_MS = 90 * 24 * 60 * 60 * 1000;
+  const REPLAY_HORIZON_ENTITIES = new Set(["installation_execution", "sea_vibe"]);
   const OPEN_OPERATION_STATUSES = ["pending", "retry", "processing", "failed", "conflict"];
   const handlers = new Map();
   const processors = new Map();
@@ -24,6 +27,51 @@
       this.code = "OFFLINE_CONFLICT";
       this.details = details;
     }
+  }
+
+
+  function isReplayHorizonManaged(operation) {
+    return REPLAY_HORIZON_ENTITIES.has(String(operation?.entity || ""));
+  }
+
+  function replayPolicy(operation, now = Date.now()) {
+    const managed = isReplayHorizonManaged(operation);
+    if (!managed) return { managed: false, policyVersion: null, horizonDays: null, canReplay: true, expired: false, anchorAt: null, deadlineAt: null, legacyGracePending: false };
+    const attempts = Number(operation?.attempts || 0);
+    const firstAttemptAt = Number(operation?.firstAttemptAt || 0);
+    const legacyGraceAt = Number(operation?.replayHorizonStartedAt || 0);
+    const anchorAt = firstAttemptAt || legacyGraceAt || 0;
+    if (!anchorAt) {
+      return { managed: true, policyVersion: REPLAY_POLICY_VERSION, horizonDays: Math.round(REPLAY_HORIZON_MS / 86400000), canReplay: true, expired: false, anchorAt: null, deadlineAt: null, legacyGracePending: attempts > 0 };
+    }
+    const deadlineAt = anchorAt + REPLAY_HORIZON_MS;
+    const expired = Number(now || Date.now()) > deadlineAt;
+    return { managed: true, policyVersion: REPLAY_POLICY_VERSION, horizonDays: Math.round(REPLAY_HORIZON_MS / 86400000), canReplay: !expired, expired, anchorAt, deadlineAt, legacyGracePending: false };
+  }
+
+  async function ensureReplayPolicyMetadata(operation) {
+    if (!operation || !isReplayHorizonManaged(operation)) return replayPolicy(operation);
+    let changed = false;
+    if (operation.replayPolicyVersion !== REPLAY_POLICY_VERSION) { operation.replayPolicyVersion = REPLAY_POLICY_VERSION; changed = true; }
+    if (Number(operation.attempts || 0) > 0 && !Number(operation.firstAttemptAt || 0) && !Number(operation.replayHorizonStartedAt || 0)) {
+      // Legacy R37-and-earlier failed/conflict/retry operations receive a fresh 90-day grace window
+      // from first R38 observation instead of losing a previously available manual replay immediately.
+      operation.replayHorizonStartedAt = Date.now();
+      changed = true;
+    }
+    if (changed) await putOperation(operation);
+    return replayPolicy(operation);
+  }
+
+  async function assertReplayAllowed(operation) {
+    const policy = await ensureReplayPolicyMetadata(operation);
+    if (policy.expired) {
+      const error = new Error("OFFLINE_REPLAY_HORIZON_EXPIRED");
+      error.code = "OFFLINE_REPLAY_HORIZON_EXPIRED";
+      error.details = { entity: operation?.entity || null, operationId: operation?.id || null, policyVersion: policy.policyVersion, horizonDays: policy.horizonDays, deadlineAt: policy.deadlineAt };
+      throw error;
+    }
+    return policy;
   }
 
   function uid(prefix = "op") {
@@ -204,6 +252,8 @@
       baseUpdatedAt: options.baseUpdatedAt || payload?.updatedAt || payload?.updated_at || "",
       dependsOn: Array.isArray(options.dependsOn) ? [...new Set(options.dependsOn.filter(Boolean))] : [],
       dedupeKey, idempotencyKey: options.idempotencyKey || dedupeKey,
+      replayPolicyVersion: REPLAY_HORIZON_ENTITIES.has(String(options.entity || "")) ? REPLAY_POLICY_VERSION : null,
+      firstAttemptAt: null, replayHorizonStartedAt: null, replayExpiredAt: null,
       status: "pending", attempts: 0, createdAt: Date.now(), updatedAt: Date.now(),
       nextAttemptAt: 0, lastError: "", resultId: null
     };
@@ -284,6 +334,21 @@
     const handler = handlers.get(operation.entity);
     if (!handler || !(await dependenciesReady(operation))) return false;
 
+    const policy = await ensureReplayPolicyMetadata(operation);
+    if (policy.expired) {
+      operation.status = operation.status === "conflict" ? "conflict" : "failed";
+      operation.replayExpiredAt = policy.deadlineAt;
+      operation.lastError = "OFFLINE_REPLAY_HORIZON_EXPIRED";
+      operation.updatedAt = Date.now();
+      await putOperation(operation);
+      emit("kyum-offline-replay-expired", { operation: clone(operation), replayPolicy: policy });
+      return false;
+    }
+    if (policy.managed && !Number(operation.firstAttemptAt || 0) && !Number(operation.replayHorizonStartedAt || 0)) {
+      operation.firstAttemptAt = Date.now();
+      operation.replayPolicyVersion = REPLAY_POLICY_VERSION;
+    }
+
     operation.status = "processing";
     operation.attempts = Number(operation.attempts || 0) + 1;
     operation.updatedAt = Date.now();
@@ -325,6 +390,8 @@
     const namespace = options.namespace || await getNamespace({ allowNetwork: false });
     if (processors.has(namespace)) return processors.get(namespace);
     const job = (async () => {
+      const openRows = await list({ namespace, statuses: OPEN_OPERATION_STATUSES });
+      for (const row of openRows) await ensureReplayPolicyMetadata(row);
       await recover(namespace);
       const rows = await list({ namespace, statuses: ["pending", "retry"] });
       let synced = 0;
@@ -350,9 +417,11 @@
   async function retryAll(options = {}) {
     const namespace = options.namespace || await getNamespace({ allowNetwork: false });
     const rows = await list({ namespace, statuses: ["failed", "retry", "pending", "conflict"] });
-    let updated = 0;
+    let updated = 0, replayBlocked = 0;
     for (const operation of rows) {
       if (operation.status === "processing") continue;
+      const policy = await ensureReplayPolicyMetadata(operation);
+      if (policy.expired) { replayBlocked += 1; continue; }
       operation.status = "retry";
       operation.nextAttemptAt = 0;
       operation.lastError = "";
@@ -360,8 +429,9 @@
       await putOperation(operation);
       updated += 1;
     }
-    if (updated) emit("kyum-offline-queue-retry-all", { namespace, updated });
-    return process({ namespace });
+    if (updated || replayBlocked) emit("kyum-offline-queue-retry-all", { namespace, updated, replayBlocked, replayPolicyVersion: REPLAY_POLICY_VERSION });
+    const result = await process({ namespace });
+    return { ...result, replayBlocked };
   }
 
   async function retry(operationId) {
@@ -369,6 +439,7 @@
     if (!operation) throw new Error("offline_operation_not_found");
     const namespace = await getNamespace({ allowNetwork: false });
     if (operation.namespace !== namespace) throw new Error("offline_operation_namespace_mismatch");
+    await assertReplayAllowed(operation);
     operation.status = "retry";
     operation.nextAttemptAt = 0;
     operation.lastError = "";
@@ -419,6 +490,11 @@
     if (!conflict) throw new Error("offline_conflict_not_found");
     const namespace = await getNamespace({ allowNetwork: false });
     if (conflict.namespace !== namespace) throw new Error("offline_conflict_namespace_mismatch");
+    if (resolution === "retry") {
+      const operation = await getOperation(conflict.operationId);
+      if (!operation) throw new Error("offline_operation_not_found");
+      await assertReplayAllowed(operation);
+    }
     conflict.status = "resolved";
     conflict.resolution = resolution;
     conflict.resolvedAt = Date.now();
@@ -467,10 +543,16 @@
       return acc;
     }, {});
     const conflicts = await listConflicts({ namespace: options.namespace, statuses: ["open"] }).catch(() => []);
+    const replayManaged = rows.filter(isReplayHorizonManaged);
+    const replayPolicies = replayManaged.map(row => replayPolicy(row));
     return {
       total: rows.length, counts, openConflicts: conflicts.length,
       lastQueuedAt: rows.reduce((max, row) => Math.max(max, row.createdAt || 0), 0) || null,
-      lastSyncedAt: rows.reduce((max, row) => Math.max(max, row.syncedAt || 0), 0) || null
+      lastSyncedAt: rows.reduce((max, row) => Math.max(max, row.syncedAt || 0), 0) || null,
+      replayPolicyVersion: REPLAY_POLICY_VERSION,
+      replayHorizonDays: Math.round(REPLAY_HORIZON_MS / 86400000),
+      replayManagedOpen: replayPolicies.length,
+      replayExpiredOpen: replayPolicies.filter(item => item.expired).length
     };
   }
 
@@ -489,7 +571,8 @@
   window.KYUMOfflineQueue = Object.freeze({
     version: "M13.13", ConflictError, enqueue, register, process, recover,
     list, stats, retry, retryAll, discard, cleanup, listConflicts, resolveConflict,
-    resolveServerId, findCreateOperationByLocalId, isRetryableError, getNamespace
+    resolveServerId, findCreateOperationByLocalId, isRetryableError, getNamespace,
+    replayPolicy, replayPolicyVersion: REPLAY_POLICY_VERSION, replayHorizonDays: Math.round(REPLAY_HORIZON_MS / 86400000)
   });
   installLifecycle();
 })();

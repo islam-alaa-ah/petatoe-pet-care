@@ -1,14 +1,15 @@
 {
-  "version": "18.56.35",
-  "build": 185635,
+  "version": "18.56.36",
+  "build": 185636,
   "forceUpdate": true,
   "releaseDate": "2026-09-03",
-  "title": "Production Retention Decision Gate R37",
+  "title": "Replay Horizon Policy R38",
   "notes": [
-    "إضافة Production Retention Decision Gate داخل مراقبة النظام لقياس جاهزية Idempotency Ledger Pruning بالأدلة بدل التقدير.",
-    "اشتراط نافذة مراقبة لا تقل عن 60 يومًا مع فصل Queue replay horizon عن Financial retry horizon.",
-    "الإبقاء على Replay Horizon غير محددة وCandidate Retention فارغة، لذلك تظل حالة القرار HOLD وLedger pruning معطلًا.",
-    "عدم تغيير Offline Queue أو Recovery Center أو Smart Cache أو Sync Engine أو أي Business Logic مالي أو تشغيلي."
+    "اعتماد Replay Horizon لمدة 90 يومًا لعمليات تنفيذ المواعيد وSEA VIBE من أول محاولة فعلية للسيرفر.",
+    "منع Auto/Manual Retry بعد انتهاء المهلة مع إبقاء العملية في Recovery Center للمراجعة اليدوية والتجاهل بعد التحقق.",
+    "منح عمليات R37 وما قبلها Grace لمدة 90 يومًا عند أول تعامل مع R38 بدل إسقاط حق إعادة المحاولة فورًا.",
+    "إضافة Watermark v2 لقياس Replayable مقابل Expired وإظهار Candidate Retention 120 يومًا مع بقاء Ledger pruning معطلًا.",
+    "Financial retry horizon وServer-side enforcement للأجهزة القديمة يظلان بوابات مستقلة قبل أي Idempotency Ledger pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-35-retention-decision-gate-r37-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-36-replay-horizon-policy-r38-p5-13-8-72"
 }

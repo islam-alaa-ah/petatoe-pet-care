@@ -1,4 +1,4 @@
-// PETATOE R35 — Sync retention coordinator: CRM tombstones + queue-age readiness
+// PETATOE R38 — Sync retention coordinator: CRM tombstones + queue replay-horizon evidence
 (function () {
   "use strict";
 
@@ -137,19 +137,44 @@
     const counts = { pending: 0, retry: 0, processing: 0, failed: 0, conflict: 0 };
     let oldest = null;
     let newest = null;
+    let oldestReplayable = null;
+    let latestReplayDeadline = null;
+    let replayableFailedConflictCount = 0;
+    let expiredFailedConflictCount = 0;
+    const replayPolicyVersion = window.KYUMOfflineQueue?.replayPolicyVersion || null;
+    const replayHorizonDays = Number(window.KYUMOfflineQueue?.replayHorizonDays || 0) || null;
     for (const row of rows || []) {
       const status = String(row?.status || "");
       if (Object.prototype.hasOwnProperty.call(counts, status)) counts[status] += 1;
       const created = Number(row?.createdAt || 0);
-      if (!created) continue;
-      oldest = oldest == null ? created : Math.min(oldest, created);
-      newest = newest == null ? created : Math.max(newest, created);
+      if (created) {
+        oldest = oldest == null ? created : Math.min(oldest, created);
+        newest = newest == null ? created : Math.max(newest, created);
+      }
+      const policy = window.KYUMOfflineQueue?.replayPolicy?.(row);
+      if (!policy?.managed) continue;
+      if (["failed", "conflict"].includes(status)) {
+        if (policy.expired) expiredFailedConflictCount += 1;
+        else {
+          replayableFailedConflictCount += 1;
+          const replayAnchor = Number(policy.anchorAt || row?.updatedAt || row?.createdAt || 0);
+          if (replayAnchor) oldestReplayable = oldestReplayable == null ? replayAnchor : Math.min(oldestReplayable, replayAnchor);
+        }
+      }
+      const deadline = Number(policy.deadlineAt || 0);
+      if (deadline && !policy.expired) latestReplayDeadline = latestReplayDeadline == null ? deadline : Math.max(latestReplayDeadline, deadline);
     }
     return {
       openCount: Object.values(counts).reduce((sum, value) => sum + value, 0),
       counts,
       oldestOpenAt: isoTimestamp(oldest),
-      newestOpenAt: isoTimestamp(newest)
+      newestOpenAt: isoTimestamp(newest),
+      replayPolicyVersion,
+      replayHorizonDays,
+      replayableFailedConflictCount,
+      expiredFailedConflictCount,
+      oldestReplayableAt: isoTimestamp(oldestReplayable),
+      latestReplayDeadlineAt: isoTimestamp(latestReplayDeadline)
     };
   }
 
@@ -163,7 +188,7 @@
     if (inflightQueueAcks.has(key)) return inflightQueueAcks.get(key);
 
     const operation = (async () => {
-      const { error } = await window.customerSupabase.rpc("ack_sync_queue_watermark", {
+      const { error } = await window.customerSupabase.rpc("ack_sync_queue_watermark_v2", {
         p_client_id: clientId(),
         p_domain: domain,
         p_open_count: summary.openCount,
@@ -173,7 +198,13 @@
         p_failed_count: summary.counts.failed,
         p_conflict_count: summary.counts.conflict,
         p_oldest_open_at: summary.oldestOpenAt,
-        p_newest_open_at: summary.newestOpenAt
+        p_newest_open_at: summary.newestOpenAt,
+        p_replay_policy_version: summary.replayPolicyVersion,
+        p_replay_horizon_days: summary.replayHorizonDays,
+        p_replayable_failed_conflict_count: summary.replayableFailedConflictCount,
+        p_expired_failed_conflict_count: summary.expiredFailedConflictCount,
+        p_oldest_replayable_at: summary.oldestReplayableAt,
+        p_latest_replay_deadline_at: summary.latestReplayDeadlineAt
       });
       if (error) throw new Error(error.message || "sync_queue_watermark_ack_failed");
       lastQueueAckAt.set(key, Date.now());
@@ -211,7 +242,7 @@
   }
 
   window.KYUMSyncRetention = Object.freeze({
-    version: "R35",
+    version: "R38",
     clientId,
     scopeFingerprint,
     ack,

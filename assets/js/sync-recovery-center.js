@@ -4,7 +4,7 @@
 
   const statusLabels = { pending: "معلقة", retry: "بانتظار إعادة المحاولة", processing: "قيد المزامنة", failed: "فشلت", conflict: "تعارض", synced: "تمت" };
   const actionLabels = { create: "إضافة", update: "تعديل", delete: "حذف" };
-  const entityLabels = { customers: "العملاء", followups: "المتابعات", quotations: "عروض الأسعار", installation_execution: "تنفيذ المواعيد" };
+  const entityLabels = { customers: "العملاء", followups: "المتابعات", quotations: "عروض الأسعار", installation_execution: "تنفيذ المواعيد", sea_vibe: "SEA VIBE" };
   let refreshTimer = null;
 
   function text(value) {
@@ -15,6 +15,15 @@
     if (!value) return "—";
     try { return new Intl.DateTimeFormat("ar-SA-u-nu-latn", { dateStyle: "short", timeStyle: "short" }).format(new Date(value)); }
     catch (_) { return "—"; }
+  }
+
+  function replayPolicy(row) {
+    return window.KYUMOfflineQueue?.replayPolicy?.(row) || { managed: false, canReplay: true, expired: false, horizonDays: null, deadlineAt: null };
+  }
+
+  function replayExpiredText(policy) {
+    if (!policy?.expired) return "";
+    return `انتهت مهلة إعادة التنفيذ (${Number(policy.horizonDays || 90)} يوم). راجع حالة العملية في الشاشة الأصلية وعلى الخادم يدويًا، ثم استخدم «تجاهل» فقط بعد التأكد. آخر مهلة: ${formatTime(policy.deadlineAt)}.`;
   }
 
   function setStatus(message, kind = "") {
@@ -57,11 +66,16 @@
     }
     body.innerHTML = visible.map(row => {
       const conflict = openConflictByOperation.get(row.id);
-      const actions = ["failed", "retry", "pending"].includes(row.status)
+      const policy = replayPolicy(row);
+      const expired = policy.managed && policy.expired;
+      const actions = !expired && ["failed", "retry", "pending"].includes(row.status)
         ? `<button type="button" class="secondary-btn compact-btn" data-sync-retry="${text(row.id)}">إعادة المحاولة</button>` : "";
-      const resolve = conflict ? `<button type="button" class="secondary-btn compact-btn" data-sync-resolve="${text(conflict.id)}">حل التعارض</button>` : "";
+      const resolve = conflict && !expired ? `<button type="button" class="secondary-btn compact-btn" data-sync-resolve="${text(conflict.id)}">حل التعارض</button>` : "";
+      const manual = expired ? `<button type="button" class="secondary-btn compact-btn" data-sync-manual-review="${text(row.id)}">مراجعة يدوية فقط</button>` : "";
       const discard = row.status !== "processing" ? `<button type="button" class="secondary-btn compact-btn" data-sync-discard="${text(row.id)}">تجاهل</button>` : "";
-      return `<tr><td>${text(entityLabels[row.entity] || row.entity)}</td><td>${text(actionLabels[row.action] || row.action)}</td><td>${text(statusLabels[row.status] || row.status)}</td><td>${Number(row.attempts || 0)}</td><td>${formatTime(row.updatedAt)}</td><td title="${text(row.lastError || "")}">${text(row.lastError || "—")}</td><td><div class="sync-recovery-row-actions">${actions}${resolve}${discard}</div></td></tr>`;
+      const stateLabel = expired ? "انتهت مهلة Replay" : (statusLabels[row.status] || row.status);
+      const errorText = expired ? replayExpiredText(policy) : (row.lastError || "—");
+      return `<tr><td>${text(entityLabels[row.entity] || row.entity)}</td><td>${text(actionLabels[row.action] || row.action)}</td><td>${text(stateLabel)}</td><td>${Number(row.attempts || 0)}</td><td>${formatTime(row.updatedAt)}</td><td title="${text(errorText)}">${text(errorText)}</td><td><div class="sync-recovery-row-actions">${actions}${resolve}${manual}${discard}</div></td></tr>`;
     }).join("");
   }
 
@@ -78,18 +92,33 @@
   async function runAction(action, id) {
     setStatus("جارٍ تنفيذ الإجراء...");
     try {
-      if (action === "retry") await window.KYUMOfflineQueue.retry(id);
-      if (action === "discard") await window.KYUMOfflineQueue.discard(id);
-      if (action === "resolve") await window.KYUMOfflineQueue.resolveConflict(id, "retry");
-      if (action === "retryAll") await window.KYUMOfflineQueue.retryAll();
+      let result = null;
+      if (action === "retry") result = await window.KYUMOfflineQueue.retry(id);
+      if (action === "discard") result = await window.KYUMOfflineQueue.discard(id);
+      if (action === "resolve") result = await window.KYUMOfflineQueue.resolveConflict(id, "retry");
+      if (action === "retryAll") result = await window.KYUMOfflineQueue.retryAll();
+      if (action === "manualReview") {
+        const row = (await window.KYUMOfflineQueue.list()).find(item => item.id === id);
+        const policy = replayPolicy(row);
+        setStatus(replayExpiredText(policy) || "هذه العملية تحتاج مراجعة يدوية قبل اتخاذ أي إجراء.", "info");
+        return;
+      }
       if (action === "sync") {
-        await window.KYUMOfflineQueue.process();
+        result = await window.KYUMOfflineQueue.process();
         await window.KYUMSyncEngine?.triggerAll?.("manual-recovery-center");
       }
-      setStatus("تم تنفيذ الإجراء بنجاح.", "success");
+      if (action === "retryAll" && Number(result?.replayBlocked || 0) > 0) {
+        setStatus(`تمت إعادة المحاولة للعمليات المسموحة، وتم استبعاد ${Number(result.replayBlocked)} عملية انتهت مهلة Replay الخاصة بها.`, "info");
+      } else {
+        setStatus("تم تنفيذ الإجراء بنجاح.", "success");
+      }
       await refresh();
     } catch (error) {
-      setStatus(`تعذر تنفيذ الإجراء: ${error.message || error}`, "error");
+      if (error?.code === "OFFLINE_REPLAY_HORIZON_EXPIRED" || String(error?.message || "") === "OFFLINE_REPLAY_HORIZON_EXPIRED") {
+        setStatus("انتهت مهلة إعادة التنفيذ لهذه العملية. راجع حالتها يدويًا في الشاشة الأصلية وعلى الخادم ثم تجاهل سجل الاسترداد بعد التأكد.", "info");
+      } else {
+        setStatus(`تعذر تنفيذ الإجراء: ${error.message || error}`, "error");
+      }
     }
   }
 
@@ -100,9 +129,11 @@
       const retry = event.target.closest("[data-sync-retry]");
       const discard = event.target.closest("[data-sync-discard]");
       const resolve = event.target.closest("[data-sync-resolve]");
+      const manual = event.target.closest("[data-sync-manual-review]");
       if (retry) runAction("retry", retry.dataset.syncRetry);
       if (discard && confirm("هل تريد تجاهل هذه العملية نهائيًا؟")) runAction("discard", discard.dataset.syncDiscard);
       if (resolve && confirm("هل تريد إعادة محاولة العملية باستخدام النسخة المحلية؟")) runAction("resolve", resolve.dataset.syncResolve);
+      if (manual) runAction("manualReview", manual.dataset.syncManualReview);
     });
     ["kyum-offline-queue-changed", "kyum-sync-state-changed", "kyum-auth-state-changed", "online"].forEach(type => window.addEventListener(type, () => {
       clearTimeout(refreshTimer); refreshTimer = setTimeout(refresh, 150);
