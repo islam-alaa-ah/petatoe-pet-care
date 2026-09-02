@@ -2885,6 +2885,7 @@ function renderSyncRetentionObservability() {
     SERVER_REPLAY_ENFORCEMENT_PENDING: "يلزم Server-side enforcement قبل السماح بحذف الـLedgers",
     SERVER_LEGACY_REPLAY_GRACE_ACTIVE: "Server enforcement يعمل؛ ما زالت مهلة توافق الأجهزة القديمة نشطة",
     FINANCIAL_RETRY_POLICY_REQUIRED: "السياسة المالية تحتاج قرار Retry مستقل",
+    FINANCIAL_REPLAY_HORIZON_EXPIRED: "انتهت مهلة إعادة المحاولة المالية وتحتاج مراجعة حالة الخادم",
     LEDGER_PRUNING_REMAINS_DISABLED: "حذف Idempotency Ledgers ما زال معطلًا"
   };
   const labelBlocker = code => blockerLabels[String(code || "")] || String(code || "غير محدد");
@@ -2898,7 +2899,11 @@ function renderSyncRetentionObservability() {
           ? "Server enforcement نشط؛ ننتظر انتهاء مهلة توافق الأجهزة القديمة قبل أي Pruning"
           : (decisionGate.nextDecisionRequired === "DEFINE_FINANCIAL_RETRY_POLICY"
             ? "Server enforcement مكتمل للـExecution وSEA VIBE؛ المتبقي تحديد سياسة Financial Retry"
-            : String(snapshot.readinessReason || "غير محدد")))));
+            : (decisionGate.nextDecisionRequired === "WAIT_RETENTION_GATE_REQUIREMENTS"
+              ? "تم تحديد كل سياسات Replay؛ ننتظر اكتمال Observation/Rollout قبل Retention"
+              : (decisionGate.nextDecisionRequired === "RETENTION_PRUNING_IMPLEMENTATION_PENDING"
+                ? "سياسات Replay مكتملة؛ Pruning ما زال يحتاج مرحلة تنفيذ مستقلة"
+                : String(snapshot.readinessReason || "غير محدد")))))));
 
   badge.className = `record-status ${gateReady ? "active" : "inactive"}`;
   badge.textContent = gateReady ? "Decision Gate READY" : "Decision Gate HOLD";
@@ -2983,9 +2988,9 @@ function renderSyncRetentionObservability() {
     <div class="health-metrics-grid">
       <article><span>Observation Window</span><strong>${decisionGate.observationWindowSatisfied ? "مكتملة" : "غير مكتملة"}</strong><small>${observationDays} / ${requiredObservationDays} يوم</small></article>
       <article><span>Queue Replay Horizon</span><strong>${decisionGate.queueReplayHorizonBounded ? `${Number(decisionGate.queueReplayHorizonDays || 90)} يوم` : "غير محدد"}</strong><small>Execution + SEA VIBE — من أول محاولة فعلية للسيرفر</small></article>
-      <article><span>Financial Retry Horizon</span><strong>${decisionGate.financialRetryHorizonBounded ? "محدد" : "غير محدد"}</strong><small>Online idempotent retries</small></article>
+      <article><span>Financial Retry Horizon</span><strong>${decisionGate.financialRetryHorizonBounded ? `${Number(decisionGate.financialRetryHorizonDays || 90)} يوم` : "غير محدد"}</strong><small>${decisionGate.financialServerReplayEnforcementEnabled ? "Server-enforced" : "Online idempotent retries"}</small></article>
       <article><span>أقدم Replay حي مرصود</span><strong>${escapeHtml(healthAgeLabel(decisionGate.observedOldestOpenOperationAt))}</strong><small>Evidence فقط وليست Retention recommendation</small></article>
-      <article><span>Candidate Retention</span><strong>${decisionGate.candidateRetentionDays ? `${Number(decisionGate.candidateRetentionDays)} يوم` : "غير محدد"}</strong><small>Queue-backed فقط: Replay + Safety Buffer؛ لا يتم تطبيق الحذف في R38</small></article>
+      <article><span>Candidate Retention</span><strong>${decisionGate.candidateRetentionDays ? `${Number(decisionGate.candidateRetentionDays)} يوم` : "غير محدد"}</strong><small>Queue: ${Number(decisionGate.candidateRetentionDays || 0) || "—"} يوم / Financial: ${Number(decisionGate.financialCandidateRetentionDays || 0) || "—"} يوم — لا حذف تلقائي</small></article>
     </div>
     <div class="data-status info">${escapeHtml(overallBlockers.map(labelBlocker).join(" — ") || "لا توجد موانع حالية")}</div>
     <div class="table-wrap"><table>
@@ -2999,7 +3004,7 @@ function renderSyncRetentionObservability() {
       <tbody>${queueRows}</tbody>
     </table></div>
 
-    <div class="panel-header"><div><h3>Idempotency Ledgers</h3><p>المراقبة فقط؛ الحذف الفعلي يظل معطلًا في R38 حتى اكتمال Server-side replay enforcement والبوابات المتبقية.</p></div></div>
+    <div class="panel-header"><div><h3>Idempotency Ledgers</h3><p>المراقبة فقط؛ كل Replay Horizons أصبحت محددة، لكن الحذف الفعلي يظل معطلًا حتى اجتياز Observation/Grace ثم مرحلة Pruning مستقلة.</p></div></div>
     <div class="table-wrap"><table>
       <thead><tr><th>Ledger</th><th>الصفوف</th><th>عمر الأقدم</th><th>مصدر Retry</th><th>Retention</th></tr></thead>
       <tbody>${ledgerRows}</tbody>

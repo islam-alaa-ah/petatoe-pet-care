@@ -1,15 +1,15 @@
 {
-  "version": "18.56.37",
-  "build": 185637,
+  "version": "18.56.38",
+  "build": 185638,
   "forceUpdate": true,
   "releaseDate": "2026-09-03",
-  "title": "Server Replay Enforcement Cutover R39",
+  "title": "Financial Retry Horizon Policy R40",
   "notes": [
-    "تفعيل Server-side Replay Enforcement لمدة 90 يومًا لعمليات تنفيذ المواعيد وSEA VIBE مع Replay Anchor مثبتة على الخادم.",
-    "إضافة RPC v2 للنسخة الحالية مع منع إعادة ضبط مهلة Replay لكل User + Domain + Operation Key.",
-    "الإبقاء على RPC القديمة لمدة Grace عالمية 90 يومًا فقط؛ بعدها العمليات المجهولة من الإصدارات القديمة تُرفض حتى يتم تحديث التطبيق.",
-    "الحفاظ على Idempotent replay للعمليات الموجودة بالفعل في الـLedgers وعدم تفعيل أي Ledger pruning في R39.",
-    "تحديث شاشة مراقبة النظام لإظهار أن Server enforcement نشط مع استمرار Decision Gate بحالة HOLD."
+    "تحديد Financial Retry Horizon لمدة 90 يومًا للعمليات المالية الخاصة بالمواعيد مع enforcement على الخادم.",
+    "إضافة Compact Financial Replay Guards لكل عملية مالية ومنع إعادة التنفيذ القديمة بعد انتهاء المهلة إذا لم يعد Result Ledger موجودًا.",
+    "عمل Backfill تلقائي للعمليات المالية السابقة مع إبقاء الـResult Ledger الحالي مرجعًا للـIdempotent replay.",
+    "اعتماد Candidate Retention قدره 120 يومًا للـFinancial result ledger دون تفعيل أي Ledger pruning في R40.",
+    "تحديث شاشة مراقبة النظام وDecision Gate لإظهار أن سياسة Financial Retry أصبحت محددة بينما Pruning ما زال HOLD."
   ],
-  "cacheToken": "petatoe-pwa-18-56-37-server-replay-enforcement-r39-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-38-financial-retry-horizon-r40-p5-13-8-72"
 }

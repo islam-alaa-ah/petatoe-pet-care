@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.8.0",
+  "policyVersion": "1.9.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -229,6 +229,9 @@
     "idempotencyLedgerPruningRequiresBoundedReplayHorizon": true,
     "expiredQueueReplayRequiresManualRecovery": true,
     "queueBackedReplayHorizonMustBeServerEnforced": true,
-    "legacyReplayRpcMustHaveBoundedCutoverGrace": true
+    "legacyReplayRpcMustHaveBoundedCutoverGrace": true,
+    "financialRetryHorizonMustBeServerEnforced": true,
+    "financialResultLedgerPruningRequiresExpiredReplayGuard": true,
+    "financialReplayGuardMustOutliveResultLedger": true
   }
 }

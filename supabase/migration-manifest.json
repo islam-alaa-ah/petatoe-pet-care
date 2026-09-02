@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.37",
-    "build": 185637,
+    "version": "18.56.38",
+    "build": 185638,
     "date": "2026-09-03"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -70,11 +70,12 @@
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
-      "supabase/migrations/phase_p5_13_8_72_r39_server_replay_enforcement.sql"
+      "supabase/migrations/phase_p5_13_8_72_r39_server_replay_enforcement.sql",
+      "supabase/migrations/phase_p5_13_8_72_r40_financial_retry_horizon_policy.sql"
     ]
   },
   "inventoryStats": {
-    "historicalMigrationCount": 223,
+    "historicalMigrationCount": 224,
     "uppercaseFilenameCount": 4,
     "shortAliasCount": 5,
     "allTimestampPrefixed": false
@@ -1214,6 +1215,11 @@
       "path": "supabase/migrations/phase_petatoe_p4_canonical_customer_master.sql",
       "sha256": "67fe34d9f97c64b46b26c2f5b1d4929d47caa23d86241e5cd7eb8c7cc1dfb094",
       "bytes": 18097
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r40_financial_retry_horizon_policy.sql",
+      "sha256": "dd72247fddd5d2caaf333a1c9f61cf36ee3784eec9505f6991341bdeeb671661",
+      "bytes": 32238
     }
   ]
 }
