@@ -444,24 +444,11 @@
 
   async function deleteQuotation(record, context = {}) {
     requirePermission("quotations", "delete");
-    const queueDelete = () => window.KYUMOfflineQueue.enqueue({
-      entity: "quotations", action: "delete", payload: record,
-      localEntityId: record.id, idempotencyKey: `quotations:delete:${record.id}`
-    });
-    if (!context.skipOfflineQueue && navigator.onLine === false && window.KYUMOfflineQueue) {
-      await queueDelete();
-      return { queued: true };
+    if (navigator.onLine === false) {
+      throw new Error("حذف العقد يحتاج اتصالًا بالإنترنت حتى يتم تأكيد الحذف من الخادم.");
     }
-    try {
-      await deleteQuotationOnline(record);
-      return { queued: false };
-    } catch (error) {
-      if (!context.skipOfflineQueue && window.KYUMOfflineQueue?.isRetryableError?.(error)) {
-        await queueDelete();
-        return { queued: true };
-      }
-      throw error;
-    }
+    await deleteQuotationOnline(record);
+    return { queued: false };
   }
 
   async function audit(action, entityId, newData) {

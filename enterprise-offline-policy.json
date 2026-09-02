@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.2.0",
+  "policyVersion": "1.3.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -14,17 +14,17 @@
   "domains": {
     "customers": {
       "file": "assets/js/customers-service.js",
-      "mode": "full_offline_create_update",
+      "mode": "full_offline_create_update_online_delete_legacy_delete_replay",
       "status": "compliant"
     },
     "followups": {
       "file": "assets/js/followups-service.js",
-      "mode": "full_offline_create_update",
+      "mode": "full_offline_create_update_online_delete_legacy_delete_replay",
       "status": "compliant"
     },
     "quotations": {
       "file": "assets/js/quotations-service.js",
-      "mode": "full_offline_create_update",
+      "mode": "full_offline_create_update_online_delete_legacy_delete_replay",
       "status": "compliant"
     },
     "reference_data": {
@@ -139,8 +139,8 @@
     },
     "notification_center": {
       "file": "assets/js/notification-center-service.js",
-      "mode": "online_only_user_notifications",
-      "status": "accepted_online_only"
+      "mode": "offline_read_online_write",
+      "status": "compliant"
     },
     "sales_invoices": {
       "file": "assets/js/sales-invoices-service.js",
@@ -209,13 +209,7 @@
     "assets/js/sea-vibe-service.js",
     "assets/js/vehicle-treasury-service.js"
   ],
-  "temporaryDirectUiDebt": {
-    "assets/js/app.js": [
-      "sales_representatives update",
-      "sales_representatives delete",
-      "generic reference delete"
-    ]
-  },
+  "temporaryDirectUiDebt": {},
   "rulesForFutureFeatures": {
     "newDataServiceMustBeRegistered": true,
     "newOfflineReadableDomainMustUseSmartCache": true,

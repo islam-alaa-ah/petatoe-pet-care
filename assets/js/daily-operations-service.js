@@ -81,6 +81,7 @@
       completed: Boolean(row.is_completed),
       completedAt: row.completed_at || null,
       updatedAt: row.updated_at || null,
+      serverUpdatedAt: row.serverUpdatedAt || row.updated_at || null,
       userName: row.user_profile?.full_name || "",
       representativeName: row.representative?.full_name || "",
       pendingSync: Boolean(row.pendingSync)
@@ -353,6 +354,20 @@
     return definition;
   }
 
+  async function latestPendingTaskOperation(taskKey, workDate) {
+    if (!window.KYUMOfflineQueue?.list || !window.KYUMOfflineQueue?.getNamespace) return null;
+    const namespace = await window.KYUMOfflineQueue.getNamespace({ allowNetwork: false });
+    const rows = await window.KYUMOfflineQueue.list({
+      namespace,
+      statuses: ["pending", "retry", "processing"]
+    });
+    return [...rows].reverse().find(row =>
+      row.entity === "daily_task_completions" &&
+      row.payload?.taskKey === taskKey &&
+      row.payload?.workDate === workDate
+    ) || null;
+  }
+
   async function setTaskState(taskKey, completed, workDate = todayIso(), context = {}) {
     await requireTaskEditPermission(taskKey);
     const queueTaskState = async () => {
@@ -360,6 +375,11 @@
       const now = new Date().toISOString();
       const cached = await readCache("completions", workDate);
       const existing = (cached?.data || []).find(row => row.taskKey === taskKey && row.userId === state?.user?.id);
+      const baseServerUpdatedAt = existing?.serverUpdatedAt || existing?.updatedAt || "";
+      const predecessor = await latestPendingTaskOperation(taskKey, workDate);
+      if (predecessor && Boolean(predecessor.payload?.completed) === Boolean(completed) && existing?.pendingSync) {
+        return existing;
+      }
       const optimistic = {
         id: existing?.id || `local:daily-task:${state?.user?.id || "anonymous"}:${workDate}:${taskKey}`,
         taskKey,
@@ -371,6 +391,7 @@
         completed: Boolean(completed),
         completedAt: completed ? now : null,
         updatedAt: now,
+        serverUpdatedAt: baseServerUpdatedAt || null,
         userName: existing?.userName || state?.profile?.full_name || "",
         representativeName: existing?.representativeName || "",
         pendingSync: true
@@ -380,7 +401,9 @@
         action: "upsert",
         payload: { taskKey, completed: Boolean(completed), workDate },
         localEntityId: optimistic.id,
-        baseUpdatedAt: existing?.updatedAt || ""
+        baseUpdatedAt: baseServerUpdatedAt,
+        dependsOn: predecessor ? [predecessor.id] : [],
+        idempotencyKey: `daily-task:${workDate}:${taskKey}:${completed ? 1 : 0}:${predecessor?.id || baseServerUpdatedAt || "new"}`
       });
       const merged = await mergeCompletionIntoCache(optimistic, workDate, "offline-optimistic");
       await invalidateDerivedDailyReports(workDate);
@@ -557,6 +580,54 @@
     try { return await job; } finally { refreshes.delete(key); }
   }
 
+  async function assertTaskNotConflicted(operation) {
+    const userId = authState()?.user?.id;
+    if (!userId) throw new Error("تعذر تحديد المستخدم الحالي.");
+    const { data, error } = await client().from("daily_task_completions")
+      .select("id,is_completed,updated_at")
+      .eq("task_key", operation.payload.taskKey)
+      .eq("work_date", operation.payload.workDate)
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (error) throw new Error(`تعذر التحقق من تعارض المهمة اليومية: ${error.message}`);
+
+    const predecessorId = Array.isArray(operation.dependsOn) && operation.dependsOn.length ? operation.dependsOn[operation.dependsOn.length - 1] : null;
+    if (predecessorId && window.KYUMOfflineQueue?.list) {
+      const rows = await window.KYUMOfflineQueue.list({ namespace: operation.namespace });
+      const predecessor = rows.find(row => row.id === predecessorId);
+      if (predecessor?.status === "synced" && data && Boolean(data.is_completed) === Boolean(predecessor.payload?.completed)) {
+        return;
+      }
+      throw new window.KYUMOfflineQueue.ConflictError("تم تغيير حالة المهمة اليومية بعد العملية المحلية السابقة.", {
+        taskKey: operation.payload.taskKey,
+        workDate: operation.payload.workDate,
+        serverUpdatedAt: data?.updated_at || "",
+        baseUpdatedAt: operation.baseUpdatedAt || ""
+      });
+    }
+
+    if (!operation.baseUpdatedAt) {
+      if (!data) return;
+      throw new window.KYUMOfflineQueue.ConflictError("تم إنشاء أو تعديل المهمة اليومية على الخادم بعد آخر مزامنة.", {
+        taskKey: operation.payload.taskKey,
+        workDate: operation.payload.workDate,
+        serverUpdatedAt: data.updated_at || "",
+        baseUpdatedAt: ""
+      });
+    }
+
+    const serverTime = Date.parse(data?.updated_at || "") || 0;
+    const baseTime = Date.parse(operation.baseUpdatedAt || "") || 0;
+    if (!data || (serverTime && baseTime && serverTime > baseTime + 1000)) {
+      throw new window.KYUMOfflineQueue.ConflictError("تم تعديل المهمة اليومية على الخادم بعد آخر مزامنة.", {
+        taskKey: operation.payload.taskKey,
+        workDate: operation.payload.workDate,
+        serverUpdatedAt: data?.updated_at || "",
+        baseUpdatedAt: operation.baseUpdatedAt || ""
+      });
+    }
+  }
+
   async function assertNotConflicted(table, workDate, baseUpdatedAt, label) {
     if (!baseUpdatedAt) return;
     const { data, error } = await client().from(table).select("updated_at").eq("work_date", workDate).maybeSingle();
@@ -571,6 +642,7 @@
   }
 
   window.KYUMOfflineQueue?.register?.("daily_task_completions", async operation => {
+    await assertTaskNotConflicted(operation);
     return setTaskStateOnline(operation.payload.taskKey, operation.payload.completed, operation.payload.workDate);
   });
   window.KYUMOfflineQueue?.register?.("daily_operation_targets", async operation => {

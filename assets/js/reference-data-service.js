@@ -13,6 +13,12 @@
     return window.customerSupabase;
   }
 
+  function requireOnlineWrite(label = "هذه العملية") {
+    if (navigator.onLine === false) {
+      throw new Error(`${label} تحتاج اتصالًا بالإنترنت.`);
+    }
+  }
+
   async function unwrap(request, fallbackMessage) {
     const { data, error } = await request;
     if (error) {
@@ -145,6 +151,7 @@
   }
 
   async function saveRepresentative(record) {
+    requireOnlineWrite(record?.id ? "تعديل المندوب" : "إضافة المندوب");
     const payload = {
       representative_code: record.representative_code.trim(),
       full_name: record.full_name.trim(),
@@ -172,6 +179,32 @@
     return rows;
   }
 
+  async function setRepresentativeStatus(id, isActive) {
+    requireOnlineWrite("تغيير حالة المندوب");
+    const row = await unwrap(
+      client().from("sales_representatives")
+        .update({ is_active: Boolean(isActive), updated_at: new Date().toISOString() })
+        .eq("id", id)
+        .select("id, representative_code, full_name, phone, email, is_active, created_at")
+        .single(),
+      "تعذر تغيير حالة المندوب"
+    );
+    await audit("update", "sales_representatives", id, { is_active: Boolean(isActive) });
+    invalidate("sales_representatives:");
+    return row;
+  }
+
+  async function deleteRepresentative(id) {
+    requireOnlineWrite("حذف المندوب");
+    await unwrap(
+      client().from("sales_representatives").delete().eq("id", id),
+      "تعذر حذف المندوب"
+    );
+    await audit("delete", "sales_representatives", id, { id });
+    invalidate("sales_representatives:");
+    return { id };
+  }
+
   async function listReference(table, includeInactive = true) {
     const key = cacheKey(table, includeInactive);
 
@@ -187,6 +220,7 @@
   }
 
   async function saveReference(table, record) {
+    requireOnlineWrite(record?.id ? "تعديل البيانات المرجعية" : "إضافة البيانات المرجعية");
     const payload = {
       name: record.name.trim(),
       is_active: Boolean(record.is_active)
@@ -211,6 +245,17 @@
     return row;
   }
 
+  async function deleteReference(table, id) {
+    requireOnlineWrite("حذف البيانات المرجعية");
+    await unwrap(
+      client().from(table).delete().eq("id", id),
+      "تعذر حذف البيانات المرجعية"
+    );
+    await audit("delete", table, id, { id });
+    invalidate(`${table}:`);
+    return { id };
+  }
+
   async function audit(action, entityType, entityId, newData) {
     try {
       await client().from("audit_logs").insert({
@@ -229,12 +274,16 @@
   window.ReferenceDataService = Object.freeze({
     listRepresentatives,
     saveRepresentative,
+    setRepresentativeStatus,
+    deleteRepresentative,
     listInterests: (includeInactive = true) =>
       listReference("interest_categories", includeInactive),
     saveInterest: record => saveReference("interest_categories", record),
+    deleteInterest: id => deleteReference("interest_categories", id),
     listReasons: (includeInactive = true) =>
       listReference("no_sale_reasons", includeInactive),
     saveReason: record => saveReference("no_sale_reasons", record),
+    deleteReason: id => deleteReference("no_sale_reasons", id),
     invalidate
   });
 })();

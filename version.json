@@ -1,15 +1,15 @@
 {
-  "version": "18.56.29",
-  "build": 185629,
+  "version": "18.56.30",
+  "build": 185630,
   "forceUpdate": true,
-  "releaseDate": "2026-08-28",
-  "title": "SEA VIBE Sync Hardening R31",
+  "releaseDate": "2026-09-02",
+  "title": "Remaining Sync Debt Hardening R32",
   "notes": [
-    "تقوية مزامنة SEA VIBE دون تغيير منطق الرحلات أو المصروفات أو الأصول أو الخزنة أو زاول، مع الحفاظ على عمليات الحذف والتعديلات غير المدعومة Offline كعمليات Online-only.",
-    "توحيد عمليات Create/Update الجديدة مع Offline Queue القياسي للاستفادة من ID Mapping وDependency Graph، مع استمرار دعم Replay للعمليات القديمة المعلقة من الإصدارات السابقة.",
-    "إضافة Idempotency Server-side لعمليات الإنشاء الحساسة وConflict Guard يعتمد على baseUpdatedAt للتعديلات وحالة الرحلة والبيانات المرجعية ومصفوفة رسوم التصاريح، لمنع التكرار والكتابة فوق تغييرات أحدث.",
-    "تقليل Full Snapshot Refresh بعد الحفظ وإعادة Queue إلى تحديث الأقسام المتأثرة فقط، مع الإبقاء على Full Reconciliation عند الفتح والعودة للواجهة كشبكة أمان.",
-    "الحفاظ على Offline Queue وSmart Cache وSync Engine المشتركة بدون تعديل وعلى جميع إصلاحات R25-R30 السابقة."
+    "إزالة مسارات الكتابة المباشرة من واجهة مندوبي المبيعات والبيانات المرجعية ونقل تغيير الحالة والحذف إلى ReferenceDataService كعمليات Online-only مع إبطال Smart Cache بعد النجاح.",
+    "إضافة Smart Cache معزول حسب المستخدم لقائمة إشعارات المستخدم لتظل قابلة للعرض Offline، مع إبقاء Mark Read وMark All Read وإعدادات مركز الإشعارات عمليات Online-only بدون Queue.",
+    "تقوية Daily Tasks عند العمل Offline بإضافة dependency chain للمراحل المحلية المتتابعة وConflict Guard عند Replay لمنع Last-Write-Wins الصامت على تغيير أحدث من جهاز آخر.",
+    "إيقاف إنشاء Offline Delete جديد للعملاء والمتابعات والعقود إلى أن يتوفر Tombstone/Soft-delete feed صريح، مع استمرار Replay لعمليات الحذف القديمة المعلقة من الإصدارات السابقة.",
+    "الحفاظ على R25-R31 ومحركات Offline Queue وSmart Cache وSync Engine المشتركة بدون تعديل وعدم الحاجة إلى Database Migration."
   ],
-  "cacheToken": "petatoe-pwa-18-56-29-sea-vibe-sync-r31-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-30-sync-debt-r32-p5-13-8-72"
 }

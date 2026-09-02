@@ -430,26 +430,11 @@
 
   async function deleteCustomer(customerId, customerName, context = {}) {
     requirePermission("customers", "delete");
-    const queueDelete = () => window.KYUMOfflineQueue.enqueue({
-      entity: "customers", action: "delete", payload: { id: customerId, name: customerName },
-      localEntityId: customerId, idempotencyKey: `customers:delete:${customerId}`
-    });
-    if (!context.skipOfflineQueue && navigator.onLine === false && window.KYUMOfflineQueue) {
-      await queueDelete();
-      await invalidateCustomerCache();
-      return { queued: true };
+    if (navigator.onLine === false) {
+      throw new Error("حذف العميل يحتاج اتصالًا بالإنترنت حتى يتم تأكيد الحذف من الخادم.");
     }
-    try {
-      await deleteCustomerOnline(customerId, customerName);
-      return { queued: false };
-    } catch (error) {
-      if (!context.skipOfflineQueue && window.KYUMOfflineQueue?.isRetryableError?.(error)) {
-        await queueDelete();
-        await invalidateCustomerCache();
-        return { queued: true };
-      }
-      throw error;
-    }
+    await deleteCustomerOnline(customerId, customerName);
+    return { queued: false };
   }
 
   async function audit(action, entityId, newData, userId = null) {

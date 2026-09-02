@@ -404,24 +404,11 @@
 
   async function deleteFollowup(record, context = {}) {
     requirePermission("followups", "delete");
-    const queueDelete = () => window.KYUMOfflineQueue.enqueue({
-      entity: "followups", action: "delete", payload: record,
-      localEntityId: record.id, idempotencyKey: `followups:delete:${record.id}`
-    });
-    if (!context.skipOfflineQueue && navigator.onLine === false && window.KYUMOfflineQueue) {
-      await queueDelete();
-      return { queued: true };
+    if (navigator.onLine === false) {
+      throw new Error("حذف المتابعة يحتاج اتصالًا بالإنترنت حتى يتم تأكيد الحذف من الخادم.");
     }
-    try {
-      await deleteFollowupOnline(record);
-      return { queued: false };
-    } catch (error) {
-      if (!context.skipOfflineQueue && window.KYUMOfflineQueue?.isRetryableError?.(error)) {
-        await queueDelete();
-        return { queued: true };
-      }
-      throw error;
-    }
+    await deleteFollowupOnline(record);
+    return { queued: false };
   }
 
   async function audit(action, entityId, newData) {

@@ -3736,16 +3736,7 @@ async function toggleRepresentativeStatus(id) {
   showDataStatus("representativesStatus", `جاري ${actionLabel} المندوب...`, "info");
 
   try {
-    const { error } = await window.customerSupabase
-      .from("sales_representatives")
-      .update({
-        is_active: nextStatus,
-        updated_at: new Date().toISOString()
-      })
-      .eq("id", id);
-
-    if (error) throw error;
-
+    await window.ReferenceDataService.setRepresentativeStatus(id, nextStatus);
     await loadReferenceDataFromSupabase(true);
     showDataStatus(
       "representativesStatus",
@@ -3785,13 +3776,7 @@ async function deleteRepresentativeRecord(id) {
   showDataStatus("representativesStatus", "جاري حذف المندوب...", "info");
 
   try {
-    const { error } = await window.customerSupabase
-      .from("sales_representatives")
-      .delete()
-      .eq("id", id);
-
-    if (error) throw error;
-
+    await window.ReferenceDataService.deleteRepresentative(id);
     await loadReferenceDataFromSupabase(true);
     showDataStatus("representativesStatus", "تم حذف المندوب بنجاح.", "success");
   } catch (error) {
@@ -3893,19 +3878,11 @@ async function deleteReferenceItem(type, id) {
     return;
   }
 
-  const table = type === "interest"
-    ? "interest_categories"
-    : "no_sale_reasons";
-
   showDataStatus("referenceDataStatus", `جاري حذف ${label}...`, "info");
 
   try {
-    const { error } = await window.customerSupabase
-      .from(table)
-      .delete()
-      .eq("id", id);
-
-    if (error) throw error;
+    if (type === "interest") await window.ReferenceDataService.deleteInterest(id);
+    else await window.ReferenceDataService.deleteReason(id);
 
     referenceDataLoaded = false;
     await loadReferenceDataFromSupabase(true);
