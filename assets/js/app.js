@@ -923,6 +923,38 @@ function applyQuotationCacheUpdate(event) {
 
 window.addEventListener("kyum-quotation-cache-updated", applyQuotationCacheUpdate);
 
+let crmDeleteTerminalRefreshTimer = 0;
+function handleCrmDeleteQueueTerminalState(event) {
+  const operation = event?.detail?.operation;
+  if (!operation || operation.action !== "delete") return;
+  if (!["customers", "followups", "quotations"].includes(operation.entity)) return;
+  if (!["conflict", "failed"].includes(operation.status)) return;
+  if (navigator.onLine === false) return;
+
+  window.clearTimeout(crmDeleteTerminalRefreshTimer);
+  crmDeleteTerminalRefreshTimer = window.setTimeout(async () => {
+    try {
+      if (operation.entity === "customers") {
+        await Promise.allSettled([
+          loadCustomersFromSupabase(true),
+          loadFollowupsFromSupabase(true),
+          loadQuotationsFromSupabase(true)
+        ]);
+        return;
+      }
+      if (operation.entity === "followups") {
+        await loadFollowupsFromSupabase(true);
+        return;
+      }
+      await loadQuotationsFromSupabase(true);
+    } catch (error) {
+      console.warn("CRM delete terminal-state refresh failed:", error);
+    }
+  }, 50);
+}
+
+window.addEventListener("kyum-offline-operation-updated", handleCrmDeleteQueueTerminalState);
+
 function applyDailyOperationsCacheUpdate(event) {
   const detail = event?.detail || {};
   const workDate = detail.workDate || window.DailyOperationsService?.todayIso?.();
@@ -4052,7 +4084,19 @@ async function deleteCustomer(id) {
   if (!confirm(`هل تريد حذف العميل: ${customer.name}؟ سيتم حذف السجلات المرتبطة به وفق قواعد قاعدة البيانات.`)) return;
 
   try {
-    await window.CustomersService.deleteCustomer(customer.id, customer.name);
+    const result = await window.CustomersService.deleteCustomer(customer);
+    if (result?.queued) {
+      customers = customers.filter(item => String(item.id) !== String(customer.id));
+      followups = followups.filter(item => String(item.customerId) !== String(customer.id));
+      quotations = quotations.filter(item => String(item.customerId) !== String(customer.id));
+      customersLoaded = true;
+      renderCustomers();
+      renderReferenceCustomers();
+      renderFollowups();
+      renderQuotations();
+      renderDashboard();
+      return;
+    }
     customersLoaded = false;
     await loadCustomersFromSupabase(true);
   } catch (error) {
@@ -4333,7 +4377,14 @@ async function deleteFollowup(id) {
   if (!confirm(customerT("followups.confirm.delete","هل تريد حذف هذه المتابعة؟"))) return;
 
   try {
-    await window.FollowupsService.deleteFollowup(item);
+    const result = await window.FollowupsService.deleteFollowup(item);
+    if (result?.queued) {
+      followups = followups.filter(row => String(row.id) !== String(item.id));
+      followupsLoaded = true;
+      renderFollowups();
+      renderDashboard();
+      return;
+    }
     followupsLoaded = false;
     customersLoaded = false;
     await Promise.all([
@@ -6915,7 +6966,15 @@ async function deleteQuotation(id) {
   if (!confirm(`هل تريد حذف العقد ${item.code}؟`)) return;
 
   try {
-    await window.QuotationsService.deleteQuotation(item);
+    const result = await window.QuotationsService.deleteQuotation(item);
+    if (result?.queued) {
+      quotations = quotations.filter(row => String(row.id) !== String(item.id));
+      quotationsLoaded = true;
+      renderQuotations();
+      renderCustomers();
+      renderDashboard();
+      return;
+    }
     quotationsLoaded = false;
     customersLoaded = false;
 

@@ -16,7 +16,7 @@
 
   const FOLLOWUPS_CACHE_TTL_MS = 10 * 60 * 1000;
   const FOLLOWUPS_CACHE_STALE_MAX_MS = 10 * 365 * 24 * 60 * 60 * 1000;
-  const FOLLOWUPS_CACHE_SCHEMA_VERSION = 1;
+  const FOLLOWUPS_CACHE_SCHEMA_VERSION = 2;
   const followupRefreshes = new Map();
   let lastReadStatus = null;
 
@@ -35,7 +35,42 @@
     const ids = Array.isArray(scope?.representativeIds)
       ? [...scope.representativeIds].filter(Boolean).sort()
       : [];
-    return `followups:${scope?.mode || "none"}:${ids.join(",") || "all"}`;
+    return `followups:v2:${scope?.mode || "none"}:${ids.join(",") || "all"}`;
+  }
+
+  function isFollowupTombstone(row) { return Boolean(row?.__deleted); }
+
+  async function pendingFollowupDeleteState(namespace) {
+    const followupIds = new Set();
+    const customerIds = new Set();
+    if (!window.KYUMOfflineQueue?.list) return { followupIds, customerIds };
+    try {
+      const rows = await window.KYUMOfflineQueue.list({ namespace, statuses: ["pending", "retry", "processing"] });
+      for (const row of rows) {
+        if (row.action !== "delete") continue;
+        if (row.entity === "followups") followupIds.add(String(row.payload?.id || row.localEntityId || ""));
+        if (row.entity === "customers") customerIds.add(String(row.payload?.id || row.localEntityId || ""));
+      }
+    } catch (_) {}
+    return { followupIds, customerIds };
+  }
+
+  async function visibleFollowupRows(rows, namespace) {
+    const pending = await pendingFollowupDeleteState(namespace);
+    return (rows || []).filter(row => !isFollowupTombstone(row)
+      && !pending.followupIds.has(String(row?.id || ""))
+      && !pending.customerIds.has(String(row?.customerId || "")));
+  }
+
+  function normalizeFollowupTombstone(row) {
+    return { id: row.entity_id, customerId: row.customer_id || "", representativeId: row.representative_id || "",
+      __deleted: true, deletedAt: row.deleted_at || "", updatedAt: row.deleted_at || "", sourceUpdatedAt: row.source_updated_at || "" };
+  }
+
+  async function fetchFollowupTombstones(since) {
+    if (!since) return [];
+    const rows = await unwrap(client().rpc("list_crm_sync_tombstones", { p_entity: "followups", p_since: since }), "تعذر تحميل سجل حذف المتابعات");
+    return (rows || []).map(normalizeFollowupTombstone);
   }
 
   function emitFollowupCacheUpdate(data, source, cacheKey) {
@@ -146,12 +181,22 @@
     return (rows || []).map(normalizeFollowup);
   }
 
+  async function fetchFollowupDelta(scope, since) {
+    const [changedRows, tombstones] = await Promise.all([
+      fetchFollowupsFromNetwork(scope, { updatedSince: since }),
+      fetchFollowupTombstones(since)
+    ]);
+    return [...changedRows, ...tombstones];
+  }
+
   function sortFollowups(rows) {
-    return [...(rows || [])].sort((a, b) => {
-      const contactDiff = String(b?.contactDate || "").localeCompare(String(a?.contactDate || ""));
-      if (contactDiff) return contactDiff;
+    const active = (rows || []).filter(row => !isFollowupTombstone(row)).sort((a, b) => {
+      const dateDiff = String(b?.contactDate || "").localeCompare(String(a?.contactDate || ""));
+      if (dateDiff) return dateDiff;
       return (Date.parse(b?.createdAt || "") || 0) - (Date.parse(a?.createdAt || "") || 0);
     });
+    const deleted = (rows || []).filter(isFollowupTombstone).sort((a,b) => (Date.parse(b?.updatedAt||"")||0)-(Date.parse(a?.updatedAt||"")||0));
+    return [...active, ...deleted];
   }
 
   async function refreshFollowupsInBackground(scope, namespace, cacheKey, previousRows) {
@@ -165,7 +210,7 @@
             scopeKey: cacheKey,
             cachedRows: previousRows,
             fetchFull: () => fetchFollowupsFromNetwork(scope),
-            fetchDelta: since => fetchFollowupsFromNetwork(scope, { updatedSince: since }),
+            fetchDelta: since => fetchFollowupDelta(scope, since),
             sortRows: sortFollowups
           })
         : { rows: await fetchFollowupsFromNetwork(scope), mode: "full" };
@@ -174,9 +219,9 @@
       const previousHash = window.KYUMSmartCache?.hashValue?.(previousRows);
       const nextHash = window.KYUMSmartCache?.hashValue?.(rows);
       if (previousHash !== nextHash) {
-        emitFollowupCacheUpdate(rows, `network-${result.mode}`, cacheKey);
+        emitFollowupCacheUpdate(await visibleFollowupRows(rows, namespace), `network-${result.mode}`, cacheKey);
       }
-      return rows;
+      return visibleFollowupRows(rows, namespace);
     })();
 
     followupRefreshes.set(cacheKey, refresh);
@@ -251,7 +296,7 @@
           console.warn("Follow-up cache background refresh skipped:", error);
         });
       }
-      return cached.data;
+      return visibleFollowupRows(cached.data, namespace);
     }
 
     try {
@@ -262,17 +307,18 @@
             scopeKey: cacheKey,
             cachedRows: cached?.data,
             fetchFull: () => fetchFollowupsFromNetwork(scope),
-            fetchDelta: since => fetchFollowupsFromNetwork(scope, { updatedSince: since }),
+            fetchDelta: since => fetchFollowupDelta(scope, since),
             sortRows: sortFollowups,
             forceFull: true
           })
         : { rows: await fetchFollowupsFromNetwork(scope), mode: "full" };
       const rows = result.rows;
       await persistFollowups(cacheKey, rows, namespace);
-      lastReadStatus = { source: "network", stale: false, metadata: { updatedAt: Date.now(), recordCount: rows.length } };
-      return rows;
+      const visible = await visibleFollowupRows(rows, namespace);
+      lastReadStatus = { source: "network", stale: false, metadata: { updatedAt: Date.now(), recordCount: visible.length } };
+      return visible;
     } catch (error) {
-      if (cached?.data && Array.isArray(cached.data)) return cached.data;
+      if (cached?.data && Array.isArray(cached.data)) return visibleFollowupRows(cached.data, namespace);
       throw error;
     }
   }
@@ -391,24 +437,54 @@
     }
   }
 
-  async function deleteFollowupOnline(record) {
-    await unwrap(
-      client().from("customer_followups").delete().eq("id", record.id),
-      "تعذر حذف المتابعة"
-    );
+  function followupDeleteOperationKey(record) {
+    return `crm-delete:followups:${record.id}:${record.updatedAt || record.updated_at || "unknown"}`;
+  }
+
+  async function deleteFollowupSafeOnline(record, operationKey, baseUpdatedAt) {
+    const result = await unwrap(client().rpc("delete_crm_entity_safe", {
+      p_entity: "followups", p_entity_id: record.id, p_base_updated_at: baseUpdatedAt || null, p_operation_key: operationKey
+    }), "تعذر حذف المتابعة");
+    if (result?.conflict) throw new window.KYUMOfflineQueue.ConflictError(result.message || "تم تعديل المتابعة بعد آخر مزامنة.", {
+      entityId: record.id, baseUpdatedAt, serverUpdatedAt: result.serverUpdatedAt || result.server_updated_at || null
+    });
+    if (!result?.ok) throw new Error(result?.message || "تعذر حذف المتابعة.");
+    if (result.applied) await audit("delete", record.id, { customer_id: record.customerId, contact_date: record.contactDate });
+    await invalidateFollowupCache();
+    await window.KYUMCacheDependencyEngine?.invalidate?.("followups", { action: "delete", contactDate: record.contactDate, source: "followups-service" });
+    return result;
+  }
+
+  async function deleteFollowupLegacyOnline(record) {
+    await unwrap(client().from("customer_followups").delete().eq("id", record.id), "تعذر حذف المتابعة");
     await recalculateLastContact(record.customerId);
     await audit("delete", record.id, { customer_id: record.customerId, contact_date: record.contactDate });
     await invalidateFollowupCache();
-    await window.KYUMCacheDependencyEngine?.invalidate?.("followups", { action: "delete", contactDate: record.contactDate, source: "followups-service" });
+    await window.KYUMCacheDependencyEngine?.invalidate?.("followups", { action: "delete", contactDate: record.contactDate, source: "followups-service-legacy-delete" });
+  }
+
+  async function queueFollowupDelete(record, operationKey) {
+    if (String(record?.id || "").startsWith("local:")) throw new Error("لا يمكن حذف متابعة لم تتم مزامنتها بعد. انتظر اكتمال المزامنة أولًا.");
+    const baseUpdatedAt = record?.updatedAt || record?.updated_at || "";
+    if (!baseUpdatedAt) throw new Error("تعذر حذف المتابعة Offline لأن نسخة السجل المحلية لا تحتوي وقت آخر تحديث.");
+    const queued = await window.KYUMOfflineQueue.enqueue({ entity: "followups", action: "delete", payload: record,
+      localEntityId: record.id, baseUpdatedAt, idempotencyKey: operationKey });
+    await window.KYUMCacheDependencyEngine?.invalidate?.("followups", { action: "delete", contactDate: record.contactDate, source: "followups-service-queue" });
+    return { queued: true, operationId: queued.operationId };
   }
 
   async function deleteFollowup(record, context = {}) {
     requirePermission("followups", "delete");
-    if (navigator.onLine === false) {
-      throw new Error("حذف المتابعة يحتاج اتصالًا بالإنترنت حتى يتم تأكيد الحذف من الخادم.");
+    if (!record?.id) throw new Error("بيانات المتابعة غير مكتملة للحذف.");
+    const operationKey = context.operationKey || followupDeleteOperationKey(record);
+    if (!context.skipOfflineQueue && navigator.onLine === false && window.KYUMOfflineQueue) return queueFollowupDelete(record, operationKey);
+    try {
+      await deleteFollowupSafeOnline(record, operationKey, record.updatedAt || record.updated_at || "");
+      return { queued: false };
+    } catch (error) {
+      if (!context.skipOfflineQueue && window.KYUMOfflineQueue?.isRetryableError?.(error)) return queueFollowupDelete(record, operationKey);
+      throw error;
     }
-    await deleteFollowupOnline(record);
-    return { queued: false };
   }
 
   async function audit(action, entityId, newData) {
@@ -434,7 +510,11 @@
   window.KYUMOfflineQueue?.register?.("followups", async (operation, helpers) => {
     const record = { ...operation.payload };
     if (operation.action === "delete") {
-      await deleteFollowupOnline(record);
+      if (!operation.baseUpdatedAt) {
+        await deleteFollowupLegacyOnline(record);
+        return { id: record.id };
+      }
+      await deleteFollowupSafeOnline(record, operation.idempotencyKey, operation.baseUpdatedAt);
       return { id: record.id };
     }
     if (String(record.customerId || "").startsWith("local:")) {

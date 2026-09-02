@@ -1,15 +1,15 @@
 {
-  "version": "18.56.30",
-  "build": 185630,
+  "version": "18.56.31",
+  "build": 185631,
   "forceUpdate": true,
   "releaseDate": "2026-09-02",
-  "title": "Remaining Sync Debt Hardening R32",
+  "title": "CRM Tombstone Offline Delete R33",
   "notes": [
-    "إزالة مسارات الكتابة المباشرة من واجهة مندوبي المبيعات والبيانات المرجعية ونقل تغيير الحالة والحذف إلى ReferenceDataService كعمليات Online-only مع إبطال Smart Cache بعد النجاح.",
-    "إضافة Smart Cache معزول حسب المستخدم لقائمة إشعارات المستخدم لتظل قابلة للعرض Offline، مع إبقاء Mark Read وMark All Read وإعدادات مركز الإشعارات عمليات Online-only بدون Queue.",
-    "تقوية Daily Tasks عند العمل Offline بإضافة dependency chain للمراحل المحلية المتتابعة وConflict Guard عند Replay لمنع Last-Write-Wins الصامت على تغيير أحدث من جهاز آخر.",
-    "إيقاف إنشاء Offline Delete جديد للعملاء والمتابعات والعقود إلى أن يتوفر Tombstone/Soft-delete feed صريح، مع استمرار Replay لعمليات الحذف القديمة المعلقة من الإصدارات السابقة.",
-    "الحفاظ على R25-R31 ومحركات Offline Queue وSmart Cache وSync Engine المشتركة بدون تعديل وعدم الحاجة إلى Database Migration."
+    "إضافة Tombstone Ledger دائم لحذف العملاء والمتابعات والعقود مع التقاط الحذف المباشر وCascade delete بدون تغيير نموذج Hard Delete الحالي.",
+    "إعادة تفعيل Offline Delete الآمن للسجلات المتزامنة فقط باستخدام baseUpdatedAt وoperationKey ثابت وServer-side conflict guard وIdempotent replay.",
+    "دمج Tombstones داخل Delta Sync لخدمات Customers وFollowups وQuotations مع إبقائها داخل Smart Cache داخليًا وإخفائها عن واجهة المستخدم.",
+    "إخفاء المتابعات والعقود التابعة لعميل لديه حذف Offline معلق، وإعادة تحميل الحقيقة من الخادم تلقائيًا إذا انتهت عملية الحذف إلى Conflict أو Failed.",
+    "الحفاظ على Replay لعمليات الحذف القديمة المعلقة ومنع حذف local records غير المتزامنة، مع إبقاء Offline Queue وSmart Cache وSync Engine المشتركة بدون تعديل."
   ],
-  "cacheToken": "petatoe-pwa-18-56-30-sync-debt-r32-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-31-crm-tombstone-delete-r33-p5-13-8-72"
 }

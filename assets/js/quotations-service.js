@@ -34,7 +34,42 @@
     const ids = Array.isArray(scope?.representativeIds)
       ? [...scope.representativeIds].filter(Boolean).sort()
       : [];
-    return `quotations:${scope?.mode || "none"}:${ids.join(",") || "all"}`;
+    return `quotations:v2:${scope?.mode || "none"}:${ids.join(",") || "all"}`;
+  }
+
+  function isQuotationTombstone(row) { return Boolean(row?.__deleted); }
+
+  async function pendingQuotationDeleteState(namespace) {
+    const quotationIds = new Set();
+    const customerIds = new Set();
+    if (!window.KYUMOfflineQueue?.list) return { quotationIds, customerIds };
+    try {
+      const rows = await window.KYUMOfflineQueue.list({ namespace, statuses: ["pending", "retry", "processing"] });
+      for (const row of rows) {
+        if (row.action !== "delete") continue;
+        if (row.entity === "quotations") quotationIds.add(String(row.payload?.id || row.localEntityId || ""));
+        if (row.entity === "customers") customerIds.add(String(row.payload?.id || row.localEntityId || ""));
+      }
+    } catch (_) {}
+    return { quotationIds, customerIds };
+  }
+
+  async function visibleQuotationRows(rows, namespace) {
+    const pending = await pendingQuotationDeleteState(namespace);
+    return (rows || []).filter(row => !isQuotationTombstone(row)
+      && !pending.quotationIds.has(String(row?.id || ""))
+      && !pending.customerIds.has(String(row?.customerId || "")));
+  }
+
+  function normalizeQuotationTombstone(row) {
+    return { id: row.entity_id, customerId: row.customer_id || "", representativeId: row.representative_id || "",
+      __deleted: true, deletedAt: row.deleted_at || "", updatedAt: row.deleted_at || "", sourceUpdatedAt: row.source_updated_at || "" };
+  }
+
+  async function fetchQuotationTombstones(since) {
+    if (!since) return [];
+    const rows = await unwrap(client().rpc("list_crm_sync_tombstones", { p_entity: "quotations", p_since: since }), "تعذر تحميل سجل حذف العقود");
+    return (rows || []).map(normalizeQuotationTombstone);
   }
 
   function emitQuotationCacheUpdate(data, source, cacheKey) {
@@ -175,12 +210,22 @@
     return (rows || []).map(normalizeQuotation);
   }
 
+  async function fetchQuotationDelta(scope, since) {
+    const [changedRows, tombstones] = await Promise.all([
+      fetchQuotationsFromNetwork(scope, { updatedSince: since }),
+      fetchQuotationTombstones(since)
+    ]);
+    return [...changedRows, ...tombstones];
+  }
+
   function sortQuotations(rows) {
-    return [...(rows || [])].sort((a, b) => {
+    const active = (rows || []).filter(row => !isQuotationTombstone(row)).sort((a, b) => {
       const dateDiff = String(b?.quotationDate || "").localeCompare(String(a?.quotationDate || ""));
       if (dateDiff) return dateDiff;
       return (Date.parse(b?.createdAt || "") || 0) - (Date.parse(a?.createdAt || "") || 0);
     });
+    const deleted = (rows || []).filter(isQuotationTombstone).sort((a,b) => (Date.parse(b?.updatedAt||"")||0)-(Date.parse(a?.updatedAt||"")||0));
+    return [...active, ...deleted];
   }
 
   async function refreshQuotationsInBackground(scope, namespace, cacheKey, previousRows) {
@@ -194,7 +239,7 @@
             scopeKey: cacheKey,
             cachedRows: previousRows,
             fetchFull: () => fetchQuotationsFromNetwork(scope),
-            fetchDelta: since => fetchQuotationsFromNetwork(scope, { updatedSince: since }),
+            fetchDelta: since => fetchQuotationDelta(scope, since),
             sortRows: sortQuotations
           })
         : { rows: await fetchQuotationsFromNetwork(scope), mode: "full" };
@@ -203,9 +248,9 @@
       const previousHash = window.KYUMSmartCache?.hashValue?.(previousRows);
       const nextHash = window.KYUMSmartCache?.hashValue?.(rows);
       if (previousHash !== nextHash) {
-        emitQuotationCacheUpdate(rows, `network-${result.mode}`, cacheKey);
+        emitQuotationCacheUpdate(await visibleQuotationRows(rows, namespace), `network-${result.mode}`, cacheKey);
       }
-      return rows;
+      return visibleQuotationRows(rows, namespace);
     })();
 
     quotationRefreshes.set(cacheKey, refresh);
@@ -270,7 +315,7 @@
           console.warn("Quotation cache background refresh skipped:", error);
         });
       }
-      return cached.data.map(row => ({ ...row, status: canonicalQuotationStatus(row?.status) }));
+      return (await visibleQuotationRows(cached.data, namespace)).map(row => ({ ...row, status: canonicalQuotationStatus(row?.status) }));
     }
 
     try {
@@ -281,17 +326,18 @@
             scopeKey: cacheKey,
             cachedRows: cached?.data,
             fetchFull: () => fetchQuotationsFromNetwork(scope),
-            fetchDelta: since => fetchQuotationsFromNetwork(scope, { updatedSince: since }),
+            fetchDelta: since => fetchQuotationDelta(scope, since),
             sortRows: sortQuotations,
             forceFull: true
           })
         : { rows: await fetchQuotationsFromNetwork(scope), mode: "full" };
       const rows = result.rows;
       await persistQuotations(cacheKey, rows, namespace);
-      lastReadStatus = { source: "network", stale: false, metadata: { updatedAt: Date.now(), recordCount: rows.length } };
-      return rows;
+      const visible = await visibleQuotationRows(rows, namespace);
+      lastReadStatus = { source: "network", stale: false, metadata: { updatedAt: Date.now(), recordCount: visible.length } };
+      return visible;
     } catch (error) {
-      if (cached?.data && Array.isArray(cached.data)) return cached.data;
+      if (cached?.data && Array.isArray(cached.data)) return visibleQuotationRows(cached.data, namespace);
       throw error;
     }
   }
@@ -431,24 +477,54 @@
     }
   }
 
-  async function deleteQuotationOnline(record) {
-    await unwrap(
-      client().from("quotations").delete().eq("id", record.id),
-      "تعذر حذف العقد"
-    );
+  function quotationDeleteOperationKey(record) {
+    return `crm-delete:quotations:${record.id}:${record.updatedAt || record.updated_at || "unknown"}`;
+  }
+
+  async function deleteQuotationSafeOnline(record, operationKey, baseUpdatedAt) {
+    const result = await unwrap(client().rpc("delete_crm_entity_safe", {
+      p_entity: "quotations", p_entity_id: record.id, p_base_updated_at: baseUpdatedAt || null, p_operation_key: operationKey
+    }), "تعذر حذف العقد");
+    if (result?.conflict) throw new window.KYUMOfflineQueue.ConflictError(result.message || "تم تعديل العقد بعد آخر مزامنة.", {
+      entityId: record.id, baseUpdatedAt, serverUpdatedAt: result.serverUpdatedAt || result.server_updated_at || null
+    });
+    if (!result?.ok) throw new Error(result?.message || "تعذر حذف العقد.");
+    if (result.applied) await audit("delete", record.id, { quotation_number: record.code, customer_id: record.customerId });
+    await invalidateQuotationCache();
+    await window.KYUMCacheDependencyEngine?.invalidate?.("quotations", { action: "delete", quotationDate: record.quotationDate, source: "quotations-service" });
+    return result;
+  }
+
+  async function deleteQuotationLegacyOnline(record) {
+    await unwrap(client().from("quotations").delete().eq("id", record.id), "تعذر حذف العقد");
     await recalculateCustomerSnapshot(record.customerId);
     await audit("delete", record.id, { quotation_number: record.code, customer_id: record.customerId });
     await invalidateQuotationCache();
-    await window.KYUMCacheDependencyEngine?.invalidate?.("quotations", { action: "delete", quotationDate: record.quotationDate, source: "quotations-service" });
+    await window.KYUMCacheDependencyEngine?.invalidate?.("quotations", { action: "delete", quotationDate: record.quotationDate, source: "quotations-service-legacy-delete" });
+  }
+
+  async function queueQuotationDelete(record, operationKey) {
+    if (String(record?.id || "").startsWith("local:")) throw new Error("لا يمكن حذف عقد لم تتم مزامنته بعد. انتظر اكتمال المزامنة أولًا.");
+    const baseUpdatedAt = record?.updatedAt || record?.updated_at || "";
+    if (!baseUpdatedAt) throw new Error("تعذر حذف العقد Offline لأن نسخة السجل المحلية لا تحتوي وقت آخر تحديث.");
+    const queued = await window.KYUMOfflineQueue.enqueue({ entity: "quotations", action: "delete", payload: record,
+      localEntityId: record.id, baseUpdatedAt, idempotencyKey: operationKey });
+    await window.KYUMCacheDependencyEngine?.invalidate?.("quotations", { action: "delete", quotationDate: record.quotationDate, source: "quotations-service-queue" });
+    return { queued: true, operationId: queued.operationId };
   }
 
   async function deleteQuotation(record, context = {}) {
     requirePermission("quotations", "delete");
-    if (navigator.onLine === false) {
-      throw new Error("حذف العقد يحتاج اتصالًا بالإنترنت حتى يتم تأكيد الحذف من الخادم.");
+    if (!record?.id) throw new Error("بيانات العقد غير مكتملة للحذف.");
+    const operationKey = context.operationKey || quotationDeleteOperationKey(record);
+    if (!context.skipOfflineQueue && navigator.onLine === false && window.KYUMOfflineQueue) return queueQuotationDelete(record, operationKey);
+    try {
+      await deleteQuotationSafeOnline(record, operationKey, record.updatedAt || record.updated_at || "");
+      return { queued: false };
+    } catch (error) {
+      if (!context.skipOfflineQueue && window.KYUMOfflineQueue?.isRetryableError?.(error)) return queueQuotationDelete(record, operationKey);
+      throw error;
     }
-    await deleteQuotationOnline(record);
-    return { queued: false };
   }
 
   async function audit(action, entityId, newData) {
@@ -475,7 +551,11 @@
   window.KYUMOfflineQueue?.register?.("quotations", async (operation, helpers) => {
     const record = { ...operation.payload };
     if (operation.action === "delete") {
-      await deleteQuotationOnline(record);
+      if (!operation.baseUpdatedAt) {
+        await deleteQuotationLegacyOnline(record);
+        return { id: record.id };
+      }
+      await deleteQuotationSafeOnline(record, operation.idempotencyKey, operation.baseUpdatedAt);
       return { id: record.id };
     }
     if (String(record.customerId || "").startsWith("local:")) {

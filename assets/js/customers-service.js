@@ -46,7 +46,7 @@
   const CUSTOMER_PAGE_SIZE = 250;
   const CUSTOMER_CACHE_TTL_MS = 15 * 60 * 1000;
   const CUSTOMER_CACHE_STALE_MAX_MS = 10 * 365 * 24 * 60 * 60 * 1000;
-  const CUSTOMER_CACHE_SCHEMA_VERSION = 2;
+  const CUSTOMER_CACHE_SCHEMA_VERSION = 3;
   const customerRefreshes = new Map();
   let lastReadStatus = null;
 
@@ -62,7 +62,60 @@
   }
 
   function scopeCacheKey() {
-    return "customers:master-v2";
+    return "customers:master-v3";
+  }
+
+  function isCustomerTombstone(row) {
+    return Boolean(row?.__deleted);
+  }
+
+  function storedCustomerRows(rows) {
+    const active = (rows || []).filter(row => !isCustomerTombstone(row)).sort((a, b) => {
+      const left = Date.parse(a?.createdAt || "") || 0;
+      const right = Date.parse(b?.createdAt || "") || 0;
+      return right - left;
+    });
+    const deleted = (rows || []).filter(isCustomerTombstone).sort((a, b) => {
+      return (Date.parse(b?.updatedAt || "") || 0) - (Date.parse(a?.updatedAt || "") || 0);
+    });
+    return [...active, ...deleted];
+  }
+
+  async function pendingCustomerDeleteIds(namespace) {
+    if (!window.KYUMOfflineQueue?.list) return new Set();
+    try {
+      const rows = await window.KYUMOfflineQueue.list({ namespace, statuses: ["pending", "retry", "processing"] });
+      return new Set(rows
+        .filter(row => row.entity === "customers" && row.action === "delete")
+        .map(row => String(row.payload?.id || row.localEntityId || ""))
+        .filter(Boolean));
+    } catch (_) {
+      return new Set();
+    }
+  }
+
+  async function visibleCustomerRows(rows, namespace) {
+    const pending = await pendingCustomerDeleteIds(namespace);
+    return (rows || []).filter(row => !isCustomerTombstone(row) && !pending.has(String(row?.id || "")));
+  }
+
+  function normalizeCustomerTombstone(row) {
+    return {
+      id: row.entity_id,
+      __deleted: true,
+      deletedAt: row.deleted_at || "",
+      updatedAt: row.deleted_at || "",
+      sourceUpdatedAt: row.source_updated_at || ""
+    };
+  }
+
+  async function fetchCustomerTombstones(since) {
+    if (!since) return [];
+    const rows = await unwrap(
+      client().rpc("list_crm_sync_tombstones", { p_entity: "customers", p_since: since }),
+      "تعذر تحميل سجل حذف العملاء"
+    );
+    return (rows || []).map(normalizeCustomerTombstone);
   }
 
   function emitCustomerCacheUpdate(data, source, cacheKey) {
@@ -145,12 +198,16 @@
     return allRows.map(normalizeCustomer);
   }
 
+  async function fetchCustomerDelta(scope, since) {
+    const [changedRows, tombstones] = await Promise.all([
+      fetchCustomersFromNetwork(scope, { updatedSince: since }),
+      fetchCustomerTombstones(since)
+    ]);
+    return [...changedRows, ...tombstones];
+  }
+
   function sortCustomers(rows) {
-    return [...(rows || [])].sort((a, b) => {
-      const left = Date.parse(a?.createdAt || "") || 0;
-      const right = Date.parse(b?.createdAt || "") || 0;
-      return right - left;
-    });
+    return storedCustomerRows(rows);
   }
 
   async function refreshCustomersInBackground(scope, namespace, cacheKey, previousRows) {
@@ -160,7 +217,7 @@
       let forceFull = false;
       try {
         const serverCount = await fetchCustomerServerCount(scope);
-        if (serverCount != null && serverCount !== previousRows.length) {
+        if (serverCount != null && serverCount !== previousRows.filter(row => !isCustomerTombstone(row)).length) {
           forceFull = true;
           window.KYUMSyncEngine?.clearState?.(namespace, "customers", cacheKey);
         }
@@ -175,7 +232,7 @@
             scopeKey: cacheKey,
             cachedRows: previousRows,
             fetchFull: () => fetchCustomersFromNetwork(scope),
-            fetchDelta: since => fetchCustomersFromNetwork(scope, { updatedSince: since }),
+            fetchDelta: since => fetchCustomerDelta(scope, since),
             sortRows: sortCustomers,
             forceFull
           })
@@ -185,9 +242,9 @@
       const previousHash = window.KYUMSmartCache?.hashValue?.(previousRows);
       const nextHash = window.KYUMSmartCache?.hashValue?.(rows);
       if (previousHash !== nextHash) {
-        emitCustomerCacheUpdate(rows, forceFull ? "network-self-heal" : `network-${result.mode}`, cacheKey);
+        emitCustomerCacheUpdate(await visibleCustomerRows(rows, namespace), forceFull ? "network-self-heal" : `network-${result.mode}`, cacheKey);
       }
-      return rows;
+      return visibleCustomerRows(rows, namespace);
     })();
 
     customerRefreshes.set(cacheKey, refresh);
@@ -239,7 +296,7 @@
           console.warn("Customer cache background refresh skipped:", error);
         });
       }
-      return cached.data;
+      return visibleCustomerRows(cached.data, namespace);
     }
 
     try {
@@ -250,17 +307,18 @@
             scopeKey: cacheKey,
             cachedRows: cached?.data,
             fetchFull: () => fetchCustomersFromNetwork(scope),
-            fetchDelta: since => fetchCustomersFromNetwork(scope, { updatedSince: since }),
+            fetchDelta: since => fetchCustomerDelta(scope, since),
             sortRows: sortCustomers,
             forceFull: true
           })
         : { rows: await fetchCustomersFromNetwork(scope), mode: "full" };
       const rows = result.rows;
       await persistCustomers(cacheKey, rows, namespace);
-      lastReadStatus = { source: "network", stale: false, metadata: { updatedAt: Date.now(), recordCount: rows.length } };
-      return rows;
+      const visible = await visibleCustomerRows(rows, namespace);
+      lastReadStatus = { source: "network", stale: false, metadata: { updatedAt: Date.now(), recordCount: visible.length } };
+      return visible;
     } catch (error) {
-      if (cached?.data && Array.isArray(cached.data)) return cached.data;
+      if (cached?.data && Array.isArray(cached.data)) return visibleCustomerRows(cached.data, namespace);
       throw error;
     }
   }
@@ -418,23 +476,76 @@
     }
   }
 
-  async function deleteCustomerOnline(customerId, customerName) {
-    await unwrap(
-      client().from("customers").delete().eq("id", customerId),
-      "تعذر حذف العميل"
-    );
-    await audit("delete", customerId, { customer_name: customerName });
-    await invalidateCustomerCache();
-    await window.KYUMCacheDependencyEngine?.invalidate?.("customers", { action: "delete", source: "customers-service" });
+  function customerDeleteRecord(customerOrId, customerName, context = {}) {
+    if (customerOrId && typeof customerOrId === "object") return { ...customerOrId };
+    return { id: customerOrId, name: customerName || "", updatedAt: context.updatedAt || "" };
   }
 
-  async function deleteCustomer(customerId, customerName, context = {}) {
-    requirePermission("customers", "delete");
-    if (navigator.onLine === false) {
-      throw new Error("حذف العميل يحتاج اتصالًا بالإنترنت حتى يتم تأكيد الحذف من الخادم.");
+  function crmDeleteOperationKey(entity, record) {
+    return `crm-delete:${entity}:${record.id}:${record.updatedAt || record.updated_at || "unknown"}`;
+  }
+
+  async function deleteCustomerSafeOnline(record, operationKey, baseUpdatedAt) {
+    const result = await unwrap(
+      client().rpc("delete_crm_entity_safe", {
+        p_entity: "customers",
+        p_entity_id: record.id,
+        p_base_updated_at: baseUpdatedAt || null,
+        p_operation_key: operationKey
+      }),
+      "تعذر حذف العميل"
+    );
+    if (result?.conflict) {
+      throw new window.KYUMOfflineQueue.ConflictError(result.message || "تم تعديل العميل بعد آخر مزامنة.", {
+        entityId: record.id, baseUpdatedAt, serverUpdatedAt: result.serverUpdatedAt || result.server_updated_at || null
+      });
     }
-    await deleteCustomerOnline(customerId, customerName);
-    return { queued: false };
+    if (!result?.ok) throw new Error(result?.message || "تعذر حذف العميل.");
+    if (result.applied) await audit("delete", record.id, { customer_name: record.name || record.customerName || "" });
+    await invalidateCustomerCache();
+    await window.KYUMCacheDependencyEngine?.invalidate?.("customers", { action: "delete", source: "customers-service" });
+    return result;
+  }
+
+  async function deleteCustomerLegacyOnline(record) {
+    await unwrap(client().from("customers").delete().eq("id", record.id), "تعذر حذف العميل");
+    await audit("delete", record.id, { customer_name: record.name || record.customerName || "" });
+    await invalidateCustomerCache();
+    await window.KYUMCacheDependencyEngine?.invalidate?.("customers", { action: "delete", source: "customers-service-legacy-delete" });
+  }
+
+  async function queueCustomerDelete(record, operationKey) {
+    if (String(record?.id || "").startsWith("local:")) {
+      throw new Error("لا يمكن حذف عميل لم تتم مزامنته بعد. انتظر اكتمال المزامنة أولًا.");
+    }
+    const baseUpdatedAt = record?.updatedAt || record?.updated_at || "";
+    if (!baseUpdatedAt) throw new Error("تعذر حذف العميل Offline لأن نسخة السجل المحلية لا تحتوي وقت آخر تحديث. افتح البيانات Online ثم أعد المحاولة.");
+    const queued = await window.KYUMOfflineQueue.enqueue({
+      entity: "customers", action: "delete", payload: record, localEntityId: record.id,
+      baseUpdatedAt, idempotencyKey: operationKey
+    });
+    await window.KYUMCacheDependencyEngine?.invalidate?.("customers", { action: "delete", source: "customers-service-queue" });
+    return { queued: true, operationId: queued.operationId };
+  }
+
+  async function deleteCustomer(customerOrId, customerName, context = {}) {
+    requirePermission("customers", "delete");
+    const record = customerDeleteRecord(customerOrId, customerName, context);
+    if (!record?.id) throw new Error("بيانات العميل غير مكتملة للحذف.");
+    const operationKey = context.operationKey || crmDeleteOperationKey("customers", record);
+    if (!context.skipOfflineQueue && navigator.onLine === false && window.KYUMOfflineQueue) {
+      return queueCustomerDelete(record, operationKey);
+    }
+    try {
+      const baseUpdatedAt = record.updatedAt || record.updated_at || "";
+      await deleteCustomerSafeOnline(record, operationKey, baseUpdatedAt);
+      return { queued: false };
+    } catch (error) {
+      if (!context.skipOfflineQueue && window.KYUMOfflineQueue?.isRetryableError?.(error)) {
+        return queueCustomerDelete(record, operationKey);
+      }
+      throw error;
+    }
   }
 
   async function audit(action, entityId, newData, userId = null) {
@@ -586,11 +697,15 @@
 
   window.KYUMSyncEngine?.register?.("customers", () => listCustomers());
   window.KYUMOfflineQueue?.register?.("customers", async operation => {
-    if (operation.action === "delete") {
-      await deleteCustomerOnline(operation.payload.id, operation.payload.name || "");
-      return { id: operation.payload.id };
-    }
     const record = { ...operation.payload };
+    if (operation.action === "delete") {
+      if (!operation.baseUpdatedAt) {
+        await deleteCustomerLegacyOnline(record);
+        return { id: record.id };
+      }
+      await deleteCustomerSafeOnline(record, operation.idempotencyKey, operation.baseUpdatedAt);
+      return { id: record.id };
+    }
     if (operation.action === "update") {
       await assertCustomerNotConflicted(record, operation.baseUpdatedAt);
     }
