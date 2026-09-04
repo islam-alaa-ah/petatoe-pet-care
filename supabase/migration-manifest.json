@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.50",
-    "build": 185650,
+    "version": "18.56.51",
+    "build": 185651,
     "date": "2026-09-05"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -88,8 +88,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 235,
-    "totalBytes": 2452995
+    "sqlFileCount": 236,
+    "totalBytes": 2491428
   },
   "orderingHazards": {
     "examples": [
@@ -1246,6 +1246,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r8_sea_vibe_payroll_foundation.sql",
       "sha256": "b92d50ba78c706b8d94d91102d3e9acc35accea5cec3fc458c455c5d64c25052",
       "bytes": 16246
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r9_sea_vibe_payroll_core.sql",
+      "sha256": "419ba5842407a291c95bd595310091552a75108f187636e5e15c653e8440f854",
+      "bytes": 38433
     },
     {
       "path": "supabase/migrations/phase_p5_13_8_appointment_management_localization.sql",
