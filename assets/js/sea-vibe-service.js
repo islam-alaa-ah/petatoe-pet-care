@@ -43,6 +43,28 @@
   function fuelCostForTripType(tripTypeId,snapshot=memory||blank()){return num((snapshot||blank()).tripTypes.find(x=>String(x.id)===String(tripTypeId))?.fuelCostAmount);}
   function commissionAmount(rule,tripValue){return rule?.calculationType==='percentage'?Number((num(tripValue)*num(rule.calculationValue)/100).toFixed(2)):Number(num(rule?.calculationValue).toFixed(2));}
   function commissionRulesForTripType(tripTypeId,snapshot=memory||blank()){return (snapshot.commissionRules||[]).filter(r=>r.isActive&&(r.tripTypeIds||[]).some(id=>String(id)===String(tripTypeId)));}
+  function previewTripAutomaticCosts(record={},snapshot=memory||blank()){
+    const s=snapshot||blank(),tripTypeId=record.tripTypeId||'',tripType=(s.tripTypes||[]).find(x=>String(x.id)===String(tripTypeId));
+    const peopleCount=num(record.peopleCount),durationHours=num(record.durationHours),tripValue=num(record.totalValue);
+    return {
+      tripTypeId,
+      tripNameAr:tripType?.nameAr||'',
+      tripNameEn:tripType?.nameEn||'',
+      permitPoints:calcPermitPoints(peopleCount,durationHours,s),
+      permitFee:calcPermitFee(peopleCount,durationHours,s),
+      fuelCost:fuelCostForTripType(tripTypeId,s),
+      commissions:commissionRulesForTripType(tripTypeId,s).map(rule=>({
+        id:rule.id,
+        nameAr:rule.nameAr||'',
+        nameEn:rule.nameEn||'',
+        beneficiaryType:rule.beneficiaryType||'',
+        beneficiaryName:rule.beneficiaryName||'',
+        calculationType:rule.calculationType||'fixed',
+        calculationValue:num(rule.calculationValue),
+        amount:commissionAmount(rule,tripValue)
+      }))
+    };
+  }
   function syncOptimisticTripCommissions(snapshot,tripId,record,existing){
     if(snapshot.commissionRulesReady!==true)throw new Error('SEA_VIBE_COMMISSION_REFERENCE_NOT_CACHED');
     let rows=snapshot.expenses||[];
@@ -352,5 +374,5 @@
   window.KYUMOfflineQueue?.register?.('sea_vibe',handleQueuedMutation);
 
 
-  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,saveTrip,setTripStatus,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,signedAttachment});
+  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,saveTrip,setTripStatus,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,signedAttachment});
 })();

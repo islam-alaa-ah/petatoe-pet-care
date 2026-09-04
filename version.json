@@ -1,14 +1,14 @@
 {
-  "version": "18.56.53",
-  "build": 185653,
+  "version": "18.56.54",
+  "build": 185654,
   "forceUpdate": true,
   "releaseDate": "2026-09-05",
-  "title": "SEA VIBE Commission Historical Backfill R44R11",
+  "title": "SEA VIBE Trip Create Preview + Trip Expense Flow R44R12",
   "notes": [
-    "إضافة تطبيق اختياري بأثر رجعي لكل تعريف عمولة SEA VIBE على الرحلات السابقة المطابقة بدون تكرار أي مصروف عمولة موجود بالفعل.",
-    "الحفاظ على Trigger R44R7 كمالك Canonical للرحلات الجديدة؛ العمولات النشطة تظل تضاف تلقائيًا عند إنشاء الرحلة الجديدة.",
-    "حماية Server-side للسجل المالي: التطبيق بأثر رجعي متاح للسوبر أدمن فقط، مع Audit Run مستقل ورفض عمولات الموظفين إذا كان هناك كشف راتب قائم يغطي الرحلات المستهدفة.",
-    "عدم تعديل Shared Offline Engines أو نظام الرواتب الرئيسي أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
+    "عرض اسم نوع الرحلة وتكلفة البنزين والعمولات/المصاريف التلقائية المرتبطة بنوع الرحلة مباشرة داخل شاشة إضافة الرحلة قبل الحفظ، باستخدام نفس Canonical Commission/Fuel rules الحالية.",
+    "تحديث المعاينة فور تغيير نوع الرحلة أو قيمة الرحلة؛ رسوم المرسى تُعرض من تعريف العمولة الحالي بدون إنشاء منطق مالي موازٍ أو Double Counting.",
+    "تثبيت شاشة إضافة مصروف المباشرة على مصروف رحلة مع اختيار الرحلة والمصروف يدويًا، وربط تاريخ المصروف تلقائيًا بتاريخ الرحلة Client + Server-side.",
+    "الحفاظ على شاشات المصروفات العامة والأصول كنقاط إنشاء مستقلة بنطاقها الحالي، وعدم تعديل Shared Offline Engines أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Gate=HOLD."
   ],
-  "cacheToken": "petatoe-pwa-18-56-53-sea-vibe-commission-historical-backfill-r44r11-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-54-sea-vibe-trip-create-preview-expense-flow-r44r12-p5-13-8-72"
 }
