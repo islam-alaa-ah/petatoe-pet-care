@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.42",
-    "build": 185642,
-    "date": "2026-09-03"
+    "version": "18.56.43",
+    "build": 185643,
+    "date": "2026-09-04"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
   "policy": {
@@ -70,7 +70,8 @@
       "supabase/migrations/phase_p5_13_8_72_r41_ledger_pruning_dry_run_guard.sql",
       "supabase/migrations/phase_p5_13_8_72_r42_execution_replay_guard_backfill.sql",
       "supabase/migrations/phase_p5_13_8_72_r43_production_retention_readiness_rollout_gate.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44_bounded_pruning_engine_disabled.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44_bounded_pruning_engine_disabled.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r1_sea_vibe_zawel_reconciliation_dry_run.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -81,7 +82,7 @@
     ]
   },
   "inventoryStats": {
-    "historicalMigrationCount": 228,
+    "historicalMigrationCount": 229,
     "uppercaseFilenameCount": 4,
     "shortAliasCount": 5,
     "allTimestampPrefixed": false
@@ -1206,6 +1207,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44_bounded_pruning_engine_disabled.sql",
       "sha256": "60ac42da073c1693c31d13ce5b7dd5ae954ca7b0005261e6e36722ab22cd0af9",
       "bytes": 15591
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r1_sea_vibe_zawel_reconciliation_dry_run.sql",
+      "sha256": "c103dd37da89c39b5c49e142079c8168f980d04ffbdb19eadb11f79a5e1e27e6",
+      "bytes": 8036
     },
     {
       "path": "supabase/migrations/phase_p5_13_8_appointment_management_localization.sql",
