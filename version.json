@@ -1,15 +1,14 @@
 {
-  "version": "18.56.47",
-  "build": 185647,
+  "version": "18.56.48",
+  "build": 185648,
   "forceUpdate": true,
   "releaseDate": "2026-09-04",
-  "title": "SEA VIBE Fuel Top-up Value + Unit Price Input R44R5",
+  "title": "SEA VIBE Zawel Negative Balance Support R44R6",
   "notes": [
-    "عكس طريقة إدخال شحن البنزين: المستخدم يدخل القيمة بالريال وسعر اللتر، وتُحسب الكمية باللتر تلقائيًا بدقة 3 منازل عشرية.",
-    "حقل الكمية أصبح Read-only محسوبًا من المعادلة القيمة ÷ سعر اللتر، مع إعادة الحساب الفوري عند تغيير أي من المدخلين وإعادة التحقق عند الحفظ.",
-    "تعديل حركة شحن بنزين قائمة يعيد تحميل القيمة وسعر اللتر التاريخي ثم يعيد حساب الكمية بنفس الـCanonical flow.",
-    "عدم تعديل SQL أو Fuel Ledger/RPC contracts؛ تستمر الواجهة في تمرير liters + value لنفس الخدمات الحالية بعد اشتقاق اللترات محليًا.",
-    "عدم تعديل Offline Queue/SmartCache/Sync Engine أو R44 Pruning/R44R4 Settlement؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
+    "السماح بخصم نقاط تصريح الإبحار وإنشاء/تعديل الرحلات حتى لو أدى ذلك إلى رصيد زاول سالب؛ الشحنات اللاحقة تعوّض الرصيد تلقائيًا.",
+    "السماح بتعديل أو حذف شحنات زاول اليدوية حتى لو أصبح إجمالي الرصيد سالبًا، مع بقاء صلاحيات edit/delete والتحقق من أن الحركة Top-up فقط.",
+    "إزالة نفس مانع الرصيد غير الكافي من المسار Offline Optimistic للحفاظ على Parity بين Online وOffline عند إنشاء/تعديل الرحلة.",
+    "عدم تغيير تعريفة تصريح الإبحار أو Zawel Ledger/Idempotency أو RLS أو Offline Queue/SmartCache/Sync Engine أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
   ],
-  "cacheToken": "petatoe-pwa-18-56-47-sea-vibe-fuel-topup-input-r44r5-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-48-sea-vibe-zawel-negative-r44r6-p5-13-8-72"
 }
