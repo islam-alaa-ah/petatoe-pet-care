@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.52",
-    "build": 185652,
+    "version": "18.56.53",
+    "build": 185653,
     "date": "2026-09-05"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -79,7 +79,8 @@
       "supabase/migrations/phase_p5_13_8_72_r44r7_sea_vibe_trip_commissions.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r8_sea_vibe_payroll_foundation.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r9_sea_vibe_payroll_core.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r10_sea_vibe_commission_employee_refresh_safe_delete.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r10_sea_vibe_commission_employee_refresh_safe_delete.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r11_sea_vibe_commission_historical_backfill.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -90,8 +91,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 237,
-    "totalBytes": 2499500
+    "sqlFileCount": 238,
+    "totalBytes": 2510774
   },
   "orderingHazards": {
     "examples": [
@@ -1218,6 +1219,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r10_sea_vibe_commission_employee_refresh_safe_delete.sql",
       "sha256": "e54f7d5252a4beae8aa26aa7588606704b976c13ab7fcbdca30b0330a5dafda1",
       "bytes": 8072
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r11_sea_vibe_commission_historical_backfill.sql",
+      "sha256": "7588ba35ec12db2a33ca6821a7052cb3d468a5bc1c9b2027a21e12d92d9f57a4",
+      "bytes": 11274
     },
     {
       "path": "supabase/migrations/phase_p5_13_8_72_r44r1_sea_vibe_zawel_reconciliation_dry_run.sql",

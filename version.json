@@ -1,14 +1,14 @@
 {
-  "version": "18.56.52",
-  "build": 185652,
+  "version": "18.56.53",
+  "build": 185653,
   "forceUpdate": true,
   "releaseDate": "2026-09-05",
-  "title": "SEA VIBE Commission Employee Refresh + Safe Delete R44R10",
+  "title": "SEA VIBE Commission Historical Backfill R44R11",
   "notes": [
-    "تحديث مرجع مستفيدي عمولات SEA VIBE فور حفظ أو تعديل موظف SEA VIBE بدون الحاجة إلى إعادة تحميل يدوي أو الاعتماد على Cache قديم.",
-    "إضافة حذف تعريف العمولة مع حماية Server-side: يسمح بالحذف فقط إذا لم تُستخدم العمولة في أي رحلة، وأي عمولة مستخدمة تاريخيًا تظل قابلة للإيقاف فقط.",
-    "إضافة Usage Ledger دائم لتعريفات العمولات حتى لا تصبح العمولة المستخدمة قابلة للحذف لاحقًا إذا تغيّر نوع رحلة أو حُذفت حركة عمولة مولدة.",
-    "عدم تعديل نظام الرواتب الرئيسي أو Shared Offline Engines أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
+    "إضافة تطبيق اختياري بأثر رجعي لكل تعريف عمولة SEA VIBE على الرحلات السابقة المطابقة بدون تكرار أي مصروف عمولة موجود بالفعل.",
+    "الحفاظ على Trigger R44R7 كمالك Canonical للرحلات الجديدة؛ العمولات النشطة تظل تضاف تلقائيًا عند إنشاء الرحلة الجديدة.",
+    "حماية Server-side للسجل المالي: التطبيق بأثر رجعي متاح للسوبر أدمن فقط، مع Audit Run مستقل ورفض عمولات الموظفين إذا كان هناك كشف راتب قائم يغطي الرحلات المستهدفة.",
+    "عدم تعديل Shared Offline Engines أو نظام الرواتب الرئيسي أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
   ],
-  "cacheToken": "petatoe-pwa-18-56-52-sea-vibe-commission-refresh-delete-r44r10-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-53-sea-vibe-commission-historical-backfill-r44r11-p5-13-8-72"
 }
