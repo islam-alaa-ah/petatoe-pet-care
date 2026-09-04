@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.45",
-    "build": 185645,
+    "version": "18.56.46",
+    "build": 185646,
     "date": "2026-09-04"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -1224,6 +1224,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r3_sea_vibe_fuel_balance.sql",
       "sha256": "c4761cdd29c5eb976ccc38c9258ee85169f9e028ade928207f00055c70b2a79f",
       "bytes": 40114
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r4_sea_vibe_fuel_settlement.sql",
+      "sha256": "fbee9329ecb8e22970e8fda68c95fb9b2279ca956e846b69db9de0329890a408",
+      "bytes": 33685
     },
     {
       "path": "supabase/migrations/phase_p5_13_8_appointment_management_localization.sql",

@@ -37,6 +37,17 @@ html[data-theme="dark"]{
 .sea-vibe-zawel-balance,.sea-vibe-fuel-balance{background:linear-gradient(145deg,rgba(10,52,105,.98),rgba(8,31,66,.98));color:#fff;border-color:rgba(58,145,255,.45)}
 .sea-vibe-zawel-balance small,.sea-vibe-fuel-balance small{color:rgba(255,255,255,.78)}
 @media (max-width:1180px){.sea-vibe-zawel-kpis,.sea-vibe-fuel-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* P5.13.8.72R44R4 — canonical SEA VIBE fuel settlement controls */
+.sea-vibe-fuel-tabs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.sea-vibe-fuel-tabs .secondary-btn{min-width:132px}
+.sea-vibe-fuel-tabs .secondary-btn.is-active{background:var(--primary,#1f6fe5);border-color:var(--primary,#1f6fe5);color:#fff}
+.sea-vibe-settlement-controls{grid-template-columns:minmax(220px,320px) auto;justify-content:start}
+.sea-vibe-settlement-controls .primary-btn{min-height:44px}
+.sea-vibe-settlement-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.sea-vibe-settlement-kpis .panel{min-height:108px}
+.sea-vibe-settlement-config{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) auto;gap:12px;align-items:end}
+.sea-vibe-settlement-config .sea-vibe-settlement-total{display:flex;align-items:center;justify-content:center;min-height:44px;font-weight:800}
+@media (max-width:1180px){.sea-vibe-settlement-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* P5.13.8.71R5 — SEA VIBE mobile-only certification. Desktop/tablet rules above remain canonical. */
 @media (max-width:767px),
@@ -103,6 +114,10 @@ html[data-theme="dark"]{
   .sea-vibe-permit-wrap>.dialog-actions button{width:100%;min-height:44px}
 
   .sea-vibe-zawel-kpis,.sea-vibe-fuel-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+  .sea-vibe-fuel-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:8px}
+  .sea-vibe-fuel-tabs .secondary-btn{min-width:0;width:100%;min-height:44px}
+  .sea-vibe-settlement-controls,.sea-vibe-settlement-config{grid-template-columns:minmax(0,1fr);gap:10px}
+  .sea-vibe-settlement-controls .primary-btn,.sea-vibe-settlement-config .primary-btn{width:100%}
   .sea-vibe-zawel-balance,.sea-vibe-fuel-balance{grid-column:1/-1}
   .sea-vibe-zawel-kpis .panel,.sea-vibe-fuel-kpis .panel{min-height:92px;padding:12px;gap:6px}
   .sea-vibe-zawel-kpis strong,.sea-vibe-fuel-kpis strong{font-size:1rem;overflow-wrap:anywhere}
