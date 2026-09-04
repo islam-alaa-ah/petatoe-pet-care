@@ -1,14 +1,14 @@
 {
-  "version": "18.56.48",
-  "build": 185648,
+  "version": "18.56.49",
+  "build": 185649,
   "forceUpdate": true,
   "releaseDate": "2026-09-04",
-  "title": "SEA VIBE Zawel Negative Balance Support R44R6",
+  "title": "SEA VIBE Trip Commissions R44R7",
   "notes": [
-    "السماح بخصم نقاط تصريح الإبحار وإنشاء/تعديل الرحلات حتى لو أدى ذلك إلى رصيد زاول سالب؛ الشحنات اللاحقة تعوّض الرصيد تلقائيًا.",
-    "السماح بتعديل أو حذف شحنات زاول اليدوية حتى لو أصبح إجمالي الرصيد سالبًا، مع بقاء صلاحيات edit/delete والتحقق من أن الحركة Top-up فقط.",
-    "إزالة نفس مانع الرصيد غير الكافي من المسار Offline Optimistic للحفاظ على Parity بين Online وOffline عند إنشاء/تعديل الرحلة.",
-    "عدم تغيير تعريفة تصريح الإبحار أو Zawel Ledger/Idempotency أو RLS أو Offline Queue/SmartCache/Sync Engine أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
+    "إضافة بيانات مرجعية للعمولات وربط كل عمولة بنوع رحلة واحد أو عدة أنواع مع مستفيد موظف أو وسيط.",
+    "احتساب العمولات تلقائيًا عند إنشاء الرحلة؛ النسبة تُحسب من قيمة الرحلة وتُعاد تلقائيًا عند تعديل القيمة، بينما العمولة الثابتة تبقى ثابتة.",
+    "الإبقاء على عمولة كابتن الرحلة اليدوية كمصروف إضافي مستقل، مع منع أي تداخل مع العمولات النظامية الجديدة.",
+    "عدم تعديل Shared Offline Engines أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
   ],
-  "cacheToken": "petatoe-pwa-18-56-48-sea-vibe-zawel-negative-r44r6-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-49-sea-vibe-trip-commissions-r44r7-p5-13-8-72"
 }
