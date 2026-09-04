@@ -1,14 +1,15 @@
 {
-  "version": "18.56.49",
-  "build": 185649,
+  "version": "18.56.50",
+  "build": 185650,
   "forceUpdate": true,
-  "releaseDate": "2026-09-04",
-  "title": "SEA VIBE Trip Commissions R44R7",
+  "releaseDate": "2026-09-05",
+  "title": "SEA VIBE Payroll & Commissions Foundation R44R8",
   "notes": [
-    "إضافة بيانات مرجعية للعمولات وربط كل عمولة بنوع رحلة واحد أو عدة أنواع مع مستفيد موظف أو وسيط.",
-    "احتساب العمولات تلقائيًا عند إنشاء الرحلة؛ النسبة تُحسب من قيمة الرحلة وتُعاد تلقائيًا عند تعديل القيمة، بينما العمولة الثابتة تبقى ثابتة.",
-    "الإبقاء على عمولة كابتن الرحلة اليدوية كمصروف إضافي مستقل، مع منع أي تداخل مع العمولات النظامية الجديدة.",
-    "عدم تعديل Shared Offline Engines أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
+    "إضافة قائمة مستقلة داخل SEA VIBE باسم رواتب وعمولات SEA VIBE مع نفس بنية نوافذ الرواتب والعمولات الحالية.",
+    "إضافة مرجع موظفين مستقل sea_vibe_employees برواتب أساسية وبدلات وطريقة دفع وربط اختياري بالمستخدم دون أي اعتماد على payroll_employees.",
+    "إعادة ربط مستفيد الموظف في عمولات SEA VIBE بموظفي SEA VIBE المستقلين مع Safety Gate يمنع أي تحويل تخميني لقواعد عمولة موظفين موجودة مسبقًا.",
+    "المرحلة Foundation فقط: دورة تجهيز واعتماد وصرف الرواتب وكشوف العمولات الشهرية ستنفذ في مرحلة لاحقة بعد اعتماد الموظفين والربط.",
+    "عدم تعديل نظام الرواتب والعمولات الرئيسي أو Shared Offline Engines أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
   ],
-  "cacheToken": "petatoe-pwa-18-56-49-sea-vibe-trip-commissions-r44r7-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-50-sea-vibe-payroll-foundation-r44r8-p5-13-8-72"
 }

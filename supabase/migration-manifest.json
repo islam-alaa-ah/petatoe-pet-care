@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.49",
-    "build": 185649,
-    "date": "2026-09-04"
+    "version": "18.56.50",
+    "build": 185650,
+    "date": "2026-09-05"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
   "policy": {
@@ -76,7 +76,8 @@
       "supabase/migrations/phase_p5_13_8_72_r44r3_sea_vibe_fuel_balance.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r4_sea_vibe_fuel_settlement.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r6_zawel_negative_balance.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r7_sea_vibe_trip_commissions.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r7_sea_vibe_trip_commissions.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r8_sea_vibe_payroll_foundation.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -87,10 +88,8 @@
     ]
   },
   "inventoryStats": {
-    "historicalMigrationCount": 234,
-    "uppercaseFilenameCount": 4,
-    "shortAliasCount": 5,
-    "allTimestampPrefixed": false
+    "sqlFileCount": 235,
+    "totalBytes": 2452995
   },
   "orderingHazards": {
     "examples": [
@@ -113,6 +112,21 @@
     ]
   },
   "historicalInventory": [
+    {
+      "path": "supabase/migrations/PETATOE_P3_3_MAKKAH_JEDDAH_NEIGHBORHOODS_SEED.sql",
+      "sha256": "780e66575afac8e0b3073b178989ed28b8772185fd08950658351aa8298bbc24",
+      "bytes": 7129
+    },
+    {
+      "path": "supabase/migrations/PETATOE_P5_1_DAILY_OPERATIONS_RELATIONSHIP_RECOVERY.sql",
+      "sha256": "cf4f108d2eca15023adeffc9965a8d5a3eef6e3ad4cbf0c4d057907b4b906985",
+      "bytes": 8170
+    },
+    {
+      "path": "supabase/migrations/PETATOE_P5_DAILY_OPERATIONS_GLOBAL_RUNTIME_DIAGNOSTIC.sql",
+      "sha256": "a7ee92defe1e147ed21eee3e54fc7f52aa6f69ea498c3bc0a2b8b53de23e944e",
+      "bytes": 15466
+    },
     {
       "path": "supabase/migrations/p5113.sql",
       "sha256": "e07133d379e9b3e823c45b35e0382fb5c8da159c9e4d8ac40ba7cccf06ada35b",
@@ -142,21 +156,6 @@
       "path": "supabase/migrations/p5_6_groomer_driver_team_only_scope.sql",
       "sha256": "1e24994ee2abfefc69d8645aed13b34d5c85839709bab23f0386640a73199d13",
       "bytes": 4351
-    },
-    {
-      "path": "supabase/migrations/PETATOE_P3_3_MAKKAH_JEDDAH_NEIGHBORHOODS_SEED.sql",
-      "sha256": "780e66575afac8e0b3073b178989ed28b8772185fd08950658351aa8298bbc24",
-      "bytes": 7129
-    },
-    {
-      "path": "supabase/migrations/PETATOE_P5_1_DAILY_OPERATIONS_RELATIONSHIP_RECOVERY.sql",
-      "sha256": "cf4f108d2eca15023adeffc9965a8d5a3eef6e3ad4cbf0c4d057907b4b906985",
-      "bytes": 8170
-    },
-    {
-      "path": "supabase/migrations/PETATOE_P5_DAILY_OPERATIONS_GLOBAL_RUNTIME_DIAGNOSTIC.sql",
-      "sha256": "a7ee92defe1e147ed21eee3e54fc7f52aa6f69ea498c3bc0a2b8b53de23e944e",
-      "bytes": 15466
     },
     {
       "path": "supabase/migrations/phase07_reference_data_audit.sql",
@@ -1234,6 +1233,21 @@
       "bytes": 33685
     },
     {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r6_zawel_negative_balance.sql",
+      "sha256": "d18440d429c5a5d856ab5c9e02880f07c99bdb996f761cfb63c12d671e610de5",
+      "bytes": 6934
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r7_sea_vibe_trip_commissions.sql",
+      "sha256": "95f77a4151a66400468189af5988ee257b502da2587257e6a2c3931a73b845fa",
+      "bytes": 15107
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r8_sea_vibe_payroll_foundation.sql",
+      "sha256": "b92d50ba78c706b8d94d91102d3e9acc35accea5cec3fc458c455c5d64c25052",
+      "bytes": 16246
+    },
+    {
       "path": "supabase/migrations/phase_p5_13_8_appointment_management_localization.sql",
       "sha256": "f038098d9540b6cd506baadeae77fc8fed2c5bea9d67bbdf904a7e9ee9dc4823",
       "bytes": 17001
@@ -1272,16 +1286,6 @@
       "path": "supabase/migrations/phase_petatoe_p4_canonical_customer_master.sql",
       "sha256": "67fe34d9f97c64b46b26c2f5b1d4929d47caa23d86241e5cd7eb8c7cc1dfb094",
       "bytes": 18097
-    },
-    {
-      "path": "supabase/migrations/phase_p5_13_8_72_r44r6_zawel_negative_balance.sql",
-      "sha256": "d18440d429c5a5d856ab5c9e02880f07c99bdb996f761cfb63c12d671e610de5",
-      "bytes": 6934
-    },
-    {
-      "path": "supabase/migrations/phase_p5_13_8_72_r44r7_sea_vibe_trip_commissions.sql",
-      "sha256": "95f77a4151a66400468189af5988ee257b502da2587257e6a2c3931a73b845fa",
-      "bytes": 15107
     }
   ]
 }

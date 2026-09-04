@@ -167,6 +167,11 @@
       "mode": "scoped_smart_cache_queued_create_update_idempotent_conflict_guarded_entity_refresh",
       "status": "compliant"
     },
+    "sea_vibe_payroll": {
+      "file": "assets/js/sea-vibe-payroll-service.js",
+      "mode": "offline_read_online_write",
+      "status": "compliant"
+    },
     "vehicle_treasury": {
       "file": "assets/js/vehicle-treasury-service.js",
       "mode": "smart_cache_scoped_read_queued_create_update_conflict_guarded_online_delete",
@@ -213,6 +218,7 @@
     "assets/js/users-service.js",
     "assets/js/whatsapp-template-service.js",
     "assets/js/sea-vibe-service.js",
+    "assets/js/sea-vibe-payroll-service.js",
     "assets/js/vehicle-treasury-service.js"
   ],
   "temporaryDirectUiDebt": {},

@@ -36,30 +36,30 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/vehicle-treasury.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.56.49" />
-  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.56.49" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/vehicle-treasury.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.56.50" />
+  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.56.50" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
@@ -189,6 +189,19 @@
             <button class="nav-item" data-view="seaVibeTreasury" type="button" data-petatoe-i18n="sidebar.seaVibeTreasury">الخزنة</button>
             <button class="nav-item" data-view="seaVibeZawel" type="button" data-petatoe-i18n="sidebar.seaVibeZawel">رصيد زاول</button>
             <button class="nav-item" data-view="seaVibeFuel" type="button" data-petatoe-i18n="sidebar.seaVibeFuel">رصيد البنزين</button>
+            <div class="sea-vibe-payroll-subgroup is-collapsed" data-sea-vibe-payroll-subgroup>
+              <button class="nav-item sea-vibe-payroll-subtoggle" type="button" data-sea-vibe-payroll-toggle aria-expanded="false">
+                <span data-petatoe-i18n="sidebar.seaVibePayrollGroup">رواتب وعمولات SEA VIBE</span>
+                <svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="sea-vibe-payroll-subcontent">
+                <button class="nav-item" data-view="seaVibePayrollManagement" type="button" data-petatoe-i18n="sidebar.seaVibePayrollManagement">إدارة الرواتب SEA VIBE</button>
+                <button class="nav-item" data-view="seaVibeSalaryStatement" type="button" data-petatoe-i18n="sidebar.seaVibeSalaryStatement">كشف الراتب SEA VIBE</button>
+                <button class="nav-item" data-view="seaVibeCommissionManagement" type="button" data-petatoe-i18n="sidebar.seaVibeCommissionManagement">إدارة العمولات SEA VIBE</button>
+                <button class="nav-item" data-view="seaVibeCommissionStatement" type="button" data-petatoe-i18n="sidebar.seaVibeCommissionStatement">كشف العمولة SEA VIBE</button>
+                <button class="nav-item" data-view="seaVibePayrollReference" type="button" data-petatoe-i18n="sidebar.seaVibePayrollReference">البيانات المرجعية للرواتب SEA VIBE</button>
+              </div>
+            </div>
             <button class="nav-item" data-view="seaVibeReference" type="button" data-petatoe-i18n="sidebar.seaVibeReference">البيانات المرجعية</button>
             <button class="nav-item" data-view="seaVibeReports" type="button" data-petatoe-i18n="sidebar.seaVibeReports">التقارير والتحليلات</button>
           </div>
@@ -1713,6 +1726,33 @@
         <div id="payrollReferenceStatus" class="data-status hidden" aria-live="polite"></div>
         <div class="panel payroll-reference-header"><label class="payroll-reference-switcher"><span data-petatoe-i18n="payroll.reference.type">نوع البيانات المرجعية</span><select id="payrollReferenceType"><option value="employees" data-petatoe-i18n="payroll.reference.employees">الموظفين</option><option value="tiers" data-petatoe-i18n="payroll.reference.tiers">الشرائح</option></select></label><button id="payrollEmployeeAdd" class="primary-btn" type="button" data-permission-screen="payrollReference" data-permission-action="add" data-petatoe-i18n="payroll.employee.add">إضافة موظف</button></div>
         <div id="payrollReferenceContent" class="payroll-reference-content"></div>
+      </section>
+
+      <section id="seaVibePayrollManagementView" class="view-section hidden payroll-view sea-vibe-payroll-view" aria-hidden="true">
+        <div class="payroll-toolbar"><div class="payroll-toolbar-title"><h3 data-petatoe-i18n="seaVibePayroll.management.title">إدارة الرواتب SEA VIBE</h3><p data-petatoe-i18n="seaVibePayroll.management.subtitle">إدارة دورة رواتب موظفي SEA VIBE بشكل مستقل عن نظام الرواتب الرئيسي.</p></div></div>
+        <div id="seaVibePayrollManagementContent"></div>
+      </section>
+
+      <section id="seaVibeSalaryStatementView" class="view-section hidden payroll-view sea-vibe-payroll-view" aria-hidden="true">
+        <div class="payroll-toolbar"><div class="payroll-toolbar-title"><h3 data-petatoe-i18n="seaVibePayroll.salaryStatement.title">كشف الراتب SEA VIBE</h3><p data-petatoe-i18n="seaVibePayroll.salaryStatement.subtitle">كشف راتب موظف SEA VIBE داخل النطاق المستقل.</p></div></div>
+        <div id="seaVibeSalaryStatementContent"></div>
+      </section>
+
+      <section id="seaVibeCommissionManagementView" class="view-section hidden payroll-view sea-vibe-payroll-view" aria-hidden="true">
+        <div class="payroll-toolbar"><div class="payroll-toolbar-title"><h3 data-petatoe-i18n="seaVibePayroll.commissionManagement.title">إدارة العمولات SEA VIBE</h3><p data-petatoe-i18n="seaVibePayroll.commissionManagement.subtitle">إدارة مستحقات عمولات الرحلات لموظفي SEA VIBE والوسطاء.</p></div></div>
+        <div id="seaVibeCommissionManagementContent"></div>
+      </section>
+
+      <section id="seaVibeCommissionStatementView" class="view-section hidden payroll-view sea-vibe-payroll-view" aria-hidden="true">
+        <div class="payroll-toolbar"><div class="payroll-toolbar-title"><h3 data-petatoe-i18n="seaVibePayroll.commissionStatement.title">كشف العمولة SEA VIBE</h3><p data-petatoe-i18n="seaVibePayroll.commissionStatement.subtitle">عرض مستحقات عمولات موظف SEA VIBE بشكل مستقل.</p></div></div>
+        <div id="seaVibeCommissionStatementContent"></div>
+      </section>
+
+      <section id="seaVibePayrollReferenceView" class="view-section hidden payroll-view sea-vibe-payroll-view" aria-hidden="true">
+        <div class="payroll-toolbar"><div class="payroll-toolbar-title"><h3 data-petatoe-i18n="seaVibePayroll.reference.title">البيانات المرجعية للرواتب SEA VIBE</h3><p data-petatoe-i18n="seaVibePayroll.reference.subtitle">تكويد موظفي SEA VIBE ورواتبهم الأساسية وبدلاتهم وربطهم بالمستخدمين.</p></div><button id="seaVibePayrollReferenceRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
+        <div id="seaVibePayrollReferenceStatus" class="data-status hidden" aria-live="polite"></div>
+        <div class="panel payroll-reference-header"><div class="payroll-reference-switcher"><span data-petatoe-i18n="seaVibePayroll.reference.employeeMaster">موظفو SEA VIBE</span></div><button id="seaVibeEmployeeAdd" class="primary-btn" type="button" data-permission-screen="seaVibePayrollReference" data-permission-action="add" data-petatoe-i18n="seaVibePayroll.employee.add">إضافة موظف SEA VIBE</button></div>
+        <div id="seaVibePayrollReferenceContent" class="payroll-reference-content"></div>
       </section>
 
       <section id="seaVibeTripsView" class="view-section hidden sea-vibe-view" aria-hidden="true">
@@ -3360,10 +3400,10 @@
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.56.49"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.56.49"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.56.49"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.56.49"></script>
+  <script src="assets/js/performance-monitor.js?v=18.56.50"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.56.50"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.56.50"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.56.50"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -3906,6 +3946,21 @@
     </form>
   </dialog>
 
+  <dialog id="seaVibeEmployeeDialog" class="glass-dialog payroll-dialog-wide">
+    <form id="seaVibeEmployeeForm" class="dialog-shell">
+      <div class="dialog-header"><div><h3 id="seaVibeEmployeeDialogTitle" data-petatoe-i18n="seaVibePayroll.employee.add">إضافة موظف SEA VIBE</h3><p data-petatoe-i18n="seaVibePayroll.employee.dialogHint">سجل موظف SEA VIBE المستقل واربطه بالمستخدم عند الحاجة.</p></div><button id="seaVibeEmployeeClose" class="icon-btn" type="button" data-petatoe-i18n-aria="common.close" aria-label="إغلاق">×</button></div>
+      <input id="seaVibeEmployeeId" type="hidden"><div class="form-grid">
+        <label><span data-petatoe-i18n="seaVibePayroll.employee.name">اسم الموظف</span><input id="seaVibeEmployeeName" required></label>
+        <label><span data-petatoe-i18n="seaVibePayroll.employee.user">المستخدم المرتبط</span><select id="seaVibeEmployeeUser"><option value="">—</option></select></label>
+        <label><span data-petatoe-i18n="seaVibePayroll.employee.baseSalary">الراتب الأساسي</span><input id="seaVibeEmployeeBase" type="number" min="0" step="0.01" required></label>
+        <label><span data-petatoe-i18n="seaVibePayroll.employee.allowances">البدلات</span><input id="seaVibeEmployeeAllowances" type="number" min="0" step="0.01" required></label>
+        <label><span data-petatoe-i18n="seaVibePayroll.employee.paymentMethod">طريقة الدفع</span><input id="seaVibeEmployeePaymentMethod" required></label>
+        <label class="payroll-switch"><input id="seaVibeEmployeeActive" type="checkbox" checked><span data-petatoe-i18n="seaVibePayroll.employee.active">موظف فعال</span></label>
+        <label class="full-span"><span data-petatoe-i18n="payroll.common.notes">ملاحظات</span><textarea id="seaVibeEmployeeNotes" rows="3"></textarea></label>
+      </div><div class="dialog-actions"><button id="seaVibeEmployeeCancel" class="secondary-btn" type="button" data-petatoe-i18n="common.cancel">إلغاء</button><button class="primary-btn" type="submit" data-petatoe-i18n="common.save">حفظ</button></div>
+    </form>
+  </dialog>
+
   <dialog id="payrollEmployeeDialog" class="glass-dialog payroll-dialog-wide">
     <form id="payrollEmployeeForm" class="dialog-shell">
       <div class="dialog-header"><div><h3 id="payrollEmployeeDialogTitle" data-petatoe-i18n="payroll.employee.add">إضافة موظف</h3><p data-petatoe-i18n="payroll.employee.dialogHint">اربط الموظف بالمستخدم ومصدر العمولة الصحيح.</p></div><button id="payrollEmployeeClose" class="icon-btn" type="button" data-petatoe-i18n-aria="common.close" aria-label="إغلاق">×</button></div>
@@ -3936,72 +3991,74 @@
     </form>
   </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.56.49"></script>
-  <script src="assets/js/offline-session-store.js?v=18.56.49"></script>
-  <script src="assets/js/supabase-client.js?v=18.56.49"></script>
-  <script src="assets/js/geographic-address.js?v=18.56.49"></script>
-  <script src="assets/js/permissions.js?v=18.56.49"></script>
-  <script src="assets/js/permission-engine.js?v=18.56.49"></script>
-  <script src="assets/js/localization-center-service.js?v=18.56.49"></script>
-  <script src="assets/js/localization-center.js?v=18.56.49"></script>
-  <script src="assets/js/translation-center.js?v=18.56.49"></script>
-  <script src="assets/js/data-access-scope.js?v=18.56.49"></script>
-  <script src="assets/js/smart-cache.js?v=18.56.49"></script>
-  <script src="assets/js/sync-engine.js?v=18.56.49"></script>
-  <script src="assets/js/sync-retention.js?v=18.56.49"></script>
-  <script src="assets/js/offline-queue.js?v=18.56.49"></script>
-  <script src="assets/js/permissions-service.js?v=18.56.49"></script>
-  <script src="assets/js/auth-session.js?v=18.56.49"></script>
-  <script src="assets/js/reference-data-service.js?v=18.56.49"></script>
-  <script src="assets/js/customers-service.js?v=18.56.49"></script>
-  <script src="assets/js/followups-service.js?v=18.56.49"></script>
-  <script src="assets/js/quotations-service.js?v=18.56.49"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.56.49"></script>
-  <script src="assets/js/vehicle-treasury-service.js?v=18.56.49"></script>
-  <script src="assets/js/payroll-service.js?v=18.56.49"></script>
-  <script src="assets/js/sea-vibe-service.js?v=18.56.49"></script>
-  <script src="assets/js/users-service.js?v=18.56.49"></script>
-  <script src="assets/js/activity-service.js?v=18.56.49"></script>
-  <script src="assets/js/backup-service.js?v=18.56.49"></script>
-  <script src="assets/js/system-settings-service.js?v=18.56.49"></script>
-  <script src="assets/js/system-health-service.js?v=18.56.49"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.56.49"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.56.49"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.56.49"></script>
-  <script src="assets/js/installations-service.js?v=18.56.49"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.56.49"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.56.49"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.56.49"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.56.49"></script>
+  <script src="assets/js/supabase-config.js?v=18.56.50"></script>
+  <script src="assets/js/offline-session-store.js?v=18.56.50"></script>
+  <script src="assets/js/supabase-client.js?v=18.56.50"></script>
+  <script src="assets/js/geographic-address.js?v=18.56.50"></script>
+  <script src="assets/js/permissions.js?v=18.56.50"></script>
+  <script src="assets/js/permission-engine.js?v=18.56.50"></script>
+  <script src="assets/js/localization-center-service.js?v=18.56.50"></script>
+  <script src="assets/js/localization-center.js?v=18.56.50"></script>
+  <script src="assets/js/translation-center.js?v=18.56.50"></script>
+  <script src="assets/js/data-access-scope.js?v=18.56.50"></script>
+  <script src="assets/js/smart-cache.js?v=18.56.50"></script>
+  <script src="assets/js/sync-engine.js?v=18.56.50"></script>
+  <script src="assets/js/sync-retention.js?v=18.56.50"></script>
+  <script src="assets/js/offline-queue.js?v=18.56.50"></script>
+  <script src="assets/js/permissions-service.js?v=18.56.50"></script>
+  <script src="assets/js/auth-session.js?v=18.56.50"></script>
+  <script src="assets/js/reference-data-service.js?v=18.56.50"></script>
+  <script src="assets/js/customers-service.js?v=18.56.50"></script>
+  <script src="assets/js/followups-service.js?v=18.56.50"></script>
+  <script src="assets/js/quotations-service.js?v=18.56.50"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.56.50"></script>
+  <script src="assets/js/vehicle-treasury-service.js?v=18.56.50"></script>
+  <script src="assets/js/payroll-service.js?v=18.56.50"></script>
+  <script src="assets/js/sea-vibe-payroll-service.js?v=18.56.50"></script>
+  <script src="assets/js/sea-vibe-service.js?v=18.56.50"></script>
+  <script src="assets/js/users-service.js?v=18.56.50"></script>
+  <script src="assets/js/activity-service.js?v=18.56.50"></script>
+  <script src="assets/js/backup-service.js?v=18.56.50"></script>
+  <script src="assets/js/system-settings-service.js?v=18.56.50"></script>
+  <script src="assets/js/system-health-service.js?v=18.56.50"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.56.50"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.56.50"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.56.50"></script>
+  <script src="assets/js/installations-service.js?v=18.56.50"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.56.50"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.56.50"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.56.50"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.56.50"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.56.49"></script>
-  <script src="assets/js/export-center.js?v=18.56.49"></script>
-  <script src="assets/js/customer360-engine.js?v=18.56.49"></script>
-  <script src="assets/js/customer360-export.js?v=18.56.49"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.56.49"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.56.49"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.56.49"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.56.49"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.56.49"></script>
-  <script src="assets/js/notification-center-service.js?v=18.56.49"></script>
-  <script src="assets/js/app.js?v=18.56.49"></script>
-  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.56.49"></script>
-  <script src="assets/js/notification-center.js?v=18.56.49"></script>
-  <script src="assets/js/sales-invoices.js?v=18.56.49"></script>
-  <script src="assets/js/vehicle-treasury.js?v=18.56.49"></script>
-  <script src="assets/js/payroll.js?v=18.56.49"></script>
-  <script src="assets/js/sea-vibe.js?v=18.56.49"></script>
-  <script src="assets/js/installations-module.js?v=18.56.49"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.56.49"></script>
-  <script src="assets/js/installation-execution.js?v=18.56.49"></script>
-  <script src="assets/js/installation-completion.js?v=18.56.49"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.56.49"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.56.49"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.56.49"></script>
-  <script src="assets/js/mobile.js?v=18.56.49"></script>
-  <script src="assets/js/pwa.js?v=18.56.49"></script>
-  <script src="assets/js/native.js?v=18.56.49"></script>
+  <script src="assets/js/reports-engine.js?v=18.56.50"></script>
+  <script src="assets/js/export-center.js?v=18.56.50"></script>
+  <script src="assets/js/customer360-engine.js?v=18.56.50"></script>
+  <script src="assets/js/customer360-export.js?v=18.56.50"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.56.50"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.56.50"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.56.50"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.56.50"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.56.50"></script>
+  <script src="assets/js/notification-center-service.js?v=18.56.50"></script>
+  <script src="assets/js/app.js?v=18.56.50"></script>
+  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.56.50"></script>
+  <script src="assets/js/notification-center.js?v=18.56.50"></script>
+  <script src="assets/js/sales-invoices.js?v=18.56.50"></script>
+  <script src="assets/js/vehicle-treasury.js?v=18.56.50"></script>
+  <script src="assets/js/payroll.js?v=18.56.50"></script>
+  <script src="assets/js/sea-vibe-payroll.js?v=18.56.50"></script>
+  <script src="assets/js/sea-vibe.js?v=18.56.50"></script>
+  <script src="assets/js/installations-module.js?v=18.56.50"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.56.50"></script>
+  <script src="assets/js/installation-execution.js?v=18.56.50"></script>
+  <script src="assets/js/installation-completion.js?v=18.56.50"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.56.50"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.56.50"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.56.50"></script>
+  <script src="assets/js/mobile.js?v=18.56.50"></script>
+  <script src="assets/js/pwa.js?v=18.56.50"></script>
+  <script src="assets/js/native.js?v=18.56.50"></script>
 </body>
 </html>

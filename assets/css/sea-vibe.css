@@ -136,3 +136,51 @@ html[data-theme="dark"]{
   .sea-vibe-mobile-permit-cards tbody tr{grid-template-columns:1fr}
   .sea-vibe-mobile-permit-cards tbody tr::before{grid-column:1}
 }
+
+/* R44R8 — SEA VIBE payroll & commissions foundation. Canonical SEA VIBE-only navigation/UI additions. */
+#mainSidebar .sea-vibe-payroll-subgroup{
+  display:grid;
+  gap:4px;
+}
+#mainSidebar .sea-vibe-payroll-subtoggle{
+  width:100%;
+  justify-content:space-between;
+  color:inherit;
+}
+#mainSidebar .sea-vibe-payroll-subtoggle .nav-chevron{
+  transition:transform .18s ease;
+}
+#mainSidebar .sea-vibe-payroll-subgroup:not(.is-collapsed) .sea-vibe-payroll-subtoggle .nav-chevron{
+  transform:rotate(180deg);
+}
+#mainSidebar .sea-vibe-payroll-subcontent{
+  display:grid;
+  gap:3px;
+  margin-inline-start:12px;
+  padding-inline-start:8px;
+  border-inline-start:1px solid rgba(35,136,255,.14);
+}
+#mainSidebar .sea-vibe-payroll-subgroup.is-collapsed .sea-vibe-payroll-subcontent{
+  display:none;
+}
+#mainSidebar .sea-vibe-payroll-subcontent .nav-item{
+  min-height:38px;
+  height:auto;
+  font-size:12px;
+}
+.sea-vibe-payroll-foundation-card{
+  display:grid;
+  gap:10px;
+  min-height:150px;
+  align-content:center;
+  text-align:center;
+}
+.sea-vibe-payroll-foundation-card strong{
+  font-size:18px;
+}
+.sea-vibe-payroll-foundation-card p{
+  margin:0 auto;
+  max-width:760px;
+  color:var(--text-muted,#64748b);
+  line-height:1.8;
+}
