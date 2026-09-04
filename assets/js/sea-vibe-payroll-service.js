@@ -162,7 +162,7 @@
     requirePermission('seaVibePayrollReference',record?.id?'edit':'add');
     await rpcOnline('save_sea_vibe_employee_r44r8',{p_record:record||{}},t('seaVibePayroll.error.saveEmployee','تعذر حفظ موظف SEA VIBE.'));
     await invalidate();
-    try{await window.SeaVibeService?.invalidate?.();}catch(_){}
+    try{await window.SeaVibeService?.refreshCommissionEmployees?.();}catch(error){console.warn('SEA VIBE commission employee refresh deferred:',error);try{await window.SeaVibeService?.invalidate?.();}catch(_){}}
     const result=await loadReference({force:true});
     window.dispatchEvent(new CustomEvent('sea-vibe-payroll-employee-saved'));
     return result;

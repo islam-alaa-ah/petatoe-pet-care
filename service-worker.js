@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-51-sea-vibe-payroll-core-r44r9-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-52-sea-vibe-commission-refresh-delete-r44r10-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

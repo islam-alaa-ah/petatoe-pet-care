@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const CURRENT_VERSION = "18.56.51";
+  const CURRENT_VERSION = "18.56.52";
   const VERSION_ENDPOINT = "./version.json";
   const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
   const isNative = Boolean(window.Capacitor?.isNativePlatform?.());
