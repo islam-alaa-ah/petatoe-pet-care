@@ -1,15 +1,16 @@
 {
-  "version": "18.56.44",
-  "build": 185644,
+  "version": "18.56.45",
+  "build": 185645,
   "forceUpdate": true,
   "releaseDate": "2026-09-04",
-  "title": "SEA VIBE Controlled Historical Zawel Backfill R44R2",
+  "title": "SEA VIBE Fuel Balance + Automatic Trip Fuel Cost R44R3",
   "notes": [
-    "تنفيذ مصالحة تاريخية محكومة للرحلات الست SV-2026-000001 إلى SV-2026-000006 بعد نجاح R44R1 Production Dry-run وشحن رصيد كافٍ.",
-    "إضافة 2,700 نقطة خصم تاريخية فقط كحركات permit أصلية مرتبطة بالرحلات وتواريخها، مع بقاء الرصيد غير سالب.",
-    "التنفيذ Fail-Closed: يتوقف بالكامل إذا تغيرت مجموعة الرحلات أو القيم المرجعية أو ظهرت Anomaly أو أصبح الرصيد غير كافٍ قبل التنفيذ.",
-    "إعادة تشغيل مصالحة R44R1 داخل نفس Transaction بعد الإدخال والتراجع الكامل إذا لم تصبح missingLedgerCandidateCount=0 وrepairGate=NO_REPAIR_NEEDED.",
-    "عدم تعديل Trigger رسوم تصريح الإبحار أو RLS/GRANT أو Offline Queue/SmartCache/Sync Engine أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
+    "إضافة شاشة رصيد البنزين داخل SEA VIBE بميزان مزدوج للترات والقيمة بالريال مع السماح الطبيعي بالرصيد السالب دون تعطيل إنشاء الرحلات.",
+    "إضافة تكلفة بنزين مرجعية لكل نوع رحلة؛ القيم الأولية: خور 30 ر.س، بياضة 150 ر.س، صيد 150 ر.س، مع تسجيل تكلفة البنزين تلقائيًا عند إنشاء الرحلة.",
+    "احتساب اللترات تلقائيًا من قيمة الرحلة ومتوسط سعر اللتر المرجح للرصيد، مع حفظ آخر سعر صالح ودعم Pending Quantity Valuation حتى أول شحنة بنزين.",
+    "إضافة Backfill تاريخي آمن للرحلات السابقة مع منع مضاعفة التكلفة للرحلات التي لديها مصروف بنزين يدوي وإظهارها للمراجعة بدل إنشاء خصم مزدوج.",
+    "إضافة شحن/تعديل/حذف شحنات البنزين وسجل حركات مستقل، مع Idempotency للرحلات وتسويات Audit عند تغيير نوع الرحلة ودمج شراء البنزين في خزينة SEA VIBE دون احتساب تكلفة الرحلة مرتين.",
+    "عدم تعديل Offline Queue/SmartCache/Sync Engine أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
   ],
-  "cacheToken": "petatoe-pwa-18-56-44-zawel-controlled-historical-backfill-r44r2-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-45-sea-vibe-fuel-balance-r44r3-p5-13-8-72"
 }

@@ -31,12 +31,12 @@ html[data-theme="dark"]{
 .sea-vibe-asset-note{font-size:.82rem;color:var(--muted,#7183a0);margin-top:6px}
 @media (max-width:1180px){.sea-vibe-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.sea-vibe-filters{grid-template-columns:repeat(3,minmax(0,1fr))}.sea-vibe-report-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* P5.13.8.69 — canonical SEA VIBE treasury / Zawel additions */
-.sea-vibe-zawel-kpis{display:grid;grid-template-columns:1.25fr repeat(3,minmax(0,1fr));gap:14px;margin-bottom:16px}
-.sea-vibe-zawel-kpis .panel{min-height:118px;display:flex;flex-direction:column;justify-content:center;gap:9px}
-.sea-vibe-zawel-kpis strong{font-size:1.35rem}.sea-vibe-zawel-kpis small{color:var(--muted,#7183a0)}
-.sea-vibe-zawel-balance{background:linear-gradient(145deg,rgba(10,52,105,.98),rgba(8,31,66,.98));color:#fff;border-color:rgba(58,145,255,.45)}
-.sea-vibe-zawel-balance small{color:rgba(255,255,255,.78)}
-@media (max-width:1180px){.sea-vibe-zawel-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sea-vibe-zawel-kpis,.sea-vibe-fuel-kpis{display:grid;grid-template-columns:1.25fr repeat(3,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.sea-vibe-zawel-kpis .panel,.sea-vibe-fuel-kpis .panel{min-height:118px;display:flex;flex-direction:column;justify-content:center;gap:9px}
+.sea-vibe-zawel-kpis strong,.sea-vibe-fuel-kpis strong{font-size:1.35rem}.sea-vibe-zawel-kpis small,.sea-vibe-fuel-kpis small{color:var(--muted,#7183a0)}
+.sea-vibe-zawel-balance,.sea-vibe-fuel-balance{background:linear-gradient(145deg,rgba(10,52,105,.98),rgba(8,31,66,.98));color:#fff;border-color:rgba(58,145,255,.45)}
+.sea-vibe-zawel-balance small,.sea-vibe-fuel-balance small{color:rgba(255,255,255,.78)}
+@media (max-width:1180px){.sea-vibe-zawel-kpis,.sea-vibe-fuel-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* P5.13.8.71R5 — SEA VIBE mobile-only certification. Desktop/tablet rules above remain canonical. */
 @media (max-width:767px),
@@ -102,11 +102,11 @@ html[data-theme="dark"]{
   .sea-vibe-permit-wrap>.dialog-actions{display:grid;grid-template-columns:1fr;margin-top:12px}
   .sea-vibe-permit-wrap>.dialog-actions button{width:100%;min-height:44px}
 
-  .sea-vibe-zawel-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
-  .sea-vibe-zawel-balance{grid-column:1/-1}
-  .sea-vibe-zawel-kpis .panel{min-height:92px;padding:12px;gap:6px}
-  .sea-vibe-zawel-kpis strong{font-size:1rem;overflow-wrap:anywhere}
-  .sea-vibe-zawel-kpis small{font-size:.72rem}
+  .sea-vibe-zawel-kpis,.sea-vibe-fuel-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+  .sea-vibe-zawel-balance,.sea-vibe-fuel-balance{grid-column:1/-1}
+  .sea-vibe-zawel-kpis .panel,.sea-vibe-fuel-kpis .panel{min-height:92px;padding:12px;gap:6px}
+  .sea-vibe-zawel-kpis strong,.sea-vibe-fuel-kpis strong{font-size:1rem;overflow-wrap:anywhere}
+  .sea-vibe-zawel-kpis small,.sea-vibe-fuel-kpis small{font-size:.72rem}
 
   .sea-vibe-report-split>.panel{padding:12px}
   .sea-vibe-report-split h4{margin-top:0;font-size:.95rem}
@@ -114,7 +114,7 @@ html[data-theme="dark"]{
 }
 
 @media (max-width:380px){
-  .sea-vibe-kpis,.sea-vibe-report-grid,.sea-vibe-zawel-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sea-vibe-kpis,.sea-vibe-report-grid,.sea-vibe-zawel-kpis,.sea-vibe-fuel-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
   .sea-vibe-summary-card{grid-template-columns:1fr}
   .sea-vibe-form .dialog-actions{grid-template-columns:1fr}
   .sea-vibe-mobile-permit-cards tbody tr{grid-template-columns:1fr}

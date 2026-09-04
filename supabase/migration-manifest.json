@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.44",
-    "build": 185644,
+    "version": "18.56.45",
+    "build": 185645,
     "date": "2026-09-04"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -71,7 +71,9 @@
       "supabase/migrations/phase_p5_13_8_72_r42_execution_replay_guard_backfill.sql",
       "supabase/migrations/phase_p5_13_8_72_r43_production_retention_readiness_rollout_gate.sql",
       "supabase/migrations/phase_p5_13_8_72_r44_bounded_pruning_engine_disabled.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r1_sea_vibe_zawel_reconciliation_dry_run.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r1_sea_vibe_zawel_reconciliation_dry_run.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r2_sea_vibe_zawel_controlled_historical_backfill.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r3_sea_vibe_fuel_balance.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -82,7 +84,7 @@
     ]
   },
   "inventoryStats": {
-    "historicalMigrationCount": 230,
+    "historicalMigrationCount": 231,
     "uppercaseFilenameCount": 4,
     "shortAliasCount": 5,
     "allTimestampPrefixed": false
@@ -1217,6 +1219,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r2_sea_vibe_zawel_controlled_historical_backfill.sql",
       "sha256": "f63e41a2415f324dbee0d5d68c3ee1e64a637a036888a98ea69b128bbdaedda6",
       "bytes": 7841
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r3_sea_vibe_fuel_balance.sql",
+      "sha256": "c4761cdd29c5eb976ccc38c9258ee85169f9e028ade928207f00055c70b2a79f",
+      "bytes": 40114
     },
     {
       "path": "supabase/migrations/phase_p5_13_8_appointment_management_localization.sql",
