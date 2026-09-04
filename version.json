@@ -1,15 +1,15 @@
 {
-  "version": "18.56.43",
-  "build": 185643,
+  "version": "18.56.44",
+  "build": 185644,
   "forceUpdate": true,
   "releaseDate": "2026-09-04",
-  "title": "SEA VIBE Zawel Historical Reconciliation Dry-Run R44R1",
+  "title": "SEA VIBE Controlled Historical Zawel Backfill R44R2",
   "notes": [
-    "إضافة فحص Dry-run فقط لاكتشاف الرحلات التاريخية التي لديها رسوم تصريح إبحار محسوبة ولكن لا توجد لها حركة خصم في Zawel Ledger.",
-    "حساب إجمالي النقاط التاريخية الناقصة والرصيد المتوقع بعد المصالحة مع إيقاف القرار إذا نتج رصيد سالب أو ظهرت أي Data Anomaly.",
-    "عدم تنفيذ أي Backfill أو INSERT/UPDATE/DELETE على بيانات SEA VIBE في R44R1 وعدم تعديل Trigger رسوم تصريح الإبحار.",
-    "عدم إضافة Apply RPC أو أي مسار كتابة تلقائي؛ نتيجة Production الحقيقية مطلوبة قبل مرحلة R44R2 المنفصلة.",
-    "الحفاظ على R44 Bounded Pruning Engine مع Pruning Switch OFF وعدم المساس بـOffline Queue أو SmartCache أو Sync Engine."
+    "تنفيذ مصالحة تاريخية محكومة للرحلات الست SV-2026-000001 إلى SV-2026-000006 بعد نجاح R44R1 Production Dry-run وشحن رصيد كافٍ.",
+    "إضافة 2,700 نقطة خصم تاريخية فقط كحركات permit أصلية مرتبطة بالرحلات وتواريخها، مع بقاء الرصيد غير سالب.",
+    "التنفيذ Fail-Closed: يتوقف بالكامل إذا تغيرت مجموعة الرحلات أو القيم المرجعية أو ظهرت Anomaly أو أصبح الرصيد غير كافٍ قبل التنفيذ.",
+    "إعادة تشغيل مصالحة R44R1 داخل نفس Transaction بعد الإدخال والتراجع الكامل إذا لم تصبح missingLedgerCandidateCount=0 وrepairGate=NO_REPAIR_NEEDED.",
+    "عدم تعديل Trigger رسوم تصريح الإبحار أو RLS/GRANT أو Offline Queue/SmartCache/Sync Engine أو R44 Pruning؛ R45 ما زالت محظورة طالما Production Retention Gate=HOLD."
   ],
-  "cacheToken": "petatoe-pwa-18-56-43-zawel-reconciliation-dry-run-r44r1-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-44-zawel-controlled-historical-backfill-r44r2-p5-13-8-72"
 }
