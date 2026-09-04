@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.12.0",
+  "policyVersion": "1.13.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -14,7 +14,7 @@
   "domains": {
     "sync_retention": {
       "file": "assets/js/sync-retention.js",
-      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_bounded_replay_horizon_server_enforced_readiness_pruning_dry_run_guarded_execution_historical_guard_backfill_production_rollout_gate",
+      "mode": "online_sync_metadata_ack_tombstone_retention_queue_age_bounded_replay_horizon_server_enforced_readiness_pruning_dry_run_guarded_execution_historical_guard_backfill_production_rollout_gate_bounded_pruning_engine_installed_disabled",
       "status": "compliant"
     },
     "customers": {
@@ -237,6 +237,11 @@
     "ledgerPruningRequiresReplayGuardCoverage": true,
     "ledgerPruningDryRunMustPrecedeDeleteEnablement": true,
     "historicalReplayGuardBackfillMustGrantFreshServerGrace": true,
-    "historicalReplayGuardBackfillMustNotExtendExistingGuards": true
+    "historicalReplayGuardBackfillMustNotExtendExistingGuards": true,
+    "ledgerPruningEngineMustDefaultDisabled": true,
+    "ledgerPruningBatchMustBeBounded": true,
+    "ledgerPruningRequiresSeparateActivationMigration": true,
+    "ledgerPruningMustPreserveReplayGuards": true,
+    "ledgerPruningRunMustBeAuditedWithoutBusinessPayload": true
   }
 }

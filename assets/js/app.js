@@ -2868,6 +2868,7 @@ function renderSyncRetentionObservability() {
   const crm = snapshot.crmRetention || {};
   const ledgers = snapshot.ledgers || {};
   const pruningDryRun = snapshot.ledgerPruningDryRun || {};
+  const boundedPruningEngine = snapshot.boundedPruningEngine || {};
   const productionReadiness = snapshot.productionRetentionReadiness || {};
   const productionReadinessDomains = productionReadiness.domains || {};
   const pruningDryRunDomains = pruningDryRun.domains || {};
@@ -2914,7 +2915,8 @@ function renderSyncRetentionObservability() {
     BOUNDED_PRUNING_IMPLEMENTATION_PENDING: "Production Gate اجتازت الشروط؛ Pruning ما زال يحتاج مرحلة تنفيذ مستقلة",
     RETENTION_PRUNING_IMPLEMENTATION_PENDING: "سياسات Replay مكتملة؛ Pruning ما زال يحتاج مرحلة تنفيذ مستقلة",
     REPLAY_GUARD_COVERAGE_INCOMPLETE: "تغطية Replay Guards غير مكتملة بعد",
-    REPLAY_POLICY_SERVER_CONTRACT_INCOMPLETE: "عقد Replay Policy على الخادم غير مكتمل"
+    REPLAY_POLICY_SERVER_CONTRACT_INCOMPLETE: "عقد Replay Policy على الخادم غير مكتمل",
+    PRUNING_ACTIVATION_MIGRATION_REQUIRED: "Production Gate جاهزة والمحرك مركب؛ يلزم Activation Migration منفصلة لتشغيل الحذف"
   };
   const readinessText = gateReady
     ? "اجتاز بوابة القرار"
@@ -3067,7 +3069,8 @@ function renderSyncRetentionObservability() {
       <article><span>Observation Ready At</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.observationReadyAt))}</strong><small>${Number(productionReadiness.observationDays || 0)} / ${Number(productionReadiness.requiredObservationDays || 60)} يوم</small></article>
       <article><span>Legacy Grace Ends</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.legacyV1AcceptUntil))}</strong><small>${productionReadiness.legacyV1GraceActive ? "ما زالت نشطة" : "انتهت"}</small></article>
       <article><span>أقرب Time Gate</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.timeConditionsReadyAt))}</strong><small>أقصى Observation Ready / Legacy Grace End</small></article>
-      <article><span>Pruning Switch</span><strong>OFF</strong><small>حتى لو أصبحت Gate = READY</small></article>
+      <article><span>Pruning Engine</span><strong>${boundedPruningEngine.engineInstalled ? "INSTALLED" : "NOT INSTALLED"}</strong><small>Bounded batch cap: ${Number(boundedPruningEngine.maxBatchRows || 100)} صف</small></article>
+      <article><span>Pruning Switch</span><strong>${boundedPruningEngine.executionEnabled ? "ON" : "OFF"}</strong><small>${boundedPruningEngine.authenticatedExecuteGranted ? "Execute grant متاح" : "لا يوجد Execute grant — Activation Migration منفصلة مطلوبة"}</small></article>
     </div>
     <div class="table-wrap"><table>
       <thead><tr><th>Domain</th><th>Gate</th><th>Active Clients</th><th>Policy Clients</th><th>Legacy/Unbounded</th><th>Rollout</th><th>Guard Coverage</th><th>كل الصفوف الحالية آمنة بعد</th><th>الموانع</th></tr></thead>
@@ -3086,7 +3089,7 @@ function renderSyncRetentionObservability() {
       <tbody>${ledgerRows}</tbody>
     </table></div>
 
-    <div class="panel-header"><div><h3>Ledger Pruning Dry-Run</h3><p>حساب فقط لما قد يصبح مؤهلًا بعد اجتياز Production Gate. لا يتم تنفيذ أي DELETE في R43.</p></div></div>
+    <div class="panel-header"><div><h3>Ledger Pruning Dry-Run</h3><p>حساب فقط لما قد يصبح مؤهلًا بعد اجتياز Production Gate. محرك R44 مركب لكنه معطل ولا يتم تنفيذ أي DELETE.</p></div></div>
     <div class="health-metrics-grid">
       <article><span>Technical Candidates</span><strong>${Number(pruningDryRun.technicalCandidateRows || 0)}</strong><small>بعد Replay Horizon + Safety Buffer وبوجود Guard مطابق</small></article>
       <article><span>Unprotected Rows</span><strong>${Number(pruningDryRun.unprotectedRows || 0)}</strong><small>لا تدخل ضمن المرشحين مهما كان عمرها</small></article>

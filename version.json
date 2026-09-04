@@ -1,15 +1,16 @@
 {
-  "version": "18.56.41",
-  "build": 185641,
+  "version": "18.56.42",
+  "build": 185642,
   "forceUpdate": true,
   "releaseDate": "2026-09-03",
-  "title": "Production Retention Readiness Gate R43",
+  "title": "Bounded Pruning Engine Foundation R44",
   "notes": [
-    "إضافة Production Retention Gate نهائية Read-only تجمع Observation Window وLegacy Grace وRollout الأجهزة النشطة وReplay Guard Coverage.",
-    "حساب نسبة الأجهزة النشطة التي أثبتت Replay Policy الجديدة لكل من Execution وSEA VIBE بدون عرض User IDs أو Client IDs.",
-    "عرض Observation Ready At وLegacy Grace End وTime Conditions Ready At ومواعيد Safety Maturity للصفوف الحالية.",
-    "السماح للـDecision Gate بالتحول إلى READY تلقائيًا فقط بعد تحقق كل الشروط الفعلية مع إبقاء Ledger Pruning معطلًا.",
-    "عدم تنفيذ أي DELETE أو تعديل Queue/SmartCache/Business Services في R43."
+    "تركيب محرك Bounded Ledger Pruning على الخادم بحد أقصى 100 صف لكل دفعة مع إبقاء مفتاح التنفيذ OFF.",
+    "اشتراط Production Gate = READY وReplay Guard Coverage سليمة وR41 eligibility guard قبل أي حذف مستقبلي.",
+    "عدم منح Execute للمحرك إلى authenticated أو service_role في R44 وعدم إنشاء Cron أو Auto-pruning.",
+    "الحفاظ على Replay Guards وعدم حذفها؛ المحرك المستقبلي يستهدف صفوف Result Ledgers الثقيلة فقط.",
+    "إضافة Audit metadata لأي تشغيل مستقبلي بدون تخزين Operation Keys أو Payloads أو مبالغ مالية.",
+    "عدم تنفيذ أي DELETE أثناء Migration R44 وعدم تعديل Queue أو SmartCache أو Business Services."
   ],
-  "cacheToken": "petatoe-pwa-18-56-41-production-retention-readiness-r43-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-42-bounded-pruning-engine-disabled-r44-p5-13-8-72"
 }
