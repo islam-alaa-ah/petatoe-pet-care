@@ -328,11 +328,44 @@
     const link=(row.payrollLinks||[])[0];return link?.payrollMonth?`${t('seaVibePayroll.commission.linked','مدرج بالراتب')} — ${monthLabel(link.payrollMonth)}`:t('seaVibePayroll.commission.linked','مدرج بالراتب');
   }
 
+  function commissionRuleFilterKey(row){
+    if(row?.commissionRuleId)return `id:${row.commissionRuleId}`;
+    return `name:${String(row?.commissionNameAr||'').trim()}|${String(row?.commissionNameEn||'').trim()}`;
+  }
+
+  function commissionBeneficiaryFilterKey(row){
+    if(row?.beneficiaryType==='employee'&&row?.employeeId)return `employee:${row.employeeId}`;
+    return `${row?.beneficiaryType||'broker'}:${String(row?.beneficiaryName||'').trim()}`;
+  }
+
+  function syncCommissionExactFilters(){
+    const rows=[...(state.commissions?.rows||[])];
+    const commissionSelect=$('seaVibeCommissionRuleFilter'),beneficiarySelect=$('seaVibeCommissionRecipientFilter');
+    if(commissionSelect){
+      const current=commissionSelect.value;
+      const options=new Map();
+      rows.forEach(row=>{const key=commissionRuleFilterKey(row);if(key&&!options.has(key))options.set(key,commissionName(row));});
+      commissionSelect.innerHTML=`<option value="">${esc(t('payroll.common.all','الكل'))}</option>`+[...options.entries()].sort((a,b)=>String(a[1]).localeCompare(String(b[1]),lang()==='en'?'en':'ar')).map(([key,label])=>`<option value="${esc(key)}">${esc(label||'—')}</option>`).join('');
+      commissionSelect.value=options.has(current)?current:'';
+    }
+    if(beneficiarySelect){
+      const current=beneficiarySelect.value;
+      const options=new Map();
+      rows.forEach(row=>{
+        const key=commissionBeneficiaryFilterKey(row);if(!key||options.has(key))return;
+        const name=row.beneficiaryName||'—';
+        options.set(key,`${name} — ${commissionBeneficiaryTypeLabel(row.beneficiaryType)}`);
+      });
+      beneficiarySelect.innerHTML=`<option value="">${esc(t('payroll.common.all','الكل'))}</option>`+[...options.entries()].sort((a,b)=>String(a[1]).localeCompare(String(b[1]),lang()==='en'?'en':'ar')).map(([key,label])=>`<option value="${esc(key)}">${esc(label)}</option>`).join('');
+      beneficiarySelect.value=options.has(current)?current:'';
+    }
+  }
+
   function filteredCommissionRows(){
-    const rows=[...(state.commissions?.rows||[])],search=String($('seaVibeCommissionSearch')?.value||'').trim().toLowerCase(),beneficiary=$('seaVibeCommissionBeneficiaryFilter')?.value||'',payroll=$('seaVibeCommissionPayrollFilter')?.value||'';
+    const rows=[...(state.commissions?.rows||[])],search=String($('seaVibeCommissionSearch')?.value||'').trim().toLowerCase(),beneficiaryType=$('seaVibeCommissionBeneficiaryFilter')?.value||'',payroll=$('seaVibeCommissionPayrollFilter')?.value||'',commissionRule=$('seaVibeCommissionRuleFilter')?.value||'',beneficiary=$('seaVibeCommissionRecipientFilter')?.value||'';
     return rows.filter(row=>{
       const hay=`${row.tripSerial||''} ${row.beneficiaryName||''} ${row.commissionNameAr||''} ${row.commissionNameEn||''} ${row.tripTypeNameAr||''} ${row.tripTypeNameEn||''}`.toLowerCase();
-      return(!search||hay.includes(search))&&(!beneficiary||row.beneficiaryType===beneficiary)&&(!payroll||commissionPayrollState(row)===payroll);
+      return(!search||hay.includes(search))&&(!commissionRule||commissionRuleFilterKey(row)===commissionRule)&&(!beneficiary||commissionBeneficiaryFilterKey(row)===beneficiary)&&(!beneficiaryType||row.beneficiaryType===beneficiaryType)&&(!payroll||commissionPayrollState(row)===payroll);
     });
   }
 
@@ -344,6 +377,7 @@
   }
 
   function renderCommissions(){
+    syncCommissionExactFilters();
     const summary=state.commissions?.summary||{},all=state.commissions?.rows||[],rows=filteredCommissionRows();
     if($('seaVibeCommissionKpiTotal'))$('seaVibeCommissionKpiTotal').textContent=money(summary.totalCommissions||0);
     if($('seaVibeCommissionKpiEmployee'))$('seaVibeCommissionKpiEmployee').textContent=money(summary.employeeCommissions||0);
@@ -437,7 +471,7 @@
     $('seaVibeCommissionManagementMonth')?.addEventListener('change',()=>loadCommissions(false,true));
     ['seaVibeCommissionManagementFrom','seaVibeCommissionManagementTo'].forEach(id=>$(id)?.addEventListener('change',()=>loadCommissions(false,false)));
     $('seaVibeCommissionManagementRefresh')?.addEventListener('click',()=>loadCommissions(true,false));
-    ['seaVibeCommissionSearch','seaVibeCommissionBeneficiaryFilter','seaVibeCommissionPayrollFilter'].forEach(id=>$(id)?.addEventListener(id==='seaVibeCommissionSearch'?'input':'change',renderCommissions));
+    ['seaVibeCommissionSearch','seaVibeCommissionRuleFilter','seaVibeCommissionRecipientFilter','seaVibeCommissionBeneficiaryFilter','seaVibeCommissionPayrollFilter'].forEach(id=>$(id)?.addEventListener(id==='seaVibeCommissionSearch'?'input':'change',renderCommissions));
     $('seaVibeCommissionStatementRefresh')?.addEventListener('click',()=>loadCommissionStatement(true));
     $('seaVibeCommissionStatementTabs')?.addEventListener('click',event=>{const btn=event.target.closest('[data-sea-vibe-commission-tab]');if(!btn)return;state.commissionTab=btn.dataset.seaVibeCommissionTab;renderCommissionStatement();});
 

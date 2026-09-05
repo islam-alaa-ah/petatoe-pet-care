@@ -1,13 +1,13 @@
 {
-  "version": "18.56.58",
-  "build": 185658,
+  "version": "18.56.59",
+  "build": 185659,
   "forceUpdate": true,
   "releaseDate": "2026-09-06",
-  "title": "SEA VIBE Commission Management + Safe Customer Delete R44R15",
+  "title": "SEA VIBE Commission Exact Filters R44R16",
   "notes": [
-    "تفعيل إدارة العمولات SEA VIBE فعليًا من عمولات الرحلات التلقائية مع فلاتر وفترات وإظهار حالة ربط عمولات الموظفين بالرواتب.",
-    "تفعيل كشف العمولة SEA VIBE للموظف المرتبط بالمستخدم، مع عرض شامل لكل المستفيدين لـ Super Admin.",
-    "إضافة حذف آمن لعملاء SEA VIBE: يسمح بالحذف فقط إذا لم يُستخدم العميل في أي رحلة، مع سجل استخدام دائم وحماية Server-side."
+    "إضافة فلتر مباشر باسم العمولة داخل إدارة عمولات SEA VIBE من نفس حركات العمولات المحملة.",
+    "إضافة فلتر مباشر بالمستفيد الفعلي مع تمييز الموظف عن الوسيط عند تشابه الأسماء.",
+    "الحفاظ على فلاتر البحث ونوع المستفيد وحالة الراتب الحالية بدون أي تغيير في SQL أو حسابات العمولات."
   ],
-  "cacheToken": "petatoe-pwa-18-56-58-sea-vibe-commissions-customer-delete-r44r15-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-59-sea-vibe-commission-exact-filters-r44r16-p5-13-8-72"
 }
