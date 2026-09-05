@@ -4,7 +4,7 @@
   const CACHE_PREFIX='sea-vibe-payroll:v2:';
   const CACHE_TTL_MS=10*60*1000;
   const CACHE_STALE_MAX_MS=180*24*60*60*1000;
-  const memory={reference:null,management:null,salary:null};
+  const memory={reference:null,management:null,salary:null,commissions:null,commissionStatement:null};
   const readStatus={};
   const activeContexts=new Map();
   const refreshes=new Map();
@@ -37,7 +37,10 @@
     SEA_VIBE_PAYROLL_REVERSE_SUBMIT_INVALID:'لا يمكن إرجاع الراتب للتجهيز من الحالة الحالية.',
     SEA_VIBE_PAYROLL_ACTION_UNKNOWN:'إجراء راتب SEA VIBE غير معروف.',
     SEA_VIBE_PAYROLL_MANAGEMENT_VIEW_PERMISSION_REQUIRED:'لا توجد صلاحية عرض إدارة رواتب SEA VIBE.',
-    SEA_VIBE_SALARY_STATEMENT_VIEW_PERMISSION_REQUIRED:'لا توجد صلاحية عرض كشف راتب SEA VIBE.'
+    SEA_VIBE_SALARY_STATEMENT_VIEW_PERMISSION_REQUIRED:'لا توجد صلاحية عرض كشف راتب SEA VIBE.',
+    SEA_VIBE_COMMISSION_MANAGEMENT_VIEW_PERMISSION_REQUIRED:'لا توجد صلاحية عرض إدارة عمولات SEA VIBE.',
+    SEA_VIBE_COMMISSION_STATEMENT_VIEW_PERMISSION_REQUIRED:'لا توجد صلاحية عرض كشف عمولة SEA VIBE.',
+    SEA_VIBE_COMMISSION_RANGE_INVALID:'فترة عرض عمولات SEA VIBE غير صالحة.'
   };
 
   function translateMessage(message=''){
@@ -210,20 +213,40 @@
     });
   }
 
+  async function loadCommissionsRange(fromDate,toDate,options={}){
+    const from=isoDate(fromDate),to=isoDate(toDate);
+    if(!from||!to||from>to)throw new Error(t('seaVibePayroll.commission.rangeInvalid','يجب أن يكون تاريخ بداية العمولات قبل أو مساويًا لتاريخ النهاية.'));
+    return loadWorkspace({
+      kind:'commissions',screen:'seaVibeCommissionManagement',parts:['range',from,to],force:Boolean(options.force),
+      fetcher:()=>rpcOnline('get_sea_vibe_commission_management_workspace_r44r15',{p_from:from,p_to:to},'تعذر تحميل إدارة عمولات SEA VIBE.')
+    });
+  }
+
+  async function loadCommissionStatement(options={}){
+    return loadWorkspace({
+      kind:'commissionStatement',screen:'seaVibeCommissionStatement',parts:['self'],force:Boolean(options.force),
+      fetcher:()=>rpcOnline('get_sea_vibe_commission_statement_workspace_r44r15',{},'تعذر تحميل كشف عمولة SEA VIBE.')
+    });
+  }
+
   async function refreshActiveContexts(){
     if(navigator.onLine===false)return;
     const management=activeContexts.get('management');
     const salary=activeContexts.get('salary');
+    const commissions=activeContexts.get('commissions');
+    const commissionStatement=activeContexts.get('commissionStatement');
     const reference=activeContexts.get('reference');
     if(management?.parts?.[1])await loadManagement(management.parts[1],{force:true}).catch(error=>console.warn('SEA VIBE payroll management refresh skipped:',error));
     if(salary)await loadSalaryStatement({force:true}).catch(error=>console.warn('SEA VIBE salary statement refresh skipped:',error));
+    if(commissions?.parts?.[1]&&commissions?.parts?.[2])await loadCommissionsRange(commissions.parts[1],commissions.parts[2],{force:true}).catch(error=>console.warn('SEA VIBE commission management refresh skipped:',error));
+    if(commissionStatement)await loadCommissionStatement({force:true}).catch(error=>console.warn('SEA VIBE commission statement refresh skipped:',error));
     if(reference)await loadReference({force:true}).catch(error=>console.warn('SEA VIBE payroll reference refresh skipped:',error));
   }
 
   window.KYUMSyncEngine?.register?.('sea-vibe-payroll',refreshActiveContexts);
 
   window.SeaVibePayrollService=Object.freeze({
-    monthStart,loadReference,saveEmployee,loadManagement,prepareMonth,saveAdjustmentItems,transition,loadSalaryStatement,
+    monthStart,loadReference,saveEmployee,loadManagement,prepareMonth,saveAdjustmentItems,transition,loadSalaryStatement,loadCommissionsRange,loadCommissionStatement,
     invalidate,getCache:()=>({...memory}),getReadStatus:kind=>kind?readStatus[kind]||null:{...readStatus}
   });
 })();

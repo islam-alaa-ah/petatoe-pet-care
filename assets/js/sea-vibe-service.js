@@ -19,7 +19,7 @@
   const localId=prefix=>`local:${prefix}:${Date.now()}:${Math.random().toString(16).slice(2)}`;
   const mapRef=r=>({id:r.id,nameAr:r.name_ar||'',nameEn:r.name_en||'',isActive:r.is_active!==false,systemKey:r.system_key||'',isSystem:!!r.is_system,fuelCostAmount:num(r.fuel_cost_amount),requiresCustomer:r.requires_customer!==false,serialSeriesKey:r.serial_series_key||'standard',updatedAt:r.updated_at||r.created_at||''});
   const mapTrip=r=>({id:r.id,serial:r.trip_serial||'',treasuryMovementSerial:r.treasury_movement_serial||'',date:r.trip_date||'',startTime:String(r.start_time||'').slice(0,5),durationHours:num(r.duration_hours),peopleCount:num(r.people_count),tripTypeId:r.trip_type_id||'',customerId:r.customer_id||'',customerNumber:r.customer_number||'',customerName:r.customer_name||'',totalValue:num(r.total_value),notes:r.notes||'',status:r.status||'open',closedAt:r.closed_at||'',createdAt:r.created_at||'',updatedAt:r.updated_at||'',tripExpenses:num(r.trip_expenses),netProfit:num(r.net_profit)});
-  const mapCustomer=r=>({id:r.id,number:r.customer_number||'',name:r.full_name||'',notes:r.notes||'',isActive:r.is_active!==false,createdAt:r.created_at||'',updatedAt:r.updated_at||''});
+  const mapCustomer=r=>({id:r.id,number:r.customer_number||'',name:r.full_name||'',notes:r.notes||'',isActive:r.is_active!==false,hasBeenUsed:r.has_been_used===true,createdAt:r.created_at||'',updatedAt:r.updated_at||''});
   const mapAsset=r=>({id:r.id,code:r.asset_code||'',name:r.asset_name||'',initialValue:num(r.initial_value),capitalizedExpenses:num(r.capitalized_expenses),currentValue:num(r.current_value??r.initial_value),notes:r.notes||'',isActive:r.is_active!==false,createdAt:r.created_at||'',updatedAt:r.updated_at||''});
   const mapExpense=r=>({id:r.id,scope:r.expense_scope,tripId:r.trip_id||'',assetId:r.asset_id||'',catalogId:r.expense_catalog_id||'',date:r.expense_date||'',amount:num(r.amount),paymentMethodId:r.payment_method_id||'',notes:r.notes||'',movementGroupId:r.movement_group_id||'',movementSerial:r.movement_serial||'',systemGenerated:!!r.is_system_generated,systemKey:r.system_key||'',commissionRuleId:r.commission_rule_id||'',commissionNameAr:r.commission_name_ar_snapshot||'',commissionNameEn:r.commission_name_en_snapshot||'',commissionBeneficiaryType:r.commission_beneficiary_type_snapshot||'',commissionBeneficiaryName:r.commission_beneficiary_name_snapshot||'',commissionCalculationType:r.commission_calculation_type_snapshot||'',commissionCalculationValue:num(r.commission_calculation_value_snapshot),commissionTripValue:num(r.commission_trip_value_snapshot),createdAt:r.created_at||'',updatedAt:r.updated_at||''});
   const mapCommissionRule=r=>({id:r.id,nameAr:r.name_ar||'',nameEn:r.name_en||'',beneficiaryType:r.beneficiary_type||'',employeeId:r.employee_id||'',brokerName:r.broker_name||'',beneficiaryName:r.beneficiary_name||'',calculationType:r.calculation_type||'fixed',calculationValue:num(r.calculation_value),tripTypeIds:Array.isArray(r.trip_type_ids)?r.trip_type_ids:[],isActive:r.is_active!==false,hasBeenUsed:r.has_been_used===true,createdAt:r.created_at||'',updatedAt:r.updated_at||''});
@@ -90,7 +90,7 @@
     const c=client(),out={};
     await Promise.all(requested.map(async name=>{
       if(name==='trips') out.trips=sortTrips((await unwrap(c.from('sea_vibe_trip_financials').select('*').order('trip_date',{ascending:false}),'تعذر تحميل رحلات SEA VIBE')).map(mapTrip));
-      else if(name==='customers') out.customers=(await unwrap(c.from('sea_vibe_customers').select('*').order('full_name'),'تعذر تحميل عملاء SEA VIBE')).map(mapCustomer);
+      else if(name==='customers') out.customers=(await unwrap(c.rpc('get_sea_vibe_customers_r44r15'),'تعذر تحميل عملاء SEA VIBE')).map(mapCustomer);
       else if(name==='expenses') out.expenses=(await unwrap(c.from('sea_vibe_expenses').select('*').order('expense_date',{ascending:false}),'تعذر تحميل مصروفات SEA VIBE')).map(mapExpense);
       else if(name==='assets') out.assets=(await unwrap(c.from('sea_vibe_assets_with_value').select('*').order('created_at',{ascending:false}),'تعذر تحميل أصول SEA VIBE')).map(mapAsset);
       else if(name==='tripTypes') out.tripTypes=(await unwrap(c.from('sea_vibe_trip_types').select('*').order('name_ar'),'تعذر تحميل أنواع الرحلات')).map(mapRef);
@@ -316,6 +316,22 @@
       await refreshSections(['customers']);return id;
     }catch(error){if(String(error?.message||'').includes('SEA_VIBE_CUSTOMER_NUMBER_EXISTS'))throw new Error('رقم العميل مستخدم بالفعل.');throw error;}
   }
+  async function deleteCustomer(id){
+    permission('seaVibeCustomers','delete');
+    if(navigator.onLine===false)throw new Error('يلزم الاتصال بالإنترنت لحذف عميل SEA VIBE.');
+    const customerId=String(id||'').trim();if(!customerId)throw new Error('حدد العميل المراد حذفه.');
+    try{
+      await unwrap(client().rpc('delete_sea_vibe_customer_r44r15',{p_customer_id:customerId}),'تعذر حذف عميل SEA VIBE');
+      await audit('delete','sea_vibe_customers',customerId,{source:'sea-vibe-customers'});
+      await refreshSections(['customers']);return true;
+    }catch(error){
+      const message=String(error?.message||'');
+      if(message.includes('SEA_VIBE_CUSTOMER_USED_DELETE_BLOCKED'))throw new Error('لا يمكن حذف العميل لأنه استُخدم في رحلة سابقة. يمكنك إيقافه فقط.');
+      if(message.includes('SEA_VIBE_CUSTOMER_DELETE_PERMISSION_REQUIRED'))throw new Error('لا توجد صلاحية حذف عملاء SEA VIBE.');
+      throw error;
+    }
+  }
+
   async function ensureTripCustomer(record={}){
     const existingId=String(record.id||'').trim();if(existingId)return existingId;
     const number=String(record.number||'').trim(),name=String(record.name||'').trim();
@@ -407,5 +423,5 @@
   window.KYUMOfflineQueue?.register?.('sea_vibe',handleQueuedMutation);
 
 
-  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,signedAttachment});
+  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,signedAttachment});
 })();

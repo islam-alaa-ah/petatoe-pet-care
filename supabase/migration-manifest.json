@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.57",
-    "build": 185657,
-    "date": "2026-09-05"
+    "version": "18.56.58",
+    "build": 185658,
+    "date": "2026-09-06"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
   "policy": {
@@ -94,8 +94,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 241,
-    "totalBytes": 2558977
+    "sqlFileCount": 242,
+    "totalBytes": 2578791
   },
   "orderingHazards": {
     "examples": [
@@ -1242,6 +1242,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r14_sea_vibe_trip_customer_quick_create.sql",
       "sha256": "1cef8d497aeb6213bfc18c4bbe9a5d6d1dc8a007536abedbdc1179e7196eff46",
       "bytes": 3015
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r15_sea_vibe_commissions_customer_delete.sql",
+      "sha256": "1d4d1320223da88ab8e5aa033a23281222677d5de44d46e8dfb3f6d926ae618f",
+      "bytes": 19814
     },
     {
       "path": "supabase/migrations/phase_p5_13_8_72_r44r1_sea_vibe_zawel_reconciliation_dry_run.sql",

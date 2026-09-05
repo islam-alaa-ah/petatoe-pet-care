@@ -1,7 +1,6 @@
 (function(){
   'use strict';
 
-  const COMMISSION_FOUNDATION_VIEWS=['seaVibeCommissionManagement','seaVibeCommissionStatement'];
   const $=id=>document.getElementById(id);
   const svc=()=>window.SeaVibePayrollService;
   const t=(key,fallback,vars={})=>{const value=window.PetatoeLocalization?.t?.(key,vars);return value&&!/^\[.+\]$/.test(value)?value:fallback;};
@@ -16,7 +15,7 @@
   const monthBounds=value=>{const raw=/^\d{4}-\d{2}$/.test(String(value||''))?String(value):currentMonth();const [year,month]=raw.split('-').map(Number);return{from:`${raw}-01`,to:`${raw}-${String(new Date(year,month,0).getDate()).padStart(2,'0')}`};};
   const addDays=(value,days)=>{const d=new Date(`${String(value).slice(0,10)}T12:00:00`);d.setDate(d.getDate()+Number(days||0));return d.toISOString().slice(0,10);};
 
-  const state={reference:{employees:[],users:[]},management:null,managementTab:'current',salary:null,salaryTab:'current'};
+  const state={reference:{employees:[],users:[]},management:null,managementTab:'current',salary:null,salaryTab:'current',commissions:null,commissionStatement:null,commissionTab:'current'};
 
   function setStatus(id,message='',type='info'){
     const el=$(id);if(!el)return;
@@ -301,13 +300,83 @@
     catch(error){setStatus('seaVibePayrollReferenceStatus',error.message||String(error),'error');}
   }
 
-  function renderCommissionFoundation(view){
-    const map={
-      seaVibeCommissionManagement:['seaVibeCommissionManagementContent','إدارة العمولات SEA VIBE','تم ربط عمولات الرحلات تلقائيًا برواتب الموظفين في R44R9. شاشة إدارة/تجميع العمولات التفصيلية ستُفعّل في المرحلة التالية.'],
-      seaVibeCommissionStatement:['seaVibeCommissionStatementContent','كشف العمولة SEA VIBE','كشف تفاصيل العمولات المستقلة لكل موظف سيتم تفعيله في المرحلة التالية.']
-    };
-    const item=map[view];if(!item)return;const el=$(item[0]);if(!el)return;
-    el.innerHTML=`<div class="panel payroll-empty sea-vibe-payroll-foundation-card"><strong>${esc(item[1])}</strong><p>${esc(item[2])}</p></div>`;
+  // -----------------------------------------------------------------------
+  // Commission management — R44R15 canonical read model over trip expenses.
+  // -----------------------------------------------------------------------
+  function commissionRange(reset=false){
+    const monthInput=$('seaVibeCommissionManagementMonth'),fromInput=$('seaVibeCommissionManagementFrom'),toInput=$('seaVibeCommissionManagementTo');
+    const month=monthInput?.value||currentMonth(),bounds=monthBounds(month);
+    if(monthInput&&!monthInput.value)monthInput.value=month;
+    if(fromInput&&(reset||!fromInput.value))fromInput.value=bounds.from;
+    if(toInput&&(reset||!toInput.value))toInput.value=bounds.to;
+    return{month,from:fromInput?.value||bounds.from,to:toInput?.value||bounds.to,bounds};
+  }
+
+  function validCommissionRange(range,show=true){
+    const ok=Boolean(range?.from&&range?.to&&range.from<=range.to);
+    if(!ok&&show)setStatus('seaVibeCommissionManagementStatus',t('seaVibePayroll.commission.rangeInvalid','يجب أن يكون تاريخ بداية العمولات قبل أو مساويًا لتاريخ النهاية.'),'error');
+    return ok;
+  }
+
+  function commissionName(row){return lang()==='en'?(row.commissionNameEn||row.commissionNameAr||'Commission'):(row.commissionNameAr||row.commissionNameEn||'عمولة');}
+  function commissionBeneficiaryTypeLabel(value){return value==='employee'?t('seaVibePayroll.commission.employee','موظف'):t('seaVibePayroll.commission.broker','وسيط');}
+  function commissionCalculationLabel(row){return row.calculationType==='percentage'?`${number(row.calculationValue)}% ${t('seaVibePayroll.commission.ofTripValue','من قيمة الرحلة')}`:`${money(row.calculationValue)} ${t('seaVibePayroll.commission.fixed','ثابت')}`;}
+  function commissionPayrollState(row){if(row.beneficiaryType!=='employee')return'not_applicable';return row.payrollLinked?'linked':'pending';}
+  function commissionPayrollLabel(row){
+    const key=commissionPayrollState(row);if(key==='not_applicable')return t('seaVibePayroll.commission.notApplicable','لا ينطبق');
+    if(key==='pending')return t('seaVibePayroll.commission.pending','لم يُدرج بعد');
+    const link=(row.payrollLinks||[])[0];return link?.payrollMonth?`${t('seaVibePayroll.commission.linked','مدرج بالراتب')} — ${monthLabel(link.payrollMonth)}`:t('seaVibePayroll.commission.linked','مدرج بالراتب');
+  }
+
+  function filteredCommissionRows(){
+    const rows=[...(state.commissions?.rows||[])],search=String($('seaVibeCommissionSearch')?.value||'').trim().toLowerCase(),beneficiary=$('seaVibeCommissionBeneficiaryFilter')?.value||'',payroll=$('seaVibeCommissionPayrollFilter')?.value||'';
+    return rows.filter(row=>{
+      const hay=`${row.tripSerial||''} ${row.beneficiaryName||''} ${row.commissionNameAr||''} ${row.commissionNameEn||''} ${row.tripTypeNameAr||''} ${row.tripTypeNameEn||''}`.toLowerCase();
+      return(!search||hay.includes(search))&&(!beneficiary||row.beneficiaryType===beneficiary)&&(!payroll||commissionPayrollState(row)===payroll);
+    });
+  }
+
+  async function loadCommissions(force=false,resetRange=false){
+    const range=commissionRange(resetRange);if(!validCommissionRange(range))return;
+    setStatus('seaVibeCommissionManagementStatus',t('commission.loading','جاري تحميل العمولات...'));
+    try{state.commissions=await svc().loadCommissionsRange(range.from,range.to,{force});renderCommissions();setStatus('seaVibeCommissionManagementStatus',cacheMessage('commissions'),'info');}
+    catch(error){setStatus('seaVibeCommissionManagementStatus',error.message||String(error),'error');renderCommissions();}
+  }
+
+  function renderCommissions(){
+    const summary=state.commissions?.summary||{},all=state.commissions?.rows||[],rows=filteredCommissionRows();
+    if($('seaVibeCommissionKpiTotal'))$('seaVibeCommissionKpiTotal').textContent=money(summary.totalCommissions||0);
+    if($('seaVibeCommissionKpiEmployee'))$('seaVibeCommissionKpiEmployee').textContent=money(summary.employeeCommissions||0);
+    if($('seaVibeCommissionKpiBroker'))$('seaVibeCommissionKpiBroker').textContent=money(summary.brokerCommissions||0);
+    if($('seaVibeCommissionKpiTrips'))$('seaVibeCommissionKpiTrips').textContent=number(summary.tripCount||0);
+    if($('seaVibeCommissionKpiPayrollLinked'))$('seaVibeCommissionKpiPayrollLinked').textContent=number(summary.payrollLinkedCount||0);
+    const body=$('seaVibeCommissionManagementBody');if(body)body.innerHTML=rows.length?rows.map(row=>`<tr><td data-label="${esc(t('seaVibe.common.date','التاريخ'))}">${esc(dateLabel(row.tripDate))}</td><td data-label="${esc(t('seaVibe.trip.serial','سيريال الرحلة'))}"><strong>${esc(row.tripSerial||'—')}</strong></td><td data-label="${esc(t('seaVibePayroll.commission.name','العمولة'))}">${esc(commissionName(row))}</td><td data-label="${esc(t('seaVibePayroll.commission.beneficiary','المستفيد'))}"><strong>${esc(row.beneficiaryName||'—')}</strong></td><td data-label="${esc(t('seaVibePayroll.commission.beneficiaryType','النوع'))}">${esc(commissionBeneficiaryTypeLabel(row.beneficiaryType))}</td><td data-label="${esc(t('seaVibePayroll.commission.calculation','طريقة الحساب'))}">${esc(commissionCalculationLabel(row))}</td><td data-label="${esc(t('seaVibe.trip.value','قيمة الرحلة'))}" class="money">${money(row.tripValue)}</td><td data-label="${esc(t('commission.col.amount','العمولة'))}" class="money net"><strong>${money(row.amount)}</strong></td><td data-label="${esc(t('seaVibePayroll.commission.payrollStatus','حالة الراتب'))}">${esc(commissionPayrollLabel(row))}</td></tr>`).join(''):`<tr><td colspan="9" class="payroll-empty">${esc(t('commission.empty','لا توجد عمولات ضمن الفلاتر الحالية.'))}</td></tr>`;
+    const total=rows.reduce((sum,row)=>sum+Number(row.amount||0),0);if($('seaVibeCommissionManagementFoot'))$('seaVibeCommissionManagementFoot').innerHTML=`<tr><th colspan="7">${esc(t('commission.footer.total','الإجمالي'))}</th><th class="net">${money(total)}</th><th>${number(rows.length)} / ${number(all.length)}</th></tr>`;
+  }
+
+  // -----------------------------------------------------------------------
+  // Commission statement — self-service for employees, all-beneficiaries for Super Admin.
+  // -----------------------------------------------------------------------
+  async function loadCommissionStatement(force=false){
+    setStatus('seaVibeCommissionStatementStatus',t('commission.loading','جاري تحميل العمولات...'));
+    try{state.commissionStatement=await svc().loadCommissionStatement({force});renderCommissionStatement();setStatus('seaVibeCommissionStatementStatus',cacheMessage('commissionStatement'),'info');}
+    catch(error){setStatus('seaVibeCommissionStatementStatus',error.message||String(error),'error');renderCommissionStatement();}
+  }
+
+  function commissionStatementCurrentTable(rows,showBeneficiary=false){
+    const cols=showBeneficiary?7:5;
+    return `<div class="panel payroll-table-wrap"><table class="data-table payroll-history-table"><thead><tr><th>${esc(t('seaVibe.common.date','التاريخ'))}</th><th>${esc(t('seaVibe.trip.serial','سيريال الرحلة'))}</th><th>${esc(t('seaVibePayroll.commission.name','العمولة'))}</th>${showBeneficiary?`<th>${esc(t('seaVibePayroll.commission.beneficiary','المستفيد'))}</th><th>${esc(t('seaVibePayroll.commission.beneficiaryType','النوع'))}</th>`:''}<th>${esc(t('seaVibe.trip.value','قيمة الرحلة'))}</th><th>${esc(t('commission.col.amount','العمولة'))}</th></tr></thead><tbody>${rows.length?rows.map(row=>`<tr><td>${esc(dateLabel(row.tripDate))}</td><td><strong>${esc(row.tripSerial||'—')}</strong></td><td>${esc(commissionName(row))}</td>${showBeneficiary?`<td>${esc(row.beneficiaryName||'—')}</td><td>${esc(commissionBeneficiaryTypeLabel(row.beneficiaryType))}</td>`:''}<td class="money">${money(row.tripValue)}</td><td class="money net"><strong>${money(row.amount)}</strong></td></tr>`).join(''):`<tr><td colspan="${cols}" class="payroll-empty">${esc(t('commissionStatement.noCurrent','لا توجد عمولة محتسبة للشهر الحالي حتى الآن.'))}</td></tr>`}</tbody></table></div>`;
+  }
+
+  function renderCommissionStatement(){
+    const data=state.commissionStatement||{},current=data.current||[],history=data.history||[],admin=data.mode==='admin',employee=data.employee;
+    $('seaVibeCommissionStatementTabs')?.querySelectorAll('[data-sea-vibe-commission-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.seaVibeCommissionTab===state.commissionTab));
+    $('seaVibeCommissionStatementCurrent')?.classList.toggle('hidden',state.commissionTab!=='current');$('seaVibeCommissionStatementHistory')?.classList.toggle('hidden',state.commissionTab!=='history');
+    if(!admin&&!employee){if($('seaVibeCommissionStatementCurrent'))$('seaVibeCommissionStatementCurrent').innerHTML=`<div class="panel payroll-empty">${esc(t('commissionStatement.unlinked','حسابك غير مربوط بسجل موظف في البيانات المرجعية.'))}</div>`;if($('seaVibeCommissionStatementHistory'))$('seaVibeCommissionStatementHistory').innerHTML='';return;}
+    const total=current.reduce((sum,row)=>sum+Number(row.amount||0),0),trips=new Set(current.map(row=>row.tripId).filter(Boolean)).size;
+    const title=admin?t('seaVibePayroll.commissionStatement.adminTitle','ملخص عمولات SEA VIBE'):employee?.name||'—';
+    if($('seaVibeCommissionStatementCurrent'))$('seaVibeCommissionStatementCurrent').innerHTML=`<div class="commission-statement-shell"><div class="commission-statement-summary"><article class="panel commission-summary-card commission-summary-total"><span>${esc(t('commission.kpi.total','إجمالي العمولة'))}</span><strong>${money(total)}</strong></article><article class="panel commission-summary-card"><span>${esc(t('seaVibePayroll.commission.kpi.trips','عدد الرحلات'))}</span><strong>${number(trips)}</strong></article><article class="panel commission-summary-card"><span>${esc(t('payroll.common.month','الشهر'))}</span><strong>${esc(monthLabel(data.month))}</strong></article><article class="panel commission-summary-card"><span>${esc(t('seaVibePayroll.commission.beneficiary','المستفيد'))}</span><strong>${esc(title)}</strong></article></div>${commissionStatementCurrentTable(current,admin)}</div>`;
+    if($('seaVibeCommissionStatementHistory'))$('seaVibeCommissionStatementHistory').innerHTML=admin?`<div class="panel payroll-table-wrap"><table class="data-table payroll-history-table"><thead><tr><th>${esc(t('payroll.common.month','الشهر'))}</th><th>${esc(t('seaVibePayroll.commission.beneficiary','المستفيد'))}</th><th>${esc(t('seaVibePayroll.commission.beneficiaryType','النوع'))}</th><th>${esc(t('seaVibePayroll.commission.kpi.trips','عدد الرحلات'))}</th><th>${esc(t('commission.col.amount','العمولة'))}</th></tr></thead><tbody>${history.length?history.map(row=>`<tr><td>${esc(monthLabel(row.month))}</td><td><strong>${esc(row.beneficiaryName||'—')}</strong></td><td>${esc(commissionBeneficiaryTypeLabel(row.beneficiaryType))}</td><td>${number(row.tripCount||0)}</td><td class="money net"><strong>${money(row.commissionAmount)}</strong></td></tr>`).join(''):`<tr><td colspan="5" class="payroll-empty">${esc(t('commissionStatement.noHistory','لا توجد عمولات سابقة.'))}</td></tr>`}</tbody></table></div>`:`<div class="panel payroll-table-wrap"><table class="data-table payroll-history-table"><thead><tr><th>${esc(t('payroll.common.month','الشهر'))}</th><th>${esc(t('seaVibePayroll.commission.kpi.trips','عدد الرحلات'))}</th><th>${esc(t('commission.col.amount','العمولة'))}</th></tr></thead><tbody>${history.length?history.map(row=>`<tr><td>${esc(monthLabel(row.month))}</td><td>${number(row.tripCount||0)}</td><td class="money net"><strong>${money(row.commissionAmount)}</strong></td></tr>`).join(''):`<tr><td colspan="3" class="payroll-empty">${esc(t('commissionStatement.noHistory','لا توجد عمولات سابقة.'))}</td></tr>`}</tbody></table></div>`;
   }
 
   async function activate(view){
@@ -315,8 +384,9 @@
       if($('seaVibePayrollManagementMonth')&&!$('seaVibePayrollManagementMonth').value)$('seaVibePayrollManagementMonth').value=currentMonth();
       await loadManagement(false,true);
     }else if(view==='seaVibeSalaryStatement')await loadSalaryStatement(false);
+    else if(view==='seaVibeCommissionManagement'){if($('seaVibeCommissionManagementMonth')&&!$('seaVibeCommissionManagementMonth').value)$('seaVibeCommissionManagementMonth').value=currentMonth();await loadCommissions(false,true);}
+    else if(view==='seaVibeCommissionStatement')await loadCommissionStatement(false);
     else if(view==='seaVibePayrollReference')await loadReference(false);
-    else if(COMMISSION_FOUNDATION_VIEWS.includes(view))renderCommissionFoundation(view);
     window.PetatoeLocalization?.applyStatic?.(document);
   }
 
@@ -364,6 +434,13 @@
     $('seaVibeSalaryStatementRefresh')?.addEventListener('click',()=>loadSalaryStatement(true));
     $('seaVibeSalaryStatementTabs')?.addEventListener('click',event=>{const btn=event.target.closest('[data-sea-vibe-salary-tab]');if(!btn)return;state.salaryTab=btn.dataset.seaVibeSalaryTab;renderSalaryStatement();});
 
+    $('seaVibeCommissionManagementMonth')?.addEventListener('change',()=>loadCommissions(false,true));
+    ['seaVibeCommissionManagementFrom','seaVibeCommissionManagementTo'].forEach(id=>$(id)?.addEventListener('change',()=>loadCommissions(false,false)));
+    $('seaVibeCommissionManagementRefresh')?.addEventListener('click',()=>loadCommissions(true,false));
+    ['seaVibeCommissionSearch','seaVibeCommissionBeneficiaryFilter','seaVibeCommissionPayrollFilter'].forEach(id=>$(id)?.addEventListener(id==='seaVibeCommissionSearch'?'input':'change',renderCommissions));
+    $('seaVibeCommissionStatementRefresh')?.addEventListener('click',()=>loadCommissionStatement(true));
+    $('seaVibeCommissionStatementTabs')?.addEventListener('click',event=>{const btn=event.target.closest('[data-sea-vibe-commission-tab]');if(!btn)return;state.commissionTab=btn.dataset.seaVibeCommissionTab;renderCommissionStatement();});
+
     $('seaVibePayrollReferenceRefresh')?.addEventListener('click',()=>loadReference(true));$('seaVibeEmployeeAdd')?.addEventListener('click',()=>openEmployee());
     $('seaVibePayrollReferenceContent')?.addEventListener('click',event=>{const btn=event.target.closest('[data-sea-vibe-employee-edit]');if(!btn)return;openEmployee((state.reference.employees||[]).find(row=>String(row.id)===String(btn.dataset.seaVibeEmployeeEdit)));});
     $('seaVibeEmployeeClose')?.addEventListener('click',()=> $('seaVibeEmployeeDialog')?.close());$('seaVibeEmployeeCancel')?.addEventListener('click',()=> $('seaVibeEmployeeDialog')?.close());
@@ -377,11 +454,13 @@
       const cache=svc()?.getCache?.()||{};
       if(event.detail?.kind==='management'&&!$('seaVibePayrollManagementView')?.classList.contains('hidden')&&cache.management){state.management=cache.management;renderManagement();}
       if(event.detail?.kind==='salary'&&!$('seaVibeSalaryStatementView')?.classList.contains('hidden')&&cache.salary){state.salary=cache.salary;renderSalaryStatement();}
+      if(event.detail?.kind==='commissions'&&!$('seaVibeCommissionManagementView')?.classList.contains('hidden')&&cache.commissions){state.commissions=cache.commissions;renderCommissions();}
+      if(event.detail?.kind==='commissionStatement'&&!$('seaVibeCommissionStatementView')?.classList.contains('hidden')&&cache.commissionStatement){state.commissionStatement=cache.commissionStatement;renderCommissionStatement();}
       if(event.detail?.kind==='reference'&&!$('seaVibePayrollReferenceView')?.classList.contains('hidden')&&cache.reference){state.reference=cache.reference;renderReference();}
     });
-    window.addEventListener('petatoe-language-changed',()=>{if(state.management)renderManagement();if(state.salary)renderSalaryStatement();if(state.reference)renderReference();});
+    window.addEventListener('petatoe-language-changed',()=>{if(state.management)renderManagement();if(state.salary)renderSalaryStatement();if(state.commissions)renderCommissions();if(state.commissionStatement)renderCommissionStatement();if(state.reference)renderReference();});
   }
 
   document.addEventListener('DOMContentLoaded',bind);
-  window.SeaVibePayrollUI=Object.freeze({activate,refreshManagement:()=>loadManagement(true,false),refreshSalary:()=>loadSalaryStatement(true),refreshReference:()=>loadReference(true)});
+  window.SeaVibePayrollUI=Object.freeze({activate,refreshManagement:()=>loadManagement(true,false),refreshSalary:()=>loadSalaryStatement(true),refreshCommissions:()=>loadCommissions(true,false),refreshCommissionStatement:()=>loadCommissionStatement(true),refreshReference:()=>loadReference(true)});
 })();
