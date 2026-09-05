@@ -1,14 +1,13 @@
 {
-  "version": "18.56.56",
-  "build": 185656,
+  "version": "18.56.57",
+  "build": 185657,
   "forceUpdate": true,
   "releaseDate": "2026-09-05",
-  "title": "SEA VIBE Customers + Trip Serial Routing R44R13R1",
+  "title": "SEA VIBE Trip Customer Entry R44R14",
   "notes": [
-    "تصحيح توافق Production لـ sea_vibe_trip_financials مع الحفاظ على أول 20 عمودًا بالاسم والترتيب الحالي وإضافة بيانات عميل SEA VIBE بعد net_profit فقط.",
-    "إضافة شاشة عملاء SEA VIBE مستقلة وربط رقم/اسم العميل بالرحلات عبر قوائم بحث مترابطة دون أي ربط بعملاء CRM.",
-    "إضافة خيار طلب بيانات العميل لكل نوع رحلة مع سيريال مستقل لرحلات الخور يبدأ من 1000001 واستمرار الصيد والبياضة على السيريال القياسي الحالي.",
-    "R44R13 الأصلية فشلت قبل COMMIT بسبب PostgreSQL 42P16؛ R44R13R1 هي Migration الاستبدال المعتمدة ولا تتطلب ALTER VIEW RENAME COLUMN."
+    "إصلاح قوائم البحث عن عميل الرحلة بحيث لا تبقى قائمة رقم العميل واسم العميل مفتوحتين معًا وتغلق فور الخروج أو فتح القائمة الجانبية.",
+    "السماح بكتابة رقم واسم عميل جديد داخل إضافة/تعديل الرحلة؛ يتم إنشاء العميل تلقائيًا في عملاء SEA VIBE عند حفظ الرحلة ثم ربطه بها.",
+    "منع إنشاء Duplicate برقم عميل موجود، مع Fail-Closed عند اختلاف الاسم أو إذا كان العميل الموجود غير نشط، دون أي ربط بعملاء CRM."
   ],
-  "cacheToken": "petatoe-pwa-18-56-56-sea-vibe-customers-trip-serials-r44r13r1-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-57-sea-vibe-trip-customer-entry-r44r14-p5-13-8-72"
 }

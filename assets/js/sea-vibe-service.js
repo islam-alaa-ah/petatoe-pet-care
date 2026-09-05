@@ -185,6 +185,7 @@
   async function saveTrip(record,context={}){
     const isUpdate=!!record.id;
     permission(isUpdate?'seaVibeTrips':'seaVibeTripNew',isUpdate?'edit':'add');
+    if(!record.customerId&&(String(record.customerNumber||'').trim()||String(record.customerName||'').trim()))record={...record,customerId:await ensureTripCustomer({number:record.customerNumber,name:record.customerName})};
     const existing=isUpdate?(memory||blank()).trips.find(x=>String(x.id)===String(record.id)):null;
     const baseUpdatedAt=isUpdate&&!String(record.id).startsWith('local:')?(record.baseUpdatedAt||existing?.updatedAt||''):'';
     const operationKey=context.operationKey||newOperationKey(isUpdate?'trip-update':'trip-create');
@@ -315,6 +316,19 @@
       await refreshSections(['customers']);return id;
     }catch(error){if(String(error?.message||'').includes('SEA_VIBE_CUSTOMER_NUMBER_EXISTS'))throw new Error('رقم العميل مستخدم بالفعل.');throw error;}
   }
+  async function ensureTripCustomer(record={}){
+    const existingId=String(record.id||'').trim();if(existingId)return existingId;
+    const number=String(record.number||'').trim(),name=String(record.name||'').trim();
+    if(!number&&!name)return '';
+    if(!number||!name)throw new Error('أدخل رقم العميل واسم العميل.');
+    if(navigator.onLine===false)throw new Error('يلزم الاتصال بالإنترنت لإضافة عميل SEA VIBE جديد من الرحلة.');
+    try{
+      const result=await unwrap(client().rpc('ensure_sea_vibe_trip_customer_r44r14',{p_customer_number:number,p_full_name:name}),'تعذر تجهيز عميل الرحلة');
+      const id=String(result?.id||'');if(!id)throw new Error('تعذر تحديد عميل الرحلة.');
+      if(result?.created===true)await audit('insert','sea_vibe_customers',id,{customerNumber:number,fullName:name,source:'trip-entry'});
+      await refreshSections(['customers']);return id;
+    }catch(error){const message=String(error?.message||'');if(message.includes('SEA_VIBE_CUSTOMER_NUMBER_NAME_MISMATCH'))throw new Error('رقم العميل موجود بالفعل باسم مختلف. اختر العميل المسجل أو استخدم رقمًا جديدًا.');if(message.includes('SEA_VIBE_CUSTOMER_INACTIVE'))throw new Error('رقم العميل موجود لكنه غير نشط. فعّل العميل من شاشة عملاء SEA VIBE أولًا.');throw error;}
+  }
   async function previewTripSerial(tripTypeId,tripDate){
     if(!tripTypeId)return '';
     if(navigator.onLine===false)return '';
@@ -393,5 +407,5 @@
   window.KYUMOfflineQueue?.register?.('sea_vibe',handleQueuedMutation);
 
 
-  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,signedAttachment});
+  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,signedAttachment});
 })();
