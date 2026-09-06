@@ -1426,10 +1426,135 @@
     ["seaVibe.reference.tripTypes","option","أنواع الرحلات","Trip Types"],
     ["seaVibe.reference.paymentMethods","option","طرق الدفع","Payment Methods"],
     ["seaVibe.reference.permitFees","option","رسوم تصريح الإبحار","Sailing Permit Fees"],
-    ["seaVibe.reference.add","button","إضافة جديد","Add New"]
+    ["seaVibe.reference.add","button","إضافة جديد","Add New"],
+    ["translationCenter.page.title","title","مركز الترجمة","Translation Center"],
+    ["translationCenter.page.subtitle","subtitle","إدارة قاموس الترجمة المركزي ومراجعة تغطية الوحدات والشاشات من مصدر واحد.","Manage the centralized translation catalog and review module and screen coverage from one source."],
+    ["translationCenter.language.group","aria","لغة واجهة البرنامج","Application interface language"],
+    ["translationCenter.language.ar","button","العربية","Arabic"],
+    ["translationCenter.language.en","button","English","English"],
+    ["translationCenter.kpi.total","label","إجمالي مفاتيح الترجمة","Total translation keys"],
+    ["translationCenter.kpi.complete","label","ترجمة مكتملة","Complete translations"],
+    ["translationCenter.kpi.custom","label","مفاتيح معدّلة","Customized keys"],
+    ["translationCenter.kpi.missing","label","ترجمات ناقصة","Missing translations"],
+    ["translationCenter.filter.search","label","بحث","Search"],
+    ["translationCenter.filter.searchPlaceholder","placeholder","ابحث بالمفتاح أو النص العربي أو الإنجليزي","Search by key, Arabic text, or English text"],
+    ["translationCenter.filter.module","label","الوحدة","Module"],
+    ["translationCenter.filter.allModules","option","كل الوحدات","All modules"],
+    ["translationCenter.filter.screen","label","الشاشة","Screen"],
+    ["translationCenter.filter.allScreens","option","كل الشاشات","All screens"],
+    ["translationCenter.filter.type","label","نوع النص","Text type"],
+    ["translationCenter.filter.allTypes","option","كل الأنواع","All types"],
+    ["translationCenter.action.reload","button","إعادة تحميل","Reload"],
+    ["translationCenter.action.save","button","حفظ الترجمات","Save translations"],
+    ["translationCenter.column.key","label","المفتاح","Key"],
+    ["translationCenter.column.ar","label","العربية","Arabic"],
+    ["translationCenter.column.en","label","English","English"],
+    ["translationCenter.column.status","label","الحالة","Status"],
+    ["translationCenter.status.complete","status","مكتملة","Complete"],
+    ["translationCenter.status.missing","status","ناقصة","Missing"],
+    ["translationCenter.status.custom","status","معدّلة","Customized"],
+    ["translationCenter.empty","empty","لا توجد نتائج مطابقة.","No matching results."],
+    ["translationCenter.loading","status","جاري التحميل...","Loading..."],
+    ["translationCenter.save.saving","status","جاري حفظ الترجمات...","Saving translations..."],
+    ["translationCenter.save.success","status","تم حفظ الترجمات بنجاح.","Translations saved successfully."],
+    ["translationCenter.save.failed","error","تعذر حفظ الترجمات.","Failed to save translations."],
+    ["translationCenter.load.local","status","تم عرض القاموس المحلي — جاري تحديث البيانات من الخادم...","Local catalog loaded — refreshing data from the server..."],
+    ["translationCenter.load.partial","error","تم عرض القاموس المحلي — تعذر تحديث بعض البيانات من الخادم.","Local catalog loaded — some server data could not be refreshed."],
+    ["translationCenter.language.changedAr","status","تم تحويل واجهة البرنامج إلى العربية.","The application interface has been switched to Arabic."],
+    ["translationCenter.language.changedEn","status","تم تحويل واجهة البرنامج إلى الإنجليزية.","The application interface has been switched to English."],
+    ["translationCenter.toggle.toEnglish","aria","التبديل إلى الإنجليزية","Switch to English"],
+    ["translationCenter.toggle.toArabic","aria","التبديل إلى العربية","Switch to Arabic"],
+    ["translationCenter.module.core","option","الأساس المشترك","Core"],
+    ["translationCenter.module.navigation","option","التنقل","Navigation"],
+    ["translationCenter.module.dashboard","option","لوحة التحكم","Dashboard"],
+    ["translationCenter.module.crm","option","إدارة العملاء","CRM"],
+    ["translationCenter.module.appointments","option","إدارة المواعيد","Appointments"],
+    ["translationCenter.module.payroll","option","الرواتب والعمولات","Payroll & Commissions"],
+    ["translationCenter.module.finance","option","العمليات المالية","Finance"],
+    ["translationCenter.module.seaVibe","option","SEA VIBE","SEA VIBE"],
+    ["translationCenter.module.system","option","النظام والإعدادات","System & Settings"],
+    ["translationCenter.type.title","option","عنوان","Title"],
+    ["translationCenter.type.label","option","Label","Label"],
+    ["translationCenter.type.button","option","زر","Button"],
+    ["translationCenter.type.option","option","خيار","Option"],
+    ["translationCenter.type.stage","option","مرحلة","Stage"],
+    ["translationCenter.type.status","option","حالة","Status"],
+    ["translationCenter.type.help","option","مساعدة","Help"],
+    ["translationCenter.type.error","option","خطأ","Error"],
+    ["translationCenter.type.empty","option","حالة فارغة","Empty state"],
+    ["translationCenter.type.placeholder","option","Placeholder","Placeholder"],
+    ["translationCenter.type.dialog","option","رسالة تأكيد","Confirmation dialog"],
+    ["translationCenter.type.format","option","صيغة ديناميكية","Dynamic format"],
+    ["translationCenter.type.noun","option","مصطلح","Term"],
+    ["translationCenter.type.tab","option","تبويب","Tab"],
+    ["translationCenter.type.subtitle","option","وصف","Subtitle"],
+    ["translationCenter.type.navigation","option","القائمة الجانبية","Navigation"],
+    ["translationCenter.type.service","option","خدمة","Service"],
+    ["translationCenter.type.neighborhood","option","حي","Neighborhood"],
+    ["translationCenter.validation.englishArabic","error","لا يمكن الحفظ مع نص عربي داخل العمود الإنجليزي.","Arabic text cannot be saved in the English column."],
+    ["translationCenter.validation.required","error","لا يمكن حذف ترجمة مكتملة أو حفظ نص عربي فارغ.","A completed translation cannot be removed and Arabic text cannot be empty."],
+    ["translationCenter.error.serviceNotReady","error","خدمة مركز الترجمة غير جاهزة.","Translation Center service is not ready."],
+    ["translationCenter.error.dbNotReady","error","اتصال قاعدة البيانات غير جاهز.","Database connection is not ready."],
+    ["translationCenter.error.load","error","تعذر تحميل الترجمات","Failed to load translations"],
+    ["translationCenter.error.loadAll","error","تعذر تحميل الترجمات المركزية","Failed to load centralized translations"],
+    ["translationCenter.error.services","error","تعذر تحميل الخدمات لمركز الترجمة","Failed to load services for the Translation Center"],
+    ["translationCenter.error.neighborhoods","error","تعذر تحميل الأحياء لمركز الترجمة","Failed to load neighborhoods for the Translation Center"],
+    ["translationCenter.error.permission","error","ليس لديك صلاحية تعديل مركز الترجمة.","You do not have permission to edit the Translation Center."],
+    ["translationCenter.error.save","error","تعذر حفظ مركز الترجمة","Failed to save the Translation Center"]
   ];
-  const screenKeyFor=(key)=>key.startsWith('sidebar.')?'sidebar':key.startsWith('shared.')?'shared':key.startsWith('dashboard.')?'dashboard':key.startsWith('appointments.')?'appointments':key.startsWith('customers.')?'customers':key.startsWith('followups.')?'followups':key.startsWith('contracts.')?'quotations':key.startsWith('invoices.')?'salesInvoices':key.startsWith('users.')?'users':key.startsWith('salaryStatement.')?'salaryStatement':key.startsWith('commissionStatement.')?'commissionStatement':key.startsWith('commission.')?'commissionManagement':key.startsWith('payroll.page.salaryStatement.')?'salaryStatement':key.startsWith('payroll.page.commissionManagement.')?'commissionManagement':key.startsWith('payroll.page.commissionStatement.')?'commissionStatement':key.startsWith('payroll.page.reference.')||key.startsWith('payroll.reference.')||key.startsWith('payroll.employee.')?'payrollReference':key.startsWith('payroll.')?'payrollManagement':key.startsWith('seaVibe.')?'seaVibe':SCREEN_KEY;
-  const defaults=new Map(rows.map(([key,type,ar,en])=>[key,Object.freeze({key,type,screenKey:screenKeyFor(key),ar,en})]));
+  const routeFor=(key)=>{
+    const value=String(key||'');
+    if(value.startsWith('entity.service.'))return{screenKey:'installationExecutionServices',moduleName:'appointments'};
+    if(value.startsWith('entity.neighborhood.'))return{screenKey:'installationExecutionNeighborhoods',moduleName:'appointments'};
+    if(value.startsWith('translationCenter.'))return{screenKey:'translationCenter',moduleName:'system'};
+    if(value.startsWith('sidebar.'))return{screenKey:'sidebar',moduleName:'navigation'};
+    if(value.startsWith('shared.')||value.startsWith('common.'))return{screenKey:'shared',moduleName:'core'};
+    if(value.startsWith('dashboard.'))return{screenKey:'dashboard',moduleName:'dashboard'};
+    if(value.startsWith('customers.'))return{screenKey:'customers',moduleName:'crm'};
+    if(value.startsWith('followups.'))return{screenKey:'followups',moduleName:'crm'};
+    if(value.startsWith('contracts.'))return{screenKey:'quotations',moduleName:'crm'};
+    if(value.startsWith('invoices.'))return{screenKey:'salesInvoices',moduleName:'crm'};
+    if(value.startsWith('users.'))return{screenKey:'users',moduleName:'system'};
+    if(value.startsWith('salaryStatement.'))return{screenKey:'salaryStatement',moduleName:'payroll'};
+    if(value.startsWith('commissionStatement.'))return{screenKey:'commissionStatement',moduleName:'payroll'};
+    if(value.startsWith('commission.'))return{screenKey:'commissionManagement',moduleName:'payroll'};
+    if(value.startsWith('payroll.page.salaryStatement.'))return{screenKey:'salaryStatement',moduleName:'payroll'};
+    if(value.startsWith('payroll.page.commissionManagement.'))return{screenKey:'commissionManagement',moduleName:'payroll'};
+    if(value.startsWith('payroll.page.commissionStatement.'))return{screenKey:'commissionStatement',moduleName:'payroll'};
+    if(value.startsWith('payroll.page.reference.')||value.startsWith('payroll.reference.')||value.startsWith('payroll.employee.'))return{screenKey:'payrollReference',moduleName:'payroll'};
+    if(value.startsWith('payroll.'))return{screenKey:'payrollManagement',moduleName:'payroll'};
+    if(value.startsWith('appointmentNew.'))return{screenKey:'installationRequestNew',moduleName:'appointments'};
+    if(value.startsWith('execution.'))return{screenKey:'installationExecution',moduleName:'appointments'};
+    if(value.startsWith('appointments.overview.'))return{screenKey:'installationsOverview',moduleName:'appointments'};
+    if(value.startsWith('appointments.requests.'))return{screenKey:'installationRequests',moduleName:'appointments'};
+    if(value.startsWith('appointments.schedule.'))return{screenKey:'installationSchedule',moduleName:'appointments'};
+    if(value.startsWith('appointments.completion.'))return{screenKey:'installationCompletion',moduleName:'appointments'};
+    if(value.startsWith('appointments.'))return{screenKey:'appointmentsShared',moduleName:'appointments'};
+    if(value.startsWith('vehicleTreasury.'))return{screenKey:'vehicleTreasury',moduleName:'finance'};
+    if(value.startsWith('seaVibePayroll.page.salaryStatement.')||value.startsWith('seaVibePayroll.salaryStatement.'))return{screenKey:'seaVibeSalaryStatement',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibePayroll.page.commissionStatement.')||value.startsWith('seaVibePayroll.commissionStatement.'))return{screenKey:'seaVibeCommissionStatement',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibePayroll.page.commissionManagement.')||value.startsWith('seaVibePayroll.commissionManagement.')||value.startsWith('seaVibePayroll.commission.'))return{screenKey:'seaVibeCommissionManagement',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibePayroll.page.reference.')||value.startsWith('seaVibePayroll.reference.')||value.startsWith('seaVibePayroll.employee.'))return{screenKey:'seaVibePayrollReference',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibePayroll.page.management.')||value.startsWith('seaVibePayroll.management.'))return{screenKey:'seaVibePayrollManagement',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibePayroll.'))return{screenKey:'seaVibePayroll',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.trips.')||value.startsWith('seaVibe.trip.')||value.startsWith('seaVibe.trips.'))return{screenKey:'seaVibeTrips',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.customers.')||value.startsWith('seaVibe.customer.')||value.startsWith('seaVibe.customers.'))return{screenKey:'seaVibeCustomers',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.tripNew.'))return{screenKey:'seaVibeTrips',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.tripDetails.'))return{screenKey:'seaVibeTrips',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.expenseNew.')||value.startsWith('seaVibe.expense.')||value.startsWith('seaVibe.validation.'))return{screenKey:'seaVibeExpenseNew',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.general.')||value.startsWith('seaVibe.general.'))return{screenKey:'seaVibeGeneralExpenses',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.assets.')||value.startsWith('seaVibe.asset.')||value.startsWith('seaVibe.assets.'))return{screenKey:'seaVibeAssets',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.reference.')||value.startsWith('seaVibe.reference.'))return{screenKey:'seaVibeReference',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.reports.')||value.startsWith('seaVibe.reports.'))return{screenKey:'seaVibeReports',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.treasury.')||value.startsWith('seaVibe.treasury.'))return{screenKey:'seaVibeTreasury',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.zawel.')||value.startsWith('seaVibe.zawel.'))return{screenKey:'seaVibeZawel',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.fuel.')||value.startsWith('seaVibe.fuel.'))return{screenKey:'seaVibeFuel',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.'))return{screenKey:'seaVibeShared',moduleName:'seaVibe'};
+    return{screenKey:'shared',moduleName:'core'};
+  };
+  const screenKeyFor=key=>routeFor(key).screenKey;
+  const moduleNameFor=key=>routeFor(key).moduleName;
+  const defaults=new Map(rows.map(([key,type,ar,en])=>{const route=routeFor(key);return[key,Object.freeze({key,type,screenKey:route.screenKey,moduleName:route.moduleName,ar,en})]}));
   const state={language:(localStorage.getItem(STORAGE_LANGUAGE)==='en'?'en':'ar'),remote:new Map(),loaded:false,loading:null};
   const ARABIC_RE=/[\u0600-\u06FF]/;
   function interpolate(value,vars){return String(value??'').replace(/\{(\w+)\}/g,(_,k)=>vars&&Object.prototype.hasOwnProperty.call(vars,k)?String(vars[k]):`{${k}}`)}
@@ -1550,7 +1675,7 @@
     let en=String(item?.en||'').trim();
     if(kind==='service'&&!en)en=serviceDefaultEnglish(ar,item?.serviceCode||item?.service_code||'');
     const type=kind==='service'?'service':'neighborhood',screenKey=kind==='service'?'installationExecutionServices':'installationExecutionNeighborhoods';
-    if(!defaults.has(key))defaults.set(key,Object.freeze({key,type,screenKey,ar,en}));
+    if(!defaults.has(key))defaults.set(key,Object.freeze({key,type,screenKey,moduleName:'appointments',ar,en}));
     return key;
   }
   function registerEntityCatalog(catalog={}){(catalog.services||[]).forEach(x=>registerEntity('service',x));(catalog.neighborhoods||[]).forEach(x=>registerEntity('neighborhood',x));return getRows()}
@@ -1561,16 +1686,16 @@
   }
   function statusLabel(value){const map={'مسند':'execution.status.assigned','في الطريق':'execution.status.onRoute','وصل إلى العميل':'execution.status.arrived','قيد التنفيذ':'execution.status.inProgress','مكتمل':'execution.status.completed','ملغي':'execution.status.cancelled','بانتظار التأكيد':'execution.status.awaitingConfirmation'};return map[value]?t(map[value]):String(value||'')}
   function translateMessage(message){const text=String(message||'');if(effectiveLanguage()==='ar'||!text)return text;for(const base of defaults.values()){if(base.type!=='error')continue;if(text===base.ar)return t(base.key);if(base.ar.endsWith(':')&&text.startsWith(base.ar))return `${t(base.key)}${text.slice(base.ar.length)}`;}return text}
-  function cacheRows(){try{localStorage.setItem(STORAGE_CACHE,JSON.stringify([...state.remote.values()].map(x=>({translation_key:x.key,ar_text:x.ar,en_text:x.en,text_type:x.type,screen_key:x.screenKey||SCREEN_KEY}))))}catch(_){}}
-  function loadCache(){try{const data=JSON.parse(localStorage.getItem(STORAGE_CACHE)||'[]');if(Array.isArray(data))data.forEach(row=>{const base=defaults.get(row.translation_key);state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||base?.ar||''),en:String(row.en_text||base?.en||''),type:row.text_type||base?.type||'label',screenKey:row.screen_key||base?.screenKey||SCREEN_KEY})})}catch(_){}}
-  async function loadRemote(force=false){if(state.loading&&!force)return state.loading;if(state.loaded&&!force)return getRows();state.loading=(async()=>{try{if(!window.LocalizationCenterService)return getRows();const data=await (window.LocalizationCenterService.listPilot?.()||window.LocalizationCenterService.listScreen(SCREEN_KEY));(data||[]).forEach(row=>{const base=defaults.get(row.translation_key);state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||base?.ar||''),en:String(row.en_text||base?.en||''),type:row.text_type||base?.type||'label',screenKey:row.screen_key||base?.screenKey||SCREEN_KEY})});state.loaded=true;cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}catch(error){console.warn('[Localization] remote load deferred',error?.message||error);return getRows()}finally{state.loading=null}})();return state.loading}
-  function getRows(){const keys=new Set([...defaults.keys(),...state.remote.keys()]);return [...keys].map(key=>{const base=defaults.get(key),remote=state.remote.get(key);const ar=String(remote?.ar||base?.ar||''),en=String(remote?.en||base?.en||'');return{key,type:remote?.type||base?.type||'label',screenKey:remote?.screenKey||base?.screenKey||SCREEN_KEY,ar,en,defaultAr:base?.ar||ar,defaultEn:base?.en||en,complete:Boolean(ar.trim()&&en.trim()&&!ARABIC_RE.test(en)),customized:Boolean(remote&&base&&(remote.ar!==base.ar||remote.en!==base.en))}}).sort((a,b)=>a.screenKey.localeCompare(b.screenKey)||a.key.localeCompare(b.key))}
-  async function saveRows(entries){if(!window.LocalizationCenterService)throw new Error('خدمة مركز الترجمه غير جاهزة.');const normalized=(entries||[]).map(x=>{const base=defaults.get(x.key),remote=state.remote.get(x.key);return{translation_key:x.key,screen_key:x.screenKey||base?.screenKey||SCREEN_KEY,module_name:x.key.startsWith('sidebar.')?'navigation':x.key.startsWith('shared.')?'core':x.key.startsWith('dashboard.')?'dashboard':x.key.startsWith('customers.')||x.key.startsWith('followups.')||x.key.startsWith('contracts.')||x.key.startsWith('invoices.')?'customers':x.key.startsWith('users.')?'users':x.key.startsWith('payroll.')||x.key.startsWith('salaryStatement.')||x.key.startsWith('commission.')||x.key.startsWith('commissionStatement.')||x.key.startsWith('sidebar.payroll')||x.key.startsWith('sidebar.salaryStatement')||x.key.startsWith('sidebar.commission')||x.key==='sidebar.group.payroll'?'payroll':'appointments',text_type:x.type||base?.type||'label',ar_text:String(x.ar||'').trim(),en_text:String(x.en||'').trim(),default_ar:base?.ar||String(x.ar||'').trim(),default_en:base?.en||String(x.en||'').trim(),_hadEnglish:Boolean(String(remote?.en||base?.en||'').trim())}});if(normalized.some(x=>x.en_text&&ARABIC_RE.test(x.en_text)))throw new Error('لا يمكن الحفظ مع نص عربي داخل العمود الإنجليزي.');if(normalized.some(x=>!x.ar_text||(x._hadEnglish&&!x.en_text)))throw new Error('لا يمكن حذف ترجمة مكتملة أو حفظ نص عربي فارغ.');const payload=normalized.filter(x=>x.ar_text&&x.en_text).map(({_hadEnglish,...x})=>x);if(payload.length)await (window.LocalizationCenterService.saveEntries?.(payload)||window.LocalizationCenterService.saveScreen(SCREEN_KEY,payload));payload.forEach(x=>state.remote.set(x.translation_key,{key:x.translation_key,ar:x.ar_text,en:x.en_text,type:x.text_type,screenKey:x.screen_key}));cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}
+  function cacheRows(){try{localStorage.setItem(STORAGE_CACHE,JSON.stringify([...state.remote.values()].map(x=>({translation_key:x.key,ar_text:x.ar,en_text:x.en,text_type:x.type,screen_key:x.screenKey||routeFor(x.key).screenKey,module_name:x.moduleName||routeFor(x.key).moduleName}))))}catch(_){}}
+  function loadCache(){try{const data=JSON.parse(localStorage.getItem(STORAGE_CACHE)||'[]');if(Array.isArray(data))data.forEach(row=>{const base=defaults.get(row.translation_key);{const route=routeFor(row.translation_key);state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||base?.ar||''),en:String(row.en_text||base?.en||''),type:row.text_type||base?.type||'label',screenKey:route.screenKey,moduleName:route.moduleName})}})}catch(_){}}
+  async function loadRemote(force=false){if(state.loading&&!force)return state.loading;if(state.loaded&&!force)return getRows();state.loading=(async()=>{try{if(!window.LocalizationCenterService)return getRows();const data=await (window.LocalizationCenterService.listPilot?.()||window.LocalizationCenterService.listScreen(SCREEN_KEY));(data||[]).forEach(row=>{const base=defaults.get(row.translation_key);{const route=routeFor(row.translation_key);state.remote.set(row.translation_key,{key:row.translation_key,ar:String(row.ar_text||base?.ar||''),en:String(row.en_text||base?.en||''),type:row.text_type||base?.type||'label',screenKey:route.screenKey,moduleName:route.moduleName})}});state.loaded=true;cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}catch(error){console.warn('[Localization] remote load deferred',error?.message||error);return getRows()}finally{state.loading=null}})();return state.loading}
+  function getRows(){const keys=new Set([...defaults.keys(),...state.remote.keys()]);return [...keys].map(key=>{const base=defaults.get(key),remote=state.remote.get(key);const ar=String(remote?.ar||base?.ar||''),en=String(remote?.en||base?.en||'');const route=routeFor(key);return{key,type:remote?.type||base?.type||'label',screenKey:route.screenKey,moduleName:route.moduleName,ar,en,defaultAr:base?.ar||ar,defaultEn:base?.en||en,complete:Boolean(ar.trim()&&en.trim()&&!ARABIC_RE.test(en)),customized:Boolean(remote&&base&&(remote.ar!==base.ar||remote.en!==base.en))}}).sort((a,b)=>a.screenKey.localeCompare(b.screenKey)||a.key.localeCompare(b.key))}
+  async function saveRows(entries){if(!window.LocalizationCenterService)throw new Error(t('translationCenter.error.serviceNotReady'));const normalized=(entries||[]).map(x=>{const base=defaults.get(x.key),remote=state.remote.get(x.key),route=routeFor(x.key);return{translation_key:x.key,screen_key:route.screenKey,module_name:route.moduleName,text_type:x.type||base?.type||'label',ar_text:String(x.ar||'').trim(),en_text:String(x.en||'').trim(),default_ar:base?.ar||String(x.ar||'').trim(),default_en:base?.en||String(x.en||'').trim(),_hadEnglish:Boolean(String(remote?.en||base?.en||'').trim())}});if(normalized.some(x=>x.en_text&&ARABIC_RE.test(x.en_text)))throw new Error(t('translationCenter.validation.englishArabic'));if(normalized.some(x=>!x.ar_text||(x._hadEnglish&&!x.en_text)))throw new Error(t('translationCenter.validation.required'));const payload=normalized.filter(x=>x.ar_text&&x.en_text).map(({_hadEnglish,...x})=>x);if(payload.length)await (window.LocalizationCenterService.saveEntries?.(payload)||window.LocalizationCenterService.saveScreen(SCREEN_KEY,payload));payload.forEach(x=>state.remote.set(x.translation_key,{key:x.translation_key,ar:x.ar_text,en:x.en_text,type:x.text_type,screenKey:x.screen_key,moduleName:x.module_name}));cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}
   function setLanguage(language){state.language=language==='en'?'en':'ar';localStorage.setItem(STORAGE_LANGUAGE,state.language);applyStatic(document);window.dispatchEvent(new CustomEvent('petatoe-language-changed',{detail:{screenKey:SCREEN_KEY,language:state.language}}));return state.language}
   function getLanguage(){return state.language}
   function applyStatic(root=document){const lang=effectiveLanguage();const scope=root?.querySelectorAll?root:document;scope.querySelectorAll?.('[data-execution-i18n]').forEach(el=>{el.textContent=t(el.dataset.executionI18n)});scope.querySelectorAll?.('[data-execution-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.executionI18nPlaceholder))});scope.querySelectorAll?.('[data-petatoe-i18n]').forEach(el=>{el.textContent=t(el.dataset.petatoeI18n)});scope.querySelectorAll?.('[data-petatoe-i18n-aria]').forEach(el=>{const value=t(el.dataset.petatoeI18nAria);el.setAttribute('aria-label',value);el.setAttribute('title',value)});scope.querySelectorAll?.('[data-petatoe-i18n-title]').forEach(el=>{el.setAttribute('title',t(el.dataset.petatoeI18nTitle))});scope.querySelectorAll?.('[data-petatoe-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.petatoeI18nPlaceholder))});scope.querySelectorAll?.('input[type="date"]').forEach(el=>{el.lang=lang==='en'?'en-US':'ar-SA';el.dir=lang==='en'?'ltr':'rtl'});document.documentElement.lang=lang==='en'?'en':'ar';document.documentElement.dir=lang==='en'?'ltr':'rtl';const header=document.getElementById('appHeader');if(header){header.lang=lang==='en'?'en':'ar';header.dataset.petatoeLanguage=lang}const view=document.getElementById('installationExecutionView');if(view){view.dir=lang==='en'?'ltr':'rtl';view.lang=lang==='en'?'en':'ar';view.dataset.executionLanguage=lang}const sidebar=document.getElementById('mainSidebar');if(sidebar){sidebar.dir=lang==='en'?'ltr':'rtl';sidebar.lang=lang==='en'?'en':'ar';sidebar.dataset.petatoeLanguage=lang}}
   function pageMeta(){return[t('execution.page.title'),t('execution.page.subtitle')]}
   loadCache();
-  window.PetatoeLocalization=Object.freeze({screenKey:SCREEN_KEY,t,statusLabel,translateMessage,getRows,loadRemote,saveRows,setLanguage,getLanguage,effectiveLanguage,applyStatic,pageMeta,desktopPilot,registerEntityCatalog,entityText,serviceDefaultEnglish});
+  window.PetatoeLocalization=Object.freeze({screenKey:SCREEN_KEY,t,statusLabel,translateMessage,getRows,loadRemote,saveRows,setLanguage,getLanguage,effectiveLanguage,applyStatic,pageMeta,desktopPilot,registerEntityCatalog,entityText,serviceDefaultEnglish,routeFor,screenKeyFor,moduleNameFor});
   document.addEventListener('DOMContentLoaded',()=>{applyStatic(document);setTimeout(()=>loadRemote(false),0)});
 })();

@@ -1,13 +1,13 @@
 {
-  "version": "18.56.61",
-  "build": 185661,
+  "version": "18.56.62",
+  "build": 185662,
   "forceUpdate": true,
   "releaseDate": "2026-09-07",
-  "title": "SEA VIBE Reports Visual Consistency & Full-Width Tables R44R18",
+  "title": "Localization Architecture & Coverage Gate R44R19",
   "notes": [
-    "تنسيق كروت تقارير SEA VIBE بفصل العنوان عن القيمة ومعالجة عرض الأرقام واتجاه النص بدون التأثير على كروت الخزنة.",
-    "عرض تقريري أعلى الرحلات ربحًا وأعلى المصروفات بعرض كامل وتحت بعض مع 10 صفوف افتراضيًا وزر عرض المزيد.",
-    "إضافة إجماليات كاملة للأعمدة الرقمية وتوحيد توزيع كروت المصاريف العامة مع الحفاظ على Desktop وTablet وMobile."
+    "توحيد تصنيف مفاتيح الترجمة حسب الوحدة والشاشة داخل نفس PETATOE Localization Center بدون إنشاء محرك ترجمة موازٍ.",
+    "تحديث مركز الترجمة لإدارة التغطية حسب الوحدة والشاشة ونوع النص مع إزالة مفهوم المرحلة التجريبية القديمة.",
+    "إضافة Localization Coverage Gate يمنع زيادة النصوص الصلبة ويكشف مفاتيح HTML المفقودة وتسرب العربية داخل الإنجليزية."
   ],
-  "cacheToken": "petatoe-pwa-18-56-61-sea-vibe-reports-visual-consistency-r44r18-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-62-localization-architecture-coverage-r44r19-p5-13-8-72"
 }

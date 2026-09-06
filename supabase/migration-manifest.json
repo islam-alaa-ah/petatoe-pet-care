@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.58",
-    "build": 185658,
-    "date": "2026-09-06"
+    "version": "18.56.62",
+    "build": 185662,
+    "date": "2026-09-07"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
   "policy": {
@@ -83,7 +83,8 @@
       "supabase/migrations/phase_p5_13_8_72_r44r11_sea_vibe_commission_historical_backfill.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r12_sea_vibe_trip_preview_expense_flow.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r13r1_sea_vibe_customers_serials_compatibility.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r14_sea_vibe_trip_customer_quick_create.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r14_sea_vibe_trip_customer_quick_create.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r19_localization_architecture_coverage.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -94,8 +95,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 242,
-    "totalBytes": 2578791
+    "sqlFileCount": 243,
+    "totalBytes": 2602283
   },
   "orderingHazards": {
     "examples": [
@@ -118,21 +119,6 @@
     ]
   },
   "historicalInventory": [
-    {
-      "path": "supabase/migrations/PETATOE_P3_3_MAKKAH_JEDDAH_NEIGHBORHOODS_SEED.sql",
-      "sha256": "780e66575afac8e0b3073b178989ed28b8772185fd08950658351aa8298bbc24",
-      "bytes": 7129
-    },
-    {
-      "path": "supabase/migrations/PETATOE_P5_1_DAILY_OPERATIONS_RELATIONSHIP_RECOVERY.sql",
-      "sha256": "cf4f108d2eca15023adeffc9965a8d5a3eef6e3ad4cbf0c4d057907b4b906985",
-      "bytes": 8170
-    },
-    {
-      "path": "supabase/migrations/PETATOE_P5_DAILY_OPERATIONS_GLOBAL_RUNTIME_DIAGNOSTIC.sql",
-      "sha256": "a7ee92defe1e147ed21eee3e54fc7f52aa6f69ea498c3bc0a2b8b53de23e944e",
-      "bytes": 15466
-    },
     {
       "path": "supabase/migrations/p5113.sql",
       "sha256": "e07133d379e9b3e823c45b35e0382fb5c8da159c9e4d8ac40ba7cccf06ada35b",
@@ -162,6 +148,21 @@
       "path": "supabase/migrations/p5_6_groomer_driver_team_only_scope.sql",
       "sha256": "1e24994ee2abfefc69d8645aed13b34d5c85839709bab23f0386640a73199d13",
       "bytes": 4351
+    },
+    {
+      "path": "supabase/migrations/PETATOE_P3_3_MAKKAH_JEDDAH_NEIGHBORHOODS_SEED.sql",
+      "sha256": "780e66575afac8e0b3073b178989ed28b8772185fd08950658351aa8298bbc24",
+      "bytes": 7129
+    },
+    {
+      "path": "supabase/migrations/PETATOE_P5_1_DAILY_OPERATIONS_RELATIONSHIP_RECOVERY.sql",
+      "sha256": "cf4f108d2eca15023adeffc9965a8d5a3eef6e3ad4cbf0c4d057907b4b906985",
+      "bytes": 8170
+    },
+    {
+      "path": "supabase/migrations/PETATOE_P5_DAILY_OPERATIONS_GLOBAL_RUNTIME_DIAGNOSTIC.sql",
+      "sha256": "a7ee92defe1e147ed21eee3e54fc7f52aa6f69ea498c3bc0a2b8b53de23e944e",
+      "bytes": 15466
     },
     {
       "path": "supabase/migrations/phase07_reference_data_audit.sql",
@@ -1247,6 +1248,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r15_sea_vibe_commissions_customer_delete.sql",
       "sha256": "1d4d1320223da88ab8e5aa033a23281222677d5de44d46e8dfb3f6d926ae618f",
       "bytes": 19814
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r19_localization_architecture_coverage.sql",
+      "sha256": "b6f8fbfac4f8227ac9cd20e28532df56be4647374e2e4f0c07fa7b0f9c4f697d",
+      "bytes": 23492
     },
     {
       "path": "supabase/migrations/phase_p5_13_8_72_r44r1_sea_vibe_zawel_reconciliation_dry_run.sql",
