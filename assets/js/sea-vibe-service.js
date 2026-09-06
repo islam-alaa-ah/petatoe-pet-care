@@ -3,10 +3,15 @@
   const CACHE_KEY='sea-vibe:snapshot:v1';
   const CACHE_TTL=15*60*1000;
   const STALE_MAX=365*24*60*60*1000;
+  const REVALIDATE_MIN_INTERVAL_MS=30*1000;
+  const SNAPSHOT_META_KEY='__seaVibeSnapshotMeta';
   const ALL_SECTIONS=['trips','customers','expenses','assets','tripTypes','paymentMethods','expenseCatalog','permitFees','commissionRules','commissionEmployees','attachments','zawelTransactions','zawelBalance','fuelTransactions','fuelBalance','fuelSettlementConfig','fuelSettlements','treasuryMovements'];
   const LEGACY_CREATE_ACTIONS=new Set(['trip_create','asset_create','expense_create','expense_batch_create','reference_create','zawel_topup']);
   let memory=null;
-  let readStatus={source:'none',updatedAt:0,stale:false};
+  let readStatus={source:'none',updatedAt:0,stale:false,failedSections:[],refreshedSections:[]};
+  let revalidationPromise=null;
+  let lastRevalidationStartedAt=0;
+  let memoryRevision=0;
   const pendingSyncSections=new Set();
 
   function client(){ if(!window.customerSupabase) throw new Error('اتصال Supabase غير جاهز.'); return window.customerSupabase; }
@@ -32,6 +37,19 @@
   const mapTreasury=r=>({id:r.movement_id,serial:r.movement_serial||'',date:r.movement_date||String(r.movement_at||'').slice(0,10),at:r.movement_at||'',type:r.movement_type||'',amount:num(r.amount),reference:r.reference||'',description:r.description||'',tripId:r.trip_id||'',assetId:r.asset_id||'',sourceKind:r.source_kind||'',sourceId:r.source_id||'',expenseGroupId:r.expense_group_id||''});
   const blank=()=>({trips:[],customers:[],expenses:[],assets:[],tripTypes:[],paymentMethods:[],expenseCatalog:[],permitFees:[],commissionRules:[],commissionEmployees:[],commissionRulesReady:false,attachments:[],zawelTransactions:[],zawelBalance:{balancePoints:0,totalChargedPoints:0,totalDeductedPoints:0,totalTopupCost:0},fuelTransactions:[],fuelBalance:{balanceLiters:0,balanceValue:0,totalTopupLiters:0,totalTopupValue:0,totalDeductedLiters:0,totalDeductedValue:0,averageUnitPrice:0,pendingValuationCount:0,unconfiguredTripCount:0,historicalReviewCount:0},fuelSettlementConfig:{peopleWeightPct:50,hoursWeightPct:50,updatedAt:''},fuelSettlements:[],treasuryMovements:[]});
   function normalizeSnapshot(value){const base=blank(),raw=value&&typeof value==='object'?value:{};return{...base,...raw,customers:Array.isArray(raw.customers)?raw.customers:[],commissionRules:Array.isArray(raw.commissionRules)?raw.commissionRules:[],commissionEmployees:Array.isArray(raw.commissionEmployees)?raw.commissionEmployees:[],commissionRulesReady:raw.commissionRulesReady===true,zawelTransactions:Array.isArray(raw.zawelTransactions)?raw.zawelTransactions:[],zawelBalance:{...base.zawelBalance,...(raw.zawelBalance||{})},fuelTransactions:Array.isArray(raw.fuelTransactions)?raw.fuelTransactions:[],fuelBalance:{...base.fuelBalance,...(raw.fuelBalance||{})},fuelSettlementConfig:{...base.fuelSettlementConfig,...(raw.fuelSettlementConfig||{})},fuelSettlements:Array.isArray(raw.fuelSettlements)?raw.fuelSettlements:[],treasuryMovements:Array.isArray(raw.treasuryMovements)?raw.treasuryMovements:[]};}
+
+  function snapshotMeta(snapshot){const raw=snapshot?.[SNAPSHOT_META_KEY];return raw&&typeof raw==='object'?raw:{failedSections:[],sectionUpdatedAt:{},refreshedAt:0};}
+  function applySnapshotMeta(snapshot,{refreshedSections=[],failedSections=[],full=false,refreshedAt=Date.now()}={}){
+    const current=snapshotMeta(snapshot),failed=new Set(full?[]:(current.failedSections||[])),sectionUpdatedAt={...(current.sectionUpdatedAt||{})};
+    for(const name of refreshedSections||[]){failed.delete(name);sectionUpdatedAt[name]=refreshedAt;}
+    for(const name of failedSections||[])failed.add(name);
+    snapshot[SNAPSHOT_META_KEY]={failedSections:[...failed],sectionUpdatedAt,refreshedAt};
+    return snapshot;
+  }
+  function updateReadStatus(source,{updatedAt=Date.now(),stale=false,failedSections=[],refreshedSections=[],refreshError=''}={}){
+    readStatus={source,updatedAt:Number(updatedAt||Date.now()),stale:Boolean(stale),failedSections:[...(failedSections||[])],refreshedSections:[...(refreshedSections||[])],refreshError:String(refreshError||'')};
+    return readStatus;
+  }
 
   function permitDurationKey(durationHours){return Math.min(5,Math.max(1,Math.trunc(num(durationHours)||1)));}
   function permitCostFromPoints(points){return Number((Math.max(0,Math.trunc(num(points)))*575/2500).toFixed(2));}
@@ -82,50 +100,115 @@
   function hasManualFuelExpense(snapshot,tripId){return (snapshot.expenses||[]).some(e=>e.tripId===tripId&&!e.systemGenerated&&(()=>{const c=(snapshot.expenseCatalog||[]).find(x=>String(x.id)===String(e.catalogId));return /بنزين/i.test(c?.nameAr||'')||/fuel/i.test(c?.nameEn||'');})());}
   function syncOptimisticFuelWallet(snapshot,tripId,record,existing){const cost=fuelCostForTripType(record.tripTypeId,snapshot);if(cost<=0)throw new Error('SEA_VIBE_FUEL_TARIFF_MISSING');const systemExpense=(snapshot.expenses||[]).find(x=>x.tripId===tripId&&x.systemKey==='fuel_cost');if(existing&&!systemExpense&&hasManualFuelExpense(snapshot,tripId))return;const oldCost=existing?num(systemExpense?.amount||cost):0,price=num(snapshot.fuelBalance?.averageUnitPrice),rows=snapshot.fuelTransactions||[];let fuelExpense=systemExpense;if(fuelExpense){if(!existing||String(existing.tripTypeId)!==String(record.tripTypeId))fuelExpense.amount=cost;fuelExpense.date=record.date;fuelExpense.updatedAt=nowIso();}else{fuelExpense={id:localId('fuel-expense'),scope:'trip',tripId,assetId:'',catalogId:(snapshot.expenseCatalog||[]).find(x=>x.systemKey==='fuel_cost')?.id||'',date:record.date,amount:cost,paymentMethodId:'',notes:'',systemGenerated:true,systemKey:'fuel_cost',createdAt:nowIso(),updatedAt:nowIso()};snapshot.expenses.unshift(fuelExpense);}rows.filter(x=>x.tripId===tripId&&(x.type==='trip'||x.type==='trip_adjustment')).forEach(x=>{x.transactionDate=record.date;x.reference=record.serial||existing?.serial||x.reference||'';});if(!existing){const valueDelta=-cost,liters=fuelLitersFromValue(valueDelta,price);rows.unshift({id:localId('fuel-trip'),type:'trip',litersDelta:liters,valueDelta,unitPriceSnapshot:liters==null?null:price,valuationStatus:liters==null?'pending':'valued',tripId,reference:record.serial||'',notes:'خصم بنزين الرحلة حسب نوع الرحلة',transactionDate:record.date,createdAt:nowIso(),updatedAt:nowIso()});}else if(String(existing.tripTypeId)!==String(record.tripTypeId)){const valueDelta=Number((oldCost-cost).toFixed(2));if(valueDelta!==0){const liters=fuelLitersFromValue(valueDelta,price);rows.unshift({id:localId('fuel-adjustment'),type:'trip_adjustment',litersDelta:liters,valueDelta,unitPriceSnapshot:liters==null?null:price,valuationStatus:liters==null?'pending':'valued',tripId,reference:existing.serial||record.serial||'',notes:'تسوية بنزين بعد تغيير نوع الرحلة',transactionDate:record.date,createdAt:nowIso(),updatedAt:nowIso()});}}snapshot.fuelTransactions=rows;recalcOptimisticFuelBalance(snapshot);}
 
-  async function persist(snapshot){ memory=snapshot; const ns=await namespace(); await window.KYUMSmartCache?.set?.(CACHE_KEY,snapshot,{namespace:ns,ttlMs:CACHE_TTL,staleMaxMs:STALE_MAX,source:'supabase',schemaVersion:1}); readStatus={source:'network',updatedAt:Date.now(),stale:false}; window.dispatchEvent(new CustomEvent('sea-vibe-data-updated',{detail:{source:'persist'}})); return snapshot; }
-  async function readCache(){ const ns=await namespace(); const hit=await window.KYUMSmartCache?.get?.(CACHE_KEY,{namespace:ns,allowStale:true,allowStaleAnyAge:true,staleMaxMs:STALE_MAX}); if(hit?.hit){memory=normalizeSnapshot(hit.data);readStatus={source:'cache',updatedAt:hit.updatedAt||Date.now(),stale:!!hit.stale};return memory;} return null; }
+  async function persist(snapshot,options={}){
+    const refreshedSections=[...new Set(options.refreshedSections||[])],failedSections=[...new Set(options.failedSections||[])],source=options.source||'network';
+    memory=applySnapshotMeta(normalizeSnapshot(snapshot),{refreshedSections,failedSections,full:options.full===true,refreshedAt:Date.now()});
+    memoryRevision+=1;
+    const ns=await namespace();
+    const cacheMeta=await window.KYUMSmartCache?.set?.(CACHE_KEY,memory,{namespace:ns,ttlMs:CACHE_TTL,staleMaxMs:STALE_MAX,source:'supabase',schemaVersion:1});
+    updateReadStatus(source,{updatedAt:cacheMeta?.updatedAt||Date.now(),stale:options.stale===true||failedSections.length>0,failedSections:snapshotMeta(memory).failedSections,refreshedSections});
+    window.dispatchEvent(new CustomEvent('sea-vibe-data-updated',{detail:{source,failedSections:[...readStatus.failedSections],refreshedSections:[...refreshedSections],partial:readStatus.failedSections.length>0}}));
+    return memory;
+  }
+  async function readCache(){
+    const ns=await namespace();
+    const hit=await window.KYUMSmartCache?.get?.(CACHE_KEY,{namespace:ns,allowStale:true,allowStaleAnyAge:true,staleMaxMs:STALE_MAX});
+    if(hit?.hit){
+      memory=normalizeSnapshot(hit.data);
+      memoryRevision+=1;
+      const meta=snapshotMeta(memory),failedSections=[...(meta.failedSections||[])];
+      updateReadStatus('cache',{updatedAt:hit.metadata?.updatedAt||meta.refreshedAt||Date.now(),stale:!!hit.stale||failedSections.length>0,failedSections,refreshedSections:[]});
+      return memory;
+    }
+    return null;
+  }
 
-  async function fetchSections(names=ALL_SECTIONS){
-    const requested=[...new Set((names||[]).filter(name=>ALL_SECTIONS.includes(name)))];
-    const c=client(),out={};
-    await Promise.all(requested.map(async name=>{
-      if(name==='trips') out.trips=sortTrips((await unwrap(c.from('sea_vibe_trip_financials').select('*').order('trip_date',{ascending:false}),'تعذر تحميل رحلات SEA VIBE')).map(mapTrip));
-      else if(name==='customers') out.customers=(await unwrap(c.rpc('get_sea_vibe_customers_r44r15'),'تعذر تحميل عملاء SEA VIBE')).map(mapCustomer);
-      else if(name==='expenses') out.expenses=(await unwrap(c.from('sea_vibe_expenses').select('*').order('expense_date',{ascending:false}),'تعذر تحميل مصروفات SEA VIBE')).map(mapExpense);
-      else if(name==='assets') out.assets=(await unwrap(c.from('sea_vibe_assets_with_value').select('*').order('created_at',{ascending:false}),'تعذر تحميل أصول SEA VIBE')).map(mapAsset);
-      else if(name==='tripTypes') out.tripTypes=(await unwrap(c.from('sea_vibe_trip_types').select('*').order('name_ar'),'تعذر تحميل أنواع الرحلات')).map(mapRef);
-      else if(name==='paymentMethods') out.paymentMethods=(await unwrap(c.from('sea_vibe_payment_methods').select('*').order('name_ar'),'تعذر تحميل طرق الدفع')).map(mapRef);
-      else if(name==='expenseCatalog') out.expenseCatalog=(await unwrap(c.from('sea_vibe_expense_catalog').select('*').order('name_ar'),'تعذر تحميل المصروفات المرجعية')).map(mapRef);
-      else if(name==='permitFees') out.permitFees=(await unwrap(c.from('sea_vibe_sailing_permit_fees').select('*').order('people_count').order('duration_hours'),'تعذر تحميل رسوم تصريح الإبحار')).map(r=>({peopleCount:num(r.people_count),durationHours:num(r.duration_hours),amount:num(r.fee_amount),points:r.points==null?null:num(r.points),updatedAt:r.updated_at||''}));
-      else if(name==='commissionRules'){out.commissionRules=(await unwrap(c.from('sea_vibe_commission_rules_view').select('*').order('name_ar'),'تعذر تحميل العمولات المرجعية')).map(mapCommissionRule);out.commissionRulesReady=true;}
-      else if(name==='commissionEmployees') out.commissionEmployees=(await unwrap(c.rpc('sea_vibe_commission_employee_options_r44r7'),'تعذر تحميل موظفي العمولات')).map(mapCommissionEmployee);
-      else if(name==='attachments') out.attachments=(await unwrap(c.from('sea_vibe_expense_attachments').select('*').order('created_at',{ascending:false}),'تعذر تحميل مرفقات المصروفات')).map(mapAttachment);
-      else if(name==='zawelTransactions') out.zawelTransactions=(await unwrap(c.from('sea_vibe_zawel_transactions').select('*').order('transaction_date',{ascending:false}).order('created_at',{ascending:false}),'تعذر تحميل حركات رصيد زاول')).map(mapZawel);
-      else if(name==='zawelBalance') { const row=await unwrap(c.from('sea_vibe_zawel_balance').select('*').single(),'تعذر تحميل رصيد زاول'); out.zawelBalance={balancePoints:num(row.balance_points),totalChargedPoints:num(row.total_charged_points),totalDeductedPoints:num(row.total_deducted_points),totalTopupCost:num(row.total_topup_cost)}; }
-      else if(name==='fuelTransactions') out.fuelTransactions=(await unwrap(c.from('sea_vibe_fuel_transactions').select('*').order('transaction_date',{ascending:false}).order('created_at',{ascending:false}),'تعذر تحميل حركات رصيد البنزين')).map(mapFuel);
-      else if(name==='fuelBalance') { const rows=await unwrap(c.from('sea_vibe_fuel_balance').select('*').limit(1),'تعذر تحميل رصيد البنزين'),row=rows?.[0]||{}; out.fuelBalance={balanceLiters:num(row.balance_liters),balanceValue:num(row.balance_value),totalTopupLiters:num(row.total_topup_liters),totalTopupValue:num(row.total_topup_value),totalDeductedLiters:num(row.total_deducted_liters),totalDeductedValue:num(row.total_deducted_value),averageUnitPrice:num(row.average_unit_price),pendingValuationCount:num(row.pending_valuation_count),unconfiguredTripCount:num(row.unconfigured_trip_count),historicalReviewCount:num(row.historical_review_count)}; }
-      else if(name==='fuelSettlementConfig') { const rows=await unwrap(c.from('sea_vibe_fuel_settlement_config').select('*').limit(1),'تعذر تحميل إعدادات تسوية البنزين'),row=rows?.[0]||{}; out.fuelSettlementConfig={peopleWeightPct:num(row.people_weight_pct||50),hoursWeightPct:num(row.hours_weight_pct||50),updatedAt:row.updated_at||''}; }
-      else if(name==='fuelSettlements') out.fuelSettlements=(await unwrap(c.from('sea_vibe_fuel_settlements').select('*').order('cutoff_date',{ascending:false}).order('created_at',{ascending:false}),'تعذر تحميل سجل تسويات البنزين')).map(mapFuelSettlement);
-      else if(name==='treasuryMovements') out.treasuryMovements=(await unwrap(c.from('sea_vibe_treasury_movements').select('*').order('movement_date',{ascending:false}).order('movement_at',{ascending:false}),'تعذر تحميل حركات الخزنة')).map(mapTreasury);
-    }));
+  async function fetchSection(name,c=client()){
+    const out={};
+    if(name==='trips') out.trips=sortTrips((await unwrap(c.from('sea_vibe_trip_financials').select('*').order('trip_date',{ascending:false}),'تعذر تحميل رحلات SEA VIBE')).map(mapTrip));
+    else if(name==='customers') out.customers=(await unwrap(c.rpc('get_sea_vibe_customers_r44r15'),'تعذر تحميل عملاء SEA VIBE')).map(mapCustomer);
+    else if(name==='expenses') out.expenses=(await unwrap(c.from('sea_vibe_expenses').select('*').order('expense_date',{ascending:false}),'تعذر تحميل مصروفات SEA VIBE')).map(mapExpense);
+    else if(name==='assets') out.assets=(await unwrap(c.from('sea_vibe_assets_with_value').select('*').order('created_at',{ascending:false}),'تعذر تحميل أصول SEA VIBE')).map(mapAsset);
+    else if(name==='tripTypes') out.tripTypes=(await unwrap(c.from('sea_vibe_trip_types').select('*').order('name_ar'),'تعذر تحميل أنواع الرحلات')).map(mapRef);
+    else if(name==='paymentMethods') out.paymentMethods=(await unwrap(c.from('sea_vibe_payment_methods').select('*').order('name_ar'),'تعذر تحميل طرق الدفع')).map(mapRef);
+    else if(name==='expenseCatalog') out.expenseCatalog=(await unwrap(c.from('sea_vibe_expense_catalog').select('*').order('name_ar'),'تعذر تحميل المصروفات المرجعية')).map(mapRef);
+    else if(name==='permitFees') out.permitFees=(await unwrap(c.from('sea_vibe_sailing_permit_fees').select('*').order('people_count').order('duration_hours'),'تعذر تحميل رسوم تصريح الإبحار')).map(r=>({peopleCount:num(r.people_count),durationHours:num(r.duration_hours),amount:num(r.fee_amount),points:r.points==null?null:num(r.points),updatedAt:r.updated_at||''}));
+    else if(name==='commissionRules'){out.commissionRules=(await unwrap(c.from('sea_vibe_commission_rules_view').select('*').order('name_ar'),'تعذر تحميل العمولات المرجعية')).map(mapCommissionRule);out.commissionRulesReady=true;}
+    else if(name==='commissionEmployees') out.commissionEmployees=(await unwrap(c.rpc('sea_vibe_commission_employee_options_r44r7'),'تعذر تحميل موظفي العمولات')).map(mapCommissionEmployee);
+    else if(name==='attachments') out.attachments=(await unwrap(c.from('sea_vibe_expense_attachments').select('*').order('created_at',{ascending:false}),'تعذر تحميل مرفقات المصروفات')).map(mapAttachment);
+    else if(name==='zawelTransactions') out.zawelTransactions=(await unwrap(c.from('sea_vibe_zawel_transactions').select('*').order('transaction_date',{ascending:false}).order('created_at',{ascending:false}),'تعذر تحميل حركات رصيد زاول')).map(mapZawel);
+    else if(name==='zawelBalance') { const row=await unwrap(c.from('sea_vibe_zawel_balance').select('*').single(),'تعذر تحميل رصيد زاول'); out.zawelBalance={balancePoints:num(row.balance_points),totalChargedPoints:num(row.total_charged_points),totalDeductedPoints:num(row.total_deducted_points),totalTopupCost:num(row.total_topup_cost)}; }
+    else if(name==='fuelTransactions') out.fuelTransactions=(await unwrap(c.from('sea_vibe_fuel_transactions').select('*').order('transaction_date',{ascending:false}).order('created_at',{ascending:false}),'تعذر تحميل حركات رصيد البنزين')).map(mapFuel);
+    else if(name==='fuelBalance') { const rows=await unwrap(c.from('sea_vibe_fuel_balance').select('*').limit(1),'تعذر تحميل رصيد البنزين'),row=rows?.[0]||{}; out.fuelBalance={balanceLiters:num(row.balance_liters),balanceValue:num(row.balance_value),totalTopupLiters:num(row.total_topup_liters),totalTopupValue:num(row.total_topup_value),totalDeductedLiters:num(row.total_deducted_liters),totalDeductedValue:num(row.total_deducted_value),averageUnitPrice:num(row.average_unit_price),pendingValuationCount:num(row.pending_valuation_count),unconfiguredTripCount:num(row.unconfigured_trip_count),historicalReviewCount:num(row.historical_review_count)}; }
+    else if(name==='fuelSettlementConfig') { const rows=await unwrap(c.from('sea_vibe_fuel_settlement_config').select('*').limit(1),'تعذر تحميل إعدادات تسوية البنزين'),row=rows?.[0]||{}; out.fuelSettlementConfig={peopleWeightPct:num(row.people_weight_pct||50),hoursWeightPct:num(row.hours_weight_pct||50),updatedAt:row.updated_at||''}; }
+    else if(name==='fuelSettlements') out.fuelSettlements=(await unwrap(c.from('sea_vibe_fuel_settlements').select('*').order('cutoff_date',{ascending:false}).order('created_at',{ascending:false}),'تعذر تحميل سجل تسويات البنزين')).map(mapFuelSettlement);
+    else if(name==='treasuryMovements') out.treasuryMovements=(await unwrap(c.from('sea_vibe_treasury_movements').select('*').order('movement_date',{ascending:false}).order('movement_at',{ascending:false}),'تعذر تحميل حركات الخزنة')).map(mapTreasury);
     return out;
   }
 
+  async function fetchSections(names=ALL_SECTIONS){
+    const requested=[...new Set((names||[]).filter(name=>ALL_SECTIONS.includes(name)))],c=client(),out={};
+    await Promise.all(requested.map(async name=>Object.assign(out,await fetchSection(name,c))));
+    return out;
+  }
+
+  async function fetchSectionsPartial(names=ALL_SECTIONS){
+    const requested=[...new Set((names||[]).filter(name=>ALL_SECTIONS.includes(name)))],c=client();
+    const settled=await Promise.allSettled(requested.map(async name=>({name,patch:await fetchSection(name,c)})));
+    const patch={},refreshedSections=[],failedSections=[],errors={};
+    settled.forEach((result,index)=>{const name=requested[index];if(result.status==='fulfilled'){Object.assign(patch,result.value.patch);refreshedSections.push(name);}else{failedSections.push(name);errors[name]=String(result.reason?.message||result.reason||'unknown error');}});
+    return {patch,refreshedSections,failedSections,errors};
+  }
+
   async function fetchNetwork(){ return {...blank(),...await fetchSections(ALL_SECTIONS)}; }
-  async function refreshSections(names){ const patch=await fetchSections(names); return persist({...blank(),...(memory||blank()),...patch}); }
+  async function refreshSections(names){ const requested=[...new Set((names||[]).filter(name=>ALL_SECTIONS.includes(name)))],patch=await fetchSections(requested); return persist({...blank(),...(memory||blank()),...patch},{source:'network-sections',refreshedSections:requested,failedSections:[],full:false}); }
   function markSyncSections(names){ for(const name of names||[]) if(ALL_SECTIONS.includes(name))pendingSyncSections.add(name); }
   async function syncRefresh(context={}){
     if(context.reason==='offline-queue'&&pendingSyncSections.size){const names=[...pendingSyncSections];pendingSyncSections.clear();return refreshSections(names);}
     return refresh();
   }
 
-  async function load(options={}){
-    if(memory&&!options.force) return memory;
-    const cached=await readCache();
-    if(cached&&!options.force){ if(navigator.onLine!==false) fetchNetwork().then(persist).catch(()=>{}); return cached; }
-    try{return await persist(await fetchNetwork());}catch(error){ if(cached)return cached; throw error; }
+  function revalidationDue(force=false){
+    if(navigator.onLine===false||!memory)return false;
+    if(force)return true;
+    const now=Date.now();
+    if(now-lastRevalidationStartedAt<REVALIDATE_MIN_INTERVAL_MS)return false;
+    const age=now-Number(readStatus.updatedAt||0);
+    return readStatus.source==='cache'||readStatus.stale===true||age>=REVALIDATE_MIN_INTERVAL_MS;
   }
-  async function refresh(){ return persist(await fetchNetwork()); }
+  async function revalidateSnapshot(options={}){
+    if(navigator.onLine===false||!memory)return memory||blank();
+    if(revalidationPromise)return revalidationPromise;
+    if(!revalidationDue(options.force===true))return memory;
+    lastRevalidationStartedAt=Date.now();
+    const base=memory,startRevision=memoryRevision;
+    revalidationPromise=(async()=>{
+      const result=await fetchSectionsPartial(ALL_SECTIONS);
+      if(memoryRevision!==startRevision||memory!==base){console.warn('SEA VIBE background revalidation discarded because the snapshot changed while the network refresh was in flight.');return memory||base;}
+      if(!result.refreshedSections.length){
+        updateReadStatus(readStatus.source||'cache',{updatedAt:readStatus.updatedAt||Date.now(),stale:true,failedSections:result.failedSections,refreshedSections:[],refreshError:Object.values(result.errors)[0]||'SEA VIBE background refresh failed'});
+        console.warn('SEA VIBE background revalidation failed for all sections.',result.errors);
+        return base;
+      }
+      if(result.failedSections.length)console.warn('SEA VIBE background revalidation completed with partial section failures.',result.errors);
+      return persist({...blank(),...base,...result.patch},{source:result.failedSections.length?'network-partial':'network-background',refreshedSections:result.refreshedSections,failedSections:result.failedSections,stale:result.failedSections.length>0,full:true});
+    })();
+    try{return await revalidationPromise;}finally{revalidationPromise=null;}
+  }
+  function scheduleRevalidation(options={}){
+    if(navigator.onLine===false||!memory||revalidationPromise||!revalidationDue(options.force===true))return;
+    revalidateSnapshot(options).catch(error=>{updateReadStatus(readStatus.source||'cache',{updatedAt:readStatus.updatedAt||Date.now(),stale:true,failedSections:readStatus.failedSections||[],refreshedSections:[],refreshError:error?.message||String(error)});console.warn('SEA VIBE background revalidation skipped:',error);});
+  }
+
+  async function load(options={}){
+    const force=options.force===true,available=memory||await readCache();
+    if(available&&!force){scheduleRevalidation();return available;}
+    try{return await persist(await fetchNetwork(),{source:'network',refreshedSections:ALL_SECTIONS,failedSections:[],full:true});}catch(error){
+      if(available){updateReadStatus(readStatus.source||'cache',{updatedAt:readStatus.updatedAt||Date.now(),stale:true,failedSections:readStatus.failedSections||[],refreshedSections:[],refreshError:error?.message||String(error)});return available;}
+      throw error;
+    }
+  }
+  async function refresh(){ return persist(await fetchNetwork(),{source:'network',refreshedSections:ALL_SECTIONS,failedSections:[],full:true}); }
   async function refreshCommissionEmployees(){
     if(navigator.onLine===false)return (memory||blank()).commissionEmployees||[];
     if(memory)await refreshSections(['commissionEmployees']);
@@ -133,11 +216,14 @@
     return (memory||blank()).commissionEmployees||[];
   }
   function getSnapshot(){ return memory||blank(); }
-  function getReadStatus(){ return {...readStatus}; }
-  async function invalidate(){ memory=null; const ns=await namespace(); await window.KYUMSmartCache?.removePrefix?.('sea-vibe:',{namespace:ns}); }
+  function getReadStatus(){ return {...readStatus,failedSections:[...(readStatus.failedSections||[])],refreshedSections:[...(readStatus.refreshedSections||[])]}; }
+  async function invalidate(){ memory=null; memoryRevision+=1; revalidationPromise=null; lastRevalidationStartedAt=0; const ns=await namespace(); await window.KYUMSmartCache?.removePrefix?.('sea-vibe:',{namespace:ns}); }
+
+  window.addEventListener('online',()=>{if(memory)scheduleRevalidation({force:true});});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&memory)scheduleRevalidation();});
 
   async function audit(action,entity,id,payload){ try{ const u=(await client().auth.getUser()).data.user?.id||null; await client().from('audit_logs').insert({user_id:u,action,entity_type:entity,entity_id:String(id||''),new_data:payload,metadata:{source:'petatoe-web',phase:'P5.13.8.72R31',module:'sea-vibe'}});}catch(e){console.warn('SEA VIBE audit skipped',e);} }
-  function optimistic(mutator){ const s=structuredClone(memory||blank()); mutator(s); memory=s; namespace().then(ns=>window.KYUMSmartCache?.set?.(CACHE_KEY,s,{namespace:ns,ttlMs:CACHE_TTL,staleMaxMs:STALE_MAX,source:'offline-optimistic',schemaVersion:1})); window.dispatchEvent(new CustomEvent('sea-vibe-data-updated',{detail:{source:'offline-optimistic'}})); return s; }
+  function optimistic(mutator){ const s=structuredClone(memory||blank()); mutator(s); memory=s; memoryRevision+=1; namespace().then(ns=>window.KYUMSmartCache?.set?.(CACHE_KEY,s,{namespace:ns,ttlMs:CACHE_TTL,staleMaxMs:STALE_MAX,source:'offline-optimistic',schemaVersion:1})); window.dispatchEvent(new CustomEvent('sea-vibe-data-updated',{detail:{source:'offline-optimistic'}})); return s; }
   function newOperationKey(kind){const suffix=globalThis.crypto?.randomUUID?.()||`${Date.now()}:${Math.random().toString(36).slice(2)}`;return `sea_vibe:${kind}:${suffix}`;}
   const serverReplayAnchors=new Map();
   function replayAnchorIso(value){const n=Number(value||0);if(n>0)return new Date(n).toISOString();const parsed=Date.parse(String(value||''));return Number.isFinite(parsed)?new Date(parsed).toISOString():new Date().toISOString();}

@@ -1,13 +1,13 @@
 {
-  "version": "18.56.59",
-  "build": 185659,
+  "version": "18.56.60",
+  "build": 185660,
   "forceUpdate": true,
   "releaseDate": "2026-09-06",
-  "title": "SEA VIBE Commission Exact Filters R44R16",
+  "title": "SEA VIBE Snapshot Revalidation & Partial Refresh Recovery R44R17",
   "notes": [
-    "إضافة فلتر مباشر باسم العمولة داخل إدارة عمولات SEA VIBE من نفس حركات العمولات المحملة.",
-    "إضافة فلتر مباشر بالمستفيد الفعلي مع تمييز الموظف عن الوسيط عند تشابه الأسماء.",
-    "الحفاظ على فلاتر البحث ونوع المستفيد وحالة الراتب الحالية بدون أي تغيير في SQL أو حسابات العمولات."
+    "إعادة التحقق من Snapshot الخاصة بـ SEA VIBE عند العودة للشاشات بدل الاكتفاء بنسخة الذاكرة القديمة.",
+    "السماح بتحديث الأقسام السليمة حتى إذا تعذر تحديث قسم مستقل، مع الاحتفاظ بحالة الفشل لإعادة المحاولة.",
+    "إعادة التحقق تلقائيًا عند عودة الاتصال أو استئناف التطبيق على الموبايل بدون تغيير Offline Queue أو SmartCache أو Sync Engine."
   ],
-  "cacheToken": "petatoe-pwa-18-56-59-sea-vibe-commission-exact-filters-r44r16-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-60-sea-vibe-snapshot-revalidation-r44r17-p5-13-8-72"
 }
