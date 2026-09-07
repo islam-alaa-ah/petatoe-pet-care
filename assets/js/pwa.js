@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const CURRENT_VERSION = "18.56.62";
+  const CURRENT_VERSION = "18.56.63";
   const VERSION_ENDPOINT = "./version.json";
   const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
   const isNative = Boolean(window.Capacitor?.isNativePlatform?.());
@@ -16,6 +16,68 @@
     latestRelease: null,
     manifest: null
   };
+
+  const t = (key, vars = {}) => window.PetatoeLocalization?.t?.(key, vars) || key;
+
+  function localizedReleaseTitle(release) {
+    return release?.titleI18nKey ? t(release.titleI18nKey) : (release?.title || t("pwa.update.title"));
+  }
+
+  function localizedReleaseNotes(release) {
+    const keys = Array.isArray(release?.notesI18nKeys) ? release.notesI18nKeys.filter(Boolean) : [];
+    if (keys.length) return keys.map(key => t(key));
+    return Array.isArray(release?.notes) ? release.notes : [];
+  }
+
+  function renderReleaseMetadata(dialog, release) {
+    if (!dialog || !release) return;
+    const title = dialog.querySelector("[data-update-title]");
+    if (title) title.textContent = localizedReleaseTitle(release);
+    const notes = dialog.querySelector("[data-update-notes]");
+    if (notes) notes.replaceChildren(...localizedReleaseNotes(release).map(note => {
+      const item = document.createElement("li");
+      item.textContent = note;
+      return item;
+    }));
+  }
+
+  function applyPwaLocalization() {
+    const banner = document.getElementById("pwaInstallBanner");
+    if (banner) {
+      const title = banner.querySelector("[data-pwa-install-title]");
+      const note = banner.querySelector("[data-pwa-install-note]");
+      const action = banner.querySelector("[data-pwa-install]");
+      const close = banner.querySelector("[data-pwa-dismiss]");
+      if (title) title.textContent = t("pwa.install.title");
+      if (note) note.textContent = t("pwa.install.note");
+      if (action) action.textContent = t("pwa.install.action");
+      if (close) close.setAttribute("aria-label", t("pwa.common.close"));
+    }
+    document.querySelectorAll(".pwa-ios-hint").forEach(hint => {
+      const title = hint.querySelector("[data-pwa-ios-title]");
+      const note = hint.querySelector("[data-pwa-ios-note]");
+      const close = hint.querySelector("button");
+      if (title) title.textContent = t("pwa.ios.title");
+      if (note) note.textContent = t("pwa.ios.note");
+      if (close) close.setAttribute("aria-label", t("pwa.common.close"));
+    });
+    const dialog = document.getElementById("kyumUpdateDialog");
+    if (dialog) {
+      const shell = dialog.querySelector(".kyum-update-shell");
+      if (shell) shell.dir = document.documentElement.dir || "rtl";
+      const versionLabel = dialog.querySelector("[data-update-version-label]");
+      const now = dialog.querySelector("[data-update-now]");
+      const later = dialog.querySelector("[data-update-later]");
+      if (versionLabel) versionLabel.firstChild.textContent = `${t("pwa.update.newVersion")} `;
+      if (now) now.textContent = t("pwa.update.action");
+      if (later) later.textContent = t("pwa.update.later");
+      if (updateState.latestRelease) renderReleaseMetadata(dialog, updateState.latestRelease);
+      else {
+        const title = dialog.querySelector("[data-update-title]");
+        if (title) title.textContent = t("pwa.update.title");
+      }
+    }
+  }
 
   function emitUpdateState() {
     window.dispatchEvent(new CustomEvent("kyum-update-state", { detail: { ...updateState } }));
@@ -64,9 +126,9 @@
     banner.hidden = true;
     banner.innerHTML = `
       <div class="pwa-install-icon" aria-hidden="true"><img src="assets/images/icon-128x128.png" alt=""></div>
-      <div class="pwa-install-copy"><strong>تثبيت PETATOE</strong><span>افتح النظام كتطبيق مستقل على هاتفك.</span></div>
-      <button type="button" class="pwa-install-action" data-pwa-install>تثبيت</button>
-      <button type="button" class="pwa-install-close" data-pwa-dismiss aria-label="إغلاق">×</button>`;
+      <div class="pwa-install-copy"><strong data-pwa-install-title>${t("pwa.install.title")}</strong><span data-pwa-install-note>${t("pwa.install.note")}</span></div>
+      <button type="button" class="pwa-install-action" data-pwa-install>${t("pwa.install.action")}</button>
+      <button type="button" class="pwa-install-close" data-pwa-dismiss aria-label="${t("pwa.common.close")}">×</button>`;
     document.body.appendChild(banner);
     banner.querySelector("[data-pwa-dismiss]").addEventListener("click", () => {
       banner.hidden = true;
@@ -87,7 +149,7 @@
     if (!ios || isStandalone() || sessionStorage.getItem("kyumPwaIosHintDismissed")) return;
     const hint = document.createElement("aside");
     hint.className = "pwa-ios-hint";
-    hint.innerHTML = `<strong>تثبيت PETATOE على iPhone</strong><span>من زر المشاركة اختر «إضافة إلى الشاشة الرئيسية».</span><button type="button" aria-label="إغلاق">×</button>`;
+    hint.innerHTML = `<strong data-pwa-ios-title>${t("pwa.ios.title")}</strong><span data-pwa-ios-note>${t("pwa.ios.note")}</span><button type="button" aria-label="${t("pwa.common.close")}">×</button>`;
     document.body.appendChild(hint);
     hint.querySelector("button").addEventListener("click", () => {
       sessionStorage.setItem("kyumPwaIosHintDismissed", "1");
@@ -118,15 +180,15 @@
     dialog.id = "kyumUpdateDialog";
     dialog.className = "kyum-update-dialog";
     dialog.innerHTML = `
-      <div class="kyum-update-shell" dir="rtl">
+      <div class="kyum-update-shell" dir="${document.documentElement.dir || "rtl"}">
         <div class="kyum-update-icon" aria-hidden="true">↻</div>
-        <h2 data-update-title>يوجد إصدار أحدث</h2>
-        <p class="kyum-update-version">الإصدار الجديد <strong data-update-version></strong></p>
+        <h2 data-update-title>${t("pwa.update.title")}</h2>
+        <p class="kyum-update-version" data-update-version-label>${t("pwa.update.newVersion")} <strong data-update-version></strong></p>
         <ul class="kyum-update-notes" data-update-notes></ul>
         <p class="kyum-update-status" data-update-status hidden></p>
         <div class="kyum-update-actions">
-          <button type="button" class="primary-btn kyum-update-now" data-update-now>تحديث</button>
-          <button type="button" class="secondary-btn kyum-update-later" data-update-later>لاحقًا</button>
+          <button type="button" class="primary-btn kyum-update-now" data-update-now>${t("pwa.update.action")}</button>
+          <button type="button" class="secondary-btn kyum-update-later" data-update-later>${t("pwa.update.later")}</button>
         </div>
       </div>`;
     document.body.appendChild(dialog);
@@ -141,14 +203,8 @@
   function showUpdateDialog(release) {
     const dialog = ensureUpdateDialog();
     dialog.dataset.forceUpdate = String(Boolean(release.forceUpdate));
-    dialog.querySelector("[data-update-title]").textContent = release.title || "يوجد إصدار أحدث";
+    renderReleaseMetadata(dialog, release);
     dialog.querySelector("[data-update-version]").textContent = `v${release.version}`;
-    const notes = dialog.querySelector("[data-update-notes]");
-    notes.replaceChildren(...(Array.isArray(release.notes) ? release.notes : []).map(note => {
-      const item = document.createElement("li");
-      item.textContent = note;
-      return item;
-    }));
     const laterButton = dialog.querySelector("[data-update-later]");
     laterButton.hidden = Boolean(release.forceUpdate);
     dialog.querySelector("[data-update-status]").hidden = true;
@@ -244,11 +300,11 @@
     const status = dialog.querySelector("[data-update-status]");
     button.disabled = true;
     status.hidden = false;
-    status.textContent = "جارٍ تنزيل التحديث وتفعيله...";
+    status.textContent = t("pwa.update.activating");
 
     try {
       const targetVersion = updateState.latestRelease?.version || updateState.manifest?.version || "";
-      status.textContent = "جارٍ إزالة النسخة المخزنة...";
+      status.textContent = t("pwa.update.clearing");
 
       // A hard reset is required on iOS standalone PWAs because an already active
       // service worker may keep serving the previous JavaScript bundle even after
@@ -262,11 +318,11 @@
         localStorage.setItem("kyumUpdateRequestedAt", new Date().toISOString());
       } catch (_) {}
 
-      status.textContent = "تم تنزيل التحديث. جارٍ إعادة تشغيل التطبيق...";
+      status.textContent = t("pwa.update.restarting");
       window.setTimeout(() => reloadWithCacheBuster(targetVersion), 250);
     } catch (error) {
       console.error("PETATOE update activation failed", error);
-      status.textContent = "تعذر إكمال التحديث. تحقق من الاتصال ثم حاول مرة أخرى.";
+      status.textContent = t("pwa.update.failed");
       button.disabled = false;
       updateInProgress = false;
     }
@@ -321,6 +377,7 @@
     checkForUpdate({ silent: true, showDialog: false });
   });
   window.addEventListener("offline", () => document.documentElement.classList.add("is-offline"));
+  window.addEventListener("petatoe-language-changed", applyPwaLocalization);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") checkForUpdate({ silent: true, showDialog: false });
   });

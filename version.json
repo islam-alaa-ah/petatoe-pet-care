@@ -1,13 +1,19 @@
 {
-  "version": "18.56.62",
-  "build": 185662,
+  "version": "18.56.63",
+  "build": 185663,
   "forceUpdate": true,
   "releaseDate": "2026-09-07",
-  "title": "Localization Architecture & Coverage Gate R44R19",
+  "title": "Localization L1 — Core Shell & System Administration R44R20",
   "notes": [
-    "توحيد تصنيف مفاتيح الترجمة حسب الوحدة والشاشة داخل نفس PETATOE Localization Center بدون إنشاء محرك ترجمة موازٍ.",
-    "تحديث مركز الترجمة لإدارة التغطية حسب الوحدة والشاشة ونوع النص مع إزالة مفهوم المرحلة التجريبية القديمة.",
-    "إضافة Localization Coverage Gate يمنع زيادة النصوص الصلبة ويكشف مفاتيح HTML المفقودة وتسرب العربية داخل الإنجليزية."
+    "استكمال ترجمة تسجيل الدخول والهيكل الأساسي وشاشات إدارة النظام.",
+    "توحيد النصوص الديناميكية والتواريخ وحالات التشخيص مع اللغة الحالية دون تغيير منطق الأعمال.",
+    "إضافة بوابة تغطية L1 مع الحفاظ على أنظمة المزامنة والصلاحيات وR44 Pruning بدون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-62-localization-architecture-coverage-r44r19-p5-13-8-72"
+  "cacheToken": "petatoe-pwa-18-56-63-localization-l1-r44r20-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r20.title",
+  "notesI18nKeys": [
+    "pwa.update.release.r44r20.note1",
+    "pwa.update.release.r44r20.note2",
+    "pwa.update.release.r44r20.note3"
+  ]
 }

@@ -272,16 +272,16 @@ const pageMeta = {
   seaVibeFuel: ["رصيد البنزين — SEA VIBE", "متابعة رصيد البنزين باللتر والقيمة وخصم تكلفة الرحلات تلقائيًا"],
   seaVibeReference: ["البيانات المرجعية — SEA VIBE", "إدارة المصروفات وأنواع الرحلات وطرق الدفع ورسوم التصريح"],
   seaVibeReports: ["تقارير وتحليلات SEA VIBE", "متابعة إيرادات الرحلات والمصروفات وصافي الربح التشغيلي"],
-  users: ["المستخدمون", "إدارة حسابات مستخدمي النظام"],
-  permissions: ["الصلاحيات", "إدارة الأدوار وصلاحيات الوصول"],
-  activityLog: ["سجل النشاط", "متابعة العمليات والتغييرات داخل النظام"],
-  backups: ["النسخ الاحتياطي", "التصدير والاستعادة وحماية البيانات"],
-  systemHealth: ["مراقبة النظام", "الحالة الصحية والأمان والأداء التشغيلي"],
+  users: ["users.page.title", "users.page.note"],
+  permissions: ["permissions.page.title", "permissions.page.note"],
+  activityLog: ["activityLog.page.title", "activityLog.page.note"],
+  backups: ["backups.page.title", "backups.page.note"],
+  systemHealth: ["systemHealth.page.title", "systemHealth.page.note"],
   reportsOverview: ["مركز التقارير", "تحليلات العملاء والمتابعات والعروض وأداء المندوبين"],
   dailyPerformanceReport: ["تقرير الأداء اليومي", "متابعة تنفيذ المهام والنشاط اليومي للموظفين"],
   notificationCenter: ["مركز الإشعارات", "إدارة الأحداث والمستلمين وقنوات الإشعار"],
   translationCenter: ["مركز الترجمه", "إدارة قاموس الترجمة المركزي ومراجعة تغطية الشاشات"],
-  systemSettings: ["إعدادات النظام", "الخيارات العامة وبيانات الشركة"],
+  systemSettings: ["systemSettings.page.title", "systemSettings.page.note"],
   aboutApp: ["حول التطبيق", "معلومات الإصدار وحالة التحديثات"]
 };
 
@@ -1500,9 +1500,9 @@ function switchView(requestedName, options = {}) {
     window.SeaVibeUI?.activate?.(name);
   }
 
-  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
+  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
   const localizedMetaKeys = localizedPageMetaKeys[name];
-  const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map((key,index)=>customerT(key,pageMeta[name][index])) : pageMeta[name];
+  const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map(key=>l1T(key)) : pageMeta[name];
   document.getElementById("pageTitle").textContent = activePageMeta[0];
   requestAnimationFrame(() => {
     window.PerformanceMonitor?.recordRender(
@@ -1552,12 +1552,19 @@ function switchView(requestedName, options = {}) {
 window.addEventListener("petatoe-language-changed", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
   const current = activeViewKey;
-  const localizedPageMetaKeys = { dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
+  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
   let meta = null;
   if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
-  else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map((key,index)=>customerT(key,pageMeta[current][index]));
+  else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map(key=>l1T(key));
   if (meta) { document.getElementById("pageTitle").textContent = meta[0]; document.getElementById("pageSubtitle").textContent = meta[1]; }
   if (current === "followups") { renderFollowups(); showDataStatus("followupsStatus", formatOfflineCacheStatus(window.FollowupsService?.getLastReadStatus?.()), "info"); }
+  if (current === "users") { populateSecurityOptions(); renderUsers(); }
+  if (current === "permissions") { populateSecurityOptions(); renderPermissionsMatrix(document.getElementById("permissionsRoleSelect")?.value || "sales_manager"); }
+  if (current === "activityLog") renderActivity();
+  if (current === "backups") renderBackupHistory();
+  if (current === "systemHealth" && systemHealthSnapshot) renderSystemHealth();
+  if (current === "systemHealth" && latestDiagnosticsReport) renderDiagnosticsReport(latestDiagnosticsReport);
+  if (current === "aboutApp") renderAboutAppCenter();
 });
 window.addEventListener("petatoe-localization-updated", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
@@ -1917,12 +1924,34 @@ function roleLabel(role) {
   return window.CustomerPermissions?.roleLabels?.[role] || role;
 }
 
+function l1T(key, vars = {}) {
+  return window.PetatoeLocalization?.t?.(key, vars) || key;
+}
+
+function l1Locale() {
+  return window.PetatoeLocalization?.effectiveLanguage?.() === "en"
+    ? "en-US-u-ca-gregory-nu-latn"
+    : "ar-SA-u-ca-gregory-nu-latn";
+}
+
+function l1DateTime(value, options = undefined) {
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString(l1Locale(), options);
+}
+
+function l1ScreenName(screenKey) {
+  const nav = document.querySelector(`.nav-item[data-view="${CSS.escape(String(screenKey || ""))}"] [data-petatoe-i18n]`);
+  if (nav?.dataset?.petatoeI18n) return l1T(nav.dataset.petatoeI18n);
+  const value = pageMeta[screenKey]?.[0];
+  return value && value.includes(".") ? l1T(value) : (value || String(screenKey || ""));
+}
+
 function dataAccessLabel(user) {
   const mode = user?.data_access_mode || "own";
-  if (mode === "all") return "جميع البيانات";
-  if (mode === "own") return "بياناته فقط";
+  if (mode === "all") return l1T("users.scope.allData");
+  if (mode === "own") return l1T("users.scope.ownData");
   const names = (user?.data_access_representatives || []).map(item => item.full_name).filter(Boolean);
-  return names.length ? `بياناته + ${names.join("، ")}` : "بياناته فقط";
+  return names.length ? l1T("users.scope.ownPlus", { names: names.join("، ") }) : l1T("users.scope.ownData");
 }
 
 function syncUserDataAccessFields() {
@@ -1944,7 +1973,7 @@ function selectedAllowedRepresentativeIds() {
 function updateAllowedRepresentativesCount() {
   const count = selectedAllowedRepresentativeIds().length;
   const element = document.getElementById("userAllowedRepresentativesCount");
-  if (element) element.textContent = `تم اختيار ${count}`;
+  if (element) element.textContent = l1T("users.selection.count", { count });
 }
 
 function selectedInstallationRepresentativeIds() {
@@ -1956,7 +1985,7 @@ function selectedInstallationRepresentativeIds() {
 function updateInstallationRepresentativesCount() {
   const count = selectedInstallationRepresentativeIds().length;
   const element = document.getElementById("userInstallationRepresentativesCount");
-  if (element) element.textContent = `تم اختيار ${count}`;
+  if (element) element.textContent = l1T("users.selection.count", { count });
 }
 
 function filterInstallationRepresentativesList() {
@@ -1978,7 +2007,7 @@ function renderInstallationRepresentativesChecklist(selectedIds = null) {
         <input class="representative-check-input" type="checkbox" value="${escapeHtml(rep.id)}" ${currentIds.has(rep.id) ? "checked" : ""}>
         <span class="representative-check-name">${escapeHtml(rep.full_name)}</span>
       </label>`).join("")
-    : '<div class="representatives-checklist-empty">لا يوجد مندوبون متاحون.</div>';
+    : `<div class="representatives-checklist-empty">${escapeHtml(l1T("users.list.noRepresentatives"))}</div>`;
   filterInstallationRepresentativesList();
   updateInstallationRepresentativesCount();
 }
@@ -2018,7 +2047,7 @@ function renderAllowedRepresentativesChecklist(selectedIds = null) {
         <input class="representative-check-input" type="checkbox" value="${escapeHtml(rep.id)}" ${currentIds.has(rep.id) ? "checked" : ""}>
         <span class="representative-check-name">${escapeHtml(rep.full_name)}</span>
       </label>`).join("")
-    : '<div class="representatives-checklist-empty">لا يوجد مندوبون متاحون.</div>';
+    : `<div class="representatives-checklist-empty">${escapeHtml(l1T("users.list.noRepresentatives"))}</div>`;
   filterAllowedRepresentativesList();
   updateAllowedRepresentativesCount();
 }
@@ -2043,18 +2072,18 @@ function setAllowedRepresentativesSelection(mode) {
 function populateSecurityOptions() {
   const roles = (window.CustomerPermissions?.roleOptions || []).map(role => ({ label: roleLabel(role), value: role }));
   replaceSelectOptions(document.getElementById("userRole"), roles);
-  replaceSelectOptions(document.getElementById("usersRoleFilter"), roles, "كل الأدوار", document.getElementById("usersRoleFilter")?.value || "");
+  replaceSelectOptions(document.getElementById("usersRoleFilter"), roles, l1T("users.filter.allRoles"), document.getElementById("usersRoleFilter")?.value || "");
   replaceSelectOptions(document.getElementById("permissionsRoleSelect"), roles, null, document.getElementById("permissionsRoleSelect")?.value || "sales_manager");
   replaceSelectOptions(
     document.getElementById("userRepresentative"),
     representativeRecords.map(rep => ({ label: rep.full_name, value: rep.id })),
-    "بدون ربط",
+    l1T("users.dialog.noLink"),
     document.getElementById("userRepresentative")?.value || ""
   );
   replaceSelectOptions(
     document.getElementById("userInstallationTeam"),
     installationTeamRecords.map(team => ({ label: team.name, value: team.id })),
-    "اختر الفرقة",
+    l1T("users.dialog.chooseTeam"),
     document.getElementById("userInstallationTeam")?.value || ""
   );
   renderAllowedRepresentativesChecklist();
@@ -2064,7 +2093,7 @@ function populateSecurityOptions() {
 async function loadUsersFromSupabase(force = false) {
   if (usersLoading || (usersLoaded && !force) || !window.UsersService) return;
   usersLoading = true;
-  showDataStatus("usersStatus", "جاري تحميل المستخدمين...", "info");
+  showDataStatus("usersStatus", l1T("users.status.loading"), "info");
   try {
     [userRecords, installationTeamRecords] = await Promise.all([
       window.UsersService.listUsers(),
@@ -2075,7 +2104,7 @@ async function loadUsersFromSupabase(force = false) {
     showDataStatus("usersStatus", "");
     renderUsers();
   } catch (error) {
-    showDataStatus("usersStatus", error.message || "تعذر تحميل المستخدمين.", "error");
+    showDataStatus("usersStatus", error.message || l1T("users.error.load", { error: "" }).replace(/:\s*$/, ""), "error");
   } finally {
     usersLoading = false;
   }
@@ -2096,15 +2125,15 @@ function renderUsers() {
 
   body.innerHTML = rows.length ? rows.map(user => `
     <tr>
-      <td><strong>${escapeHtml(user.full_name || "بدون اسم")}</strong></td>
+      <td><strong>${escapeHtml(user.full_name || l1T("users.common.noName"))}</strong></td>
       <td>${escapeHtml(user.email || "—")}</td>
       <td><span class="badge">${escapeHtml(roleLabel(user.role))}</span></td>
       <td>${escapeHtml(user.representative?.full_name || "—")}</td>
       <td><span class="data-access-badge" title="${escapeHtml(dataAccessLabel(user))}">${escapeHtml(dataAccessLabel(user))}</span></td>
-      <td><span class="record-status ${user.is_active ? "active" : "inactive"}">${user.is_active ? "نشط" : "غير نشط"}</span></td>
-      <td>${user.last_login_at ? new Date(user.last_login_at).toLocaleString("ar-SA-u-ca-gregory-nu-latn") : "لم يسجل الدخول"}</td>
-      <td><div class="row-actions"><button class="edit-btn" data-edit-user="${user.id}">تعديل</button><button class="secondary-btn compact-btn" data-reset-password="${user.id}">كلمة مرور مؤقتة</button></div></td>
-    </tr>`).join("") : `<tr><td colspan="8" class="empty-state">لا توجد نتائج.</td></tr>`;
+      <td><span class="record-status ${user.is_active ? "active" : "inactive"}">${user.is_active ? l1T("users.status.active") : l1T("users.status.inactive")}</span></td>
+      <td>${user.last_login_at ? l1DateTime(user.last_login_at) : l1T("users.lastLogin.never")}</td>
+      <td><div class="row-actions"><button class="edit-btn" data-edit-user="${user.id}">${escapeHtml(l1T("users.action.edit"))}</button><button class="secondary-btn compact-btn" data-reset-password="${user.id}">${escapeHtml(l1T("users.action.tempPassword"))}</button></div></td>
+    </tr>`).join("") : `<tr><td colspan="8" class="empty-state">${escapeHtml(l1T("users.empty.noResults"))}</td></tr>`;
 }
 
 function syncInstallationTechnicianBindingFields() {
@@ -2136,9 +2165,9 @@ function syncInstallationTechnicianBindingFields() {
 
 function openUserDialog(user = null) {
   const action = user ? "edit" : "add";
-  if (!requireScreenAction("users", action, `لا توجد صلاحية ${user ? "تعديل" : "إضافة"} المستخدمين.`)) return;
+  if (!requireScreenAction("users", action, user ? l1T("users.permission.edit") : l1T("users.permission.add"))) return;
   editingUserId = user?.id || null;
-  document.getElementById("userDialogTitle").textContent = user ? "تعديل المستخدم" : "إضافة مستخدم";
+  document.getElementById("userDialogTitle").textContent = user ? l1T("users.dialog.editTitle") : l1T("users.dialog.addTitle");
   document.getElementById("userFullName").value = user?.full_name || "";
   document.getElementById("userEmail").value = user?.email || "";
   document.getElementById("userEmail").disabled = Boolean(user);
@@ -2175,11 +2204,11 @@ function closeUserDialog() {
 
 async function saveUserForm(event) {
   const action = editingUserId ? "edit" : "add";
-  if (!requireScreenAction("users", action, "لا توجد صلاحية حفظ المستخدمين.")) return;
+  if (!requireScreenAction("users", action, l1T("users.permission.save"))) return;
   event.preventDefault();
   const button = event.submitter;
   try {
-    if (button) { button.disabled = true; button.textContent = "جاري الحفظ..."; }
+    if (button) { button.disabled = true; button.textContent = l1T("users.status.saving"); }
     const payload = {
       id: editingUserId,
       fullName: document.getElementById("userFullName").value,
@@ -2198,13 +2227,13 @@ async function saveUserForm(event) {
       defaultLanguage: document.getElementById("userDefaultLanguage").value === "en" ? "en" : "ar"
     };
     if (payload.role !== "viewer" && payload.accessMode === "selected" && !payload.representativeId && payload.allowedRepresentativeIds.length === 0) {
-      throw new Error("اختر مندوبًا مرتبطًا أو مندوبًا واحدًا على الأقل ضمن نطاق البيانات.");
+      throw new Error(l1T("users.validation.dataScope"));
     }
     if (payload.role !== "viewer" && payload.installationAccessMode === "selected" && !payload.representativeId && payload.allowedInstallationRepresentativeIds.length === 0) {
-      throw new Error("اختر مندوبًا مرتبطًا أو مندوب مواعيد واحدًا على الأقل.");
+      throw new Error(l1T("users.validation.appointmentScope"));
     }
     if (payload.role === "viewer" && !payload.installationTeamId) {
-      throw new Error("اختر فرقة المواعيد المرتبطة بالجرومر / السائق.");
+      throw new Error(l1T("users.error.chooseTeam"));
     }
     if (editingUserId) await window.UsersService.updateUser(payload);
     else await window.UsersService.createUser(payload);
@@ -2212,35 +2241,35 @@ async function saveUserForm(event) {
     usersLoaded = false;
     await loadUsersFromSupabase(true);
   } catch (error) {
-    alert(error.message || "تعذر حفظ المستخدم.");
+    alert(error.message || l1T("users.error.save"));
   } finally {
-    if (button) { button.disabled = false; button.textContent = "حفظ المستخدم"; }
+    if (button) { button.disabled = false; button.textContent = l1T("users.action.save"); }
   }
 }
 
 async function resetUserPassword(userId) {
-  if (!requireScreenAction("users", "edit", "لا توجد صلاحية إعادة تعيين كلمات المرور.")) return;
-  const password = prompt("أدخل كلمة مرور مؤقتة من 8 أحرف على الأقل:");
+  if (!requireScreenAction("users", "edit", l1T("users.permission.resetPassword"))) return;
+  const password = prompt(l1T("users.password.prompt"));
   if (!password) return;
-  if (password.length < 8) return alert("كلمة المرور قصيرة.");
+  if (password.length < 8) return alert(l1T("users.password.tooShort"));
   try {
     await window.UsersService.resetPassword(userId, password);
-    alert("تم تحديث كلمة المرور المؤقتة.");
+    alert(l1T("users.password.updated"));
   } catch (error) {
-    alert(error.message || "تعذر إعادة تعيين كلمة المرور.");
+    alert(error.message || l1T("users.password.resetError"));
   }
 }
 
 async function loadPermissionsMatrix(force = false) {
   if (permissionsLoaded && !force) return;
-  showDataStatus("permissionsStatus", "جاري تحميل الصلاحيات...", "info");
+  showDataStatus("permissionsStatus", l1T("permissions.status.loading"), "info");
   try {
     permissionScreens = await window.PermissionsService.listScreens();
     permissionsLoaded = true;
     await loadRolePermissions(document.getElementById("permissionsRoleSelect")?.value || "sales_manager");
     showDataStatus("permissionsStatus", "");
   } catch (error) {
-    showDataStatus("permissionsStatus", error.message || "تعذر تحميل الصلاحيات.", "error");
+    showDataStatus("permissionsStatus", error.message || l1T("permissions.error.loadFallback"), "error");
   }
 }
 
@@ -2256,7 +2285,7 @@ function renderPermissionsMatrix(role) {
   const groups = [...new Set(permissionScreens.map(screen => screen.group_name))];
   container.innerHTML = groups.map(group => `
     <section class="permission-group"><h4>${escapeHtml(group)}</h4><div class="permission-table">
-      <div class="permission-row permission-header"><strong>الشاشة</strong><span>عرض</span><span>إضافة</span><span>تعديل</span><span>حذف</span><span>تصدير</span></div>
+      <div class="permission-row permission-header"><strong>${escapeHtml(l1T("permissions.column.screen"))}</strong><span>${escapeHtml(l1T("permissions.action.view"))}</span><span>${escapeHtml(l1T("permissions.action.add"))}</span><span>${escapeHtml(l1T("permissions.action.edit"))}</span><span>${escapeHtml(l1T("permissions.action.delete"))}</span><span>${escapeHtml(l1T("permissions.action.export"))}</span></div>
       ${permissionScreens.filter(screen => screen.group_name === group).map(screen => {
         const row = map.get(screen.screen_key) || {};
         return `<div class="permission-row" data-screen-key="${screen.screen_key}"><strong>${escapeHtml(screen.screen_name)}</strong>${
@@ -2269,9 +2298,9 @@ function renderPermissionsMatrix(role) {
 }
 
 async function savePermissions() {
-  if (!requireScreenAction("permissions", "edit", "لا توجد صلاحية تعديل الصلاحيات.")) return;
+  if (!requireScreenAction("permissions", "edit", l1T("permissions.permission.edit"))) return;
   const role = document.getElementById("permissionsRoleSelect").value;
-  if (role === "super_admin") return alert("مدير النظام يمتلك كل الصلاحيات تلقائيًا.");
+  if (role === "super_admin") return alert(l1T("permissions.superAdminAll"));
   const rows = [...document.querySelectorAll(".permission-row[data-screen-key]")].map(row => ({
     screenKey: row.dataset.screenKey,
     canView: row.querySelector('[data-permission="can_view"]').checked,
@@ -2292,22 +2321,22 @@ async function savePermissions() {
         window.CustomerPermissions.applyActionVisibility();
       }
     }
-    showDataStatus("permissionsStatus", "تم حفظ الصلاحيات والتحقق منها بنجاح.", "success");
+    showDataStatus("permissionsStatus", l1T("permissions.status.saved"), "success");
   } catch (error) {
-    showDataStatus("permissionsStatus", error.message || "تعذر حفظ الصلاحيات.", "error");
+    showDataStatus("permissionsStatus", error.message || l1T("permissions.error.saveFallback"), "error");
   }
 }
 
 async function loadActivity(force = false) {
   if (activityLoaded && !force) return;
-  showDataStatus("activityStatus", "جاري تحميل سجل النشاط...", "info");
+  showDataStatus("activityStatus", l1T("activityLog.status.loading"), "info");
   try {
     activityRecords = await window.ActivityService.listActivity();
     activityLoaded = true;
     showDataStatus("activityStatus", "");
     renderActivity();
   } catch (error) {
-    showDataStatus("activityStatus", error.message || "تعذر تحميل سجل النشاط.", "error");
+    showDataStatus("activityStatus", error.message || l1T("activityLog.error.loadFallback"), "error");
   }
 }
 
@@ -2320,7 +2349,7 @@ function renderActivity() {
     const text = `${item.user?.full_name || ""} ${item.user?.email || ""} ${item.action} ${item.entity_type} ${JSON.stringify(item.new_data || {})}`.toLowerCase();
     return (!search || text.includes(search)) && (!action || item.action === action);
   });
-  body.innerHTML = rows.length ? rows.map(item => `<tr><td>${escapeHtml(item.user?.full_name || item.user?.email || "مستخدم محذوف")}</td><td><span class="badge">${escapeHtml(item.action)}</span></td><td>${escapeHtml(item.entity_type)}</td><td class="activity-details">${escapeHtml(JSON.stringify(item.new_data || {}))}</td><td>${new Date(item.created_at).toLocaleString("ar-SA-u-ca-gregory-nu-latn")}</td></tr>`).join("") : `<tr><td colspan="5" class="empty-state">لا توجد عمليات مطابقة.</td></tr>`;
+  body.innerHTML = rows.length ? rows.map(item => `<tr><td>${escapeHtml(item.user?.full_name || item.user?.email || l1T("activityLog.user.deleted"))}</td><td><span class="badge">${escapeHtml(item.action)}</span></td><td>${escapeHtml(item.entity_type)}</td><td class="activity-details">${escapeHtml(JSON.stringify(item.new_data || {}))}</td><td>${l1DateTime(item.created_at)}</td></tr>`).join("") : `<tr><td colspan="5" class="empty-state">${escapeHtml(l1T("activityLog.empty.noMatches"))}</td></tr>`;
 }
 
 function canScreenAction(screenKey, action = "view") {
@@ -2344,11 +2373,11 @@ function downloadJsonFile(fileName, payload) {
 }
 
 function backupOperationLabel(value) {
-  return value === "export" ? "تصدير" : value === "restore" ? "استعادة" : value;
+  return value === "export" ? l1T("backups.operation.export") : value === "restore" ? l1T("backups.operation.restore") : value;
 }
 
 async function exportBackup() {
-  if (!requireScreenAction("backups", "export", "لا توجد صلاحية تصدير النسخ الاحتياطية.")) return;
+  if (!requireScreenAction("backups", "export", l1T("backups.permission.export"))) return;
 
   const buttons = [
     document.getElementById("createBackupBtn"),
@@ -2357,27 +2386,27 @@ async function exportBackup() {
 
   buttons.forEach(button => {
     button.disabled = true;
-    button.textContent = "جاري تجهيز النسخة...";
+    button.textContent = l1T("backups.status.preparing");
   });
 
-  showDataStatus("backupStatus", "جاري تجميع بيانات النظام...", "info");
+  showDataStatus("backupStatus", l1T("backups.status.collecting"), "info");
 
   try {
     const result = await window.BackupService.createBackup();
     downloadJsonFile(result.file_name, result.backup);
     showDataStatus(
       "backupStatus",
-      `تم إنشاء النسخة وتنزيلها بنجاح — ${result.total_records} سجل.`,
+      l1T("backups.status.exportSuccess", { count: result.total_records }),
       "success"
     );
     backupHistoryLoaded = false;
     await loadBackupHistory(true);
   } catch (error) {
-    showDataStatus("backupStatus", error.message || "تعذر إنشاء النسخة.", "error");
+    showDataStatus("backupStatus", error.message || l1T("backups.error.createFallback"), "error");
   } finally {
     buttons.forEach((button, index) => {
       button.disabled = false;
-      button.textContent = index === 0 ? "إنشاء نسخة احتياطية" : "تصدير وتنزيل";
+      button.textContent = index === 0 ? l1T("backups.action.create") : l1T("backups.action.download");
     });
   }
 }
@@ -2391,7 +2420,7 @@ async function inspectBackupFile(file) {
     return;
   }
 
-  showDataStatus("backupStatus", "جاري قراءة وفحص ملف النسخة...", "info");
+  showDataStatus("backupStatus", l1T("backups.status.reading"), "info");
 
   try {
     const text = await file.text();
@@ -2402,7 +2431,7 @@ async function inspectBackupFile(file) {
     document.getElementById("restoreBackupBtn").disabled = !canScreenAction("backups", "edit");
     document.getElementById("backupInspectionPanel").classList.remove("hidden");
     document.getElementById("backupInspectionSummary").textContent =
-      `الملف صالح — الإصدار ${result.version} — إجمالي ${result.total_records} سجل.`;
+      l1T("backups.inspect.valid", { version: result.version, count: result.total_records });
 
     document.getElementById("backupTableCounts").innerHTML =
       Object.entries(result.table_counts)
@@ -2410,33 +2439,33 @@ async function inspectBackupFile(file) {
           <article><span>${escapeHtml(table)}</span><strong>${count}</strong></article>
         `).join("");
 
-    showDataStatus("backupStatus", "تم التحقق من ملف النسخة بنجاح.", "success");
+    showDataStatus("backupStatus", l1T("backups.inspect.success"), "success");
   } catch (error) {
     document.getElementById("backupInspectionPanel").classList.add("hidden");
-    showDataStatus("backupStatus", error.message || "ملف النسخة غير صالح.", "error");
+    showDataStatus("backupStatus", error.message || l1T("backups.inspect.invalid"), "error");
   }
 }
 
 async function restoreSelectedBackup() {
   if (!selectedBackupPayload) {
-    alert("اختر ملف نسخة احتياطية صالحًا أولًا.");
+    alert(l1T("backups.restore.selectFirst"));
     return;
   }
 
-  const phrase = prompt('اكتب العبارة التالية للتأكيد:\nRESTORE PETATOE DATA');
+  const phrase = prompt(l1T("backups.restore.confirmPhrase"));
   if (phrase !== "RESTORE PETATOE DATA") {
-    alert("لم يتم تنفيذ الاستعادة لأن عبارة التأكيد غير مطابقة.");
+    alert(l1T("backups.restore.phraseMismatch"));
     return;
   }
 
-  if (!confirm("سيتم استبدال البيانات التشغيلية الحالية ببيانات النسخة. هل تريد المتابعة؟")) {
+  if (!confirm(l1T("backups.restore.confirmReplace"))) {
     return;
   }
 
   const button = document.getElementById("restoreBackupBtn");
   button.disabled = true;
-  button.textContent = "جاري الاستعادة...";
-  showDataStatus("backupStatus", "جاري استعادة البيانات. لا تغلق الصفحة...", "info");
+  button.textContent = l1T("backups.restore.running");
+  showDataStatus("backupStatus", l1T("backups.restore.progress"), "info");
 
   try {
     const result = await window.BackupService.restoreBackup(
@@ -2446,7 +2475,7 @@ async function restoreSelectedBackup() {
 
     showDataStatus(
       "backupStatus",
-      `تمت الاستعادة بنجاح — ${result.total_records} سجل.`,
+      l1T("backups.restore.success", { count: result.total_records }),
       "success"
     );
 
@@ -2464,10 +2493,10 @@ async function restoreSelectedBackup() {
     await loadUsersFromSupabase(true);
     await loadBackupHistory(true);
   } catch (error) {
-    showDataStatus("backupStatus", error.message || "فشلت استعادة النسخة.", "error");
+    showDataStatus("backupStatus", error.message || l1T("backups.restore.failed"), "error");
   } finally {
     button.disabled = false;
-    button.textContent = "استعادة النسخة";
+    button.textContent = l1T("backups.action.restore");
   }
 }
 
@@ -2480,7 +2509,7 @@ async function loadBackupHistory(force = false) {
     backupHistoryLoaded = true;
     renderBackupHistory();
   } catch (error) {
-    showDataStatus("backupStatus", error.message || "تعذر تحميل سجل النسخ.", "error");
+    showDataStatus("backupStatus", error.message || l1T("backups.history.loadError"), "error");
   }
 }
 
@@ -2495,18 +2524,18 @@ function renderBackupHistory() {
         <td>${escapeHtml(item.file_name || "—")}</td>
         <td>${Number(item.total_records || 0)}</td>
         <td>${escapeHtml(item.user?.full_name || item.user?.email || "—")}</td>
-        <td><span class="record-status ${item.status === "completed" ? "active" : "inactive"}">${escapeHtml(quotationStatusLabel(canonicalStatus))}</span></td>
-        <td>${new Date(item.created_at).toLocaleString("ar-SA-u-ca-gregory-nu-latn")}</td>
+        <td><span class="record-status ${item.status === "completed" ? "active" : "inactive"}">${escapeHtml(item.status === "completed" ? l1T("backups.status.completed") : item.status === "failed" ? l1T("backups.status.failed") : String(item.status || "—"))}</span></td>
+        <td>${l1DateTime(item.created_at)}</td>
       </tr>
     `).join("")
-    : `<tr><td colspan="6" class="empty-state">لا توجد عمليات نسخ أو استعادة مسجلة.</td></tr>`;
+    : `<tr><td colspan="6" class="empty-state">${escapeHtml(l1T("backups.history.empty"))}</td></tr>`;
 }
 
 async function loadSystemSettings(force = false) {
   if (systemSettingsLoaded && !force) return;
   if (!window.SystemSettingsService) return;
 
-  showDataStatus("systemSettingsStatus", "جاري تحميل الإعدادات...", "info");
+  showDataStatus("systemSettingsStatus", l1T("systemSettings.status.loading"), "info");
 
   try {
     const settings = await window.SystemSettingsService.loadSettings();
@@ -2527,7 +2556,7 @@ async function loadSystemSettings(force = false) {
   } catch (error) {
     showDataStatus(
       "systemSettingsStatus",
-      error.message || "تعذر تحميل إعدادات النظام.",
+      error.message || l1T("systemSettings.error.loadFallback"),
       "error"
     );
   }
@@ -2536,11 +2565,11 @@ async function loadSystemSettings(force = false) {
 async function saveSystemSettings(event) {
   event?.preventDefault();
 
-  if (!requireScreenAction("systemSettings", "edit", "لا توجد صلاحية تعديل إعدادات النظام.")) return;
+  if (!requireScreenAction("systemSettings", "edit", l1T("systemSettings.permission.edit"))) return;
 
   const button = document.getElementById("saveSystemSettingsBtn");
   button.disabled = true;
-  button.textContent = "جاري الحفظ...";
+  button.textContent = l1T("systemSettings.status.saving");
 
   try {
     const settings = {
@@ -2556,19 +2585,19 @@ async function saveSystemSettings(event) {
     };
 
     await window.SystemSettingsService.saveSettings(settings);
-    showDataStatus("systemSettingsStatus", "تم حفظ إعدادات النظام بنجاح.", "success");
+    showDataStatus("systemSettingsStatus", l1T("systemSettings.status.saved"), "success");
 
     const brand = document.querySelector(".sidebar-brand strong");
     if (brand && settings.company_name_en) brand.textContent = settings.company_name_en;
   } catch (error) {
     showDataStatus(
       "systemSettingsStatus",
-      error.message || "تعذر حفظ إعدادات النظام.",
+      error.message || l1T("systemSettings.error.saveFallback"),
       "error"
     );
   } finally {
     button.disabled = false;
-    button.textContent = "حفظ الإعدادات";
+    button.textContent = l1T("systemSettings.action.save");
   }
 }
 
@@ -2579,7 +2608,7 @@ function formatDuration(milliseconds) {
 
   const minutes = Math.floor(ms / 60000);
   const seconds = Math.floor((ms % 60000) / 1000);
-  return `${minutes} د ${seconds} ث`;
+  return l1T("performance.duration.minutesSeconds", { minutes, seconds });
 }
 
 function shortRequestName(url) {
@@ -2604,36 +2633,28 @@ function renderPerformanceMonitor() {
     "performancePageLoad",
     summary.navigation.pageLoadMs
       ? formatDuration(summary.navigation.pageLoadMs)
-      : "غير متاح"
+      : l1T("performance.value.unavailable")
   );
   setText(
     "performanceDomReady",
-    `DOM: ${
-      summary.navigation.domReadyMs
-        ? formatDuration(summary.navigation.domReadyMs)
-        : "غير متاح"
-    }`
+    l1T("performance.domReady", { value: summary.navigation.domReadyMs ? formatDuration(summary.navigation.domReadyMs) : l1T("performance.value.unavailable") })
   );
   setText("performanceApiRequests", String(summary.requestsTotal));
-  setText("performanceFailedRequests", `الفاشلة: ${summary.failedRequests}`);
+  setText("performanceFailedRequests", l1T("performance.failedRequests", { count: summary.failedRequests }));
   setText(
     "performanceAverageResponse",
     summary.requestsTotal
       ? formatDuration(summary.averageResponseMs)
-      : "لا توجد طلبات"
+      : l1T("performance.noRequests")
   );
   setText(
     "performanceSlowestResponse",
-    `الأبطأ: ${
-      summary.slowestResponseMs
-        ? formatDuration(summary.slowestResponseMs)
-        : "—"
-    }`
+    l1T("performance.slowest", { value: summary.slowestResponseMs ? formatDuration(summary.slowestResponseMs) : "—" })
   );
 
   setText(
     "performanceNetworkStatus",
-    summary.network.online ? "Online" : "Offline"
+    summary.network.online ? l1T("performance.network.online") : l1T("performance.network.offline")
   );
 
   const connectionDetails = [
@@ -2650,30 +2671,30 @@ function renderPerformanceMonitor() {
 
   setText(
     "performanceConnectionType",
-    `الاتصال: ${connectionDetails || "غير متاح"}`
+    l1T("performance.connection", { value: connectionDetails || l1T("performance.value.unavailable") })
   );
 
   if (summary.memory) {
     setText(
       "performanceMemoryUsage",
-      `${formatBytes(summary.memory.usedBytes)} مستخدم`
+      l1T("performance.memory.used", { value: formatBytes(summary.memory.usedBytes) })
     );
     setText(
       "performanceMemoryLimit",
-      `الحد: ${formatBytes(summary.memory.limitBytes)}`
+      l1T("performance.memory.limit", { value: formatBytes(summary.memory.limitBytes) })
     );
   } else {
-    setText("performanceMemoryUsage", "غير مدعوم");
-    setText("performanceMemoryLimit", "الحد: غير متاح");
+    setText("performanceMemoryUsage", l1T("performance.memory.unsupported"));
+    setText("performanceMemoryLimit", l1T("performance.memory.limit", { value: l1T("performance.value.unavailable") }));
   }
 
   setText(
     "performanceLastUpdated",
-    new Date(summary.lastUpdatedAt).toLocaleTimeString("ar-SA-u-ca-gregory-nu-latn")
+    new Date(summary.lastUpdatedAt).toLocaleTimeString(l1Locale())
   );
   setText(
     "performanceSessionDuration",
-    `مدة الجلسة: ${formatDuration(summary.sessionDurationMs)}`
+    l1T("performance.session", { value: formatDuration(summary.sessionDurationMs) })
   );
 
   const slowRequests = document.getElementById("performanceSlowRequests");
@@ -2683,12 +2704,12 @@ function renderPerformanceMonitor() {
         <div class="performance-request-item">
           <div>
             <strong>${escapeHtml(item.method)} ${escapeHtml(shortRequestName(item.url))}</strong>
-            <small>${item.status || "Network Error"} — ${new Date(item.timestamp).toLocaleTimeString("ar-SA-u-ca-gregory-nu-latn")}</small>
+            <small>${item.status || "Network Error"} — ${new Date(item.timestamp).toLocaleTimeString(l1Locale())}</small>
           </div>
           <b class="${item.ok ? "" : "performance-failed"}">${formatDuration(item.durationMs)}</b>
         </div>
       `).join("")
-      : '<div class="empty-state">لا توجد طلبات API مسجلة في الجلسة الحالية.</div>';
+      : `<div class="empty-state">${escapeHtml(l1T("performance.empty.requests"))}</div>`;
   }
 
   const renderList = document.getElementById("performanceScreenRenders");
@@ -2697,13 +2718,13 @@ function renderPerformanceMonitor() {
       ? summary.screenRenders.map(item => `
         <div class="performance-request-item">
           <div>
-            <strong>${escapeHtml(pageMeta[item.screen]?.[0] || item.screen)}</strong>
-            <small>${item.count} عملية عرض — الحد الأقصى ${formatDuration(item.maxMs)}</small>
+            <strong>${escapeHtml(l1ScreenName(item.screen))}</strong>
+            <small>${escapeHtml(l1T("performance.render.summary", { count: item.count, max: formatDuration(item.maxMs) }))}</small>
           </div>
           <b>${formatDuration(item.averageMs)}</b>
         </div>
       `).join("")
-      : '<div class="empty-state">لا توجد قياسات عرض شاشات بعد.</div>';
+      : `<div class="empty-state">${escapeHtml(l1T("performance.empty.renders"))}</div>`;
   }
 }
 
@@ -2732,12 +2753,12 @@ async function loadSystemHealth(force = false, options = {}) {
   if (systemHealthLoading || (!force && systemHealthSnapshot)) return;
   if (!window.SystemHealthService) return;
   if (!canScreenAction("systemHealth", "view")) {
-    showDataStatus("systemHealthStatus", "لا توجد صلاحية عرض مراقبة النظام.", "error");
+    showDataStatus("systemHealthStatus", l1T("systemHealth.permission.view"), "error");
     return;
   }
 
   systemHealthLoading = true;
-  showDataStatus("systemHealthStatus", "جاري تنفيذ الفحص الصحي...", "info");
+  showDataStatus("systemHealthStatus", l1T("systemHealth.status.running"), "info");
   try {
     const healthPromise = window.SystemHealthService.getSnapshot();
     const canLoadRetention = currentRole() === "super_admin" && window.SystemHealthService.getSyncRetentionObservability;
@@ -2760,7 +2781,7 @@ async function loadSystemHealth(force = false, options = {}) {
     renderSystemHealth();
     showDataStatus("systemHealthStatus", "");
   } catch (error) {
-    showDataStatus("systemHealthStatus", error.message || "تعذر تنفيذ فحص النظام.", "error");
+    showDataStatus("systemHealthStatus", error.message || l1T("systemHealth.error.fallback"), "error");
   } finally {
     systemHealthLoading = false;
   }
@@ -2777,56 +2798,57 @@ function renderSystemHealth() {
   );
 
   const score = healthEvaluation?.score ?? calculateHealthScore(s);
-  const label = healthEvaluation?.level?.arabic
-    || (score >= 90 ? "ممتاز" : score >= 75 ? "جيد" : score >= 60 ? "يحتاج متابعة" : "حرج");
+  const label = healthEvaluation?.level?.key
+    ? l1T(`systemHealth.level.${healthEvaluation.level.key === "healthy" ? "excellent" : healthEvaluation.level.key}`)
+    : (score >= 90 ? l1T("systemHealth.level.excellent") : score >= 75 ? l1T("systemHealth.level.good") : score >= 60 ? l1T("systemHealth.level.warning") : l1T("systemHealth.level.critical"));
   document.getElementById("healthScoreValue").textContent = `${score}%`;
   document.getElementById("healthScoreRing").style.setProperty("--health-score", `${score * 3.6}deg`);
-  document.getElementById("healthOverallLabel").textContent = `حالة النظام: ${label}`;
-  document.getElementById("healthLastChecked").textContent = `آخر فحص: ${new Date().toLocaleString("ar-SA-u-ca-gregory-nu-latn")}`;
-  document.getElementById("healthDatabaseStatus").textContent = s.database_online ? "متصل" : "غير متصل";
-  document.getElementById("healthDatabaseLatency").textContent = `زمن الاستجابة: ${s.latency_ms} ms`;
+  document.getElementById("healthOverallLabel").textContent = l1T("systemHealth.overall", { label });
+  document.getElementById("healthLastChecked").textContent = l1T("systemHealth.lastChecked", { value: l1DateTime(new Date()) });
+  document.getElementById("healthDatabaseStatus").textContent = s.database_online ? l1T("systemHealth.status.connected") : l1T("systemHealth.status.disconnected");
+  document.getElementById("healthDatabaseLatency").textContent = l1T("systemHealth.latency", { value: s.latency_ms });
   document.getElementById("healthUsersTotal").textContent = Number(s.users_total || 0);
-  document.getElementById("healthUsersActive").textContent = `النشطون: ${Number(s.users_active || 0)}`;
+  document.getElementById("healthUsersActive").textContent = l1T("systemHealth.activeUsers", { count: Number(s.users_active || 0) });
   document.getElementById("healthRlsCoverage").textContent = `${Number(s.security?.rls_coverage_percent || 0)}%`;
-  document.getElementById("healthPoliciesCount").textContent = `السياسات: ${Number(s.security?.policies_count || 0)}`;
+  document.getElementById("healthPoliciesCount").textContent = l1T("systemHealth.policies", { count: Number(s.security?.policies_count || 0) });
 
   document.getElementById("healthServicesList").innerHTML = [
-    healthStatusItem("Supabase Database", s.database_online ? "Online" : "Offline", s.database_online, `${s.latency_ms} ms`),
-    healthStatusItem("backup-admin", "Configured", true, "Export / Validate / Restore"),
-    healthStatusItem("manage-user", "Configured", true, "User administration"),
-    healthStatusItem("GitHub Pages", navigator.onLine ? "Online" : "Offline", navigator.onLine, location.hostname)
+    healthStatusItem(l1T("systemHealth.service.database"), s.database_online ? l1T("systemHealth.service.online") : l1T("systemHealth.service.offline"), s.database_online, `${s.latency_ms} ms`),
+    healthStatusItem("backup-admin", l1T("systemHealth.service.configured"), true, l1T("systemHealth.service.backupDetail")),
+    healthStatusItem("manage-user", l1T("systemHealth.service.configured"), true, l1T("systemHealth.service.userAdminDetail")),
+    healthStatusItem(l1T("systemHealth.service.githubPages"), navigator.onLine ? l1T("systemHealth.service.online") : l1T("systemHealth.service.offline"), navigator.onLine, location.hostname)
   ].join("");
 
   document.getElementById("healthDatabaseMetrics").innerHTML = [
-    ["الجداول", s.tables_count], ["إجمالي الصفوف", s.rows_total], ["حجم البيانات", formatBytes(s.database_size_bytes)], ["الفهارس", s.indexes_count]
+    [l1T("systemHealth.metric.tables"), s.tables_count], [l1T("systemHealth.metric.rows"), s.rows_total], [l1T("systemHealth.metric.dataSize"), formatBytes(s.database_size_bytes)], [l1T("systemHealth.metric.indexes"), s.indexes_count]
   ].map(([a,b]) => `<article><span>${a}</span><strong>${b}</strong></article>`).join("");
 
   document.getElementById("healthSecurityList").innerHTML = [
-    healthStatusItem("Row Level Security", `${s.security.rls_enabled_tables}/${s.security.public_tables}`, s.security.rls_coverage_percent === 100),
-    healthStatusItem("Database Policies", s.security.policies_count, s.security.policies_count > 0),
-    healthStatusItem("Edge Authentication", "Enabled", true, "Custom JWT verification"),
-    healthStatusItem("Active Super Admin", s.super_admins, s.super_admins > 0)
+    healthStatusItem(l1T("systemHealth.security.rls"), `${s.security.rls_enabled_tables}/${s.security.public_tables}`, s.security.rls_coverage_percent === 100),
+    healthStatusItem(l1T("systemHealth.security.databasePolicies"), s.security.policies_count, s.security.policies_count > 0),
+    healthStatusItem(l1T("systemHealth.security.edgeAuth"), l1T("systemHealth.security.enabled"), true, l1T("systemHealth.security.jwtDetail")),
+    healthStatusItem(l1T("systemHealth.security.superAdmin"), s.super_admins, s.super_admins > 0)
   ].join("");
 
   document.getElementById("healthVersionMetrics").innerHTML = [
-    ["النظام", "PETATOE"], ["الإصدار", s.version || "1.0"], ["البيئة", "Production"], ["وقت الخادم", new Date(s.server_time).toLocaleString("ar-SA-u-ca-gregory-nu-latn")]
+    [l1T("systemHealth.version.system"), "PETATOE"], [l1T("systemHealth.version.version"), s.version || "1.0"], [l1T("systemHealth.version.environment"), l1T("systemHealth.version.production")], [l1T("systemHealth.version.serverTime"), l1DateTime(s.server_time)]
   ].map(([a,b]) => `<article><span>${a}</span><strong>${escapeHtml(String(b))}</strong></article>`).join("");
 
-  document.getElementById("healthTablesBody").innerHTML = (s.tables || []).map(t => `<tr><td><strong>${escapeHtml(t.table_name)}</strong></td><td>${Number(t.row_count || 0)}</td><td>${formatBytes(t.total_bytes)}</td><td>${t.rls_enabled ? '<span class="record-status active">مفعّل</span>' : '<span class="record-status inactive">غير مفعّل</span>'}</td><td>${Number(t.policies_count || 0)}</td></tr>`).join("") || '<tr><td colspan="5" class="empty-state">لا توجد بيانات.</td></tr>';
+  document.getElementById("healthTablesBody").innerHTML = (s.tables || []).map(t => `<tr><td><strong>${escapeHtml(t.table_name)}</strong></td><td>${Number(t.row_count || 0)}</td><td>${formatBytes(t.total_bytes)}</td><td>${t.rls_enabled ? `<span class="record-status active">${escapeHtml(l1T("systemHealth.rls.enabled"))}</span>` : `<span class="record-status inactive">${escapeHtml(l1T("systemHealth.rls.disabled"))}</span>`}</td><td>${Number(t.policies_count || 0)}</td></tr>`).join("") || `<tr><td colspan="5" class="empty-state">${escapeHtml(l1T("systemHealth.empty.noData"))}</td></tr>`;
 
   document.getElementById("healthBackupsList").innerHTML = (s.recent_backups || []).map(b => healthStatusItem(
-    b.operation_type === "restore" ? "استعادة" : "تصدير",
+    b.operation_type === "restore" ? l1T("backups.operation.restore") : l1T("backups.operation.export"),
     b.status,
     b.status === "completed",
-    `${b.total_records || 0} سجل — ${new Date(b.created_at).toLocaleString("ar-SA-u-ca-gregory-nu-latn")}`
-  )).join("") || '<div class="empty-state">لا توجد عمليات نسخ مسجلة.</div>';
+    l1T("systemHealth.backup.records", { count: b.total_records || 0, date: l1DateTime(b.created_at) })
+  )).join("") || `<div class="empty-state">${escapeHtml(l1T("systemHealth.backup.empty"))}</div>`;
 
   document.getElementById("healthAlertsList").innerHTML = (s.alerts || []).map(a => healthStatusItem(
-    a.title || "تنبيه",
+    a.title || l1T("systemHealth.alert.fallback"),
     a.severity || "warning",
     false,
     a.detail || ""
-  )).join("") || healthStatusItem("لا توجد تنبيهات حرجة", "سليم", true, "آخر 24 ساعة");
+  )).join("") || healthStatusItem(l1T("systemHealth.alert.none"), l1T("systemHealth.status.healthy"), true, l1T("systemHealth.alert.last24h"));
 
   renderSyncRetentionObservability();
   renderSmartHealthInsights(healthEvaluation);
@@ -3665,110 +3687,109 @@ function exportReportsCsv() {
 }
 
 function diagnosticsStatusLabel(status) {
-  const labels = {
-    passed: "Passed",
-    warning: "Warning",
-    critical: "Critical"
+  const keys = {
+    passed: "diagnostics.status.passed",
+    warning: "diagnostics.status.warning",
+    critical: "diagnostics.status.critical"
   };
-  return labels[status] || status;
+  return keys[status] ? l1T(keys[status]) : status;
 }
 
-function diagnosticsStatusArabic(status) {
-  const labels = {
-    passed: "ناجح",
-    warning: "تحذير",
-    critical: "حرج"
-  };
-  return labels[status] || status;
+function diagnosticsLocalizedField(test, field) {
+  const value = test?.localization?.[field];
+  return value?.key ? l1T(value.key, value.vars || {}) : String(test?.[field] || "");
 }
 
 function renderDiagnosticsReport(report) {
   latestDiagnosticsReport = report;
 
-  document.getElementById("diagnosticsScore").textContent =
-    `${report.evaluation.score}%`;
-  document.getElementById("diagnosticsDuration").textContent =
-    `المدة: ${formatDuration(report.duration_ms)}`;
-  document.getElementById("diagnosticsPassed").textContent =
-    report.evaluation.passed;
-  document.getElementById("diagnosticsWarnings").textContent =
-    report.evaluation.warnings;
-  document.getElementById("diagnosticsCritical").textContent =
-    report.evaluation.critical;
-  document.getElementById("diagnosticsFinishedAt").textContent =
-    new Date(report.finished_at).toLocaleTimeString("ar-SA-u-ca-gregory-nu-latn");
-  document.getElementById("diagnosticsEnvironment").textContent =
-    `البيئة: ${report.environment}`;
+  document.getElementById("diagnosticsScore").textContent = `${report.evaluation.score}%`;
+  document.getElementById("diagnosticsDuration").textContent = l1T("diagnostics.summary.duration", { value: formatDuration(report.duration_ms) });
+  document.getElementById("diagnosticsPassed").textContent = report.evaluation.passed;
+  document.getElementById("diagnosticsWarnings").textContent = report.evaluation.warnings;
+  document.getElementById("diagnosticsCritical").textContent = report.evaluation.critical;
+  document.getElementById("diagnosticsFinishedAt").textContent = l1DateTime(report.finished_at, { timeStyle: "medium" });
+  document.getElementById("diagnosticsEnvironment").textContent = l1T("diagnostics.summary.environment", { value: report.environment });
 
-  const groups = [...new Set(report.evaluation.tests.map(test => test.category))];
-  document.getElementById("diagnosticsResults").innerHTML = groups.map(group => `
-    <section class="diagnostics-group">
-      <h4>${escapeHtml(group)}</h4>
-      <div class="diagnostics-test-list">
-        ${report.evaluation.tests.filter(test => test.category === group).map(test => `
-          <article class="diagnostics-test ${test.status}">
-            <div class="diagnostics-test-status">
-              <span>${escapeHtml(diagnosticsStatusLabel(test.status))}</span>
-            </div>
-            <div class="diagnostics-test-content">
-              <strong>${escapeHtml(test.title)}</strong>
-              <p>${escapeHtml(test.detail || "")}</p>
-              ${test.status !== "passed" && test.recommendation
-                ? `<small><b>التوصية:</b> ${escapeHtml(test.recommendation)}</small>`
-                : ""}
-            </div>
-          </article>
-        `).join("")}
-      </div>
-    </section>
-  `).join("");
+  const tests = Array.isArray(report.evaluation?.tests) ? report.evaluation.tests : [];
+  const groups = [];
+  const seen = new Set();
+  tests.forEach(test => {
+    const groupKey = test?.localization?.category?.key || test.category || "";
+    if (!seen.has(groupKey)) { seen.add(groupKey); groups.push(groupKey); }
+  });
+  document.getElementById("diagnosticsResults").innerHTML = groups.map(groupKey => {
+    const grouped = tests.filter(test => (test?.localization?.category?.key || test.category || "") === groupKey);
+    const heading = grouped.length ? diagnosticsLocalizedField(grouped[0], "category") : groupKey;
+    return `
+      <section class="diagnostics-group">
+        <h4>${escapeHtml(heading)}</h4>
+        <div class="diagnostics-test-list">
+          ${grouped.map(test => `
+            <article class="diagnostics-test ${test.status}">
+              <div class="diagnostics-test-status"><span>${escapeHtml(diagnosticsStatusLabel(test.status))}</span></div>
+              <div class="diagnostics-test-content">
+                <strong>${escapeHtml(diagnosticsLocalizedField(test, "title"))}</strong>
+                <p>${escapeHtml(diagnosticsLocalizedField(test, "detail"))}</p>
+                ${test.status !== "passed" && diagnosticsLocalizedField(test, "recommendation")
+                  ? `<small><b>${escapeHtml(l1T("diagnostics.test.recommendation"))}</b> ${escapeHtml(diagnosticsLocalizedField(test, "recommendation"))}</small>`
+                  : ""}
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      </section>`;
+  }).join("");
 
   document.getElementById("downloadDiagnosticsJsonBtn").disabled = false;
   document.getElementById("downloadDiagnosticsHtmlBtn").disabled = false;
 }
 
 function diagnosticsHtml(report) {
+  const lang = window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "en" : "ar";
+  const dir = lang === "en" ? "ltr" : "rtl";
+  const align = dir === "rtl" ? "right" : "left";
   const rows = report.evaluation.tests.map(test => `
     <tr>
-      <td>${escapeHtml(test.category)}</td>
-      <td>${escapeHtml(test.title)}</td>
-      <td>${escapeHtml(diagnosticsStatusArabic(test.status))}</td>
-      <td>${escapeHtml(test.detail || "")}</td>
-      <td>${escapeHtml(test.recommendation || "")}</td>
+      <td>${escapeHtml(diagnosticsLocalizedField(test, "category"))}</td>
+      <td>${escapeHtml(diagnosticsLocalizedField(test, "title"))}</td>
+      <td>${escapeHtml(diagnosticsStatusLabel(test.status))}</td>
+      <td>${escapeHtml(diagnosticsLocalizedField(test, "detail"))}</td>
+      <td>${escapeHtml(diagnosticsLocalizedField(test, "recommendation"))}</td>
     </tr>
   `).join("");
 
   return `<!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="${lang}" dir="${dir}">
 <head>
 <meta charset="utf-8">
-<title>PETATOE Diagnostics Report</title>
+<title>${escapeHtml(l1T("diagnostics.report.title"))}</title>
 <style>
 body{font-family:Arial,sans-serif;margin:32px;color:#172033}
 h1,h2{margin:0 0 12px}
 .summary{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0}
 .summary div{border:1px solid #ddd;border-radius:10px;padding:12px;min-width:120px}
 table{width:100%;border-collapse:collapse}
-th,td{border:1px solid #ddd;padding:9px;text-align:right;vertical-align:top}
+th,td{border:1px solid #ddd;padding:9px;text-align:${align};vertical-align:top}
 th{background:#f4f6f8}
 footer{margin-top:24px;color:#667085;font-size:12px}
 </style>
 </head>
 <body>
-<h1>تقرير التشخيص الشامل — PETATOE</h1>
-<p>وقت الفحص: ${escapeHtml(new Date(report.finished_at).toLocaleString("ar-SA-u-ca-gregory-nu-latn"))}</p>
+<h1>${escapeHtml(l1T("diagnostics.report.title"))}</h1>
+<p>${escapeHtml(l1T("diagnostics.report.checkTime", { value: l1DateTime(report.finished_at) }))}</p>
 <div class="summary">
-<div><b>النتيجة</b><br>${report.evaluation.score}%</div>
-<div><b>Passed</b><br>${report.evaluation.passed}</div>
-<div><b>Warning</b><br>${report.evaluation.warnings}</div>
-<div><b>Critical</b><br>${report.evaluation.critical}</div>
-<div><b>المدة</b><br>${Math.round(report.duration_ms)} ms</div>
+<div><b>${escapeHtml(l1T("diagnostics.summary.score"))}</b><br>${report.evaluation.score}%</div>
+<div><b>${escapeHtml(l1T("diagnostics.status.passed"))}</b><br>${report.evaluation.passed}</div>
+<div><b>${escapeHtml(l1T("diagnostics.status.warning"))}</b><br>${report.evaluation.warnings}</div>
+<div><b>${escapeHtml(l1T("diagnostics.status.critical"))}</b><br>${report.evaluation.critical}</div>
+<div><b>${escapeHtml(l1T("diagnostics.summary.duration", { value: "" }).replace(/\s*[:：]\s*$/, ""))}</b><br>${Math.round(report.duration_ms)} ms</div>
 </div>
 <table>
-<thead><tr><th>القسم</th><th>الفحص</th><th>الحالة</th><th>التفاصيل</th><th>التوصية</th></tr></thead>
+<thead><tr><th>${escapeHtml(l1T("diagnostics.report.header.category"))}</th><th>${escapeHtml(l1T("diagnostics.report.header.test"))}</th><th>${escapeHtml(l1T("diagnostics.report.header.status"))}</th><th>${escapeHtml(l1T("diagnostics.report.header.details"))}</th><th>${escapeHtml(l1T("diagnostics.report.header.recommendation"))}</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
-<footer>Environment: ${escapeHtml(report.environment)} — Report version ${escapeHtml(report.report_version)}</footer>
+<footer>${escapeHtml(l1T("diagnostics.report.footer", { environment: report.environment, version: report.report_version }))}</footer>
 </body>
 </html>`;
 }
@@ -3791,61 +3812,42 @@ async function runEnterpriseDiagnostics() {
 
   const button = document.getElementById("runDiagnosticsBtn");
   button.disabled = true;
-  button.textContent = "جاري الفحص...";
-  showDataStatus(
-    "diagnosticsStatus",
-    "جاري تنفيذ اختبارات قاعدة البيانات والأمان والوظائف والواجهة...",
-    "info"
-  );
+  button.textContent = l1T("diagnostics.status.running");
+  showDataStatus("diagnosticsStatus", l1T("diagnostics.status.runningDetail"), "info");
 
   try {
     const report = await window.DiagnosticsEngine.run();
     renderDiagnosticsReport(report);
 
-    const type = report.evaluation.critical
-      ? "error"
-      : report.evaluation.warnings
-        ? "info"
-        : "success";
-
-    showDataStatus(
-      "diagnosticsStatus",
-      `اكتمل الفحص: ${report.evaluation.passed} ناجح، ${report.evaluation.warnings} تحذير، ${report.evaluation.critical} حرج.`,
-      type
-    );
+    const type = report.evaluation.critical ? "error" : report.evaluation.warnings ? "info" : "success";
+    showDataStatus("diagnosticsStatus", l1T("diagnostics.status.complete", {
+      passed: report.evaluation.passed,
+      warnings: report.evaluation.warnings,
+      critical: report.evaluation.critical
+    }), type);
   } catch (error) {
-    showDataStatus(
-      "diagnosticsStatus",
-      error instanceof Error ? error.message : "تعذر تنفيذ الفحص الشامل.",
-      "error"
-    );
+    showDataStatus("diagnosticsStatus", error instanceof Error ? error.message : l1T("diagnostics.error.runFallback"), "error");
   } finally {
     diagnosticsRunning = false;
     button.disabled = false;
-    button.textContent = "إعادة الفحص";
+    button.textContent = l1T("diagnostics.action.rerun");
   }
 }
 
 function componentLabel(key) {
-  const labels = {
-    database: "قاعدة البيانات",
-    security: "الأمان",
-    backups: "النسخ الاحتياطي",
-    performance: "الأداء",
-    network: "الشبكة",
-    users: "المستخدمون",
-    errors: "الأخطاء"
-  };
-  return labels[key] || key;
+  const translationKey = `systemHealth.smart.component.${key}`;
+  const translated = l1T(translationKey);
+  return translated === `[${translationKey}]` ? key : translated;
 }
 
 function severityLabel(severity) {
-  const labels = {
-    healthy: "سليم",
-    warning: "تحذير",
-    critical: "حرج"
-  };
-  return labels[severity] || severity;
+  const key = severity === "healthy" ? "healthy" : severity === "warning" ? "warning" : "critical";
+  return l1T(`systemHealth.smart.level.${key}`);
+}
+
+function healthLocalizedField(item, field) {
+  const value = item?.localization?.[field];
+  return value?.key ? l1T(value.key, value.vars || {}) : String(item?.[field] || "");
 }
 
 function renderHealthTrend(history) {
@@ -3853,7 +3855,7 @@ function renderHealthTrend(history) {
   if (!container) return;
 
   if (!history?.length) {
-    container.innerHTML = '<div class="empty-state">لا توجد قياسات سابقة بعد.</div>';
+    container.innerHTML = `<div class="empty-state">${escapeHtml(l1T("systemHealth.smart.empty.history"))}</div>`;
     return;
   }
 
@@ -3861,27 +3863,23 @@ function renderHealthTrend(history) {
   const height = 150;
   const padding = 18;
   const points = history.map((item, index) => {
-    const x = history.length === 1
-      ? width / 2
-      : padding + index * ((width - padding * 2) / (history.length - 1));
+    const x = history.length === 1 ? width / 2 : padding + index * ((width - padding * 2) / (history.length - 1));
     const y = height - padding - (item.score / 100) * (height - padding * 2);
     return { x, y, ...item };
   });
 
   const polyline = points.map(point => `${point.x},${point.y}`).join(" ");
-
   container.innerHTML = `
-    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Health score trend">
+    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(l1T("systemHealth.smart.trendAria"))}">
       <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" class="trend-axis"/>
       <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" class="trend-axis"/>
       <polyline points="${polyline}" class="trend-line"/>
       ${points.map(point => `
         <circle cx="${point.x}" cy="${point.y}" r="4" class="trend-point">
-          <title>${point.score}% — ${new Date(point.timestamp).toLocaleTimeString("ar-SA-u-ca-gregory-nu-latn")}</title>
+          <title>${point.score}% — ${l1DateTime(point.timestamp, { timeStyle: "medium" })}</title>
         </circle>
       `).join("")}
-    </svg>
-  `;
+    </svg>`;
 }
 
 function renderSmartHealthInsights(evaluation) {
@@ -3889,7 +3887,10 @@ function renderSmartHealthInsights(evaluation) {
 
   const badge = document.getElementById("smartHealthLevelBadge");
   if (badge) {
-    badge.textContent = `${evaluation.level.arabic} — ${evaluation.score}%`;
+    const levelLabel = evaluation.level?.localization?.key
+      ? l1T(evaluation.level.localization.key, evaluation.level.localization.vars || {})
+      : evaluation.level?.label || severityLabel(evaluation.level?.key);
+    badge.textContent = `${levelLabel} — ${evaluation.score}%`;
     badge.className = `smart-health-level ${evaluation.level.key}`;
   }
 
@@ -3899,11 +3900,9 @@ function renderSmartHealthInsights(evaluation) {
       <div class="score-breakdown-item">
         <div>
           <strong>${escapeHtml(componentLabel(key))}</strong>
-          <small>الوزن: ${evaluation.weights[key]}%</small>
+          <small>${escapeHtml(l1T("systemHealth.smart.weight", { value: evaluation.weights[key] }))}</small>
         </div>
-        <div class="score-progress">
-          <span style="width:${Math.round(value)}%"></span>
-        </div>
+        <div class="score-progress"><span style="width:${Math.round(value)}%"></span></div>
         <b>${Math.round(value)}%</b>
       </div>
     `).join("");
@@ -3914,8 +3913,8 @@ function renderSmartHealthInsights(evaluation) {
     alerts.innerHTML = evaluation.alerts.map(alert => `
       <article class="smart-alert ${alert.severity}">
         <div>
-          <strong>${escapeHtml(alert.title)}</strong>
-          <small>${escapeHtml(alert.detail || "")}</small>
+          <strong>${escapeHtml(healthLocalizedField(alert, "title"))}</strong>
+          <small>${escapeHtml(healthLocalizedField(alert, "detail"))}</small>
         </div>
         <span>${escapeHtml(severityLabel(alert.severity))}</span>
       </article>
@@ -3924,12 +3923,12 @@ function renderSmartHealthInsights(evaluation) {
 
   const recommendations = document.getElementById("healthRecommendationsList");
   if (recommendations) {
-    recommendations.innerHTML = evaluation.recommendations.map((item, index) => `
-      <article class="health-recommendation">
-        <span>${index + 1}</span>
-        <p>${escapeHtml(item)}</p>
-      </article>
-    `).join("");
+    const refs = Array.isArray(evaluation.recommendationLocalization) ? evaluation.recommendationLocalization : [];
+    recommendations.innerHTML = evaluation.recommendations.map((item, index) => {
+      const ref = refs[index];
+      const value = ref?.key ? l1T(ref.key, ref.vars || {}) : item;
+      return `<article class="health-recommendation"><span>${index + 1}</span><p>${escapeHtml(value)}</p></article>`;
+    }).join("");
   }
 
   renderHealthTrend(evaluation.history);
@@ -7461,8 +7460,8 @@ function initializeDynamicSidebar() {
   const sidebarUserName = document.getElementById("sidebarCurrentUserName");
   if (headerUserName && sidebarUserName) {
     const syncHeaderIdentity = () => {
-      sidebarUserName.textContent = headerUserName.textContent || petatoeSharedT("sidebar.userFallback", "مستخدم");
-      if (headerUserRole) headerUserRole.textContent = roleLabel(currentRole()) || petatoeSharedT("shared.header.systemUser", "مستخدم النظام");
+      sidebarUserName.textContent = headerUserName.textContent || petatoeSharedT("sidebar.userFallback");
+      if (headerUserRole) headerUserRole.textContent = roleLabel(currentRole()) || petatoeSharedT("shared.header.systemUser");
     };
     syncHeaderIdentity();
     new MutationObserver(syncHeaderIdentity).observe(headerUserName, { childList: true, characterData: true, subtree: true });
@@ -7581,12 +7580,12 @@ function applyKyumTheme(theme, persist = true) {
     button.setAttribute(
       "aria-label",
       darkActive
-        ? petatoeSharedT("shared.header.themeEnableLight", "تفعيل الوضع الفاتح")
-        : petatoeSharedT("shared.header.themeEnableDark", "تفعيل الوضع الداكن")
+        ? petatoeSharedT("shared.header.themeEnableLight")
+        : petatoeSharedT("shared.header.themeEnableDark")
     );
     button.title = darkActive
-      ? petatoeSharedT("shared.header.themeSwitchLight", "التبديل إلى الوضع الفاتح")
-      : petatoeSharedT("shared.header.themeSwitchDark", "التبديل إلى الوضع الداكن");
+      ? petatoeSharedT("shared.header.themeSwitchLight")
+      : petatoeSharedT("shared.header.themeSwitchDark");
   }
 
   if (persist) {
@@ -7598,7 +7597,7 @@ function formatAboutDate(value) {
   if (!value) return "—";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return String(value);
-  return new Intl.DateTimeFormat(kyumDisplayDateLocale(), { dateStyle: "medium", timeStyle: "short" }).format(date);
+  return new Intl.DateTimeFormat(l1Locale(), { dateStyle: "medium", timeStyle: "short" }).format(date);
 }
 
 function setAboutActionStatus(message, isError = false) {
@@ -7625,7 +7624,7 @@ function renderAboutAppCenter() {
   setText("aboutCurrentVersion", `v${currentVersion}`);
   setText("aboutCurrentBuild", currentBuild);
   setText("aboutReleaseDate", manifest.releaseDate || "—");
-  setText("aboutLastUpdateCheck", state.lastCheckedAt ? formatAboutDate(state.lastCheckedAt) : "لم يتم الفحص بعد");
+  setText("aboutLastUpdateCheck", state.lastCheckedAt ? formatAboutDate(state.lastCheckedAt) : l1T("aboutApp.lastCheck.none"));
 
   const badge = document.getElementById("aboutUpdateStatusBadge");
   const headline = document.getElementById("aboutUpdateHeadline");
@@ -7638,25 +7637,25 @@ function renderAboutAppCenter() {
 
   badge.className = "about-status-badge";
   if (state.checking) {
-    badge.textContent = "جارٍ الفحص";
+    badge.textContent = l1T("aboutApp.state.checkingBadge");
     badge.classList.add("is-pending");
-    headline.textContent = "يتم التحقق من الإصدار";
-    message.textContent = "جارٍ الاتصال بخادم التحديثات...";
+    headline.textContent = l1T("aboutApp.state.checkingHeadline");
+    message.textContent = l1T("aboutApp.state.checkingMessage");
   } else if (state.lastError) {
-    badge.textContent = "تعذر الفحص";
+    badge.textContent = l1T("aboutApp.state.errorBadge");
     badge.classList.add("is-error");
-    headline.textContent = "تعذر التحقق من التحديثات";
-    message.textContent = "تحقق من اتصال الإنترنت ثم أعد المحاولة.";
+    headline.textContent = l1T("aboutApp.state.errorHeadline");
+    message.textContent = l1T("aboutApp.state.errorMessage");
   } else if (release) {
-    badge.textContent = release.forceUpdate ? "تحديث إلزامي" : "تحديث متاح";
+    badge.textContent = release.forceUpdate ? l1T("aboutApp.state.required") : l1T("aboutApp.state.available");
     badge.classList.add("is-warning");
-    headline.textContent = `يوجد إصدار أحدث v${release.version}`;
-    message.textContent = "اضغط تحديث الآن لتنشيط آخر تطويرات البرنامج.";
+    headline.textContent = l1T("aboutApp.state.newVersion", { version: release.version });
+    message.textContent = l1T("aboutApp.state.updateMessage");
   } else {
-    badge.textContent = "محدّث";
+    badge.textContent = l1T("aboutApp.state.currentBadge");
     badge.classList.add("is-success");
-    headline.textContent = "لديك أحدث إصدار";
-    message.textContent = "نسخة البرنامج الحالية هي أحدث نسخة منشورة.";
+    headline.textContent = l1T("aboutApp.state.currentHeadline");
+    message.textContent = l1T("aboutApp.state.currentMessage");
   }
 
   latestBlock.classList.toggle("hidden", !release);
@@ -7680,13 +7679,13 @@ function initializeAboutAppCenter() {
 
   document.getElementById("aboutCheckUpdatesBtn")?.addEventListener("click", async event => {
     event.currentTarget.disabled = true;
-    setAboutActionStatus("جارٍ التحقق من وجود تحديثات...");
+    setAboutActionStatus(l1T("aboutApp.check.running"));
     try {
       const result = await window.KYUM_UPDATE?.checkDetailed?.();
-      setAboutActionStatus(result?.latestRelease ? `يوجد إصدار أحدث v${result.latestRelease.version}.` : "لديك أحدث إصدار من البرنامج.");
+      setAboutActionStatus(result?.latestRelease ? l1T("aboutApp.check.available", { version: result.latestRelease.version }) : l1T("aboutApp.check.current"));
     } catch (error) {
       console.error("Manual update check failed", error);
-      setAboutActionStatus("تعذر التحقق من التحديثات. تحقق من الاتصال ثم أعد المحاولة.", true);
+      setAboutActionStatus(l1T("aboutApp.check.failed"), true);
     } finally {
       event.currentTarget.disabled = false;
       renderAboutAppCenter();
@@ -7700,13 +7699,13 @@ function initializeAboutAppCenter() {
 
   document.getElementById("aboutClearCacheBtn")?.addEventListener("click", async event => {
     event.currentTarget.disabled = true;
-    setAboutActionStatus("جارٍ مسح الكاش وإعادة تحميل التطبيق...");
+    setAboutActionStatus(l1T("aboutApp.cache.clearing"));
     try {
       await window.KYUM_UPDATE?.clearCaches?.();
       window.setTimeout(() => window.KYUM_UPDATE?.reload?.(), 250);
     } catch (error) {
       console.error("Cache clear failed", error);
-      setAboutActionStatus("تعذر مسح الكاش.", true);
+      setAboutActionStatus(l1T("aboutApp.cache.failed"), true);
       event.currentTarget.disabled = false;
     }
   });
@@ -7715,17 +7714,17 @@ function initializeAboutAppCenter() {
     const state = window.KYUM_UPDATE?.getStatus?.() || {};
     const manifest = state.manifest || {};
     const text = [
-      "PETATOE — Enterprise Edition",
-      `Version: ${window.KYUM_UPDATE?.currentVersion || "—"}`,
-      `Build: ${manifest.build || "—"}`,
-      `Environment: Production`,
-      `URL: ${location.href}`
+      l1T("aboutApp.copy.product"),
+      l1T("aboutApp.copy.version", { value: window.KYUM_UPDATE?.currentVersion || "—" }),
+      l1T("aboutApp.copy.build", { value: manifest.build || "—" }),
+      l1T("aboutApp.copy.environment"),
+      l1T("aboutApp.copy.url", { value: location.href })
     ].join("\n");
     try {
       await navigator.clipboard.writeText(text);
-      setAboutActionStatus("تم نسخ معلومات الإصدار.");
+      setAboutActionStatus(l1T("aboutApp.copy.success"));
     } catch {
-      setAboutActionStatus("تعذر نسخ معلومات الإصدار.", true);
+      setAboutActionStatus(l1T("aboutApp.copy.failed"), true);
     }
   });
 
@@ -7749,7 +7748,7 @@ initializeKyumThemeToggle();
 window.addEventListener("petatoe-language-changed", () => {
   applyKyumTheme(getKyumTheme(), false);
   const roleNode = document.getElementById("currentUserRoleLabel");
-  if (roleNode && !roleLabel(currentRole())) roleNode.textContent = petatoeSharedT("shared.header.systemUser", "مستخدم النظام");
+  if (roleNode && !roleLabel(currentRole())) roleNode.textContent = petatoeSharedT("shared.header.systemUser");
 });
 
 // Phase M7.2.1 — stable public navigation bridge for mobile controls.

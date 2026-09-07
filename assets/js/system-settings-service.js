@@ -1,7 +1,7 @@
 // KYUM Phase 12 — System Settings Service
 (function () {
   function client() {
-    if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
+    if (!window.customerSupabase) throw new Error(window.PetatoeLocalization.t("auth.error.supabaseNotReady"));
     return window.customerSupabase;
   }
 
@@ -21,7 +21,7 @@
         "session_timeout_minutes"
       ]);
 
-    if (error) throw new Error(`تعذر تحميل إعدادات النظام: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("systemSettings.error.load", { error: error.message }));
 
     return Object.fromEntries(
       (data || []).map(row => [row.setting_key, row.setting_value])
@@ -39,7 +39,7 @@
       .from("system_settings")
       .upsert(rows, { onConflict: "setting_key" });
 
-    if (error) throw new Error(`تعذر حفظ إعدادات النظام: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("systemSettings.error.save", { error: error.message }));
 
     try {
       const { data } = await client().auth.getUser();

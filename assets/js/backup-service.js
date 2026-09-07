@@ -7,14 +7,14 @@
     }
   }
   function client() {
-    if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
+    if (!window.customerSupabase) throw new Error(window.PetatoeLocalization.t("auth.error.supabaseNotReady"));
     return window.customerSupabase;
   }
 
   async function invoke(body) {
     const { data, error } = await client().functions.invoke("backup-admin", { body });
-    if (error) throw new Error(`تعذر تنفيذ عملية النسخ الاحتياطي: ${error.message}`);
-    if (!data?.success) throw new Error(data?.error || "فشلت عملية النسخ الاحتياطي.");
+    if (error) throw new Error(window.PetatoeLocalization.t("backups.error.operation", { error: error.message }));
+    if (!data?.success) throw new Error(data?.error || window.PetatoeLocalization.t("backups.error.failed"));
     return data;
   }
 
@@ -56,7 +56,7 @@
       .order("created_at", { ascending: false })
       .limit(100);
 
-    if (error) throw new Error(`تعذر تحميل سجل النسخ الاحتياطي: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("backups.error.history", { error: error.message }));
     return data || [];
   }
 

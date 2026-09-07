@@ -1,25 +1,31 @@
 window.CustomerPermissions = {
-  roleLabels: {
-    super_admin: "مدير النظام",
-    sales_manager: "مدير المبيعات",
-    sales_supervisor: "مشرف المبيعات",
-    sales_representative: "مندوب مبيعات",
-    customer_service: "مشرف التركيبات",
-    viewer: "جرومر / سائق"
+  get roleLabels() {
+    const t = key => window.PetatoeLocalization?.t?.(key) || key;
+    return {
+      super_admin: t("permissions.role.super_admin"),
+      sales_manager: t("permissions.role.sales_manager"),
+      sales_supervisor: t("permissions.role.sales_supervisor"),
+      sales_representative: t("permissions.role.sales_representative"),
+      customer_service: t("permissions.role.customer_service"),
+      viewer: t("permissions.role.viewer")
+    };
   },
   roleOptions: ["super_admin","sales_manager","sales_supervisor","sales_representative","customer_service","viewer"],
   screenPermissions: new Map(),
   permissionsLoaded: false,
 
 
-  actionLabels: Object.freeze({
-    view: "عرض",
-    add: "إضافة",
-    edit: "تعديل",
-    delete: "حذف",
-    export: "تصدير",
-    import: "استيراد"
-  }),
+  get actionLabels() {
+    const t = key => window.PetatoeLocalization?.t?.(key) || key;
+    return Object.freeze({
+      view: t("permissions.action.view"),
+      add: t("permissions.action.add"),
+      edit: t("permissions.action.edit"),
+      delete: t("permissions.action.delete"),
+      export: t("permissions.action.export"),
+      import: t("permissions.action.import")
+    });
+  },
 
   canAction(screenKey, action = "view") {
     return window.PermissionEngine?.can?.(screenKey, action) ?? this.canScreen(screenKey, action);
@@ -30,7 +36,7 @@ window.CustomerPermissions = {
     if (allowed) return true;
 
     const label = options.label || this.actionLabels[action] || action;
-    const message = options.message || `لا توجد صلاحية ${label} لهذه الشاشة.`;
+    const message = options.message || (window.PetatoeLocalization?.t?.("permissions.error.denied", { action: label }) || `Permission denied: ${label}`);
     window.dispatchEvent(new CustomEvent("kyum-permission-denied", {
       detail: Object.freeze({ screenKey, action, message })
     }));
@@ -79,12 +85,12 @@ window.CustomerPermissions = {
     this.screenPermissions = new Map();
     const profile = window.CustomerAuth?.getState?.().profile;
     if (profile?.role === "super_admin") { this.permissionsLoaded = true; return; }
-    if (!window.PermissionsService) throw new Error("خدمة الصلاحيات غير محملة.");
+    if (!window.PermissionsService) throw new Error(window.PetatoeLocalization?.t?.("permissions.error.serviceMissing") || "Permissions service is not loaded.");
     try {
       const rows = options.offline
         ? window.KYUMOfflineSessionStore?.loadPermissions?.(profile?.id) || []
         : await window.PermissionsService.getCurrentUserPermissions();
-      if (options.offline && !rows.length) throw new Error("لا توجد صلاحيات محفوظة لهذا الحساب.");
+      if (options.offline && !rows.length) throw new Error(window.PetatoeLocalization?.t?.("permissions.error.offlineNone") || "No saved permissions are available for this account.");
       this.screenPermissions = new Map(rows.map(row => [row.screen_key, Object.freeze({ ...row })]));
       this.permissionsLoaded = true;
     } catch (error) {

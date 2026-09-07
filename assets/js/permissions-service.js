@@ -1,6 +1,6 @@
 (function () {
   const client = () => {
-    if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
+    if (!window.customerSupabase) throw new Error(window.PetatoeLocalization.t("auth.error.supabaseNotReady"));
     return window.customerSupabase;
   };
 
@@ -8,7 +8,7 @@
     const { data, error } = await client().from("app_screens")
       .select("screen_key,screen_name,group_name,display_order,is_active")
       .eq("is_active", true).order("display_order");
-    if (error) throw new Error(`تعذر تحميل الشاشات: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("permissions.error.loadScreens", { error: error.message }));
     return data || [];
   }
 
@@ -16,7 +16,7 @@
     const { data, error } = await client().from("role_screen_permissions")
       .select("screen_key,can_view,can_add,can_edit,can_delete,can_export")
       .eq("role", role);
-    if (error) throw new Error(`تعذر تحميل الصلاحيات: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("permissions.error.load", { error: error.message }));
     return data || [];
   }
 
@@ -44,13 +44,13 @@
     }));
     const { error } = await client().from("role_screen_permissions")
       .upsert(rows, { onConflict: "role,screen_key" });
-    if (error) throw new Error(`تعذر حفظ الصلاحيات: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("permissions.error.save", { error: error.message }));
 
     const saved = await getRolePermissions(role);
     const expectedCanonical = canonicalize(rows);
     const savedCanonical = canonicalize(saved).filter(row => expectedCanonical.some(expected => expected.screen_key === row.screen_key));
     if (JSON.stringify(savedCanonical) !== JSON.stringify(expectedCanonical)) {
-      throw new Error("تم إرسال الصلاحيات لكن تعذر التحقق من حفظ جميع التعديلات.");
+      throw new Error(window.PetatoeLocalization.t("permissions.error.verifySave"));
     }
     return saved;
   }
@@ -58,7 +58,7 @@
   async function getCurrentUserPermissions() {
     const profile = window.CustomerAuth?.getState?.().profile;
     const role = profile?.role;
-    if (!profile?.id || !role) throw new Error("ملف المستخدم أو الدور غير متاح.");
+    if (!profile?.id || !role) throw new Error(window.PetatoeLocalization.t("permissions.error.profileRoleMissing"));
     if (role === "super_admin") return [];
     const rows = await getRolePermissions(role);
     const normalized = rows.map(row => Object.freeze({ ...row }));

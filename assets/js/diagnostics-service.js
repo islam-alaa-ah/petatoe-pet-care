@@ -1,7 +1,7 @@
 // KYUM Phase 14.4 — Diagnostics Data Service
 (function () {
   function client() {
-    if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
+    if (!window.customerSupabase) throw new Error(window.PetatoeLocalization.t("auth.error.supabaseNotReady"));
     return window.customerSupabase;
   }
 
@@ -28,7 +28,7 @@
   async function getHealthSnapshot() {
     return timed("health_snapshot", async () => {
       if (!window.SystemHealthService) {
-        throw new Error("SystemHealthService غير محمل.");
+        throw new Error(window.PetatoeLocalization.t("diagnostics.error.serviceMissing"));
       }
       return window.SystemHealthService.getSnapshot();
     });
@@ -49,7 +49,7 @@
   async function getProfile() {
     return timed("user_profile", async () => {
       const profile = window.CustomerAuth?.getState?.().profile;
-      if (!profile) throw new Error("ملف المستخدم غير محمل.");
+      if (!profile) throw new Error(window.PetatoeLocalization.t("diagnostics.error.profileMissing"));
       return {
         id: profile.id,
         role: profile.role,
@@ -62,7 +62,7 @@
   async function getScreensAndPermissions() {
     return timed("screen_permissions", async () => {
       const role = window.CustomerAuth?.getState?.().profile?.role;
-      if (!role) throw new Error("دور المستخدم غير معروف.");
+      if (!role) throw new Error(window.PetatoeLocalization.t("diagnostics.error.roleUnknown"));
 
       const [screensResult, permissionsResult] = await Promise.all([
         client()
@@ -106,7 +106,7 @@
         || window.CUSTOMER_SUPABASE_URL
         || "";
 
-      if (!projectUrl) throw new Error("رابط Supabase غير متاح.");
+      if (!projectUrl) throw new Error(window.PetatoeLocalization.t("diagnostics.error.supabaseUrlMissing"));
 
       const response = await fetch(
         `${projectUrl.replace(/\/$/, "")}/functions/v1/${functionName}`,

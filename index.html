@@ -36,37 +36,37 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/mobile.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/vehicle-treasury.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.56.62" />
-  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.56.62" />
+  <link rel="stylesheet" href="assets/css/style.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/mobile.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/responsive-foundation.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/core-screens-responsive.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/daily-reports-responsive.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/mobile-shell-touch-certification.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/tablet-desktop-certification.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/installations-foundation.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/installation-requests.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/installation-request-inline-dialogs.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/installation-scheduling.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/installation-execution.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/installation-completion.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/installation-operations-reports.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/installation-dashboard-settings.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/vehicle-treasury.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/notification-center.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/translation-center.css?v=18.56.63" />
+  <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.56.63" />
 </head>
 <body>
   <div id="authLoadingOverlay" class="auth-loading-overlay">
     <div class="auth-loading-card">
       <div class="spinner"></div>
-      <strong>جاري التحقق من الجلسة...</strong>
-      <span>يرجى الانتظار</span>
+      <strong data-petatoe-i18n="auth.loading.session">جاري التحقق من الجلسة...</strong>
+      <span data-petatoe-i18n="auth.loading.wait">يرجى الانتظار</span>
     </div>
   </div>
   <section id="loginView" class="login-shell">
@@ -76,16 +76,16 @@
       <p>Enterprise CRM — Secure Login</p>
       <form id="loginForm">
         <label>
-          البريد الإلكتروني
+          <span data-petatoe-i18n="auth.login.email">البريد الإلكتروني</span>
           <input id="loginEmail" type="email" autocomplete="username" placeholder="name@company.com" required>
         </label>
         <label>
-          كلمة المرور
-          <input id="loginPassword" type="password" autocomplete="current-password" placeholder="كلمة المرور" required>
+          <span data-petatoe-i18n="auth.login.password">كلمة المرور</span>
+          <input id="loginPassword" type="password" autocomplete="current-password" placeholder="كلمة المرور" data-petatoe-i18n-placeholder="auth.login.passwordPlaceholder" required>
         </label>
-        <button id="loginSubmitBtn" class="primary-btn" type="submit">تسجيل الدخول</button>
+        <button id="loginSubmitBtn" class="primary-btn" type="submit" data-petatoe-i18n="auth.login.submit">تسجيل الدخول</button>
         <div id="loginMessage" class="auth-message hidden" role="alert"></div>
-        <small>يتم تسجيل الدخول باستخدام Supabase Auth. لا توجد بيانات دخول افتراضية.</small>
+        <small data-petatoe-i18n="auth.login.hint">يتم تسجيل الدخول باستخدام Supabase Auth. لا توجد بيانات دخول افتراضية.</small>
       </form>
     </div>
   </section>
@@ -107,7 +107,7 @@
         </button>
       </div>
 
-      <nav class="sidebar-nav" aria-label="القائمة الرئيسية">
+      <nav class="sidebar-nav" aria-label="القائمة الرئيسية" data-petatoe-i18n-aria="sidebar.mainNavigation">
         <section class="nav-group main-nav-group" data-nav-group="main-navigation" data-default-open="true">
           <button class="nav-group-toggle" type="button" aria-expanded="true">
             <span class="nav-group-label"><svg class="nav-group-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span data-petatoe-i18n="sidebar.group.main">الرئيسية</span></span>
@@ -2284,20 +2284,20 @@
       <section id="usersView" class="view-section hidden">
         <div class="actions-row">
           <div>
-            <h3 class="section-title">إدارة المستخدمين</h3>
-            <p class="section-note">إدارة حسابات الدخول والأدوار وربط المستخدم بمندوب المبيعات.</p>
+            <h3 class="section-title" data-petatoe-i18n="users.page.title">إدارة المستخدمين</h3>
+            <p class="section-note" data-petatoe-i18n="users.page.note">إدارة حسابات الدخول والأدوار وربط المستخدم بمندوب المبيعات.</p>
           </div>
-          <button id="addUserBtn" class="primary-btn users-manage-action">إضافة مستخدم</button>
+          <button id="addUserBtn" class="primary-btn users-manage-action" data-petatoe-i18n="users.action.add">إضافة مستخدم</button>
         </div>
         <div class="filters-grid users-filters">
-          <label>بحث<input id="usersSearch" type="search" placeholder="الاسم أو البريد"></label>
-          <label>الدور<select id="usersRoleFilter"><option value="">كل الأدوار</option></select></label>
-          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="usersStatusFilter"><option value="">كل الحالات</option><option value="active">نشط</option><option value="inactive">غير نشط</option></select></label>
+          <label><span data-petatoe-i18n="users.filter.search">بحث</span><input id="usersSearch" type="search" placeholder="الاسم أو البريد" data-petatoe-i18n-placeholder="users.filter.searchPlaceholder"></label>
+          <label><span data-petatoe-i18n="users.filter.role">الدور</span><select id="usersRoleFilter"><option value="" data-petatoe-i18n="users.filter.allRoles">كل الأدوار</option></select></label>
+          <label><span data-petatoe-i18n="appointmentNew.collection.appointmentStatus">الحالة</span><select id="usersStatusFilter"><option value="" data-petatoe-i18n="users.filter.allStatuses">كل الحالات</option><option value="active" data-petatoe-i18n="users.status.active">نشط</option><option value="inactive" data-petatoe-i18n="users.status.inactive">غير نشط</option></select></label>
         </div>
         <div id="usersStatus" class="data-status hidden"></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>المستخدم</th><th>البريد</th><th>الدور</th><th>المندوب المرتبط</th><th>نطاق البيانات</th><th>الحالة</th><th>آخر دخول</th><th>الإجراءات</th></tr></thead>
+            <thead><tr><th data-petatoe-i18n="users.column.user">المستخدم</th><th data-petatoe-i18n="users.column.email">البريد</th><th data-petatoe-i18n="users.column.role">الدور</th><th data-petatoe-i18n="users.column.representative">المندوب المرتبط</th><th data-petatoe-i18n="users.column.scope">نطاق البيانات</th><th data-petatoe-i18n="users.column.status">الحالة</th><th data-petatoe-i18n="users.column.lastLogin">آخر دخول</th><th data-petatoe-i18n="users.column.actions">الإجراءات</th></tr></thead>
             <tbody id="usersTableBody"></tbody>
           </table>
         </div>
@@ -2306,13 +2306,13 @@
       <section id="permissionsView" class="view-section hidden">
         <div class="actions-row">
           <div>
-            <h3 class="section-title">إدارة الصلاحيات</h3>
-            <p class="section-note">صلاحيات العرض والإضافة والتعديل والحذف والتصدير لكل دور.</p>
+            <h3 class="section-title" data-petatoe-i18n="permissions.page.title">إدارة الصلاحيات</h3>
+            <p class="section-note" data-petatoe-i18n="permissions.page.note">صلاحيات العرض والإضافة والتعديل والحذف والتصدير لكل دور.</p>
           </div>
-          <button id="savePermissionsBtn" class="primary-btn permissions-manage-action">حفظ الصلاحيات</button>
+          <button id="savePermissionsBtn" class="primary-btn permissions-manage-action" data-petatoe-i18n="permissions.action.save">حفظ الصلاحيات</button>
         </div>
         <div class="permissions-role-bar">
-          <label>اختر الدور<select id="permissionsRoleSelect"></select></label>
+          <label><span data-petatoe-i18n="permissions.filter.role">اختر الدور</span><select id="permissionsRoleSelect"></select></label>
         </div>
         <div id="permissionsStatus" class="data-status hidden"></div>
         <div id="permissionsMatrix" class="permissions-matrix"></div>
@@ -2321,19 +2321,19 @@
       <section id="activityLogView" class="view-section hidden">
         <div class="actions-row">
           <div>
-            <h3 class="section-title">سجل النشاط</h3>
-            <p class="section-note">العمليات التي تمت داخل النظام مع المستخدم والتاريخ.</p>
+            <h3 class="section-title" data-petatoe-i18n="activityLog.page.title">سجل النشاط</h3>
+            <p class="section-note" data-petatoe-i18n="activityLog.page.note">العمليات التي تمت داخل النظام مع المستخدم والتاريخ.</p>
           </div>
-          <button id="refreshActivityBtn" class="secondary-btn">تحديث</button>
+          <button id="refreshActivityBtn" class="secondary-btn" data-petatoe-i18n="activityLog.action.refresh">تحديث</button>
         </div>
         <div class="filters-grid">
-          <label>بحث<input id="activitySearch" type="search" placeholder="المستخدم أو العملية"></label>
-          <label>نوع العملية<select id="activityActionFilter"><option value="">كل العمليات</option><option value="insert">إضافة</option><option value="update">تعديل</option><option value="delete">حذف</option><option value="login">دخول</option><option value="logout">خروج</option></select></label>
+          <label><span data-petatoe-i18n="activityLog.filter.search">بحث</span><input id="activitySearch" type="search" placeholder="المستخدم أو العملية" data-petatoe-i18n-placeholder="activityLog.filter.searchPlaceholder"></label>
+          <label><span data-petatoe-i18n="activityLog.filter.action">نوع العملية</span><select id="activityActionFilter"><option value="" data-petatoe-i18n="activityLog.actionType.all">كل العمليات</option><option value="insert" data-petatoe-i18n="activityLog.actionType.insert">إضافة</option><option value="update" data-petatoe-i18n="activityLog.actionType.update">تعديل</option><option value="delete" data-petatoe-i18n="activityLog.actionType.delete">حذف</option><option value="login" data-petatoe-i18n="activityLog.actionType.login">دخول</option><option value="logout" data-petatoe-i18n="activityLog.actionType.logout">خروج</option></select></label>
         </div>
         <div id="activityStatus" class="data-status hidden"></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>المستخدم</th><th>العملية</th><th>القسم</th><th>التفاصيل</th><th>التاريخ والوقت</th></tr></thead>
+            <thead><tr><th data-petatoe-i18n="activityLog.column.user">المستخدم</th><th data-petatoe-i18n="activityLog.column.action">العملية</th><th data-petatoe-i18n="activityLog.column.section">القسم</th><th data-petatoe-i18n="activityLog.column.details">التفاصيل</th><th data-petatoe-i18n="activityLog.column.dateTime">التاريخ والوقت</th></tr></thead>
             <tbody id="activityTableBody"></tbody>
           </table>
         </div>
@@ -2342,10 +2342,10 @@
       <section id="backupsView" class="view-section hidden">
         <div class="actions-row">
           <div>
-            <h3 class="section-title">مركز النسخ الاحتياطي</h3>
-            <p class="section-note">تصدير نسخة كاملة من بيانات النظام والتحقق منها واستعادتها بأمان.</p>
+            <h3 class="section-title" data-petatoe-i18n="backups.page.title">مركز النسخ الاحتياطي</h3>
+            <p class="section-note" data-petatoe-i18n="backups.page.note">تصدير نسخة كاملة من بيانات النظام والتحقق منها واستعادتها بأمان.</p>
           </div>
-          <button id="createBackupBtn" class="primary-btn backup-manage-action">إنشاء نسخة احتياطية</button>
+          <button id="createBackupBtn" class="primary-btn backup-manage-action" data-petatoe-i18n="backups.action.create">إنشاء نسخة احتياطية</button>
         </div>
 
         <div id="backupStatus" class="data-status hidden"></div>
@@ -2353,34 +2353,34 @@
         <div class="backup-overview-grid">
           <article class="panel backup-action-card">
             <div class="backup-card-icon backup-card-icon--download"><span class="legacy-icon-glyph" aria-hidden="true">↓</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5"/><path d="M5 20h14"/></svg></span></div>
-            <h3>تصدير نسخة جديدة</h3>
-            <p>تنزيل ملف JSON يحتوي على بيانات العملاء والمتابعات والعروض والبيانات المرجعية والإعدادات.</p>
-            <button id="downloadBackupBtn" class="primary-btn backup-manage-action">تصدير وتنزيل</button>
+            <h3 data-petatoe-i18n="backups.export.title">تصدير نسخة جديدة</h3>
+            <p data-petatoe-i18n="backups.export.note">تنزيل ملف JSON يحتوي على بيانات العملاء والمتابعات والعروض والبيانات المرجعية والإعدادات.</p>
+            <button id="downloadBackupBtn" class="primary-btn backup-manage-action" data-petatoe-i18n="backups.action.download">تصدير وتنزيل</button>
           </article>
 
           <article class="panel backup-action-card">
             <div class="backup-card-icon backup-card-icon--verify"><span class="legacy-icon-glyph" aria-hidden="true">✓</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.2V12a8 8 0 1 1-4.7-7.3"/><path d="m9 11 2 2 7-7"/></svg></span></div>
-            <h3>التحقق من نسخة</h3>
-            <p>اختيار ملف نسخة احتياطية وفحص الإصدار والجداول وعدد السجلات قبل الاستعادة.</p>
+            <h3 data-petatoe-i18n="backups.verify.title">التحقق من نسخة</h3>
+            <p data-petatoe-i18n="backups.verify.note">اختيار ملف نسخة احتياطية وفحص الإصدار والجداول وعدد السجلات قبل الاستعادة.</p>
             <label class="file-picker-btn">
-              اختيار ملف
+              <span data-petatoe-i18n="backups.action.chooseFile">اختيار ملف</span>
               <input id="backupFileInput" type="file" accept=".json,application/json">
             </label>
           </article>
 
           <article class="panel backup-action-card danger-zone">
             <div class="backup-card-icon backup-card-icon--restore"><span class="legacy-icon-glyph" aria-hidden="true">↺</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v6h6"/><path d="M5.5 15a7 7 0 1 0 1.4-7.7L4 10"/></svg></span></div>
-            <h3>استعادة البيانات</h3>
-            <p>استعادة الملف الذي تم التحقق منه. العملية متاحة لمدير النظام فقط وتتطلب تأكيدًا إضافيًا.</p>
-            <button id="restoreBackupBtn" class="delete-btn backup-manage-action" disabled>استعادة النسخة</button>
+            <h3 data-petatoe-i18n="backups.restore.title">استعادة البيانات</h3>
+            <p data-petatoe-i18n="backups.restore.note">استعادة الملف الذي تم التحقق منه. العملية متاحة لمدير النظام فقط وتتطلب تأكيدًا إضافيًا.</p>
+            <button id="restoreBackupBtn" class="delete-btn backup-manage-action" data-petatoe-i18n="backups.action.restore" disabled>استعادة النسخة</button>
           </article>
         </div>
 
         <article id="backupInspectionPanel" class="panel backup-inspection hidden">
           <div class="panel-header">
             <div>
-              <h3>نتيجة فحص النسخة</h3>
-              <p id="backupInspectionSummary">لم يتم اختيار ملف.</p>
+              <h3 data-petatoe-i18n="backups.inspect.title">نتيجة فحص النسخة</h3>
+              <p id="backupInspectionSummary" data-petatoe-i18n="backups.inspect.none">لم يتم اختيار ملف.</p>
             </div>
           </div>
           <div id="backupTableCounts" class="backup-counts-grid"></div>
@@ -2389,21 +2389,21 @@
         <article class="panel">
           <div class="panel-header">
             <div>
-              <h3>سجل النسخ والاستعادة</h3>
-              <p>آخر العمليات المسجلة في قاعدة البيانات.</p>
+              <h3 data-petatoe-i18n="backups.history.title">سجل النسخ والاستعادة</h3>
+              <p data-petatoe-i18n="backups.history.note">آخر العمليات المسجلة في قاعدة البيانات.</p>
             </div>
-            <button id="refreshBackupHistoryBtn" class="secondary-btn">تحديث</button>
+            <button id="refreshBackupHistoryBtn" class="secondary-btn" data-petatoe-i18n="backups.action.refresh">تحديث</button>
           </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>العملية</th>
-                  <th>اسم الملف</th>
-                  <th>عدد السجلات</th>
-                  <th>المستخدم</th>
-                  <th>الحالة</th>
-                  <th>التاريخ</th>
+                  <th data-petatoe-i18n="backups.column.operation">العملية</th>
+                  <th data-petatoe-i18n="backups.column.fileName">اسم الملف</th>
+                  <th data-petatoe-i18n="backups.column.records">عدد السجلات</th>
+                  <th data-petatoe-i18n="backups.column.user">المستخدم</th>
+                  <th data-petatoe-i18n="backups.column.status">الحالة</th>
+                  <th data-petatoe-i18n="backups.column.date">التاريخ</th>
                 </tr>
               </thead>
               <tbody id="backupHistoryBody"></tbody>
@@ -2416,10 +2416,10 @@
       <section id="systemHealthView" class="view-section hidden">
         <div class="actions-row">
           <div>
-            <h3 class="section-title">مراقبة النظام</h3>
-            <p class="section-note">متابعة صحة قاعدة البيانات والأمان والمستخدمين والنسخ الاحتياطية من مكان واحد.</p>
+            <h3 class="section-title" data-petatoe-i18n="systemHealth.page.title">مراقبة النظام</h3>
+            <p class="section-note" data-petatoe-i18n="systemHealth.page.note">متابعة صحة قاعدة البيانات والأمان والمستخدمين والنسخ الاحتياطية من مكان واحد.</p>
           </div>
-          <button id="refreshSystemHealthBtn" class="primary-btn">تشغيل الفحص</button>
+          <button id="refreshSystemHealthBtn" class="primary-btn" data-petatoe-i18n="systemHealth.action.run">تشغيل الفحص</button>
         </div>
 
         <div id="systemHealthStatus" class="data-status hidden"></div>
@@ -2428,70 +2428,70 @@
           <article class="panel health-score-card">
             <div class="health-score-ring" id="healthScoreRing">
               <strong id="healthScoreValue">—</strong>
-              <span>درجة الصحة</span>
+              <span data-petatoe-i18n="systemHealth.score.label">درجة الصحة</span>
             </div>
             <div>
-              <h3 id="healthOverallLabel">جاري انتظار الفحص</h3>
-              <p id="healthLastChecked">لم يتم تنفيذ فحص بعد.</p>
+              <h3 id="healthOverallLabel" data-petatoe-i18n="systemHealth.score.waiting">جاري انتظار الفحص</h3>
+              <p id="healthLastChecked" data-petatoe-i18n="systemHealth.score.notChecked">لم يتم تنفيذ فحص بعد.</p>
             </div>
           </article>
 
           <article class="panel health-summary-card">
-            <span>قاعدة البيانات</span>
+            <span data-petatoe-i18n="systemHealth.summary.database">قاعدة البيانات</span>
             <strong id="healthDatabaseStatus">—</strong>
-            <small id="healthDatabaseLatency">زمن الاستجابة: —</small>
+            <small id="healthDatabaseLatency" data-petatoe-i18n="systemHealth.summary.latencyEmpty">زمن الاستجابة: —</small>
           </article>
 
           <article class="panel health-summary-card">
-            <span>المستخدمون</span>
+            <span data-petatoe-i18n="systemHealth.summary.users">المستخدمون</span>
             <strong id="healthUsersTotal">—</strong>
-            <small id="healthUsersActive">النشطون: —</small>
+            <small id="healthUsersActive" data-petatoe-i18n="systemHealth.summary.activeUsersEmpty">النشطون: —</small>
           </article>
 
           <article class="panel health-summary-card">
-            <span>الأمان</span>
+            <span data-petatoe-i18n="systemHealth.summary.security">الأمان</span>
             <strong id="healthRlsCoverage">—</strong>
-            <small id="healthPoliciesCount">السياسات: —</small>
+            <small id="healthPoliciesCount" data-petatoe-i18n="systemHealth.summary.policiesEmpty">السياسات: —</small>
           </article>
         </div>
 
         <div class="health-details-grid">
           <article class="panel">
-            <div class="panel-header"><div><h3>حالة الخدمات</h3><p>الخدمات الأساسية المرتبطة بالنظام.</p></div></div>
+            <div class="panel-header"><div><h3 data-petatoe-i18n="systemHealth.services.title">حالة الخدمات</h3><p data-petatoe-i18n="systemHealth.services.note">الخدمات الأساسية المرتبطة بالنظام.</p></div></div>
             <div id="healthServicesList" class="health-list"></div>
           </article>
 
           <article class="panel">
-            <div class="panel-header"><div><h3>قاعدة البيانات</h3><p>الجداول والصفوف والحجم الإجمالي.</p></div></div>
+            <div class="panel-header"><div><h3 data-petatoe-i18n="systemHealth.database.title">قاعدة البيانات</h3><p data-petatoe-i18n="systemHealth.database.note">الجداول والصفوف والحجم الإجمالي.</p></div></div>
             <div id="healthDatabaseMetrics" class="health-metrics-grid"></div>
           </article>
 
           <article class="panel">
-            <div class="panel-header"><div><h3>حالة الأمان</h3><p>RLS والسياسات وحماية الوظائف الحساسة.</p></div></div>
+            <div class="panel-header"><div><h3 data-petatoe-i18n="systemHealth.security.title">حالة الأمان</h3><p data-petatoe-i18n="systemHealth.security.note">RLS والسياسات وحماية الوظائف الحساسة.</p></div></div>
             <div id="healthSecurityList" class="health-list"></div>
           </article>
 
           <article class="panel">
-            <div class="panel-header"><div><h3>معلومات الإصدار</h3><p>بيانات البناء والبيئة الحالية.</p></div></div>
+            <div class="panel-header"><div><h3 data-petatoe-i18n="systemHealth.version.title">معلومات الإصدار</h3><p data-petatoe-i18n="systemHealth.version.note">بيانات البناء والبيئة الحالية.</p></div></div>
             <div id="healthVersionMetrics" class="health-metrics-grid"></div>
           </article>
         </div>
 
         <article class="panel health-table-panel">
-          <div class="panel-header"><div><h3>أحجام الجداول</h3><p>أكبر الجداول وعدد الصفوف التقديري.</p></div></div>
+          <div class="panel-header"><div><h3 data-petatoe-i18n="systemHealth.tables.title">أحجام الجداول</h3><p data-petatoe-i18n="systemHealth.tables.note">أكبر الجداول وعدد الصفوف التقديري.</p></div></div>
           <div class="table-wrap"><table>
-            <thead><tr><th>الجدول</th><th>الصفوف</th><th>الحجم</th><th>RLS</th><th>السياسات</th></tr></thead>
+            <thead><tr><th data-petatoe-i18n="systemHealth.tables.column.table">الجدول</th><th data-petatoe-i18n="systemHealth.tables.column.rows">الصفوف</th><th data-petatoe-i18n="systemHealth.tables.column.size">الحجم</th><th>RLS</th><th data-petatoe-i18n="systemHealth.tables.column.policies">السياسات</th></tr></thead>
             <tbody id="healthTablesBody"></tbody>
           </table></div>
         </article>
 
         <div class="health-details-grid">
           <article class="panel">
-            <div class="panel-header"><div><h3>آخر عمليات النسخ</h3><p>آخر خمس عمليات نسخ أو استعادة.</p></div></div>
+            <div class="panel-header"><div><h3 data-petatoe-i18n="systemHealth.backups.title">آخر عمليات النسخ</h3><p data-petatoe-i18n="systemHealth.backups.note">آخر خمس عمليات نسخ أو استعادة.</p></div></div>
             <div id="healthBackupsList" class="health-list"></div>
           </article>
           <article class="panel">
-            <div class="panel-header"><div><h3>آخر التنبيهات</h3><p>أحدث العمليات الفاشلة أو التنبيهات المسجلة.</p></div></div>
+            <div class="panel-header"><div><h3 data-petatoe-i18n="systemHealth.alerts.title">آخر التنبيهات</h3><p data-petatoe-i18n="systemHealth.alerts.note">أحدث العمليات الفاشلة أو التنبيهات المسجلة.</p></div></div>
             <div id="healthAlertsList" class="health-list"></div>
           </article>
         </div>
@@ -2513,13 +2513,13 @@
         <article class="panel diagnostics-center-panel">
           <div class="panel-header">
             <div>
-              <h3>مركز التشخيص الشامل</h3>
-              <p>فحص تكاملي لقاعدة البيانات والأمان والوظائف السحابية والواجهة والأداء.</p>
+              <h3 data-petatoe-i18n="diagnostics.page.title">مركز التشخيص الشامل</h3>
+              <p data-petatoe-i18n="diagnostics.page.note">فحص تكاملي لقاعدة البيانات والأمان والوظائف السحابية والواجهة والأداء.</p>
             </div>
             <div class="diagnostics-actions">
-              <button id="runDiagnosticsBtn" class="primary-btn" type="button">تشغيل الفحص الشامل</button>
-              <button id="downloadDiagnosticsJsonBtn" class="secondary-btn compact-btn" type="button" disabled>تنزيل JSON</button>
-              <button id="downloadDiagnosticsHtmlBtn" class="secondary-btn compact-btn" type="button" disabled>تنزيل HTML</button>
+              <button id="runDiagnosticsBtn" class="primary-btn" type="button" data-petatoe-i18n="diagnostics.action.run">تشغيل الفحص الشامل</button>
+              <button id="downloadDiagnosticsJsonBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="diagnostics.action.downloadJson" disabled>تنزيل JSON</button>
+              <button id="downloadDiagnosticsHtmlBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="diagnostics.action.downloadHtml" disabled>تنزيل HTML</button>
             </div>
           </div>
 
@@ -2527,67 +2527,67 @@
 
           <div class="diagnostics-summary-grid">
             <article>
-              <span>النتيجة</span>
+              <span data-petatoe-i18n="diagnostics.summary.score">النتيجة</span>
               <strong id="diagnosticsScore">—</strong>
-              <small id="diagnosticsDuration">المدة: —</small>
+              <small id="diagnosticsDuration" data-petatoe-i18n="diagnostics.summary.durationEmpty">المدة: —</small>
             </article>
             <article>
-              <span>Passed</span>
+              <span data-petatoe-i18n="diagnostics.summary.passed">Passed</span>
               <strong id="diagnosticsPassed">0</strong>
-              <small>اختبارات ناجحة</small>
+              <small data-petatoe-i18n="diagnostics.summary.passedNote">اختبارات ناجحة</small>
             </article>
             <article>
-              <span>Warning</span>
+              <span data-petatoe-i18n="diagnostics.summary.warning">Warning</span>
               <strong id="diagnosticsWarnings">0</strong>
-              <small>تحتاج متابعة</small>
+              <small data-petatoe-i18n="diagnostics.summary.warningNote">تحتاج متابعة</small>
             </article>
             <article>
-              <span>Critical</span>
+              <span data-petatoe-i18n="diagnostics.summary.critical">Critical</span>
               <strong id="diagnosticsCritical">0</strong>
-              <small>تحتاج تدخلًا</small>
+              <small data-petatoe-i18n="diagnostics.summary.criticalNote">تحتاج تدخلًا</small>
             </article>
             <article>
-              <span>وقت الفحص</span>
+              <span data-petatoe-i18n="diagnostics.summary.finishedAt">وقت الفحص</span>
               <strong id="diagnosticsFinishedAt">—</strong>
-              <small id="diagnosticsEnvironment">البيئة: —</small>
+              <small id="diagnosticsEnvironment" data-petatoe-i18n="diagnostics.summary.environmentEmpty">البيئة: —</small>
             </article>
           </div>
 
           <div id="diagnosticsResults" class="diagnostics-results">
-            <div class="empty-state">اضغط «تشغيل الفحص الشامل» لبدء التشخيص.</div>
+            <div class="empty-state" data-petatoe-i18n="diagnostics.empty.ready">اضغط «تشغيل الفحص الشامل» لبدء التشخيص.</div>
           </div>
         </article>
 
         <article class="panel smart-health-panel">
           <div class="panel-header">
             <div>
-              <h3>التقييم الذكي والتنبيهات</h3>
-              <p>تحليل موحد لحالة النظام مع توصيات عملية حسب مستوى الخطورة.</p>
+              <h3 data-petatoe-i18n="systemHealth.smart.title">التقييم الذكي والتنبيهات</h3>
+              <p data-petatoe-i18n="systemHealth.smart.note">تحليل موحد لحالة النظام مع توصيات عملية حسب مستوى الخطورة.</p>
             </div>
             <span id="smartHealthLevelBadge" class="smart-health-level">—</span>
           </div>
 
           <div class="smart-health-grid">
             <section class="smart-score-breakdown">
-              <h4>تفصيل درجة الصحة</h4>
+              <h4 data-petatoe-i18n="systemHealth.smart.breakdown">تفصيل درجة الصحة</h4>
               <div id="healthScoreBreakdown" class="score-breakdown-list"></div>
             </section>
 
             <section>
-              <h4>التنبيهات الذكية</h4>
+              <h4 data-petatoe-i18n="systemHealth.smart.alerts">التنبيهات الذكية</h4>
               <div id="smartAlertsList" class="smart-alerts-list"></div>
             </section>
 
             <section>
-              <h4>الإجراءات المقترحة</h4>
+              <h4 data-petatoe-i18n="systemHealth.smart.recommendations">الإجراءات المقترحة</h4>
               <div id="healthRecommendationsList" class="health-recommendations-list"></div>
             </section>
           </div>
 
           <div class="health-trend-section">
             <div>
-              <h4>اتجاه درجة الصحة</h4>
-              <p>آخر القياسات خلال جلسة الاستخدام الحالية.</p>
+              <h4 data-petatoe-i18n="systemHealth.smart.trend">اتجاه درجة الصحة</h4>
+              <p data-petatoe-i18n="systemHealth.smart.trendNote">آخر القياسات خلال جلسة الاستخدام الحالية.</p>
             </div>
             <div id="healthTrendChart" class="health-trend-chart" aria-label="Health score trend"></div>
           </div>
@@ -2596,52 +2596,52 @@
         <article class="panel performance-monitor-panel">
           <div class="panel-header">
             <div>
-              <h3>مراقبة الأداء</h3>
-              <p>قياسات خفيفة لجلسة المتصفح الحالية بدون إرسال بيانات خارجية.</p>
+              <h3 data-petatoe-i18n="performance.page.title">مراقبة الأداء</h3>
+              <p data-petatoe-i18n="performance.page.note">قياسات خفيفة لجلسة المتصفح الحالية بدون إرسال بيانات خارجية.</p>
             </div>
-            <button id="resetPerformanceMetricsBtn" class="secondary-btn compact-btn" type="button">إعادة القياسات</button>
+            <button id="resetPerformanceMetricsBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="performance.action.reset">إعادة القياسات</button>
           </div>
 
           <div class="performance-summary-grid">
             <article>
-              <span>تحميل الواجهة</span>
+              <span data-petatoe-i18n="performance.summary.pageLoad">تحميل الواجهة</span>
               <strong id="performancePageLoad">—</strong>
               <small id="performanceDomReady">DOM: —</small>
             </article>
             <article>
-              <span>طلبات API</span>
+              <span data-petatoe-i18n="performance.summary.apiRequests">طلبات API</span>
               <strong id="performanceApiRequests">0</strong>
-              <small id="performanceFailedRequests">الفاشلة: 0</small>
+              <small id="performanceFailedRequests" data-petatoe-i18n="performance.summary.failedEmpty">الفاشلة: 0</small>
             </article>
             <article>
-              <span>متوسط الاستجابة</span>
+              <span data-petatoe-i18n="performance.summary.averageResponse">متوسط الاستجابة</span>
               <strong id="performanceAverageResponse">—</strong>
-              <small id="performanceSlowestResponse">الأبطأ: —</small>
+              <small id="performanceSlowestResponse" data-petatoe-i18n="performance.summary.slowestEmpty">الأبطأ: —</small>
             </article>
             <article>
-              <span>حالة الشبكة</span>
+              <span data-petatoe-i18n="performance.summary.network">حالة الشبكة</span>
               <strong id="performanceNetworkStatus">—</strong>
-              <small id="performanceConnectionType">الاتصال: —</small>
+              <small id="performanceConnectionType" data-petatoe-i18n="performance.summary.connectionEmpty">الاتصال: —</small>
             </article>
             <article>
-              <span>الذاكرة</span>
-              <strong id="performanceMemoryUsage">غير متاح</strong>
-              <small id="performanceMemoryLimit">الحد: —</small>
+              <span data-petatoe-i18n="performance.summary.memory">الذاكرة</span>
+              <strong id="performanceMemoryUsage" data-petatoe-i18n="performance.common.unavailable">غير متاح</strong>
+              <small id="performanceMemoryLimit" data-petatoe-i18n="performance.summary.limitEmpty">الحد: —</small>
             </article>
             <article>
-              <span>آخر تحديث</span>
+              <span data-petatoe-i18n="performance.summary.lastUpdated">آخر تحديث</span>
               <strong id="performanceLastUpdated">—</strong>
-              <small id="performanceSessionDuration">مدة الجلسة: —</small>
+              <small id="performanceSessionDuration" data-petatoe-i18n="performance.summary.sessionEmpty">مدة الجلسة: —</small>
             </article>
           </div>
 
           <div class="performance-details-grid">
             <section>
-              <h4>أبطأ طلبات API</h4>
+              <h4 data-petatoe-i18n="performance.slowRequests.title">أبطأ طلبات API</h4>
               <div id="performanceSlowRequests" class="performance-request-list"></div>
             </section>
             <section>
-              <h4>أداء الشاشات</h4>
+              <h4 data-petatoe-i18n="performance.screenRenders.title">أداء الشاشات</h4>
               <div id="performanceScreenRenders" class="performance-request-list"></div>
             </section>
           </div>
@@ -2650,31 +2650,31 @@
         <article class="panel sync-recovery-center-panel">
           <div class="panel-header">
             <div>
-              <h3>مركز استعادة المزامنة</h3>
-              <p>مراجعة العمليات المعلقة والفاشلة والتعارضات وإعادة تشغيل المزامنة.</p>
+              <h3 data-petatoe-i18n="syncRecovery.page.title">مركز استعادة المزامنة</h3>
+              <p data-petatoe-i18n="syncRecovery.page.note">مراجعة العمليات المعلقة والفاشلة والتعارضات وإعادة تشغيل المزامنة.</p>
             </div>
             <div class="diagnostics-actions">
-              <button id="syncRetryAllBtn" class="secondary-btn compact-btn" type="button">إعادة محاولة الكل</button>
-              <button id="syncNowBtn" class="primary-btn compact-btn" type="button">مزامنة الآن</button>
+              <button id="syncRetryAllBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="syncRecovery.action.retryAll">إعادة محاولة الكل</button>
+              <button id="syncNowBtn" class="primary-btn compact-btn" type="button" data-petatoe-i18n="syncRecovery.action.syncNow">مزامنة الآن</button>
             </div>
           </div>
           <div id="syncRecoveryStatus" class="data-status hidden"></div>
           <div class="diagnostics-summary-grid">
-            <article><span>معلقة</span><strong id="syncPendingCount">0</strong><small>تشمل إعادة المحاولة</small></article>
-            <article><span>قيد المزامنة</span><strong id="syncProcessingCount">0</strong><small>عمليات جارية</small></article>
-            <article><span>فشلت</span><strong id="syncFailedCount">0</strong><small>تحتاج تدخلًا</small></article>
-            <article><span>تعارضات</span><strong id="syncConflictCount">0</strong><small>تحتاج حلًا</small></article>
-            <article><span>آخر مزامنة</span><strong id="syncLastSuccessAt">—</strong><small>آخر نجاح مسجل</small></article>
+            <article><span data-petatoe-i18n="syncRecovery.summary.pending">معلقة</span><strong id="syncPendingCount">0</strong><small data-petatoe-i18n="syncRecovery.summary.pendingNote">تشمل إعادة المحاولة</small></article>
+            <article><span data-petatoe-i18n="syncRecovery.summary.processing">قيد المزامنة</span><strong id="syncProcessingCount">0</strong><small data-petatoe-i18n="syncRecovery.summary.processingNote">عمليات جارية</small></article>
+            <article><span data-petatoe-i18n="syncRecovery.summary.failed">فشلت</span><strong id="syncFailedCount">0</strong><small data-petatoe-i18n="syncRecovery.summary.failedNote">تحتاج تدخلًا</small></article>
+            <article><span data-petatoe-i18n="syncRecovery.summary.conflicts">تعارضات</span><strong id="syncConflictCount">0</strong><small data-petatoe-i18n="syncRecovery.summary.conflictsNote">تحتاج حلًا</small></article>
+            <article><span data-petatoe-i18n="syncRecovery.summary.lastSync">آخر مزامنة</span><strong id="syncLastSuccessAt">—</strong><small data-petatoe-i18n="syncRecovery.summary.lastSyncNote">آخر نجاح مسجل</small></article>
           </div>
           <div class="table-wrap sync-recovery-table">
             <table>
-              <thead><tr><th>البيان</th><th>الإجراء</th><th>الحالة</th><th>المحاولات</th><th>آخر تحديث</th><th>الخطأ</th><th>الإجراءات</th></tr></thead>
-              <tbody id="syncRecoveryRows"><tr><td colspan="7"><div class="empty-state">جاري تحميل حالة المزامنة...</div></td></tr></tbody>
+              <thead><tr><th data-petatoe-i18n="syncRecovery.column.entity">البيان</th><th data-petatoe-i18n="syncRecovery.column.operation">الإجراء</th><th data-petatoe-i18n="syncRecovery.column.status">الحالة</th><th data-petatoe-i18n="syncRecovery.column.attempts">المحاولات</th><th data-petatoe-i18n="syncRecovery.column.updatedAt">آخر تحديث</th><th data-petatoe-i18n="syncRecovery.column.error">الخطأ</th><th data-petatoe-i18n="syncRecovery.column.actions">الإجراءات</th></tr></thead>
+              <tbody id="syncRecoveryRows"><tr><td colspan="7"><div class="empty-state" data-petatoe-i18n="syncRecovery.loading">جاري تحميل حالة المزامنة...</div></td></tr></tbody>
             </table>
           </div>
         </article>
 
-        <p class="health-auto-refresh-note">يتم تحديث الشاشة تلقائيًا كل 30 ثانية أثناء فتحها فقط.</p>
+        <p class="health-auto-refresh-note" data-petatoe-i18n="systemHealth.autoRefreshNote">يتم تحديث الشاشة تلقائيًا كل 30 ثانية أثناء فتحها فقط.</p>
       </section>
 
 
@@ -2744,10 +2744,10 @@
       <section id="systemSettingsView" class="view-section hidden">
         <div class="actions-row">
           <div>
-            <h3 class="section-title">إعدادات النظام</h3>
-            <p class="section-note">بيانات الشركة والإعدادات العامة الظاهرة داخل البرنامج.</p>
+            <h3 class="section-title" data-petatoe-i18n="systemSettings.page.title">إعدادات النظام</h3>
+            <p class="section-note" data-petatoe-i18n="systemSettings.page.note">بيانات الشركة والإعدادات العامة الظاهرة داخل البرنامج.</p>
           </div>
-          <button id="saveSystemSettingsBtn" class="primary-btn system-settings-manage-action">حفظ الإعدادات</button>
+          <button id="saveSystemSettingsBtn" class="primary-btn system-settings-manage-action" data-petatoe-i18n="systemSettings.action.save">حفظ الإعدادات</button>
         </div>
 
         <div id="systemSettingsStatus" class="data-status hidden"></div>
@@ -2756,29 +2756,29 @@
           <article class="panel">
             <div class="panel-header">
               <div>
-                <h3>بيانات الشركة</h3>
-                <p>الهوية الأساسية المستخدمة في النظام والتقارير.</p>
+                <h3 data-petatoe-i18n="systemSettings.company.title">بيانات الشركة</h3>
+                <p data-petatoe-i18n="systemSettings.company.note">الهوية الأساسية المستخدمة في النظام والتقارير.</p>
               </div>
             </div>
             <div class="form-grid">
               <label>
-                اسم الشركة بالعربية
+                <span data-petatoe-i18n="systemSettings.company.nameAr">اسم الشركة بالعربية</span>
                 <input id="companyNameAr" maxlength="200">
               </label>
               <label>
-                اسم الشركة بالإنجليزية
+                <span data-petatoe-i18n="systemSettings.company.nameEn">اسم الشركة بالإنجليزية</span>
                 <input id="companyNameEn" maxlength="200">
               </label>
               <label>
-                البريد الإلكتروني
+                <span data-petatoe-i18n="systemSettings.company.email">البريد الإلكتروني</span>
                 <input id="companyEmail" type="email" maxlength="200">
               </label>
               <label>
-                رقم الجوال
+                <span data-petatoe-i18n="systemSettings.company.phone">رقم الجوال</span>
                 <input id="companyPhone" maxlength="30">
               </label>
               <label class="full-width">
-                العنوان
+                <span data-petatoe-i18n="systemSettings.company.address">العنوان</span>
                 <input id="companyAddress" maxlength="300">
               </label>
             </div>
@@ -2787,27 +2787,27 @@
           <article class="panel">
             <div class="panel-header">
               <div>
-                <h3>الإعدادات العامة</h3>
-                <p>العملة والمنطقة الزمنية وتنسيق العرض.</p>
+                <h3 data-petatoe-i18n="systemSettings.general.title">الإعدادات العامة</h3>
+                <p data-petatoe-i18n="systemSettings.general.note">العملة والمنطقة الزمنية وتنسيق العرض.</p>
               </div>
             </div>
             <div class="form-grid">
               <label>
-                العملة
+                <span data-petatoe-i18n="systemSettings.general.currency">العملة</span>
                 <select id="systemCurrency">
-                  <option value="SAR">SAR — ريال سعودي</option>
-                  <option value="USD">USD — دولار أمريكي</option>
+                  <option value="SAR" data-petatoe-i18n="systemSettings.currency.sar">SAR — ريال سعودي</option>
+                  <option value="USD" data-petatoe-i18n="systemSettings.currency.usd">USD — دولار أمريكي</option>
                 </select>
               </label>
               <label>
-                المنطقة الزمنية
+                <span data-petatoe-i18n="systemSettings.general.timezone">المنطقة الزمنية</span>
                 <select id="systemTimezone">
                   <option value="Asia/Riyadh">Asia/Riyadh</option>
                   <option value="UTC">UTC</option>
                 </select>
               </label>
               <label>
-                عدد السجلات في الصفحة
+                <span data-petatoe-i18n="systemSettings.general.pageSize">عدد السجلات في الصفحة</span>
                 <select id="systemPageSize">
                   <option value="10">10</option>
                   <option value="20">20</option>
@@ -2815,7 +2815,7 @@
                 </select>
               </label>
               <label>
-                مدة الجلسة بالدقائق
+                <span data-petatoe-i18n="systemSettings.general.sessionTimeout">مدة الجلسة بالدقائق</span>
                 <input id="systemSessionTimeout" type="number" min="15" max="1440">
               </label>
             </div>
@@ -2826,10 +2826,10 @@
       <section id="aboutAppView" class="view-section hidden" aria-hidden="true">
         <div class="actions-row about-app-heading">
           <div>
-            <h3 class="section-title">حول التطبيق</h3>
-            <p class="section-note">معلومات إصدار PETATOE وحالة التحديثات.</p>
+            <h3 class="section-title" data-petatoe-i18n="aboutApp.page.title">حول التطبيق</h3>
+            <p class="section-note" data-petatoe-i18n="aboutApp.page.note">معلومات إصدار PETATOE وحالة التحديثات.</p>
           </div>
-          <button id="aboutCheckUpdatesBtn" class="primary-btn" type="button">التحقق من وجود تحديثات</button>
+          <button id="aboutCheckUpdatesBtn" class="primary-btn" type="button" data-petatoe-i18n="aboutApp.action.check">التحقق من وجود تحديثات</button>
         </div>
 
         <div class="about-app-grid">
@@ -2843,27 +2843,27 @@
           </article>
 
           <article class="panel about-version-panel">
-            <div class="about-version-row"><span>الإصدار الحالي</span><strong id="aboutCurrentVersion">—</strong></div>
-            <div class="about-version-row"><span>رقم البناء</span><strong id="aboutCurrentBuild">—</strong></div>
-            <div class="about-version-row"><span>تاريخ الإصدار</span><strong id="aboutReleaseDate">—</strong></div>
-            <div class="about-version-row"><span>آخر فحص للتحديثات</span><strong id="aboutLastUpdateCheck">لم يتم الفحص بعد</strong></div>
+            <div class="about-version-row"><span data-petatoe-i18n="aboutApp.version.current">الإصدار الحالي</span><strong id="aboutCurrentVersion">—</strong></div>
+            <div class="about-version-row"><span data-petatoe-i18n="aboutApp.version.build">رقم البناء</span><strong id="aboutCurrentBuild">—</strong></div>
+            <div class="about-version-row"><span data-petatoe-i18n="aboutApp.version.releaseDate">تاريخ الإصدار</span><strong id="aboutReleaseDate">—</strong></div>
+            <div class="about-version-row"><span data-petatoe-i18n="aboutApp.version.lastCheck">آخر فحص للتحديثات</span><strong id="aboutLastUpdateCheck" data-petatoe-i18n="aboutApp.status.notChecked">لم يتم الفحص بعد</strong></div>
           </article>
 
           <article class="panel about-update-panel">
             <div class="about-update-status-line">
-              <span id="aboutUpdateStatusBadge" class="about-status-badge">جارٍ التحقق...</span>
-              <strong id="aboutUpdateHeadline">حالة التحديث</strong>
+              <span id="aboutUpdateStatusBadge" class="about-status-badge" data-petatoe-i18n="aboutApp.status.checking">جارٍ التحقق...</span>
+              <strong id="aboutUpdateHeadline" data-petatoe-i18n="aboutApp.status.headline">حالة التحديث</strong>
             </div>
-            <p id="aboutUpdateMessage">يتم فحص أحدث إصدار منشور على الخادم.</p>
+            <p id="aboutUpdateMessage" data-petatoe-i18n="aboutApp.status.message">يتم فحص أحدث إصدار منشور على الخادم.</p>
             <div id="aboutLatestVersionBlock" class="about-latest-version hidden">
-              <span>الإصدار الجديد</span>
+              <span data-petatoe-i18n="aboutApp.version.new">الإصدار الجديد</span>
               <strong id="aboutLatestVersion">—</strong>
               <ul id="aboutReleaseNotes" class="about-release-notes"></ul>
             </div>
             <div class="about-app-actions">
-              <button id="aboutUpdateNowBtn" class="primary-btn hidden" type="button">تحديث الآن</button>
-              <button id="aboutClearCacheBtn" class="secondary-btn" type="button">مسح الكاش وإعادة التحميل</button>
-              <button id="aboutCopyVersionBtn" class="secondary-btn" type="button">نسخ معلومات الإصدار</button>
+              <button id="aboutUpdateNowBtn" class="primary-btn hidden" type="button" data-petatoe-i18n="aboutApp.action.updateNow">تحديث الآن</button>
+              <button id="aboutClearCacheBtn" class="secondary-btn" type="button" data-petatoe-i18n="aboutApp.action.clearCache">مسح الكاش وإعادة التحميل</button>
+              <button id="aboutCopyVersionBtn" class="secondary-btn" type="button" data-petatoe-i18n="aboutApp.action.copyVersion">نسخ معلومات الإصدار</button>
             </div>
             <p id="aboutActionStatus" class="data-status hidden" role="status"></p>
           </article>
@@ -2937,26 +2937,26 @@
 
 
     </main>
-    <nav id="mobileBottomNav" class="mobile-bottom-nav" aria-label="التنقل السريع على الهاتف">
-      <button class="mobile-nav-item is-active" type="button" data-mobile-view="dashboard" aria-label="الرئيسية">
+    <nav id="mobileBottomNav" class="mobile-bottom-nav" aria-label="التنقل السريع على الهاتف" data-petatoe-i18n-aria="shared.mobile.bottomNav">
+      <button class="mobile-nav-item is-active" type="button" data-mobile-view="dashboard" aria-label="الرئيسية" data-petatoe-i18n-aria="sidebar.dashboard">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></svg>
-        <span>الرئيسية</span>
+        <span data-petatoe-i18n="sidebar.dashboard">الرئيسية</span>
       </button>
-      <button class="mobile-nav-item" type="button" data-mobile-view="customers" aria-label="العملاء">
+      <button class="mobile-nav-item" type="button" data-mobile-view="customers" aria-label="العملاء" data-petatoe-i18n-aria="sidebar.customers">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>العملاء</span>
+        <span data-petatoe-i18n="sidebar.customers">العملاء</span>
       </button>
-      <button class="mobile-nav-item" type="button" data-mobile-view="followups" aria-label="المتابعات">
+      <button class="mobile-nav-item" type="button" data-mobile-view="followups" aria-label="المتابعات" data-petatoe-i18n-aria="sidebar.followups">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11 12 14 22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <span>المتابعات</span>
+        <span data-petatoe-i18n="sidebar.followups">المتابعات</span>
       </button>
-      <button class="mobile-nav-item" type="button" data-mobile-view="quotations" aria-label="العقود">
+      <button class="mobile-nav-item" type="button" data-mobile-view="quotations" aria-label="العقود" data-petatoe-i18n-aria="sidebar.quotations">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8ZM14 2v6h6M8 13h8M8 17h8M8 9h2"/></svg>
-        <span>العقود</span>
+        <span data-petatoe-i18n="sidebar.quotations">العقود</span>
       </button>
-      <button class="mobile-nav-item mobile-menu-item" type="button" data-mobile-action="menu" aria-label="فتح القائمة" aria-controls="mainSidebar">
+      <button class="mobile-nav-item mobile-menu-item" type="button" data-mobile-action="menu" aria-label="فتح القائمة" data-petatoe-i18n-aria="shared.header.menu" aria-controls="mainSidebar">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-        <span>القائمة</span>
+        <span data-petatoe-i18n="shared.mobile.menu">القائمة</span>
       </button>
     </nav>
   </div>
@@ -3402,78 +3402,78 @@
   <dialog id="userDialog">
     <form class="dialog-shell" id="userForm" method="dialog">
       <div class="dialog-header">
-        <div><h3 id="userDialogTitle">إضافة مستخدم</h3><p>إنشاء حساب Supabase Auth وربطه بملف المستخدم.</p></div>
+        <div><h3 id="userDialogTitle" data-petatoe-i18n="users.dialog.addTitle">إضافة مستخدم</h3><p data-petatoe-i18n="users.dialog.note">إنشاء حساب Supabase Auth وربطه بملف المستخدم.</p></div>
         <button id="closeUserDialogBtn" class="icon-btn" type="button"><span class="legacy-icon-glyph" aria-hidden="true">×</span><span class="desktop-icon-svg" aria-hidden="true"><svg class="petatoe-core-icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></span></button>
       </div>
       <input id="userProfileId" type="hidden">
       <div class="form-grid">
-        <label>الاسم الكامل<input id="userFullName" required maxlength="150"></label>
-        <label>البريد الإلكتروني<input id="userEmail" type="email" required maxlength="200"></label>
-        <label id="userPasswordLabel">كلمة المرور المؤقتة<input id="userPassword" type="password" minlength="8" autocomplete="new-password"></label>
-        <label>الدور<select id="userRole" required></select></label>
-        <label id="userRepresentativeField">مندوب المبيعات المرتبط<select id="userRepresentative"><option value="">بدون ربط</option></select></label>
+        <label><span data-petatoe-i18n="users.dialog.fullName">الاسم الكامل</span><input id="userFullName" required maxlength="150"></label>
+        <label><span data-petatoe-i18n="users.dialog.email">البريد الإلكتروني</span><input id="userEmail" type="email" required maxlength="200"></label>
+        <label id="userPasswordLabel"><span data-petatoe-i18n="users.dialog.tempPassword">كلمة المرور المؤقتة</span><input id="userPassword" type="password" minlength="8" autocomplete="new-password"></label>
+        <label><span data-petatoe-i18n="users.dialog.role">الدور</span><select id="userRole" required></select></label>
+        <label id="userRepresentativeField"><span data-petatoe-i18n="users.dialog.linkedRepresentative">مندوب المبيعات المرتبط</span><select id="userRepresentative"><option value="" data-petatoe-i18n="users.dialog.noLink">بدون ربط</option></select></label>
         <div id="userInstallationTechnicianBinding" class="form-field-wide hidden">
           <div class="user-representatives-permission-header">
             <div>
-              <strong>ربط الجرومر / السائق بفرقة المواعيد</strong>
-              <small class="field-hint">هذا الدور يرى مواعيد الفرقة المرتبط بها فقط، بدون أي ربط بمندوب مبيعات.</small>
+              <strong data-petatoe-i18n="users.dialog.teamBindingTitle">ربط الجرومر / السائق بفرقة المواعيد</strong>
+              <small class="field-hint" data-petatoe-i18n="users.dialog.teamBindingNote">هذا الدور يرى مواعيد الفرقة المرتبط بها فقط، بدون أي ربط بمندوب مبيعات.</small>
             </div>
           </div>
           <div class="form-grid">
-            <label>فرقة المواعيد المرتبطة<select id="userInstallationTeam"><option value="">اختر الفرقة</option></select></label>
+            <label><span data-petatoe-i18n="users.dialog.team">فرقة المواعيد المرتبطة</span><select id="userInstallationTeam"><option value="" data-petatoe-i18n="users.dialog.chooseTeam">اختر الفرقة</option></select></label>
             <input id="userInstallationTechnicianName" type="hidden">
           </div>
         </div>
-        <label>نطاق الوصول إلى البيانات<select id="userDataAccessMode">
-          <option value="own">بيانات المستخدم فقط</option>
-          <option value="selected">بيانات المستخدم ومندوبين محددين</option>
-          <option value="all">جميع البيانات</option>
+        <label><span data-petatoe-i18n="users.dialog.dataScope">نطاق الوصول إلى البيانات</span><select id="userDataAccessMode">
+          <option value="own" data-petatoe-i18n="users.scope.own">بيانات المستخدم فقط</option>
+          <option value="selected" data-petatoe-i18n="users.scope.selected">بيانات المستخدم ومندوبين محددين</option>
+          <option value="all" data-petatoe-i18n="users.scope.all">جميع البيانات</option>
         </select></label>
         <div id="userAllowedRepresentativesLabel" class="form-field-wide user-representatives-permission hidden">
           <div class="user-representatives-permission-header">
             <div>
-              <strong>المندوبون المسموح بعرض بياناتهم</strong>
-              <small id="userAllowedRepresentativesHint" class="field-hint">يتم تضمين مندوب المستخدم المرتبط تلقائيًا، ويمكن اختيار مندوبين إضافيين.</small>
+              <strong data-petatoe-i18n="users.dialog.allowedRepsTitle">المندوبون المسموح بعرض بياناتهم</strong>
+              <small id="userAllowedRepresentativesHint" class="field-hint" data-petatoe-i18n="users.dialog.allowedRepsNote">يتم تضمين مندوب المستخدم المرتبط تلقائيًا، ويمكن اختيار مندوبين إضافيين.</small>
             </div>
-            <span id="userAllowedRepresentativesCount" class="selection-count" aria-live="polite">تم اختيار 0</span>
+            <span id="userAllowedRepresentativesCount" class="selection-count" aria-live="polite" data-petatoe-i18n="users.selection.none">تم اختيار 0</span>
           </div>
           <div class="user-representatives-tools">
-            <input id="userAllowedRepresentativesSearch" type="search" placeholder="ابحث باسم المندوب..." aria-label="البحث في المندوبين">
-            <div class="user-representatives-actions" aria-label="إجراءات تحديد المندوبين">
-              <button id="selectAllAllowedRepresentativesBtn" class="secondary-btn compact-btn" type="button">تحديد الكل</button>
-              <button id="clearAllowedRepresentativesBtn" class="secondary-btn compact-btn" type="button">إلغاء الكل</button>
-              <button id="selectOwnRepresentativeBtn" class="secondary-btn compact-btn" type="button">مندوبه فقط</button>
+            <input id="userAllowedRepresentativesSearch" type="search" placeholder="ابحث باسم المندوب..." aria-label="البحث في المندوبين" data-petatoe-i18n-placeholder="users.dialog.searchRepPlaceholder" data-petatoe-i18n-aria="users.dialog.searchRepAria">
+            <div class="user-representatives-actions" aria-label="إجراءات تحديد المندوبين" data-petatoe-i18n-aria="users.dialog.repActionsAria">
+              <button id="selectAllAllowedRepresentativesBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="users.action.selectAll">تحديد الكل</button>
+              <button id="clearAllowedRepresentativesBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="users.action.clearAll">إلغاء الكل</button>
+              <button id="selectOwnRepresentativeBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="users.action.ownRepOnly">مندوبه فقط</button>
             </div>
           </div>
           <div id="userAllowedRepresentativesList" class="user-representatives-checklist" role="group" aria-describedby="userAllowedRepresentativesHint"></div>
         </div>
         <div class="form-field-wide user-representatives-permission">
           <div class="user-representatives-permission-header">
-            <div><strong>نطاق رؤية مندوبي المواعيد</strong><small class="field-hint">مستقل تمامًا عن نطاق إدارة العملاء. مندوب المستخدم المرتبط يُضاف تلقائيًا، ويمكن منح مندوبي مواعيد إضافيين.</small></div>
-            <span id="userInstallationRepresentativesCount" class="selection-count" aria-live="polite">تم اختيار 0</span>
+            <div><strong data-petatoe-i18n="users.dialog.appointmentScopeTitle">نطاق رؤية مندوبي المواعيد</strong><small class="field-hint" data-petatoe-i18n="users.dialog.appointmentScopeNote">مستقل تمامًا عن نطاق إدارة العملاء. مندوب المستخدم المرتبط يُضاف تلقائيًا، ويمكن منح مندوبي مواعيد إضافيين.</small></div>
+            <span id="userInstallationRepresentativesCount" class="selection-count" aria-live="polite" data-petatoe-i18n="users.selection.none">تم اختيار 0</span>
           </div>
-          <label>نطاق المواعيد<select id="userInstallationAccessMode"><option value="own">مواعيد مندوبه فقط</option><option value="selected">مندوبه ومندوبون محددون</option><option value="all">جميع المواعيد</option></select></label>
+          <label><span data-petatoe-i18n="users.dialog.appointmentScope">نطاق المواعيد</span><select id="userInstallationAccessMode"><option value="own" data-petatoe-i18n="users.appointmentScope.own">مواعيد مندوبه فقط</option><option value="selected" data-petatoe-i18n="users.appointmentScope.selected">مندوبه ومندوبون محددون</option><option value="all" data-petatoe-i18n="users.appointmentScope.all">جميع المواعيد</option></select></label>
           <div id="userInstallationRepresentativesTools" class="user-representatives-tools hidden">
-            <input id="userInstallationRepresentativesSearch" type="search" placeholder="ابحث باسم المندوب...">
-            <div class="user-representatives-actions"><button id="selectAllInstallationRepresentativesBtn" class="secondary-btn compact-btn" type="button">تحديد الكل</button><button id="clearInstallationRepresentativesBtn" class="secondary-btn compact-btn" type="button">إلغاء الكل</button><button id="selectOwnInstallationRepresentativeBtn" class="secondary-btn compact-btn" type="button">مندوبه فقط</button></div>
+            <input id="userInstallationRepresentativesSearch" type="search" placeholder="ابحث باسم المندوب..." data-petatoe-i18n-placeholder="users.dialog.searchRepPlaceholder">
+            <div class="user-representatives-actions"><button id="selectAllInstallationRepresentativesBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="users.action.selectAll">تحديد الكل</button><button id="clearInstallationRepresentativesBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="users.action.clearAll">إلغاء الكل</button><button id="selectOwnInstallationRepresentativeBtn" class="secondary-btn compact-btn" type="button" data-petatoe-i18n="users.action.ownRepOnly">مندوبه فقط</button></div>
           </div>
           <div id="userInstallationRepresentativesList" class="user-representatives-checklist hidden" role="group"></div>
         </div>
         <label><span data-petatoe-i18n="users.defaultLanguage">اللغة الافتراضية</span><select id="userDefaultLanguage"><option value="ar" data-petatoe-i18n="users.language.ar">العربية</option><option value="en" data-petatoe-i18n="users.language.en">English</option></select></label>
-        <label>حالة الحساب<select id="userActive"><option value="true">نشط</option><option value="false">غير نشط</option></select></label>
-        <label>تغيير كلمة المرور عند أول دخول<select id="userMustChangePassword"><option value="true">نعم</option><option value="false">لا</option></select></label>
+        <label><span data-petatoe-i18n="users.dialog.accountStatus">حالة الحساب</span><select id="userActive"><option value="true" data-petatoe-i18n="users.status.active">نشط</option><option value="false" data-petatoe-i18n="users.status.inactive">غير نشط</option></select></label>
+        <label><span data-petatoe-i18n="users.dialog.mustChangePassword">تغيير كلمة المرور عند أول دخول</span><select id="userMustChangePassword"><option value="true" data-petatoe-i18n="users.common.yes">نعم</option><option value="false" data-petatoe-i18n="users.common.no">لا</option></select></label>
       </div>
       <div class="dialog-actions">
-        <button id="cancelUserDialogBtn" type="button" class="secondary-btn">إلغاء</button>
-        <button type="submit" class="primary-btn">حفظ المستخدم</button>
+        <button id="cancelUserDialogBtn" type="button" class="secondary-btn" data-petatoe-i18n="common.cancel">إلغاء</button>
+        <button type="submit" class="primary-btn" data-petatoe-i18n="users.action.save">حفظ المستخدم</button>
       </div>
     </form>
   </dialog>
 
-  <script src="assets/js/performance-monitor.js?v=18.56.62"></script>
-  <script src="assets/js/health-alerts-engine.js?v=18.56.62"></script>
-  <script src="assets/js/diagnostics-service.js?v=18.56.62"></script>
-  <script src="assets/js/diagnostics-engine.js?v=18.56.62"></script>
+  <script src="assets/js/performance-monitor.js?v=18.56.63"></script>
+  <script src="assets/js/health-alerts-engine.js?v=18.56.63"></script>
+  <script src="assets/js/diagnostics-service.js?v=18.56.63"></script>
+  <script src="assets/js/diagnostics-engine.js?v=18.56.63"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <dialog id="representativeImportDialog" class="glass-dialog customer-import-dialog representative-import-dialog">
     <form method="dialog" class="dialog-shell">
@@ -4080,74 +4080,74 @@
     </form>
   </dialog>
 
-  <script src="assets/js/supabase-config.js?v=18.56.62"></script>
-  <script src="assets/js/offline-session-store.js?v=18.56.62"></script>
-  <script src="assets/js/supabase-client.js?v=18.56.62"></script>
-  <script src="assets/js/geographic-address.js?v=18.56.62"></script>
-  <script src="assets/js/permissions.js?v=18.56.62"></script>
-  <script src="assets/js/permission-engine.js?v=18.56.62"></script>
-  <script src="assets/js/localization-center-service.js?v=18.56.62"></script>
-  <script src="assets/js/localization-center.js?v=18.56.62"></script>
-  <script src="assets/js/translation-center.js?v=18.56.62"></script>
-  <script src="assets/js/data-access-scope.js?v=18.56.62"></script>
-  <script src="assets/js/smart-cache.js?v=18.56.62"></script>
-  <script src="assets/js/sync-engine.js?v=18.56.62"></script>
-  <script src="assets/js/sync-retention.js?v=18.56.62"></script>
-  <script src="assets/js/offline-queue.js?v=18.56.62"></script>
-  <script src="assets/js/permissions-service.js?v=18.56.62"></script>
-  <script src="assets/js/auth-session.js?v=18.56.62"></script>
-  <script src="assets/js/reference-data-service.js?v=18.56.62"></script>
-  <script src="assets/js/customers-service.js?v=18.56.62"></script>
-  <script src="assets/js/followups-service.js?v=18.56.62"></script>
-  <script src="assets/js/quotations-service.js?v=18.56.62"></script>
-  <script src="assets/js/sales-invoices-service.js?v=18.56.62"></script>
-  <script src="assets/js/vehicle-treasury-service.js?v=18.56.62"></script>
-  <script src="assets/js/payroll-service.js?v=18.56.62"></script>
-  <script src="assets/js/sea-vibe-payroll-service.js?v=18.56.62"></script>
-  <script src="assets/js/sea-vibe-service.js?v=18.56.62"></script>
-  <script src="assets/js/users-service.js?v=18.56.62"></script>
-  <script src="assets/js/activity-service.js?v=18.56.62"></script>
-  <script src="assets/js/backup-service.js?v=18.56.62"></script>
-  <script src="assets/js/system-settings-service.js?v=18.56.62"></script>
-  <script src="assets/js/system-health-service.js?v=18.56.62"></script>
-  <script src="assets/js/offline-read-cache.js?v=18.56.62"></script>
-  <script src="assets/js/cache-dependency-engine.js?v=18.56.62"></script>
-  <script src="assets/js/daily-operations-service.js?v=18.56.62"></script>
-  <script src="assets/js/installations-service.js?v=18.56.62"></script>
-  <script src="assets/js/installations-service-contract.js?v=18.56.62"></script>
-  <script src="assets/js/employee-report-settings-service.js?v=18.56.62"></script>
-  <script src="assets/js/whatsapp-template-service.js?v=18.56.62"></script>
-  <script src="assets/js/daily-suggestions-service.js?v=18.56.62"></script>
+  <script src="assets/js/supabase-config.js?v=18.56.63"></script>
+  <script src="assets/js/offline-session-store.js?v=18.56.63"></script>
+  <script src="assets/js/supabase-client.js?v=18.56.63"></script>
+  <script src="assets/js/geographic-address.js?v=18.56.63"></script>
+  <script src="assets/js/permissions.js?v=18.56.63"></script>
+  <script src="assets/js/permission-engine.js?v=18.56.63"></script>
+  <script src="assets/js/localization-center-service.js?v=18.56.63"></script>
+  <script src="assets/js/localization-center.js?v=18.56.63"></script>
+  <script src="assets/js/translation-center.js?v=18.56.63"></script>
+  <script src="assets/js/data-access-scope.js?v=18.56.63"></script>
+  <script src="assets/js/smart-cache.js?v=18.56.63"></script>
+  <script src="assets/js/sync-engine.js?v=18.56.63"></script>
+  <script src="assets/js/sync-retention.js?v=18.56.63"></script>
+  <script src="assets/js/offline-queue.js?v=18.56.63"></script>
+  <script src="assets/js/permissions-service.js?v=18.56.63"></script>
+  <script src="assets/js/auth-session.js?v=18.56.63"></script>
+  <script src="assets/js/reference-data-service.js?v=18.56.63"></script>
+  <script src="assets/js/customers-service.js?v=18.56.63"></script>
+  <script src="assets/js/followups-service.js?v=18.56.63"></script>
+  <script src="assets/js/quotations-service.js?v=18.56.63"></script>
+  <script src="assets/js/sales-invoices-service.js?v=18.56.63"></script>
+  <script src="assets/js/vehicle-treasury-service.js?v=18.56.63"></script>
+  <script src="assets/js/payroll-service.js?v=18.56.63"></script>
+  <script src="assets/js/sea-vibe-payroll-service.js?v=18.56.63"></script>
+  <script src="assets/js/sea-vibe-service.js?v=18.56.63"></script>
+  <script src="assets/js/users-service.js?v=18.56.63"></script>
+  <script src="assets/js/activity-service.js?v=18.56.63"></script>
+  <script src="assets/js/backup-service.js?v=18.56.63"></script>
+  <script src="assets/js/system-settings-service.js?v=18.56.63"></script>
+  <script src="assets/js/system-health-service.js?v=18.56.63"></script>
+  <script src="assets/js/offline-read-cache.js?v=18.56.63"></script>
+  <script src="assets/js/cache-dependency-engine.js?v=18.56.63"></script>
+  <script src="assets/js/daily-operations-service.js?v=18.56.63"></script>
+  <script src="assets/js/installations-service.js?v=18.56.63"></script>
+  <script src="assets/js/installations-service-contract.js?v=18.56.63"></script>
+  <script src="assets/js/employee-report-settings-service.js?v=18.56.63"></script>
+  <script src="assets/js/whatsapp-template-service.js?v=18.56.63"></script>
+  <script src="assets/js/daily-suggestions-service.js?v=18.56.63"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="assets/js/reports-engine.js?v=18.56.62"></script>
-  <script src="assets/js/export-center.js?v=18.56.62"></script>
-  <script src="assets/js/customer360-engine.js?v=18.56.62"></script>
-  <script src="assets/js/customer360-export.js?v=18.56.62"></script>
-  <script src="assets/js/representative-excel-center.js?v=18.56.62"></script>
-  <script src="assets/js/customer-excel-center.js?v=18.56.62"></script>
-  <script src="assets/js/daily-performance-service.js?v=18.56.62"></script>
-  <script src="assets/js/daily-alerts-service.js?v=18.56.62"></script>
-  <script src="assets/js/daily-activity-service.js?v=18.56.62"></script>
-  <script src="assets/js/notification-center-service.js?v=18.56.62"></script>
-  <script src="assets/js/app.js?v=18.56.62"></script>
-  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.56.62"></script>
-  <script src="assets/js/notification-center.js?v=18.56.62"></script>
-  <script src="assets/js/sales-invoices.js?v=18.56.62"></script>
-  <script src="assets/js/vehicle-treasury.js?v=18.56.62"></script>
-  <script src="assets/js/payroll.js?v=18.56.62"></script>
-  <script src="assets/js/sea-vibe-payroll.js?v=18.56.62"></script>
-  <script src="assets/js/sea-vibe.js?v=18.56.62"></script>
-  <script src="assets/js/installations-module.js?v=18.56.62"></script>
-  <script src="assets/js/installation-scheduling.js?v=18.56.62"></script>
-  <script src="assets/js/installation-execution.js?v=18.56.62"></script>
-  <script src="assets/js/installation-completion.js?v=18.56.62"></script>
-  <script src="assets/js/installation-operations-reports.js?v=18.56.62"></script>
-  <script src="assets/js/installation-dashboard-settings.js?v=18.56.62"></script>
-  <script src="assets/js/installation-settings-management.js?v=18.56.62"></script>
-  <script src="assets/js/mobile.js?v=18.56.62"></script>
-  <script src="assets/js/pwa.js?v=18.56.62"></script>
-  <script src="assets/js/native.js?v=18.56.62"></script>
+  <script src="assets/js/reports-engine.js?v=18.56.63"></script>
+  <script src="assets/js/export-center.js?v=18.56.63"></script>
+  <script src="assets/js/customer360-engine.js?v=18.56.63"></script>
+  <script src="assets/js/customer360-export.js?v=18.56.63"></script>
+  <script src="assets/js/representative-excel-center.js?v=18.56.63"></script>
+  <script src="assets/js/customer-excel-center.js?v=18.56.63"></script>
+  <script src="assets/js/daily-performance-service.js?v=18.56.63"></script>
+  <script src="assets/js/daily-alerts-service.js?v=18.56.63"></script>
+  <script src="assets/js/daily-activity-service.js?v=18.56.63"></script>
+  <script src="assets/js/notification-center-service.js?v=18.56.63"></script>
+  <script src="assets/js/app.js?v=18.56.63"></script>
+  <script src="assets/js/customer-excel-actions-hotfix.js?v=18.56.63"></script>
+  <script src="assets/js/notification-center.js?v=18.56.63"></script>
+  <script src="assets/js/sales-invoices.js?v=18.56.63"></script>
+  <script src="assets/js/vehicle-treasury.js?v=18.56.63"></script>
+  <script src="assets/js/payroll.js?v=18.56.63"></script>
+  <script src="assets/js/sea-vibe-payroll.js?v=18.56.63"></script>
+  <script src="assets/js/sea-vibe.js?v=18.56.63"></script>
+  <script src="assets/js/installations-module.js?v=18.56.63"></script>
+  <script src="assets/js/installation-scheduling.js?v=18.56.63"></script>
+  <script src="assets/js/installation-execution.js?v=18.56.63"></script>
+  <script src="assets/js/installation-completion.js?v=18.56.63"></script>
+  <script src="assets/js/installation-operations-reports.js?v=18.56.63"></script>
+  <script src="assets/js/installation-dashboard-settings.js?v=18.56.63"></script>
+  <script src="assets/js/installation-settings-management.js?v=18.56.63"></script>
+  <script src="assets/js/mobile.js?v=18.56.63"></script>
+  <script src="assets/js/pwa.js?v=18.56.63"></script>
+  <script src="assets/js/native.js?v=18.56.63"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@
   }
 
   const client = () => {
-    if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
+    if (!window.customerSupabase) throw new Error(window.PetatoeLocalization.t("auth.error.supabaseNotReady"));
     return window.customerSupabase;
   };
 
@@ -16,7 +16,7 @@
       .from("user_profiles")
       .select("id,full_name,email,role,representative_id,is_active,must_change_password,default_language,last_login_at,created_at,representative:sales_representatives!user_profiles_representative_id_fkey(id,full_name)")
       .order("created_at", { ascending: false });
-    if (error) throw new Error(`تعذر تحميل المستخدمين: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("users.error.load", { error: error.message }));
 
     const users = data || [];
     if (!users.length) return users;
@@ -34,11 +34,11 @@
       client().from("installation_user_technician_bindings").select("user_id,installation_team_id,technician_name,team:installation_teams(id,name)").in("user_id", userIds)
     ]);
 
-    if (profilesResult.error) throw new Error(`تعذر تحميل نطاقات البيانات: ${profilesResult.error.message}`);
-    if (representativesResult.error) throw new Error(`تعذر تحميل المندوبين المسموحين: ${representativesResult.error.message}`);
-    if (installationProfilesResult.error) throw new Error(`تعذر تحميل نطاق التركيبات: ${installationProfilesResult.error.message}`);
-    if (installationRepresentativesResult.error) throw new Error(`تعذر تحميل مندوبي التركيبات المسموحين: ${installationRepresentativesResult.error.message}`);
-    if (technicianBindingsResult.error && technicianBindingsResult.error.code !== "42P01") throw new Error(`تعذر تحميل ربط الجرومر / السائق: ${technicianBindingsResult.error.message}`);
+    if (profilesResult.error) throw new Error(window.PetatoeLocalization.t("users.error.dataScopes", { error: profilesResult.error.message }));
+    if (representativesResult.error) throw new Error(window.PetatoeLocalization.t("users.error.allowedReps", { error: representativesResult.error.message }));
+    if (installationProfilesResult.error) throw new Error(window.PetatoeLocalization.t("users.error.appointmentScopes", { error: installationProfilesResult.error.message }));
+    if (installationRepresentativesResult.error) throw new Error(window.PetatoeLocalization.t("users.error.appointmentReps", { error: installationRepresentativesResult.error.message }));
+    if (technicianBindingsResult.error && technicianBindingsResult.error.code !== "42P01") throw new Error(window.PetatoeLocalization.t("users.error.technicianBindings", { error: technicianBindingsResult.error.message }));
 
     const modeByUser = new Map((profilesResult.data || []).map(row => [row.user_id, row.access_mode]));
     const repsByUser = new Map();
@@ -80,14 +80,14 @@
   async function invokeManageUser(body) {
     const { data: sessionData, error: sessionError } = await client().auth.getSession();
     if (sessionError || !sessionData?.session?.access_token) {
-      throw new Error("انتهت جلسة تسجيل الدخول. سجّل الدخول مرة أخرى ثم أعد المحاولة.");
+      throw new Error(window.PetatoeLocalization.t("users.error.sessionExpired"));
     }
 
     let result;
     try {
       result = await client().functions.invoke("manage-user", { body });
     } catch (networkError) {
-      throw new Error(`تعذر الاتصال بوظيفة إدارة المستخدمين manage-user. تأكد من نشر Edge Function ثم أعد المحاولة. (${networkError?.message || "NETWORK_ERROR"})`);
+      throw new Error(window.PetatoeLocalization.t("users.error.manageUserNetwork", { error: networkError?.message || "NETWORK_ERROR" }));
     }
     const { data, error } = result;
     if (!error) return data;
@@ -103,10 +103,10 @@
       // Keep the original Functions error when the response body is unavailable.
     }
 
-    const rawMessage = details?.error || details?.message || error.message || "تعذر تنفيذ عملية المستخدم.";
+    const rawMessage = details?.error || details?.message || error.message || window.PetatoeLocalization.t("users.error.operation");
     const isTransportFailure = /failed to send a request|failed to fetch|networkerror/i.test(String(rawMessage));
     const message = isTransportFailure
-      ? "تعذر الوصول إلى Edge Function المسؤولة عن إدارة المستخدمين. يلزم التأكد من نشر manage-user على مشروع Supabase الحالي."
+      ? window.PetatoeLocalization.t("users.error.manageUserUnavailable")
       : rawMessage;
     const code = details?.code ? ` (${details.code})` : "";
     throw new Error(`${message}${code}`);
@@ -127,11 +127,11 @@
       access_mode: payload.role === "viewer" ? "selected" : payload.accessMode,
       allowed_representative_ids: payload.role === "viewer" ? [] : (payload.allowedRepresentativeIds || [])
     });
-    if (!data?.success) throw new Error(data?.error || "تعذر إنشاء المستخدم.");
+    if (!data?.success) throw new Error(data?.error || window.PetatoeLocalization.t("users.error.create"));
     const user = data.user;
-    if (!user?.id) throw new Error("تم إنشاء الحساب بدون معرف مستخدم صالح.");
+    if (!user?.id) throw new Error(window.PetatoeLocalization.t("users.error.invalidCreatedId"));
     const { error: languageError } = await client().from("user_profiles").update({ default_language: payload.defaultLanguage === "en" ? "en" : "ar" }).eq("id", user.id);
-    if (languageError) throw new Error(`تعذر حفظ اللغة الافتراضية للمستخدم: ${languageError.message}`);
+    if (languageError) throw new Error(window.PetatoeLocalization.t("users.error.defaultLanguage", { error: languageError.message }));
     await saveInstallationDataAccess(user.id, payload.role === "viewer" ? "own" : payload.installationAccessMode, payload.role === "viewer" ? [] : payload.allowedInstallationRepresentativeIds);
     await saveInstallationTechnicianBinding(user.id, payload.role, payload.installationTeamId, payload.installationTechnicianName);
     return user;
@@ -152,7 +152,7 @@
       .eq("id", payload.id)
       .select()
       .single();
-    if (error) throw new Error(`تعذر تعديل المستخدم: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("users.error.update", { error: error.message }));
     await saveUserDataAccess(payload.id, payload.role === "viewer" ? "selected" : payload.accessMode, payload.role === "viewer" ? [] : payload.allowedRepresentativeIds);
     await saveInstallationDataAccess(payload.id, payload.role === "viewer" ? "own" : payload.installationAccessMode, payload.role === "viewer" ? [] : payload.allowedInstallationRepresentativeIds);
     await saveInstallationTechnicianBinding(payload.id, payload.role, payload.installationTeamId, payload.installationTechnicianName);
@@ -169,7 +169,7 @@
       p_access_mode: normalizedMode,
       p_representative_ids: normalizedMode === "selected" ? uniqueIds : []
     });
-    if (error) throw new Error(`تعذر حفظ نطاق البيانات: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("users.error.saveDataScope", { error: error.message }));
   }
 
   async function saveInstallationDataAccess(userId, accessMode = "own", allowedRepresentativeIds = []) {
@@ -181,18 +181,18 @@
       p_access_mode: normalizedMode,
       p_representative_ids: normalizedMode === "selected" ? uniqueIds : []
     });
-    if (error) throw new Error(`تعذر حفظ نطاق المواعيد: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("users.error.saveAppointmentScope", { error: error.message }));
   }
 
   async function resetPassword(userId, password) {
     requirePermission("users", "edit");
     const data = await invokeManageUser({ action: "reset_password", user_id: userId, password });
-    if (!data?.success) throw new Error(data?.error || "تعذر إعادة التعيين.");
+    if (!data?.success) throw new Error(data?.error || window.PetatoeLocalization.t("users.error.passwordReset"));
   }
 
   async function listInstallationTeams() {
     const { data, error } = await client().from("installation_teams").select("id,name,status").neq("status","غير نشطة").order("name");
-    if (error) throw new Error(`تعذر تحميل فرق التركيبات: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("users.error.loadTeams", { error: error.message }));
     return data || [];
   }
 
@@ -201,10 +201,10 @@
     const isTechnicianRole = role === "viewer";
     if (!isTechnicianRole) {
       const { error } = await client().from("installation_user_technician_bindings").delete().eq("user_id", userId);
-      if (error && error.code !== "42P01") throw new Error(`تعذر حذف ربط الجرومر / السائق: ${error.message}`);
+      if (error && error.code !== "42P01") throw new Error(window.PetatoeLocalization.t("users.error.deleteTechnicianBinding", { error: error.message }));
       return;
     }
-    if (!teamId) throw new Error("اختر فرقة المواعيد المرتبطة بالجرومر / السائق.");
+    if (!teamId) throw new Error(window.PetatoeLocalization.t("users.error.chooseTeam"));
     const safeName = normalizedName || "team-operator";
     const { error } = await client().from("installation_user_technician_bindings").upsert({
       user_id: userId,
@@ -213,11 +213,11 @@
       normalized_technician_name: safeName.toLocaleLowerCase("ar").replace(/\s+/g, " "),
       updated_at: new Date().toISOString()
     }, { onConflict: "user_id" });
-    if (error) throw new Error(`تعذر حفظ ربط الجرومر / السائق: ${error.message}`);
+    if (error) throw new Error(window.PetatoeLocalization.t("users.error.saveTechnicianBinding", { error: error.message }));
     const { error: accessDeleteError } = await client().from("installation_team_access").delete().eq("user_id", userId);
-    if (accessDeleteError) throw new Error(`تعذر تحديث نطاق فرقة الفني: ${accessDeleteError.message}`);
+    if (accessDeleteError) throw new Error(window.PetatoeLocalization.t("users.error.updateTeamScope", { error: accessDeleteError.message }));
     const { error: accessInsertError } = await client().from("installation_team_access").insert({ user_id: userId, installation_team_id: teamId });
-    if (accessInsertError) throw new Error(`تعذر ربط المستخدم بفرقة المواعيد: ${accessInsertError.message}`);
+    if (accessInsertError) throw new Error(window.PetatoeLocalization.t("users.error.linkTeam", { error: accessInsertError.message }));
   }
 
   async function audit(action, entityId, newData) {

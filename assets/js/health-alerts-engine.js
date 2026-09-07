@@ -1,4 +1,5 @@
 // KYUM Phase 14.3 — Health Score & Smart Alerts Engine
+// PETATOE R44R20 — display localization only; score/threshold logic is unchanged.
 (function () {
   const scoreHistory = [];
   const MAX_HISTORY = 20;
@@ -12,6 +13,10 @@
     users: 10,
     errors: 10
   });
+
+  const t = (key, vars = {}) => window.PetatoeLocalization?.t?.(key, vars) || key;
+  const ref = (key, vars = {}) => Object.freeze({ key, vars });
+  const resolve = value => value?.key ? t(value.key, value.vars || {}) : String(value ?? "");
 
   function clamp(value, min = 0, max = 100) {
     return Math.min(max, Math.max(min, Number(value || 0)));
@@ -92,139 +97,87 @@
   }
 
   function levelFromScore(score) {
-    if (score >= 90) return { key: "healthy", label: "Healthy", arabic: "سليم" };
-    if (score >= 75) return { key: "good", label: "Good", arabic: "جيد" };
-    if (score >= 60) return { key: "warning", label: "Warning", arabic: "تحذير" };
-    return { key: "critical", label: "Critical", arabic: "حرج" };
+    const key = score >= 90 ? "healthy" : score >= 75 ? "good" : score >= 60 ? "warning" : "critical";
+    const labelKey = `systemHealth.smart.level.${key}`;
+    return { key, label: t(labelKey), localization: ref(labelKey) };
+  }
+
+  function alertItem(code, severity, titleRef, detailRef) {
+    return {
+      code,
+      severity,
+      title: resolve(titleRef),
+      detail: resolve(detailRef),
+      localization: Object.freeze({ title: titleRef, detail: detailRef })
+    };
   }
 
   function buildAlerts(snapshot, performanceSummary, components) {
     const alerts = [];
 
     if (!snapshot?.database_online) {
-      alerts.push({
-        severity: "critical",
-        title: "قاعدة البيانات غير متصلة",
-        detail: "تعذر الوصول إلى Supabase Database."
-      });
+      alerts.push(alertItem("database_offline", "critical", ref("systemHealth.smart.alert.databaseOffline.title"), ref("systemHealth.smart.alert.databaseOffline.detail")));
     } else if (Number(snapshot?.latency_ms || 0) > 1200) {
-      alerts.push({
-        severity: "critical",
-        title: "زمن استجابة قاعدة البيانات مرتفع جدًا",
-        detail: `${snapshot.latency_ms} ms`
-      });
+      alerts.push(alertItem("database_latency_critical", "critical", ref("systemHealth.smart.alert.databaseLatencyCritical.title"), ref("systemHealth.smart.alert.latency.detail", { value: snapshot.latency_ms })));
     } else if (Number(snapshot?.latency_ms || 0) > 700) {
-      alerts.push({
-        severity: "warning",
-        title: "زمن استجابة قاعدة البيانات مرتفع",
-        detail: `${snapshot.latency_ms} ms`
-      });
+      alerts.push(alertItem("database_latency_warning", "warning", ref("systemHealth.smart.alert.databaseLatencyWarning.title"), ref("systemHealth.smart.alert.latency.detail", { value: snapshot.latency_ms })));
     }
 
     if (Number(snapshot?.security?.rls_coverage_percent || 0) < 100) {
-      alerts.push({
-        severity: "critical",
-        title: "تغطية RLS غير مكتملة",
-        detail: `${snapshot.security.rls_coverage_percent}% فقط`
-      });
+      alerts.push(alertItem("rls_incomplete", "critical", ref("systemHealth.smart.alert.rlsIncomplete.title"), ref("systemHealth.smart.alert.rlsIncomplete.detail", { value: snapshot.security.rls_coverage_percent })));
     }
 
     if (Number(snapshot?.failed_backups_24h || 0) > 0) {
-      alerts.push({
-        severity: "critical",
-        title: "فشل عملية نسخ احتياطي",
-        detail: `${snapshot.failed_backups_24h} عملية فاشلة خلال 24 ساعة`
-      });
+      alerts.push(alertItem("backup_failed", "critical", ref("systemHealth.smart.alert.backupFailed.title"), ref("systemHealth.smart.alert.backupFailed.detail", { count: snapshot.failed_backups_24h })));
     }
 
     const failedRequests = Number(performanceSummary?.failedRequests || 0);
     if (failedRequests > 0) {
-      alerts.push({
-        severity: failedRequests >= 3 ? "critical" : "warning",
-        title: "طلبات API فاشلة",
-        detail: `${failedRequests} طلبات فاشلة في الجلسة الحالية`
-      });
+      alerts.push(alertItem("api_failed", failedRequests >= 3 ? "critical" : "warning", ref("systemHealth.smart.alert.apiFailed.title"), ref("systemHealth.smart.alert.apiFailed.detail", { count: failedRequests })));
     }
 
     const avg = Number(performanceSummary?.averageResponseMs || 0);
     if (avg > 1000) {
-      alerts.push({
-        severity: "critical",
-        title: "متوسط استجابة API بطيء جدًا",
-        detail: `${Math.round(avg)} ms`
-      });
+      alerts.push(alertItem("api_slow_critical", "critical", ref("systemHealth.smart.alert.apiSlowCritical.title"), ref("systemHealth.smart.alert.latency.detail", { value: Math.round(avg) })));
     } else if (avg > 600) {
-      alerts.push({
-        severity: "warning",
-        title: "متوسط استجابة API يحتاج متابعة",
-        detail: `${Math.round(avg)} ms`
-      });
+      alerts.push(alertItem("api_slow_warning", "warning", ref("systemHealth.smart.alert.apiSlowWarning.title"), ref("systemHealth.smart.alert.latency.detail", { value: Math.round(avg) })));
     }
 
     if (performanceSummary?.network?.online === false) {
-      alerts.push({
-        severity: "critical",
-        title: "المتصفح غير متصل بالإنترنت",
-        detail: "العمليات السحابية لن تعمل حتى عودة الاتصال."
-      });
+      alerts.push(alertItem("network_offline", "critical", ref("systemHealth.smart.alert.networkOffline.title"), ref("systemHealth.smart.alert.networkOffline.detail")));
     }
 
     if (Number(snapshot?.super_admins || 0) === 0) {
-      alerts.push({
-        severity: "critical",
-        title: "لا يوجد مدير نظام نشط",
-        detail: "يجب وجود Super Admin نشط واحد على الأقل."
-      });
+      alerts.push(alertItem("no_super_admin", "critical", ref("systemHealth.smart.alert.noSuperAdmin.title"), ref("systemHealth.smart.alert.noSuperAdmin.detail")));
     }
 
     if (!alerts.length) {
-      alerts.push({
-        severity: "healthy",
-        title: "لا توجد مشكلات حرجة",
-        detail: "جميع المؤشرات الحالية ضمن النطاق الطبيعي."
-      });
+      alerts.push(alertItem("healthy", "healthy", ref("systemHealth.smart.alert.healthy.title"), ref("systemHealth.smart.alert.healthy.detail")));
     }
 
     return alerts;
   }
 
   function buildRecommendations(alerts, components) {
-    const recommendations = [];
-    const titles = new Set(alerts.map(alert => alert.title));
+    const recommendationKeys = [];
+    const codes = new Set(alerts.map(alert => alert.code));
 
-    if ([...titles].some(title => title.includes("قاعدة البيانات"))) {
-      recommendations.push("راجع اتصال Supabase وحالة المشروع وزمن الشبكة.");
+    if (codes.has("database_offline") || codes.has("database_latency_critical") || codes.has("database_latency_warning")) {
+      recommendationKeys.push("systemHealth.smart.recommend.database");
     }
+    if (codes.has("rls_incomplete")) recommendationKeys.push("systemHealth.smart.recommend.rls");
+    if (codes.has("backup_failed")) recommendationKeys.push("systemHealth.smart.recommend.backup");
+    if (codes.has("api_failed") || codes.has("api_slow_critical") || codes.has("api_slow_warning")) recommendationKeys.push("systemHealth.smart.recommend.api");
+    if (codes.has("no_super_admin")) recommendationKeys.push("systemHealth.smart.recommend.superAdmin");
+    if (components.performance < 75) recommendationKeys.push("systemHealth.smart.recommend.performance");
+    if (components.security < 90) recommendationKeys.push("systemHealth.smart.recommend.security");
+    if (!recommendationKeys.length) recommendationKeys.push("systemHealth.smart.recommend.none");
 
-    if ([...titles].some(title => title.includes("RLS"))) {
-      recommendations.push("راجع الجداول غير المحمية وأضف سياسات RLS المفقودة.");
-    }
-
-    if ([...titles].some(title => title.includes("نسخ احتياطي"))) {
-      recommendations.push("افتح مركز النسخ الاحتياطي وراجع آخر عملية فاشلة ثم أنشئ نسخة جديدة.");
-    }
-
-    if ([...titles].some(title => title.includes("API"))) {
-      recommendations.push("افتح قائمة أبطأ الطلبات وحدد الـEndpoint المسؤول عن البطء أو الفشل.");
-    }
-
-    if ([...titles].some(title => title.includes("مدير نظام"))) {
-      recommendations.push("فعّل حساب Super Admin موثوقًا قبل تنفيذ أي إدارة حساسة.");
-    }
-
-    if (components.performance < 75) {
-      recommendations.push("قلل الطلبات المتكررة وراجع أبطأ الشاشات والطلبات.");
-    }
-
-    if (components.security < 90) {
-      recommendations.push("نفّذ فحص أمان شامل للصلاحيات والسياسات.");
-    }
-
-    if (!recommendations.length) {
-      recommendations.push("لا يوجد إجراء عاجل. استمر في مراقبة النسخ الاحتياطي والأداء دوريًا.");
-    }
-
-    return [...new Set(recommendations)].slice(0, 6);
+    const uniqueRefs = [...new Set(recommendationKeys)].slice(0, 6).map(key => ref(key));
+    return {
+      values: uniqueRefs.map(resolve),
+      refs: uniqueRefs
+    };
   }
 
   function evaluate(snapshot, performanceSummary) {
@@ -234,31 +187,22 @@
     const alerts = buildAlerts(snapshot, performanceSummary, components);
     const recommendations = buildRecommendations(alerts, components);
 
-    scoreHistory.push({
-      score,
-      timestamp: Date.now()
-    });
-    if (scoreHistory.length > MAX_HISTORY) {
-      scoreHistory.splice(0, scoreHistory.length - MAX_HISTORY);
-    }
+    scoreHistory.push({ score, timestamp: Date.now() });
+    if (scoreHistory.length > MAX_HISTORY) scoreHistory.splice(0, scoreHistory.length - MAX_HISTORY);
 
     return {
       score,
       level,
       components,
       alerts,
-      recommendations,
+      recommendations: recommendations.values,
+      recommendationLocalization: recommendations.refs,
       history: [...scoreHistory],
       weights: WEIGHTS
     };
   }
 
-  function resetHistory() {
-    scoreHistory.length = 0;
-  }
+  function resetHistory() { scoreHistory.length = 0; }
 
-  window.HealthAlertsEngine = Object.freeze({
-    evaluate,
-    resetHistory
-  });
+  window.HealthAlertsEngine = Object.freeze({ evaluate, resetHistory });
 })();

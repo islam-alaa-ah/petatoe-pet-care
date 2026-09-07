@@ -67,6 +67,7 @@
   const launcher = document.getElementById("sidebarMenuToggle");
   const title = document.querySelector("#appHeader .topbar-title");
   const originalLauncherMarkup = launcher?.innerHTML || "";
+  const mobileHeaderT = key => window.PetatoeLocalization?.t?.(key) || key;
   if (!header || !launcher) return;
 
   function ensureHeader() {
@@ -79,7 +80,7 @@
       title?.insertAdjacentElement("beforebegin", brand);
     }
 
-    launcher.setAttribute("aria-label", "فتح القائمة");
+    launcher.setAttribute("aria-label", mobileHeaderT("shared.header.menu"));
     launcher.innerHTML = `<svg class="mobile-menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`;
   }
 
@@ -94,6 +95,7 @@
 
   sync();
   MEDIA.addEventListener?.("change", sync);
+  window.addEventListener("petatoe-language-changed", sync);
 })();
 (() => {
   "use strict";
@@ -1052,7 +1054,7 @@
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "mobile-quotations-filter-backdrop";
-    backdrop.setAttribute("aria-label", "إغلاق الفلاتر");
+    backdrop.setAttribute("aria-label", t("shared.mobile.admin.closeFilters"));
     view.append(backdrop);
 
     toolbar.querySelector("button")?.addEventListener("click", () => {
@@ -1195,7 +1197,7 @@
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "mobile-reports-filter-backdrop";
-    backdrop.setAttribute("aria-label", "إغلاق الفلاتر");
+    backdrop.setAttribute("aria-label", t("shared.mobile.admin.closeFilters"));
     backdrop.addEventListener("click", closeFilters);
     view.append(backdrop);
 
@@ -1243,24 +1245,25 @@
 (() => {
   "use strict";
   const MEDIA = window.matchMedia("(max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px)");
+  const t = (key, vars = {}) => window.PetatoeLocalization?.t?.(key, vars) || key;
   const ADMIN_VIEWS = [
-    ["users", "المستخدمون"],
-    ["permissions", "الصلاحيات"],
-    ["representatives", "المندوبون"],
-    ["settings", "البيانات المرجعية"],
-    ["backups", "النسخ الاحتياطي"],
-    ["notificationCenter", "مركز الإشعارات"],
-    ["systemSettings", "الإعدادات"]
+    ["users", "sidebar.users"],
+    ["permissions", "sidebar.permissions"],
+    ["representatives", "sidebar.representatives"],
+    ["settings", "sidebar.referenceData"],
+    ["backups", "sidebar.backups"],
+    ["notificationCenter", "sidebar.notifications"],
+    ["systemSettings", "sidebar.systemSettings"]
   ];
 
   const configs = {
-    usersView: { title: "إدارة المستخدمين", note: "الحسابات والأدوار وحالة الدخول", filters: ".users-filters", labels: ["المستخدم","البريد","الدور","المندوب المرتبط","الحالة","آخر دخول","الإجراءات"] },
+    usersView: { titleKey: "users.page.title", noteKey: "users.page.note", filters: ".users-filters", labelKeys: ["users.column.user","users.column.email","users.column.role","users.column.representative","users.column.status","users.column.lastLogin","users.column.actions"] },
     representativesView: { title: "مندوبي المبيعات", note: "الإدارة والربط وحالة النشاط", filters: ".representatives-list-toolbar", labels: ["كود المندوب","اسم المندوب","الجوال","البريد الإلكتروني","العملاء المرتبطون","الحالة","الإجراءات"] },
-    permissionsView: { title: "إدارة الصلاحيات", note: "صلاحيات الأدوار على مستوى الشاشات" },
+    permissionsView: { titleKey: "permissions.page.title", noteKey: "permissions.page.note" },
     settingsView: { title: "البيانات المرجعية", note: "الاهتمامات والأسباب والعملاء", filters: ".reference-data-toolbar" },
-    backupsView: { title: "النسخ الاحتياطي", note: "التصدير والفحص والاستعادة الآمنة", labels: ["التاريخ","النوع","الحالة","المستخدم","الملف","التفاصيل"] },
+    backupsView: { titleKey: "backups.page.title", noteKey: "backups.page.note", labelKeys: ["backups.column.date","backups.mobile.type","backups.column.status","backups.column.user","backups.mobile.file","backups.mobile.details"] },
     notificationCenterView: { title: "مركز الإشعارات", note: "تفعيل الأحداث وتحديد المستلمين" },
-    systemSettingsView: { title: "إعدادات النظام", note: "بيانات الشركة والإعدادات العامة" }
+    systemSettingsView: { titleKey: "systemSettings.page.title", noteKey: "systemSettings.page.note" }
   };
 
   function clickOriginalView(view) {
@@ -1277,14 +1280,16 @@
     if (toolbar) return toolbar;
     toolbar = document.createElement("div");
     toolbar.className = "mobile-admin-toolbar";
+    const title = cfg.titleKey ? t(cfg.titleKey) : cfg.title;
+    const note = cfg.noteKey ? t(cfg.noteKey) : cfg.note;
     toolbar.innerHTML = `
-      <div class="mobile-admin-title"><span>الإدارة</span><strong>${cfg.title}</strong><small>${cfg.note}</small></div>
+      <div class="mobile-admin-title"><span>${t("shared.mobile.admin.section")}</span><strong>${title}</strong><small>${note}</small></div>
       <div class="mobile-admin-toolbar-actions">
-        ${cfg.filters ? '<button type="button" data-mobile-admin-filter>الفلاتر</button>' : ''}
-        <button type="button" data-mobile-admin-refresh>تحديث</button>
+        ${cfg.filters ? `<button type="button" data-mobile-admin-filter>${t("shared.mobile.admin.filters")}</button>` : ''}
+        <button type="button" data-mobile-admin-refresh>${t("shared.mobile.admin.refresh")}</button>
       </div>
-      <nav class="mobile-admin-nav" aria-label="أقسام الإدارة">
-        ${ADMIN_VIEWS.map(([view,label]) => `<button type="button" data-mobile-admin-view="${view}">${label}</button>`).join("")}
+      <nav class="mobile-admin-nav" aria-label="${t("shared.mobile.admin.navAria")}">
+        ${ADMIN_VIEWS.map(([view,key]) => `<button type="button" data-mobile-admin-view="${view}">${t(key)}</button>`).join("")}
       </nav>`;
     section.prepend(toolbar);
     toolbar.querySelectorAll("[data-mobile-admin-view]").forEach(btn => btn.addEventListener("click", () => clickOriginalView(btn.dataset.mobileAdminView)));
@@ -1309,7 +1314,7 @@
     filters.classList.add("mobile-admin-filter-sheet");
     const head = document.createElement("div");
     head.className = "mobile-admin-filter-head";
-    head.innerHTML = `<div><strong>الفلاتر</strong><small>حدد معايير العرض</small></div><button type="button" aria-label="إغلاق">×</button>`;
+    head.innerHTML = `<div><strong>${t("shared.mobile.admin.filterTitle")}</strong><small>${t("shared.mobile.admin.filterNote")}</small></div><button type="button" aria-label="${t("shared.mobile.admin.close")}">×</button>`;
     filters.prepend(head);
     head.querySelector("button").addEventListener("click", () => closeFilters(section));
     const backdrop = document.createElement("button");
@@ -1321,16 +1326,17 @@
   }
 
   function labelTableRows(section, cfg) {
-    if (!cfg.labels) return;
+    const labels = cfg.labelKeys ? cfg.labelKeys.map(key => t(key)) : cfg.labels;
+    if (!labels) return;
     section.querySelectorAll("tbody tr").forEach(row => {
-      [...row.children].forEach((cell, i) => cell.dataset.mobileLabel = cfg.labels[i] || "");
+      [...row.children].forEach((cell, i) => cell.dataset.mobileLabel = labels[i] || "");
     });
   }
 
   function enhancePermissions(section) {
     section.querySelectorAll(".permission-row[data-screen-key]").forEach(row => {
       row.querySelectorAll('input[type="checkbox"]').forEach((input, index) => {
-        input.setAttribute("aria-label", ["عرض","إضافة","تعديل","حذف","تصدير"][index] || "صلاحية");
+        input.setAttribute("aria-label", ["permissions.action.view","permissions.action.add","permissions.action.edit","permissions.action.delete","permissions.action.export"][index] ? t(["permissions.action.view","permissions.action.add","permissions.action.edit","permissions.action.delete","permissions.action.export"][index]) : t("permissions.mobile.permission"));
       });
     });
   }
@@ -1392,6 +1398,11 @@
 
   initialize();
   MEDIA.addEventListener?.("change", initialize);
+  window.addEventListener("petatoe-language-changed", () => {
+    if (!MEDIA.matches) return;
+    cleanupDesktopAdministration();
+    initialize();
+  });
 })();
 
 
@@ -1411,7 +1422,7 @@
     "#payrollReferenceView .payroll-table",
     ".sea-vibe-view .table-wrap .data-table"
   ];
-  const PERMISSION_LABELS = ["عرض","إضافة","تعديل","حذف","تصدير"];
+  const PERMISSION_LABEL_KEYS = ["permissions.action.view","permissions.action.add","permissions.action.edit","permissions.action.delete","permissions.action.export"];
   const NOTIFICATION_LABELS = ["الحدث","تفعيل الحدث","داخل البرنامج","Push","صاحب الطلب","إرسال للدور المحدد"];
 
   function headerLabels(table){
@@ -1493,7 +1504,7 @@
         const label=document.createElement('label');
         label.className='mobile-permission-toggle';
         const text=document.createElement('span');
-        text.textContent=PERMISSION_LABELS[index]||'صلاحية';
+        text.textContent=window.PetatoeLocalization?.t?.(PERMISSION_LABEL_KEYS[index]||"permissions.mobile.permission")||PERMISSION_LABEL_KEYS[index]||"permissions.mobile.permission";
         row.insertBefore(label,input);
         label.append(text,input);
       });
