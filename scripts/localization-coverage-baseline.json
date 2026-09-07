@@ -1,8 +1,8 @@
 {
-  "phase": "R44R21",
-  "purpose": "Phase-by-phase non-increase baseline after effective-dated team assignment history; future localization waves must reduce or preserve this remaining candidate debt without scope regressions.",
+  "phase": "R44R22",
+  "purpose": "Phase-by-phase non-increase baseline after the 2026-09-01 appointment-team assignment cutover; pre-cutover linkage is frozen and future localization waves must reduce or preserve remaining candidate debt.",
   "inventory": {
-    "catalogKeys": 2169,
+    "catalogKeys": 2175,
     "staticHtml": {
       "textCandidates": 887,
       "attributeCandidates": 50,
