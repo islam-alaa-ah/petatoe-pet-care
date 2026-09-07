@@ -1,8 +1,11 @@
 (function(){'use strict';
 const $=id=>document.getElementById(id), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tr=(key,fallback,vars={})=>{const value=window.PetatoeLocalization?.t?.(key,vars);return value&&!/^\[.+\]$/.test(value)?value:fallback};
+function isoToday(){const d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
+function dateLabel(value){if(!value)return '—';const d=new Date(`${value}T00:00:00`);if(Number.isNaN(d.getTime()))return String(value);const lang=window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en-SA':'ar-SA-u-nu-latn';return new Intl.DateTimeFormat(lang,{year:'numeric',month:'2-digit',day:'2-digit'}).format(d)}
 const SECTION_KEY='kyum-installation-settings-section';
 const VALID_SECTIONS=new Set(['services','teams','neighborhoods','employees','cars','breeds']);
-let cache={services:[],teams:[],neighborhoods:[],regions:[],cities:[],employees:[],cars:[],breeds:[]};
+let cache={services:[],teams:[],neighborhoods:[],regions:[],cities:[],employees:[],cars:[],breeds:[],teamAssignments:[]};
 
 function db(){if(!window.customerSupabase)throw new Error('اتصال Supabase غير جاهز.');return window.customerSupabase}
 function message(text,type=''){const el=$('installationSettingsStatus');if(!el)return;el.textContent=text||'';el.classList.toggle('hidden',!text);el.dataset.type=type}
@@ -27,8 +30,8 @@ function render(){
   const teamBody=$('installationTeamsSettingsBody');
   if(teamBody){
     const head=teamBody.closest('table')?.querySelector('thead tr');
-    if(head)head.innerHTML='<th>الجرومر</th><th>السائق</th><th>السيارة</th><th>الحالة</th><th>الإجراءات</th>';
-    teamBody.innerHTML=cache.teams.map(r=>{const active=r.status!=='غير نشطة',p=teamParts(r);return `<tr><td>${esc(p.groomer||'—')}</td><td>${esc(p.driver||'—')}</td><td>${esc(p.car||'—')}</td><td>${status(active,r.status||'متاحة')}</td><td>${actionButtons('team',r,active)}</td></tr>`}).join('')||'<tr><td colspan="5" class="empty-cell">لا توجد فرق مواعيد.</td></tr>';
+    if(head)head.innerHTML=`<th>الجرومر</th><th>السائق</th><th>السيارة</th><th>${esc(tr('appointmentSettings.team.effectiveFromCurrent','Current Assignment Start'))}</th><th>الحالة</th><th>الإجراءات</th>`;
+    teamBody.innerHTML=cache.teams.map(r=>{const active=r.status!=='غير نشطة',p=teamParts(r);return `<tr><td>${esc(p.groomer||'—')}</td><td>${esc(p.driver||'—')}</td><td>${esc(p.car||'—')}</td><td>${esc(dateLabel(r.assignment_effective_from))}</td><td>${status(active,r.status||'متاحة')}</td><td>${actionButtons('team',r,active)}</td></tr>`}).join('')||'<tr><td colspan="6" class="empty-cell">لا توجد فرق مواعيد.</td></tr>';
   }
   $('installationNeighborhoodsSettingsBody').innerHTML=cache.neighborhoods.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.city||'—')}</td><td>${esc(r.region||'—')}</td><td>${status(r.is_active!==false,r.is_active!==false?'نشط':'متوقف')}</td><td>${actionButtons('neighborhood',r,r.is_active!==false)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty-cell">لا توجد أحياء.</td></tr>';
   const employeeBody=$('appointmentEmployeesSettingsBody');
@@ -43,14 +46,17 @@ function showSection(section,{persist=true}={}){const next=VALID_SECTIONS.has(se
 async function load(){
   message('جاري تحميل إعدادات المواعيد...');
   try{
-    const [base,employeesRes,carsRes,breedsRes]=await Promise.all([
+    const [base,employeesRes,carsRes,breedsRes,assignmentsRes]=await Promise.all([
       window.InstallationsServiceSafe.settingsCatalog(),
       db().from('appointment_employees').select('*').order('employee_type').order('full_name'),
       db().from('appointment_cars').select('*').order('name'),
-      db().from('appointment_pet_breeds').select('*').order('pet_type').order('name')
+      db().from('appointment_pet_breeds').select('*').order('pet_type').order('name'),
+      db().from('installation_team_assignment_history').select('installation_team_id,effective_from').is('effective_to',null)
     ]);
-    if(employeesRes.error||carsRes.error||breedsRes.error){const err=employeesRes.error||carsRes.error||breedsRes.error;if(/appointment_employees|appointment_cars/i.test(err.message||''))throw new Error('شغّل Migration الموظفين والسيارات أولًا ثم أعد تحميل الصفحة.');throw err}
-    cache={...base,employees:employeesRes.data||[],cars:carsRes.data||[],breeds:breedsRes.data||[]};render();message('');
+    if(employeesRes.error||carsRes.error||breedsRes.error||assignmentsRes.error){const err=employeesRes.error||carsRes.error||breedsRes.error||assignmentsRes.error;if(/installation_team_assignment_history/i.test(err.message||''))throw new Error(tr('appointmentSettings.team.historyLoadRequired','Run the team assignment history migration first, then reload.'));if(/appointment_employees|appointment_cars/i.test(err.message||''))throw new Error('شغّل Migration الموظفين والسيارات أولًا ثم أعد تحميل الصفحة.');throw err}
+    const assignmentByTeam=new Map((assignmentsRes.data||[]).map(x=>[String(x.installation_team_id||''),x.effective_from||'']));
+    const teams=(base.teams||[]).map(team=>({...team,assignment_effective_from:assignmentByTeam.get(String(team.id||''))||''}));
+    cache={...base,teams,employees:employeesRes.data||[],cars:carsRes.data||[],breeds:breedsRes.data||[],teamAssignments:assignmentsRes.data||[]};render();message('');
   }catch(e){message(e.message||'تعذر تحميل الإعدادات.','error')}
 }
 
@@ -71,7 +77,8 @@ function fields(type,row={}){
     const carId=row.appointment_car_id||cache.cars.find(x=>x.name===teamParts(row).car)?.id||'';
     const groomers=cache.employees.filter(x=>x.employee_type==='جرومر');
     const drivers=cache.employees.filter(x=>x.employee_type==='سائق');
-    return `<label>الجرومر<select name="groomerEmployeeId" required>${option('','اختر الجرومر',!groomerId,true)}${groomers.map(x=>option(x.id,employeeLabel(x),x.id===groomerId,x.is_active===false&&x.id!==groomerId)).join('')}</select></label><label>السائق<select name="driverEmployeeId" required>${option('','اختر السائق',!driverId,true)}${drivers.map(x=>option(x.id,employeeLabel(x),x.id===driverId,x.is_active===false&&x.id!==driverId)).join('')}</select></label><label>السيارة<select name="carId" required>${option('','اختر السيارة',!carId,true)}${cache.cars.map(x=>option(x.id,carLabel(x),x.id===carId,x.is_active===false&&x.id!==carId)).join('')}</select></label><label>الحالة<select name="status">${['متاحة','مشغولة','إجازة','غير نشطة'].map(x=>`<option ${row.status===x?'selected':''}>${x}</option>`).join('')}</select></label><small class="field-hint">القوائم تأتي من بيانات الموظفين والسيارات المسجلة في إعدادات المواعيد.</small>`;
+    const today=isoToday();
+    return `<label>الجرومر<select name="groomerEmployeeId" required>${option('','اختر الجرومر',!groomerId,true)}${groomers.map(x=>option(x.id,employeeLabel(x),x.id===groomerId,x.is_active===false&&x.id!==groomerId)).join('')}</select></label><label>السائق<select name="driverEmployeeId" required>${option('','اختر السائق',!driverId,true)}${drivers.map(x=>option(x.id,employeeLabel(x),x.id===driverId,x.is_active===false&&x.id!==driverId)).join('')}</select></label><label>السيارة<select name="carId" required>${option('','اختر السيارة',!carId,true)}${cache.cars.map(x=>option(x.id,carLabel(x),x.id===carId,x.is_active===false&&x.id!==carId)).join('')}</select></label><label>${esc(tr('appointmentSettings.team.effectiveFrom','Assignment Effective Date'))}<input name="effectiveFrom" type="date" max="${today}" value="${today}" required></label><label>الحالة<select name="status">${['متاحة','مشغولة','إجازة','غير نشطة'].map(x=>`<option ${row.status===x?'selected':''}>${x}</option>`).join('')}</select></label><small class="field-hint">${esc(tr('appointmentSettings.team.effectiveHint','Historical assignments before this date remain unchanged.'))}</small>`;
   }
   return `<label>اسم الحي<input name="name" required maxlength="120" value="${esc(row.name||'')}"></label>
   <label class="installation-reference-geo-field">المنطقة<div id="installationReferenceRegionCombobox" class="geo-searchable-select installation-reference-geo-select" data-reference-geo-type="region"><input id="installationReferenceRegionId" name="regionId" type="hidden"><input id="installationReferenceRegionSearch" class="geo-searchable-input" type="search" placeholder="ابحث واختر المنطقة" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="installationReferenceRegionOptions"><button class="geo-searchable-toggle" type="button" aria-label="فتح قائمة المناطق">⌄</button><div id="installationReferenceRegionOptions" class="geo-searchable-options hidden" role="listbox"></div></div></label>
@@ -87,9 +94,9 @@ async function saveTeam(payload){
   if(!groomer||groomer.employee_type!=='جرومر')throw new Error('اختر جرومر صحيح من بيانات الموظفين.');
   if(!driver||driver.employee_type!=='سائق')throw new Error('اختر سائق صحيح من بيانات الموظفين.');
   if(!car)throw new Error('اختر سيارة صحيحة من بيانات السيارات.');
-  const record={groomer_employee_id:groomer.id,driver_employee_id:driver.id,appointment_car_id:car.id,groomer_name:groomer.full_name,driver_name:driver.full_name,car_name:car.name,leader_name:groomer.full_name,name:[groomer.full_name,driver.full_name,car.name].join(' - '),phone:null,city:null,status:payload.status||'متاحة'};
-  const q=payload.id?db().from('installation_teams').update(record).eq('id',payload.id):db().from('installation_teams').insert(record);
-  const {error}=await q;if(error){if(/groomer_employee_id|driver_employee_id|appointment_car_id|appointment_employees|appointment_cars/i.test(error.message||''))throw new Error('شغّل Migration الموظفين والسيارات أولًا ثم أعد المحاولة.');if(error.code==='23505')throw new Error('الجرومر أو السائق أو السيارة مرتبط بالفعل بفريق موعد نشط آخر.');throw new Error('تعذر حفظ فريق الموعد: '+error.message)}
+  const effectiveFrom=String(payload.effectiveFrom||'').trim();if(!effectiveFrom)throw new Error(tr('appointmentSettings.team.effectiveRequired','Assignment effective date is required.'));
+  const {error}=await db().rpc('save_installation_team_assignment_v1',{p_team_id:payload.id||null,p_groomer_employee_id:groomer.id,p_driver_employee_id:driver.id,p_appointment_car_id:car.id,p_effective_from:effectiveFrom,p_status:payload.status||'متاحة'});
+  if(error){if(/save_installation_team_assignment_v1|installation_team_assignment_history|schema cache/i.test(error.message||''))throw new Error(tr('appointmentSettings.team.migrationRequired','Run the team assignment history update first.'));if(error.code==='23505')throw new Error(tr('appointmentSettings.team.assignmentConflict',error.message||'The selected resource is assigned to another team in this period.'));throw new Error(tr('appointmentSettings.team.saveHistoricalError','Unable to save historical team assignment: {error}',{error:error.message}))}
 }
 async function saveEmployee(payload){
   const record={full_name:String(payload.fullName||'').trim(),employee_type:payload.employeeType,phone:String(payload.phone||'').trim()||null,is_active:payload.isActive};

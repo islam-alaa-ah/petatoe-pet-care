@@ -174,11 +174,11 @@
     ['vehicleTreasury.page.subtitle','subtitle','متابعة أرصدة السيارات والإيرادات النقدية والمصروفات','Track vehicle balances, cash revenue and expenses'],
     ['vehicleTreasury.title','title','خزينة السيارة','Vehicle Treasury'],
     ['vehicleTreasury.subtitle','help','متابعة الإيرادات النقدية والمصروفات حسب السيارة والفرقة المسموح بها.','Track cash revenue and expenses by permitted vehicle and team.'],
-    ['vehicleTreasury.filter.car','label','السيارة / الفرقة','Vehicle / Team'],
+    ['vehicleTreasury.filter.car','label','السيارة','Vehicle'],
     ['vehicleTreasury.filter.from','label','من تاريخ','From date'],
     ['vehicleTreasury.filter.to','label','إلى تاريخ','To date'],
     ['vehicleTreasury.filter.search','label','بحث','Search'],
-    ['vehicleTreasury.filter.selectCar','option','اختر السيارة / الفرقة','Select vehicle / team'],
+    ['vehicleTreasury.filter.selectCar','option','اختر السيارة','Select vehicle'],
     ['vehicleTreasury.type.revenue','status','إيراد','Revenue'],
     ['vehicleTreasury.type.expense','status','مصروف','Expense'],
     ['vehicleTreasury.empty','empty','لا توجد حركات ضمن الفلاتر الحالية.','No movements match the current filters.'],
@@ -186,6 +186,9 @@
     ['vehicleTreasury.offline','status','يتم عرض آخر بيانات محفوظة دون اتصال.','Showing the latest cached data while offline.'],
     ['vehicleTreasury.expense.addTitle','title','صرف من خزينة السيارة','Vehicle Treasury Expense'],
     ['vehicleTreasury.expense.editTitle','title','تعديل حركة صرف','Edit Expense Movement'],
+    ['vehicleTreasury.expense.noTeamForDate','option','لا يوجد فريق مرتبط بهذه السيارة في التاريخ المحدد','No team is assigned to this vehicle on the selected date'],
+    ['vehicleTreasury.error.historyMigrationRequired','error','شغّل تحديث تاريخ ربط فرق المواعيد أولًا ثم أعد فتح خزينة السيارة.','Run the appointment team assignment history update first, then reopen Vehicle Treasury.'],
+    ['vehicleTreasury.error.load','error','تعذر تحميل خزينة السيارة: {error}','Unable to load Vehicle Treasury: {error}'],
     ['vehicleTreasury.saved','status','تم حفظ حركة الصرف بنجاح.','Expense movement saved successfully.'],
     ['vehicleTreasury.deleteConfirm','confirm','هل تريد حذف حركة الصرف؟','Do you want to delete this expense movement?'],
     ['vehicleTreasury.deleted','status','تم حذف حركة الصرف.','Expense movement deleted.'],
@@ -608,6 +611,26 @@
     ["appointmentNew.schedule.teamLater","option","تحدد لاحقًا","Set later"],
     ["appointmentNew.schedule.groomer","label","الجرومر","Groomer"],
     ["appointmentNew.schedule.groomerPlaceholder","placeholder","اسم الجرومر","Groomer name"],
+    ["appointmentNew.schedule.groomerFromTeam","help","يتم تحديد الجرومر تلقائيًا من الفرقة المختارة حسب تاريخ الموعد.","The groomer is selected automatically from the chosen team for the appointment date."],
+    ["appointments.schedule.error.historyMigrationRequired","error","شغّل تحديث تاريخ ربط فرق المواعيد أولًا ثم أعد المحاولة.","Run the appointment team assignment history update first, then try again."],
+    ["appointments.schedule.error.assignmentLookupFailed","error","تعذر تحديد ربط الفرقة في تاريخ الموعد: {error}","Unable to resolve the team assignment for the appointment date: {error}"],
+    ["appointments.schedule.error.multiDayIncomplete","error","أكمل التاريخ والوقت والفرقة لكل يوم.","Complete the date, time, and team for every day."],
+    ["appointments.schedule.error.noGroomerVisitDate","error","لا يوجد جرومر مرتبط بالفرقة في تاريخ الزيارة المحدد.","No groomer is assigned to the team on the selected visit date."],
+    ["appointments.schedule.error.fixedSlotRequired","error","كل زيارة يجب أن تستخدم أحد مواعيد PETATOE الثابتة.","Every visit must use one of the fixed PETATOE time slots."],
+    ["appointments.schedule.error.dateRequired","error","تاريخ الموعد مطلوب.","Appointment date is required."],
+    ["appointments.schedule.error.timeRequired","error","وقت الموعد مطلوب.","Appointment time is required."],
+    ["appointments.schedule.error.invalidFixedSlot","error","وقت الموعد يجب أن يكون أحد المواعيد الثابتة: 12 ظهرًا، 2، 4، 6، 8 أو 10 مساءً.","Appointment time must be one of the fixed slots: 12 PM, 2 PM, 4 PM, 6 PM, 8 PM, or 10 PM."],
+    ["appointments.schedule.error.teamRequired","error","اختر فرقة المواعيد.","Select an appointment team."],
+    ["appointments.schedule.error.noGroomerDate","error","لا يوجد جرومر مرتبط بالفرقة في تاريخ الموعد المحدد.","No groomer is assigned to the team on the selected appointment date."],
+    ["appointments.schedule.error.suggestionSave","error","تعذر حفظ اسم الفني في قائمة المقترحات: {error}","Unable to save the technician name to suggestions: {error}"],
+    ["appointments.schedule.error.dayLockCheck","error","تعذر التحقق من حالة يوم الجدولة: {error}","Unable to check the scheduling day status: {error}"],
+    ["appointments.schedule.error.dayLocked","error","هذا اليوم مغلق. افتح اليوم أولًا قبل الجدولة.","This day is closed. Open the day before scheduling."],
+    ["appointments.schedule.error.bookedCheck","error","تعذر التحقق من موعد الفني: {error}","Unable to check the groomer booking: {error}"],
+    ["appointments.schedule.error.slotBooked","error","هذا الموعد محجوز للفني المحدد. اختر موعدًا آخر.","This time slot is booked for the selected groomer. Choose another time."],
+    ["appointments.schedule.error.assignmentSave","error","تعذر حفظ الجدولة والإسناد: {error}","Unable to save scheduling and assignment: {error}"],
+    ["appointments.reports.error.historyMigrationRequired","error","شغّل تحديث تاريخ ربط فرق المواعيد أولًا ثم أعد فتح التقرير.","Run the appointment team assignment history update first, then reopen the report."],
+    ["appointments.common.unassigned","label","غير مسند","Unassigned"],
+    ["appointments.common.unspecifiedService","label","خدمة غير محددة","Unspecified service"],
     ["appointmentNew.schedule.notes","label","ملاحظات الموعد","Appointment Notes"],
     ["appointmentNew.schedule.notesPlaceholder","placeholder","اكتب تعليمات العميل أو تفاصيل الموقع أو أي متطلبات خاصة","Enter customer instructions, location details, or any special requirements"],
     ["appointmentNew.schedule.hint","help","إذا اكتملت بيانات الجدولة سيظهر الموعد مباشرة في الجدول. إذا تُركت فارغة سيبقى في انتظار الجدولة.","If scheduling details are complete, the appointment appears directly on the schedule. If left blank, it remains pending scheduling."],
@@ -616,6 +639,14 @@
     ["appointmentNew.action.saving","button","جاري الحفظ...","Saving..."],
     ["appointmentNew.action.saved","button","تم الحفظ","Saved"],
     ["appointmentNew.action.saveError","button","تعذر الحفظ","Save Failed"],
+    ["appointmentSettings.team.effectiveFrom","label","تاريخ سريان الربط","Assignment Effective Date"],
+    ["appointmentSettings.team.effectiveFromCurrent","label","بداية الربط الحالي","Current Assignment Start"],
+    ["appointmentSettings.team.effectiveHint","help","أي موعد أو تقرير قبل هذا التاريخ يحتفظ بالجرومر والسائق والسيارة السابقين، ومن هذا التاريخ يبدأ الربط الجديد.","Appointments and reports before this date keep the previous groomer, driver, and vehicle; the new assignment starts on this date."],
+    ["appointmentSettings.team.effectiveRequired","error","تاريخ سريان الربط مطلوب.","Assignment effective date is required."],
+    ["appointmentSettings.team.migrationRequired","error","شغّل تحديث تاريخ ربط فرق المواعيد أولًا ثم أعد المحاولة.","Run the appointment team assignment history update first, then try again."],
+    ["appointmentSettings.team.historyLoadRequired","error","شغّل Migration تاريخ ربط فرق المواعيد أولًا ثم أعد تحميل الصفحة.","Run the appointment team assignment history migration first, then reload the page."],
+    ["appointmentSettings.team.assignmentConflict","error","الجرومر أو السائق أو السيارة مرتبط بالفعل بفريق آخر خلال الفترة المحددة.","The groomer, driver, or vehicle is already assigned to another team during the selected period."],
+    ["appointmentSettings.team.saveHistoricalError","error","تعذر حفظ ربط الفريق التاريخي: {error}","Unable to save the historical team assignment: {error}"],
     ["dashboard.reps.title","title","أداء المندوبين","Representative Performance"],
     ["dashboard.reps.note","help","العملاء، المتابعات، العروض، ونسبة التحويل","Customers, follow-ups, contracts, and conversion rate"],
     ["dashboard.reps.settings","button","إعدادات ظهور المندوبين","Representative Visibility Settings"],
@@ -1976,6 +2007,10 @@
     ["pwa.update.release.r44r20.note1","help","استكمال ترجمة تسجيل الدخول والهيكل الأساسي وشاشات إدارة النظام.","Completed localization for login, the core shell, and system administration screens."],
     ["pwa.update.release.r44r20.note2","help","توحيد النصوص الديناميكية والتواريخ وحالات التشخيص مع اللغة الحالية دون تغيير منطق الأعمال.","Localized dynamic text, dates, and diagnostics states using the active language without changing business logic."],
     ["pwa.update.release.r44r20.note3","help","إضافة بوابة تغطية L1 مع الحفاظ على أنظمة المزامنة والصلاحيات وR44 Pruning بدون تغيير.","Added the L1 coverage gate while preserving sync, permissions, and R44 pruning behavior unchanged."],
+    ["pwa.update.release.r44r21.title","title","تاريخ ربط فرق المواعيد والعمولات","Effective-Dated Team Assignment History"],
+    ["pwa.update.release.r44r21.note1","help","حفظ تاريخ ربط الجرومر والسائق والسيارة حسب تاريخ السريان دون إعادة تفسير المواعيد الجديدة بعد النقل.","Preserves groomer, driver, and vehicle assignments by effective date without rewriting future assignment history."],
+    ["pwa.update.release.r44r21.note2","help","تطبيق الربط التاريخي على المواعيد والتنفيذ وتقارير العمولات وخزينة السيارة حسب تاريخ العملية.","Applies historical assignment resolution to appointments, execution, commission reports, and Vehicle Treasury by business date."],
+    ["pwa.update.release.r44r21.note3","help","تحديد الجرومر تلقائيًا من الفرقة وتاريخ الموعد مع الحفاظ على الصلاحيات والمزامنة وR44 Pruning بدون تغيير.","Automatically resolves the groomer from the team and appointment date while preserving permissions, sync, and R44 pruning behavior."],
     ["shared.mobile.bottomNav","aria","التنقل السريع على الهاتف","Mobile quick navigation"],
     ["shared.mobile.menu","navigation","القائمة","Menu"],
     ["shared.mobile.admin.section","label","الإدارة","Administration"],
@@ -2175,10 +2210,12 @@
     if(value.startsWith('payroll.page.reference.')||value.startsWith('payroll.reference.')||value.startsWith('payroll.employee.'))return{screenKey:'payrollReference',moduleName:'payroll'};
     if(value.startsWith('payroll.'))return{screenKey:'payrollManagement',moduleName:'payroll'};
     if(value.startsWith('appointmentNew.'))return{screenKey:'installationRequestNew',moduleName:'appointments'};
+    if(value.startsWith('appointmentSettings.'))return{screenKey:'installationSettings',moduleName:'appointments'};
     if(value.startsWith('execution.'))return{screenKey:'installationExecution',moduleName:'appointments'};
     if(value.startsWith('appointments.overview.'))return{screenKey:'installationsOverview',moduleName:'appointments'};
     if(value.startsWith('appointments.requests.'))return{screenKey:'installationRequests',moduleName:'appointments'};
     if(value.startsWith('appointments.schedule.'))return{screenKey:'installationSchedule',moduleName:'appointments'};
+    if(value.startsWith('appointments.reports.'))return{screenKey:'installationReports',moduleName:'appointments'};
     if(value.startsWith('appointments.completion.'))return{screenKey:'installationCompletion',moduleName:'appointments'};
     if(value.startsWith('appointments.'))return{screenKey:'appointmentsShared',moduleName:'appointments'};
     if(value.startsWith('vehicleTreasury.'))return{screenKey:'vehicleTreasury',moduleName:'finance'};

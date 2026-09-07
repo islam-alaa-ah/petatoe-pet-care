@@ -10,15 +10,44 @@
     const el = $('vehicleTreasuryStatus'); if (!el) return;
     el.textContent = message; el.className = `data-status${message ? '' : ' hidden'} ${type}`;
   }
-  function filters() { return { teamId:$('vehicleTreasuryTeam')?.value||'', from:$('vehicleTreasuryFrom')?.value||'', to:$('vehicleTreasuryTo')?.value||'', search:$('vehicleTreasurySearch')?.value||'' }; }
-  function currentTeam() { const id = $('vehicleTreasuryTeam')?.value || ''; return state.data?.teams?.find(x => String(x.id) === String(id)) || null; }
+  function filters() { return { carId:$('vehicleTreasuryTeam')?.value||'', from:$('vehicleTreasuryFrom')?.value||'', to:$('vehicleTreasuryTo')?.value||'', search:$('vehicleTreasurySearch')?.value||'' }; }
+  function currentCar() { const id = $('vehicleTreasuryTeam')?.value || ''; return state.data?.cars?.find(x => String(x.id) === String(id)) || null; }
 
-  function fillTeams() {
+  function fillCars() {
     const el = $('vehicleTreasuryTeam'); if (!el || !state.data) return;
     const current = el.value;
-    el.innerHTML = `<option value="">${esc(t('vehicleTreasury.filter.selectCar','اختر السيارة / الفرقة'))}</option>` + state.data.teams.map(x => `<option value="${esc(x.id)}">${esc(x.carName || x.teamName || '—')} — ${esc(x.teamName || '')}</option>`).join('');
-    if (state.data.teams.some(x => String(x.id) === String(current))) el.value = current;
-    else if (state.data.teams.length === 1) el.value = state.data.teams[0].id;
+    const cars = state.data.cars || [];
+    el.innerHTML = `<option value="">${esc(t('vehicleTreasury.filter.selectCar','اختر السيارة'))}</option>` + cars.map(x => `<option value="${esc(x.id)}">${esc(x.carName || '—')}${x.plateNumber?` — ${esc(x.plateNumber)}`:''}</option>`).join('');
+    if (cars.some(x => String(x.id) === String(current))) el.value = current;
+    else if (cars.length === 1) el.value = cars[0].id;
+  }
+
+  function assignmentsForDate(date) {
+    const d = String(date || '').slice(0,10);
+    if (!d) return [];
+    const rows = (state.data?.teamAssignments || []).filter(row => {
+      const from = String(row?.effectiveFrom || '');
+      const to = String(row?.effectiveTo || '');
+      return from && from <= d && (!to || to >= d);
+    });
+    if (rows.length) return rows;
+    return (state.data?.teams || []).map(row => ({teamId:row.id,teamName:row.teamName,carId:row.carId,carName:row.carName,plateNumber:row.plateNumber,effectiveFrom:'',effectiveTo:''}));
+  }
+
+  function fillExpenseTeams(date, preferredTeamId='') {
+    const el = $('vehicleTreasuryExpenseTeam'); if (!el) return;
+    const selectedCarId = String($('vehicleTreasuryTeam')?.value || '');
+    let rows = assignmentsForDate(date);
+    if (selectedCarId) rows = rows.filter(row => String(row?.carId || '') === selectedCarId);
+    const dedup = new Map();
+    for (const row of rows) if (row?.teamId && !dedup.has(String(row.teamId))) dedup.set(String(row.teamId), row);
+    rows = [...dedup.values()].sort((a,b)=>String(a.carName||'').localeCompare(String(b.carName||''))||String(a.teamName||'').localeCompare(String(b.teamName||'')));
+    const current = String(preferredTeamId || el.value || '');
+    el.innerHTML = rows.length
+      ? rows.map(x=>`<option value="${esc(x.teamId)}">${esc(x.carName||x.teamName||'—')}${x.plateNumber?` — ${esc(x.plateNumber)}`:''} — ${esc(x.teamName||'')}</option>`).join('')
+      : `<option value="" disabled>${esc(t('vehicleTreasury.expense.noTeamForDate','No team is assigned to this vehicle on the selected date'))}</option>`;
+    if (rows.some(x=>String(x.teamId)===current)) el.value=current;
+    else if (rows.length===1) el.value=rows[0].teamId;
   }
 
   function renderSummary() {
@@ -46,7 +75,7 @@
 
   async function load(showLoader=true) {
     if (state.loading) return; state.loading=true; if(showLoader)status(t('vehicleTreasury.loading','جاري تحميل خزينة السيارة...'),'info');
-    try { state.data = await window.VehicleTreasuryService.load(filters()); fillTeams(); if (!filters().teamId && $('vehicleTreasuryTeam')?.value) state.data = await window.VehicleTreasuryService.load(filters()); renderSummary(); renderRows(); status(window.VehicleTreasuryService.getReadStatus()==='offline-cache'?t('vehicleTreasury.offline','يتم عرض آخر بيانات محفوظة دون اتصال.'): '', 'info'); }
+    try { state.data = await window.VehicleTreasuryService.load(filters()); fillCars(); if (!filters().carId && $('vehicleTreasuryTeam')?.value) state.data = await window.VehicleTreasuryService.load(filters()); renderSummary(); renderRows(); status(window.VehicleTreasuryService.getReadStatus()==='offline-cache'?t('vehicleTreasury.offline','يتم عرض آخر بيانات محفوظة دون اتصال.'): '', 'info'); }
     catch(e){ status(e.message||String(e),'error'); }
     finally { state.loading=false; }
   }
@@ -54,11 +83,11 @@
   function openExpense(row=null) {
     state.editing = row;
     const dialog = $('vehicleTreasuryExpenseDialog'); if(!dialog)return;
-    const team = row?.teamId || $('vehicleTreasuryTeam')?.value || '';
+    const team = row?.teamId || '';
     $('vehicleTreasuryExpenseId').value = row?.sourceId || row?.id || '';
-    $('vehicleTreasuryExpenseTeam').innerHTML = (state.data?.teams||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.carName||x.teamName)} — ${esc(x.teamName||'')}</option>`).join('');
-    $('vehicleTreasuryExpenseTeam').value = team;
-    $('vehicleTreasuryExpenseDate').value = row?.movementDate || new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    const expenseDate = row?.movementDate || new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+    $('vehicleTreasuryExpenseDate').value = expenseDate;
+    fillExpenseTeams(expenseDate, team);
     $('vehicleTreasuryExpenseDescription').value = row?.description || '';
     $('vehicleTreasuryExpenseAmount').value = row ? Math.abs(Number(row.amount||0)) : '';
     $('vehicleTreasuryExpenseNotes').value = row?.notes || '';
@@ -82,6 +111,7 @@
     $('vehicleTreasuryReset')?.addEventListener('click',()=>{['vehicleTreasuryFrom','vehicleTreasuryTo','vehicleTreasurySearch'].forEach(id=>{if($(id))$(id).value=''});load(false)});
     $('vehicleTreasuryAddExpense')?.addEventListener('click',()=>openExpense());
     $('vehicleTreasuryExpenseForm')?.addEventListener('submit',submitExpense);
+    $('vehicleTreasuryExpenseDate')?.addEventListener('change',e=>fillExpenseTeams(e.target.value,$('vehicleTreasuryExpenseTeam')?.value||''));
     $('vehicleTreasuryExpenseCancel')?.addEventListener('click',closeExpense);
     $('vehicleTreasuryExpenseClose')?.addEventListener('click',closeExpense);
     $('vehicleTreasuryBody')?.addEventListener('click',async e=>{

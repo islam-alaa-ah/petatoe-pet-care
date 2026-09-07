@@ -37,6 +37,32 @@
   let editingReturnView = "installationRequests";
   let editingScheduleSnapshot = null;
   let scheduleTeams = [], scheduleTechnicians = [];
+  let scheduleAssignmentLookupToken = 0;
+  function selectedScheduleTeam(){
+    const teamId=String($("newInstallationScheduleTeam")?.value||"");
+    return scheduleTeams.find(item=>String(item?.id||"")===teamId)||null;
+  }
+  async function syncNewScheduleGroomerFromTeam({overwrite=false}={}){
+    const teamInput=$("newInstallationScheduleTeam"),groomerInput=$("newInstallationScheduleTechnician");
+    if(!teamInput||!groomerInput)return;
+    const team=selectedScheduleTeam(),teamId=String(teamInput.value||""),hasTeam=Boolean(teamId),scheduledDate=String($("newInstallationScheduleDate")?.value||"");
+    const token=++scheduleAssignmentLookupToken;
+    groomerInput.readOnly=hasTeam;
+    groomerInput.setAttribute('aria-readonly',String(hasTeam));
+    groomerInput.title=hasTeam?appointmentT('appointmentNew.schedule.groomerFromTeam','The groomer is selected automatically from the selected team.'):'';
+    if(!hasTeam){if(overwrite)groomerInput.value="";return;}
+    let groomerName=String(team?.groomerName||"").trim();
+    if(scheduledDate&&window.InstallationsServiceSafe?.teamAssignmentForDate){
+      try{
+        const assignment=await window.InstallationsServiceSafe.teamAssignmentForDate(teamId,scheduledDate);
+        if(token!==scheduleAssignmentLookupToken||String(teamInput.value||"")!==teamId||String($("newInstallationScheduleDate")?.value||"")!==scheduledDate)return;
+        groomerName=String(assignment?.groomerName||groomerName).trim();
+      }catch(error){
+        console.warn('[Appointments] Historical team assignment lookup skipped:',error?.message||error);
+      }
+    }
+    if(overwrite)groomerInput.value=groomerName;
+  }
   const QUOTATION_PREFILL_KEY = "kyum:installation:quotation-prefill";
   let quotationPrefillPromise = null;
   let customerDefaultsSelectionToken = 0;
@@ -895,6 +921,7 @@
     if($("newInstallationScheduleTime")) $("newInstallationScheduleTime").value="";
     if($("newInstallationScheduleTeam")) $("newInstallationScheduleTeam").value="";
     if($("newInstallationScheduleTechnician")) $("newInstallationScheduleTechnician").value="";
+    syncNewScheduleGroomerFromTeam({overwrite:false});
     recalculateServices();
     $("newInstallationRequestHeading").textContent = "إضافة موعد جديد";
     $("newInstallationRequestNote").textContent = "سجّل بيانات العميل والخدمات والحيوان والتحصيل. ينتقل الموعد بعد الحفظ إلى المواعيد بحالة بانتظار المراجعة.";
@@ -941,6 +968,7 @@
         [scheduleTeams,scheduleTechnicians]=await Promise.all([window.InstallationsServiceSafe.scheduleTeams(),window.InstallationsServiceSafe.technicianNameSuggestions()]);
         const team=$("newInstallationScheduleTeam");if(team){const current=team.value;team.innerHTML='<option value="">تحدد لاحقًا</option>'+scheduleTeams.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}${x.carName?` — ${esc(x.carName)}`:''}</option>`).join('');team.value=current;}
         const dl=$("newInstallationScheduleTechnicianOptions");if(dl)dl.innerHTML=scheduleTechnicians.map(x=>`<option value="${esc(x)}"></option>`).join('');
+        syncNewScheduleGroomerFromTeam({overwrite:false});
       }catch(error){console.warn('[Appointments] Optional schedule options unavailable:',error.message)}
       if (!editingRequestId) {
         if (!preservePrefill) resetNewForm({ exitEdit: true });
@@ -982,6 +1010,8 @@
 
     window.addEventListener("kyum-permissions-refreshed", () => syncNewRequestPermissionState());
     window.addEventListener("kyum-permission-engine-ready", () => syncNewRequestPermissionState());
+    $("newInstallationScheduleTeam")?.addEventListener("change",()=>{void syncNewScheduleGroomerFromTeam({overwrite:true})});
+    $("newInstallationScheduleDate")?.addEventListener("change",()=>{void syncNewScheduleGroomerFromTeam({overwrite:true})});
 
     window.addEventListener("kyum-view-changed", event => {
       if (event.detail?.view === "installationRequests") load();

@@ -9,7 +9,7 @@ const CATALOG=path.join(ROOT,'assets/js/localization-center.js');
 const HTML=path.join(ROOT,'index.html');
 const BASELINE=path.join(ROOT,'scripts/localization-coverage-baseline.json');
 const AR=/[\u0600-\u06FF]/;
-const ALLOWED_PREFIXES=new Set(['common','shared','sidebar','auth','dashboard','customers','followups','contracts','invoices','users','permissions','activityLog','backups','systemHealth','diagnostics','performance','syncRecovery','systemSettings','aboutApp','pwa','salaryStatement','commissionStatement','commission','payroll','appointments','appointmentNew','execution','vehicleTreasury','seaVibePayroll','seaVibe','translationCenter']);
+const ALLOWED_PREFIXES=new Set(['common','shared','sidebar','auth','dashboard','customers','followups','contracts','invoices','users','permissions','activityLog','backups','systemHealth','diagnostics','performance','syncRecovery','systemSettings','aboutApp','pwa','salaryStatement','commissionStatement','commission','payroll','appointments','appointmentNew','appointmentSettings','execution','vehicleTreasury','seaVibePayroll','seaVibe','translationCenter']);
 
 function read(file){return fs.readFileSync(file,'utf8');}
 function listFiles(dir,ext='.js'){const out=[];for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);if(entry.isDirectory())out.push(...listFiles(full,ext));else if(entry.isFile()&&entry.name.endsWith(ext))out.push(full);}return out;}

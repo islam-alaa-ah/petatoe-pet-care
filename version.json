@@ -1,19 +1,19 @@
 {
-  "version": "18.56.63",
-  "build": 185663,
+  "version": "18.56.64",
+  "build": 185664,
   "forceUpdate": true,
-  "releaseDate": "2026-09-07",
-  "title": "Localization L1 — Core Shell & System Administration R44R20",
+  "releaseDate": "2026-09-08",
+  "title": "تاريخ ربط فرق المواعيد والعمولات — R44R21",
   "notes": [
-    "استكمال ترجمة تسجيل الدخول والهيكل الأساسي وشاشات إدارة النظام.",
-    "توحيد النصوص الديناميكية والتواريخ وحالات التشخيص مع اللغة الحالية دون تغيير منطق الأعمال.",
-    "إضافة بوابة تغطية L1 مع الحفاظ على أنظمة المزامنة والصلاحيات وR44 Pruning بدون تغيير."
+    "حفظ تاريخ ربط الجرومر والسائق والسيارة حسب تاريخ السريان، بحيث لا يعيد تغيير الفريق تفسير الفترات السابقة.",
+    "تطبيق الربط التاريخي على المواعيد والتنفيذ وتقارير العمولات وخزينة السيارة حسب تاريخ العملية.",
+    "تحديد الجرومر تلقائيًا من الفرقة وتاريخ الموعد مع الحفاظ على الصلاحيات والمزامنة وR44 Pruning بدون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-63-localization-l1-r44r20-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r20.title",
+  "cacheToken": "petatoe-pwa-18-56-64-team-assignment-history-r44r21-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r21.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r20.note1",
-    "pwa.update.release.r44r20.note2",
-    "pwa.update.release.r44r20.note3"
+    "pwa.update.release.r44r21.note1",
+    "pwa.update.release.r44r21.note2",
+    "pwa.update.release.r44r21.note3"
   ]
 }

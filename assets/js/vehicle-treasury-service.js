@@ -2,13 +2,13 @@
   'use strict';
 
   const LEGACY_CACHE_KEY = 'petatoe-vehicle-treasury-cache-v1';
-  const CACHE_PREFIX = 'vehicle-treasury:workspace:v2:';
-  const SCOPE_CACHE_KEY = 'vehicle-treasury:scope:v2';
+  const CACHE_PREFIX = 'vehicle-treasury:workspace:v3:';
+  const SCOPE_CACHE_KEY = 'vehicle-treasury:scope:v3';
   const CACHE_TTL_MS = 15 * 60 * 1000;
   const CACHE_STALE_MAX_MS = 365 * 24 * 60 * 60 * 1000;
-  const CACHE_SCHEMA_VERSION = 2;
+  const CACHE_SCHEMA_VERSION = 3;
 
-  let snapshot = { teams: [], movements: [], summary: null, selectedTeamId: '', from: '', to: '', search: '' };
+  let snapshot = { cars: [], teams: [], teamAssignments: [], movements: [], summary: null, selectedCarId: '', from: '', to: '', search: '' };
   let readStatus = 'idle';
 
   // The old cache was global across users. Never migrate it into a user namespace because
@@ -26,6 +26,7 @@
     if (ok !== true) throw new Error('لا توجد صلاحية لهذه العملية في خزينة السيارة.');
   };
   const num = value => Number(value || 0);
+  const text = (key, fallback, vars={}) => { const value=window.PetatoeLocalization?.t?.(key,vars); return value&&value!==`[${key}]`?value:(fallback||key); };
   const localDate = () => {
     const d = new Date();
     const offset = d.getTimezoneOffset();
@@ -35,16 +36,18 @@
     ? structuredClone(value)
     : JSON.parse(JSON.stringify(value));
   const normalizeFilters = filters => ({
-    teamId: String(filters?.teamId || filters?.selectedTeamId || '').trim(),
+    carId: String(filters?.carId || filters?.selectedCarId || '').trim(),
     from: String(filters?.from || '').trim(),
     to: String(filters?.to || '').trim(),
     search: String(filters?.search || '').trim()
   });
   const normalize = raw => ({
+    cars: Array.isArray(raw?.cars) ? raw.cars : [],
     teams: Array.isArray(raw?.teams) ? raw.teams : [],
+    teamAssignments: Array.isArray(raw?.teamAssignments) ? raw.teamAssignments : [],
     movements: Array.isArray(raw?.movements) ? raw.movements : [],
     summary: raw?.summary && typeof raw.summary === 'object' ? raw.summary : null,
-    selectedTeamId: String(raw?.selectedTeamId || ''),
+    selectedCarId: String(raw?.selectedCarId || ''),
     from: String(raw?.from || ''),
     to: String(raw?.to || ''),
     search: String(raw?.search || '')
@@ -64,14 +67,14 @@
     throw new Error('تعذر تحديد المستخدم الحالي لعزل بيانات خزينة السيارة.');
   }
 
-  function scopeHash(teamIds) {
-    const ids = [...new Set((teamIds || []).filter(Boolean).map(String))].sort();
-    return window.KYUMSmartCache?.hashValue?.(ids) || `teams:${ids.join(',')}`;
+  function scopeHash(scopeItems) {
+    const ids = [...new Set((scopeItems || []).filter(Boolean).map(String))].sort();
+    return window.KYUMSmartCache?.hashValue?.(ids) || `scope:${ids.join(',')}`;
   }
 
   function filterToken(filters) {
     const f = normalizeFilters(filters);
-    return [f.teamId || '*', f.from || '*', f.to || '*', f.search || '*']
+    return [f.carId || '*', f.from || '*', f.to || '*', f.search || '*']
       .map(value => encodeURIComponent(String(value).toLowerCase()))
       .join('|');
   }
@@ -91,15 +94,18 @@
     return hit?.hit && hit.data?.hash ? hit.data : null;
   }
 
-  async function reconcileScope(ns, teams) {
-    if (!window.KYUMSmartCache) return scopeHash((teams || []).map(x => x?.id));
-    const teamIds = [...new Set((teams || []).map(x => x?.id).filter(Boolean).map(String))].sort();
-    const hash = scopeHash(teamIds);
+  async function reconcileScope(ns, value) {
+    const carIds = [...new Set((value?.cars || []).map(x => x?.id).filter(Boolean).map(String))].sort();
+    const teamIds = [...new Set((value?.teams || []).map(x => x?.id).filter(Boolean).map(String))].sort();
+    const assignmentTokens = [...new Set((value?.teamAssignments || []).map(x => [x?.teamId,x?.carId,x?.effectiveFrom,x?.effectiveTo].join(':')).filter(Boolean))].sort();
+    const tokens = [...carIds.map(x => `car:${x}`),...teamIds.map(x => `team:${x}`),...assignmentTokens.map(x => `assignment:${x}`)];
+    if (!window.KYUMSmartCache) return scopeHash(tokens);
+    const hash = scopeHash(tokens);
     const previous = await readScope(ns);
     if (previous?.hash && previous.hash !== hash) {
       await window.KYUMSmartCache.removePrefix(CACHE_PREFIX, { namespace: ns });
     }
-    await window.KYUMSmartCache.set(SCOPE_CACHE_KEY, { hash, teamIds }, {
+    await window.KYUMSmartCache.set(SCOPE_CACHE_KEY, { hash, carIds, teamIds }, {
       namespace: ns,
       ttlMs: CACHE_TTL_MS,
       staleMaxMs: CACHE_STALE_MAX_MS,
@@ -113,7 +119,7 @@
     if (!window.KYUMSmartCache) return;
     const ns = await namespace();
     const hash = source === 'supabase'
-      ? await reconcileScope(ns, value?.teams || [])
+      ? await reconcileScope(ns, value)
       : (await readScope(ns))?.hash;
     if (!hash) return;
     await window.KYUMSmartCache.set(workspaceKey(filters, hash), value, {
@@ -174,7 +180,7 @@
 
   function snapshotFilters() {
     return normalizeFilters({
-      teamId: snapshot.selectedTeamId,
+      carId: snapshot.selectedCarId,
       from: snapshot.from,
       to: snapshot.to,
       search: snapshot.search
@@ -183,7 +189,7 @@
 
   function movementMatchesFilters(row, filters) {
     const f = normalizeFilters(filters);
-    if (f.teamId && String(row?.teamId || '') !== f.teamId) return false;
+    if (f.carId && String(row?.carId || '') !== f.carId) return false;
     const date = String(row?.movementDate || '');
     if (f.from && date && date < f.from) return false;
     if (f.to && date && date > f.to) return false;
@@ -203,12 +209,28 @@
     return data;
   }
 
+  function assignmentForDate(teamId, businessDate, source = snapshot) {
+    const team = String(teamId || '');
+    const date = String(businessDate || '').slice(0,10);
+    if (!team || !date) return null;
+    const rows = (source?.teamAssignments || [])
+      .filter(row => String(row?.teamId || '') === team)
+      .sort((a,b) => String(b?.effectiveFrom || '').localeCompare(String(a?.effectiveFrom || '')));
+    return rows.find(row => {
+      const from = String(row?.effectiveFrom || '');
+      const to = String(row?.effectiveTo || '');
+      return from && from <= date && (!to || to >= date);
+    }) || null;
+  }
+
   async function applyOptimisticExpense(payload, localId) {
     const next = normalize(clone(snapshot));
     const filters = snapshotFilters();
     const existingIndex = next.movements.findIndex(row => String(row?.sourceId || row?.id || '') === String(localId));
     const existing = existingIndex >= 0 ? next.movements[existingIndex] : null;
-    const team = next.teams.find(row => String(row?.id || '') === String(payload.teamId)) || {};
+    const assignment = assignmentForDate(payload.teamId, payload.date, next)
+      || next.teams.find(row => String(row?.id || '') === String(payload.teamId))
+      || {};
     const row = {
       ...(existing || {}),
       id: localId,
@@ -220,9 +242,10 @@
       description: payload.description,
       amount: -Math.abs(num(payload.amount)),
       teamId: payload.teamId,
-      teamName: team.teamName || existing?.teamName || '',
-      carName: team.carName || existing?.carName || '',
-      plateNumber: team.plateNumber || existing?.plateNumber || '',
+      teamName: assignment.teamName || existing?.teamName || '',
+      carId: assignment.carId || payload.carId || existing?.carId || '',
+      carName: assignment.carName || payload.carName || existing?.carName || '',
+      plateNumber: assignment.plateNumber || payload.plateNumber || existing?.plateNumber || '',
       notes: payload.notes,
       editable: true,
       pendingSync: true,
@@ -267,14 +290,18 @@
     }
 
     try {
-      const { data, error } = await db().rpc('get_vehicle_treasury_workspace', {
-        p_team_id: f.teamId || null,
+      const { data, error } = await db().rpc('get_vehicle_treasury_workspace_v2', {
+        p_car_id: f.carId || null,
         p_from: f.from || null,
         p_to: f.to || null,
         p_search: f.search || null
       });
-      if (error) throw new Error('تعذر تحميل خزينة السيارة: ' + error.message);
-      const enriched = await attachExpenseVersions({ ...(data || {}), selectedTeamId: f.teamId, from: f.from, to: f.to, search: f.search });
+      if (error) {
+        const message = String(error.message || error);
+        if (/get_vehicle_treasury_workspace_v2|schema cache/i.test(message)) throw new Error(text('vehicleTreasury.error.historyMigrationRequired','Run the team assignment history update first.'));
+        throw new Error(text('vehicleTreasury.error.load','Unable to load Vehicle Treasury: {error}',{error:message}));
+      }
+      const enriched = await attachExpenseVersions({ ...(data || {}), selectedCarId: f.carId, from: f.from, to: f.to, search: f.search });
       snapshot = enriched;
       await persistCache(snapshot, f, 'supabase');
       readStatus = 'network';
@@ -391,6 +418,9 @@
     const payload = {
       id: record?.id || null,
       teamId: String(record?.teamId || '').trim(),
+      carId: String(record?.carId || '').trim(),
+      carName: String(record?.carName || '').trim(),
+      plateNumber: String(record?.plateNumber || '').trim(),
       date: String(record?.date || localDate()).trim(),
       description: String(record?.description || '').trim(),
       amount: num(record?.amount),
@@ -400,6 +430,12 @@
     };
     if (!payload.teamId) throw new Error('اختر السيارة / الفرقة.');
     if (!payload.date) throw new Error('تاريخ الصرف مطلوب.');
+    const assignment = assignmentForDate(payload.teamId, payload.date);
+    if (assignment) {
+      payload.carId = String(assignment.carId || payload.carId || '');
+      payload.carName = String(assignment.carName || payload.carName || '');
+      payload.plateNumber = String(assignment.plateNumber || payload.plateNumber || '');
+    }
     if (!payload.description) throw new Error('بيان المصروف مطلوب.');
     if (!(payload.amount > 0)) throw new Error('قيمة المصروف يجب أن تكون أكبر من صفر.');
 

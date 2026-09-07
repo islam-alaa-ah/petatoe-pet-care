@@ -1,8 +1,8 @@
 {
-  "phase": "R44R20",
-  "purpose": "Phase-by-phase non-increase baseline after L1 Core Shell & System Administration localization; future localization waves must reduce or preserve this remaining candidate debt without scope regressions.",
+  "phase": "R44R21",
+  "purpose": "Phase-by-phase non-increase baseline after effective-dated team assignment history; future localization waves must reduce or preserve this remaining candidate debt without scope regressions.",
   "inventory": {
-    "catalogKeys": 2134,
+    "catalogKeys": 2169,
     "staticHtml": {
       "textCandidates": 887,
       "attributeCandidates": 50,
@@ -40,7 +40,7 @@
       }
     },
     "runtimeArabic": {
-      "total": 2512,
+      "total": 2504,
       "byFile": {
         "assets/js/app.js": 793,
         "assets/js/customer-excel-actions-hotfix.js": 12,
@@ -62,10 +62,10 @@
         "assets/js/installation-execution.js": 10,
         "assets/js/installation-operations-reports.js": 127,
         "assets/js/installation-scheduling.js": 80,
-        "assets/js/installation-settings-management.js": 67,
+        "assets/js/installation-settings-management.js": 66,
         "assets/js/installations-module.js": 127,
         "assets/js/installations-service-contract.js": 4,
-        "assets/js/installations-service.js": 251,
+        "assets/js/installations-service.js": 245,
         "assets/js/mobile.js": 93,
         "assets/js/native.js": 1,
         "assets/js/notification-center-service.js": 19,
@@ -87,7 +87,7 @@
         "assets/js/supabase-client.js": 4,
         "assets/js/system-health-service.js": 1,
         "assets/js/users-service.js": 1,
-        "assets/js/vehicle-treasury-service.js": 23,
+        "assets/js/vehicle-treasury-service.js": 22,
         "assets/js/vehicle-treasury.js": 10
       }
     }
