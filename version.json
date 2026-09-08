@@ -1,19 +1,19 @@
 {
-  "version": "18.56.67",
-  "build": 185667,
+  "version": "18.56.68",
+  "build": 185668,
   "forceUpdate": true,
-  "releaseDate": "2026-09-08",
-  "title": "تجاوز ربط فرق المواعيد للسوبر أدمن — R44R24",
+  "releaseDate": "2026-09-09",
+  "title": "استعادة ربط فرق أغسطس ومنع التاريخ الافتراضي — R44R25",
   "notes": [
-    "السماح للسوبر أدمن بتعديل ربط فريق موجود حتى عند وجود الجرومر أو السائق أو السيارة في فريق آخر خلال نفس الفترة.",
-    "استمرار منع تضارب الموارد لباقي المستخدمين وعند إنشاء فريق جديد.",
-    "لا تغيير على سلامة الفترات التاريخية داخل نفس الفريق أو الصلاحيات العامة أو العمولات أو خزينة السيارة."
+    "استعادة ربط فرق شهر أغسطس 2026 بالكامل اعتمادًا على أرقام الفواتير التاريخية المؤكدة دون تعديل الفواتير أو الرواتب المصروفة.",
+    "إبقاء سبتمبر وما بعده كما هو مع استمرار احتساب المواعيد والتقارير والعمولات حسب تاريخ العملية.",
+    "تاريخ سريان ربط الفريق أصبح إلزاميًا ولا يتم ملؤه بتاريخ اليوم تلقائيًا."
   ],
-  "cacheToken": "petatoe-pwa-18-56-67-super-admin-team-assignment-override-r44r24-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r24.title",
+  "cacheToken": "petatoe-pwa-18-56-68-august-team-history-recovery-r44r25-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r25.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r24.note1",
-    "pwa.update.release.r44r24.note2",
-    "pwa.update.release.r44r24.note3"
+    "pwa.update.release.r44r25.note1",
+    "pwa.update.release.r44r25.note2",
+    "pwa.update.release.r44r25.note3"
   ]
 }
