@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.65",
-    "build": 185665,
+    "version": "18.56.66",
+    "build": 185666,
     "date": "2026-09-08"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -87,7 +87,8 @@
       "supabase/migrations/phase_p5_13_8_72_r44r19_localization_architecture_coverage.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r20_localization_l1_core_shell_system_admin.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r21_team_assignment_history.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r22_team_assignment_cutover.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r22_team_assignment_cutover.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r23_zero_value_executed_service_invoice.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -98,8 +99,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 246,
-    "totalBytes": 2879821
+    "sqlFileCount": 247,
+    "totalBytes": 2890205
   },
   "orderingHazards": {
     "examples": [
@@ -1276,6 +1277,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r22_team_assignment_cutover.sql",
       "sha256": "d30a1e449f97e52f63c9bf5869d64c86982e00fa7079d5a1c0602df78135fafd",
       "bytes": 19574
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r23_zero_value_executed_service_invoice.sql",
+      "sha256": "b2590d9e35953df7e2be7703d343a7b31bddb52e63cc9115bbc940632b9960e2",
+      "bytes": 10384
     },
     {
       "path": "supabase/migrations/phase_p5_13_8_72_r44r2_sea_vibe_zawel_controlled_historical_backfill.sql",
