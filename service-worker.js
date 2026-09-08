@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-66-zero-value-invoice-r44r23-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-67-super-admin-team-assignment-override-r44r24-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
