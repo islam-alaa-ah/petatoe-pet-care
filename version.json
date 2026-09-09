@@ -1,19 +1,19 @@
 {
-  "version": "18.56.72",
-  "build": 185672,
+  "version": "18.56.73",
+  "build": 185673,
   "forceUpdate": true,
   "releaseDate": "2026-09-10",
-  "title": "تحسين شاشة بيانات التواصل — R44R29",
+  "title": "تحسين أيقونات وتنسيق شاشة بيانات التواصل — R44R30",
   "notes": [
-    "توحيد أيقونات شاشة بيانات التواصل مع الهوية البصرية المعتمدة وإزالة الرسائل الإرشادية غير المطلوبة.",
-    "عرض جميع أرقام الشاشة بالأرقام الإنجليزية 0-9 مع تقويم ميلادي صريح لتاريخ الشاشة على الموبايل وباقي المقاسات.",
-    "لا تغيير على بيانات الشاشة أو صلاحياتها أو الحفظ أو منطق المواعيد أو الملفات المحمية."
+    "اعتماد أيقونات زجاجية احترافية بهوية PETATOE مع Instagram وWhatsApp والاتصال والعناصر التشغيلية المعتمدة.",
+    "إصلاح عرض تاريخ شاشة بيانات التواصل بصيغة ميلادية ثابتة DD/MM/YYYY على الديسكتوب والموبايل.",
+    "ضمان عرض وإدخال جميع أرقام الشاشة بالأرقام الإنجليزية 0-9 دون تغيير القيم المخزنة أو منطق الحفظ."
   ],
-  "cacheToken": "petatoe-pwa-18-56-72-contact-data-visual-numeric-r44r29-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r29.title",
+  "cacheToken": "petatoe-pwa-18-56-73-contact-data-glass-icons-latin-r44r30-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r30.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r29.note1",
-    "pwa.update.release.r44r29.note2",
-    "pwa.update.release.r44r29.note3"
+    "pwa.update.release.r44r30.note1",
+    "pwa.update.release.r44r30.note2",
+    "pwa.update.release.r44r30.note3"
   ]
 }

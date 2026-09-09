@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-72-contact-data-visual-numeric-r44r29-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-73-contact-data-glass-icons-latin-r44r30-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
