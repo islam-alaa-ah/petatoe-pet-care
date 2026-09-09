@@ -471,9 +471,51 @@ html[data-theme="dark"] .installation-completion-dialog .installation-invoice-no
   html[data-theme="dark"] #installationCompletionDialog select option{background:#0d223e;color:#f7fbff}
 }
 
-/* P5.12.3 — Desktop completion specialized visual owner. */
+/* P5.12.3 — Desktop completion specialized visual owner.
+   The dialog lives outside #appView, so it owns the desktop theme variables it consumes. */
 @media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
-  #installationCompletionDialog .installation-completion-body{background:var(--dialog-inner-surface,linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft)))}
+  #installationCompletionDialog{
+    --desk-glass:rgba(249,252,255,.76);
+    --desk-glass-strong:rgba(255,255,255,.94);
+    --desk-glass-soft:rgba(239,247,255,.86);
+    --desk-line:rgba(74,144,232,.24);
+    --desk-blue:#2f83ff;
+    --desk-blue-deep:#104fae;
+    --desk-gold:#d5a132;
+    --desk-text:#10233f;
+    --desk-muted:#6b7f9b;
+    --desk-shadow:0 18px 44px rgba(20,58,104,.13),0 5px 16px rgba(47,131,255,.055),inset 0 1px 0 rgba(255,255,255,.94);
+    --dialog-shell-surface:radial-gradient(circle at 90% -12%,rgba(47,131,255,.12),transparent 36%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));
+    --dialog-chrome-surface:rgba(255,255,255,.94);
+    --dialog-inner-surface:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft));
+  }
+  html[data-theme="dark"] #installationCompletionDialog{
+    --desk-glass:rgba(8,25,48,.80);
+    --desk-glass-strong:rgba(6,20,40,.95);
+    --desk-glass-soft:rgba(12,34,63,.88);
+    --desk-line:rgba(92,158,239,.25);
+    --desk-blue:#338fff;
+    --desk-blue-deep:#0c59bf;
+    --desk-gold:#d9a837;
+    --desk-text:#f7fbff;
+    --desk-muted:#9fb1c8;
+    --desk-shadow:0 20px 48px rgba(0,0,0,.30),0 0 24px rgba(47,140,255,.045),inset 0 1px 0 rgba(255,255,255,.04);
+    --dialog-shell-surface:radial-gradient(circle at 90% -12%,rgba(51,143,255,.14),transparent 36%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass));
+    --dialog-chrome-surface:rgba(6,20,40,.95);
+    --dialog-inner-surface:linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft));
+  }
+  #installationCompletionDialog .dialog-shell{
+    border:1px solid var(--desk-line);
+    color:var(--desk-text);
+    background:var(--dialog-shell-surface);
+    box-shadow:var(--desk-shadow);
+  }
+  #installationCompletionDialog :is(.dialog-header,.dialog-actions){
+    background:var(--dialog-chrome-surface);
+    color:var(--desk-text);
+    border-color:var(--desk-line);
+  }
+  #installationCompletionDialog .installation-completion-body{background:var(--dialog-inner-surface);color:var(--desk-text)}
   #installationCompletionView .installation-completion-card,#installationCompletionDialog :is(.installation-completion-summary>div,.installation-invoice-section,.installation-evidence-section){border:1px solid var(--desk-line);border-radius:18px;background:radial-gradient(circle at 10% 112%,rgba(47,131,255,.10),transparent 46%),linear-gradient(145deg,var(--desk-glass-strong),var(--desk-glass-soft));box-shadow:var(--desk-shadow)}
   #installationCompletionDialog .installation-quantity-summary-card{border-color:rgba(217,168,55,.42);background:linear-gradient(145deg,color-mix(in srgb,var(--desk-gold) 8%,var(--desk-glass-strong)),var(--desk-glass-soft));box-shadow:0 10px 24px rgba(217,168,55,.08)}
 }

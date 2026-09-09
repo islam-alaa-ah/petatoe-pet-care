@@ -1,19 +1,19 @@
 {
-  "version": "18.56.69",
-  "build": 185669,
+  "version": "18.56.70",
+  "build": 185670,
   "forceUpdate": true,
   "releaseDate": "2026-09-09",
-  "title": "توحيد مظهر تحويل المواعيد المجانية إلى الفاتورة — R44R26",
+  "title": "إصلاح نطاق متغيرات نافذة تحويل المواعيد — R44R27",
   "notes": [
-    "إصلاح مظهر نافذة تحويل الكمية المنفذة إلى فاتورة للمواعيد المجانية العالقة لتستخدم نفس السطح البصري المقروء المعتمد في تأكيد المواعيد.",
-    "لا تغيير على احتساب الخدمة المجانية أو الفاتورة بقيمة 0.00 أو الكميات أو التحصيل أو الصلاحيات.",
-    "التعديل محصور في مالك CSS الخاص بتأكيد المواعيد على Desktop مع بقاء Tablet وMobile بدون تغيير."
+    "إصلاح السبب الفعلي لشفافية جسم نافذة تحويل الكمية المنفذة إلى فاتورة على Desktop عبر تعريف متغيرات الهوية محليًا لأن النافذة تقع خارج #appView.",
+    "لا تغيير على احتساب المواعيد المجانية أو الفاتورة بقيمة 0.00 أو الكميات أو التحصيل أو الصلاحيات أو أي Business Logic.",
+    "التعديل محصور في المالك البصري لنافذة تأكيد المواعيد على Desktop؛ Tablet وMobile وملفات المزامنة والاحتفاظ دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-69-zero-value-completion-dialog-surface-r44r26-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r26.title",
+  "cacheToken": "petatoe-pwa-18-56-70-completion-dialog-theme-scope-r44r27-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r27.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r26.note1",
-    "pwa.update.release.r44r26.note2",
-    "pwa.update.release.r44r26.note3"
+    "pwa.update.release.r44r27.note1",
+    "pwa.update.release.r44r27.note2",
+    "pwa.update.release.r44r27.note3"
   ]
 }

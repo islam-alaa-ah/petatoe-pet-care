@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-69-zero-value-completion-dialog-surface-r44r26-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-70-completion-dialog-theme-scope-r44r27-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
