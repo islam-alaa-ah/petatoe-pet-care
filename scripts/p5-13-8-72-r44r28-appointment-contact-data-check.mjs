@@ -1,0 +1,62 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+
+const read=p=>fs.readFileSync(p,'utf8');
+const exists=p=>fs.existsSync(p);
+const html=read('index.html');
+const app=read('assets/js/app.js');
+const ui=read('assets/js/appointment-contact-data.js');
+const service=read('assets/js/appointment-contact-data-service.js');
+const css=read('assets/css/appointment-contact-data.css');
+const localization=read('assets/js/localization-center.js');
+const migrationPath='supabase/migrations/phase_p5_13_8_72_r44r28_appointment_contact_daily_data.sql';
+const migration=read(migrationPath);
+const version=JSON.parse(read('version.json'));
+const pkg=JSON.parse(read('package.json'));
+const manifest=JSON.parse(read('supabase/migration-manifest.json'));
+const policy=JSON.parse(read('enterprise-offline-policy.json'));
+const sw=read('service-worker.js');
+const pwa=read('assets/js/pwa.js');
+
+const checks=[];
+const check=(name,ok)=>checks.push([name,Boolean(ok)]);
+
+const navOverview=html.indexOf('data-view="installationsOverview"');
+const navContact=html.indexOf('data-view="installationContactData"');
+const navNew=html.indexOf('data-view="installationRequestNew"');
+check('approved navigation order dashboard -> contact data -> add appointment',navOverview>=0&&navContact>navOverview&&navNew>navContact);
+check('contact view exists exactly once',(html.match(/id="installationContactDataView"/g)||[]).length===1);
+check('approved seven numeric inputs exist',['appointmentContactSocialMedia','appointmentContactWebsiteAppointments','appointmentContactNewCustomers','appointmentContactWhatsapp','appointmentContactCalls','appointmentContactInventorySales','appointmentContactAppointmentsCreated'].every(id=>html.includes(`id="${id}"`)));
+check('inventory sales replaces website payment',html.includes('appointments.contact.inventorySales.title')&&!html.includes('appointments.contact.websitePayment'));
+check('automatic contact total UI exists',html.includes('id="appointmentContactTotalInteractions"')&&ui.includes('fields.socialMedia,fields.whatsapp,fields.calls'));
+check('single-date load and save service exists',service.includes("const TABLE='appointment_contact_daily_data'")&&service.includes(".eq('work_date',workDate).maybeSingle()")&&service.includes('saveForDate'));
+check('screen actions are permission-owned',service.includes("const SCREEN='installationContactData'")&&service.includes("requirePermission('view')")&&service.includes("existing?'edit':'add'"));
+check('online-only behavior is explicit',service.includes('navigator.onLine===false')&&policy.domains?.appointment_contact_data?.status==='accepted_online_only');
+check('new canonical CSS owner exists',exists('assets/css/appointment-contact-data.css')&&css.includes('R44R28 — Appointment Contact Daily Data canonical owner'));
+check('no important overrides in new CSS',!css.includes('!important'));
+check('responsive coverage exists',css.includes('@media (max-width:900px)')&&css.includes('@media (max-width:720px)')&&css.includes('@media (max-width:430px)'));
+check('dark mode coverage exists',css.includes('html[data-theme="dark"]'));
+check('view registered in app routing',app.includes('installationContactData: document.getElementById("installationContactDataView")'));
+check('localized page metadata registered',app.includes('installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"]'));
+check('fallback localization contains screen and inventory keys',localization.includes('sidebar.appointmentContactData')&&localization.includes('appointments.contact.inventorySales.title'));
+check('release localization exists',["title","note1","note2","note3"].every(k=>localization.includes(`pwa.update.release.r44r28.${k}`)));
+check('migration creates one-record-per-date table',migration.includes('create table if not exists public.appointment_contact_daily_data')&&migration.includes('work_date date primary key'));
+check('migration enforces non-negative metrics',(migration.match(/check\([^\n]+ >= 0\)/g)||[]).length>=7);
+check('migration registers screen and approved order',migration.includes("values ('installationContactData','إضافة بيانات التواصل','إدارة المواعيد',66,true)")&&migration.includes("screen_key='installationsOverview'")&&migration.includes("screen_key='installationRequestNew'"));
+check('migration grants only view/add/edit to super admin',migration.includes("'installationContactData',true,true,true,false,false"));
+check('RLS is permission-owned',migration.includes('alter table public.appointment_contact_daily_data enable row level security')&&migration.includes("has_screen_permission('installationContactData','view')")&&migration.includes("has_screen_permission('installationContactData','add')")&&migration.includes("has_screen_permission('installationContactData','edit')"));
+check('migration has no destructive table operation',!/\b(drop\s+table|truncate\s+table|delete\s+from\s+public\.appointment_contact_daily_data)\b/i.test(migration));
+check('migration has no RLS/role widening grants',!migration.includes('grant all')&&!migration.includes('to anon'));
+check('service and UI are included in app shell',sw.includes('./assets/js/appointment-contact-data-service.js')&&sw.includes('./assets/js/appointment-contact-data.js')&&sw.includes('./assets/css/appointment-contact-data.css'));
+check('release version/build R44R28',version.version==='18.56.71'&&Number(version.build)===185671&&String(version.cacheToken||'').includes('r44r28'));
+check('package version unified',pkg.version===version.version);
+check('manifest release unified',manifest.release?.version===version.version&&Number(manifest.release?.build)===Number(version.build));
+check('manifest recent tail includes R44R28',manifest.policy?.certifiedRecentTailOrder?.includes(migrationPath));
+check('index cache-bust unified',html.includes('appointment-contact-data.css?v=18.56.71')&&!html.includes('?v=18.56.70'));
+check('PWA current version unified',pwa.includes('const CURRENT_VERSION = "18.56.71";'));
+check('service worker cache token unified',sw.includes(version.cacheToken));
+
+let fail=0;
+for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} - ${name}`);if(!ok)fail++;}
+console.log(`R44R28 appointment contact data certification: ${checks.length-fail}/${checks.length} PASS`);
+if(fail)process.exit(1);

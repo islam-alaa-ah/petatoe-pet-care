@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-70-completion-dialog-theme-scope-r44r27-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-71-appointment-contact-data-r44r28-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -25,6 +25,7 @@ const CORE_APP_SHELL = [
   "./assets/css/installation-scheduling.css",
   "./assets/css/installation-execution.css",
   "./assets/css/installation-completion.css",
+  "./assets/css/appointment-contact-data.css",
   "./assets/css/installation-operations-reports.css",
   "./assets/css/installation-dashboard-settings.css",
   "./assets/css/mobile-theme-canonical.css",
@@ -60,6 +61,7 @@ const CORE_APP_SHELL = [
   "./assets/js/followups-service.js",
   "./assets/js/quotations-service.js",
   "./assets/js/installations-service.js",
+  "./assets/js/appointment-contact-data-service.js",
   "./assets/js/sales-invoices.js",
   "./assets/js/vehicle-treasury.js",
   "./assets/js/payroll.js",
@@ -75,6 +77,7 @@ const CORE_APP_SHELL = [
   "./assets/js/customer-excel-actions-hotfix.js",
   "./assets/js/notification-center.js",
   "./assets/js/installations-module.js",
+  "./assets/js/appointment-contact-data.js",
   "./assets/js/installation-scheduling.js",
   "./assets/js/installation-execution.js",
   "./assets/js/installation-completion.js",

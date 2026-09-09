@@ -1,19 +1,19 @@
 {
-  "version": "18.56.70",
-  "build": 185670,
+  "version": "18.56.71",
+  "build": 185671,
   "forceUpdate": true,
-  "releaseDate": "2026-09-09",
-  "title": "إصلاح نطاق متغيرات نافذة تحويل المواعيد — R44R27",
+  "releaseDate": "2026-09-10",
+  "title": "إضافة شاشة بيانات التواصل اليومية — R44R28",
   "notes": [
-    "إصلاح السبب الفعلي لشفافية جسم نافذة تحويل الكمية المنفذة إلى فاتورة على Desktop عبر تعريف متغيرات الهوية محليًا لأن النافذة تقع خارج #appView.",
-    "لا تغيير على احتساب المواعيد المجانية أو الفاتورة بقيمة 0.00 أو الكميات أو التحصيل أو الصلاحيات أو أي Business Logic.",
-    "التعديل محصور في المالك البصري لنافذة تأكيد المواعيد على Desktop؛ Tablet وMobile وملفات المزامنة والاحتفاظ دون تغيير."
+    "إضافة شاشة إضافة بيانات التواصل داخل إدارة المواعيد بين لوحة المواعيد وإضافة موعد جديد بنفس الهوية المعتمدة.",
+    "تسجيل سبعة مؤشرات يومية مع إجمالي تواصل تلقائي وسجل واحد لكل تاريخ وصلاحيات مستقلة.",
+    "دعم العربية والإنجليزية وLight/Dark وDesktop/Tablet/Mobile دون تغيير منطق المواعيد أو الفواتير أو الملفات المحمية."
   ],
-  "cacheToken": "petatoe-pwa-18-56-70-completion-dialog-theme-scope-r44r27-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r27.title",
+  "cacheToken": "petatoe-pwa-18-56-71-appointment-contact-data-r44r28-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r28.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r27.note1",
-    "pwa.update.release.r44r27.note2",
-    "pwa.update.release.r44r27.note3"
+    "pwa.update.release.r44r28.note1",
+    "pwa.update.release.r44r28.note2",
+    "pwa.update.release.r44r28.note3"
   ]
 }

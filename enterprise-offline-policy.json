@@ -1,5 +1,5 @@
 {
-  "policyVersion": "1.13.0",
+  "policyVersion": "1.14.0",
   "enforcementMode": "block-new-unregistered-data-paths",
   "requiredArchitecture": [
     "permission-check",
@@ -122,6 +122,11 @@
       "mode": "online_only_security_sensitive",
       "status": "accepted_online_only"
     },
+    "appointment_contact_data": {
+      "file": "assets/js/appointment-contact-data-service.js",
+      "mode": "online_only_daily_operational_input",
+      "status": "accepted_online_only"
+    },
     "installation_operations_reports": {
       "file": "assets/js/installation-operations-reports.js",
       "mode": "offline_read_via_installations_service_online_write",
@@ -194,6 +199,7 @@
     "assets/js/employee-report-settings-service.js",
     "assets/js/followups-service.js",
     "assets/js/geographic-address.js",
+    "assets/js/appointment-contact-data-service.js",
     "assets/js/installation-operations-reports.js",
     "assets/js/installation-scheduling.js",
     "assets/js/installation-settings-management.js",
