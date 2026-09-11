@@ -1,19 +1,19 @@
 {
-  "version": "18.56.92",
-  "build": 185692,
+  "version": "18.56.93",
+  "build": 185693,
   "forceUpdate": true,
-  "releaseDate": "2026-09-11",
-  "title": "إغلاق بواقي العرض الدلالية للتواريخ والكيانات والأرقام — R44R38R3",
+  "releaseDate": "2026-09-12",
+  "title": "إغلاق بواقي مركز الترجمة وأرقام شرائح العمولات — R44R38R4",
   "notes": [
-    "فصل وضع الإنجليزية عن تقويم المتصفح المحلي بمالك موحد للتاريخ والشهر يحافظ على قيم ISO ويعرض تقويمًا ميلاديًا إنجليزيًا بأرقام لاتينية، مع إبقاء سلوك العربية الأصلي.",
-    "ربط أسماء الخدمات والأحياء والمدن والمناطق ووصف حركات خزينة السيارة بطبقة العرض المترجمة دون تغيير القيم المخزنة أو الحسابات.",
-    "تثبيت الأرقام اللاتينية في مدخلات الأرقام عند الإنجليزية وإعادة مزامنة رسائل الكاش الديناميكية عند تغيير اللغة مع بقاء Offline/Sync/Permissions وR44 Pruning دون تغيير."
+    "إغلاق بواقي ترجمة الأحياء القديمة من مصادر الجغرافيا المعتمدة مع الحفاظ على أي ترجمة إنجليزية مخصصة موجودة.",
+    "تثبيت عرض وإدخال الأرقام اللاتينية في شرائح الرواتب والعمولات عند الإنجليزية دون تغيير القيم أو الحفظ أو معادلات العمولة.",
+    "إضافة Migration جديدة فقط لإغلاق بواقي الجغرافيا مع بقاء Offline/Sync/Permissions وR44 Pruning دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-92-l7-semantic-display-closure-r44r38r3-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r3.title",
+  "cacheToken": "petatoe-pwa-18-56-93-translation-center-tier-numerals-r44r38r4-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r4.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r3.note1",
-    "pwa.update.release.r44r38r3.note2",
-    "pwa.update.release.r44r38r3.note3"
+    "pwa.update.release.r44r38r4.note1",
+    "pwa.update.release.r44r38r4.note2",
+    "pwa.update.release.r44r38r4.note3"
   ]
 }
