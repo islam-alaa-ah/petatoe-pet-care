@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.83",
-    "build": 185683,
+    "version": "18.56.84",
+    "build": 185684,
     "date": "2026-09-11"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -98,7 +98,8 @@
       "supabase/migrations/phase_p5_13_8_72_r44r34_appointments_l3_localization_completion.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r35_financial_runtime_localization.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r36_sea_vibe_l5_localization_residual.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r37_generated_content_l6_localization.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r37_generated_content_l6_localization.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r37r1_localization_runtime_placeholder_page_meta_hotfix.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -109,8 +110,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 262,
-    "totalBytes": 3629148
+    "sqlFileCount": 263,
+    "totalBytes": 3637418
   },
   "orderingHazards": {
     "examples": [
@@ -1442,6 +1443,11 @@
       "path": "supabase/migrations/R44R24R4-August-full-month-commission-alignment.sql",
       "sha256": "ab0f034a177119e1faf83eb716c23bbdc06a884943e0f041f518db4fc6b00eb9",
       "bytes": 15176
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r37r1_localization_runtime_placeholder_page_meta_hotfix.sql",
+      "sha256": "622c7ce76d9b60ec2083e58ee56e3220fa518869508df78f147f0a612ab2ab19",
+      "bytes": 8270
     }
   ]
 }

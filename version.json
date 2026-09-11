@@ -1,19 +1,19 @@
 {
-  "version": "18.56.83",
-  "build": 185683,
+  "version": "18.56.84",
+  "build": 185684,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "استكمال ترجمة التصدير والإشعارات والمحتوى المولد واعتماد L6 — R44R37",
+  "title": "إصلاح ترجمة الجدولة والعدادات الديناميكية — R44R37R1",
   "notes": [
-    "ترجمة محتوى PDF وExcel وCSV وWhatsApp والتقارير المولدة حسب اللغة الحالية دون تغيير الحسابات.",
-    "استكمال مركز الإشعارات ورسائل Push وأسماء الأحداث في طبقة العرض مع بقاء خدمات الإشعارات دون تعديل.",
-    "الحفاظ على منطق الأعمال وOffline/Sync/Permissions وCSS دون تعديل مع اعتماد L6."
+    "إصلاح عدادات تقويم المواعيد ومنع ظهور {count} و{date} كنص خام في العربية والإنجليزية.",
+    "استكمال ترجمة عناوين وأوصاف الهيدر للشاشات غير المغطاة وإعادة رسمها عند تغيير اللغة.",
+    "إعادة ترجمة رسالة بيانات الكاش في شاشة الجدولة عند تغيير اللغة دون إعادة تحميل البيانات، مع عدم تعديل Business Logic أو Offline/Sync/Permissions/CSS."
   ],
-  "cacheToken": "petatoe-pwa-18-56-83-generated-content-l6-r44r37-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r37.title",
+  "cacheToken": "petatoe-pwa-18-56-84-localization-runtime-hotfix-r44r37r1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r37r1.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r37.note1",
-    "pwa.update.release.r44r37.note2",
-    "pwa.update.release.r44r37.note3"
+    "pwa.update.release.r44r37r1.note1",
+    "pwa.update.release.r44r37r1.note2",
+    "pwa.update.release.r44r37r1.note3"
   ]
 }
