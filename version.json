@@ -1,19 +1,15 @@
 {
-  "version": "18.56.74",
-  "build": 185674,
+  "version": "18.56.75",
+  "build": 185675,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "استكمال ترجمة CRM واختيار تاريخ بيانات التواصل — R44R31",
+  "title": "إصلاح تداخل حقل اختيار التاريخ في بيانات التواصل — R44R31R1",
   "notes": [
-    "استكمال ترجمة مندوبي المبيعات والبيانات المرجعية ورسائل Excel التشغيلية ضمن L2-A.",
-    "إتاحة اختيار تاريخ بيانات التواصل وتحميل أو إنشاء سجل اليوم المحدد باستخدام نفس work_date الحالي.",
-    "إصلاح Migration Manifest metadata دون تشغيل migrations تاريخية ودون تغيير منطق المواعيد أو المالية أو المزامنة أو الصلاحيات."
+    "إخفاء عنصر اختيار التاريخ الأصلي بصريًا ومنع تداخل قيمته مع التاريخ المعروض في شاشة إضافة بيانات التواصل.",
+    "الحفاظ على اختيار اليوم نفسه وتحميل/حفظ work_date كما هو بدون أي تغيير في منطق المواعيد أو قاعدة البيانات.",
+    "تحديث إصدار الواجهة وCache Token لضمان وصول إصلاح الـCSS/JS للمستخدمين."
   ],
-  "cacheToken": "petatoe-pwa-18-56-74-crm-l2a-contact-date-r44r31-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r31.title",
-  "notesI18nKeys": [
-    "pwa.update.release.r44r31.note1",
-    "pwa.update.release.r44r31.note2",
-    "pwa.update.release.r44r31.note3"
-  ]
+  "cacheToken": "petatoe-pwa-18-56-75-contact-date-overlap-fix-r44r31r1-p5-13-8-72",
+  "titleI18nKey": "",
+  "notesI18nKeys": []
 }

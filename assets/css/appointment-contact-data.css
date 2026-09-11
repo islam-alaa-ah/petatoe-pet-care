@@ -10,10 +10,11 @@
 .appointment-contact-context-item small{color:var(--muted);font-weight:700}
 .appointment-contact-context-item strong{font-size:16px;overflow-wrap:anywhere}
 #appointmentContactWorkDate,#appointmentContactTotalInteractions{direction:ltr;unicode-bidi:isolate;font-family:Arial,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.02em;white-space:nowrap}
-.appointment-contact-date-picker{position:relative;display:inline-flex;align-items:center;min-height:28px;cursor:pointer;border-radius:9px;outline:none}
-.appointment-contact-date-picker::after{content:"";width:7px;height:7px;margin-inline-start:8px;border-inline-end:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:rotate(45deg) translateY(-2px);opacity:.55;pointer-events:none}
-.appointment-contact-date-picker:focus-within{box-shadow:0 0 0 3px rgba(47,131,255,.14)}
-.appointment-contact-date-input{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;opacity:0;cursor:pointer;direction:ltr;color-scheme:light}
+.appointment-contact-date-picker{position:relative;display:inline-flex;align-items:center;min-height:28px;gap:8px;cursor:pointer;border-radius:9px;outline:none;user-select:none}
+.appointment-contact-date-picker::after{content:"";width:7px;height:7px;margin-inline-start:2px;border-inline-end:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:rotate(45deg) translateY(-2px);opacity:.55;pointer-events:none}
+.appointment-contact-date-picker:focus,.appointment-contact-date-picker:focus-within{box-shadow:0 0 0 3px rgba(47,131,255,.14)}
+.appointment-contact-date-picker strong{display:inline-block}
+.appointment-contact-date-input{position:absolute;inline-size:1px;block-size:1px;margin:-1px;padding:0;border:0;opacity:0;pointer-events:none;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;direction:ltr;color-scheme:light}
 html[data-theme="dark"] .appointment-contact-date-input{color-scheme:dark}
 .appointment-contact-context-icon,.appointment-contact-section-icon,.appointment-contact-metric-icon,.appointment-contact-summary-icon{position:relative;display:grid;place-items:center;flex:0 0 auto;overflow:hidden;isolation:isolate;border:1px solid transparent;background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(232,242,255,.82)) padding-box,linear-gradient(135deg,rgba(47,131,255,.78),rgba(255,255,255,.85) 46%,rgba(217,160,23,.78)) border-box;box-shadow:0 10px 24px rgba(10,64,135,.12),inset 0 1px 0 rgba(255,255,255,.96),inset 0 -12px 24px rgba(47,131,255,.06)}
 .appointment-contact-context-icon::before,.appointment-contact-section-icon::before,.appointment-contact-metric-icon::before,.appointment-contact-summary-icon::before{content:"";position:absolute;inset:2px 3px auto 3px;height:42%;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,0));pointer-events:none;z-index:0}

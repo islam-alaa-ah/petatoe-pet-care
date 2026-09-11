@@ -58,10 +58,20 @@
     if(hasUnsavedChanges()&&!window.confirm(t('appointments.contact.dateChange.confirm','There are unsaved changes. Change the date and discard them?'))){setWorkDateUi(state.workDate||todayIso());return;}
     await load(next);
   }
+  function openWorkDatePicker(event){
+    const input=$('appointmentContactWorkDateInput');if(!input||state.busy)return;
+    if(event?.type==='keydown'){const key=event.key;if(key!=='Enter'&&key!==' ')return;event.preventDefault();}
+    else if(event?.type==='click'){event.preventDefault();}
+    try{if(typeof input.showPicker==='function'){input.showPicker();return;}}catch(_error){}
+    input.focus({preventScroll:true});
+    try{input.click();}catch(_error){}
+  }
   function bind(){
     $('appointmentContactDataForm')?.addEventListener('submit',save);
     $('appointmentContactCancelBtn')?.addEventListener('click',cancel);
     $('appointmentContactWorkDateInput')?.addEventListener('change',changeWorkDate);
+    const datePicker=$('appointmentContactWorkDateInput')?.closest('.appointment-contact-date-picker');
+    if(datePicker){datePicker.tabIndex=0;datePicker.setAttribute('role','button');datePicker.addEventListener('click',openWorkDatePicker);datePicker.addEventListener('keydown',openWorkDatePicker);}
     Object.values(fields).forEach(id=>{const el=$(id);if(!el)return;el.addEventListener('input',event=>{const input=event.currentTarget;const normalized=latinDigits(input.value).replace(/[^0-9]/g,'');if(input.value!==normalized)input.value=normalized;renderSummary();});el.addEventListener('blur',()=>{if(el.value==='')el.value='0';renderSummary();});el.addEventListener('focus',()=>el.select?.());});
     window.addEventListener('kyum-view-changed',e=>{if(e.detail?.view===VIEW)load(todayIso());});
     window.addEventListener('petatoe-language-changed',onLanguage);
