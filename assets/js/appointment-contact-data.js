@@ -61,13 +61,11 @@
   function isMobileDatePickerSurface(){return window.matchMedia?.('(max-width: 767px), (pointer: coarse) and (max-device-width: 1024px)')?.matches===true;}
   function openWorkDatePicker(event){
     const input=$('appointmentContactWorkDateInput');if(!input||state.busy)return;
+    if(event?.type==='click'&&isMobileDatePickerSurface())return;
     if(event?.type==='keydown'){
-      const key=event.key;if(key!=='Enter'&&key!==' ')return;event.preventDefault();
-    }else if(event?.type==='click'&&event.target===input){
-      return;
-    }else if(event?.type==='click'&&!isMobileDatePickerSurface()){
-      event.preventDefault();
+      const key=event.key;if(key!=='Enter'&&key!==' ')return;
     }
+    event?.preventDefault?.();
     try{if(typeof input.showPicker==='function'){input.showPicker();return;}}catch(_error){}
     input.focus({preventScroll:true});
     try{input.click();}catch(_error){}

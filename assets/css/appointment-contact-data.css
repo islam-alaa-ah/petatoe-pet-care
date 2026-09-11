@@ -13,7 +13,7 @@
 .appointment-contact-date-picker{position:relative;display:inline-flex;align-items:center;min-height:28px;gap:8px;cursor:pointer;border-radius:9px;outline:none;user-select:none}
 .appointment-contact-date-picker::after{content:"";width:7px;height:7px;margin-inline-start:2px;border-inline-end:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:rotate(45deg) translateY(-2px);opacity:.55;pointer-events:none}
 .appointment-contact-date-picker:focus,.appointment-contact-date-picker:focus-within{box-shadow:0 0 0 3px rgba(47,131,255,.14)}
-.appointment-contact-date-picker strong{display:inline-block}
+.appointment-contact-date-picker strong{display:inline-block;white-space:nowrap;line-height:1.25}
 .appointment-contact-date-input{position:absolute;inline-size:1px;block-size:1px;margin:-1px;padding:0;border:0;opacity:0;pointer-events:none;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;direction:ltr;color-scheme:light}
 html[data-theme="dark"] .appointment-contact-date-input{color-scheme:dark}
 .appointment-contact-context-icon,.appointment-contact-section-icon,.appointment-contact-metric-icon,.appointment-contact-summary-icon{position:relative;display:grid;place-items:center;flex:0 0 auto;overflow:hidden;isolation:isolate;border:1px solid transparent;background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(232,242,255,.82)) padding-box,linear-gradient(135deg,rgba(47,131,255,.78),rgba(255,255,255,.85) 46%,rgba(217,160,23,.78)) border-box;box-shadow:0 10px 24px rgba(10,64,135,.12),inset 0 1px 0 rgba(255,255,255,.96),inset 0 -12px 24px rgba(47,131,255,.06)}
@@ -83,11 +83,6 @@ html[data-theme="dark"] .appointment-contact-context-icon::before,html[data-them
   .appointment-contact-summary-icon{margin:auto}
   .appointment-contact-actions{display:grid;grid-template-columns:1fr 1.4fr}
   .appointment-contact-actions .primary-btn,.appointment-contact-actions .secondary-btn{min-width:0;width:100%}
-}
-@media (max-width:767px), (pointer:coarse) and (max-device-width:1024px){
-  .appointment-contact-date-picker{min-height:34px;padding-inline:2px}
-  .appointment-contact-date-picker strong{position:relative;z-index:1;pointer-events:none}
-  .appointment-contact-date-input{position:absolute;inset:0;inline-size:100%;block-size:100%;margin:0;padding:0;border:0;opacity:.015;pointer-events:auto;overflow:hidden;clip:auto;clip-path:none;white-space:normal;z-index:2;-webkit-appearance:none;appearance:none;background:transparent;color:transparent;-webkit-text-fill-color:transparent;font-size:16px;cursor:pointer}
 }
 @media (max-width:430px){
   .appointment-contact-actions{grid-template-columns:1fr}

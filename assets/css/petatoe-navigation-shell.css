@@ -1138,6 +1138,21 @@ body.sidebar-menu-open{overflow:hidden}
     max-width:20px!important;
     max-height:20px!important;
   }
+  #appHeader #sidebarMenuToggle .petatoe-menu-icon,
+  #appHeader #sidebarMenuToggle .mobile-menu-icon{
+    color:#8ec5ff!important;
+    stroke:#8ec5ff!important;
+    filter:drop-shadow(0 0 6px rgba(64,155,255,.32))!important;
+    opacity:1!important;
+  }
+  #appHeader #sidebarMenuToggle .petatoe-menu-icon path,
+  #appHeader #sidebarMenuToggle .mobile-menu-icon path{
+    stroke:currentColor!important;
+    stroke-width:2.25!important;
+    stroke-linecap:round!important;
+    fill:none!important;
+    opacity:1!important;
+  }
 
   /* Mobile brand is independent from the desktop brand and cannot wrap awkwardly. */
   #appHeader .mobile-app-brand{
@@ -1685,25 +1700,3 @@ body.sidebar-menu-open{overflow:hidden}
 }
 
 
-
-/* R44R31R2 — Mobile dark header menu icon visibility.
-   Canonical mobile-dark correction only; desktop and light mode remain unchanged. */
-@media (max-width:767px),
-       (pointer:coarse) and (max-device-width:1024px),
-       (hover:none) and (max-device-width:1024px){
-  html[data-theme="dark"] #appHeader #sidebarMenuToggle .petatoe-menu-icon,
-  html[data-theme="dark"] #appHeader #sidebarMenuToggle .mobile-menu-icon{
-    color:#8ec5ff!important;
-    stroke:#8ec5ff!important;
-    filter:drop-shadow(0 0 6px rgba(64,155,255,.32))!important;
-    opacity:1!important;
-  }
-  html[data-theme="dark"] #appHeader #sidebarMenuToggle .petatoe-menu-icon path,
-  html[data-theme="dark"] #appHeader #sidebarMenuToggle .mobile-menu-icon path{
-    stroke:#8ec5ff!important;
-    stroke-width:2.25!important;
-    stroke-linecap:round!important;
-    fill:none!important;
-    opacity:1!important;
-  }
-}

@@ -1,15 +1,11 @@
 {
-  "version": "18.56.76",
-  "build": 185676,
+  "version": "18.56.77",
+  "build": 185677,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "Mobile-only fixes for contact date picker and dark menu icon — R44R31R2",
-  "notes": [
-    "تفعيل اختيار التاريخ على الموبايل داخل شاشة إضافة بيانات التواصل بدون إعادة ظهور تداخل القيمة الأصلية.",
-    "إظهار أيقونة زر القائمة بوضوح في وضع Dark Mode على الموبايل فقط.",
-    "تحديث إصدار الواجهة وCache Token لضمان وصول إصلاحات CSS/JS للمستخدمين."
-  ],
-  "cacheToken": "petatoe-pwa-18-56-76-mobile-date-menu-fix-r44r31r2-p5-13-8-72",
-  "titleI18nKey": "",
+  "title": "PETATOE R44R31R3",
+  "notes": [],
+  "cacheToken": "petatoe-pwa-18-56-77-mobile-date-canonical-r44r31r3-p5-13-8-72",
+  "titleI18nKey": "pwa.update.title",
   "notesI18nKeys": []
 }
