@@ -1,16 +1,17 @@
 // KYUM Phase M9.4 — Sales Representatives Excel Import
 (function () {
+  const t = (key, fallback, vars = {}) => { const value=window.PetatoeLocalization?.t?.(key, vars); return value && !/^\[.+\]$/.test(value) ? value : fallback; };
   const HEADERS = ["كود المندوب", "اسم المندوب", "رقم الجوال", "البريد الإلكتروني", "الحالة"];
   const HEADER_ALIASES = {
     representativeCode: ["كود المندوب", "كود", "representative code", "code"],
     fullName: ["اسم المندوب", "الاسم", "مندوب المبيعات", "representative name", "full name", "name"],
-    phone: ["رقم الجوال", "الجوال", "رقم الهاتف", "phone", "mobile"],
+    phone: ["رقم الجوال", "الجوال", "رقم الهاتف", "phone", "mobile", "mobile number"],
     email: ["البريد الإلكتروني", "البريد الالكتروني", "البريد", "email", "e-mail"],
     status: ["الحالة", "حالة المندوب", "status", "active"]
   };
 
   function requireXlsx() {
-    if (!window.XLSX) throw new Error("مكتبة Excel غير محملة.");
+    if (!window.XLSX) throw new Error(t('representatives.import.excelMissing','Excel library is not loaded.'));
   }
 
   function text(value) {
@@ -59,11 +60,11 @@
 
   async function parseImportFile(file) {
     requireXlsx();
-    if (!file) throw new Error("اختر ملف Excel أولًا.");
+    if (!file) throw new Error(t('representatives.import.fileRequired','Choose an Excel file first.'));
     const buffer = await file.arrayBuffer();
     const workbook = window.XLSX.read(buffer, { type: "array", cellDates: false });
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    if (!firstSheet) throw new Error("ملف Excel لا يحتوي على ورقة بيانات.");
+    if (!firstSheet) throw new Error(t('representatives.import.sheetMissing','The Excel file does not contain a data sheet.'));
     const rows = window.XLSX.utils.sheet_to_json(firstSheet, { defval: "", raw: false });
     return rows.filter(row => !rowIsEmpty(row));
   }
@@ -96,18 +97,18 @@
       const errors = [];
       const codeKey = representativeCode.toLowerCase();
 
-      if (!representativeCode) errors.push("كود المندوب إلزامي");
-      if (!fullName) errors.push("اسم المندوب إلزامي");
-      if (phone && !/^05\d{8}$/.test(phone)) errors.push("رقم الجوال غير صحيح");
-      if (!validEmail(email)) errors.push("البريد الإلكتروني غير صحيح");
-      if (statusValue === null) errors.push("الحالة يجب أن تكون نشط أو موقوف");
+      if (!representativeCode) errors.push(t('representatives.import.validation.codeRequired','Representative code is required'));
+      if (!fullName) errors.push(t('representatives.import.validation.nameRequired','Representative name is required'));
+      if (phone && !/^05\d{8}$/.test(phone)) errors.push(t('representatives.import.validation.phoneInvalid','Invalid mobile number'));
+      if (!validEmail(email)) errors.push(t('representatives.import.validation.emailInvalid','Invalid email address'));
+      if (statusValue === null) errors.push(t('representatives.import.validation.statusInvalid','Status must be Active or Suspended'));
 
       let duplicateInFile = false;
       if (codeKey && fileCodes.has(codeKey)) duplicateInFile = true;
       if (phone && filePhones.has(phone)) duplicateInFile = true;
       if (email && fileEmails.has(email)) duplicateInFile = true;
       if (duplicateInFile) {
-        errors.push("مكرر داخل الملف");
+        errors.push(t('representatives.import.validation.duplicateFile','Duplicate in file'));
         duplicates += 1;
       }
 
@@ -117,7 +118,7 @@
         (email && existingEmails.has(email))
       );
       if (existsInSystem) {
-        errors.push("مندوب موجود مسبقًا في النظام");
+        errors.push(t('representatives.import.validation.exists','Representative already exists in the system'));
         existing += 1;
       }
 
@@ -151,7 +152,7 @@
   }
 
   async function importRows(rows, saveRepresentative, onProgress, options = {}) {
-    if (typeof saveRepresentative !== "function") throw new Error("خدمة حفظ المندوبين غير متاحة.");
+    if (typeof saveRepresentative !== "function") throw new Error(t('representatives.import.error.saveService','Representative save service is unavailable.'));
     const chunkSize = Math.max(1, Number(options.chunkSize) || 200);
     const validRows = Array.isArray(rows) ? rows : [];
     const errors = [];
@@ -196,37 +197,46 @@
 
   function downloadTemplate() {
     requireXlsx();
-    const rows = [
-      {
-        "كود المندوب": "REP-001",
-        "اسم المندوب": "أحمد محمد",
-        "رقم الجوال": "0500000001",
-        "البريد الإلكتروني": "ahmed@company.com",
-        "الحالة": "نشط"
-      }
+    const localizedHeaders = [
+      t('representatives.col.code','Representative Code'),
+      t('representatives.col.name','Representative Name'),
+      t('representatives.field.phone','Mobile Number'),
+      t('representatives.field.email','Email'),
+      t('representatives.col.status','Status')
     ];
-    const sheet = window.XLSX.utils.json_to_sheet(rows, { header: HEADERS });
+    const rows = [{
+      [localizedHeaders[0]]: "REP-001",
+      [localizedHeaders[1]]: window.PetatoeLocalization?.effectiveLanguage?.()==='en' ? "Ahmed Mohamed" : "أحمد محمد",
+      [localizedHeaders[2]]: "0500000001",
+      [localizedHeaders[3]]: "ahmed@company.com",
+      [localizedHeaders[4]]: t('representatives.status.active','Active')
+    }];
+    const sheet = window.XLSX.utils.json_to_sheet(rows, { header: localizedHeaders });
     applyLayout(sheet);
     const workbook = window.XLSX.utils.book_new();
-    window.XLSX.utils.book_append_sheet(workbook, sheet, "نموذج المندوبين");
+    window.XLSX.utils.book_append_sheet(workbook, sheet, t('representatives.import.sheet.template','Representative Template').slice(0,31));
     window.XLSX.writeFile(workbook, "PETATOE_Sales_Representatives_Import_Template.xlsx");
   }
 
   function exportFailedRows(rows) {
     requireXlsx();
-    if (!Array.isArray(rows) || !rows.length) throw new Error("لا توجد صفوف فاشلة للتصدير.");
+    if (!Array.isArray(rows) || !rows.length) throw new Error(t('representatives.import.error.noFailedRows','There are no failed rows to export.'));
+    const h = [
+      t('representatives.import.header.row','Row Number'),
+      t('representatives.col.code','Representative Code'),
+      t('representatives.col.name','Representative Name'),
+      t('representatives.field.phone','Mobile Number'),
+      t('representatives.field.email','Email'),
+      t('representatives.import.header.failure','Failure Reason')
+    ];
     const data = rows.map(row => ({
-      "رقم الصف": row.sourceRow,
-      "كود المندوب": row.representativeCode || "",
-      "اسم المندوب": row.fullName || "",
-      "رقم الجوال": row.phone || "",
-      "البريد الإلكتروني": row.email || "",
-      "سبب الفشل": row.message || ""
+      [h[0]]: row.sourceRow, [h[1]]: row.representativeCode || "", [h[2]]: row.fullName || "",
+      [h[3]]: row.phone || "", [h[4]]: row.email || "", [h[5]]: row.message || ""
     }));
     const sheet = window.XLSX.utils.json_to_sheet(data);
     sheet["!cols"] = [{ wch: 12 }, { wch: 18 }, { wch: 28 }, { wch: 18 }, { wch: 28 }, { wch: 55 }];
     const workbook = window.XLSX.utils.book_new();
-    window.XLSX.utils.book_append_sheet(workbook, sheet, "الصفوف الفاشلة");
+    window.XLSX.utils.book_append_sheet(workbook, sheet, t('representatives.import.sheet.failed','Failed Rows').slice(0,31));
     window.XLSX.writeFile(workbook, "PETATOE_Sales_Representatives_Failed_Rows.xlsx");
   }
 

@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.73",
-    "build": 185673,
+    "version": "18.56.74",
+    "build": 185674,
     "date": "2026-09-10"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -91,7 +91,8 @@
       "supabase/migrations/phase_p5_13_8_72_r44r23_zero_value_executed_service_invoice.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r24_super_admin_team_assignment_override.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r25_august_history_recovery_effective_date_required.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r28_appointment_contact_daily_data.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r28_appointment_contact_daily_data.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r31_crm_l2a_contact_date_localization.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -102,8 +103,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 251,
-    "totalBytes": 2983195
+    "sqlFileCount": 256,
+    "totalBytes": 3071437
   },
   "orderingHazards": {
     "examples": [
@@ -140,6 +141,26 @@
       "path": "supabase/migrations/PETATOE_P5_DAILY_OPERATIONS_GLOBAL_RUNTIME_DIAGNOSTIC.sql",
       "sha256": "a7ee92defe1e147ed21eee3e54fc7f52aa6f69ea498c3bc0a2b8b53de23e944e",
       "bytes": 15466
+    },
+    {
+      "path": "supabase/migrations/R44R24R1-super-admin-team-override.sql",
+      "sha256": "cc913d92f1af83376bca5bfeb9783af59e27a5bab49d0cd92dff450b21697bb3",
+      "bytes": 5375
+    },
+    {
+      "path": "supabase/migrations/R44R24R2-final-team-resource-override.sql",
+      "sha256": "8ca492b09d5fcc06173e7830127ca9d4df17fde0c19dacd1f677727f8e4b1f38",
+      "bytes": 9261
+    },
+    {
+      "path": "supabase/migrations/R44R24R3-August-team-history-and-commission-fix.sql",
+      "sha256": "52190a6b4e7ca55265610b36aaa5ef1601809e433e5161b71aa0f807ababa6c1",
+      "bytes": 16693
+    },
+    {
+      "path": "supabase/migrations/R44R24R4-August-full-month-commission-alignment.sql",
+      "sha256": "ab0f034a177119e1faf83eb716c23bbdc06a884943e0f041f518db4fc6b00eb9",
+      "bytes": 15176
     },
     {
       "path": "supabase/migrations/p5113.sql",
@@ -1242,6 +1263,11 @@
       "bytes": 7473
     },
     {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r13_sea_vibe_customers_serials.sql",
+      "sha256": "11e19f83dba7516063924512920d3504b3859e65ea015ebcf127ffde514b9fe1",
+      "bytes": 35157
+    },
+    {
       "path": "supabase/migrations/phase_p5_13_8_72_r44r13r1_sea_vibe_customers_serials_compatibility.sql",
       "sha256": "626081436adc59e54c1582d5992d7fe40cefead962b37c2f363a4fac74bcdef0",
       "bytes": 37715
@@ -1305,6 +1331,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r2_sea_vibe_zawel_controlled_historical_backfill.sql",
       "sha256": "f63e41a2415f324dbee0d5d68c3ee1e64a637a036888a98ea69b128bbdaedda6",
       "bytes": 7841
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r31_crm_l2a_contact_date_localization.sql",
+      "sha256": "9f2f4f9976890b3a607eacbac46f10ff46137a978eb4d2d5152602477c7b898c",
+      "bytes": 41737
     },
     {
       "path": "supabase/migrations/phase_p5_13_8_72_r44r3_sea_vibe_fuel_balance.sql",

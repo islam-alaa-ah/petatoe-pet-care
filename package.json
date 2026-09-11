@@ -1,6 +1,6 @@
 {
   "name": "petatoe-pet-care-mobile",
-  "version": "18.56.73",
+  "version": "18.56.74",
   "private": true,
   "description": "Native Android/iOS packaging layer for PETATOE.",
   "scripts": {
@@ -69,7 +69,8 @@
     "check:r44r27": "node scripts/p5-13-8-72-r44r27-completion-dialog-theme-scope-check.mjs",
     "check:r44r28": "node scripts/p5-13-8-72-r44r28-appointment-contact-data-check.mjs",
     "check:r44r29": "node scripts/p5-13-8-72-r44r29-contact-data-visual-numeric-check.mjs",
-    "check:r44r30": "node scripts/p5-13-8-72-r44r30-contact-data-glass-icons-latin-check.mjs"
+    "check:r44r30": "node scripts/p5-13-8-72-r44r30-contact-data-glass-icons-latin-check.mjs",
+    "check:r44r31": "node scripts/p5-13-8-72-r44r31-crm-l2a-contact-date-check.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",

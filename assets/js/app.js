@@ -1502,7 +1502,7 @@ function switchView(requestedName, options = {}) {
     window.SeaVibeUI?.activate?.(name);
   }
 
-  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
+  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
   const localizedMetaKeys = localizedPageMetaKeys[name];
   const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map(key=>l1T(key)) : pageMeta[name];
   document.getElementById("pageTitle").textContent = activePageMeta[0];
@@ -1554,7 +1554,7 @@ function switchView(requestedName, options = {}) {
 window.addEventListener("petatoe-language-changed", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
   const current = activeViewKey;
-  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dashboard:["dashboard.page.title","dashboard.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
+  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
   let meta = null;
   if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
   else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map(key=>l1T(key));
@@ -1567,6 +1567,9 @@ window.addEventListener("petatoe-language-changed", () => {
   if (current === "systemHealth" && systemHealthSnapshot) renderSystemHealth();
   if (current === "systemHealth" && latestDiagnosticsReport) renderDiagnosticsReport(latestDiagnosticsReport);
   if (current === "aboutApp") renderAboutAppCenter();
+  if (current === "representatives") renderRepresentatives();
+  if (current === "settings") { renderReferenceData(); renderReferenceCustomers(); }
+  if (document.getElementById("representativeImportDialog")?.open && representativeImportPreview) renderRepresentativeImportPreview(representativeImportPreview);
 });
 window.addEventListener("petatoe-localization-updated", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
@@ -4051,184 +4054,75 @@ function representativeCustomerCount() { return 0; }
 function renderRepresentatives() {
   const body = document.getElementById("representativesTableBody");
   if (!body) return;
-
   const rows = filteredRepresentativeRecords();
   const canManage = canManageReferenceData();
-
   if (!rows.length) {
-    body.innerHTML = `
-      <tr>
-        <td colspan="7" class="empty-state">
-          لا توجد نتائج مطابقة للمندوبين.
-        </td>
-      </tr>`;
+    body.innerHTML = `<tr><td colspan="7" class="empty-state">${escapeHtml(customerT("representatives.empty","No matching representatives found."))}</td></tr>`;
     return;
   }
-
   body.innerHTML = rows.map(rep => {
     const customerCount = representativeCustomerCount(rep);
-
-    return `
-      <tr class="${rep.is_active ? "" : "inactive-record"}">
-        <td><strong>${escapeHtml(rep.representative_code || "—")}</strong></td>
-        <td><strong>${escapeHtml(rep.full_name || "—")}</strong></td>
-        <td>${escapeHtml(rep.phone || "—")}</td>
-        <td>${escapeHtml(rep.email || "—")}</td>
-        <td>
-          <span class="representative-customer-count">
-            ${customerCount}
-          </span>
-        </td>
-        <td>
-          <span class="record-status ${rep.is_active ? "active" : "inactive"}">
-            ${rep.is_active ? "نشط" : "موقوف"}
-          </span>
-        </td>
-        <td>
-          ${canManage ? `
-            <div class="table-actions representative-actions">
-              <button
-                class="edit-btn"
-                type="button"
-                data-edit-representative="${rep.id}">
-                تعديل
-              </button>
-              <button
-                class="${rep.is_active ? "warning-btn" : "activate-btn"}"
-                type="button"
-                data-toggle-representative="${rep.id}">
-                ${rep.is_active ? "إيقاف" : "تفعيل"}
-              </button>
-              <button
-                class="delete-btn"
-                type="button"
-                data-delete-representative="${rep.id}"
-                ${customerCount ? 'title="لا يمكن الحذف قبل نقل العملاء المرتبطين"' : ""}>
-                حذف
-              </button>
-            </div>
-          ` : "—"}
-        </td>
-      </tr>`;
+    const linkedTitle = customerCount ? `title="${escapeHtml(customerT("representatives.error.linkedDeleteTitle","Linked customers must be reassigned before deletion"))}"` : "";
+    return `<tr class="${rep.is_active ? "" : "inactive-record"}">
+      <td><strong>${escapeHtml(rep.representative_code || "—")}</strong></td><td><strong>${escapeHtml(rep.full_name || "—")}</strong></td>
+      <td>${escapeHtml(rep.phone || "—")}</td><td>${escapeHtml(rep.email || "—")}</td>
+      <td><span class="representative-customer-count">${customerCount}</span></td>
+      <td><span class="record-status ${rep.is_active ? "active" : "inactive"}">${escapeHtml(customerT(rep.is_active?"representatives.status.active":"representatives.status.inactive",rep.is_active?"Active":"Suspended"))}</span></td>
+      <td>${canManage ? `<div class="table-actions representative-actions">
+        <button class="edit-btn" type="button" data-edit-representative="${rep.id}">${escapeHtml(customerT("representatives.action.edit","Edit"))}</button>
+        <button class="${rep.is_active ? "warning-btn" : "activate-btn"}" type="button" data-toggle-representative="${rep.id}">${escapeHtml(customerT(rep.is_active?"representatives.action.deactivate":"representatives.action.activate",rep.is_active?"Deactivate":"Activate"))}</button>
+        <button class="delete-btn" type="button" data-delete-representative="${rep.id}" ${linkedTitle}>${escapeHtml(customerT("representatives.action.delete","Delete"))}</button>
+      </div>` : "—"}</td></tr>`;
   }).join("");
 }
 
 async function toggleRepresentativeStatus(id) {
   if (!canManageReferenceData()) return;
-
   const record = representativeRecords.find(item => item.id === id);
   if (!record) return;
-
   const nextStatus = !record.is_active;
-  const actionLabel = nextStatus ? "إعادة تفعيل" : "إيقاف";
-
-  if (!confirm(`هل تريد ${actionLabel} المندوب «${record.full_name}»؟`)) return;
-
-  showDataStatus("representativesStatus", `جاري ${actionLabel} المندوب...`, "info");
-
+  const confirmKey = nextStatus ? "representatives.confirm.activate" : "representatives.confirm.deactivate";
+  if (!confirm(customerT(confirmKey, nextStatus ? 'Reactivate representative “{name}”?' : 'Deactivate representative “{name}”?', { name: record.full_name }))) return;
+  showDataStatus("representativesStatus", customerT(nextStatus?"representatives.status.changingActivate":"representatives.status.changingDeactivate",nextStatus?"Reactivating representative...":"Deactivating representative..."), "info");
   try {
     await window.ReferenceDataService.setRepresentativeStatus(id, nextStatus);
     await loadReferenceDataFromSupabase(true);
-    showDataStatus(
-      "representativesStatus",
-      nextStatus ? "تم تفعيل المندوب بنجاح." : "تم إيقاف المندوب بنجاح.",
-      "success"
-    );
+    showDataStatus("representativesStatus", customerT(nextStatus?"representatives.status.activated":"representatives.status.deactivated",nextStatus?"Representative activated successfully.":"Representative deactivated successfully."), "success");
   } catch (error) {
-    showDataStatus(
-      "representativesStatus",
-      error instanceof Error ? error.message : "تعذر تغيير حالة المندوب.",
-      "error"
-    );
+    showDataStatus("representativesStatus", error instanceof Error ? error.message : customerT("representatives.error.status","Unable to change representative status."), "error");
   }
 }
 
 async function deleteRepresentativeRecord(id) {
-  if (!requireScreenAction("representatives", "delete", "لا توجد صلاحية حذف مندوبي المبيعات.")) return;
+  if (!requireScreenAction("representatives", "delete", customerT("representatives.permission.delete","You do not have permission to delete sales representatives."))) return;
   if (!canManageReferenceData()) return;
-
   const record = representativeRecords.find(item => item.id === id);
   if (!record) return;
-
   const customerCount = representativeCustomerCount(record);
   if (customerCount > 0) {
-    showDataStatus(
-      "representativesStatus",
-      `لا يمكن حذف «${record.full_name}» لأنه مرتبط بـ ${customerCount} عميل. انقل العملاء إلى مندوب آخر أو استخدم الإيقاف.`,
-      "error"
-    );
+    showDataStatus("representativesStatus", customerT("representatives.error.linkedCustomers","Cannot delete “{name}” because {count} customer(s) are linked. Reassign them or deactivate the representative.",{name:record.full_name,count:customerCount}), "error");
     return;
   }
-
-  if (!confirm(
-    `سيتم حذف المندوب «${record.full_name}» نهائيًا. هل تريد المتابعة؟`
-  )) return;
-
-  showDataStatus("representativesStatus", "جاري حذف المندوب...", "info");
-
+  if (!confirm(customerT("representatives.confirm.delete",'Representative “{name}” will be permanently deleted. Continue?',{name:record.full_name}))) return;
+  showDataStatus("representativesStatus", customerT("representatives.status.deleting","Deleting representative..."), "info");
   try {
     await window.ReferenceDataService.deleteRepresentative(id);
     await loadReferenceDataFromSupabase(true);
-    showDataStatus("representativesStatus", "تم حذف المندوب بنجاح.", "success");
+    showDataStatus("representativesStatus", customerT("representatives.status.deleted","Representative deleted successfully."), "success");
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    showDataStatus(
-      "representativesStatus",
-      message.includes("foreign key")
-        ? "لا يمكن حذف المندوب لوجود بيانات مرتبطة به. استخدم الإيقاف بدلًا من الحذف."
-        : message || "تعذر حذف المندوب.",
-      "error"
-    );
+    showDataStatus("representativesStatus", message.includes("foreign key") ? customerT("representatives.error.deleteLinked","The representative cannot be deleted because linked data exists. Deactivate instead.") : message || customerT("representatives.error.delete","Unable to delete representative."), "error");
   }
 }
 
 function renderReferenceData() {
   const canManage = canManageReferenceData();
-
-  const renderItems = (records, type) => records.length
-    ? records.map(item => `
-        <div class="reference-item ${item.is_active ? "" : "inactive-record"}">
-          <div>
-            <strong>${escapeHtml(item.name)}</strong>
-            <span class="record-status ${item.is_active ? "active" : "inactive"}">
-              ${item.is_active ? "نشط" : "غير نشط"}
-            </span>
-          </div>
-          ${canManage ? `
-            <div class="reference-item-actions">
-              <button
-                class="edit-btn"
-                type="button"
-                data-edit-reference="${item.id}"
-                data-reference-type="${type}">
-                تعديل
-              </button>
-              <button
-                class="delete-btn"
-                type="button"
-                data-delete-reference="${item.id}"
-                data-reference-type="${type}">
-                حذف
-              </button>
-            </div>
-          ` : ""}
-        </div>`).join("")
-    : `<div class="empty-state">لا توجد بيانات مسجلة.</div>`;
-
+  const renderItems = (records, type) => records.length ? records.map(item => `<div class="reference-item ${item.is_active ? "" : "inactive-record"}"><div><strong>${escapeHtml(item.name)}</strong><span class="record-status ${item.is_active ? "active" : "inactive"}">${escapeHtml(customerT(item.is_active?"referenceData.status.active":"referenceData.status.inactive",item.is_active?"Active":"Inactive"))}</span></div>${canManage ? `<div class="reference-item-actions"><button class="edit-btn" type="button" data-edit-reference="${item.id}" data-reference-type="${type}">${escapeHtml(customerT("referenceData.action.edit","Edit"))}</button><button class="delete-btn" type="button" data-delete-reference="${item.id}" data-reference-type="${type}">${escapeHtml(customerT("referenceData.action.delete","Delete"))}</button></div>` : ""}</div>`).join("") : `<div class="empty-state">${escapeHtml(customerT("referenceData.empty","No data has been recorded."))}</div>`;
   const interestsContainer = document.getElementById("settingsInterests");
   const reasonsContainer = document.getElementById("settingsReasons");
-
-  if (interestsContainer) {
-    interestsContainer.innerHTML = renderItems(interestRecords, "interest");
-  }
-  if (reasonsContainer) {
-    reasonsContainer.innerHTML = renderItems(reasonRecords, "reason");
-  }
-
-  document.querySelectorAll(".reference-manage-action").forEach(button => {
-    button.classList.toggle("hidden", !canManage);
-  });
-
+  if (interestsContainer) interestsContainer.innerHTML = renderItems(interestRecords, "interest");
+  if (reasonsContainer) reasonsContainer.innerHTML = renderItems(reasonRecords, "reason");
+  document.querySelectorAll(".reference-manage-action").forEach(button => button.classList.toggle("hidden", !canManage));
   renderReferenceCustomers();
 }
 
@@ -4240,10 +4134,12 @@ function filteredReferenceCustomers() {
 function syncReferenceCustomerFilters() {}
 
 function renderReferenceCustomers() {
-  const body=document.getElementById("referenceCustomersTableBody"); if(!body)return; const allRows=filteredReferenceCustomers(); const pageCount=Math.max(1,Math.ceil(allRows.length/REFERENCE_CUSTOMERS_PAGE_SIZE)); if(referenceCustomersPage>pageCount)referenceCustomersPage=pageCount; const start=(referenceCustomersPage-1)*REFERENCE_CUSTOMERS_PAGE_SIZE,rows=allRows.slice(start,start+REFERENCE_CUSTOMERS_PAGE_SIZE);
+  const body=document.getElementById("referenceCustomersTableBody"); if(!body)return;
+  const allRows=filteredReferenceCustomers(); const pageCount=Math.max(1,Math.ceil(allRows.length/REFERENCE_CUSTOMERS_PAGE_SIZE)); if(referenceCustomersPage>pageCount)referenceCustomersPage=pageCount; const start=(referenceCustomersPage-1)*REFERENCE_CUSTOMERS_PAGE_SIZE,rows=allRows.slice(start,start+REFERENCE_CUSTOMERS_PAGE_SIZE);
   document.getElementById("referenceAddCustomerBtn")?.classList.toggle("hidden",!canScreenAction("customers","add")); document.querySelectorAll(".customer-export-action").forEach(b=>b.classList.toggle("hidden",!canScreenAction("customers","export"))); document.querySelectorAll(".customer-import-action").forEach(b=>b.classList.toggle("hidden",!canScreenAction("customers","add")));
-  if(!rows.length)body.innerHTML=`<tr><td colspan="6" class="empty-state">${customersLoaded?"لا توجد نتائج مطابقة.":"جاري تحميل بيانات العملاء..."}</td></tr>`; else body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.neighborhoodId?customerNeighborhoodLabel(c.neighborhoodId,c.address):(c.address||"—"))}</td><td>${escapeHtml(c.phone||"—")}</td><td><div class="row-actions"><button class="edit-btn" type="button" data-reference-customer-details="${c.id}">فتح</button>${canScreenAction("customers","edit")?`<button class="edit-btn" type="button" data-reference-customer-edit="${c.id}">تعديل</button>`:""}${canScreenAction("customers","delete")?`<button class="delete-btn" type="button" data-reference-customer-delete="${c.id}">حذف</button>`:""}</div></td></tr>`).join("");
-  const info=document.getElementById("referenceCustomersPaginationInfo"),pn=document.getElementById("referenceCustomersPageNumber"),prev=document.getElementById("referenceCustomersPrevPage"),next=document.getElementById("referenceCustomersNextPage"); if(info)info.textContent=customerT("customers.count",`${allRows.length} عميل`,{count:allRows.length}); if(pn)pn.textContent=`${referenceCustomersPage} / ${pageCount}`; if(prev)prev.disabled=referenceCustomersPage<=1; if(next)next.disabled=referenceCustomersPage>=pageCount;
+  if(!rows.length) body.innerHTML=`<tr><td colspan="6" class="empty-state">${escapeHtml(customerT(customersLoaded?"referenceData.customers.empty":"referenceData.customers.loading",customersLoaded?"No matching results.":"Loading customer data..."))}</td></tr>`;
+  else body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.neighborhoodId?customerNeighborhoodLabel(c.neighborhoodId,c.address):(c.address||"—"))}</td><td>${escapeHtml(c.phone||"—")}</td><td>${c.googleMapsUrl?`<a class="text-btn" href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(customerT("customers.action.openMap","Open location"))}</a>`:"—"}</td><td><div class="row-actions"><button class="edit-btn" type="button" data-reference-customer-details="${c.id}">${escapeHtml(customerT("referenceData.customers.open","Open"))}</button>${canScreenAction("customers","edit")?`<button class="edit-btn" type="button" data-reference-customer-edit="${c.id}">${escapeHtml(customerT("customers.action.edit","Edit"))}</button>`:""}${canScreenAction("customers","delete")?`<button class="delete-btn" type="button" data-reference-customer-delete="${c.id}">${escapeHtml(customerT("customers.action.delete","Delete"))}</button>`:""}</div></td></tr>`).join("");
+  const info=document.getElementById("referenceCustomersPaginationInfo"),pn=document.getElementById("referenceCustomersPageNumber"),prev=document.getElementById("referenceCustomersPrevPage"),next=document.getElementById("referenceCustomersNextPage"); if(info)info.textContent=customerT("customers.count",`${allRows.length}`,{count:allRows.length}); if(pn)pn.textContent=`${referenceCustomersPage} / ${pageCount}`; if(prev)prev.disabled=referenceCustomersPage<=1; if(next)next.disabled=referenceCustomersPage>=pageCount;
 }
 
 function syncReferenceDataPanel() {
@@ -4257,60 +4153,29 @@ function syncReferenceDataPanel() {
 }
 
 async function deleteReferenceItem(type, id) {
-  if (!requireScreenAction("settings", "delete", "لا توجد صلاحية حذف البيانات المرجعية.")) return;
+  if (!requireScreenAction("settings", "delete", customerT("referenceData.permission.delete","You do not have permission to delete reference data."))) return;
   if (!canManageReferenceData()) return;
-
   const records = type === "interest" ? interestRecords : reasonRecords;
-  const record = records.find(item => item.id === id);
-  if (!record) return;
-
-  const label = type === "interest" ? "مجال الاهتمام" : "سبب عدم البيع";
-  if (!confirm(`سيتم حذف ${label} «${record.name}» نهائيًا. هل تريد المتابعة؟`)) {
-    return;
-  }
-
-  showDataStatus("referenceDataStatus", `جاري حذف ${label}...`, "info");
-
+  const record = records.find(item => item.id === id); if (!record) return;
+  const item = customerT(type === "interest" ? "referenceData.item.interest" : "referenceData.item.reason", type === "interest" ? "interest category" : "no-sale reason");
+  if (!confirm(customerT("referenceData.confirm.delete",'{item} “{name}” will be permanently deleted. Continue?',{item,name:record.name}))) return;
+  showDataStatus("referenceDataStatus", customerT("referenceData.status.deleting",'Deleting {item}...',{item}), "info");
   try {
-    if (type === "interest") await window.ReferenceDataService.deleteInterest(id);
-    else await window.ReferenceDataService.deleteReason(id);
-
-    referenceDataLoaded = false;
-    await loadReferenceDataFromSupabase(true);
-    syncReferenceDataPanel();
-
-    showDataStatus(
-      "referenceDataStatus",
-      `تم حذف ${label} بنجاح.`,
-      "success"
-    );
+    if (type === "interest") await window.ReferenceDataService.deleteInterest(id); else await window.ReferenceDataService.deleteReason(id);
+    referenceDataLoaded = false; await loadReferenceDataFromSupabase(true); syncReferenceDataPanel();
+    showDataStatus("referenceDataStatus", customerT("referenceData.status.deleted",'{item} deleted successfully.',{item}), "success");
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    const isLinked = /foreign key|violates|referenced|23503/i.test(message);
-
-    showDataStatus(
-      "referenceDataStatus",
-      isLinked
-        ? `لا يمكن حذف ${label} لأنه مستخدم في بيانات حالية. عدّل حالته إلى «غير نشط» بدل الحذف.`
-        : message || `تعذر حذف ${label}.`,
-      "error"
-    );
+    const message = error instanceof Error ? error.message : String(error); const isLinked = /foreign key|violates|referenced|23503/i.test(message);
+    showDataStatus("referenceDataStatus", isLinked ? customerT("referenceData.error.linked",'Cannot delete {item} because it is used by current data. Set it to Inactive instead.',{item}) : message || customerT("referenceData.error.delete",'Unable to delete {item}.',{item}), "error");
   }
 }
 
 function openRepresentativeDialog(record = null) {
   const action = record ? "edit" : "add";
-  if (!requireScreenAction("representatives", action, "لا توجد صلاحية إدارة مندوبي المبيعات.")) return;
+  if (!requireScreenAction("representatives", action, customerT("representatives.permission.manage","You do not have permission to manage sales representatives."))) return;
   editingRepresentativeId = record?.id || null;
-  document.getElementById("representativeDialogTitle").textContent =
-    record ? "تعديل مندوب المبيعات" : "إضافة مندوب مبيعات";
-  document.getElementById("representativeId").value = record?.id || "";
-  document.getElementById("representativeCode").value = record?.representative_code || "";
-  document.getElementById("representativeName").value = record?.full_name || "";
-  document.getElementById("representativePhone").value = record?.phone || "";
-  document.getElementById("representativeEmail").value = record?.email || "";
-  document.getElementById("representativeActive").value = String(record?.is_active ?? true);
-  document.getElementById("representativeDialog").showModal();
+  document.getElementById("representativeDialogTitle").textContent = customerT(record?"representatives.dialog.editTitle":"representatives.dialog.addTitle",record?"Edit Sales Representative":"Add Sales Representative");
+  document.getElementById("representativeId").value = record?.id || ""; document.getElementById("representativeCode").value = record?.representative_code || ""; document.getElementById("representativeName").value = record?.full_name || ""; document.getElementById("representativePhone").value = record?.phone || ""; document.getElementById("representativeEmail").value = record?.email || ""; document.getElementById("representativeActive").value = String(record?.is_active ?? true); document.getElementById("representativeDialog").showModal();
 }
 
 function closeRepresentativeDialog() {
@@ -4321,36 +4186,21 @@ function closeRepresentativeDialog() {
 
 async function saveRepresentativeForm(event) {
   const action = editingRepresentativeId ? "edit" : "add";
-  if (!requireScreenAction("representatives", action, "لا توجد صلاحية حفظ مندوبي المبيعات.")) return;
+  if (!requireScreenAction("representatives", action, customerT("representatives.permission.save","You do not have permission to save sales representatives."))) return;
   event.preventDefault();
   try {
-    await window.ReferenceDataService.saveRepresentative({
-      id: editingRepresentativeId,
-      representative_code: document.getElementById("representativeCode").value,
-      full_name: document.getElementById("representativeName").value,
-      phone: document.getElementById("representativePhone").value,
-      email: document.getElementById("representativeEmail").value,
-      is_active: document.getElementById("representativeActive").value === "true"
-    });
-    closeRepresentativeDialog();
-    referenceDataLoaded = false;
-    await loadReferenceDataFromSupabase(true);
-  } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حفظ المندوب.");
-  }
+    await window.ReferenceDataService.saveRepresentative({id:editingRepresentativeId,representative_code:document.getElementById("representativeCode").value,full_name:document.getElementById("representativeName").value,phone:document.getElementById("representativePhone").value,email:document.getElementById("representativeEmail").value,is_active:document.getElementById("representativeActive").value === "true"});
+    closeRepresentativeDialog(); referenceDataLoaded = false; await loadReferenceDataFromSupabase(true);
+  } catch (error) { alert(error instanceof Error ? error.message : customerT("representatives.error.save","Unable to save representative.")); }
 }
 
 function openReferenceDialog(type, record = null) {
   const action = record ? "edit" : "add";
-  if (!requireScreenAction("settings", action, "لا توجد صلاحية إدارة البيانات المرجعية.")) return;
+  if (!requireScreenAction("settings", action, customerT("referenceData.permission.manage","You do not have permission to manage reference data."))) return;
   editingReferenceItemId = record?.id || null;
-  document.getElementById("referenceDialogTitle").textContent =
-    `${record ? "تعديل" : "إضافة"} ${type === "interest" ? "مجال اهتمام" : "سبب عدم بيع"}`;
-  document.getElementById("referenceItemId").value = record?.id || "";
-  document.getElementById("referenceItemType").value = type;
-  document.getElementById("referenceItemName").value = record?.name || "";
-  document.getElementById("referenceItemActive").value = String(record?.is_active ?? true);
-  document.getElementById("referenceItemDialog").showModal();
+  const item = customerT(type === "interest" ? "referenceData.item.interest" : "referenceData.item.reason", type === "interest" ? "interest category" : "no-sale reason");
+  document.getElementById("referenceDialogTitle").textContent = customerT(record?"referenceData.dialog.editTitle":"referenceData.dialog.addItemTitle",record?'Edit {item}':'Add {item}',{item});
+  document.getElementById("referenceItemId").value = record?.id || ""; document.getElementById("referenceItemType").value = type; document.getElementById("referenceItemName").value = record?.name || ""; document.getElementById("referenceItemActive").value = String(record?.is_active ?? true); document.getElementById("referenceItemDialog").showModal();
 }
 
 function closeReferenceDialog() {
@@ -4361,24 +4211,11 @@ function closeReferenceDialog() {
 
 async function saveReferenceForm(event) {
   const action = editingReferenceItemId ? "edit" : "add";
-  if (!requireScreenAction("settings", action, "لا توجد صلاحية حفظ البيانات المرجعية.")) return;
+  if (!requireScreenAction("settings", action, customerT("referenceData.permission.save","You do not have permission to save reference data."))) return;
   event.preventDefault();
-  const type = document.getElementById("referenceItemType").value;
-  const payload = {
-    id: editingReferenceItemId,
-    name: document.getElementById("referenceItemName").value,
-    is_active: document.getElementById("referenceItemActive").value === "true"
-  };
-
-  try {
-    if (type === "interest") await window.ReferenceDataService.saveInterest(payload);
-    else await window.ReferenceDataService.saveReason(payload);
-    closeReferenceDialog();
-    referenceDataLoaded = false;
-    await loadReferenceDataFromSupabase(true);
-  } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حفظ البيانات المرجعية.");
-  }
+  const type = document.getElementById("referenceItemType").value; const payload = {id:editingReferenceItemId,name:document.getElementById("referenceItemName").value,is_active:document.getElementById("referenceItemActive").value === "true"};
+  try { if (type === "interest") await window.ReferenceDataService.saveInterest(payload); else await window.ReferenceDataService.saveReason(payload); closeReferenceDialog(); referenceDataLoaded = false; await loadReferenceDataFromSupabase(true); }
+  catch (error) { alert(error instanceof Error ? error.message : customerT("referenceData.error.save","Unable to save reference data.")); }
 }
 
 function syncCustomerContactPersonField() {
@@ -8280,144 +8117,34 @@ document.getElementById("referenceAddCustomerBtn")?.addEventListener("click", ()
 });
 
 
-function closeRepresentativeImportDialog() {
-  document.getElementById("representativeImportDialog")?.close();
-}
-
+function closeRepresentativeImportDialog() { document.getElementById("representativeImportDialog")?.close(); }
 function resetRepresentativeImportDialog() {
-  representativeImportPreview = null;
-  representativeImportFailedRows = [];
-  const fileInput = document.getElementById("representativeImportFileInput");
-  if (fileInput) fileInput.value = "";
-  const fileName = document.getElementById("representativeImportFileName");
-  if (fileName) fileName.textContent = "لم يتم اختيار ملف";
-  document.getElementById("representativeImportSummary")?.classList.add("hidden");
-  document.getElementById("representativeImportProgress")?.classList.add("hidden");
-  const progressBar = document.getElementById("representativeImportProgressBar");
-  if (progressBar) progressBar.style.width = "0%";
-  const body = document.getElementById("representativeImportPreviewBody");
-  if (body) body.innerHTML = '<tr><td colspan="7" class="empty-cell">اختر ملف Excel لعرض المعاينة.</td></tr>';
-  const executeBtn = document.getElementById("representativeImportExecuteBtn");
-  if (executeBtn) executeBtn.disabled = true;
-  document.getElementById("representativeImportFailedExportBtn")?.classList.add("hidden");
-  showDataStatus("representativeImportStatus", "");
+  representativeImportPreview = null; representativeImportFailedRows = [];
+  const fileInput = document.getElementById("representativeImportFileInput"); if (fileInput) fileInput.value = "";
+  const fileName = document.getElementById("representativeImportFileName"); if (fileName) fileName.textContent = customerT("representatives.import.noFile","No file selected");
+  document.getElementById("representativeImportSummary")?.classList.add("hidden"); document.getElementById("representativeImportProgress")?.classList.add("hidden");
+  const progressBar = document.getElementById("representativeImportProgressBar"); if (progressBar) progressBar.style.width = "0%";
+  const body = document.getElementById("representativeImportPreviewBody"); if (body) body.innerHTML = `<tr><td colspan="7" class="empty-cell">${escapeHtml(customerT("representatives.import.previewEmpty","Choose an Excel file to preview it."))}</td></tr>`;
+  const executeBtn = document.getElementById("representativeImportExecuteBtn"); if (executeBtn) executeBtn.disabled = true;
+  document.getElementById("representativeImportFailedExportBtn")?.classList.add("hidden"); showDataStatus("representativeImportStatus", "");
 }
-
 function renderRepresentativeImportPreview(preview) {
-  representativeImportPreview = preview;
-  const summary = preview.summary;
-  const values = {
-    representativeImportTotalCount: summary.total,
-    representativeImportValidCount: summary.valid,
-    representativeImportErrorCount: summary.errors,
-    representativeImportNewCount: summary.newRepresentatives,
-    representativeImportDuplicateCount: summary.duplicates,
-    representativeImportExistingCount: summary.existing
-  };
-  Object.entries(values).forEach(([id, value]) => {
-    const element = document.getElementById(id);
-    if (element) element.textContent = String(value);
-  });
-  document.getElementById("representativeImportSummary")?.classList.remove("hidden");
-
-  const body = document.getElementById("representativeImportPreviewBody");
-  if (body) {
-    const previewLimit = 200;
-    const rows = preview.rows.slice(0, previewLimit);
-    body.innerHTML = rows.map(row => {
-      const statusClass = row.errors.length ? "danger" : "success";
-      const statusLabel = row.errors.length ? "خطأ" : "جديد";
-      return `<tr>
-        <td>${row.sourceRow}</td>
-        <td dir="ltr">${escapeHtml(row.representativeCode || "-")}</td>
-        <td>${escapeHtml(row.fullName || "-")}</td>
-        <td dir="ltr">${escapeHtml(row.phone || "-")}</td>
-        <td dir="ltr">${escapeHtml(row.email || "-")}</td>
-        <td><span class="status-badge ${statusClass}">${row.isActive ? "نشط" : "موقوف"} — ${statusLabel}</span></td>
-        <td>${row.errors.length ? escapeHtml(row.errors.join(" — ")) : "جاهز"}</td>
-      </tr>`;
-    }).join("") + (preview.rows.length > previewLimit
-      ? `<tr><td colspan="7" class="empty-cell">يتم عرض أول ${previewLimit} صف فقط من أصل ${preview.rows.length} صف للحفاظ على سرعة الواجهة. سيتم استيراد جميع الصفوف الصحيحة.</td></tr>`
-      : "");
-  }
-  const executeBtn = document.getElementById("representativeImportExecuteBtn");
-  if (executeBtn) executeBtn.disabled = summary.valid === 0;
+  representativeImportPreview = preview; const summary = preview.summary;
+  const values={representativeImportTotalCount:summary.total,representativeImportValidCount:summary.valid,representativeImportErrorCount:summary.errors,representativeImportNewCount:summary.newRepresentatives,representativeImportDuplicateCount:summary.duplicates,representativeImportExistingCount:summary.existing};
+  Object.entries(values).forEach(([id,value])=>{const element=document.getElementById(id);if(element)element.textContent=String(value);}); document.getElementById("representativeImportSummary")?.classList.remove("hidden");
+  const body=document.getElementById("representativeImportPreviewBody"); if(body){const previewLimit=200;const rows=preview.rows.slice(0,previewLimit);body.innerHTML=rows.map(row=>{const statusClass=row.errors.length?"danger":"success";const statusLabel=customerT(row.errors.length?"representatives.import.status.error":"representatives.import.status.new",row.errors.length?"Error":"New");return `<tr><td>${row.sourceRow}</td><td dir="ltr">${escapeHtml(row.representativeCode||"-")}</td><td>${escapeHtml(row.fullName||"-")}</td><td dir="ltr">${escapeHtml(row.phone||"-")}</td><td dir="ltr">${escapeHtml(row.email||"-")}</td><td><span class="status-badge ${statusClass}">${escapeHtml(customerT(row.isActive?"representatives.status.active":"representatives.status.inactive",row.isActive?"Active":"Suspended"))} — ${escapeHtml(statusLabel)}</span></td><td>${row.errors.length?escapeHtml(row.errors.join(" — ")):escapeHtml(customerT("representatives.import.status.ready","Ready"))}</td></tr>`;}).join("")+(preview.rows.length>previewLimit?`<tr><td colspan="7" class="empty-cell">${escapeHtml(customerT("representatives.import.previewLimited",'Only the first {limit} of {total} rows are shown to keep the interface responsive. All valid rows will be imported.',{limit:previewLimit,total:preview.rows.length}))}</td></tr>`:"");}
+  const executeBtn=document.getElementById("representativeImportExecuteBtn");if(executeBtn)executeBtn.disabled=summary.valid===0;
 }
-
 async function previewRepresentativeImportFile(file) {
-  if (!file) return;
-  const fileName = document.getElementById("representativeImportFileName");
-  if (fileName) fileName.textContent = file.name;
-  showDataStatus("representativeImportStatus", "جاري قراءة الملف والتحقق من البيانات...", "info");
-  try {
-    const rows = await window.RepresentativeExcelCenter.parseImportFile(file);
-    renderRepresentativeImportPreview(window.RepresentativeExcelCenter.buildImportPreview(rows, representativeRecords));
-    const errors = representativeImportPreview.summary.errors;
-    showDataStatus(
-      "representativeImportStatus",
-      errors ? `تم التحقق: سيتم استيراد ${representativeImportPreview.summary.valid} صف صحيح وتجاهل ${errors} صف به أخطاء.` : "تم التحقق من الملف وهو جاهز للاستيراد.",
-      errors ? "info" : "success"
-    );
-  } catch (error) {
-    representativeImportPreview = null;
-    showDataStatus("representativeImportStatus", error instanceof Error ? error.message : "تعذر قراءة ملف Excel.", "error");
-  }
+  if(!file)return; const fileName=document.getElementById("representativeImportFileName");if(fileName)fileName.textContent=file.name; showDataStatus("representativeImportStatus",customerT("representatives.import.reading","Reading the file and validating data..."),"info");
+  try{const rows=await window.RepresentativeExcelCenter.parseImportFile(file);renderRepresentativeImportPreview(window.RepresentativeExcelCenter.buildImportPreview(rows,representativeRecords));const errors=representativeImportPreview.summary.errors;showDataStatus("representativeImportStatus",errors?customerT("representatives.import.checkedWithErrors",'{valid} valid row(s) will be imported and {errors} row(s) with errors will be skipped.',{valid:representativeImportPreview.summary.valid,errors}):customerT("representatives.import.checkedReady","The file has been validated and is ready to import."),errors?"info":"success");}
+  catch(error){representativeImportPreview=null;showDataStatus("representativeImportStatus",error instanceof Error?error.message:customerT("representatives.import.error.read","Unable to read the Excel file."),"error");}
 }
-
-function openRepresentativeImportDialog() {
-  if (!requireScreenAction("representatives", "add", "لا توجد صلاحية استيراد مندوبي المبيعات.")) return;
-  resetRepresentativeImportDialog();
-  document.getElementById("representativeImportDialog")?.showModal();
-}
-
-document.getElementById("representativesTemplateBtn")?.addEventListener("click", () => {
-  if (!requireScreenAction("representatives", "add", "لا توجد صلاحية تنزيل نموذج المندوبين.")) return;
-  try { window.RepresentativeExcelCenter.downloadTemplate(); }
-  catch (error) { alert(error instanceof Error ? error.message : "تعذر تنزيل النموذج."); }
-});
-document.getElementById("representativesImportBtn")?.addEventListener("click", openRepresentativeImportDialog);
-document.getElementById("representativeImportChooseFileBtn")?.addEventListener("click", () => document.getElementById("representativeImportFileInput")?.click());
-document.getElementById("representativeImportFileInput")?.addEventListener("change", event => previewRepresentativeImportFile(event.target.files?.[0] || null));
-document.getElementById("representativeImportCloseBtn")?.addEventListener("click", closeRepresentativeImportDialog);
-document.getElementById("representativeImportCancelBtn")?.addEventListener("click", closeRepresentativeImportDialog);
-document.getElementById("representativeImportFailedExportBtn")?.addEventListener("click", () => {
-  try { window.RepresentativeExcelCenter.exportFailedRows(representativeImportFailedRows); }
-  catch (error) { showDataStatus("representativeImportStatus", error instanceof Error ? error.message : "تعذر تصدير الصفوف الفاشلة.", "error"); }
-});
-
-document.getElementById("representativeImportExecuteBtn")?.addEventListener("click", async () => {
-  if (!representativeImportPreview) return;
-  if (!requireScreenAction("representatives", "add", "لا توجد صلاحية استيراد مندوبي المبيعات.")) return;
-  const validRows = representativeImportPreview.rows.filter(row => !row.errors.length);
-  const executeBtn = document.getElementById("representativeImportExecuteBtn");
-  if (executeBtn) executeBtn.disabled = true;
-  representativeImportFailedRows = representativeImportPreview.rows
-    .filter(row => row.errors.length)
-    .map(row => ({ sourceRow: row.sourceRow, representativeCode: row.representativeCode, fullName: row.fullName, phone: row.phone, email: row.email, message: row.errors.join(" — ") }));
-  document.getElementById("representativeImportProgress")?.classList.remove("hidden");
-  try {
-    const result = await window.RepresentativeExcelCenter.importRows(validRows, window.ReferenceDataService.saveRepresentative, (current, total) => {
-      const percent = total ? Math.round((current / total) * 100) : 0;
-      const bar = document.getElementById("representativeImportProgressBar");
-      if (bar) bar.style.width = `${percent}%`;
-      const text = document.getElementById("representativeImportProgressText");
-      if (text) text.textContent = `${percent}%`;
-      const rowText = document.getElementById("representativeImportProgressRows");
-      if (rowText) rowText.textContent = `${current} / ${total}`;
-      if (current === total || current % 25 === 0) showDataStatus("representativeImportStatus", `جاري استيراد ${current} من ${total}...`, "info");
-    }, { chunkSize: 200 });
-    representativeImportFailedRows.push(...result.errors);
-    document.getElementById("representativeImportFailedExportBtn")?.classList.toggle("hidden", !representativeImportFailedRows.length);
-    referenceDataLoaded = false;
-    await loadReferenceDataFromSupabase(true);
-    showDataStatus("representativeImportStatus", `اكتمل الاستيراد: ${result.inserted} مندوب جديد، ${result.failed} فشل.`, result.failed ? "error" : "success");
-    if (!result.failed) setTimeout(closeRepresentativeImportDialog, 900);
-  } catch (error) {
-    showDataStatus("representativeImportStatus", error instanceof Error ? error.message : "تعذر تنفيذ الاستيراد.", "error");
-  } finally {
-    if (executeBtn) executeBtn.disabled = false;
-  }
-});
+function openRepresentativeImportDialog(){if(!requireScreenAction("representatives","add",customerT("representatives.permission.import","You do not have permission to import sales representatives.")))return;resetRepresentativeImportDialog();document.getElementById("representativeImportDialog")?.showModal();}
+document.getElementById("representativesTemplateBtn")?.addEventListener("click",()=>{if(!requireScreenAction("representatives","add",customerT("representatives.permission.template","You do not have permission to download the representative template.")))return;try{window.RepresentativeExcelCenter.downloadTemplate();}catch(error){alert(error instanceof Error?error.message:customerT("representatives.import.error.downloadTemplate","Unable to download the template."));}});
+document.getElementById("representativesImportBtn")?.addEventListener("click",openRepresentativeImportDialog); document.getElementById("representativeImportChooseFileBtn")?.addEventListener("click",()=>document.getElementById("representativeImportFileInput")?.click()); document.getElementById("representativeImportFileInput")?.addEventListener("change",event=>previewRepresentativeImportFile(event.target.files?.[0]||null)); document.getElementById("representativeImportCloseBtn")?.addEventListener("click",closeRepresentativeImportDialog); document.getElementById("representativeImportCancelBtn")?.addEventListener("click",closeRepresentativeImportDialog);
+document.getElementById("representativeImportFailedExportBtn")?.addEventListener("click",()=>{try{window.RepresentativeExcelCenter.exportFailedRows(representativeImportFailedRows);}catch(error){showDataStatus("representativeImportStatus",error instanceof Error?error.message:customerT("representatives.import.error.exportFailed","Unable to export failed rows."),"error");}});
+document.getElementById("representativeImportExecuteBtn")?.addEventListener("click",async()=>{if(!representativeImportPreview)return;if(!requireScreenAction("representatives","add",customerT("representatives.permission.import","You do not have permission to import sales representatives.")))return;const validRows=representativeImportPreview.rows.filter(row=>!row.errors.length);const executeBtn=document.getElementById("representativeImportExecuteBtn");if(executeBtn)executeBtn.disabled=true;representativeImportFailedRows=representativeImportPreview.rows.filter(row=>row.errors.length).map(row=>({sourceRow:row.sourceRow,representativeCode:row.representativeCode,fullName:row.fullName,phone:row.phone,email:row.email,message:row.errors.join(" — ")}));document.getElementById("representativeImportProgress")?.classList.remove("hidden");try{const result=await window.RepresentativeExcelCenter.importRows(validRows,window.ReferenceDataService.saveRepresentative,(current,total)=>{const percent=total?Math.round((current/total)*100):0;const bar=document.getElementById("representativeImportProgressBar");if(bar)bar.style.width=`${percent}%`;const text=document.getElementById("representativeImportProgressText");if(text)text.textContent=`${percent}%`;const rowText=document.getElementById("representativeImportProgressRows");if(rowText)rowText.textContent=`${current} / ${total}`;if(current===total||current%25===0)showDataStatus("representativeImportStatus",customerT("representatives.import.progress",'Importing {current} of {total}...',{current,total}),"info");},{chunkSize:200});representativeImportFailedRows.push(...result.errors);document.getElementById("representativeImportFailedExportBtn")?.classList.toggle("hidden",!representativeImportFailedRows.length);referenceDataLoaded=false;await loadReferenceDataFromSupabase(true);showDataStatus("representativeImportStatus",customerT("representatives.import.complete",'Import complete: {inserted} new representative(s), {failed} failed.',{inserted:result.inserted,failed:result.failed}),result.failed?"error":"success");if(!result.failed)setTimeout(closeRepresentativeImportDialog,900);}catch(error){showDataStatus("representativeImportStatus",error instanceof Error?error.message:customerT("representatives.import.error.execute","Unable to complete the import."),"error");}finally{if(executeBtn)executeBtn.disabled=false;}});
 
 function closeCustomerImportDialog() {
   document.getElementById("customerImportDialog")?.close();

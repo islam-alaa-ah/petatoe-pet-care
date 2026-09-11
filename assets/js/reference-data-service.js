@@ -5,17 +5,18 @@
   const PERSISTENT_STALE_MAX_MS = 30 * 24 * 60 * 60 * 1000;
   const cache = new Map();
   const inFlight = new Map();
+  const t = (key, fallback, vars = {}) => { const value=window.PetatoeLocalization?.t?.(key, vars); return value && !/^\[.+\]$/.test(value) ? value : fallback; };
 
   function client() {
     if (!window.customerSupabase) {
-      throw new Error("اتصال Supabase غير جاهز.");
+      throw new Error(t('referenceData.service.dbNotReady','Supabase connection is not ready.'));
     }
     return window.customerSupabase;
   }
 
-  function requireOnlineWrite(label = "هذه العملية") {
+  function requireOnlineWrite(label = t('referenceData.service.operation','This operation')) {
     if (navigator.onLine === false) {
-      throw new Error(`${label} تحتاج اتصالًا بالإنترنت.`);
+      throw new Error(t('referenceData.service.onlineRequired','{operation} requires an internet connection.',{ operation: label }));
     }
   }
 
@@ -23,7 +24,7 @@
     const { data, error } = await request;
     if (error) {
       if (error.code === "23505") {
-        throw new Error("لا يمكن الحفظ لأن القيمة مسجلة مسبقًا.");
+        throw new Error(t('referenceData.service.duplicate','Cannot save because the value already exists.'));
       }
       throw new Error(`${fallbackMessage}: ${error.message}`);
     }
@@ -146,12 +147,12 @@
         .order("full_name", { ascending: true });
 
       if (!includeInactive) query = query.eq("is_active", true);
-      return unwrap(query, "تعذر تحميل المندوبين");
+      return unwrap(query, t('referenceData.service.loadRepresentatives','Unable to load representatives'));
     });
   }
 
   async function saveRepresentative(record) {
-    requireOnlineWrite(record?.id ? "تعديل المندوب" : "إضافة المندوب");
+    requireOnlineWrite(record?.id ? t('referenceData.service.editRepresentative','Edit representative') : t('referenceData.service.addRepresentative','Add representative'));
     const payload = {
       representative_code: record.representative_code.trim(),
       full_name: record.full_name.trim(),
@@ -163,7 +164,7 @@
     if (record.id) {
       const rows = await unwrap(
         client().from("sales_representatives").update(payload).eq("id", record.id).select().single(),
-        "تعذر تعديل المندوب"
+        t('referenceData.service.errorEditRepresentative','Unable to edit representative')
       );
       await audit("update", "sales_representatives", record.id, payload);
       invalidate("sales_representatives:");
@@ -172,7 +173,7 @@
 
     const rows = await unwrap(
       client().from("sales_representatives").insert(payload).select().single(),
-      "تعذر إضافة المندوب"
+      t('referenceData.service.errorAddRepresentative','Unable to add representative')
     );
     await audit("insert", "sales_representatives", rows.id, payload);
     invalidate("sales_representatives:");
@@ -180,14 +181,14 @@
   }
 
   async function setRepresentativeStatus(id, isActive) {
-    requireOnlineWrite("تغيير حالة المندوب");
+    requireOnlineWrite(t('referenceData.service.changeRepresentativeStatus','Change representative status'));
     const row = await unwrap(
       client().from("sales_representatives")
         .update({ is_active: Boolean(isActive), updated_at: new Date().toISOString() })
         .eq("id", id)
         .select("id, representative_code, full_name, phone, email, is_active, created_at")
         .single(),
-      "تعذر تغيير حالة المندوب"
+      t('referenceData.service.errorStatusRepresentative','Unable to change representative status')
     );
     await audit("update", "sales_representatives", id, { is_active: Boolean(isActive) });
     invalidate("sales_representatives:");
@@ -195,10 +196,10 @@
   }
 
   async function deleteRepresentative(id) {
-    requireOnlineWrite("حذف المندوب");
+    requireOnlineWrite(t('referenceData.service.deleteRepresentative','Delete representative'));
     await unwrap(
       client().from("sales_representatives").delete().eq("id", id),
-      "تعذر حذف المندوب"
+      t('referenceData.service.errorDeleteRepresentative','Unable to delete representative')
     );
     await audit("delete", "sales_representatives", id, { id });
     invalidate("sales_representatives:");
@@ -215,12 +216,12 @@
         .order("name", { ascending: true });
 
       if (!includeInactive) query = query.eq("is_active", true);
-      return unwrap(query, "تعذر تحميل البيانات المرجعية");
+      return unwrap(query, t('referenceData.service.loadReference','Unable to load reference data'));
     });
   }
 
   async function saveReference(table, record) {
-    requireOnlineWrite(record?.id ? "تعديل البيانات المرجعية" : "إضافة البيانات المرجعية");
+    requireOnlineWrite(record?.id ? t('referenceData.service.editReference','Edit reference data') : t('referenceData.service.addReference','Add reference data'));
     const payload = {
       name: record.name.trim(),
       is_active: Boolean(record.is_active)
@@ -229,7 +230,7 @@
     if (record.id) {
       const row = await unwrap(
         client().from(table).update(payload).eq("id", record.id).select().single(),
-        "تعذر تعديل البيانات المرجعية"
+        t('referenceData.service.errorEditReference','Unable to edit reference data')
       );
       await audit("update", table, record.id, payload);
       invalidate(`${table}:`);
@@ -238,7 +239,7 @@
 
     const row = await unwrap(
       client().from(table).insert(payload).select().single(),
-      "تعذر إضافة البيانات المرجعية"
+      t('referenceData.service.errorAddReference','Unable to add reference data')
     );
     await audit("insert", table, row.id, payload);
     invalidate(`${table}:`);
@@ -246,10 +247,10 @@
   }
 
   async function deleteReference(table, id) {
-    requireOnlineWrite("حذف البيانات المرجعية");
+    requireOnlineWrite(t('referenceData.service.deleteReference','Delete reference data'));
     await unwrap(
       client().from(table).delete().eq("id", id),
-      "تعذر حذف البيانات المرجعية"
+      t('referenceData.service.errorDeleteReference','Unable to delete reference data')
     );
     await audit("delete", table, id, { id });
     invalidate(`${table}:`);
