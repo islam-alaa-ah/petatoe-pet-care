@@ -1,5 +1,30 @@
 // KYUM Phase 15.3.1 — Customer 360 Foundation Engine
 (function () {
+  const t = (key, vars = {}) => window.PetatoeLocalization?.t?.(key, vars) || `[${key}]`;
+  function followupResultLabel(value) {
+    const map = {
+      "تم التواصل": "followups.result.contacted", "لم يتم الرد": "followups.result.noAnswer",
+      "طلب عقد": "followups.result.requestContract", "تم إرسال عقد": "followups.result.sentContract",
+      "تفاوض": "followups.result.negotiation", "تم البيع": "followups.result.sold",
+      "لم يتم البيع": "followups.result.notSold", "مؤجل": "followups.result.deferred"
+    };
+    return map[value] ? t(map[value]) : String(value || "");
+  }
+  function followupMethodLabel(value) {
+    const map = {
+      "اتصال": "followups.method.call", "واتساب": "followups.method.whatsapp", "زيارة": "followups.method.visit",
+      "بريد إلكتروني": "followups.method.email", "اجتماع": "followups.method.meeting"
+    };
+    return map[value] ? t(map[value]) : String(value || "");
+  }
+  function quotationStatusLabel(value) {
+    const map = {
+      "قيد التنفيذ": "contracts.status.inProgress", "مقبول": "contracts.status.accepted",
+      "مرفوض": "contracts.status.rejected", "ملغي": "customer360.contractStatus.cancelled"
+    };
+    return map[value] ? t(map[value]) : (value || t("customer360.common.unspecified"));
+  }
+
   function asDate(value) {
     if (!value) return null;
     const date = new Date(value);
@@ -71,35 +96,35 @@
     const hasOverdue = Boolean(followupStates.overdue);
     let status = {
       key: "active",
-      label: "نشط",
-      detail: "التواصل مع العميل ضمن النطاق الطبيعي."
+      label: t("customer360.status.active"),
+      detail: t("customer360.status.activeDetail")
     };
 
     if (hasOverdue) {
       status = {
         key: "overdue",
-        label: "متابعة متأخرة",
-        detail: "يوجد موعد متابعة تجاوز تاريخه."
+        label: t("customer360.status.overdue"),
+        detail: t("customer360.status.overdueDetail")
       };
     } else if (!customerFollowups.length) {
       status = {
         key: "needs_followup",
-        label: "يحتاج متابعة",
-        detail: "لم تتم إضافة أي متابعة للعميل."
+        label: t("customer360.status.needsFollowup"),
+        detail: t("customer360.status.needsFollowupDetail")
       };
     } else if (inactivityDays === null || inactivityDays > 30) {
       status = {
         key: "inactive",
-        label: "غير نشط",
+        label: t("customer360.status.inactive"),
         detail: inactivityDays === null
-          ? "لا يوجد تاريخ تواصل واضح."
-          : `مر ${inactivityDays} يومًا منذ آخر تواصل.`
+          ? t("customer360.status.noContactDate")
+          : t("customer360.status.daysSinceContact", { days: inactivityDays })
       };
     } else if (followupStates.today) {
       status = {
         key: "today",
-        label: "متابعة اليوم",
-        detail: "يوجد موعد متابعة مستحق اليوم."
+        label: t("customer360.status.today"),
+        detail: t("customer360.status.todayDetail")
       };
     }
 
@@ -117,9 +142,9 @@
       {
         id: `customer-created-${customer.id}`,
         type: "customer",
-        typeLabel: "بيانات العميل",
-        title: "إنشاء ملف العميل",
-        detail: "تم إنشاء ملف العميل في النظام.",
+        typeLabel: t("customer360.timeline.customerData"),
+        title: t("customer360.timeline.customerCreated"),
+        detail: t("customer360.timeline.customerCreatedDetail"),
         date: customer.createdAt || null,
         meta: "—",
         status: "info"
@@ -127,20 +152,20 @@
       ...customerFollowups.map(item => ({
         id: `followup-${item.id || Math.random()}`,
         type: "followup",
-        typeLabel: "متابعة",
-        title: item.result || "متابعة العميل",
-        detail: item.notes || item.method || "تم تسجيل متابعة للعميل.",
+        typeLabel: t("customer360.timeline.followup"),
+        title: item.result ? followupResultLabel(item.result) : t("customer360.timeline.followupCustomer"),
+        detail: item.notes || (item.method ? followupMethodLabel(item.method) : t("customer360.timeline.followupRecorded")),
         date: item.contactDate || item.createdAt || null,
-        meta: [item.method, item.representative].filter(Boolean).join(" · ") || "—",
+        meta: [item.method ? followupMethodLabel(item.method) : "", item.representative].filter(Boolean).join(" · ") || "—",
         status: followupState(item)
       })),
       ...customerQuotations.map(item => ({
         id: `quotation-${item.id || Math.random()}`,
         type: "quotation",
-        typeLabel: "عرض سعر",
-        title: item.code || item.quotationNumber || "عرض سعر",
+        typeLabel: t("customer360.timeline.contract"),
+        title: item.code || item.quotationNumber || t("customer360.timeline.contract"),
         detail: [
-          item.status || "غير محدد",
+          quotationStatusLabel(item.status),
           amount(item.amount) ? `${amount(item.amount).toFixed(2)} SAR` : null,
           item.rejectionReason || item.noSaleReason || null
         ].filter(Boolean).join(" · "),
@@ -170,37 +195,37 @@
 
     if (!customerFollowups.length) {
       riskScore += 25;
-      riskReasons.push("لا توجد متابعة مسجلة للعميل.");
+      riskReasons.push(t("customer360.risk.noFollowup"));
     }
 
     if (followupStates.overdue) {
       const overduePenalty = Math.min(30, (followupStates.overdue || 0) * 12);
       riskScore += overduePenalty;
-      riskReasons.push(`يوجد ${followupStates.overdue} متابعة متأخرة.`);
+      riskReasons.push(t("customer360.risk.overdueCount", { count: followupStates.overdue }));
     }
 
     if (inactivityDays === null) {
       riskScore += 15;
-      riskReasons.push("لا يوجد تاريخ واضح لآخر تواصل.");
+      riskReasons.push(t("customer360.risk.noLastContact"));
     } else if (inactivityDays > 60) {
       riskScore += 30;
-      riskReasons.push(`مر ${inactivityDays} يومًا منذ آخر تواصل.`);
+      riskReasons.push(t("customer360.risk.daysSinceContact", { days: inactivityDays }));
     } else if (inactivityDays > 30) {
       riskScore += 20;
-      riskReasons.push(`العميل غير نشط منذ ${inactivityDays} يومًا.`);
+      riskReasons.push(t("customer360.risk.inactiveDays", { days: inactivityDays }));
     } else if (inactivityDays > 14) {
       riskScore += 10;
-      riskReasons.push(`مر ${inactivityDays} يومًا منذ آخر تواصل.`);
+      riskReasons.push(t("customer360.risk.daysSinceContact", { days: inactivityDays }));
     }
 
     if (rejected.length > accepted.length && rejected.length > 0) {
       riskScore += 15;
-      riskReasons.push("العروض المرفوضة أكثر من العروض المقبولة.");
+      riskReasons.push(t("customer360.risk.moreRejected"));
     }
 
     if (customerQuotations.length && !accepted.length) {
       riskScore += 10;
-      riskReasons.push("لا توجد عروض أسعار مقبولة حتى الآن.");
+      riskReasons.push(t("customer360.risk.noAccepted"));
     }
 
 
@@ -210,46 +235,46 @@
 
     let priority = {
       key: "low",
-      label: "أولوية منخفضة"
+      label: t("customer360.priority.low")
     };
 
     if (riskScore >= 70) {
-      priority = { key: "critical", label: "أولوية حرجة" };
+      priority = { key: "critical", label: t("customer360.priority.critical") };
     } else if (riskScore >= 45) {
-      priority = { key: "high", label: "أولوية مرتفعة" };
+      priority = { key: "high", label: t("customer360.priority.high") };
     } else if (riskScore >= 20) {
-      priority = { key: "medium", label: "أولوية متوسطة" };
+      priority = { key: "medium", label: t("customer360.priority.medium") };
     }
 
     let nextAction = {
-      title: "استمرار المتابعة الدورية",
-      detail: "لا توجد مشكلة عاجلة، حافظ على التواصل المنتظم مع العميل."
+      title: t("customer360.next.periodic"),
+      detail: t("customer360.next.periodicDetail")
     };
 
     if (followupStates.overdue) {
       nextAction = {
-        title: "تنفيذ المتابعة المتأخرة فورًا",
-        detail: "تواصل مع العميل وحدّث نتيجة المتابعة والموعد القادم."
+        title: t("customer360.next.overdue"),
+        detail: t("customer360.next.overdueDetail")
       };
     } else if (!customerFollowups.length) {
       nextAction = {
-        title: "إنشاء أول متابعة",
-        detail: "حدد وسيلة التواصل وموعد المتابعة القادم."
+        title: t("customer360.next.firstFollowup"),
+        detail: t("customer360.next.firstFollowupDetail")
       };
     } else if (inactivityDays === null || inactivityDays > 30) {
       nextAction = {
-        title: "إعادة تنشيط العميل",
-        detail: "ابدأ تواصلًا جديدًا وحدد احتياجه الحالي قبل إرسال عرض جديد."
+        title: t("customer360.next.reactivate"),
+        detail: t("customer360.next.reactivateDetail")
       };
     } else if (open.length) {
       nextAction = {
-        title: "متابعة عروض الأسعار المفتوحة",
-        detail: `يوجد ${open.length} عرض مفتوح بقيمة ${openValue.toFixed(2)} SAR.`
+        title: t("customer360.next.openContracts"),
+        detail: t("customer360.next.openContractsDetail", { count: open.length, value: openValue.toFixed(2) })
       };
     } else if (!accepted.length && customerQuotations.length) {
       nextAction = {
-        title: "مراجعة سبب عدم التحويل",
-        detail: "راجع أسباب الرفض وعدّل العرض أو أسلوب المتابعة."
+        title: t("customer360.next.reviewConversion"),
+        detail: t("customer360.next.reviewConversionDetail")
       };
     }
 
@@ -264,12 +289,12 @@
     );
 
     const valueTier = acceptedValue >= 100000
-      ? { key: "strategic", label: "استراتيجي" }
+      ? { key: "strategic", label: t("customer360.valueTier.strategic") }
       : totalQuotationValue >= 50000
-        ? { key: "high", label: "قيمة مرتفعة" }
+        ? { key: "high", label: t("customer360.valueTier.high") }
         : totalQuotationValue > 0
-          ? { key: "standard", label: "قيمة متوسطة" }
-          : { key: "new", label: "فرصة جديدة" };
+          ? { key: "standard", label: t("customer360.valueTier.standard") }
+          : { key: "new", label: t("customer360.valueTier.new") };
 
     const risk = {
       score: riskScore,
@@ -277,7 +302,7 @@
       priority,
       reasons: riskReasons.length
         ? riskReasons
-        : ["لا توجد مؤشرات خطر واضحة حاليًا."],
+        : [t("customer360.risk.none")],
       nextAction,
       responseRate,
       engagementScore,

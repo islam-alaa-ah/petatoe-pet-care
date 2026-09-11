@@ -279,7 +279,7 @@ const pageMeta = {
   activityLog: ["activityLog.page.title", "activityLog.page.note"],
   backups: ["backups.page.title", "backups.page.note"],
   systemHealth: ["systemHealth.page.title", "systemHealth.page.note"],
-  reportsOverview: ["مركز التقارير", "تحليلات العملاء والمتابعات والعروض وأداء المندوبين"],
+  reportsOverview: ["reportsOverview.page.title", "reportsOverview.page.subtitle"],
   dailyPerformanceReport: ["تقرير الأداء اليومي", "متابعة تنفيذ المهام والنشاط اليومي للموظفين"],
   notificationCenter: ["مركز الإشعارات", "إدارة الأحداث والمستلمين وقنوات الإشعار"],
   translationCenter: ["مركز الترجمه", "إدارة قاموس الترجمة المركزي ومراجعة تغطية الشاشات"],
@@ -1502,7 +1502,7 @@ function switchView(requestedName, options = {}) {
     window.SeaVibeUI?.activate?.(name);
   }
 
-  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dailyOperations:["dailyOperations.page.title","dailyOperations.page.subtitle"], dailyPerformanceReport:["dailyPerformance.page.title","dailyPerformance.page.subtitle"], dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
+  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, reportsOverview:["reportsOverview.page.title","reportsOverview.page.subtitle"], dailyOperations:["dailyOperations.page.title","dailyOperations.page.subtitle"], dailyPerformanceReport:["dailyPerformance.page.title","dailyPerformance.page.subtitle"], dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
   const localizedMetaKeys = localizedPageMetaKeys[name];
   const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map(key=>l1T(key)) : pageMeta[name];
   document.getElementById("pageTitle").textContent = activePageMeta[0];
@@ -1554,7 +1554,7 @@ function switchView(requestedName, options = {}) {
 window.addEventListener("petatoe-language-changed", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
   const current = activeViewKey;
-  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
+  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, reportsOverview:["reportsOverview.page.title","reportsOverview.page.subtitle"], dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
   let meta = null;
   if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
   else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map(key=>l1T(key));
@@ -1569,6 +1569,10 @@ window.addEventListener("petatoe-language-changed", () => {
   if (current === "aboutApp") renderAboutAppCenter();
   if (current === "representatives") renderRepresentatives();
   if (current === "settings") { renderReferenceData(); renderReferenceCustomers(); }
+  if (current === "reportsOverview" && currentReportsSnapshot) { populateReportsRepresentativeFilter(); renderReportsOverview(); }
+  const customer360Dialog = document.getElementById("customerDetailsDialog");
+  if (customer360Dialog?.open && customer360Dialog.dataset.customerId) showCustomerDetails(customer360Dialog.dataset.customerId);
+  if (document.getElementById("customerImportDialog")?.open && customerImportPreview) renderCustomerImportPreview(customerImportPreview);
   if (document.getElementById("representativeImportDialog")?.open && representativeImportPreview) renderRepresentativeImportPreview(representativeImportPreview);
 });
 window.addEventListener("petatoe-localization-updated", () => {
@@ -3203,13 +3207,13 @@ function populateReportsRepresentativeFilter() {
   replaceSelectOptions(
     select,
     names.map(name => ({ label: name, value: name })),
-    "كل المندوبين",
+    l1T("reportsOverview.filter.allRepresentatives"),
     selected
   );
 }
 
 async function ensureReportsData() {
-  showDataStatus("reportsStatus", "جاري تحديث بيانات التقارير...", "info");
+  showDataStatus("reportsStatus", l1T("reportsOverview.loading"), "info");
   try {
     await Promise.all([
       loadReferenceDataFromSupabase(),
@@ -3222,7 +3226,7 @@ async function ensureReportsData() {
   } catch (error) {
     showDataStatus(
       "reportsStatus",
-      error instanceof Error ? error.message : "تعذر تحميل بيانات التقارير.",
+      error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("reportsOverview.error.load"),
       "error"
     );
   }
@@ -3231,14 +3235,29 @@ async function ensureReportsData() {
 function analyticsLabel(type, key) {
   if (type === "activity") {
     const labels = {
-      active_7_days: "نشط خلال 7 أيام",
-      active_30_days: "نشط خلال 30 يومًا",
-      inactive_30_days: "غير نشط أكثر من 30 يومًا",
-      never_contacted: "لم يتم التواصل"
+      active_7_days: "reportsOverview.activity.active7",
+      active_30_days: "reportsOverview.activity.active30",
+      inactive_30_days: "reportsOverview.activity.inactive30",
+      never_contacted: "reportsOverview.activity.neverContacted"
     };
-    return labels[key] || key;
+    return labels[key] ? l1T(labels[key]) : key;
   }
+  if (key === "غير محدد") return l1T("reportsOverview.common.unspecified");
   return key;
+}
+
+function reportsMonthLabel(monthKey) {
+  const [year, month] = String(monthKey || "").split("-").map(Number);
+  if (!year || !month) return String(monthKey || "—");
+  return new Date(year, month - 1, 1).toLocaleDateString(l1Locale(), { month: "short", year: "2-digit" });
+}
+
+function reportsFollowupReasonLabel(reason) {
+  const map = {
+    "متابعة متأخرة": "reportsOverview.followupReason.overdue",
+    "بدون متابعة": "reportsOverview.followupReason.none"
+  };
+  return map[reason] ? l1T(map[reason]) : String(reason || "");
 }
 
 function renderAnalyticsBars(containerId, entries, options = {}) {
@@ -3264,7 +3283,7 @@ function renderAnalyticsBars(containerId, entries, options = {}) {
         <b>${Number(value || 0)}</b>
       </div>
     `).join("")
-    : '<div class="empty-state">لا توجد بيانات داخل النطاق المحدد.</div>';
+    : `<div class="empty-state">${escapeHtml(l1T("reportsOverview.empty.range"))}</div>`;
 }
 
 function renderCustomerAnalytics(report) {
@@ -3284,7 +3303,7 @@ function reportStatusColorClass(status) {
 }
 
 function reportPeriodLabel(from, to) {
-  if (!from || !to) return "كل الفترات";
+  if (!from || !to) return l1T("reportsOverview.period.all");
   return `${formatDate(from)} — ${formatDate(to)}`;
 }
 
@@ -3316,24 +3335,25 @@ function renderReportsOverview() {
     const element = document.getElementById(id);
     if (element) element.textContent = value;
   };
+  const tf = (key, vars = {}) => l1T(key, vars);
 
   setText("executiveCurrentPeriod", reportPeriodLabel(report.filters.from, report.filters.to));
   setText("executivePreviousPeriod", reportPeriodLabel(report.previousFilters.from, report.previousFilters.to));
   setText("executiveTargetAchievement", `${report.totals.targetAchievement.toFixed(1)}%`);
 
   setText("reportCustomersTotal", report.totals.customers);
-  setText("reportCustomersNew", `الجدد: ${report.totals.newCustomers}`);
+  setText("reportCustomersNew", tf("reportsOverview.format.new", { count: report.totals.newCustomers }));
   setText("reportTodayFollowups", report.totals.todayFollowups);
   setText("reportFollowupsTotal", report.totals.followups);
-  setText("reportFollowupsOverdue", `المتأخرة: ${report.totals.overdueFollowups}`);
-  setText("reportCompletedFollowups", `المكتملة: ${report.totals.completedFollowups}`);
+  setText("reportFollowupsOverdue", tf("reportsOverview.format.overdue", { count: report.totals.overdueFollowups }));
+  setText("reportCompletedFollowups", tf("reportsOverview.format.completed", { count: report.totals.completedFollowups }));
   setText("reportQuotationsTotal", report.totals.quotations);
-  setText("reportQuotationsAccepted", `المقبولة: ${report.totals.acceptedQuotations}`);
+  setText("reportQuotationsAccepted", tf("reportsOverview.format.accepted", { count: report.totals.acceptedQuotations }));
   setText("reportQuotationsValue", reportCurrency(report.totals.quotationValue));
-  setText("reportAcceptedValue", `المقبولة: ${reportCurrency(report.totals.acceptedValue)}`);
+  setText("reportAcceptedValue", tf("reportsOverview.format.acceptedValue", { value: reportCurrency(report.totals.acceptedValue) }));
   setText("reportConversionRate", `${report.totals.conversionRate.toFixed(1)}%`);
   setText("reportTargetAchievement", `${report.totals.targetAchievement.toFixed(1)}%`);
-  setText("reportTargetRemaining", `المتبقي: ${reportCurrency(report.totals.targetRemaining)}`);
+  setText("reportTargetRemaining", tf("reportsOverview.format.remaining", { value: reportCurrency(report.totals.targetRemaining) }));
   setText("reportCustomersWithoutFollowup", report.totals.customersWithoutFollowup);
 
   renderReportDelta("reportCustomersDelta", report.deltas.customers);
@@ -3345,6 +3365,14 @@ function renderReportsOverview() {
   renderReportDelta("reportTargetDelta", report.deltas.targetAchievement);
   renderReportDelta("reportWithoutFollowupDelta", report.deltas.customersWithoutFollowup);
 
+  const funnelStageKeys = {
+    lead: "reportsOverview.funnel.stage.lead",
+    qualified: "reportsOverview.funnel.stage.qualified",
+    followup: "reportsOverview.funnel.stage.followup",
+    quotation: "reportsOverview.funnel.stage.quotation",
+    negotiation: "reportsOverview.funnel.stage.negotiation",
+    won: "reportsOverview.funnel.stage.won"
+  };
   const maxFunnel = Math.max(1, ...report.funnel.map(item => item.value));
   document.getElementById("reportsFunnel").innerHTML = report.funnel.map((item, index) => `
     <div class="executive-funnel-stage stage-${item.key}">
@@ -3352,7 +3380,7 @@ function renderReportsOverview() {
         <span>${index + 1}</span>
         <div>
           <strong>${escapeHtml(item.label)}</strong>
-          <small>${escapeHtml(item.arabic)}</small>
+          <small>${escapeHtml(tf(funnelStageKeys[item.key] || "reportsOverview.common.unspecified"))}</small>
         </div>
         <b>${item.value}</b>
       </div>
@@ -3360,8 +3388,8 @@ function renderReportsOverview() {
         <span style="width:${Math.max(3, item.value / maxFunnel * 100)}%"></span>
       </div>
       <div class="executive-funnel-rates">
-        <small>من المرحلة السابقة: ${item.stageConversion.toFixed(1)}%</small>
-        <small>من إجمالي العملاء: ${item.totalConversion.toFixed(1)}%</small>
+        <small>${escapeHtml(tf("reportsOverview.funnel.fromPrevious", { value: item.stageConversion.toFixed(1) }))}</small>
+        <small>${escapeHtml(tf("reportsOverview.funnel.fromTotal", { value: item.totalConversion.toFixed(1) }))}</small>
       </div>
     </div>
   `).join("");
@@ -3370,248 +3398,105 @@ function renderReportsOverview() {
   const lead = report.funnel.find(item => item.key === "lead");
   const negotiation = report.funnel.find(item => item.key === "negotiation");
   document.getElementById("executiveFunnelSummary").innerHTML = `
-    <article>
-      <span>Lead → Won</span>
-      <strong>${lead?.value ? (won.value / lead.value * 100).toFixed(1) : "0.0"}%</strong>
-    </article>
-    <article>
-      <span>تحت التفاوض</span>
-      <strong>${negotiation?.value || 0}</strong>
-    </article>
-    <article>
-      <span>صفقات ناجحة</span>
-      <strong>${won?.value || 0}</strong>
-    </article>
+    <article><span>Lead → Won</span><strong>${lead?.value ? (won.value / lead.value * 100).toFixed(1) : "0.0"}%</strong></article>
+    <article><span>${escapeHtml(tf("reportsOverview.funnel.negotiating"))}</span><strong>${negotiation?.value || 0}</strong></article>
+    <article><span>${escapeHtml(tf("reportsOverview.funnel.wonDeals"))}</span><strong>${won?.value || 0}</strong></article>
   `;
 
-  const statusEntries = Object.entries(report.quotationStatuses)
-    .sort((a, b) => b[1] - a[1]);
+  const statusEntries = Object.entries(report.quotationStatuses).sort((a, b) => b[1] - a[1]);
   const maxStatus = Math.max(1, ...statusEntries.map(([, value]) => value));
-
   document.getElementById("quotationStatusBreakdown").innerHTML = statusEntries.length
     ? statusEntries.map(([status, value]) => `
       <div class="report-status-row">
-        <div>
-          <span class="report-status-dot ${reportStatusColorClass(status)}"></span>
-          <strong>${escapeHtml(status)}</strong>
-        </div>
-        <div class="report-status-track">
-          <span class="${reportStatusColorClass(status)}" style="width:${value / maxStatus * 100}%"></span>
-        </div>
+        <div><span class="report-status-dot ${reportStatusColorClass(status)}"></span><strong>${escapeHtml(status === "غير محدد" ? tf("reportsOverview.common.unspecified") : quotationStatusLabel(status))}</strong></div>
+        <div class="report-status-track"><span class="${reportStatusColorClass(status)}" style="width:${value / maxStatus * 100}%"></span></div>
         <b>${value}</b>
-      </div>
-    `).join("")
-    : '<div class="empty-state">لا توجد عروض داخل النطاق المحدد.</div>';
+      </div>`).join("")
+    : `<div class="empty-state">${escapeHtml(tf("reportsOverview.empty.contractsRange"))}</div>`;
 
-  const maxMonthValue = Math.max(
-    1,
-    ...report.months.flatMap(item => [item.customers, item.followups, item.quotations])
-  );
-
+  const maxMonthValue = Math.max(1, ...report.months.flatMap(item => [item.customers, item.followups, item.quotations]));
   document.getElementById("reportsMonthlyTrend").innerHTML = report.months.map(item => `
     <div class="monthly-column">
       <div class="monthly-bars">
-        <span class="customers" style="height:${item.customers / maxMonthValue * 100}%" title="العملاء: ${item.customers}"></span>
-        <span class="followups" style="height:${item.followups / maxMonthValue * 100}%" title="المتابعات: ${item.followups}"></span>
-        <span class="quotations" style="height:${item.quotations / maxMonthValue * 100}%" title="العروض: ${item.quotations}"></span>
+        <span class="customers" style="height:${item.customers / maxMonthValue * 100}%" title="${escapeHtml(tf("reportsOverview.chart.customers", { count: item.customers }))}"></span>
+        <span class="followups" style="height:${item.followups / maxMonthValue * 100}%" title="${escapeHtml(tf("reportsOverview.chart.followups", { count: item.followups }))}"></span>
+        <span class="quotations" style="height:${item.quotations / maxMonthValue * 100}%" title="${escapeHtml(tf("reportsOverview.chart.contracts", { count: item.quotations }))}"></span>
       </div>
-      <small>${escapeHtml(item.label)}</small>
-    </div>
-  `).join("");
+      <small>${escapeHtml(reportsMonthLabel(item.key))}</small>
+    </div>`).join("");
 
   const followupItems = [
-    ["متأخرة", report.followupStates.overdue || 0, "critical"],
-    ["اليوم", report.followupStates.today || 0, "warning"],
-    ["قادمة", report.followupStates.upcoming || 0, "info"],
-    ["مكتملة", report.followupStates.completed || 0, "healthy"],
-    ["بدون موعد", report.followupStates.no_date || 0, "muted"]
+    [tf("followups.status.overdue"), report.followupStates.overdue || 0, "critical"],
+    [tf("followups.status.today"), report.followupStates.today || 0, "warning"],
+    [tf("followups.status.upcoming"), report.followupStates.upcoming || 0, "info"],
+    [tf("followups.status.completed"), report.followupStates.completed || 0, "healthy"],
+    [tf("reportsOverview.followup.noDate"), report.followupStates.no_date || 0, "muted"]
   ];
-
-  document.getElementById("followupReportSummary").innerHTML = followupItems.map(([label, value, type]) => `
-    <article class="${type}">
-      <span>${label}</span>
-      <strong>${value}</strong>
-    </article>
-  `).join("");
+  document.getElementById("followupReportSummary").innerHTML = followupItems.map(([label, value, type]) => `<article class="${type}"><span>${escapeHtml(label)}</span><strong>${value}</strong></article>`).join("");
 
   renderCustomerAnalytics(report);
-
   setText("quotationAverageValue", reportCurrency(report.quotationAnalytics.averageValue));
   setText("quotationHighestValue", reportCurrency(report.quotationAnalytics.highestValue));
   setText("quotationLowestValue", reportCurrency(report.quotationAnalytics.lowestValue));
   setText("quotationOpenValue", reportCurrency(report.quotationAnalytics.openValue));
   setText("quotationRejectedValue", reportCurrency(report.quotationAnalytics.rejectedValue));
   setText("quotationRejectionRate", `${report.quotationAnalytics.rejectionRate.toFixed(1)}%`);
-
-  renderAnalyticsBars(
-    "lossReasonsAnalytics",
-    report.lossReasons,
-    { limit: 10 }
-  );
+  renderAnalyticsBars("lossReasonsAnalytics", report.lossReasons, { limit: 10, labeler: label => label === "غير محدد" ? tf("reportsOverview.common.unspecified") : label });
 
   const topCustomers = document.getElementById("topCustomersByValue");
   topCustomers.innerHTML = report.topCustomersByValue.length
-    ? report.topCustomersByValue.map((item, index) => `
-      <article class="top-customer-item">
-        <span>${index + 1}</span>
-        <div>
-          <strong>${escapeHtml(item.name)}</strong>
-          <small>${item.quotations} عروض — ${item.accepted} مقبولة</small>
-        </div>
-        <b>${reportCurrency(item.totalValue)}</b>
-      </article>
-    `).join("")
-    : '<div class="empty-state">لا توجد عروض أسعار داخل النطاق المحدد.</div>';
+    ? report.topCustomersByValue.map((item, index) => `<article class="top-customer-item"><span>${index + 1}</span><div><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(tf("reportsOverview.format.contractsAccepted", { contracts: item.quotations, accepted: item.accepted }))}</small></div><b>${reportCurrency(item.totalValue)}</b></article>`).join("")
+    : `<div class="empty-state">${escapeHtml(tf("reportsOverview.empty.contractsRange"))}</div>`;
 
   const inactiveList = document.getElementById("inactiveCustomersList");
   inactiveList.innerHTML = report.inactiveCustomers.length
-    ? report.inactiveCustomers.map(item => `
-      <article class="customer-action-item">
-        <div>
-          <strong>${escapeHtml(item.name)}</strong>
-          <small>${escapeHtml(item.phone || "بدون جوال")} — ${escapeHtml(item.representative)}</small>
-        </div>
-        <span>${item.daysInactive} يوم</span>
-      </article>
-    `).join("")
-    : '<div class="empty-state">لا يوجد عملاء غير نشطين داخل النطاق المحدد.</div>';
+    ? report.inactiveCustomers.map(item => `<article class="customer-action-item"><div><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.phone || tf("customer360.common.noPhone"))} — ${escapeHtml(item.representative || tf("reportsOverview.common.unspecified"))}</small></div><span>${escapeHtml(tf("reportsOverview.format.days", { count: item.daysInactive }))}</span></article>`).join("")
+    : `<div class="empty-state">${escapeHtml(tf("reportsOverview.empty.inactive"))}</div>`;
 
   const needsFollowup = document.getElementById("customersNeedingFollowupList");
   needsFollowup.innerHTML = report.customersNeedingFollowup.length
-    ? report.customersNeedingFollowup.map(item => `
-      <article class="customer-action-item">
-        <div>
-          <strong>${escapeHtml(item.name)}</strong>
-          <small>${escapeHtml(item.phone || "بدون جوال")} — ${escapeHtml(item.representative)}</small>
-        </div>
-        <span class="${item.reason === "متابعة متأخرة" ? "critical" : "warning"}">${escapeHtml(item.reason)}</span>
-      </article>
-    `).join("")
-    : '<div class="empty-state">كل العملاء لديهم متابعة سليمة.</div>';
+    ? report.customersNeedingFollowup.map(item => `<article class="customer-action-item"><div><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.phone || tf("customer360.common.noPhone"))} — ${escapeHtml(item.representative || tf("reportsOverview.common.unspecified"))}</small></div><span class="${item.reason === "متابعة متأخرة" ? "critical" : "warning"}">${escapeHtml(reportsFollowupReasonLabel(item.reason))}</span></article>`).join("")
+    : `<div class="empty-state">${escapeHtml(tf("reportsOverview.empty.followupsHealthy"))}</div>`;
 
   const leaderboard = document.getElementById("representativeLeaderboard");
   leaderboard.innerHTML = report.representativePerformance.length
-    ? report.representativePerformance.slice(0, 8).map(item => `
-      <article class="representative-rank-card rank-${item.rank}">
-        <div class="rank-number">${item.rank}</div>
-        <div class="rank-main">
-          <strong>${escapeHtml(item.name)}</strong>
-          <small>${item.accepted} عروض مقبولة — ${reportCurrency(item.acceptedValue)}</small>
-          <div class="rank-progress"><span style="width:${Math.min(100, item.activityScore)}%"></span></div>
-        </div>
-        <div class="rank-stats">
-          <b>${item.conversion.toFixed(1)}%</b>
-          <small>تحويل</small>
-        </div>
-      </article>
-    `).join("")
-    : '<div class="empty-state">لا توجد بيانات مندوبي مبيعات.</div>';
+    ? report.representativePerformance.slice(0, 8).map(item => `<article class="representative-rank-card rank-${item.rank}"><div class="rank-number">${item.rank}</div><div class="rank-main"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(tf("reportsOverview.format.acceptedContractsValue", { count: item.accepted, value: reportCurrency(item.acceptedValue) }))}</small><div class="rank-progress"><span style="width:${Math.min(100, item.activityScore)}%"></span></div></div><div class="rank-stats"><b>${item.conversion.toFixed(1)}%</b><small>${escapeHtml(tf("reportsOverview.common.conversion"))}</small></div></article>`).join("")
+    : `<div class="empty-state">${escapeHtml(tf("reportsOverview.empty.representatives"))}</div>`;
 
   const comparison = document.getElementById("representativeComparison");
   comparison.innerHTML = report.representativePerformance.length
-    ? report.representativePerformance.slice(0, 8).map(item => `
-      <article class="representative-comparison-row">
-        <div>
-          <strong>${escapeHtml(item.name)}</strong>
-          <small>الفترة الحالية مقابل السابقة</small>
-        </div>
-        <div class="comparison-metric">
-          <span>القيمة</span>
-          <b class="${item.deltas.value >= 0 ? "positive" : "negative"}">${item.deltas.value >= 0 ? "+" : ""}${item.deltas.value.toFixed(1)}%</b>
-        </div>
-        <div class="comparison-metric">
-          <span>التحويل</span>
-          <b class="${item.deltas.conversion >= 0 ? "positive" : "negative"}">${item.deltas.conversion >= 0 ? "+" : ""}${item.deltas.conversion.toFixed(1)}%</b>
-        </div>
-      </article>
-    `).join("")
-    : '<div class="empty-state">لا توجد بيانات مقارنة.</div>';
+    ? report.representativePerformance.slice(0, 8).map(item => `<article class="representative-comparison-row"><div><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(tf("reportsOverview.comparison.currentVsPrevious"))}</small></div><div class="comparison-metric"><span>${escapeHtml(tf("reportsOverview.common.value"))}</span><b class="${item.deltas.value >= 0 ? "positive" : "negative"}">${item.deltas.value >= 0 ? "+" : ""}${item.deltas.value.toFixed(1)}%</b></div><div class="comparison-metric"><span>${escapeHtml(tf("reportsOverview.common.conversion"))}</span><b class="${item.deltas.conversion >= 0 ? "positive" : "negative"}">${item.deltas.conversion >= 0 ? "+" : ""}${item.deltas.conversion.toFixed(1)}%</b></div></article>`).join("")
+    : `<div class="empty-state">${escapeHtml(tf("reportsOverview.empty.comparison"))}</div>`;
 
   const yearly = report.yearlyTrend || [];
-  const maxCount = Math.max(
-    1,
-    ...yearly.flatMap(item => [item.customers, item.followups, item.quotations])
-  );
+  const maxCount = Math.max(1, ...yearly.flatMap(item => [item.customers, item.followups, item.quotations]));
   const maxValue = Math.max(1, ...yearly.map(item => item.value));
-
   document.getElementById("reportsYearlyTrend").innerHTML = yearly.map(item => `
-    <div class="yearly-trend-column">
-      <div class="yearly-bars">
-        <span class="customers" style="height:${item.customers / maxCount * 100}%" title="العملاء: ${item.customers}"></span>
-        <span class="followups" style="height:${item.followups / maxCount * 100}%" title="المتابعات: ${item.followups}"></span>
-        <span class="quotations" style="height:${item.quotations / maxCount * 100}%" title="العروض: ${item.quotations}"></span>
-        <span class="value" style="height:${item.value / maxValue * 100}%" title="القيمة: ${reportCurrency(item.value)}"></span>
-      </div>
-      <small>${escapeHtml(item.label)}</small>
-    </div>
-  `).join("");
+    <div class="yearly-trend-column"><div class="yearly-bars">
+      <span class="customers" style="height:${item.customers / maxCount * 100}%" title="${escapeHtml(tf("reportsOverview.chart.customers", { count: item.customers }))}"></span>
+      <span class="followups" style="height:${item.followups / maxCount * 100}%" title="${escapeHtml(tf("reportsOverview.chart.followups", { count: item.followups }))}"></span>
+      <span class="quotations" style="height:${item.quotations / maxCount * 100}%" title="${escapeHtml(tf("reportsOverview.chart.contracts", { count: item.quotations }))}"></span>
+      <span class="value" style="height:${item.value / maxValue * 100}%" title="${escapeHtml(tf("reportsOverview.chart.value", { value: reportCurrency(item.value) }))}"></span>
+    </div><small>${escapeHtml(reportsMonthLabel(item.key))}</small></div>`).join("");
 
   const renderTopList = (id, items, valueRenderer) => {
     const container = document.getElementById(id);
     container.innerHTML = items.length
-      ? items.map((item, index) => `
-        <article class="top10-item">
-          <span>${index + 1}</span>
-          <div>
-            <strong>${escapeHtml(item.name)}</strong>
-            ${item.subtitle ? `<small>${escapeHtml(item.subtitle)}</small>` : ""}
-          </div>
-          <b>${valueRenderer(item)}</b>
-        </article>
-      `).join("")
-      : '<div class="empty-state">لا توجد بيانات.</div>';
+      ? items.map((item, index) => `<article class="top10-item"><span>${index + 1}</span><div><strong>${escapeHtml(item.name)}</strong>${item.subtitle ? `<small>${escapeHtml(item.subtitle)}</small>` : ""}</div><b>${valueRenderer(item)}</b></article>`).join("")
+      : `<div class="empty-state">${escapeHtml(tf("reportsOverview.empty.data"))}</div>`;
   };
 
-  renderTopList(
-    "topRepresentativesList",
-    (report.topRepresentatives || []).map(item => ({
-      ...item,
-      subtitle: `${item.accepted} مقبولة — ${item.conversion.toFixed(1)}% تحويل`
-    })),
-    item => reportCurrency(item.acceptedValue)
-  );
-
-  renderTopList(
-    "topInterestsList",
-    report.topInterests || [],
-    item => item.count
-  );
-
-  renderTopList(
-    "topCustomersExecutiveList",
-    (report.topCustomersByValue || []).map(item => ({
-      ...item,
-      subtitle: `${item.quotations} عروض — ${item.accepted} مقبولة`
-    })),
-    item => reportCurrency(item.totalValue)
-  );
-
-  renderTopList(
-    "topLossReasonsList",
-    report.topLossReasons || [],
-    item => item.count
-  );
+  renderTopList("topRepresentativesList", (report.topRepresentatives || []).map(item => ({ ...item, subtitle: tf("reportsOverview.format.acceptedConversion", { accepted: item.accepted, conversion: item.conversion.toFixed(1) }) })), item => reportCurrency(item.acceptedValue));
+  renderTopList("topInterestsList", report.topInterests || [], item => item.count);
+  renderTopList("topCustomersExecutiveList", (report.topCustomersByValue || []).map(item => ({ ...item, subtitle: tf("reportsOverview.format.contractsAccepted", { contracts: item.quotations, accepted: item.accepted }) })), item => reportCurrency(item.totalValue));
+  renderTopList("topLossReasonsList", report.topLossReasons || [], item => item.count);
 
   const body = document.getElementById("representativePerformanceBody");
   body.innerHTML = report.representativePerformance.length
-    ? report.representativePerformance.map(item => `
-      <tr>
-        <td><strong>${escapeHtml(item.name)}</strong></td>
-        <td>${item.customers}</td>
-        <td>${item.followups}</td>
-        <td>${item.quotations}</td>
-        <td>${item.accepted}</td>
-        <td>${reportCurrency(item.value)}</td>
-        <td><span class="badge">${item.conversion.toFixed(1)}%</span></td>
-      </tr>
-    `).join("")
-    : '<tr><td colspan="7" class="empty-state">لا توجد بيانات أداء داخل النطاق المحدد.</td></tr>';
+    ? report.representativePerformance.map(item => `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${item.customers}</td><td>${item.followups}</td><td>${item.quotations}</td><td>${item.accepted}</td><td>${reportCurrency(item.value)}</td><td><span class="badge">${item.conversion.toFixed(1)}%</span></td></tr>`).join("")
+    : `<tr><td colspan="7" class="empty-state">${escapeHtml(tf("reportsOverview.empty.performance"))}</td></tr>`;
 
-  showDataStatus(
-    "reportsStatus",
-    `تم تحديث التقرير في ${new Date(report.generatedAt).toLocaleTimeString("ar-SA-u-ca-gregory-nu-latn")}.`,
-    "success"
-  );
+  showDataStatus("reportsStatus", tf("reportsOverview.updatedAt", { time: new Date(report.generatedAt).toLocaleTimeString(l1Locale(), { hour: "2-digit", minute: "2-digit" }) }), "success");
 }
 
 function resetReportsFilters() {
@@ -4233,7 +4118,7 @@ function syncCustomerContactPersonField() {
 }
 
 async function openCustomerDialog(customer=null) {
-  const action=customer?"edit":"add"; if(!requireScreenAction("customers",action,`لا توجد صلاحية ${customer?"تعديل":"إضافة"} العملاء.`))return;
+  const action=customer?"edit":"add"; if(!requireScreenAction("customers",action,l1T(customer ? "customers.permission.edit" : "customers.permission.add")))return;
   const dialog=document.getElementById("customerDialog"),form=document.getElementById("customerForm"),submitButton=form?.querySelector('button[type="submit"]'); editingId=customer?.id||null; document.getElementById("dialogTitle").textContent=customer?customerT("customers.dialog.edit","تعديل بيانات العميل"):customerT("customers.dialog.add","إضافة عميل جديد"); dialog?.showModal(); dialog?.classList.add("is-loading"); if(submitButton){submitButton.disabled=true;submitButton.textContent=customerT("customers.dialog.loading","جاري تحميل البيانات...");}
   try {
     const record=customer?.id&&window.CustomersService?.getCustomerById?await window.CustomersService.getCustomerById(customer.id):customer;
@@ -4247,8 +4132,8 @@ async function openCustomerDialog(customer=null) {
     bindCustomerNeighborhoodSearch();
     setCustomerNeighborhood(record?.neighborhoodId||"",record?.address||"");
   }
-  catch(error){console.error("Customer hydration failed",error);alert(error instanceof Error?error.message:"تعذر تحميل بيانات العميل.");dialog?.close();editingId=null;}
-  finally{dialog?.classList.remove("is-loading");if(submitButton){submitButton.disabled=false;submitButton.textContent="حفظ العميل";}}
+  catch(error){console.error("Customer hydration failed",error);alert(error instanceof Error?(window.PetatoeLocalization?.translateMessage?.(error.message)||error.message):l1T("customers.error.loadOne"));dialog?.close();editingId=null;}
+  finally{dialog?.classList.remove("is-loading");if(submitButton){submitButton.disabled=false;submitButton.textContent=l1T("customers.dialog.save");}}
 }
 
 function closeCustomerDialog() {
@@ -4260,24 +4145,24 @@ function closeCustomerDialog() {
 }
 
 async function handleCustomerSubmit(event) {
-  const action=editingId?"edit":"add"; if(!requireScreenAction("customers",action,"لا توجد صلاحية حفظ العملاء."))return; event.preventDefault();
-  if(!canManageCustomers()){alert("لا توجد صلاحية لتعديل بيانات العملاء.");return;}
+  const action=editingId?"edit":"add"; if(!requireScreenAction("customers",action,l1T("customers.permission.save")))return; event.preventDefault();
+  if(!canManageCustomers()){alert(l1T("customers.permission.manage"));return;}
   const code=document.getElementById("customerCode")?.value.trim()||"",name=document.getElementById("customerName")?.value.trim()||"",address=document.getElementById("customerAddress")?.value.trim()||"",neighborhoodId=document.getElementById("customerNeighborhoodId")?.value||"",googleMapsUrl=document.getElementById("customerGoogleMapsUrl")?.value.trim()||"",phone=normalizePhone(document.getElementById("customerPhone")?.value||"");
-  if(!neighborhoodId){const addressInput=document.getElementById("customerAddress");addressInput?.setCustomValidity("اختر الحي من القائمة.");addressInput?.reportValidity();return;}
-  if(!code){alert("أدخل كود العميل.");document.getElementById("customerCode")?.focus();return;} if(!name){alert("أدخل اسم العميل.");document.getElementById("customerName")?.focus();return;} if(!isValidSaudiMobile(phone)){alert("أدخل رقم جوال سعودي صحيحًا بصيغة 05XXXXXXXX.");document.getElementById("customerPhone")?.focus();return;}
-  try{const dup=await findCustomerByPhone(phone,editingId);if(dup){alert(duplicateCustomerWarningMessage(dup,phone));return;}const btn=event.submitter;if(btn){btn.disabled=true;btn.textContent="جاري الحفظ...";}await window.CustomersService.saveCustomer({id:editingId,updatedAt:editingId?(customers.find(x=>String(x.id)===String(editingId))?.updatedAt||""):"",customerNumber:code,name,address,neighborhoodId,googleMapsUrl,phone});closeCustomerDialog();customersLoaded=false;await loadCustomersFromSupabase(true);}catch(error){alert(error instanceof Error?error.message:"تعذر حفظ العميل.");}finally{const btn=event.submitter;if(btn){btn.disabled=false;btn.textContent="حفظ العميل";}}
+  if(!neighborhoodId){const addressInput=document.getElementById("customerAddress");addressInput?.setCustomValidity(l1T("customers.validation.neighborhood"));addressInput?.reportValidity();return;}
+  if(!code){alert(l1T("customers.validation.code"));document.getElementById("customerCode")?.focus();return;} if(!name){alert(l1T("customers.validation.name"));document.getElementById("customerName")?.focus();return;} if(!isValidSaudiMobile(phone)){alert(l1T("customers.validation.mobile"));document.getElementById("customerPhone")?.focus();return;}
+  try{const dup=await findCustomerByPhone(phone,editingId);if(dup){alert(duplicateCustomerWarningMessage(dup,phone));return;}const btn=event.submitter;if(btn){btn.disabled=true;btn.textContent=l1T("customers.dialog.saving");}await window.CustomersService.saveCustomer({id:editingId,updatedAt:editingId?(customers.find(x=>String(x.id)===String(editingId))?.updatedAt||""):"",customerNumber:code,name,address,neighborhoodId,googleMapsUrl,phone});closeCustomerDialog();customersLoaded=false;await loadCustomersFromSupabase(true);}catch(error){alert(error instanceof Error?(window.PetatoeLocalization?.translateMessage?.(error.message)||error.message):l1T("customers.error.save"));}finally{const btn=event.submitter;if(btn){btn.disabled=false;btn.textContent=l1T("customers.dialog.save");}}
 }
 
 async function deleteCustomer(id) {
-  if (!requireScreenAction("customers", "delete", "لا توجد صلاحية حذف العملاء.")) return;
+  if (!requireScreenAction("customers", "delete", l1T("customers.permission.delete"))) return;
   if (!canDeleteCustomers()) {
-    alert("حذف العملاء متاح للإدارة فقط.");
+    alert(l1T("customers.permission.deleteAdmin"));
     return;
   }
 
   const customer = customers.find(item => item.id === id);
   if (!customer) return;
-  if (!confirm(`هل تريد حذف العميل: ${customer.name}؟ سيتم حذف السجلات المرتبطة به وفق قواعد قاعدة البيانات.`)) return;
+  if (!confirm(l1T("customers.confirm.delete", { name: customer.name }))) return;
 
   try {
     const result = await window.CustomersService.deleteCustomer(customer);
@@ -4296,7 +4181,7 @@ async function deleteCustomer(id) {
     customersLoaded = false;
     await loadCustomersFromSupabase(true);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حذف العميل.");
+    alert(error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("customers.error.delete"));
   }
 }
 
@@ -4434,7 +4319,7 @@ function renderFollowups() {
 
 async function openFollowupDialog(customerId = null, followup = null) {
   const action = followup ? "edit" : "add";
-  if (!requireScreenAction("followups", action, `لا توجد صلاحية ${followup ? "تعديل" : "إضافة"} المتابعات.`)) return;
+  if (!requireScreenAction("followups", action, l1T(followup ? "followups.permission.edit" : "followups.permission.add"))) return;
   if (!(await ensureOperationalReferenceData())) return;
   editingFollowupId = followup?.id || null;
   document.getElementById("followupDialogTitle").textContent =
@@ -4464,11 +4349,11 @@ function closeFollowupDialog() {
 
 async function handleFollowupSubmit(event) {
   const action = editingFollowupId ? "edit" : "add";
-  if (!requireScreenAction("followups", action, "لا توجد صلاحية حفظ المتابعات.")) return;
+  if (!requireScreenAction("followups", action, l1T("followups.permission.save"))) return;
   event.preventDefault();
 
   if (!canManageFollowups(action)) {
-    alert("لا توجد صلاحية لإدارة المتابعات.");
+    alert(l1T("followups.permission.manage"));
     return;
   }
 
@@ -4549,7 +4434,7 @@ async function handleFollowupSubmit(event) {
       await loadDailyOperations(true);
     }
     if (suggestionCompletionError) {
-      alert(`تم حفظ المتابعة، ولكن تعذر تحديث قائمة العملاء المقترحين: ${suggestionCompletionError.message || "خطأ غير معروف"}`);
+      alert(l1T("followups.warning.suggestionUpdate", { error: suggestionCompletionError.message || l1T("shared.error.unknown") }));
     }
   } catch (error) {
     alert(error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : customerT("followups.error.save","تعذر حفظ المتابعة."));
@@ -4588,7 +4473,7 @@ async function deleteFollowup(id) {
       loadCustomersFromSupabase(true)
     ]);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حذف المتابعة.");
+    alert(error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("followups.error.delete"));
   }
 }
 
@@ -4603,17 +4488,17 @@ function customer360TimelineIcon(type) {
 
 function customer360TimelineStatusLabel(status) {
   const labels = {
-    completed: "مكتملة",
-    overdue: "متأخرة",
-    today: "اليوم",
-    upcoming: "قادمة",
-    no_date: "بدون موعد",
-    accepted: "مقبول",
-    rejected: "مرفوض",
-    open: "مفتوح",
-    info: "معلومة"
+    completed: "followups.status.completed",
+    overdue: "followups.status.overdue",
+    today: "followups.status.today",
+    upcoming: "followups.status.upcoming",
+    no_date: "customer360.timeline.noDate",
+    accepted: "contracts.status.accepted",
+    rejected: "contracts.status.rejected",
+    open: "customer360.timeline.open",
+    info: "customer360.timeline.info"
   };
-  return labels[status] || status || "—";
+  return labels[status] ? l1T(labels[status]) : (status || "—");
 }
 
 function renderCustomer360UnifiedTimeline(view) {
@@ -4641,7 +4526,7 @@ function renderCustomer360UnifiedTimeline(view) {
         </div>
       </article>
     `).join("")
-    : '<div class="empty-state">لا توجد أحداث من هذا النوع.</div>';
+    : `<div class="empty-state">${escapeHtml(l1T("customer360.empty.timelineType"))}</div>`;
 }
 
 function customer360RiskClass(score) {
@@ -4659,13 +4544,7 @@ function customer360PriorityLabelClass(key) {
 }
 
 function customer360StatusClass(key) {
-  const supported = [
-    "active",
-    "overdue",
-    "needs_followup",
-    "inactive",
-    "today"
-  ];
+  const supported = ["active", "overdue", "needs_followup", "inactive", "today"];
   return supported.includes(key) ? key : "inactive";
 }
 
@@ -4683,24 +4562,17 @@ function showCustomerDetails(customerId) {
   const customer = customerById(customerId);
   if (!customer || !window.Customer360Engine) return;
 
-  const view = window.Customer360Engine.build(
-    customer,
-    followups,
-    quotations
-  );
-
+  const view = window.Customer360Engine.build(customer, followups, quotations);
   currentCustomer360View = view;
 
-  document.getElementById("customerDetailsDialog").dataset.customerId = customerId;
-  document.getElementById("customerDetailsTitle").textContent =
-    `${customer.name} — Customer 360°`;
-  document.getElementById("customerDetailsSubtitle").textContent =
-    `${customer.customerNumber || "بدون كود"} · ${customer.phone || "بدون جوال"}`;
+  const dialog = document.getElementById("customerDetailsDialog");
+  dialog.dataset.customerId = customerId;
+  document.getElementById("customerDetailsTitle").textContent = `${customer.name} — Customer 360°`;
+  document.getElementById("customerDetailsSubtitle").textContent = `${customer.customerNumber || l1T("customer360.common.noCode")} · ${customer.phone || l1T("customer360.common.noPhone")}`;
 
   const statusBadge = document.getElementById("customer360StatusBadge");
   statusBadge.textContent = view.status.label;
-  statusBadge.className =
-    `customer360-status ${customer360StatusClass(view.status.key)}`;
+  statusBadge.className = `customer360-status ${customer360StatusClass(view.status.key)}`;
 
   const editButton = document.getElementById("customer360EditBtn");
   const followupButton = document.getElementById("customer360AddFollowupBtn");
@@ -4708,259 +4580,125 @@ function showCustomerDetails(customerId) {
   followupButton.classList.toggle("hidden", !canManageFollowups("add"));
 
   const profile = [
-    ["code", customer.customerNumber || "—"],
-    ["name", customer.name || "—"],
-    ["address", customer.address || "—"],
-    ["mobile", customer.phone || "—"]
+    [l1T("customers.col.code"), customer.customerNumber || "—"],
+    [l1T("customers.col.name"), customer.name || "—"],
+    [l1T("customers.col.address"), customer.address || "—"],
+    [l1T("customers.col.mobile"), customer.phone || "—"]
   ];
 
-  const nextFollowup = view.followups.find(item =>
-    ["today", "upcoming"].includes(
-      item.completed
-        ? "completed"
-        : (() => {
-            const next = item.nextFollowupDate
-              ? new Date(`${String(item.nextFollowupDate).slice(0, 10)}T00:00:00`)
-              : null;
-            if (!next) return "no_date";
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (next < today) return "overdue";
-            if (next.getTime() === today.getTime()) return "today";
-            return "upcoming";
-          })()
-    )
-  );
+  const nextFollowup = view.followups.find(item => ["today", "upcoming"].includes(
+    item.completed ? "completed" : (() => {
+      const next = item.nextFollowupDate ? new Date(`${String(item.nextFollowupDate).slice(0, 10)}T00:00:00`) : null;
+      if (!next) return "no_date";
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (next < today) return "overdue";
+      if (next.getTime() === today.getTime()) return "today";
+      return "upcoming";
+    })()
+  ));
 
   document.getElementById("customerDetailsContent").innerHTML = `
     <section class="customer360-overview">
       <article class="customer360-status-card ${customer360StatusClass(view.status.key)}">
-        <div>
-          <span>حالة العميل</span>
-          <strong>${escapeHtml(view.status.label)}</strong>
-          <p>${escapeHtml(view.status.detail)}</p>
-        </div>
+        <div><span>${escapeHtml(l1T("customer360.overview.status"))}</span><strong>${escapeHtml(view.status.label)}</strong><p>${escapeHtml(view.status.detail)}</p></div>
         <div class="customer360-last-contact">
-          <span>آخر تواصل</span>
+          <span>${escapeHtml(l1T("customer360.overview.lastContact"))}</span>
           <strong>${view.lastContactDate ? formatDate(view.lastContactDate) : "—"}</strong>
-          <small>${view.inactivityDays === null ? "لا توجد مدة محسوبة" : `منذ ${view.inactivityDays} يوم`}</small>
+          <small>${view.inactivityDays === null ? escapeHtml(l1T("customer360.overview.noDuration")) : escapeHtml(l1T("customer360.overview.daysAgo", { days: view.inactivityDays }))}</small>
         </div>
       </article>
 
       <div class="customer360-kpis">
-        ${customer360Metric("إجمالي المتابعات", view.totals.followups, `المتأخرة: ${view.totals.overdueFollowups}`)}
-        ${customer360Metric("المتابعات القادمة", view.totals.upcomingFollowups, nextFollowup?.nextFollowupDate ? `القادم: ${formatDate(nextFollowup.nextFollowupDate)}` : "لا يوجد موعد قادم")}
-        ${customer360Metric("عقود العملاء", view.totals.quotations, `المفتوحة: ${view.totals.openQuotations}`)}
-        ${customer360Metric("قيمة العروض", formatCurrency(view.totals.totalQuotationValue), `المقبول: ${formatCurrency(view.totals.acceptedValue)}`)}
-        ${customer360Metric("نسبة التحويل", `${view.totals.conversionRate.toFixed(1)}%`, `${view.totals.acceptedQuotations} عروض مقبولة`)}
+        ${customer360Metric(l1T("customer360.kpi.followups"), view.totals.followups, l1T("customer360.kpi.overdue", { count: view.totals.overdueFollowups }))}
+        ${customer360Metric(l1T("customer360.kpi.upcoming"), view.totals.upcomingFollowups, nextFollowup?.nextFollowupDate ? l1T("customer360.kpi.next", { date: formatDate(nextFollowup.nextFollowupDate) }) : l1T("customer360.kpi.noNext"))}
+        ${customer360Metric(l1T("customer360.kpi.contracts"), view.totals.quotations, l1T("customer360.kpi.open", { count: view.totals.openQuotations }))}
+        ${customer360Metric(l1T("customer360.kpi.contractValue"), formatCurrency(view.totals.totalQuotationValue), l1T("customer360.kpi.acceptedValue", { value: formatCurrency(view.totals.acceptedValue) }))}
+        ${customer360Metric(l1T("customer360.kpi.conversion"), `${view.totals.conversionRate.toFixed(1)}%`, l1T("customer360.kpi.acceptedContracts", { count: view.totals.acceptedQuotations }))}
       </div>
 
       <section class="customer360-risk-dashboard">
         <article class="customer360-health-gauge ${customer360RiskClass(view.risk.score)}">
-          <div class="customer360-gauge-ring" style="--score:${view.risk.healthScore}">
-            <div>
-              <strong>${view.risk.healthScore}%</strong>
-              <span>صحة العميل</span>
-            </div>
-          </div>
-          <div>
-            <span>درجة الخطر</span>
-            <strong>${view.risk.score}%</strong>
-            <small>${escapeHtml(view.risk.priority.label)}</small>
-          </div>
+          <div class="customer360-gauge-ring" style="--score:${view.risk.healthScore}"><div><strong>${view.risk.healthScore}%</strong><span>${escapeHtml(l1T("customer360.risk.health"))}</span></div></div>
+          <div><span>${escapeHtml(l1T("customer360.risk.score"))}</span><strong>${view.risk.score}%</strong><small>${escapeHtml(view.risk.priority.label)}</small></div>
         </article>
-
         <article class="customer360-risk-card">
-          <div class="customer360-risk-card-head">
-            <div>
-              <span>أولوية المتابعة</span>
-              <strong>${escapeHtml(view.risk.priority.label)}</strong>
-            </div>
-            <b class="${customer360PriorityLabelClass(view.risk.priority.key)}">${view.risk.score}% خطر</b>
-          </div>
-          <div class="customer360-risk-progress">
-            <span class="${customer360RiskClass(view.risk.score)}" style="width:${view.risk.score}%"></span>
-          </div>
-          <ul class="customer360-risk-reasons">
-            ${view.risk.reasons.slice(0, 4).map(reason => `<li>${escapeHtml(reason)}</li>`).join("")}
-          </ul>
+          <div class="customer360-risk-card-head"><div><span>${escapeHtml(l1T("customer360.risk.priority"))}</span><strong>${escapeHtml(view.risk.priority.label)}</strong></div><b class="${customer360PriorityLabelClass(view.risk.priority.key)}">${escapeHtml(l1T("customer360.risk.percent", { score: view.risk.score }))}</b></div>
+          <div class="customer360-risk-progress"><span class="${customer360RiskClass(view.risk.score)}" style="width:${view.risk.score}%"></span></div>
+          <ul class="customer360-risk-reasons">${view.risk.reasons.slice(0, 4).map(reason => `<li>${escapeHtml(reason)}</li>`).join("")}</ul>
         </article>
-
         <article class="customer360-next-action">
-          <span>الإجراء التالي المقترح</span>
-          <strong>${escapeHtml(view.risk.nextAction.title)}</strong>
-          <p>${escapeHtml(view.risk.nextAction.detail)}</p>
-          <div class="customer360-next-action-metrics">
-            <small>التفاعل: ${view.risk.engagementScore}%</small>
-            <small>استجابة المتابعة: ${view.risk.responseRate.toFixed(1)}%</small>
-          </div>
+          <span>${escapeHtml(l1T("customer360.next.title"))}</span><strong>${escapeHtml(view.risk.nextAction.title)}</strong><p>${escapeHtml(view.risk.nextAction.detail)}</p>
+          <div class="customer360-next-action-metrics"><small>${escapeHtml(l1T("customer360.next.engagement", { value: view.risk.engagementScore }))}</small><small>${escapeHtml(l1T("customer360.next.response", { value: view.risk.responseRate.toFixed(1) }))}</small></div>
         </article>
       </section>
 
       <div class="customer360-value-kpis">
-        ${customer360Metric("قيمة العميل المقبولة", formatCurrency(view.totals.acceptedValue), view.risk.valueTier.label)}
-        ${customer360Metric("القيمة المحتملة", formatCurrency(view.risk.potentialValue), `المفتوح: ${formatCurrency(view.risk.openValue)}`)}
-        ${customer360Metric("قيمة العقود المرفوضة", formatCurrency(view.risk.rejectedValue), "فرص تحتاج مراجعة")}
-        ${customer360Metric("مؤشر التفاعل", `${view.risk.engagementScore}%`, `استجابة: ${view.risk.responseRate.toFixed(1)}%`)}
+        ${customer360Metric(l1T("customer360.value.accepted"), formatCurrency(view.totals.acceptedValue), view.risk.valueTier.label)}
+        ${customer360Metric(l1T("customer360.value.potential"), formatCurrency(view.risk.potentialValue), l1T("customer360.value.open", { value: formatCurrency(view.risk.openValue) }))}
+        ${customer360Metric(l1T("customer360.value.rejected"), formatCurrency(view.risk.rejectedValue), l1T("customer360.value.reviewOpportunities"))}
+        ${customer360Metric(l1T("customer360.value.engagement"), `${view.risk.engagementScore}%`, l1T("customer360.value.response", { value: view.risk.responseRate.toFixed(1) }))}
       </div>
     </section>
 
     <div class="customer360-layout">
       <section class="customer360-main">
         <article class="customer360-section">
-          <div class="customer360-section-header">
-            <div>
-              <h3>البيانات الأساسية</h3>
-              <p>ملخص بيانات العميل المسجلة في النظام.</p>
-            </div>
-          </div>
-          <div class="customer-profile-grid customer360-profile-grid">
-            ${profile.map(([label, value]) =>
-              `<div class="profile-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(String(value ?? "—"))}</strong></div>`
-            ).join("")}
-          </div>
+          <div class="customer360-section-header"><div><h3>${escapeHtml(l1T("customer360.section.profile"))}</h3><p>${escapeHtml(l1T("customer360.section.profileNote"))}</p></div></div>
+          <div class="customer-profile-grid customer360-profile-grid">${profile.map(([label, value]) => `<div class="profile-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(String(value ?? "—"))}</strong></div>`).join("")}</div>
         </article>
-
         <article class="customer360-section">
-          <div class="customer360-section-header">
-            <div>
-              <h3>عقود العملاء</h3>
-              <p>جميع عروض السعر المرتبطة بالعميل.</p>
-            </div>
-            <span>${view.totals.quotations} عرض</span>
-          </div>
-          ${view.quotations.length ? `
-            <div class="customer360-quotation-list">
-              ${view.quotations.map(q => `
-                <article>
-                  <div>
-                    <strong>${escapeHtml(q.code || q.quotationNumber || "عرض بدون رقم")}</strong>
-                    <small>${formatDate(q.quotationDate || q.createdAt)} · ${escapeHtml(q.status || "غير محدد")}</small>
-                  </div>
-                  <div>
-                    <strong>${formatCurrency(q.amount)}</strong>
-                    ${q.rejectionReason || q.noSaleReason
-                      ? `<small>${escapeHtml(q.rejectionReason || q.noSaleReason)}</small>`
-                      : ""}
-                  </div>
-                </article>
-              `).join("")}
-            </div>
-          ` : '<div class="empty-state">لا توجد عروض أسعار لهذا العميل.</div>'}
+          <div class="customer360-section-header"><div><h3>${escapeHtml(l1T("customer360.section.contracts"))}</h3><p>${escapeHtml(l1T("customer360.section.contractsNote"))}</p></div><span>${escapeHtml(l1T("customer360.count.contracts", { count: view.totals.quotations }))}</span></div>
+          ${view.quotations.length ? `<div class="customer360-quotation-list">${view.quotations.map(q => `<article><div><strong>${escapeHtml(q.code || q.quotationNumber || l1T("customer360.contract.noNumber"))}</strong><small>${formatDate(q.quotationDate || q.createdAt)} · ${escapeHtml(q.status ? quotationStatusLabel(q.status) : l1T("customer360.common.unspecified"))}</small></div><div><strong>${formatCurrency(q.amount)}</strong>${q.rejectionReason || q.noSaleReason ? `<small>${escapeHtml(q.rejectionReason || q.noSaleReason)}</small>` : ""}</div></article>`).join("")}</div>` : `<div class="empty-state">${escapeHtml(l1T("customer360.empty.contracts"))}</div>`}
         </article>
       </section>
 
       <aside class="customer360-side">
         <article class="customer360-section">
-          <div class="customer360-section-header">
-            <div>
-              <h3>ملخص المتابعة</h3>
-              <p>حالة مواعيد المتابعة الحالية.</p>
-            </div>
-          </div>
-          <div class="customer360-followup-summary">
-            <div><span>مكتملة</span><strong>${view.totals.completedFollowups}</strong></div>
-            <div><span>متأخرة</span><strong>${view.totals.overdueFollowups}</strong></div>
-            <div><span>قادمة</span><strong>${view.totals.upcomingFollowups}</strong></div>
-          </div>
+          <div class="customer360-section-header"><div><h3>${escapeHtml(l1T("customer360.section.followupSummary"))}</h3><p>${escapeHtml(l1T("customer360.section.followupSummaryNote"))}</p></div></div>
+          <div class="customer360-followup-summary"><div><span>${escapeHtml(l1T("followups.status.completed"))}</span><strong>${view.totals.completedFollowups}</strong></div><div><span>${escapeHtml(l1T("followups.status.overdue"))}</span><strong>${view.totals.overdueFollowups}</strong></div><div><span>${escapeHtml(l1T("followups.status.upcoming"))}</span><strong>${view.totals.upcomingFollowups}</strong></div></div>
         </article>
-
         <article class="customer360-section">
-          <div class="customer360-section-header">
-            <div>
-              <h3>آخر متابعة</h3>
-              <p>أحدث تواصل مسجل مع العميل.</p>
-            </div>
-          </div>
-          ${view.latestFollowup ? `
-            <div class="customer360-latest-card">
-              <strong>${escapeHtml(view.latestFollowup.result || "متابعة")}</strong>
-              <span>${formatDate(view.latestFollowup.contactDate || view.latestFollowup.createdAt)}</span>
-              <p>${escapeHtml(view.latestFollowup.method || "—")} · ${escapeHtml(view.latestFollowup.representative || "—")}</p>
-              ${view.latestFollowup.notes ? `<p>${escapeHtml(view.latestFollowup.notes)}</p>` : ""}
-            </div>
-          ` : '<div class="empty-state">لم تتم إضافة متابعات.</div>'}
+          <div class="customer360-section-header"><div><h3>${escapeHtml(l1T("customer360.section.latestFollowup"))}</h3><p>${escapeHtml(l1T("customer360.section.latestFollowupNote"))}</p></div></div>
+          ${view.latestFollowup ? `<div class="customer360-latest-card"><strong>${escapeHtml(view.latestFollowup.result ? followupResultLabel(view.latestFollowup.result) : l1T("customer360.common.followup"))}</strong><span>${formatDate(view.latestFollowup.contactDate || view.latestFollowup.createdAt)}</span><p>${escapeHtml(view.latestFollowup.method ? followupMethodLabel(view.latestFollowup.method) : "—")} · ${escapeHtml(view.latestFollowup.representative || "—")}</p>${view.latestFollowup.notes ? `<p>${escapeHtml(view.latestFollowup.notes)}</p>` : ""}</div>` : `<div class="empty-state">${escapeHtml(l1T("customer360.empty.followups"))}</div>`}
         </article>
       </aside>
     </div>
 
     <article class="customer360-section customer360-activity-section">
-      <div class="customer360-section-header">
-        <div>
-          <h3>سجل النشاط الموحد</h3>
-          <p>جميع أحداث العميل مرتبة من الأحدث إلى الأقدم.</p>
-        </div>
-        <span>${view.timeline.length} حدث</span>
-      </div>
-
+      <div class="customer360-section-header"><div><h3>${escapeHtml(l1T("customer360.section.activity"))}</h3><p>${escapeHtml(l1T("customer360.section.activityNote"))}</p></div><span>${escapeHtml(l1T("customer360.count.events", { count: view.timeline.length }))}</span></div>
       <div class="customer360-activity-summary">
-        <article>
-          <span>آخر نشاط</span>
-          <strong>${view.latestActivity ? formatDate(view.latestActivity.date) : "—"}</strong>
-          <small>${view.latestActivity ? escapeHtml(view.latestActivity.typeLabel) : "لا يوجد نشاط"}</small>
-        </article>
-        <article>
-          <span>المتابعات</span>
-          <strong>${view.followups.length}</strong>
-          <small>إجمالي المتابعات</small>
-        </article>
-        <article>
-          <span>عقود العملاء</span>
-          <strong>${view.quotations.length}</strong>
-          <small>إجمالي العروض</small>
-        </article>
+        <article><span>${escapeHtml(l1T("customer360.activity.latest"))}</span><strong>${view.latestActivity ? formatDate(view.latestActivity.date) : "—"}</strong><small>${view.latestActivity ? escapeHtml(view.latestActivity.typeLabel) : escapeHtml(l1T("customer360.activity.none"))}</small></article>
+        <article><span>${escapeHtml(l1T("customer360.activity.followups"))}</span><strong>${view.followups.length}</strong><small>${escapeHtml(l1T("customer360.activity.followupsTotal"))}</small></article>
+        <article><span>${escapeHtml(l1T("customer360.activity.contracts"))}</span><strong>${view.quotations.length}</strong><small>${escapeHtml(l1T("customer360.activity.contractsTotal"))}</small></article>
       </div>
-
       <div class="customer360-activity-filters">
-        <button type="button" class="customer360-activity-filter active" data-customer360-filter="all">الكل</button>
-        <button type="button" class="customer360-activity-filter" data-customer360-filter="followup">المتابعات</button>
-        <button type="button" class="customer360-activity-filter" data-customer360-filter="quotation">عقود العملاء</button>
-        <button type="button" class="customer360-activity-filter" data-customer360-filter="customer">بيانات العميل</button>
+        <button type="button" class="customer360-activity-filter active" data-customer360-filter="all">${escapeHtml(l1T("customer360.filter.all"))}</button>
+        <button type="button" class="customer360-activity-filter" data-customer360-filter="followup">${escapeHtml(l1T("customer360.filter.followups"))}</button>
+        <button type="button" class="customer360-activity-filter" data-customer360-filter="quotation">${escapeHtml(l1T("customer360.filter.contracts"))}</button>
+        <button type="button" class="customer360-activity-filter" data-customer360-filter="customer">${escapeHtml(l1T("customer360.filter.customer"))}</button>
       </div>
-
       <div id="customer360UnifiedTimeline" class="customer360-unified-timeline"></div>
     </article>
 
     <article class="customer360-section customer360-timeline-section">
-      <div class="customer360-section-header">
-        <div>
-          <h3>سجل المتابعات</h3>
-          <p>جميع عمليات التواصل مرتبة من الأحدث إلى الأقدم.</p>
-        </div>
-        <span>${view.totals.followups} متابعة</span>
-      </div>
-      ${view.followups.length ? `<div class="timeline customer360-timeline">${view.followups.map(item => `
-        <div class="timeline-item">
-          <span class="timeline-dot"></span>
-          <div class="timeline-card">
-            <div class="timeline-card-header">
-              <strong>${escapeHtml(item.result || "متابعة")}</strong>
-              <span>${formatDate(item.contactDate || item.createdAt)}</span>
-            </div>
-            <p>${escapeHtml(item.method || "—")} · ${escapeHtml(item.representative || "—")}</p>
-            ${item.quotationNumber ? `<p>العقد: ${escapeHtml(item.quotationNumber)}</p>` : ""}
-            ${item.notes ? `<p>${escapeHtml(item.notes)}</p>` : ""}
-            ${item.nextFollowupDate ? `<p>المتابعة القادمة: ${formatDate(item.nextFollowupDate)}</p>` : ""}
-          </div>
-        </div>`).join("")}</div>` : '<div class="empty-state">لم تتم إضافة متابعات لهذا العميل.</div>'}
+      <div class="customer360-section-header"><div><h3>${escapeHtml(l1T("customer360.section.followupHistory"))}</h3><p>${escapeHtml(l1T("customer360.section.followupHistoryNote"))}</p></div><span>${escapeHtml(l1T("customer360.count.followups", { count: view.totals.followups }))}</span></div>
+      ${view.followups.length ? `<div class="timeline customer360-timeline">${view.followups.map(item => `<div class="timeline-item"><span class="timeline-dot"></span><div class="timeline-card"><div class="timeline-card-header"><strong>${escapeHtml(item.result ? followupResultLabel(item.result) : l1T("customer360.common.followup"))}</strong><span>${formatDate(item.contactDate || item.createdAt)}</span></div><p>${escapeHtml(item.method ? followupMethodLabel(item.method) : "—")} · ${escapeHtml(item.representative || "—")}</p>${item.quotationNumber ? `<p>${escapeHtml(l1T("customer360.followup.contract", { number: item.quotationNumber }))}</p>` : ""}${item.notes ? `<p>${escapeHtml(item.notes)}</p>` : ""}${item.nextFollowupDate ? `<p>${escapeHtml(l1T("customer360.followup.next", { date: formatDate(item.nextFollowupDate) }))}</p>` : ""}</div></div>`).join("")}</div>` : `<div class="empty-state">${escapeHtml(l1T("customer360.empty.customerFollowups"))}</div>`}
     </article>
   `;
 
   document.querySelectorAll("[data-customer360-filter]").forEach(button => {
     button.addEventListener("click", () => {
       customer360ActivityFilter = button.dataset.customer360Filter;
-      document.querySelectorAll("[data-customer360-filter]").forEach(item => {
-        item.classList.toggle("active", item === button);
-      });
+      document.querySelectorAll("[data-customer360-filter]").forEach(item => item.classList.toggle("active", item === button));
       renderCustomer360UnifiedTimeline(view);
     });
   });
 
   customer360ActivityFilter = "all";
   renderCustomer360UnifiedTimeline(view);
-  document.getElementById("customerDetailsDialog").showModal();
+  if (!dialog.open) dialog.showModal();
 }
-
 
 function dailyPerformanceSelectedDate() {
   return document.getElementById("dailyPerformanceDate")?.value
@@ -6994,12 +6732,12 @@ function renderQuotations() {
           <td>${escapeHtml(item.rejectionReason || "—")}</td>
           <td>
             <div class="row-actions">
-              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("installationRequestNew", "add") ? `<button class="primary-btn compact-btn" data-create-installation-from-quotation="${item.id}">${customerT("contracts.action.createAppointment","إنشاء موعد")}</button>` : ""}
-              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("salesInvoices", "add") ? `<button class="secondary-btn compact-btn" data-create-invoice-from-quotation="${item.id}">${customerT("contracts.action.toInvoice","تحويل إلى فاتورة")}</button>` : ""}
-              ${item.salesInvoiceId && canScreenAction("salesInvoices", "view") ? `<button class="secondary-btn compact-btn" data-open-sales-invoice="${item.salesInvoiceId}">${customerT("contracts.action.openInvoice","فتح الفاتورة")}</button>` : ""}
-              ${item.installationRequestId && canScreenAction("installationRequests", "view") ? `<button class="secondary-btn compact-btn" data-open-installation-request="${item.installationRequestId}">${customerT("contracts.action.openAppointment","فتح الموعد")}</button>` : ""}
-              ${canManageQuotations("edit") ? `<button class="edit-btn" data-edit-quotation="${item.id}">تعديل</button>` : ""}
-              ${canManageQuotations("delete") ? `<button class="delete-btn" data-delete-quotation="${item.id}">حذف</button>` : ""}
+              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("installationRequestNew", "add") ? `<button class="primary-btn compact-btn" data-create-installation-from-quotation="${item.id}">${customerT("contracts.action.createAppointment","")}</button>` : ""}
+              ${canonicalStatus === "مقبول" && !item.installationRequestId && !item.salesInvoiceId && canScreenAction("salesInvoices", "add") ? `<button class="secondary-btn compact-btn" data-create-invoice-from-quotation="${item.id}">${customerT("contracts.action.toInvoice","")}</button>` : ""}
+              ${item.salesInvoiceId && canScreenAction("salesInvoices", "view") ? `<button class="secondary-btn compact-btn" data-open-sales-invoice="${item.salesInvoiceId}">${customerT("contracts.action.openInvoice","")}</button>` : ""}
+              ${item.installationRequestId && canScreenAction("installationRequests", "view") ? `<button class="secondary-btn compact-btn" data-open-installation-request="${item.installationRequestId}">${customerT("contracts.action.openAppointment","")}</button>` : ""}
+              ${canManageQuotations("edit") ? `<button class="edit-btn" data-edit-quotation="${item.id}">${escapeHtml(l1T("customers.action.edit"))}</button>` : ""}
+              ${canManageQuotations("delete") ? `<button class="delete-btn" data-delete-quotation="${item.id}">${escapeHtml(l1T("customers.action.delete"))}</button>` : ""}
             </div>
           </td>
         </tr>`;
@@ -7019,7 +6757,7 @@ function renderQuotations() {
 
 async function openQuotationDialog(quotation = null, customerId = null) {
   const action = quotation ? "edit" : "add";
-  if (!requireScreenAction("quotations", action, `لا توجد صلاحية ${quotation ? "تعديل" : "إضافة"} عقود العملاء.`)) return;
+  if (!requireScreenAction("quotations", action, l1T(quotation ? "contracts.permission.edit" : "contracts.permission.add"))) return;
   if (!(await ensureOperationalReferenceData())) return;
   editingQuotationId = quotation?.id || null;
   document.getElementById("quotationDialogTitle").textContent =
@@ -7055,11 +6793,11 @@ function closeQuotationDialog() {
 
 async function handleQuotationSubmit(event) {
   const action = editingQuotationId ? "edit" : "add";
-  if (!requireScreenAction("quotations", action, "لا توجد صلاحية حفظ عقود العملاء.")) return;
+  if (!requireScreenAction("quotations", action, l1T("contracts.permission.save"))) return;
   event.preventDefault();
 
   if (!canManageQuotations(action)) {
-    alert("لا توجد صلاحية لإدارة عقود العملاء.");
+    alert(l1T("contracts.permission.manage"));
     return;
   }
 
@@ -7071,7 +6809,7 @@ async function handleQuotationSubmit(event) {
   const amount = Number(document.getElementById("quotationAmount").value || 0);
 
   if (!code) {
-    alert("أدخل رقم العقد.");
+    alert(l1T("contracts.validation.number"));
     document.getElementById("quotationCode").focus();
     return;
   }
@@ -7087,12 +6825,12 @@ async function handleQuotationSubmit(event) {
   }
 
   if (amount < 0) {
-    alert("قيمة العقد لا يمكن أن تكون سالبة.");
+    alert(l1T("contracts.validation.amount"));
     return;
   }
 
   if (status === "مرفوض" && !rejectionReasonId) {
-    alert("اختر سبب رفض العقد.");
+    alert(l1T("contracts.validation.rejectionReason"));
     document.getElementById("quotationRejectionReason").focus();
     return;
   }
@@ -7105,14 +6843,14 @@ async function handleQuotationSubmit(event) {
       : await window.QuotationsService.findByNumber(code, editingQuotationId);
 
     if (duplicate) {
-      alert(`رقم العقد ${code} مسجل بالفعل ولا يمكن تكراره.`);
+      alert(l1T("contracts.validation.duplicate", { code }));
       document.getElementById("quotationCode").focus();
       return;
     }
 
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.textContent = "جاري الحفظ...";
+      submitButton.textContent = l1T("contracts.dialog.saving");
     }
 
     await window.QuotationsService.saveQuotation({
@@ -7140,26 +6878,26 @@ async function handleQuotationSubmit(event) {
       loadCustomersFromSupabase(true)
     ]);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حفظ العقد.");
+    alert(error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("contracts.error.save"));
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
-      submitButton.textContent = "حفظ العقد";
+      submitButton.textContent = l1T("contracts.dialog.save");
     }
   }
 }
 
 async function deleteQuotation(id) {
-  if (!requireScreenAction("quotations", "delete", "لا توجد صلاحية حذف عقود العملاء.")) return;
+  if (!requireScreenAction("quotations", "delete", l1T("contracts.permission.delete"))) return;
   if (!canManageQuotations("delete")) {
-    alert("لا توجد صلاحية لحذف عقود العملاء.");
+    alert(l1T("contracts.permission.delete"));
     return;
   }
 
   const item = quotations.find(quotation => quotation.id === id);
   if (!item) return;
 
-  if (!confirm(`هل تريد حذف العقد ${item.code}؟`)) return;
+  if (!confirm(l1T("contracts.confirm.delete", { code: item.code }))) return;
 
   try {
     const result = await window.QuotationsService.deleteQuotation(item);
@@ -7179,7 +6917,7 @@ async function deleteQuotation(id) {
       loadCustomersFromSupabase(true)
     ]);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر حذف العقد.");
+    alert(error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("contracts.error.delete"));
   }
 }
 
@@ -8150,6 +7888,24 @@ function closeCustomerImportDialog() {
   document.getElementById("customerImportDialog")?.close();
 }
 
+function customerImportMessage(message) {
+  const value = String(message || "");
+  const known = {
+    "عميل موجود": "customerImport.status.existingCustomer",
+    "جاهز": "customerImport.status.ready",
+    "code مطلوب": "customerImport.error.codeRequired",
+    "name مطلوب": "customerImport.error.nameRequired",
+    "mobile غير صالح": "customerImport.error.mobileInvalid",
+    "mobile مكرر داخل الملف": "customerImport.error.mobileDuplicateFile",
+    "code مكرر داخل الملف": "customerImport.error.codeDuplicateFile"
+  };
+  if (known[value]) return l1T(known[value]);
+  return window.PetatoeLocalization?.translateMessage?.(value) || value;
+}
+function customerImportErrorList(row) {
+  return (Array.isArray(row?.errors) ? row.errors : []).map(customerImportMessage).join(" — ");
+}
+
 function resetCustomerImportDialog() {
   customerImportPreview = null;
   customerImportFile = null;
@@ -8157,39 +7913,26 @@ function resetCustomerImportDialog() {
   customerImportOverrideAuditId = null;
   document.getElementById("customerImportResult")?.classList.add("hidden");
   const decisionNotice = document.getElementById("customerImportDecisionNotice");
-  if (decisionNotice) {
-    decisionNotice.classList.add("hidden");
-    decisionNotice.textContent = "";
-  }
+  if (decisionNotice) { decisionNotice.classList.add("hidden"); decisionNotice.textContent = ""; }
   const fileInput = document.getElementById("customerImportFileInput");
   if (fileInput) fileInput.value = "";
   const fileName = document.getElementById("customerImportFileName");
-  if (fileName) fileName.textContent = "لم يتم اختيار ملف";
+  if (fileName) fileName.textContent = l1T("customerImport.noFile");
   document.getElementById("customerImportSummary")?.classList.add("hidden");
   const body = document.getElementById("customerImportPreviewBody");
-  if (body) {
-    body.innerHTML = '<tr><td colspan="7" class="empty-cell">اختر ملف Excel لعرض المعاينة.</td></tr>';
-  }
+  if (body) body.innerHTML = `<tr><td colspan="7" class="empty-cell">${escapeHtml(l1T("customerImport.preview.empty"))}</td></tr>`;
   const executeBtn = document.getElementById("customerImportExecuteBtn");
   if (executeBtn) executeBtn.disabled = true;
   showDataStatus("customerImportStatus", "");
   document.getElementById("customerImportProgress")?.classList.add("hidden");
-  const progressBar = document.getElementById("customerImportProgressBar");
-  if (progressBar) progressBar.style.width = "0%";
-  const progressText = document.getElementById("customerImportProgressText");
-  if (progressText) progressText.textContent = "0%";
-  const progressRows = document.getElementById("customerImportProgressRows");
-  if (progressRows) progressRows.textContent = "0 / 0";
-  const progressSuccess = document.getElementById("customerImportProgressSuccess");
-  if (progressSuccess) progressSuccess.textContent = "0";
-  const progressFailed = document.getElementById("customerImportProgressFailed");
-  if (progressFailed) progressFailed.textContent = "0";
-  const progressRemaining = document.getElementById("customerImportProgressRemaining");
-  if (progressRemaining) progressRemaining.textContent = "0";
-  const controls = document.querySelector("#customerImportDialog .customer-import-controls");
-  if (controls) controls.scrollTop = 0;
-  const failedExportBtn = document.getElementById("customerImportFailedExportBtn");
-  if (failedExportBtn) failedExportBtn.classList.add("hidden");
+  const progressBar = document.getElementById("customerImportProgressBar"); if (progressBar) progressBar.style.width = "0%";
+  const progressText = document.getElementById("customerImportProgressText"); if (progressText) progressText.textContent = "0%";
+  const progressRows = document.getElementById("customerImportProgressRows"); if (progressRows) progressRows.textContent = "0 / 0";
+  const progressSuccess = document.getElementById("customerImportProgressSuccess"); if (progressSuccess) progressSuccess.textContent = "0";
+  const progressFailed = document.getElementById("customerImportProgressFailed"); if (progressFailed) progressFailed.textContent = "0";
+  const progressRemaining = document.getElementById("customerImportProgressRemaining"); if (progressRemaining) progressRemaining.textContent = "0";
+  const controls = document.querySelector("#customerImportDialog .customer-import-controls"); if (controls) controls.scrollTop = 0;
+  const failedExportBtn = document.getElementById("customerImportFailedExportBtn"); if (failedExportBtn) failedExportBtn.classList.add("hidden");
 }
 
 function renderCustomerImportPreview(preview) {
@@ -8203,28 +7946,19 @@ function renderCustomerImportPreview(preview) {
     customerImportExistingCount: summary.existingCustomers,
     customerImportDuplicateCount: summary.duplicates
   };
-  Object.entries(values).forEach(([id, value]) => {
-    const element = document.getElementById(id);
-    if (element) element.textContent = String(value);
-  });
+  Object.entries(values).forEach(([id, value]) => { const element = document.getElementById(id); if (element) element.textContent = String(value); });
   document.getElementById("customerImportSummary")?.classList.remove("hidden");
 
-  customerImportFailedRows = preview.rows
-    .filter(row => row.errors.length)
-    .map(row => ({
-      sourceRow: row.sourceRow,
-      customerNumber: row.customerNumber,
-      name: row.name,
-      address: row.address,
-      phone: row.phone,
-      message: row.errors.join(" — ")
-    }));
+  customerImportFailedRows = preview.rows.filter(row => row.errors.length).map(row => ({
+    sourceRow: row.sourceRow, customerNumber: row.customerNumber, name: row.name,
+    address: row.address, phone: row.phone, message: customerImportErrorList(row)
+  }));
   const failedExportBtn = document.getElementById("customerImportFailedExportBtn");
   if (failedExportBtn) {
     failedExportBtn.classList.toggle("hidden", !customerImportFailedRows.length);
     failedExportBtn.textContent = customerImportFailedRows.length
-      ? `تنزيل ملف الصفوف التي بها أخطاء (${customerImportFailedRows.length})`
-      : "تنزيل ملف الصفوف التي بها أخطاء";
+      ? l1T("customerImport.downloadFailedCount", { count: customerImportFailedRows.length })
+      : l1T("customerImport.downloadFailed");
   }
 
   const body = document.getElementById("customerImportPreviewBody");
@@ -8232,30 +7966,11 @@ function renderCustomerImportPreview(preview) {
     const previewLimit = 200;
     const visibleRows = preview.rows.slice(0, previewLimit);
     body.innerHTML = visibleRows.map(row => {
-      const statusLabel = row.status === "error"
-        ? "خطأ"
-        : row.status === "existing"
-          ? "موجود"
-          : "جديد";
-      const statusClass = row.status === "error"
-        ? "danger"
-        : row.status === "existing"
-          ? "warning"
-          : "success";
-      return `
-        <tr>
-          <td>${row.sourceRow}</td>
-          <td>${escapeHtml(row.customerNumber || "-")}</td>
-          <td>${escapeHtml(row.name || "-")}</td>
-          <td>${escapeHtml(row.address || "-")}</td>
-          <td dir="ltr">${escapeHtml(row.phone || "-")}</td>
-          <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
-          <td>${escapeHtml(row.statusNote || (row.errors.length ? row.errors.join(" — ") : "جاهز"))}</td>
-        </tr>
-      `;
-    }).join("") + (preview.rows.length > previewLimit
-      ? `<tr><td colspan="7" class="empty-cell">يتم عرض أول ${previewLimit} صف فقط من أصل ${preview.rows.length} صف للحفاظ على سرعة الواجهة. سيتم استيراد جميع الصفوف الصحيحة.</td></tr>`
-      : "");
+      const statusLabel = row.status === "error" ? l1T("customerImport.status.error") : row.status === "existing" ? l1T("customerImport.status.existing") : l1T("customerImport.status.new");
+      const statusClass = row.status === "error" ? "danger" : row.status === "existing" ? "warning" : "success";
+      const note = row.statusNote ? customerImportMessage(row.statusNote) : (row.errors.length ? customerImportErrorList(row) : l1T("customerImport.status.ready"));
+      return `<tr><td>${row.sourceRow}</td><td>${escapeHtml(row.customerNumber || "-")}</td><td>${escapeHtml(row.name || "-")}</td><td>${escapeHtml(row.address || "-")}</td><td dir="ltr">${escapeHtml(row.phone || "-")}</td><td><span class="status-badge ${statusClass}">${escapeHtml(statusLabel)}</span></td><td>${escapeHtml(note)}</td></tr>`;
+    }).join("") + (preview.rows.length > previewLimit ? `<tr><td colspan="7" class="empty-cell">${escapeHtml(l1T("customerImport.preview.limited", { limit: previewLimit, total: preview.rows.length }))}</td></tr>` : "");
   }
 
   const normalImportCount = preview.rows.filter(row => !row.errors.length && !row.previouslyUploaded && !customerImportIsDuplicate(row)).length;
@@ -8266,10 +7981,8 @@ function renderCustomerImportPreview(preview) {
   const executeBtn = document.getElementById("customerImportExecuteBtn");
   if (executeBtn) {
     executeBtn.disabled = normalImportCount === 0;
-    executeBtn.textContent = normalImportCount > 0
-      ? `اعتماد الاستيراد (${normalImportCount})`
-      : "لا توجد صفوف جديدة للاستيراد";
-    executeBtn.title = normalImportCount > 0 ? "" : "جميع الصفوف مرفوعة مسبقًا أو تحتوي على أخطاء أو مكررة.";
+    executeBtn.textContent = normalImportCount > 0 ? l1T("customerImport.executeCount", { count: normalImportCount }) : l1T("customerImport.noNewRows");
+    executeBtn.title = normalImportCount > 0 ? "" : l1T("customerImport.noNewRowsTitle");
   }
 
   const overrideBtn = document.getElementById("customerImportOverrideBtn");
@@ -8277,57 +7990,39 @@ function renderCustomerImportPreview(preview) {
     const isSuperAdmin = currentRole() === "super_admin";
     overrideBtn.classList.toggle("hidden", !isSuperAdmin);
     overrideBtn.disabled = !isSuperAdmin || eligibleCount === 0;
-    overrideBtn.textContent = eligibleCount > 0
-      ? `اعتماد استثنائي بالباسورد (${eligibleCount})`
-      : "لا توجد أخطاء قابلة للاستثناء";
-    overrideBtn.title = eligibleCount > 0
-      ? "يتطلب كلمة مرور مدير النظام"
-      : "الأخطاء الحالية مكررة أو مرفوعة مسبقًا أو غير قابلة للتجاوز.";
+    overrideBtn.textContent = eligibleCount > 0 ? l1T("customerImport.override.count", { count: eligibleCount }) : l1T("customerImport.override.none");
+    overrideBtn.title = eligibleCount > 0 ? l1T("customerImport.override.passwordRequired") : l1T("customerImport.override.noneTitle");
   }
 
   const decisionNotice = document.getElementById("customerImportDecisionNotice");
   if (decisionNotice) {
     decisionNotice.classList.remove("hidden");
-    if (normalImportCount > 0) {
-      decisionNotice.textContent = `سيتم اعتماد ${normalImportCount} صف جديد فقط. سيتم استبعاد ${duplicateOrExistingCount} صف مكرر أو مرفوع مسبقًا و${hardErrorCount} صف بأخطاء غير قابلة للتجاوز.`;
-    } else if (eligibleCount > 0 && currentRole() === "super_admin") {
-      decisionNotice.textContent = `لا توجد صفوف صحيحة جديدة. يمكن لمدير النظام اعتماد ${eligibleCount} صف بأخطاء قابلة للتجاوز بعد التحقق بكلمة المرور.`;
-    } else {
-      decisionNotice.textContent = "لا توجد صفوف جديدة قابلة للاستيراد. جميع الصفوف إما مرفوعة مسبقًا أو مكررة أو تحتوي على أخطاء غير قابلة للتجاوز.";
-    }
+    if (normalImportCount > 0) decisionNotice.textContent = l1T("customerImport.decision.normal", { normal: normalImportCount, duplicate: duplicateOrExistingCount, hard: hardErrorCount });
+    else if (eligibleCount > 0 && currentRole() === "super_admin") decisionNotice.textContent = l1T("customerImport.decision.override", { count: eligibleCount });
+    else decisionNotice.textContent = l1T("customerImport.decision.none");
   }
 }
 
 async function previewCustomerImportFile(file) {
   if (!file) return;
   customerImportFile = file;
-  const fileName = document.getElementById("customerImportFileName");
-  if (fileName) fileName.textContent = file.name;
-  showDataStatus("customerImportStatus", "جاري قراءة الملف والتحقق من البيانات...", "info");
-
+  const fileName = document.getElementById("customerImportFileName"); if (fileName) fileName.textContent = file.name;
+  showDataStatus("customerImportStatus", l1T("customerImport.reading"), "info");
   try {
     const rows = await window.CustomerExcelCenter.parseImportFile(file);
     const preview = window.CustomerExcelCenter.buildImportPreview(rows, { customers });
     renderCustomerImportPreview(preview);
-    showDataStatus(
-      "customerImportStatus",
-      preview.summary.errors
-        ? `تم التحقق: سيتم استيراد ${preview.summary.valid} صف صحيح وتجاهل ${preview.summary.errors} صف به أخطاء.`
-        : "تم التحقق من الملف وهو جاهز للاستيراد.",
-      preview.summary.errors ? "info" : "success"
-    );
+    showDataStatus("customerImportStatus", preview.summary.errors
+      ? l1T("customerImport.checkedWithErrors", { valid: preview.summary.valid, errors: preview.summary.errors })
+      : l1T("customerImport.checkedReady"), preview.summary.errors ? "info" : "success");
   } catch (error) {
     customerImportPreview = null;
-    showDataStatus(
-      "customerImportStatus",
-      error instanceof Error ? error.message : "تعذر قراءة ملف Excel.",
-      "error"
-    );
+    showDataStatus("customerImportStatus", error instanceof Error ? customerImportMessage(error.message) : l1T("customerImport.error.read"), "error");
   }
 }
 
 function openCustomerImportDialog() {
-  if (!requireScreenAction("customers", "add", "لا توجد صلاحية استيراد العملاء.")) return;
+  if (!requireScreenAction("customers", "add", l1T("customerImport.permission.import"))) return;
   resetCustomerImportDialog();
   document.getElementById("customerImportDialog")?.showModal();
 }
@@ -8403,20 +8098,15 @@ function openCustomerImportOverrideDialog() {
   const eligible = customerImportOverrideRows(customerImportPreview.rows);
   if (!eligible.length) return;
   const duplicateCount = customerImportPreview.rows.filter(customerImportIsDuplicate).length;
-  const hardCount = customerImportPreview.rows.filter(row => {
-    const c = customerImportOverrideClassification(row);
-    return c.hardErrors.length > 0;
-  }).length;
+  const hardCount = customerImportPreview.rows.filter(row => customerImportOverrideClassification(row).hardErrors.length > 0).length;
   const validCount = customerImportPreview.rows.filter(row => !row.errors.length).length;
   const summary = document.getElementById("customerImportOverrideSummary");
   if (summary) {
-    summary.innerHTML = `
-      <strong>ملخص الاستيراد الاستثنائي</strong>
-      <span>صفوف صحيحة: ${validCount}</span>
-      <span>صفوف سيتم تجاوز تحذيراتها: ${eligible.length}</span>
-      <span>صفوف مكررة أو مرفوعة مسبقًا لن تُرفع: ${duplicateCount}</span>
-      <span>صفوف بأخطاء غير قابلة للتجاوز لن تُرفع: ${hardCount}</span>
-    `;
+    summary.innerHTML = `<strong>${escapeHtml(l1T("customerImport.override.summaryTitle"))}</strong>
+      <span>${escapeHtml(l1T("customerImport.override.validRows", { count: validCount }))}</span>
+      <span>${escapeHtml(l1T("customerImport.override.warningRows", { count: eligible.length }))}</span>
+      <span>${escapeHtml(l1T("customerImport.override.duplicateRows", { count: duplicateCount }))}</span>
+      <span>${escapeHtml(l1T("customerImport.override.hardRows", { count: hardCount }))}</span>`;
   }
   document.getElementById("customerImportOverrideDialog")?.showModal();
   setTimeout(() => document.getElementById("customerImportOverridePassword")?.focus(), 50);
@@ -8434,7 +8124,7 @@ async function finalizeCustomerImportOverrideAudit(auditId, result, overrideRows
     p_override_rows: Number(overrideRowsCount || 0)
   });
   if (error || data !== true) {
-    throw new Error(error?.message || "تعذر إغلاق سجل الاعتماد الاستثنائي.");
+    throw new Error(error?.message || l1T("customerImport.override.error.finalize"));
   }
 }
 
@@ -8445,14 +8135,12 @@ function renderCustomerImportResult(result, { override = false, overrideRowsCoun
   const failed = Number(result?.failed || 0);
   const skipped = Number(result?.skipped || 0);
   panel.classList.remove("hidden");
-  panel.innerHTML = `
-    <strong>${failed ? "اكتمل الاستيراد مع ملاحظات" : "تم حفظ البيانات في Supabase بنجاح"}</strong>
-    <span>العملاء المحفوظون أو المحدثون: ${savedCustomers}</span>
-    ${override ? `<span>الصفوف المعتمدة استثنائيًا: ${overrideRowsCount}</span>` : ""}
-    <span>المكرر أو المتجاهل: ${skipped}</span>
-    <span>فشل الحفظ: ${failed}</span>
-    ${override ? `<span>سجل الاعتماد: ${auditFinalized ? "تم إغلاقه وتأكيده" : "تعذر تأكيد إغلاقه"}</span>` : ""}
-  `;
+  panel.innerHTML = `<strong>${escapeHtml(l1T(failed ? "customerImport.result.withNotes" : "customerImport.result.saved"))}</strong>
+    <span>${escapeHtml(l1T("customerImport.result.savedCount", { count: savedCustomers }))}</span>
+    ${override ? `<span>${escapeHtml(l1T("customerImport.result.overrideCount", { count: overrideRowsCount }))}</span>` : ""}
+    <span>${escapeHtml(l1T("customerImport.result.skipped", { count: skipped }))}</span>
+    <span>${escapeHtml(l1T("customerImport.result.failed", { count: failed }))}</span>
+    ${override ? `<span>${escapeHtml(l1T(auditFinalized ? "customerImport.result.auditClosed" : "customerImport.result.auditNotClosed"))}</span>` : ""}`;
 }
 
 async function executeCustomerImport({ override = false, auditId = null } = {}) {
@@ -8460,9 +8148,9 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
   const mode = document.getElementById("customerImportMode")?.value || "new_only";
   document.getElementById("customerImportResult")?.classList.add("hidden");
 
-  if (!requireScreenAction("customers", "add", "لا توجد صلاحية استيراد العملاء.")) return;
+  if (!requireScreenAction("customers", "add", l1T("customerImport.permission.import"))) return;
   if (mode === "upsert" &&
-      !requireScreenAction("customers", "edit", "لا توجد صلاحية تحديث العملاء الموجودين.")) {
+      !requireScreenAction("customers", "edit", l1T("customerImport.permission.update"))) {
     return;
   }
 
@@ -8475,14 +8163,14 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
     showDataStatus(
       "customerImportStatus",
       override
-        ? "لا توجد صفوف بأخطاء قابلة للاستثناء. الصفوف الحالية مكررة أو مرفوعة مسبقًا أو غير قابلة للتجاوز."
-        : "لا توجد صفوف جديدة قابلة للاستيراد. جميع الصفوف الحالية مرفوعة مسبقًا أو مكررة أو تحتوي على أخطاء.",
+        ? l1T("customerImport.execute.noOverrideRows")
+        : l1T("customerImport.execute.noRows"),
       "info"
     );
     const notice = document.getElementById("customerImportDecisionNotice");
     if (notice) {
       notice.classList.remove("hidden");
-      notice.textContent = "لم يتم إرسال أي بيانات إلى Supabase لعدم وجود صفوف جديدة قابلة للحفظ.";
+      notice.textContent = l1T("customerImport.execute.nothingSent");
     }
     return;
   }
@@ -8518,7 +8206,7 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
     if (initialProgressText) initialProgressText.textContent = "0%";
     showDataStatus(
       "customerImportStatus",
-      `بدء الرفع على دفعات بحد أقصى 200 عميل لكل دفعة — 0 من ${importRows.length} (0%)`,
+      l1T("customerImport.progress.start", { total: importRows.length }),
       "info"
     );
     progressPanel?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -8547,11 +8235,11 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
         if (progressRemaining) progressRemaining.textContent = String(Math.max(0, total - current));
 
         const batchLabel = batch.totalBatches
-          ? ` — الدفعة ${batch.batchIndex} من ${batch.totalBatches} (${batch.batchSize} عميل)`
+          ? l1T("customerImport.progress.batch", { index: batch.batchIndex, total: batch.totalBatches, size: batch.batchSize })
           : "";
         showDataStatus(
           "customerImportStatus",
-          `جاري الرفع: ${current} من ${total} — ${percent}%${batchLabel}`,
+          l1T("customerImport.progress.uploading", { current, total, percent, batch: batchLabel }),
           "info"
         );
       },
@@ -8563,8 +8251,8 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
     if (failedExportBtn) {
       failedExportBtn.classList.toggle("hidden", !customerImportFailedRows.length);
       failedExportBtn.textContent = customerImportFailedRows.length
-        ? `تنزيل ملف الصفوف التي بها أخطاء (${customerImportFailedRows.length})`
-        : "تنزيل ملف الصفوف التي بها أخطاء";
+        ? l1T("customerImport.downloadFailedCount", { count: customerImportFailedRows.length })
+        : l1T("customerImport.downloadFailed");
     }
     await loadCustomersFromSupabase(true);
     renderReferenceCustomers();
@@ -8601,7 +8289,7 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
     document.getElementById("customerImportResult")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     showDataStatus(
       "customerImportStatus",
-      `اكتمل الاستيراد وتم تنفيذ الحفظ في Supabase: ${Number(result.inserted || 0)} جديد، ${Number(result.updated || 0)} تحديث، ${Number(result.skipped || 0)} مكرر أو متجاهل، ${Number(result.failed || 0)} فشل${override ? `، ${overrideRows.length} صف باعتماد استثنائي` : ""}.`,
+      l1T("customerImport.complete", { inserted: Number(result.inserted || 0), updated: Number(result.updated || 0), skipped: Number(result.skipped || 0), failed: Number(result.failed || 0), override: override ? l1T("customerImport.completeOverride", { count: overrideRows.length }) : "" }),
       result.failed ? "error" : "success"
     );
   } catch (error) {
@@ -8614,7 +8302,7 @@ async function executeCustomerImport({ override = false, auditId = null } = {}) 
     }
     showDataStatus(
       "customerImportStatus",
-      error instanceof Error ? error.message : "تعذر تنفيذ الاستيراد.",
+      error instanceof Error ? customerImportMessage(error.message) : l1T("customerImport.error.execute"),
       "error"
     );
   } finally {
@@ -8634,24 +8322,24 @@ document.getElementById("customerImportOverrideCancelBtn")?.addEventListener("cl
 document.getElementById("customerImportOverrideForm")?.addEventListener("submit", async event => {
   event.preventDefault();
   if (currentRole() !== "super_admin") {
-    showDataStatus("customerImportOverrideStatus", "هذا الإجراء متاح لمدير النظام فقط.", "error");
+    showDataStatus("customerImportOverrideStatus", l1T("customerImport.override.superAdminOnly"), "error");
     return;
   }
   const password = document.getElementById("customerImportOverridePassword")?.value || "";
   if (!password) {
-    showDataStatus("customerImportOverrideStatus", "أدخل كلمة مرور مدير النظام.", "error");
+    showDataStatus("customerImportOverrideStatus", l1T("customerImport.override.passwordMissing"), "error");
     return;
   }
   const confirmBtn = document.getElementById("customerImportOverrideConfirmBtn");
   if (confirmBtn) confirmBtn.disabled = true;
-  showDataStatus("customerImportOverrideStatus", "جاري التحقق من الهوية والصلاحية...", "info");
+  showDataStatus("customerImportOverrideStatus", l1T("customerImport.override.verifying"), "info");
   try {
     const eligible = customerImportOverrideRows(customerImportPreview?.rows || []);
     const duplicates = (customerImportPreview?.rows || []).filter(customerImportIsDuplicate).length;
 
     const { data: userData, error: userError } = await window.customerSupabase.auth.getUser();
     if (userError || !userData?.user?.email) {
-      throw new Error(userError?.message || "تعذر تحديد بريد مدير النظام الحالي.");
+      throw new Error(userError?.message || l1T("customerImport.override.error.email"));
     }
 
     const currentUserId = userData.user.id;
@@ -8663,11 +8351,11 @@ document.getElementById("customerImportOverrideForm")?.addEventListener("submit"
     });
 
     if (reauthError || !reauthData?.user) {
-      throw new Error("كلمة المرور غير صحيحة.");
+      throw new Error(l1T("customerImport.override.error.password"));
     }
 
     if (reauthData.user.id !== currentUserId) {
-      throw new Error("تم رفض الاعتماد لأن جلسة المستخدم تغيرت أثناء التحقق.");
+      throw new Error(l1T("customerImport.override.error.sessionChanged"));
     }
 
     const { data: auditId, error: auditError } = await window.customerSupabase.rpc(
@@ -8681,14 +8369,14 @@ document.getElementById("customerImportOverrideForm")?.addEventListener("submit"
     );
 
     if (auditError || !auditId) {
-      throw new Error(auditError?.message || "تعذر إنشاء سجل الاعتماد الاستثنائي.");
+      throw new Error(auditError?.message || l1T("customerImport.override.error.audit"));
     }
 
     customerImportOverrideAuditId = auditId;
     closeCustomerImportOverrideDialog();
     await executeCustomerImport({ override: true, auditId: customerImportOverrideAuditId });
   } catch (error) {
-    showDataStatus("customerImportOverrideStatus", error instanceof Error ? error.message : "تعذر التحقق.", "error");
+    showDataStatus("customerImportOverrideStatus", error instanceof Error ? customerImportMessage(error.message) : l1T("customerImport.override.error.verify"), "error");
   } finally {
     if (confirmBtn) confirmBtn.disabled = false;
   }
@@ -8698,12 +8386,12 @@ document.getElementById("customerImportFailedExportBtn")?.addEventListener("clic
   try {
     window.CustomerExcelCenter.exportFailedRows(customerImportFailedRows);
   } catch (error) {
-    showDataStatus("customerImportStatus", error instanceof Error ? error.message : "تعذر تصدير الصفوف الفاشلة.", "error");
+    showDataStatus("customerImportStatus", error instanceof Error ? customerImportMessage(error.message) : l1T("customerImport.error.exportFailed"), "error");
   }
 });
 
 document.getElementById("referenceCustomersExportBtn")?.addEventListener("click", () => {
-  if (!requireScreenAction("customers", "export", "لا توجد صلاحية تصدير بيانات العملاء.")) return;
+  if (!requireScreenAction("customers", "export", l1T("customerImport.permission.export"))) return;
 
   try {
     const filteredRows = filteredReferenceCustomers();
@@ -8714,44 +8402,44 @@ document.getElementById("referenceCustomersExportBtn")?.addEventListener("click"
 
     showDataStatus(
       "referenceCustomersStatus",
-      `تم تصدير ${exportedCount} عميل إلى Excel.`,
+      l1T("customerImport.export.success", { count: exportedCount }),
       "success"
     );
   } catch (error) {
     showDataStatus(
       "referenceCustomersStatus",
-      error instanceof Error ? error.message : "تعذر تصدير بيانات العملاء.",
+      error instanceof Error ? customerImportMessage(error.message) : l1T("customerImport.export.error"),
       "error"
     );
   }
 });
 
 function downloadCustomerImportTemplate() {
-  if (!requireScreenAction("customers", "export", "لا توجد صلاحية تنزيل نموذج العملاء.")) return;
+  if (!requireScreenAction("customers", "export", l1T("customerImport.permission.template"))) return;
   try {
     window.CustomerExcelCenter.downloadTemplate();
-    showDataStatus("customersStatus", "تم تنزيل نموذج استيراد العملاء.", "success");
+    showDataStatus("customersStatus", l1T("customerImport.template.success"), "success");
   } catch (error) {
-    showDataStatus("customersStatus", error instanceof Error ? error.message : "تعذر تنزيل النموذج.", "error");
+    showDataStatus("customersStatus", error instanceof Error ? customerImportMessage(error.message) : l1T("customerImport.template.error"), "error");
   }
 }
 
 document.getElementById("customersTemplateBtn")?.addEventListener("click", downloadCustomerImportTemplate);
 
 document.getElementById("referenceCustomersTemplateBtn")?.addEventListener("click", () => {
-  if (!requireScreenAction("customers", "export", "لا توجد صلاحية تنزيل نموذج العملاء.")) return;
+  if (!requireScreenAction("customers", "export", l1T("customerImport.permission.template"))) return;
 
   try {
     window.CustomerExcelCenter.downloadTemplate();
     showDataStatus(
       "referenceCustomersStatus",
-      "تم تنزيل نموذج استيراد العملاء.",
+      l1T("customerImport.template.success"),
       "success"
     );
   } catch (error) {
     showDataStatus(
       "referenceCustomersStatus",
-      error instanceof Error ? error.message : "تعذر تنزيل النموذج.",
+      error instanceof Error ? customerImportMessage(error.message) : l1T("customerImport.template.error"),
       "error"
     );
   }
@@ -8788,13 +8476,13 @@ document.getElementById("referenceCustomersTableBody")?.addEventListener("click"
   }
 
   if (editId) {
-    if (!requireScreenAction("customers", "edit", "لا توجد صلاحية تعديل العملاء.")) return;
+    if (!requireScreenAction("customers", "edit", l1T("customers.permission.edit"))) return;
     openCustomerDialog(customer);
     return;
   }
 
   if (deleteId) {
-    if (!requireScreenAction("customers", "delete", "لا توجد صلاحية حذف العملاء.")) return;
+    if (!requireScreenAction("customers", "delete", l1T("customers.permission.delete"))) return;
     deleteCustomer(customer.id);
   }
 });
@@ -9641,4 +9329,5 @@ window.addEventListener("petatoe-language-changed", () => {
     renderDailyAlerts();
     renderDailyAlertsReport();
   }
+  if (activeViewKey === "reportsOverview" && currentReportsSnapshot) renderReportsOverview();
 });

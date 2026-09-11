@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.78",
-    "build": 185678,
+    "version": "18.56.79",
+    "build": 185679,
     "date": "2026-09-11"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -93,7 +93,8 @@
       "supabase/migrations/phase_p5_13_8_72_r44r25_august_history_recovery_effective_date_required.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r28_appointment_contact_daily_data.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r31_crm_l2a_contact_date_localization.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r32_crm_l2b_daily_operations_performance_localization.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r32_crm_l2b_daily_operations_performance_localization.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r33_crm_l2c_reports_customer360_import_localization.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -104,8 +105,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 257,
-    "totalBytes": 3161707
+    "sqlFileCount": 258,
+    "totalBytes": 3271880
   },
   "orderingHazards": {
     "examples": [
@@ -1412,6 +1413,11 @@
       "path": "supabase/migrations/phase_petatoe_p4_canonical_customer_master.sql",
       "sha256": "67fe34d9f97c64b46b26c2f5b1d4929d47caa23d86241e5cd7eb8c7cc1dfb094",
       "bytes": 18097
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r33_crm_l2c_reports_customer360_import_localization.sql",
+      "sha256": "35673f82e8e7aafd830205b8834750fff5365416f970abdee2945b025a91e512",
+      "bytes": 110173
     }
   ]
 }

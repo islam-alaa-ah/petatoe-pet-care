@@ -8,6 +8,8 @@
   let xlsxPromise = null;
 
   const byId = id => document.getElementById(id);
+  const t = (key, vars = {}) => window.PetatoeLocalization?.t?.(key, vars) || key;
+  const msg = value => window.PetatoeLocalization?.translateMessage?.(String(value || "")) || String(value || "");
 
   function show(id, message, type) {
     const node = byId(id);
@@ -26,8 +28,8 @@
       script.async = true;
       script.onload = () => window.XLSX
         ? resolve(window.XLSX)
-        : reject(new Error("مكتبة Excel لم تبدأ بشكل صحيح."));
-      script.onerror = () => reject(new Error("تعذر تحميل مكتبة Excel. تحقق من الاتصال بالإنترنت."));
+        : reject(new Error(t("customerImport.runtime.xlsxStart")));
+      script.onerror = () => reject(new Error(t("customerImport.runtime.xlsxLoad")));
       document.head.appendChild(script);
     }).finally(() => {
       if (!window.XLSX) xlsxPromise = null;
@@ -38,7 +40,7 @@
   function requireAppFunction(name) {
     const fn = window[name];
     if (typeof fn !== "function") {
-      throw new Error(`تعذر تحميل وظيفة ${name}. نفذ Hard Refresh ثم أعد المحاولة.`);
+      throw new Error(t("customerImport.runtime.functionMissing", { name }));
     }
     return fn;
   }
@@ -54,7 +56,7 @@
       window.resetCustomerImportDialog();
     }
     const dialog = byId("customerImportDialog");
-    if (!dialog) throw new Error("نافذة استيراد العملاء غير موجودة.");
+    if (!dialog) throw new Error(t("customerImport.runtime.dialogMissing"));
     if (typeof dialog.showModal === "function" && !dialog.open) dialog.showModal();
   }
 
@@ -72,7 +74,7 @@
 
   async function downloadTemplate() {
     await loadXlsx();
-    if (!window.CustomerExcelCenter) throw new Error("مركز Excel للعملاء غير محمل.");
+    if (!window.CustomerExcelCenter) throw new Error(t("customerImport.runtime.centerMissing"));
     window.CustomerExcelCenter.downloadTemplate();
   }
 
@@ -85,7 +87,7 @@
     if (closest(event.target, "customersImportBtn") || closest(event.target, "referenceCustomersImportBtn")) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      openImport().catch(error => show("referenceCustomersStatus", error.message || "تعذر فتح الاستيراد.", "error"));
+      openImport().catch(error => show("referenceCustomersStatus", msg(error.message) || t("customerImport.runtime.openError"), "error"));
       return;
     }
 
@@ -93,8 +95,8 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       downloadTemplate()
-        .then(() => show("referenceCustomersStatus", "تم تنزيل نموذج العملاء.", "success"))
-        .catch(error => show("referenceCustomersStatus", error.message || "تعذر تنزيل النموذج.", "error"));
+        .then(() => show("referenceCustomersStatus", t("customerImport.template.success"), "success"))
+        .catch(error => show("referenceCustomersStatus", msg(error.message) || t("customerImport.template.error"), "error"));
       return;
     }
 
@@ -108,7 +110,7 @@
     if (closest(event.target, "customerImportExecuteBtn")) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      executeImport().catch(error => show("customerImportStatus", error.message || "تعذر تنفيذ الاستيراد.", "error"));
+      executeImport().catch(error => show("customerImportStatus", msg(error.message) || t("customerImport.error.execute"), "error"));
     }
   }, true);
 
@@ -120,7 +122,7 @@
 
     // Stop any stale duplicate change listener. The canonical preview function is invoked directly.
     event.stopImmediatePropagation();
-    previewFile(file).catch(error => show("customerImportStatus", error.message || "تعذر قراءة ملف Excel.", "error"));
+    previewFile(file).catch(error => show("customerImportStatus", msg(error.message) || t("customerImport.error.read"), "error"));
   }, true);
 
 
@@ -133,7 +135,7 @@
     try {
       requireAppFunction("openCustomerImportOverrideDialog")();
     } catch (error) {
-      show("customerImportStatus", error.message || "تعذر فتح الاعتماد الاستثنائي.", "error");
+      show("customerImportStatus", msg(error.message) || t("customerImport.runtime.overrideOpenError"), "error");
     }
   }, true);
 
@@ -145,7 +147,7 @@
     // if app.js failed before installing that listener.
     if (typeof window.executeCustomerImport !== "function") {
       event.preventDefault();
-      show("customerImportOverrideStatus", "تعذر تحميل محرك الاستيراد. نفذ Hard Refresh ثم أعد المحاولة.", "error");
+      show("customerImportOverrideStatus", t("customerImport.runtime.engineMissing"), "error");
     }
   }, true);
 
