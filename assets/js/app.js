@@ -418,7 +418,7 @@ function customerPhoneOwnershipDetails(customer) {
   if (!customer) return null;
   return {
     id: customer.id || "",
-    name: customer.customer_name || customer.name || "عميل غير مسمى",
+    name: customer.customer_name || customer.name || customerT("customers.unnamed","عميل غير مسمى"),
     phone: normalizePhone(customer.phone || ""),
     canAccess: customer.can_access !== false && customer.outside_scope !== true
   };
@@ -426,8 +426,8 @@ function customerPhoneOwnershipDetails(customer) {
 
 function duplicateCustomerWarningMessage(customer, phone) {
   const details=customerPhoneOwnershipDetails(customer);
-  if(!details)return "رقم الجوال مسجل بالفعل لعميل آخر.";
-  return `لا يمكن إضافة العميل. رقم الجوال ${normalizePhone(phone)} مرتبط بالعميل «${details.name}».`;
+  if(!details)return customerT("crmService.customers.phoneOwnership.conflict","رقم الجوال مستخدم بالفعل لعميل آخر.");
+  return customerT("customers.phoneOwnership.conflictWithCustomer","لا يمكن إضافة العميل. رقم الجوال {phone} مرتبط بالعميل «{name}».",{phone:normalizePhone(phone),name:details.name});
 }
 
 function nextCustomerId() {
@@ -510,7 +510,7 @@ function renderQuotationCustomerOptions(query = "") {
     .slice(0, 80);
 
   if (!ranked.length) {
-    options.innerHTML = '<div class="searchable-select-empty">لا توجد نتائج مطابقة.</div>';
+    options.innerHTML = `<div class="searchable-select-empty">${escapeHtml(customerT("crmService.customers.search.noResults","لا توجد نتائج مطابقة."))}</div>`;
     return;
   }
 
@@ -524,8 +524,8 @@ function renderQuotationCustomerOptions(query = "") {
         aria-selected="${isSelected ? "true" : "false"}"
         data-quotation-customer-id="${escapeHtml(String(customer.id))}"
       >
-        <strong>${escapeHtml(customer.name || "عميل بدون اسم")}</strong>
-        <span>${escapeHtml(customer.phone || "بدون رقم جوال")}${customer.customerNumber ? ` · ${escapeHtml(customer.customerNumber)}` : ""}</span>
+        <strong>${escapeHtml(customer.name || customerT("customers.unnamed","عميل بدون اسم"))}</strong>
+        <span>${escapeHtml(customer.phone || customerT("customers.noMobile","بدون رقم جوال"))}${customer.customerNumber ? ` · ${escapeHtml(customer.customerNumber)}` : ""}</span>
       </button>
     `;
   }).join("");
@@ -551,7 +551,7 @@ function setQuotationCustomerSelection(customerId, { close = true } = {}) {
   select.value = customer ? String(customer.id) : "";
   input.value = customer ? quotationCustomerDisplay(customer) : "";
   input.dataset.selectedCustomerId = customer ? String(customer.id) : "";
-  input.setCustomValidity(customer ? "" : "اختر العميل من نتائج البحث.");
+  input.setCustomValidity(customer ? "" : customerT("crmService.customers.search.selectValid","اختر قيمة صحيحة من القائمة."));
   renderQuotationCustomerOptions("");
   if (close) closeQuotationCustomerOptions();
 }
@@ -578,18 +578,18 @@ function updateCustomerInterestDropdownSummary() {
   const selectedLabels = selectedOptions.map(option => option.textContent.trim());
   const selectedCount = selectedLabels.length;
 
-  count.textContent = `تم اختيار ${selectedCount}`;
+  count.textContent = customerT("crmService.customers.interests.selectedCount","تم اختيار {count}",{count:selectedCount});
   trigger.classList.toggle("has-selection", selectedCount > 0);
 
   if (!selectedCount) {
-    text.textContent = "اختر مجال الاهتمام";
+    text.textContent = customerT("crmService.customers.interests.choose","اختر مجال الاهتمام");
     trigger.title = "";
   } else if (selectedCount <= 2) {
-    text.textContent = selectedLabels.join("، ");
-    trigger.title = selectedLabels.join("، ");
+    text.textContent = selectedLabels.join(customerT("shared.separator.comma","، "));
+    trigger.title = selectedLabels.join(customerT("shared.separator.comma","، "));
   } else {
     text.textContent = `${selectedLabels[0]} +${selectedCount - 1}`;
-    trigger.title = selectedLabels.join("، ");
+    trigger.title = selectedLabels.join(customerT("shared.separator.comma","، "));
   }
 }
 
@@ -619,7 +619,7 @@ function renderCustomerInterestDropdownOptions() {
   );
 
   if (!options.length) {
-    optionsContainer.innerHTML = '<div class="checkbox-dropdown-empty">لا توجد نتائج مطابقة.</div>';
+    optionsContainer.innerHTML = `<div class="checkbox-dropdown-empty">${escapeHtml(customerT("crmService.customers.interests.noResults","لا توجد نتائج مطابقة."))}</div>`;
     updateCustomerInterestDropdownSummary();
     return;
   }
@@ -1112,7 +1112,7 @@ function positionCustomerGeoOptions(type){
 }
 function ensureCustomerGeoController(){
   if(customerGeoController)return customerGeoController;
-  if(!window.KYUMGeography)throw new Error('مكوّن العنوان الجغرافي غير محمّل.');
+  if(!window.KYUMGeography)throw new Error(customerT('geography.error.componentMissing','مكوّن العنوان الجغرافي غير محمّل.'));
   customerGeoController=window.KYUMGeography.createController({
     ids:{
       region:{wrapper:'customerRegionCombobox',hidden:'customerRegion',search:'customerRegionSearch',options:'customerRegionOptions'},
@@ -1249,7 +1249,7 @@ async function loadCustomerDistrictCatalog(force=false){
     console.info('[KYUM Geography] unified catalog loaded',{regions:geo.regions.length,cities:geo.cities.length,districts:geo.districts.length});
     return customerDistrictCatalog;
   })();
-  try{return await customerDistrictCatalogPromise}catch(error){throw new Error(`تعذر تحميل بيانات المناطق والمدن والأحياء كاملة: ${error.message}`)}finally{customerDistrictCatalogPromise=null}
+  try{return await customerDistrictCatalogPromise}catch(error){throw new Error(customerT("geography.error.catalogLoad","تعذر تحميل بيانات المناطق والمدن والأحياء كاملة: {message}",{message:error?.message||"—"}))}finally{customerDistrictCatalogPromise=null}
 }
 
 function operationalDefaultRepresentativeId(preferredId = "") {
@@ -1270,7 +1270,7 @@ async function ensureOperationalReferenceData() {
     console.error("Operational reference data unavailable:", error);
     alert(error instanceof Error
       ? error.message
-      : "تعذر تحميل القوائم المرجعية المطلوبة. أعد المحاولة بعد تحديث الصفحة.");
+      : customerT("referenceData.error.requiredLists","تعذر تحميل القوائم المرجعية المطلوبة. أعد المحاولة بعد تحديث الصفحة."));
     return false;
   }
 }
@@ -1307,21 +1307,21 @@ async function loadReferenceDataFromSupabase(force = false) {
       if (representativesResult.status === "fulfilled") {
         representativeRecords = representativesResult.value || [];
       } else {
-        failures.push("المندوبين");
+        failures.push(customerT("referenceData.item.representatives","المندوبين"));
         console.error("Representatives reference load failed:", representativesResult.reason);
       }
 
       if (interestsResult.status === "fulfilled") {
         interestRecords = interestsResult.value || [];
       } else {
-        failures.push("مجالات الاهتمام");
+        failures.push(customerT("referenceData.item.interests","مجالات الاهتمام"));
         console.error("Interest categories load failed:", interestsResult.reason);
       }
 
       if (reasonsResult.status === "fulfilled") {
         reasonRecords = reasonsResult.value || [];
       } else {
-        failures.push("أسباب عدم البيع");
+        failures.push(customerT("referenceData.item.reasons","أسباب عدم البيع"));
         console.error("No-sale reasons load failed:", reasonsResult.reason);
       }
 
@@ -1330,19 +1330,19 @@ async function loadReferenceDataFromSupabase(force = false) {
       refreshReferenceOptions();
 
       const failureMessage = failures.length
-        ? `تعذر تحميل: ${failures.join("، ")}. تحقق من صلاحيات البيانات المرجعية.`
+        ? customerT("referenceData.error.partialLoad","تعذر تحميل: {items}. تحقق من صلاحيات البيانات المرجعية.",{items:failures.join(customerT("shared.separator.comma","، "))})
         : "";
       showDataStatus("referenceDataStatus", failureMessage, failures.length ? "error" : "info");
       showDataStatus("representativesStatus", representativesResult.status === "rejected"
-        ? "تعذر تحميل قائمة المندوبين المسموحين."
+        ? customerT("representatives.error.allowedList","تعذر تحميل قائمة المندوبين المسموحين.")
         : "", representativesResult.status === "rejected" ? "error" : "info");
 
       if (failures.length === results.length) {
-        throw new Error(failureMessage || "تعذر تحميل البيانات المرجعية.");
+        throw new Error(failureMessage || customerT("referenceData.error.load","تعذر تحميل البيانات المرجعية."));
       }
     } catch (error) {
       console.error("Reference data load failed:", error);
-      const message = error instanceof Error ? error.message : "تعذر تحميل البيانات.";
+      const message = error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : customerT("shared.error.loadData","تعذر تحميل البيانات.");
       showDataStatus("referenceDataStatus", message, "error");
       showDataStatus("representativesStatus", message, "error");
       throw error;
@@ -2892,7 +2892,8 @@ function renderSystemHealth() {
 }
 
 function healthAgeLabel(value) {
-  if (!value) return "لا توجد";
+  const rt = (key, vars = {}) => l1T(`systemHealth.retention.${key}`, vars);
+  if (!value) return rt("age.none");
   const stamp = Date.parse(String(value));
   if (!Number.isFinite(stamp)) return "—";
   const serverNow = Date.parse(String(syncRetentionObservabilitySnapshot?.serverTime || ""));
@@ -2901,18 +2902,18 @@ function healthAgeLabel(value) {
   const minute = 60 * 1000;
   const hour = 60 * minute;
   const day = 24 * hour;
-  if (diff < minute) return "الآن";
-  if (diff < hour) return `${Math.max(1, Math.floor(diff / minute))} دقيقة`;
-  if (diff < day) return `${Math.max(1, Math.floor(diff / hour))} ساعة`;
+  if (diff < minute) return rt("age.now");
+  if (diff < hour) return rt("age.minutes", { count: Math.max(1, Math.floor(diff / minute)) });
+  if (diff < day) return rt("age.hours", { count: Math.max(1, Math.floor(diff / hour)) });
   const days = diff / day;
-  return `${days < 10 ? days.toFixed(1) : Math.floor(days)} يوم`;
+  return rt("age.days", { count: days < 10 ? days.toFixed(1) : Math.floor(days) });
 }
 
 function healthDateTimeLabel(value) {
   if (!value) return "—";
   const stamp = Date.parse(String(value));
   if (!Number.isFinite(stamp)) return "—";
-  return new Date(stamp).toLocaleString("ar-SA-u-ca-gregory-nu-latn");
+  return new Date(stamp).toLocaleString(l1Locale());
 }
 
 function renderSyncRetentionObservability() {
@@ -2921,28 +2922,30 @@ function renderSyncRetentionObservability() {
   const badge = document.getElementById("syncRetentionPruningBadge");
   if (!content || !status || !badge) return;
 
+  const rt = (key, vars = {}) => l1T(`systemHealth.retention.${key}`, vars);
+
   if (currentRole() !== "super_admin") {
     badge.className = "record-status inactive";
-    badge.textContent = "مدير النظام فقط";
+    badge.textContent = rt("access.superAdminOnly");
     showDataStatus("syncRetentionObservabilityStatus", "");
-    content.innerHTML = '<div class="empty-state">بيانات المزامنة والاحتفاظ التفصيلية متاحة لمدير النظام فقط.</div>';
+    content.innerHTML = `<div class="empty-state">${escapeHtml(rt("access.superAdminDetail"))}</div>`;
     return;
   }
 
   if (syncRetentionObservabilityError) {
     badge.className = "record-status inactive";
-    badge.textContent = "غير متاح";
+    badge.textContent = rt("unavailable");
     showDataStatus("syncRetentionObservabilityStatus", syncRetentionObservabilityError, "error");
-    content.innerHTML = '<div class="empty-state">تعذر تحميل بيانات المراقبة الحالية.</div>';
+    content.innerHTML = `<div class="empty-state">${escapeHtml(rt("loadFailed"))}</div>`;
     return;
   }
 
   const snapshot = syncRetentionObservabilitySnapshot;
   if (!snapshot) {
     badge.className = "record-status inactive";
-    badge.textContent = "بانتظار البيانات";
+    badge.textContent = rt("waitingData");
     showDataStatus("syncRetentionObservabilityStatus", "");
-    content.innerHTML = '<div class="empty-state">لا توجد بيانات مراقبة متاحة بعد.</div>';
+    content.innerHTML = `<div class="empty-state">${escapeHtml(rt("noData"))}</div>`;
     return;
   }
 
@@ -2963,56 +2966,61 @@ function renderSyncRetentionObservability() {
   const observationDays = Number(decisionGate.observationDays || 0);
   const requiredObservationDays = Number(decisionGate.requiredObservationDays || 60);
   const gateReady = decisionGate.status === "READY";
-  const blockerLabels = {
-    OBSERVATION_WINDOW_INCOMPLETE: "نافذة المراقبة لم تكتمل بعد",
-    QUEUE_REPLAY_HORIZON_UNBOUNDED: "إعادة تشغيل Queue القديمة غير محددة بحد زمني",
-    FINANCIAL_RETRY_HORIZON_UNBOUNDED: "إعادة المحاولة المالية غير محددة بحد زمني",
-    OPEN_FAILED_OR_CONFLICT_OPERATIONS: "توجد عمليات Failed/Conflict مفتوحة",
-    REPLAY_POLICY_DECISION_REQUIRED: "مطلوب اعتماد سياسة قصوى لعمر إعادة المحاولة",
-    REPLAY_POLICY_ROLLOUT_INCOMPLETE: "ما زالت هناك أجهزة نشطة لم تثبت تطبيق سياسة Replay الجديدة",
-    SERVER_REPLAY_ENFORCEMENT_PENDING: "يلزم Server-side enforcement قبل السماح بحذف الـLedgers",
-    SERVER_LEGACY_REPLAY_GRACE_ACTIVE: "Server enforcement يعمل؛ ما زالت مهلة توافق الأجهزة القديمة نشطة",
-    FINANCIAL_RETRY_POLICY_REQUIRED: "السياسة المالية تحتاج قرار Retry مستقل",
-    FINANCIAL_REPLAY_HORIZON_EXPIRED: "انتهت مهلة إعادة المحاولة المالية وتحتاج مراجعة حالة الخادم",
-    LEDGER_PRUNING_REMAINS_DISABLED: "حذف Idempotency Ledgers ما زال معطلًا",
-    DECISION_GATE_NOT_READY: "بوابة Production Retention ليست READY",
-    LEDGER_PRUNING_DISABLED: "مفتاح Ledger Pruning ما زال معطلًا",
-    UNPROTECTED_LEDGER_ROWS: "توجد صفوف Ledger بدون Replay Guard مطابق",
-    REPLAY_GUARD_POLICY_MISMATCH: "توجد Replay Guards بإصدار سياسة غير مطابق",
-    REPLAY_GUARD_CONTENT_MISMATCH: "توجد Financial Guards لا تطابق نوع/بصمة العملية",
-    ACTIVE_CLIENT_REPLAY_POLICY_ROLLOUT_INCOMPLETE: "ما زالت هناك أجهزة نشطة تستخدم Replay Policy قديمة أو غير مثبتة",
-    EXECUTION_REPLAY_GUARD_COVERAGE_INCOMPLETE: "تغطية Replay Guards الخاصة بالتنفيذ غير مكتملة",
-    SEA_VIBE_REPLAY_GUARD_COVERAGE_INCOMPLETE: "تغطية Replay Guards الخاصة بـ SEA VIBE غير مكتملة",
-    FINANCIAL_REPLAY_GUARD_COVERAGE_INCOMPLETE: "تغطية Financial Replay Guards غير مكتملة",
-    SERVER_REPLAY_POLICY_MISSING: "عقد Server Replay Policy غير متاح",
-    FINANCIAL_REPLAY_POLICY_MISSING: "عقد Financial Replay Policy غير متاح"
+
+  const blockerKeys = {
+    OBSERVATION_WINDOW_INCOMPLETE: "OBSERVATION_WINDOW_INCOMPLETE",
+    QUEUE_REPLAY_HORIZON_UNBOUNDED: "QUEUE_REPLAY_HORIZON_UNBOUNDED",
+    FINANCIAL_RETRY_HORIZON_UNBOUNDED: "FINANCIAL_RETRY_HORIZON_UNBOUNDED",
+    OPEN_FAILED_OR_CONFLICT_OPERATIONS: "OPEN_FAILED_OR_CONFLICT_OPERATIONS",
+    REPLAY_POLICY_DECISION_REQUIRED: "REPLAY_POLICY_DECISION_REQUIRED",
+    REPLAY_POLICY_ROLLOUT_INCOMPLETE: "REPLAY_POLICY_ROLLOUT_INCOMPLETE",
+    SERVER_REPLAY_ENFORCEMENT_PENDING: "SERVER_REPLAY_ENFORCEMENT_PENDING",
+    SERVER_LEGACY_REPLAY_GRACE_ACTIVE: "SERVER_LEGACY_REPLAY_GRACE_ACTIVE",
+    FINANCIAL_RETRY_POLICY_REQUIRED: "FINANCIAL_RETRY_POLICY_REQUIRED",
+    FINANCIAL_REPLAY_HORIZON_EXPIRED: "FINANCIAL_REPLAY_HORIZON_EXPIRED",
+    LEDGER_PRUNING_REMAINS_DISABLED: "LEDGER_PRUNING_REMAINS_DISABLED",
+    DECISION_GATE_NOT_READY: "DECISION_GATE_NOT_READY",
+    LEDGER_PRUNING_DISABLED: "LEDGER_PRUNING_DISABLED",
+    UNPROTECTED_LEDGER_ROWS: "UNPROTECTED_LEDGER_ROWS",
+    REPLAY_GUARD_POLICY_MISMATCH: "REPLAY_GUARD_POLICY_MISMATCH",
+    REPLAY_GUARD_CONTENT_MISMATCH: "REPLAY_GUARD_CONTENT_MISMATCH",
+    ACTIVE_CLIENT_REPLAY_POLICY_ROLLOUT_INCOMPLETE: "ACTIVE_CLIENT_REPLAY_POLICY_ROLLOUT_INCOMPLETE",
+    EXECUTION_REPLAY_GUARD_COVERAGE_INCOMPLETE: "EXECUTION_REPLAY_GUARD_COVERAGE_INCOMPLETE",
+    SEA_VIBE_REPLAY_GUARD_COVERAGE_INCOMPLETE: "SEA_VIBE_REPLAY_GUARD_COVERAGE_INCOMPLETE",
+    FINANCIAL_REPLAY_GUARD_COVERAGE_INCOMPLETE: "FINANCIAL_REPLAY_GUARD_COVERAGE_INCOMPLETE",
+    SERVER_REPLAY_POLICY_MISSING: "SERVER_REPLAY_POLICY_MISSING",
+    FINANCIAL_REPLAY_POLICY_MISSING: "FINANCIAL_REPLAY_POLICY_MISSING"
   };
-  const labelBlocker = code => blockerLabels[String(code || "")] || String(code || "غير محدد");
-  const readinessMessages = {
-    DEFINE_MAX_REPLAY_AGE_POLICY: "مطلوب تحديد الحد الأقصى لعمر Replay قبل أي Pruning",
-    ENFORCE_REPLAY_POLICY_SERVER_SIDE: "تم تحديد Replay بـ90 يومًا؛ ما زال يلزم Server-side enforcement قبل Pruning",
-    WAIT_SERVER_LEGACY_REPLAY_GRACE: "Server enforcement نشط؛ ننتظر انتهاء مهلة توافق الأجهزة القديمة قبل أي Pruning",
-    DEFINE_FINANCIAL_RETRY_POLICY: "Server enforcement مكتمل للـExecution وSEA VIBE؛ المتبقي تحديد سياسة Financial Retry",
-    WAIT_RETENTION_GATE_REQUIREMENTS: "تم تحديد كل سياسات Replay؛ ننتظر اكتمال Observation/Rollout قبل Retention",
-    WAIT_OBSERVATION_WINDOW: "كل الحمايات الأساسية موجودة؛ ننتظر اكتمال نافذة المراقبة",
-    WAIT_ACTIVE_CLIENT_ROLLOUT: "ننتظر تحديث الأجهزة النشطة المتبقية إلى Replay Policy الجديدة",
-    BOUNDED_PRUNING_IMPLEMENTATION_PENDING: "Production Gate اجتازت الشروط؛ Pruning ما زال يحتاج مرحلة تنفيذ مستقلة",
-    RETENTION_PRUNING_IMPLEMENTATION_PENDING: "سياسات Replay مكتملة؛ Pruning ما زال يحتاج مرحلة تنفيذ مستقلة",
-    REPLAY_GUARD_COVERAGE_INCOMPLETE: "تغطية Replay Guards غير مكتملة بعد",
-    REPLAY_POLICY_SERVER_CONTRACT_INCOMPLETE: "عقد Replay Policy على الخادم غير مكتمل",
-    PRUNING_ACTIVATION_MIGRATION_REQUIRED: "Production Gate جاهزة والمحرك مركب؛ يلزم Activation Migration منفصلة لتشغيل الحذف"
+  const labelBlocker = code => {
+    const normalized = String(code || "");
+    return blockerKeys[normalized] ? rt(`blocker.${blockerKeys[normalized]}`) : (normalized || rt("unspecified"));
   };
+  const readinessKeys = {
+    DEFINE_MAX_REPLAY_AGE_POLICY: "DEFINE_MAX_REPLAY_AGE_POLICY",
+    ENFORCE_REPLAY_POLICY_SERVER_SIDE: "ENFORCE_REPLAY_POLICY_SERVER_SIDE",
+    WAIT_SERVER_LEGACY_REPLAY_GRACE: "WAIT_SERVER_LEGACY_REPLAY_GRACE",
+    DEFINE_FINANCIAL_RETRY_POLICY: "DEFINE_FINANCIAL_RETRY_POLICY",
+    WAIT_RETENTION_GATE_REQUIREMENTS: "WAIT_RETENTION_GATE_REQUIREMENTS",
+    WAIT_OBSERVATION_WINDOW: "WAIT_OBSERVATION_WINDOW",
+    WAIT_ACTIVE_CLIENT_ROLLOUT: "WAIT_ACTIVE_CLIENT_ROLLOUT",
+    BOUNDED_PRUNING_IMPLEMENTATION_PENDING: "BOUNDED_PRUNING_IMPLEMENTATION_PENDING",
+    RETENTION_PRUNING_IMPLEMENTATION_PENDING: "RETENTION_PRUNING_IMPLEMENTATION_PENDING",
+    REPLAY_GUARD_COVERAGE_INCOMPLETE: "REPLAY_GUARD_COVERAGE_INCOMPLETE",
+    REPLAY_POLICY_SERVER_CONTRACT_INCOMPLETE: "REPLAY_POLICY_SERVER_CONTRACT_INCOMPLETE",
+    PRUNING_ACTIVATION_MIGRATION_REQUIRED: "PRUNING_ACTIVATION_MIGRATION_REQUIRED"
+  };
+  const readinessCode = String(decisionGate.nextDecisionRequired || "");
   const readinessText = gateReady
-    ? "اجتاز بوابة القرار"
-    : (readinessMessages[decisionGate.nextDecisionRequired] || String(snapshot.readinessReason || "غير محدد"));
+    ? rt("readiness.passedGate")
+    : (readinessKeys[readinessCode] ? rt(`readiness.${readinessKeys[readinessCode]}`) : String(snapshot.readinessReason || rt("unspecified")));
 
   badge.className = `record-status ${gateReady ? "active" : "inactive"}`;
   badge.textContent = gateReady ? "Decision Gate READY" : "Decision Gate HOLD";
   showDataStatus("syncRetentionObservabilityStatus", "");
 
   const queueRows = [
-    ["تنفيذ المواعيد", execution],
-    ["SEA VIBE", seaVibe]
+    [rt("domain.executionAppointments"), execution],
+    [rt("domain.seaVibe"), seaVibe]
   ].map(([label, item]) => `
     <tr>
       <td><strong>${escapeHtml(label)}</strong></td>
@@ -3021,7 +3029,7 @@ function renderSyncRetentionObservability() {
       <td>${Number(item.pending || 0)} / ${Number(item.retry || 0)}</td>
       <td>${Number(item.failed || 0)} / ${Number(item.conflict || 0)}</td>
       <td>${Number(item.expiredFailedOrConflict || 0)} / ${Number(item.replayableFailedOrConflict || 0)}</td>
-      <td>${item.replayPolicyObserved ? `${Number(item.replayHorizonDays || 90)} يوم` : "بانتظار Rollout"}</td>
+      <td>${item.replayPolicyObserved ? escapeHtml(rt("queue.policyDays", { count: Number(item.replayHorizonDays || 90) })) : escapeHtml(rt("rollout.waiting"))}</td>
       <td>${escapeHtml(healthAgeLabel(item.oldestOpenAt))}</td>
       <td>${escapeHtml(healthDateTimeLabel(item.lastSeenAt))}</td>
     </tr>`).join("");
@@ -3035,8 +3043,8 @@ function renderSyncRetentionObservability() {
       <td><strong>${escapeHtml(label)}</strong></td>
       <td>${Number(item.rows || 0)}</td>
       <td>${escapeHtml(healthAgeLabel(item.oldestAt))}</td>
-      <td>${item.queueBacked ? "Queue-backed" : "Online retry"}</td>
-      <td><span class="record-status inactive">محمي من الحذف</span></td>
+      <td>${escapeHtml(item.queueBacked ? rt("retry.queueBacked") : rt("retry.online"))}</td>
+      <td><span class="record-status inactive">${escapeHtml(rt("retention.protected"))}</span></td>
     </tr>`).join("");
 
   const pruningDryRunRows = [
@@ -3048,6 +3056,7 @@ function renderSyncRetentionObservability() {
     const coverage = Number(item.totalRows || 0) > 0
       ? `${Math.round((Number(item.guardedRows || 0) / Number(item.totalRows || 1)) * 100)}%`
       : "100%";
+    const retentionDays = Number(item.candidateRetentionDays || 0);
     return `
       <tr>
         <td><strong>${escapeHtml(label)}</strong></td>
@@ -3056,18 +3065,18 @@ function renderSyncRetentionObservability() {
         <td>${Number(item.unprotectedRows || 0)}</td>
         <td>${Number(item.technicalCandidateRows || 0)}</td>
         <td>${escapeHtml(healthAgeLabel(item.oldestCandidateAt))}</td>
-        <td>${Number(item.candidateRetentionDays || 0) || "—"} يوم</td>
-        <td><span class="record-status inactive">Dry-run فقط</span></td>
-        <td>${escapeHtml(blockers.map(labelBlocker).join("، ") || "لا توجد فجوة Guard")}</td>
+        <td>${retentionDays ? escapeHtml(rt("pruning.retentionDays", { count: retentionDays })) : "—"}</td>
+        <td><span class="record-status inactive">${escapeHtml(rt("dryRun.only"))}</span></td>
+        <td>${escapeHtml(blockers.map(labelBlocker).join("، ") || rt("dryRun.noGuardGap"))}</td>
       </tr>`;
   }).join("");
 
   const pruningDryRunBlockers = Array.isArray(pruningDryRun.blockers) ? pruningDryRun.blockers : [];
   const gateDomains = decisionGate.domains || {};
   const gateRows = [
-    ["تنفيذ المواعيد", gateDomains.installationExecution || {}],
-    ["SEA VIBE", gateDomains.seaVibe || {}],
-    ["Financial", gateDomains.installationFinancial || {}]
+    [rt("domain.executionAppointments"), gateDomains.installationExecution || {}],
+    [rt("domain.seaVibe"), gateDomains.seaVibe || {}],
+    [rt("domain.financial"), gateDomains.installationFinancial || {}]
   ].map(([label, item]) => {
     const blockers = Array.isArray(item.blockers) ? item.blockers : [];
     const state = item.status === "READY" ? "active" : "inactive";
@@ -3076,11 +3085,11 @@ function renderSyncRetentionObservability() {
       <tr>
         <td><strong>${escapeHtml(label)}</strong></td>
         <td><span class="record-status ${state}">${escapeHtml(item.status || "HOLD")}</span></td>
-        <td>${item.replayHorizonBounded ? `${Number(item.replayHorizonDays || decisionGate.queueReplayHorizonDays || 90)} يوم` : "غير محدد"}</td>
+        <td>${item.replayHorizonBounded ? escapeHtml(rt("days", { count: Number(item.replayHorizonDays || decisionGate.queueReplayHorizonDays || 90) })) : escapeHtml(rt("unspecified"))}</td>
         <td>${item.queueBacked ? Number(item.openOperations || 0) : "—"}</td>
         <td>${item.queueBacked ? Number(item.failedOrConflict || 0) : "—"}</td>
         <td>${escapeHtml(oldest)}</td>
-        <td>${escapeHtml(blockers.map(labelBlocker).join("، ") || "لا توجد موانع")}</td>
+        <td>${escapeHtml(blockers.map(labelBlocker).join("، ") || rt("noBlockers"))}</td>
       </tr>`;
   }).join("");
 
@@ -3093,7 +3102,7 @@ function renderSyncRetentionObservability() {
     const activeClients = item.activeClients == null ? "—" : Number(item.activeClients || 0);
     const policyClients = item.activePolicyClients == null ? "—" : Number(item.activePolicyClients || 0);
     const legacyClients = item.legacyOrUnboundedActiveClients == null ? "—" : Number(item.legacyOrUnboundedActiveClients || 0);
-    const rollout = item.rolloutCoveragePercent == null ? "Server-only" : `${Number(item.rolloutCoveragePercent || 0)}%`;
+    const rollout = item.rolloutCoveragePercent == null ? rt("rollout.serverOnly") : `${Number(item.rolloutCoveragePercent || 0)}%`;
     return `
       <tr>
         <td><strong>${escapeHtml(label)}</strong></td>
@@ -3102,18 +3111,18 @@ function renderSyncRetentionObservability() {
         <td>${policyClients}</td>
         <td>${legacyClients}</td>
         <td>${escapeHtml(rollout)}</td>
-        <td>${item.guardCoverageSatisfied ? "100%" : "غير مكتملة"}</td>
+        <td>${item.guardCoverageSatisfied ? escapeHtml(rt("rollout.guardComplete")) : escapeHtml(rt("rollout.incomplete"))}</td>
         <td>${escapeHtml(healthDateTimeLabel(item.allCurrentRowsSafetyMaturityAt))}</td>
-        <td>${escapeHtml(blockers.map(labelBlocker).join("، ") || "لا توجد موانع")}</td>
+        <td>${escapeHtml(blockers.map(labelBlocker).join("، ") || rt("noBlockers"))}</td>
       </tr>`;
   }).join("");
 
   const overallBlockers = Array.isArray(decisionGate.blockers) ? decisionGate.blockers : [];
   const crmEntities = crm.entities || {};
   const crmRows = [
-    ["العملاء", crmEntities.customers || {}],
-    ["المتابعات", crmEntities.followups || {}],
-    ["العقود", crmEntities.quotations || {}]
+    [rt("domain.customers"), crmEntities.customers || {}],
+    [rt("domain.followups"), crmEntities.followups || {}],
+    [rt("domain.contracts"), crmEntities.quotations || {}]
   ].map(([label, item]) => `
     <tr>
       <td><strong>${escapeHtml(label)}</strong></td>
@@ -3124,80 +3133,83 @@ function renderSyncRetentionObservability() {
       <td>${escapeHtml(healthDateTimeLabel(item.lastSeenAt))}</td>
     </tr>`).join("");
 
+  const queueCandidate = Number(decisionGate.candidateRetentionDays || 0) || "—";
+  const financialCandidate = Number(decisionGate.financialCandidateRetentionDays || 0) || "—";
+
   content.innerHTML = `
     <div class="diagnostics-summary-grid">
-      <article><span>نافذة المراقبة</span><strong>${escapeHtml(observationAge)}</strong><small>${observationDays} / ${requiredObservationDays} يوم حد أدنى للقرار</small></article>
-      <article><span>عمليات Queue مفتوحة</span><strong>${openOperations}</strong><small>Execution + SEA VIBE</small></article>
-      <article><span>فشل / تعارض</span><strong>${issueOperations}</strong><small>تحتاج متابعة إذا كانت أكبر من صفر</small></article>
-      <article><span>CRM Tombstones</span><strong>${Number(crm.tombstones || 0)}</strong><small>الأقدم: ${escapeHtml(healthAgeLabel(crm.oldestTombstoneAt))}</small></article>
-      <article><span>Retention Decision Gate</span><strong>${gateReady ? "READY" : "HOLD"}</strong><small>${escapeHtml(readinessText)}</small></article>
+      <article><span>${escapeHtml(rt("summary.observationWindow"))}</span><strong>${escapeHtml(observationAge)}</strong><small>${escapeHtml(rt("summary.minimumDecisionDays", { current: observationDays, required: requiredObservationDays }))}</small></article>
+      <article><span>${escapeHtml(rt("summary.queueOpen"))}</span><strong>${openOperations}</strong><small>${escapeHtml(rt("summary.executionSeaVibe"))}</small></article>
+      <article><span>${escapeHtml(rt("summary.failConflict"))}</span><strong>${issueOperations}</strong><small>${escapeHtml(rt("summary.needsAttention"))}</small></article>
+      <article><span>${escapeHtml(rt("summary.crmTombstones"))}</span><strong>${Number(crm.tombstones || 0)}</strong><small>${escapeHtml(rt("summary.oldest", { value: healthAgeLabel(crm.oldestTombstoneAt) }))}</small></article>
+      <article><span>${escapeHtml(rt("summary.decisionGate"))}</span><strong>${gateReady ? "READY" : "HOLD"}</strong><small>${escapeHtml(readinessText)}</small></article>
     </div>
 
-    <div class="panel-header"><div><h3>Production Retention Decision Gate</h3><p>القرار يعتمد على Evidence فعلية + سياسة Replay محددة؛ المراقبة وحدها لا تفعّل الحذف.</p></div></div>
+    <div class="panel-header"><div><h3>${escapeHtml(rt("decision.title"))}</h3><p>${escapeHtml(rt("decision.note"))}</p></div></div>
     <div class="health-metrics-grid">
-      <article><span>Observation Window</span><strong>${decisionGate.observationWindowSatisfied ? "مكتملة" : "غير مكتملة"}</strong><small>${observationDays} / ${requiredObservationDays} يوم</small></article>
-      <article><span>Queue Replay Horizon</span><strong>${decisionGate.queueReplayHorizonBounded ? `${Number(decisionGate.queueReplayHorizonDays || 90)} يوم` : "غير محدد"}</strong><small>Execution + SEA VIBE — من أول محاولة فعلية للسيرفر</small></article>
-      <article><span>Financial Retry Horizon</span><strong>${decisionGate.financialRetryHorizonBounded ? `${Number(decisionGate.financialRetryHorizonDays || 90)} يوم` : "غير محدد"}</strong><small>${decisionGate.financialServerReplayEnforcementEnabled ? "Server-enforced" : "Online idempotent retries"}</small></article>
-      <article><span>أقدم Replay حي مرصود</span><strong>${escapeHtml(healthAgeLabel(decisionGate.observedOldestOpenOperationAt))}</strong><small>Evidence فقط وليست Retention recommendation</small></article>
-      <article><span>Candidate Retention</span><strong>${decisionGate.candidateRetentionDays ? `${Number(decisionGate.candidateRetentionDays)} يوم` : "غير محدد"}</strong><small>Queue: ${Number(decisionGate.candidateRetentionDays || 0) || "—"} يوم / Financial: ${Number(decisionGate.financialCandidateRetentionDays || 0) || "—"} يوم — لا حذف تلقائي</small></article>
+      <article><span>${escapeHtml(rt("decision.observationWindow"))}</span><strong>${escapeHtml(decisionGate.observationWindowSatisfied ? rt("decision.complete") : rt("decision.incomplete"))}</strong><small>${escapeHtml(rt("rollout.observationDays", { current: observationDays, required: requiredObservationDays }))}</small></article>
+      <article><span>${escapeHtml(rt("decision.queueReplayHorizon"))}</span><strong>${escapeHtml(decisionGate.queueReplayHorizonBounded ? rt("days", { count: Number(decisionGate.queueReplayHorizonDays || 90) }) : rt("unspecified"))}</strong><small>${escapeHtml(rt("decision.queuePolicyNote"))}</small></article>
+      <article><span>${escapeHtml(rt("decision.financialRetryHorizon"))}</span><strong>${escapeHtml(decisionGate.financialRetryHorizonBounded ? rt("days", { count: Number(decisionGate.financialRetryHorizonDays || 90) }) : rt("unspecified"))}</strong><small>${escapeHtml(decisionGate.financialServerReplayEnforcementEnabled ? rt("decision.serverEnforced") : rt("decision.onlineRetries"))}</small></article>
+      <article><span>${escapeHtml(rt("decision.oldestReplay"))}</span><strong>${escapeHtml(healthAgeLabel(decisionGate.observedOldestOpenOperationAt))}</strong><small>${escapeHtml(rt("decision.evidenceOnly"))}</small></article>
+      <article><span>${escapeHtml(rt("decision.candidateRetention"))}</span><strong>${decisionGate.candidateRetentionDays ? escapeHtml(rt("days", { count: Number(decisionGate.candidateRetentionDays) })) : escapeHtml(rt("unspecified"))}</strong><small>${escapeHtml(rt("decision.candidateDetail", { queue: queueCandidate, financial: financialCandidate }))}</small></article>
     </div>
-    <div class="data-status info">${escapeHtml(overallBlockers.map(labelBlocker).join(" — ") || "لا توجد موانع حالية")}</div>
+    <div class="data-status info">${escapeHtml(overallBlockers.map(labelBlocker).join(" — ") || rt("decision.noCurrentBlockers"))}</div>
     <div class="table-wrap"><table>
-      <thead><tr><th>الدومين</th><th>قرار</th><th>Replay Horizon</th><th>Open</th><th>Failed/Conflict</th><th>أقدم عملية</th><th>الموانع</th></tr></thead>
+      <thead><tr><th>${escapeHtml(rt("table.domain"))}</th><th>${escapeHtml(rt("table.decision"))}</th><th>${escapeHtml(rt("table.replayHorizon"))}</th><th>${escapeHtml(rt("table.open"))}</th><th>${escapeHtml(rt("table.failedConflict"))}</th><th>${escapeHtml(rt("table.oldestOperation"))}</th><th>${escapeHtml(rt("table.blockers"))}</th></tr></thead>
       <tbody>${gateRows}</tbody>
     </table></div>
 
-    <div class="panel-header"><div><h3>Production Rollout Readiness</h3><p>بوابة قراءة فقط تعتمد على وقت الخادم، انتهاء Legacy Grace، Rollout الأجهزة النشطة، وتغطية Replay Guards. لا تفعّل الحذف.</p></div></div>
+    <div class="panel-header"><div><h3>${escapeHtml(rt("rollout.title"))}</h3><p>${escapeHtml(rt("rollout.note"))}</p></div></div>
     <div class="health-metrics-grid">
-      <article><span>Production Gate</span><strong>${escapeHtml(productionReadiness.status || "HOLD")}</strong><small>${gateReady ? "اجتازت شروط الجاهزية" : "ما زالت تحت المراقبة"}</small></article>
-      <article><span>Observation Ready At</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.observationReadyAt))}</strong><small>${Number(productionReadiness.observationDays || 0)} / ${Number(productionReadiness.requiredObservationDays || 60)} يوم</small></article>
-      <article><span>Legacy Grace Ends</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.legacyV1AcceptUntil))}</strong><small>${productionReadiness.legacyV1GraceActive ? "ما زالت نشطة" : "انتهت"}</small></article>
-      <article><span>أقرب Time Gate</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.timeConditionsReadyAt))}</strong><small>أقصى Observation Ready / Legacy Grace End</small></article>
-      <article><span>Pruning Engine</span><strong>${boundedPruningEngine.engineInstalled ? "INSTALLED" : "NOT INSTALLED"}</strong><small>Bounded batch cap: ${Number(boundedPruningEngine.maxBatchRows || 100)} صف</small></article>
-      <article><span>Pruning Switch</span><strong>${boundedPruningEngine.executionEnabled ? "ON" : "OFF"}</strong><small>${boundedPruningEngine.authenticatedExecuteGranted ? "Execute grant متاح" : "لا يوجد Execute grant — Activation Migration منفصلة مطلوبة"}</small></article>
+      <article><span>${escapeHtml(rt("rollout.productionGate"))}</span><strong>${escapeHtml(productionReadiness.status || "HOLD")}</strong><small>${escapeHtml(gateReady ? rt("rollout.passed") : rt("rollout.monitoring"))}</small></article>
+      <article><span>${escapeHtml(rt("rollout.observationReadyAt"))}</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.observationReadyAt))}</strong><small>${escapeHtml(rt("rollout.observationDays", { current: Number(productionReadiness.observationDays || 0), required: Number(productionReadiness.requiredObservationDays || 60) }))}</small></article>
+      <article><span>${escapeHtml(rt("rollout.legacyGraceEnds"))}</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.legacyV1AcceptUntil))}</strong><small>${escapeHtml(productionReadiness.legacyV1GraceActive ? rt("rollout.graceActive") : rt("rollout.graceEnded"))}</small></article>
+      <article><span>${escapeHtml(rt("rollout.timeGate"))}</span><strong>${escapeHtml(healthDateTimeLabel(productionReadiness.timeConditionsReadyAt))}</strong><small>${escapeHtml(rt("rollout.timeGateNote"))}</small></article>
+      <article><span>${escapeHtml(rt("rollout.pruningEngine"))}</span><strong>${escapeHtml(boundedPruningEngine.engineInstalled ? rt("rollout.engineInstalled") : rt("rollout.engineNotInstalled"))}</strong><small>${escapeHtml(rt("rollout.batchCap", { count: Number(boundedPruningEngine.maxBatchRows || 100) }))}</small></article>
+      <article><span>${escapeHtml(rt("rollout.pruningSwitch"))}</span><strong>${escapeHtml(boundedPruningEngine.executionEnabled ? rt("rollout.switchOn") : rt("rollout.switchOff"))}</strong><small>${escapeHtml(boundedPruningEngine.authenticatedExecuteGranted ? rt("rollout.executeGrant") : rt("rollout.noExecuteGrant"))}</small></article>
     </div>
     <div class="table-wrap"><table>
-      <thead><tr><th>Domain</th><th>Gate</th><th>Active Clients</th><th>Policy Clients</th><th>Legacy/Unbounded</th><th>Rollout</th><th>Guard Coverage</th><th>كل الصفوف الحالية آمنة بعد</th><th>الموانع</th></tr></thead>
+      <thead><tr><th>${escapeHtml(rt("rollout.col.domain"))}</th><th>${escapeHtml(rt("rollout.col.gate"))}</th><th>${escapeHtml(rt("rollout.col.activeClients"))}</th><th>${escapeHtml(rt("rollout.col.policyClients"))}</th><th>${escapeHtml(rt("rollout.col.legacy"))}</th><th>${escapeHtml(rt("rollout.col.rollout"))}</th><th>${escapeHtml(rt("rollout.col.guardCoverage"))}</th><th>${escapeHtml(rt("rollout.col.safeAfter"))}</th><th>${escapeHtml(rt("rollout.col.blockers"))}</th></tr></thead>
       <tbody>${rolloutRows}</tbody>
     </table></div>
 
-    <div class="panel-header"><div><h3>Queue Watermarks</h3><p>أعمار وحالات العمليات المفتوحة من الأجهزة النشطة خلال آخر 45 يومًا.</p></div></div>
+    <div class="panel-header"><div><h3>${escapeHtml(rt("queue.title"))}</h3><p>${escapeHtml(rt("queue.note"))}</p></div></div>
     <div class="table-wrap"><table>
-      <thead><tr><th>الدومين</th><th>Clients نشطة</th><th>مفتوحة</th><th>Pending / Retry</th><th>Failed / Conflict</th><th>Expired / Replayable</th><th>Replay Policy</th><th>أقدم عملية</th><th>آخر إشارة</th></tr></thead>
+      <thead><tr><th>${escapeHtml(rt("queue.col.domain"))}</th><th>${escapeHtml(rt("queue.col.activeClients"))}</th><th>${escapeHtml(rt("queue.col.open"))}</th><th>${escapeHtml(rt("queue.col.pendingRetry"))}</th><th>${escapeHtml(rt("queue.col.failedConflict"))}</th><th>${escapeHtml(rt("queue.col.expiredReplayable"))}</th><th>${escapeHtml(rt("queue.col.policy"))}</th><th>${escapeHtml(rt("queue.col.oldest"))}</th><th>${escapeHtml(rt("queue.col.lastSeen"))}</th></tr></thead>
       <tbody>${queueRows}</tbody>
     </table></div>
 
-    <div class="panel-header"><div><h3>Idempotency Ledgers</h3><p>المراقبة فقط؛ كل Replay Horizons أصبحت محددة، لكن الحذف الفعلي يظل معطلًا حتى اجتياز Observation/Grace ثم مرحلة Pruning مستقلة.</p></div></div>
+    <div class="panel-header"><div><h3>${escapeHtml(rt("ledgers.title"))}</h3><p>${escapeHtml(rt("ledgers.note"))}</p></div></div>
     <div class="table-wrap"><table>
-      <thead><tr><th>Ledger</th><th>الصفوف</th><th>عمر الأقدم</th><th>مصدر Retry</th><th>Retention</th></tr></thead>
+      <thead><tr><th>${escapeHtml(rt("ledgers.col.ledger"))}</th><th>${escapeHtml(rt("ledgers.col.rows"))}</th><th>${escapeHtml(rt("ledgers.col.oldestAge"))}</th><th>${escapeHtml(rt("ledgers.col.retrySource"))}</th><th>${escapeHtml(rt("ledgers.col.retention"))}</th></tr></thead>
       <tbody>${ledgerRows}</tbody>
     </table></div>
 
-    <div class="panel-header"><div><h3>Ledger Pruning Dry-Run</h3><p>حساب فقط لما قد يصبح مؤهلًا بعد اجتياز Production Gate. محرك R44 مركب لكنه معطل ولا يتم تنفيذ أي DELETE.</p></div></div>
+    <div class="panel-header"><div><h3>${escapeHtml(rt("dryRun.title"))}</h3><p>${escapeHtml(rt("dryRun.note"))}</p></div></div>
     <div class="health-metrics-grid">
-      <article><span>Technical Candidates</span><strong>${Number(pruningDryRun.technicalCandidateRows || 0)}</strong><small>بعد Replay Horizon + Safety Buffer وبوجود Guard مطابق</small></article>
-      <article><span>Unprotected Rows</span><strong>${Number(pruningDryRun.unprotectedRows || 0)}</strong><small>لا تدخل ضمن المرشحين مهما كان عمرها</small></article>
-      <article><span>Pruning Allowed Now</span><strong>NO</strong><small>${pruningDryRun.decisionGateStatus === "READY" ? "Pruning switch ما زال معطلًا" : "Decision Gate ما زالت HOLD"}</small></article>
-      <article><span>Execution Mode</span><strong>DRY-RUN</strong><small>deleteExecuted = ${pruningDryRun.deleteExecuted === true ? "true" : "false"}</small></article>
+      <article><span>${escapeHtml(rt("dryRun.technicalCandidates"))}</span><strong>${Number(pruningDryRun.technicalCandidateRows || 0)}</strong><small>${escapeHtml(rt("dryRun.technicalNote"))}</small></article>
+      <article><span>${escapeHtml(rt("dryRun.unprotectedRows"))}</span><strong>${Number(pruningDryRun.unprotectedRows || 0)}</strong><small>${escapeHtml(rt("dryRun.unprotectedNote"))}</small></article>
+      <article><span>${escapeHtml(rt("dryRun.allowedNow"))}</span><strong>NO</strong><small>${escapeHtml(pruningDryRun.decisionGateStatus === "READY" ? rt("dryRun.switchDisabled") : rt("dryRun.gateHold"))}</small></article>
+      <article><span>${escapeHtml(rt("dryRun.executionMode"))}</span><strong>DRY-RUN</strong><small>${escapeHtml(rt("dryRun.deleteExecuted", { value: pruningDryRun.deleteExecuted === true ? "true" : "false" }))}</small></article>
     </div>
-    <div class="data-status info">${escapeHtml(pruningDryRunBlockers.map(labelBlocker).join(" — ") || "Dry-run نشط؛ لا توجد فجوات Guard مرصودة في البيانات الحالية")}</div>
+    <div class="data-status info">${escapeHtml(pruningDryRunBlockers.map(labelBlocker).join(" — ") || rt("dryRun.noGaps"))}</div>
     <div class="table-wrap"><table>
-      <thead><tr><th>Ledger</th><th>Rows</th><th>Guarded</th><th>Unprotected</th><th>Technical Candidates</th><th>أقدم Candidate</th><th>Candidate Retention</th><th>الحذف الآن</th><th>Guard Notes</th></tr></thead>
+      <thead><tr><th>${escapeHtml(rt("dryRun.col.ledger"))}</th><th>${escapeHtml(rt("dryRun.col.rows"))}</th><th>${escapeHtml(rt("dryRun.col.guarded"))}</th><th>${escapeHtml(rt("dryRun.col.unprotected"))}</th><th>${escapeHtml(rt("dryRun.col.candidates"))}</th><th>${escapeHtml(rt("dryRun.col.oldest"))}</th><th>${escapeHtml(rt("dryRun.col.retention"))}</th><th>${escapeHtml(rt("dryRun.col.deleteNow"))}</th><th>${escapeHtml(rt("dryRun.col.guardNotes"))}</th></tr></thead>
       <tbody>${pruningDryRunRows}</tbody>
     </table></div>
 
     <div class="health-metrics-grid">
-      <article><span>CRM Clients نشطة</span><strong>${Number(crm.activeClients || 0)}</strong></article>
-      <article><span>Watermark Rows النشطة</span><strong>${Number(crm.activeWatermarkRows || 0)}</strong></article>
-      <article><span>Tombstones أقدم من 60 يوم</span><strong>${Number(crm.olderThanMinimumRetention || 0)}</strong></article>
-      <article><span>جاهزة للصيانة التالية</span><strong>${Number(crm.eligibleForNextMaintenance || 0)}</strong></article>
-      <article><span>محجوبة بسبب Clients متأخرة</span><strong>${Number(crm.blockedByActiveClients || 0)}</strong></article>
-      <article><span>حد الاحتفاظ الأدنى</span><strong>${Number(snapshot.retentionPolicy?.crmTombstoneMinimumDays || 60)} يوم</strong></article>
+      <article><span>${escapeHtml(rt("crm.activeClients"))}</span><strong>${Number(crm.activeClients || 0)}</strong></article>
+      <article><span>${escapeHtml(rt("crm.watermarks"))}</span><strong>${Number(crm.activeWatermarkRows || 0)}</strong></article>
+      <article><span>${escapeHtml(rt("crm.oldTombstones"))}</span><strong>${Number(crm.olderThanMinimumRetention || 0)}</strong></article>
+      <article><span>${escapeHtml(rt("crm.nextMaintenance"))}</span><strong>${Number(crm.eligibleForNextMaintenance || 0)}</strong></article>
+      <article><span>${escapeHtml(rt("crm.blockedClients"))}</span><strong>${Number(crm.blockedByActiveClients || 0)}</strong></article>
+      <article><span>${escapeHtml(rt("crm.minimumRetention"))}</span><strong>${escapeHtml(rt("crm.minimumRetentionDays", { count: Number(snapshot.retentionPolicy?.crmTombstoneMinimumDays || 60) }))}</strong></article>
     </div>
 
-    <div class="panel-header"><div><h3>CRM Sync Watermarks</h3><p>لا يتم عرض User IDs أو Client IDs أو Scope IDs؛ أرقام مجمعة فقط.</p></div></div>
+    <div class="panel-header"><div><h3>${escapeHtml(rt("crm.title"))}</h3><p>${escapeHtml(rt("crm.note"))}</p></div></div>
     <div class="table-wrap"><table>
-      <thead><tr><th>الكيان</th><th>Clients نشطة</th><th>Watermarks</th><th>أقدم Cursor</th><th>أقدم Full Sync</th><th>آخر إشارة</th></tr></thead>
+      <thead><tr><th>${escapeHtml(rt("crm.col.entity"))}</th><th>${escapeHtml(rt("crm.col.activeClients"))}</th><th>${escapeHtml(rt("crm.col.watermarks"))}</th><th>${escapeHtml(rt("crm.col.oldestCursor"))}</th><th>${escapeHtml(rt("crm.col.oldestFullSync"))}</th><th>${escapeHtml(rt("crm.col.lastSeen"))}</th></tr></thead>
       <tbody>${crmRows}</tbody>
     </table></div>`;
 }
@@ -3942,7 +3954,7 @@ async function loadCustomersFromSupabase(force = false) {
     console.error("Customer loading failed:", error);
     showDataStatus(
       "customersStatus",
-      error instanceof Error ? error.message : "تعذر تحميل العملاء.",
+      error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : customerT("customers.error.load","تعذر تحميل العملاء."),
       "error"
     );
   } finally {
@@ -5741,9 +5753,7 @@ function dailyLocalDate(value = new Date()) {
 }
 
 function kyumDisplayDateLocale() {
-  return window.matchMedia?.("(max-width: 767px)")?.matches
-    ? "ar-EG-u-ca-gregory-nu-latn"
-    : "ar-SA-u-ca-gregory-nu-latn";
+  return l1Locale();
 }
 
 function dailyDateTime(value) {
@@ -6705,7 +6715,7 @@ async function loadQuotationsFromSupabase(force = false) {
     console.error("Quotation loading failed:", error);
     showDataStatus(
       "quotationsStatus",
-      error instanceof Error ? error.message : "تعذر تحميل عقود العملاء.",
+      error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : customerT("contracts.error.load","تعذر تحميل عقود العملاء."),
       "error"
     );
   } finally {
@@ -7628,7 +7638,7 @@ document.getElementById("customer360ExportExcelBtn")?.addEventListener("click", 
   try {
     window.Customer360Export.createExcel(currentCustomer360View);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر تصدير ملف Excel.");
+    alert(error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : l1T("customer360.export.excelError"));
   }
 });
 
@@ -7637,7 +7647,7 @@ document.getElementById("customer360ExportPdfBtn")?.addEventListener("click", ()
   try {
     window.Customer360Export.openPrint(currentCustomer360View);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر إنشاء تقرير PDF.");
+    alert(error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : l1T("customer360.export.pdfError"));
   }
 });
 
@@ -7646,7 +7656,7 @@ document.getElementById("customer360PrintBtn")?.addEventListener("click", () => 
   try {
     window.Customer360Export.openPrint(currentCustomer360View);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر فتح الطباعة.");
+    alert(error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : l1T("customer360.export.printError"));
   }
 });
 
@@ -7663,7 +7673,7 @@ document.getElementById("customer360ExportPngBtn")?.addEventListener("click", as
       currentCustomer360View
     );
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر تصدير صورة PNG.");
+    alert(error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : l1T("customer360.export.pngError"));
   } finally {
     button.disabled = false;
     button.textContent = l1T('reportsOverview.export.exportPng');
@@ -9089,7 +9099,7 @@ document.getElementById("resetPerformanceMetricsBtn")?.addEventListener("click",
     if (!selected || input.value !== quotationCustomerDisplay(selected)) {
       select.value = "";
       input.dataset.selectedCustomerId = "";
-      input.setCustomValidity("اختر العميل من نتائج البحث.");
+      input.setCustomValidity(customerT("crmService.customers.search.selectValid","اختر قيمة صحيحة من القائمة."));
     }
     openQuotationCustomerOptions();
   });

@@ -183,7 +183,7 @@
   }
 
   async function fetchAll(table, columns) {
-    if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
+    if (!window.customerSupabase) throw new Error(geoT("geography.error.supabaseNotReady", "Supabase connection is not ready."));
     const rows = [];
     const pageSize = 1000;
     let from = 0;
@@ -397,15 +397,15 @@
 
   function validateCanonicalAddress(address = {}, { requireRegion = true, requireCity = true, requireDistrict = true } = {}) {
     const current = canonicalizeAddress(address);
-    if (current.requestedMissing.region) return { valid: false, field: "region", code: "REGION_NOT_ACTIVE", message: "المنطقة المختارة غير موجودة أو غير نشطة." };
-    if (current.requestedMissing.city) return { valid: false, field: "city", code: "CITY_NOT_ACTIVE", message: "المدينة المختارة غير موجودة أو غير نشطة." };
-    if (current.requestedMissing.district) return { valid: false, field: "district", code: "DISTRICT_NOT_ACTIVE", message: "الحي المختار غير موجود أو غير نشط." };
-    if (requireRegion && !current.regionId) return { valid: false, field: "region", code: "REGION_REQUIRED", message: "اختر المنطقة." };
-    if (requireCity && !current.cityId) return { valid: false, field: "city", code: "CITY_REQUIRED", message: "اختر المدينة." };
-    if (requireDistrict && !current.districtId) return { valid: false, field: "district", code: "DISTRICT_REQUIRED", message: "اختر الحي." };
-    if (current.cityRegionMismatch || (current.cityId && !current.validRegionCity)) return { valid: false, field: "city", code: "CITY_REGION_MISMATCH", message: "المدينة لا تتبع المنطقة المختارة." };
-    if (current.districtCityMismatch || (current.districtId && !current.validDistrictCity)) return { valid: false, field: "district", code: "DISTRICT_CITY_MISMATCH", message: "الحي لا يتبع المدينة المختارة." };
-    if (current.districtRegionMismatch || (current.districtId && !current.validDistrictRegion)) return { valid: false, field: "district", code: "DISTRICT_REGION_MISMATCH", message: "الحي لا يتبع المنطقة المختارة." };
+    if (current.requestedMissing.region) return { valid: false, field: "region", code: "REGION_NOT_ACTIVE", message: geoT("geography.validation.regionNotActive", "The selected region does not exist or is inactive.") };
+    if (current.requestedMissing.city) return { valid: false, field: "city", code: "CITY_NOT_ACTIVE", message: geoT("geography.validation.cityNotActive", "The selected city does not exist or is inactive.") };
+    if (current.requestedMissing.district) return { valid: false, field: "district", code: "DISTRICT_NOT_ACTIVE", message: geoT("geography.validation.districtNotActive", "The selected neighborhood does not exist or is inactive.") };
+    if (requireRegion && !current.regionId) return { valid: false, field: "region", code: "REGION_REQUIRED", message: geoT("geography.validation.regionRequired", "Select a region.") };
+    if (requireCity && !current.cityId) return { valid: false, field: "city", code: "CITY_REQUIRED", message: geoT("geography.validation.cityRequired", "Select a city.") };
+    if (requireDistrict && !current.districtId) return { valid: false, field: "district", code: "DISTRICT_REQUIRED", message: geoT("geography.validation.districtRequired", "Select a neighborhood.") };
+    if (current.cityRegionMismatch || (current.cityId && !current.validRegionCity)) return { valid: false, field: "city", code: "CITY_REGION_MISMATCH", message: geoT("geography.validation.cityRegionMismatch", "The city does not belong to the selected region.") };
+    if (current.districtCityMismatch || (current.districtId && !current.validDistrictCity)) return { valid: false, field: "district", code: "DISTRICT_CITY_MISMATCH", message: geoT("geography.validation.districtCityMismatch", "The neighborhood does not belong to the selected city.") };
+    if (current.districtRegionMismatch || (current.districtId && !current.validDistrictRegion)) return { valid: false, field: "district", code: "DISTRICT_REGION_MISMATCH", message: geoT("geography.validation.districtRegionMismatch", "The neighborhood does not belong to the selected region.") };
     return { valid: true, value: current };
   }
 

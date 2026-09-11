@@ -157,7 +157,7 @@
         element.setAttribute("aria-disabled", String(!allowed));
         element.setAttribute("tabindex", allowed ? "0" : keepVisibleDisabled ? "0" : "-1");
         if (keepVisibleDisabled) {
-          element.title = element.dataset.permissionDeniedMessage || "لا توجد صلاحية لتنفيذ هذا الإجراء.";
+          element.title = element.dataset.permissionDeniedMessage || window.PetatoeLocalization?.t?.("permissions.error.actionDenied") || "لا توجد صلاحية لتنفيذ هذا الإجراء.";
         } else if (allowed && element.dataset.permissionDeniedMessage) {
           element.removeAttribute("title");
         }

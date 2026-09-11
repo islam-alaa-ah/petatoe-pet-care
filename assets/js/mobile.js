@@ -101,6 +101,7 @@
   "use strict";
 
   const MOBILE_MEDIA = window.matchMedia("(max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px)");
+  const mt = (key, fallback = "") => { const value = window.PetatoeLocalization?.t?.(key); return value && !/^\[.+\]$/.test(value) ? value : fallback; };
   const nav = document.getElementById("mobileBottomNav");
   if (!nav) return;
 
@@ -175,7 +176,7 @@
         if (announce) {
           const status = dashboardView.querySelector("[data-mobile-dashboard-status]");
           if (status) {
-            status.textContent = "تم تحديث لوحة التحكم";
+            status.textContent = mt("dashboard.mobile.updated", "Dashboard updated");
             window.setTimeout(() => { status.textContent = ""; }, 1800);
           }
         }
@@ -367,7 +368,11 @@
 
   function decorateCustomerRows() {
     if (!customersView) return;
-    const labels = ["رقم العميل", "اسم العميل", "اسم المسؤول", "التصنيف", "مجال الاهتمام", "المندوب", "تاريخ التواصل", "رقم العقد", "سبب عدم البيع", "الإجراءات"];
+    const labels = [
+      mt("customers.col.code", "Code"), mt("customers.col.name", "Name"), mt("customers.mobile.contactPerson", "Contact Person"),
+      mt("customers.mobile.classification", "Classification"), mt("customers.mobile.interest", "Interest"), mt("customers.mobile.representative", "Representative"),
+      mt("customers.mobile.lastContact", "Last Contact"), mt("customers.mobile.contractNumber", "Contract Number"), mt("customers.mobile.lossReason", "No-Sale Reason"), mt("customers.col.actions", "Actions")
+    ];
     const fields = ["phone", "name", "contact", "type", "interests", "representative", "date", "quotation", "reason", "actions"];
     customersView.querySelectorAll("#customersTableBody tr").forEach(row => {
       const cells = [...row.children];
@@ -383,8 +388,8 @@
         const call = document.createElement("a");
         call.className = "mobile-customer-call";
         call.href = window.KYUMMobilePhone.telephoneUrl(phone) || `tel:${phone}`;
-        call.textContent=mt('contracts.export.call','Call');
-        call.setAttribute("aria-label", `اتصال بالعميل ${phone}`);
+        call.textContent = t('followups.mobile.call','Call');
+        call.setAttribute("aria-label", mt("customers.mobile.callAria", `Call customer ${phone}`).replace("{phone}", phone));
         actions.append(call);
       }
       if (!actions.querySelector(".mobile-customer-whatsapp")) {
@@ -394,7 +399,7 @@
         whatsapp.target = "_blank";
         whatsapp.rel = "noopener noreferrer";
         whatsapp.textContent=mt('contracts.export.whatsapp','WhatsApp');
-        whatsapp.setAttribute("aria-label", `فتح واتساب للعميل ${phone}`);
+        whatsapp.setAttribute("aria-label", mt("customers.mobile.whatsappAria", `Open WhatsApp for customer ${phone}`).replace("{phone}", phone));
         actions.append(whatsapp);
       }
     });
@@ -424,7 +429,7 @@
     filterButton.type = "button";
     filterButton.className = "mobile-customers-filter-btn";
     filterButton.dataset.mobileCustomersFilter = "";
-    filterButton.setAttribute("aria-label", "فتح فلاتر العملاء");
+    filterButton.setAttribute("aria-label", mt("customers.mobile.filterAria", "Open customer filters"));
     filterButton.setAttribute("aria-expanded", "false");
     filterButton.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>`;
     actions.append(filterButton);
@@ -432,14 +437,14 @@
     const close = document.createElement("button");
     close.type = "button";
     close.className = "mobile-customers-filter-close";
-    close.setAttribute("aria-label", "إغلاق فلاتر العملاء");
+    close.setAttribute("aria-label", mt("customers.mobile.closeFilters", "Close customer filters"));
     close.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
     filters.prepend(close);
 
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "mobile-customers-filter-backdrop";
-    backdrop.setAttribute("aria-label", "إغلاق فلاتر العملاء");
+    backdrop.setAttribute("aria-label", mt("customers.mobile.closeFilters", "Close customer filters"));
     customersView.append(backdrop);
 
     filterButton.addEventListener("click", () => {
@@ -483,8 +488,8 @@
       content.prepend(actions);
     }
     actions.innerHTML = hasPhone ? `
-      <a href="tel:${phoneCandidate}" data-kind="call" aria-label="اتصال بالعميل">اتصال بالعميل</a>
-      <a href="${window.KYUMMobilePhone.whatsappUrl(phoneCandidate)}" target="_blank" rel="noopener noreferrer" data-kind="whatsapp" aria-label="فتح واتساب للعميل">WhatsApp</a>
+      <a href="tel:${phoneCandidate}" data-kind="call" aria-label="${mt("followups.mobile.callAria", "Call customer")}">${mt("customer360.mobile.call", "Call Customer")}</a>
+      <a href="${window.KYUMMobilePhone.whatsappUrl(phoneCandidate)}" target="_blank" rel="noopener noreferrer" data-kind="whatsapp" aria-label="${mt("customer360.mobile.whatsappAria", "Open WhatsApp for customer")}">${mt("customer360.mobile.whatsapp", "WhatsApp")}</a>
     ` : "";
     actions.hidden = !hasPhone;
 
@@ -492,15 +497,22 @@
     if (!jumpNav) {
       jumpNav = document.createElement("nav");
       jumpNav.className = "mobile-customer360-jumpnav";
-      jumpNav.setAttribute("aria-label", "أقسام ملف العميل");
+      jumpNav.setAttribute("aria-label", mt("customer360.mobile.sectionsAria", "Customer file sections"));
       const sections = [...content.querySelectorAll(".customer360-section")];
-      const wanted = ["البيانات الأساسية", "عقود العملاء", "ملخص المتابعة", "سجل النشاط الموحد", "سجل المتابعات"];
-      wanted.forEach(label => {
-        const target = sections.find(section => section.querySelector("h3")?.textContent.trim() === label);
+      const wanted = [
+        ["customer360.section.profile", "customer360.mobile.profile"],
+        ["customer360.section.contracts", "customer360.mobile.contracts"],
+        ["customer360.section.followupSummary", "customer360.mobile.followup"],
+        ["customer360.section.activity", "customer360.mobile.activity"],
+        ["customer360.section.followupHistory", "customer360.mobile.history"]
+      ];
+      wanted.forEach(([sectionKey, shortKey]) => {
+        const sectionLabel = mt(sectionKey, sectionKey);
+        const target = sections.find(section => section.querySelector("h3")?.textContent.trim() === sectionLabel);
         if (!target) return;
         const button = document.createElement("button");
         button.type = "button";
-        button.textContent = label.replace("سجل النشاط الموحد", "النشاط").replace("البيانات الأساسية", "البيانات").replace("ملخص المتابعة", "المتابعة").replace("سجل المتابعات", "السجل");
+        button.textContent = mt(shortKey, sectionLabel);
         button.addEventListener("click", () => target.scrollIntoView({ behavior: "smooth", block: "start" }));
         jumpNav.append(button);
       });
@@ -529,6 +541,17 @@
     syncActiveState();
   });
   window.addEventListener("kyum-navigation-permissions-applied", syncPermissionVisibility);
+  window.addEventListener("petatoe-language-changed", () => {
+    if (!MOBILE_MEDIA.matches) return;
+    decorateCustomerRows();
+    const dialog = document.getElementById("customerDetailsDialog");
+    dialog?.querySelector(".mobile-customer360-jumpnav")?.remove();
+    decorateCustomer360();
+    const customerFilter = customersView?.querySelector("[data-mobile-customers-filter]");
+    if (customerFilter) customerFilter.setAttribute("aria-label", mt("customers.mobile.filterAria", "Open customer filters"));
+    customersView?.querySelector(".mobile-customers-filter-close")?.setAttribute("aria-label", mt("customers.mobile.closeFilters", "Close customer filters"));
+    customersView?.querySelector(".mobile-customers-filter-backdrop")?.setAttribute("aria-label", mt("customers.mobile.closeFilters", "Close customer filters"));
+  });
 
   syncPermissionVisibility();
   syncActiveState();
@@ -706,7 +729,7 @@
         call.className = "mobile-followup-call";
         call.href = window.KYUMMobilePhone.telephoneUrl(phone) || `tel:${phone}`;
         call.textContent=mt('contracts.export.call','Call');
-        call.setAttribute("aria-label", "اتصال بالعميل");
+        call.setAttribute("aria-label", t("followups.mobile.callAria", "Call customer"));
         actions.prepend(call);
       }
 
@@ -716,8 +739,8 @@
         whatsapp.href = window.KYUMMobilePhone.whatsappUrl(phone);
         whatsapp.target = "_blank";
         whatsapp.rel = "noopener noreferrer";
-        whatsapp.textContent = "واتساب";
-        whatsapp.setAttribute("aria-label", "فتح واتساب للعميل");
+        whatsapp.textContent = t("followups.mobile.whatsapp", "WhatsApp");
+        whatsapp.setAttribute("aria-label", t("followups.mobile.whatsappAria", "Open WhatsApp for customer"));
         actions.insertBefore(whatsapp, editButton || actions.firstChild);
       }
 
@@ -726,9 +749,9 @@
         update.type = "button";
         update.className = "mobile-followup-update";
         update.dataset.editFollowup = editButton.dataset.editFollowup;
-        update.textContent = "تحديث الحالة";
+        update.textContent = t("followups.mobile.updateStatus", "Update Status");
         actions.insertBefore(update, editButton);
-        editButton.textContent = "تعديل التفاصيل";
+        editButton.textContent = t("followups.mobile.editDetails", "Edit Details");
       }
     });
   }
@@ -763,12 +786,13 @@
   const MOBILE_MEDIA = window.matchMedia("(max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px)");
   const view = document.getElementById("dailyOperationsView");
   if (!view) return;
+  const t = (key, fallback = "") => { const value = window.PetatoeLocalization?.t?.(key); return value && !/^\[.+\]$/.test(value) ? value : fallback; };
 
-  const tableLabels = new Map([
-    ["dailyFollowupsBody", ["العميل", "المندوب", "طريقة التواصل", "النتيجة", "المتابعة القادمة"]],
-    ["dailyCustomersBody", ["رقم العميل", "اسم العميل", "العنوان", "رقم الجوال", "وقت الإضافة"]],
-    ["dailyQuotationsBody", ["العميل", "المندوب", "رقم العقد", "الحالة", "القيمة"]],
-    ["dailyOverdueBody", ["العميل", "المندوب", "الموعد", "التأخير", "النتيجة السابقة"]]
+  const tableLabels = () => new Map([
+    ["dailyFollowupsBody", [t("dailyOperations.col.customer","Customer"), t("dailyOperations.col.representative","Representative"), t("dailyOperations.col.method","Contact Method"), t("dailyOperations.col.result","Result"), t("dailyOperations.col.nextFollowup","Next Follow-up")]],
+    ["dailyCustomersBody", [t("customers.col.code","Code"), t("dailyOperations.col.customerName","Customer Name"), t("customers.col.address","Address"), t("dailyOperations.col.mobile","Mobile Number"), t("dailyOperations.col.addedAt","Added At")]],
+    ["dailyQuotationsBody", [t("dailyOperations.col.customer","Customer"), t("dailyOperations.col.representative","Representative"), t("dailyOperations.col.contractNumber","Contract Number"), t("dailyOperations.col.status","Status"), t("dailyOperations.col.value","Value")]],
+    ["dailyOverdueBody", [t("dailyOperations.col.customer","Customer"), t("dailyOperations.col.representative","Representative"), t("dailyOperations.col.appointment","Due Date"), t("dailyOperations.col.delay","Delay"), t("dailyOperations.col.previousResult","Previous Result")]]
   ]);
 
   let observer = null;
@@ -779,14 +803,14 @@
     [...body.rows].forEach(row => {
       [...row.cells].forEach((cell, index) => {
         if (!cell.classList.contains("empty-state")) {
-          cell.dataset.mobileLabel = labels[index] || "بيان";
+          cell.dataset.mobileLabel = labels[index] || t("dailyOperations.mobile.genericField", "Field");
         }
       });
     });
   }
 
   function syncTables() {
-    tableLabels.forEach((labels, id) => labelRows(document.getElementById(id), labels));
+    tableLabels().forEach((labels, id) => labelRows(document.getElementById(id), labels));
   }
 
   function completionPercent() {
@@ -801,7 +825,7 @@
     const percent = completionPercent();
     if (ring) ring.style.setProperty("--progress", String(percent));
     if (value) value.textContent = `${percent}%`;
-    if (meta) meta.textContent = document.getElementById("dailyTasksCompletionText")?.textContent || "0 من 0";
+    if (meta) meta.textContent = document.getElementById("dailyTasksCompletionText")?.textContent || (window.PetatoeLocalization?.t?.("dailyOperations.mobile.zeroProgress") || "0 من 0");
   }
 
   function scrollToSelector(selector) {
@@ -836,22 +860,22 @@
         <div class="mobile-daily-progress">
           <div class="mobile-daily-progress-ring" aria-hidden="true"><strong data-mobile-daily-progress-value>0%</strong></div>
           <div class="mobile-daily-progress-copy">
-            <strong>تقدم يوم العمل</strong>
-            <small data-mobile-daily-progress-meta>0 من 0</small>
+            <strong>${t("dailyOperations.mobile.progressTitle", "Workday Progress")}</strong>
+            <small data-mobile-daily-progress-meta>0 / 0</small>
           </div>
         </div>
       </div>
       <div class="mobile-daily-toolbar-actions">
-        <button type="button" class="secondary-btn" data-mobile-daily-refresh>تحديث اليوم</button>
-        <button type="button" class="primary-btn" data-mobile-daily-report>تقرير الأداء</button>
+        <button type="button" class="secondary-btn" data-mobile-daily-refresh>${t("dailyOperations.mobile.refreshDay", "Refresh Day")}</button>
+        <button type="button" class="primary-btn" data-mobile-daily-report>${t("dailyOperations.mobile.performanceReport", "Performance Report")}</button>
       </div>
-      <nav class="mobile-daily-jump-nav" aria-label="أقسام التشغيل اليومي">
-        <button type="button" data-mobile-daily-jump=".daily-checklist-panel">المهام</button>
-        <button type="button" data-mobile-daily-jump=".daily-targets-panel">الأهداف</button>
-        <button type="button" data-mobile-daily-jump="#dailyFollowupsBody">المتابعات</button>
-        <button type="button" data-mobile-daily-jump="#dailyCustomersBody">العملاء</button>
-        <button type="button" data-mobile-daily-jump=".daily-alerts-panel">التنبيهات</button>
-        <button type="button" data-mobile-daily-jump=".daily-overdue-panel">المتأخرة</button>
+      <nav class="mobile-daily-jump-nav" aria-label="${t("dailyOperations.mobile.sectionsAria", "Daily operations sections")}">
+        <button type="button" data-mobile-daily-jump=".daily-checklist-panel">${t("dailyOperations.mobile.tasks", "Tasks")}</button>
+        <button type="button" data-mobile-daily-jump=".daily-targets-panel">${t("dailyOperations.mobile.targets", "Targets")}</button>
+        <button type="button" data-mobile-daily-jump="#dailyFollowupsBody">${t("dailyOperations.mobile.followups", "Follow-ups")}</button>
+        <button type="button" data-mobile-daily-jump="#dailyCustomersBody">${t("dailyOperations.mobile.customers", "Customers")}</button>
+        <button type="button" data-mobile-daily-jump=".daily-alerts-panel">${t("dailyOperations.mobile.alerts", "Alerts")}</button>
+        <button type="button" data-mobile-daily-jump=".daily-overdue-panel">${t("dailyOperations.mobile.overdue", "Overdue")}</button>
       </nav>`;
     view.prepend(toolbar);
 
@@ -893,7 +917,7 @@
 
   initialize();
   MOBILE_MEDIA.addEventListener?.("change", initialize);
-  window.addEventListener('petatoe-language-changed',()=>{view.querySelector('.mobile-quotations-toolbar')?.remove();view.querySelector('.mobile-quotations-sheet-header')?.remove();view.querySelector('.mobile-quotations-filter-backdrop')?.remove();[...body.rows].forEach(row=>{row.dataset.mobileQuotationReady='';row.querySelectorAll('.mobile-quotation-call,.mobile-quotation-whatsapp,.mobile-quotation-share,.mobile-quotation-print').forEach(el=>el.remove())});initialize()});
+  window.addEventListener('petatoe-language-changed',()=>{view.querySelector('.mobile-daily-toolbar')?.remove();initialize()});
 })();
 
 
@@ -932,7 +956,8 @@
   }
 
   function quotationText(data) {
-    return `عقد ${data.code}\nالعميل: ${data.customer}\nالمندوب: ${data.representative}\nالتاريخ: ${data.date}\nالقيمة: ${data.amount}\nالحالة: ${data.status}\nتاريخ الانتهاء: ${data.expiry}`;
+    const template = mt('contracts.export.shareText','Contract {code}\nCustomer: {customer}\nRepresentative: {representative}\nDate: {date}\nValue: {amount}\nStatus: {status}\nExpiry Date: {expiry}');
+    return template.replace(/\{(code|customer|representative|date|amount|status|expiry)\}/g, (_, key) => String(data[key] ?? '—'));
   }
 
   async function shareQuotation(data) {
@@ -1086,6 +1111,7 @@
 
 /* Phase M8 — Mobile Reports */
 (() => {
+  const mt = (key, fallback = "") => { const value = window.PetatoeLocalization?.t?.(key); return value && !/^\[.+\]$/.test(value) ? value : fallback; };
   const MOBILE_MEDIA = window.matchMedia("(max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px)");
   const view = document.getElementById("reportsOverviewView");
   const filters = view?.querySelector(".reports-filter-bar");
@@ -1094,16 +1120,16 @@
 
   let observer;
   let refreshTimer;
-  const performanceLabels = ["المندوب", "العملاء", "المتابعات", "العروض", "المقبولة", "قيمة العروض", "نسبة التحويل"];
-  const jumpTargets = [
-    ["المؤشرات", ".reports-kpi-grid"],
-    ["المبيعات", ".report-funnel-panel"],
-    ["العملاء", "#customerAnalyticsBreakdown"],
-    ["الخسارة", "#lossReasonsAnalytics"],
-    ["الاتجاه", "#reportsMonthlyTrend"],
-    ["المندوبون", "#representativeLeaderboard"],
-    ["أفضل 10", ".top10-grid"],
-    ["الأداء", "#representativePerformanceBody"]
+  const performanceLabels = () => [mt("reportsOverview.filter.representative","Representative"), mt("reportsOverview.common.customers","Customers"), mt("reportsOverview.common.followups","Follow-ups"), mt("reportsOverview.common.contracts","Contracts"), mt("reportsOverview.common.accepted","Accepted"), mt("reportsOverview.kpi.contractValue","Contract Value"), mt("reportsOverview.kpi.conversion","Conversion")];
+  const jumpTargets = () => [
+    [mt("reportsOverview.mobile.kpis","KPIs"), ".reports-kpi-grid"],
+    [mt("reportsOverview.mobile.sales","Sales"), ".report-funnel-panel"],
+    [mt("reportsOverview.mobile.customers","Customers"), "#customerAnalyticsBreakdown"],
+    [mt("reportsOverview.mobile.loss","Loss"), "#lossReasonsAnalytics"],
+    [mt("reportsOverview.mobile.trend","Trend"), "#reportsMonthlyTrend"],
+    [mt("reportsOverview.mobile.representatives","Representatives"), "#representativeLeaderboard"],
+    [mt("reportsOverview.mobile.top10","Top 10"), ".top10-grid"],
+    [mt("reportsOverview.mobile.performance","Performance"), "#representativePerformanceBody"]
   ];
 
   function scrollToTarget(selector) {
@@ -1132,7 +1158,7 @@
     if (!performanceBody || !MOBILE_MEDIA.matches) return;
     [...performanceBody.rows].forEach(row => {
       if (row.querySelector(".empty-state")) return;
-      [...row.cells].forEach((cell, index) => cell.dataset.mobileLabel = performanceLabels[index] || "");
+      [...row.cells].forEach((cell, index) => cell.dataset.mobileLabel = performanceLabels()[index] || "");
     });
   }
 
@@ -1158,17 +1184,17 @@
     toolbar.className = "mobile-reports-toolbar";
     toolbar.innerHTML = `
       <div class="mobile-reports-toolbar-copy">
-        <span>ملخص تنفيذي</span>
-        <strong>التقارير والتحليلات</strong>
-        <small><b data-mobile-report-period>—</b><i>تحقيق الهدف <b data-mobile-report-target>0%</b></i></small>
+        <span>${mt("reportsOverview.mobile.kicker", "Executive Summary")}</span>
+        <strong>${mt("reportsOverview.mobile.title", "Reports & Analytics")}</strong>
+        <small><b data-mobile-report-period>—</b><i>${mt("reportsOverview.mobile.targetProgress", "Target achievement")} <b data-mobile-report-target>0%</b></i></small>
       </div>
       <div class="mobile-reports-toolbar-actions">
-        <button type="button" data-mobile-reports-refresh aria-label="تحديث التقارير">تحديث</button>
-        <button type="button" data-mobile-reports-filter aria-expanded="false">الفلاتر</button>
-        <button type="button" data-mobile-reports-export>تصدير</button>
+        <button type="button" data-mobile-reports-refresh aria-label="${mt("reportsOverview.mobile.refreshAria", "Refresh reports")}">${mt("reportsOverview.mobile.refresh", "Refresh")}</button>
+        <button type="button" data-mobile-reports-filter aria-expanded="false">${mt("reportsOverview.mobile.filters", "Filters")}</button>
+        <button type="button" data-mobile-reports-export>${mt("reportsOverview.mobile.export", "Export")}</button>
       </div>
-      <nav class="mobile-reports-jump-nav" aria-label="أقسام التقارير">
-        ${jumpTargets.map(([label, selector], index) => `<button type="button" data-mobile-report-jump="${selector}"${index === 0 ? ' class="active"' : ""}>${label}</button>`).join("")}
+      <nav class="mobile-reports-jump-nav" aria-label="${mt("reportsOverview.mobile.sectionsAria", "Report sections")}">
+        ${jumpTargets().map(([label, selector], index) => `<button type="button" data-mobile-report-jump="${selector}"${index === 0 ? ' class="active"' : ""}>${label}</button>`).join("")}
       </nav>`;
     view.prepend(toolbar);
 
@@ -1193,7 +1219,7 @@
     filters.classList.add("mobile-reports-filter-sheet");
     const header = document.createElement("div");
     header.className = "mobile-reports-sheet-header";
-    header.innerHTML = `<div><strong>فلاتر التقارير</strong><small>حدد الفترة والمندوب والهدف</small></div><button type="button" aria-label="إغلاق">×</button>`;
+    header.innerHTML = `<div><strong>${mt("reportsOverview.mobile.filterTitle", "Report Filters")}</strong><small>${mt("reportsOverview.mobile.filterNote", "Select period, representative, and target")}</small></div><button type="button" aria-label="${mt("reportsOverview.mobile.close", "Close")}">×</button>`;
     filters.prepend(header);
     header.querySelector("button")?.addEventListener("click", closeFilters);
 
@@ -1242,6 +1268,14 @@
 
   initialize();
   MOBILE_MEDIA.addEventListener?.("change", initialize);
+  window.addEventListener("petatoe-language-changed", () => {
+    if (!MOBILE_MEDIA.matches) return;
+    view.querySelector(".mobile-reports-toolbar")?.remove();
+    filters.querySelector(".mobile-reports-sheet-header")?.remove();
+    filters.classList.remove("mobile-reports-filter-sheet");
+    view.querySelector(".mobile-reports-filter-backdrop")?.remove();
+    initialize();
+  });
 })();
 
 /* Phase M9 — Mobile Administration */
@@ -1261,11 +1295,11 @@
 
   const configs = {
     usersView: { titleKey: "users.page.title", noteKey: "users.page.note", filters: ".users-filters", labelKeys: ["users.column.user","users.column.email","users.column.role","users.column.representative","users.column.status","users.column.lastLogin","users.column.actions"] },
-    representativesView: { title: "مندوبي المبيعات", note: "الإدارة والربط وحالة النشاط", filters: ".representatives-list-toolbar", labels: ["كود المندوب","اسم المندوب","الجوال","البريد الإلكتروني","العملاء المرتبطون","الحالة","الإجراءات"] },
+    representativesView: { titleKey: "representatives.page.title", noteKey: "representatives.page.subtitle", filters: ".representatives-list-toolbar", labelKeys: ["representatives.col.code","representatives.col.name","representatives.col.phone","representatives.col.email","representatives.col.customers","representatives.col.status","representatives.col.actions"] },
     permissionsView: { titleKey: "permissions.page.title", noteKey: "permissions.page.note" },
-    settingsView: { title: "البيانات المرجعية", note: "الاهتمامات والأسباب والعملاء", filters: ".reference-data-toolbar" },
+    settingsView: { titleKey: "referenceData.page.title", noteKey: "referenceData.page.subtitle", filters: ".reference-data-toolbar" },
     backupsView: { titleKey: "backups.page.title", noteKey: "backups.page.note", labelKeys: ["backups.column.date","backups.mobile.type","backups.column.status","backups.column.user","backups.mobile.file","backups.mobile.details"] },
-    notificationCenterView: { title: "مركز الإشعارات", note: "تفعيل الأحداث وتحديد المستلمين" },
+    notificationCenterView: { titleKey: "shared.notifications.center.title", noteKey: "shared.notifications.center.pageSubtitle" },
     systemSettingsView: { titleKey: "systemSettings.page.title", noteKey: "systemSettings.page.note" }
   };
 
@@ -1323,7 +1357,7 @@
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "mobile-admin-filter-backdrop";
-    backdrop.setAttribute("aria-label", "إغلاق الفلاتر");
+    backdrop.setAttribute("aria-label", t("shared.mobile.admin.closeFilters"));
     backdrop.addEventListener("click", () => closeFilters(section));
     section.append(backdrop);
   }
@@ -1426,7 +1460,7 @@
     ".sea-vibe-view .table-wrap .data-table"
   ];
   const PERMISSION_LABEL_KEYS = ["permissions.action.view","permissions.action.add","permissions.action.edit","permissions.action.delete","permissions.action.export"];
-  const NOTIFICATION_LABELS = ["الحدث","تفعيل الحدث","داخل البرنامج","Push","صاحب الطلب","إرسال للدور المحدد"];
+  const notificationLabels = () => ["shared.notifications.center.event","shared.notifications.center.eventEnabled","shared.notifications.center.inApp","shared.notifications.center.push","shared.notifications.center.owner","shared.notifications.center.roleRecipient"].map(key => window.PetatoeLocalization?.t?.(key) || key);
 
   function headerLabels(table){
     return [...table.querySelectorAll("thead th")].map(th => (th.textContent || "").replace(/\s+/g," ").trim());
@@ -1525,7 +1559,7 @@
     if(!table)return;
     table.classList.add('petatoe-mobile-notification-cards');
     table.querySelectorAll('tbody tr').forEach(row=>{
-      [...row.children].forEach((cell,index)=>cell.dataset.mobileLabel=NOTIFICATION_LABELS[index]||'');
+      [...row.children].forEach((cell,index)=>cell.dataset.mobileLabel=notificationLabels()[index]||'');
     });
   }
   function cleanupDesktop(){
