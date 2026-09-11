@@ -26,13 +26,15 @@ function activeLabel(active){return active?tr('appointmentSettings.common.active
 function employeeTypeLabel(value){return value==='جرومر'?tr('appointmentSettings.employee.groomer','Groomer'):value==='سائق'?tr('appointmentSettings.employee.driver','Driver'):String(value||'')}
 function petTypeLabel(value){return value==='كلب'?tr('appointmentSettings.pet.dog','Dog'):value==='قط'?tr('appointmentSettings.pet.cat','Cat'):value==='أخرى'?tr('appointmentSettings.pet.other','Other'):String(value||'')}
 function teamStatusLabel(value){const map={'متاحة':['appointmentSettings.common.available','Available'],'مشغولة':['appointmentSettings.common.busy','Busy'],'إجازة':['appointmentSettings.common.leave','On leave'],'غير نشطة':['appointmentSettings.common.inactive','Inactive']};const item=map[value];return item?tr(item[0],item[1]):String(value||'')}
+function serviceDisplayLabel(row={}){const value=window.PetatoeLocalization?.entityText?.('service',{id:row.id||'',name:row.name||'',serviceCode:row.service_code||row.serviceCode||''});return value&&!/^\[entity\./.test(String(value))?value:String(row.name||'')}
+function geographyDisplayLabel(type,id,name){const value=window.KYUMGeography?.localizedGeographyLabel?.(type,id,name);if(value)return value;return currentLang()==='en'&&/[\u0600-\u06FF]/.test(String(name||''))?'':String(name||'')}
 
 function render(){
   const servicesBody=$('installationServicesSettingsBody');
   if(servicesBody){
     const servicesHead=servicesBody.closest('table')?.querySelector('thead tr');
     if(servicesHead)servicesHead.innerHTML=`<th>${esc(tr('appointmentSettings.col.code','Code'))}</th><th>${esc(tr('appointmentSettings.col.service','Service'))}</th><th>${esc(tr('appointmentSettings.col.priceVat','Price incl. VAT'))}</th><th>${esc(tr('appointmentSettings.col.cost','Cost'))}</th><th>${esc(tr('appointmentSettings.col.status','Status'))}</th><th>${esc(tr('appointmentSettings.col.actions','Actions'))}</th>`;
-    servicesBody.innerHTML=cache.services.map(r=>`<tr><td>${esc(r.service_code||'—')}</td><td>${esc(r.name)}</td><td>${money(vatInclusive(r.default_price))}</td><td>${money(r.default_cost)}</td><td>${status(r.is_active!==false,activeLabel(r.is_active!==false))}</td><td>${actionButtons('service',r,r.is_active!==false)}</td></tr>`).join('')||`<tr><td colspan="6" class="empty-cell">${esc(tr('appointmentSettings.empty.services','No services.'))}</td></tr>`;
+    servicesBody.innerHTML=cache.services.map(r=>`<tr><td>${esc(r.service_code||'—')}</td><td>${esc(serviceDisplayLabel(r))}</td><td>${money(vatInclusive(r.default_price))}</td><td>${money(r.default_cost)}</td><td>${status(r.is_active!==false,activeLabel(r.is_active!==false))}</td><td>${actionButtons('service',r,r.is_active!==false)}</td></tr>`).join('')||`<tr><td colspan="6" class="empty-cell">${esc(tr('appointmentSettings.empty.services','No services.'))}</td></tr>`;
   }
   const teamBody=$('installationTeamsSettingsBody');
   if(teamBody){
@@ -40,7 +42,7 @@ function render(){
     if(head)head.innerHTML=`<th>${esc(tr('appointmentSettings.field.groomer','Groomer'))}</th><th>${esc(tr('appointmentSettings.field.driver','Driver'))}</th><th>${esc(tr('appointmentSettings.field.vehicle','Vehicle'))}</th><th>${esc(tr('appointmentSettings.team.effectiveFromCurrent','Current Assignment Start'))}</th><th>${esc(tr('appointmentSettings.col.status','Status'))}</th><th>${esc(tr('appointmentSettings.col.actions','Actions'))}</th>`;
     teamBody.innerHTML=cache.teams.map(r=>{const active=r.status!=='غير نشطة',p=teamParts(r);return `<tr><td>${esc(p.groomer||'—')}</td><td>${esc(p.driver||'—')}</td><td>${esc(p.car||'—')}</td><td>${esc(dateLabel(r.assignment_effective_from))}</td><td>${status(active,teamStatusLabel(r.status||'متاحة'))}</td><td>${actionButtons('team',r,active)}</td></tr>`}).join('')||`<tr><td colspan="6" class="empty-cell">${esc(tr('appointmentSettings.empty.teams','No appointment teams.'))}</td></tr>`;
   }
-  $('installationNeighborhoodsSettingsBody').innerHTML=cache.neighborhoods.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.city||'—')}</td><td>${esc(r.region||'—')}</td><td>${status(r.is_active!==false,activeLabel(r.is_active!==false))}</td><td>${actionButtons('neighborhood',r,r.is_active!==false)}</td></tr>`).join('')||`<tr><td colspan="5" class="empty-cell">${esc(tr('appointmentSettings.empty.neighborhoods','No neighborhoods.'))}</td></tr>`;
+  $('installationNeighborhoodsSettingsBody').innerHTML=cache.neighborhoods.map(r=>`<tr><td>${esc(geographyDisplayLabel('district',r.id,r.name)||'—')}</td><td>${esc(geographyDisplayLabel('city',r.city_id,r.city)||'—')}</td><td>${esc(geographyDisplayLabel('region',r.region_id,r.region)||'—')}</td><td>${status(r.is_active!==false,activeLabel(r.is_active!==false))}</td><td>${actionButtons('neighborhood',r,r.is_active!==false)}</td></tr>`).join('')||`<tr><td colspan="5" class="empty-cell">${esc(tr('appointmentSettings.empty.neighborhoods','No neighborhoods.'))}</td></tr>`;
   const employeeBody=$('appointmentEmployeesSettingsBody');
   if(employeeBody)employeeBody.innerHTML=cache.employees.map(r=>`<tr><td>${esc(r.full_name)}</td><td>${esc(employeeTypeLabel(r.employee_type))}</td><td>${esc(r.phone||'—')}</td><td>${status(r.is_active!==false,activeLabel(r.is_active!==false))}</td><td>${actionButtons('employee',r,r.is_active!==false)}</td></tr>`).join('')||`<tr><td colspan="5" class="empty-cell">${esc(tr('appointmentSettings.empty.employees','No employees.'))}</td></tr>`;
   const carBody=$('appointmentCarsSettingsBody');
@@ -58,17 +60,23 @@ async function load(){
       db().from('appointment_employees').select('*').order('employee_type').order('full_name'),
       db().from('appointment_cars').select('*').order('name'),
       db().from('appointment_pet_breeds').select('*').order('pet_type').order('name'),
-      db().from('installation_team_assignment_history').select('installation_team_id,effective_from').is('effective_to',null)
+      db().from('installation_team_assignment_history').select('installation_team_id,effective_from').is('effective_to',null),
+      window.KYUMGeography?.loadCatalog?.(false)?.catch?.(()=>null)
     ]);
     if(employeesRes.error||carsRes.error||breedsRes.error||assignmentsRes.error){const err=employeesRes.error||carsRes.error||breedsRes.error||assignmentsRes.error;if(/installation_team_assignment_history/i.test(err.message||''))throw new Error(tr('appointmentSettings.team.historyLoadRequired','Run the team assignment history migration first, then reload.'));if(/appointment_employees|appointment_cars/i.test(err.message||''))throw new Error(tr('appointmentSettings.error.employeeCarMigration','Run the employees and vehicles migration first, then reload.'));throw err}
     const assignmentByTeam=new Map((assignmentsRes.data||[]).map(x=>[String(x.installation_team_id||''),x.effective_from||'']));
     const teams=(base.teams||[]).map(team=>({...team,assignment_effective_from:assignmentByTeam.get(String(team.id||''))||''}));
-    cache={...base,teams,employees:employeesRes.data||[],cars:carsRes.data||[],breeds:breedsRes.data||[],teamAssignments:assignmentsRes.data||[]};render();message('');
+    cache={...base,teams,employees:employeesRes.data||[],cars:carsRes.data||[],breeds:breedsRes.data||[],teamAssignments:assignmentsRes.data||[]};syncReferenceGeoCatalog();window.PetatoeLocalization?.registerEntityCatalog?.({services:(cache.services||[]).map(r=>({id:r.id,name:r.name||'',serviceCode:r.service_code||''})),neighborhoods:(cache.neighborhoods||[]).map(r=>({id:r.id,name:r.name||'',en:r.name_en||'',name_en:r.name_en||''}))});render();message('');
   }catch(e){message(uiMessage(e.message,tr('appointmentSettings.error.load','Unable to load settings.')),'error')}
 }
 
 let referenceGeoController=null;
-function syncReferenceGeoCatalog(){window.KYUMGeography?.setCatalog({regions:cache.regions||[],cities:cache.cities||[],neighborhoods:cache.neighborhoods||[]})}
+function syncReferenceGeoCatalog(){
+  const geo=window.KYUMGeography;if(!geo?.setCatalog)return;
+  const current=geo.getCatalog?.()||{regions:[],cities:[],districts:[]};
+  const merge=(rows,existing)=>{const byId=new Map((existing||[]).map(x=>[String(x.id||''),x]));return (rows||[]).map(row=>{const previous=byId.get(String(row.id||''))||{};return {...previous,...row,name_en:row.name_en||row.nameEn||previous.name_en||previous.nameEn||''}})};
+  geo.setCatalog({regions:merge(cache.regions,current.regions),cities:merge(cache.cities,current.cities),neighborhoods:merge(cache.neighborhoods,current.districts)});
+}
 function ensureReferenceGeoController(){syncReferenceGeoCatalog();if(referenceGeoController)return referenceGeoController.bind();if(!window.KYUMGeography)throw new Error(tr('appointmentSettings.error.geographyUnavailable','Geographic address component is not loaded.'));referenceGeoController=window.KYUMGeography.createController({ids:{region:{wrapper:'installationReferenceRegionCombobox',hidden:'installationReferenceRegionId',search:'installationReferenceRegionSearch',options:'installationReferenceRegionOptions'},city:{wrapper:'installationReferenceCityCombobox',hidden:'installationReferenceCityId',search:'installationReferenceCitySearch',options:'installationReferenceCityOptions'},district:{wrapper:'installationReferenceDistrictCombobox',hidden:'installationReferenceDistrictId',search:'installationReferenceDistrictSearch',options:'installationReferenceDistrictOptions'}},optionLimit:300,boundAttribute:'installationReferenceGeoUnifiedBound'}).bind();return referenceGeoController}
 function closeAllReferenceGeo(){['region','city','district'].forEach(type=>referenceGeoController?.close(type))}
 function bindReferenceGeography(row={}){const controller=ensureReferenceGeoController();controller.setValue({regionId:row.region_id||'',cityId:row.city_id||''});controller.setEnabled('city',Boolean(row.region_id),tr('appointmentSettings.placeholder.city','Search and select city'))}
@@ -144,7 +152,8 @@ function pick(row,aliases){const keys=Object.keys(row||{});for(const alias of al
 function parseActive(v){const s=String(v??'').trim().toLowerCase();return !['0','false','no','inactive','متوقفة','متوقف','غير نشطة','غير نشط'].includes(s)}
 
 function prepareServiceImport(){
-  const add=$('addInstallationServiceBtn');if(!add||$('installationServicesExcelBtn'))return;
+  const add=$('addInstallationServiceBtn');if(!add)return;
+  const existing=$('installationServicesExcelBtn');if(existing){existing.textContent=tr('appointmentSettings.excel.upload','Upload Services Excel');return;}
   const btn=document.createElement('button');btn.id='installationServicesExcelBtn';btn.className='secondary-btn';btn.type='button';btn.textContent=tr('appointmentSettings.excel.upload','Upload Services Excel');
   const input=document.createElement('input');input.id='installationServicesExcelInput';input.type='file';input.accept='.xlsx,.xls';input.hidden=true;
   add.insertAdjacentElement('beforebegin',btn);add.insertAdjacentElement('beforebegin',input);

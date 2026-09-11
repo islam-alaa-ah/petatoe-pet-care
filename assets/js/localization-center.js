@@ -5011,6 +5011,22 @@
     ["pwa.update.release.r44r38r2.note1","note","فصل عنوان ووصف الهيدر عن ربط لوحة التحكم الثابت وجعل الشاشة النشطة هي المصدر الوحيد لبيانات الهيدر عند التنقل وتغيير اللغة.","Detach the header title and subtitle from the static Dashboard binding and make the active view the single source of header metadata during navigation and language changes."],
     ["pwa.update.release.r44r38r2.note2","note","توحيد بيانات أسماء الشاشات داخل مالك واحد يغطي جميع الشاشات بما فيها SEA VIBE والرواتب والمواعيد ومنع applyStatic من إعادة الهيدر إلى Dashboard.","Centralize page metadata in one owner covering all views, including SEA VIBE, payroll, and appointments, and prevent applyStatic from resetting the header to Dashboard."],
     ["pwa.update.release.r44r38r2.note3","note","لم تتغير CSS أو قيم الأعمال أو Offline/Sync/Permissions أو الحسابات أو SQL أو R44 Pruning.","CSS, stored business values, Offline/Sync/Permissions, calculations, SQL, and R44 Pruning remain unchanged."],
+    ["shared.temporal.openPicker","label","فتح التقويم","Open calendar"],
+    ["shared.temporal.previous","button","السابق","Previous"],
+    ["shared.temporal.next","button","التالي","Next"],
+    ["shared.temporal.today","button","اليوم","Today"],
+    ["shared.temporal.clear","button","مسح","Clear"],
+    ["shared.temporal.cancel","button","إلغاء","Cancel"],
+    ["shared.temporal.datePlaceholder","placeholder","YYYY-MM-DD","YYYY-MM-DD"],
+    ["shared.temporal.monthPlaceholder","placeholder","YYYY-MM","YYYY-MM"],
+    ["vehicleTreasury.reference.noInvoice","label","بدون فاتورة","No invoice"],
+    ["vehicleTreasury.reference.noRequest","label","بدون رقم طلب","No request number"],
+    ["vehicleTreasury.description.cashInvoice","format","فاتورة نقدية — {request}","Cash invoice — {request}"],
+    ["vehicleTreasury.description.cashInvoiceOnly","label","فاتورة نقدية","Cash invoice"],
+    ["pwa.update.release.r44r38r3.title","title","إغلاق بواقي العرض الدلالية للتواريخ والكيانات والأرقام — R44R38R3","Semantic display closure for dates, entities, and numerals — R44R38R3"],
+    ["pwa.update.release.r44r38r3.note1","note","فصل وضع الإنجليزية عن تقويم المتصفح المحلي بمالك موحد للتاريخ والشهر يحافظ على قيم ISO ويعرض تقويمًا ميلاديًا إنجليزيًا بأرقام لاتينية، مع إبقاء سلوك العربية الأصلي.","Replace browser-locale date and month pickers in English mode with one canonical temporal owner that preserves ISO values and renders a Gregorian English picker with Latin digits while preserving the original Arabic behavior."],
+    ["pwa.update.release.r44r38r3.note2","note","ربط أسماء الخدمات والأحياء والمدن والمناطق ووصف حركات خزينة السيارة بطبقة العرض المترجمة دون تغيير القيم المخزنة أو الحسابات.","Route services, neighborhoods, cities, regions, and Vehicle Treasury movement descriptions through the localized display layer without changing stored values or calculations."],
+    ["pwa.update.release.r44r38r3.note3","note","تثبيت الأرقام اللاتينية في مدخلات الأرقام عند الإنجليزية وإعادة مزامنة رسائل الكاش الديناميكية عند تغيير اللغة مع بقاء Offline/Sync/Permissions وR44 Pruning دون تغيير.","Enforce Latin numerals in numeric inputs in English mode and resynchronize dynamic cache messages on language changes while keeping Offline/Sync/Permissions and R44 Pruning unchanged."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
@@ -5188,10 +5204,107 @@
     '200059':'Quick Baby Powder',
     '200060':'Jungle Mix 9×14 g',
   });
+  const SERVICE_EN_BY_NAME=Object.freeze({
+    "الاساسية - قط كبير":"Basic Package - Large Cat",
+    "الاساسية - قط متوسط":"Basic Package - Medium Cat",
+    "الاساسية - كلب كبير":"Basic Package - Large Dog",
+    "الاساسية - كلب متوسط":"Basic Package - Medium Dog",
+    "السعيدة - قط كبير":"Happy Package - Large Cat",
+    "السعيدة - قط متوسط":"Happy Package - Medium Cat",
+    "السعيدة - كلب كبير":"Happy Package - Large Dog",
+    "السعيدة - كلب متوسط":"Happy Package - Medium Dog",
+    "الشاملة - قط كبير":"Comprehensive Package - Large Cat",
+    "الشاملة - قط متوسط":"Comprehensive Package - Medium Cat",
+    "الشاملة - كلب كبير":"Comprehensive Package - Large Dog",
+    "الشاملة - كلب متوسط":"Comprehensive Package - Medium Dog",
+    "اكرامية":"Tip",
+    "اعاده موعد مجاني بسبب شكوى العميل":"Free Repeat Appointment Due to Customer Complaint",
+    "اعادة موعد مجاني بسبب شكوى العميل":"Free Repeat Appointment Due to Customer Complaint",
+    "القيمه الاضافية - اماكن بعيدة":"Additional Fee - Remote Areas",
+    "تشذيب المخالب":"Claw Trimming",
+    "تشذيب الوجة":"Face Trim",
+    "تصفيف/تنظيف/فك عقد الشعر":"Coat Brushing / Cleaning / Dematting",
+    "تفريش الاسنان":"Teeth Brushing",
+    "تقليم الاظافر":"Nail Trimming",
+    "تنظيف الاذنين":"Ear Cleaning",
+    "تنظيف الغدة الشرجية":"Anal Gland Cleaning",
+    "حلاقة الاعضاء التناسلية":"Sanitary Trim",
+    "حلاقة شعر Haircut":"Haircut",
+    "شامبو خاص":"Special Shampoo",
+    "صبغة شعر قط/كلب كبير":"Hair Dye - Large Cat/Dog",
+    "صبغة شعر قط/كلب وسط":"Hair Dye - Medium Cat/Dog",
+    "قص الشعر كبير":"Large Haircut",
+    "قص الشعر وسط":"Medium Haircut",
+    "تمشيط شعر":"Hair Brushing",
+    "برافكتو - Bravecto":"Bravecto",
+    "دوبو لعبة قطط":"Duvo Cat Toy",
+    "لولي ستكس كلاب":"Lolly Dog Sticks",
+    "رويال اكل ميني بالغ كلاب":"Royal Canin Mini Adult Dog Food",
+    "ريفيليوشين":"Revolution",
+    "برازيتل":"Prazitel",
+    "كيبي اكل قطط":"Kippy Cat Food",
+    "صحن دبل صغير":"Small Double Bowl",
+    "طوق جلد متوسط":"Medium Leather Collar",
+    "عظمة كلب كرميل":"Caramel Dog Bone",
+    "رباط/صدرية لقطط":"Cat Leash / Harness",
+    "فيبرون قطط":"Fipron for Cats",
+    "فلكسي اصفر كبير":"Flexi Large Yellow",
+    "لعبة كلب Jouet":"Jouet Dog Toy",
+    "بريت ستيك مكافأة للقطط":"Brit Stick Cat Treat",
+    "جيم كات":"GimCat",
+    "صحن دبل رمادي كبير":"Large Gray Double Bowl",
+    "لولي مكافاة قطط":"Lolly Cat Treat",
+    "صدرية للكلاب صغير":"Small Dog Harness",
+    "ماي فاملي ليش":"MyFamily Leash",
+    "كورة للقطط":"Cat Ball",
+    "صدرية للكلاب متوسط":"Medium Dog Harness",
+    "كرات تنس للكلاب":"Dog Tennis Balls",
+    "زولكس ستكس دجاج ١٠":"Zolux Chicken Sticks 10",
+    "حفائض":"Pet Diapers",
+    "كانفيت مكمل غذائي":"Canvit Nutritional Supplement",
+    "فيتو بيور كلب صغير":"Veto Pure - Small Dog",
+    "سنال بايتس بوكس":"Sanal Bites Box",
+    "ولف سناك":"Wolf Snack",
+    "دوبو بت كرة بلاستيك ٤":"Duvo Pet Plastic Ball 4",
+    "كت كات مكافأة للقطط":"Kit Cat Cat Treat",
+    "سكوب رمل كبير ناعم":"Large Fine Litter Scoop",
+    "سكوب رمل صغير ناعم":"Small Fine Litter Scoop",
+    "عظم صغير سادة ٥":"Plain Small Bones 5",
+    "لعبة سنارة للقطط":"Cat Wand Toy",
+    "عظمة كلب وسط":"Medium Dog Bone",
+    "طوق بجرس":"Bell Collar",
+    "سنال مكافئات للكلاب":"Sanal Dog Treats",
+    "رمل قطط فرش لافندر":"Fresh Lavender Cat Litter",
+    "وانبي كريمي تريت قطط":"Wanpy Creamy Cat Treat",
+    "فلكسي زهري صغير":"Flexi Small Pink",
+    "مزيل شعر الحيوانات الأليفة":"Pet Hair Remover",
+    "فريش ليتر قطط":"Fresh Cat Litter",
+    "عظمة لعبة للكلاب":"Dog Bone Toy",
+    "فرشاة قطة ٣٩":"Cat Brush 39",
+    "بتشرز اكل قطط":"Butcher's Cat Food",
+    "جنقل تريت للقطط دجاج":"Jungle Chicken Cat Treat",
+    "سلسلة للكلاب":"Dog Chain",
+    "كانفيت هيلث كير سناك 100ج":"Canvit Health Care Snack 100g",
+    "دوق فست":"Dog Fest",
+    "زولكس فرشاة شعر بلاستك وسط":"Zolux Medium Plastic Grooming Brush",
+    "أكياس قمامة للحيوانات":"Pet Waste Bags",
+    "زولوكس طوق جرس":"Zolux Bell Collar",
+    "كيس ليتر":"Litter Bag",
+    "جوارب الحيوان الاليف":"Pet Socks",
+    "ليزر":"Laser Pointer",
+    "طوق أبل للكلاب":"Apple Collar for Dogs",
+    "طوق أبل للقطط":"Apple Collar for Cats",
+    "كرة مكافأة كبيرة":"Large Treat Ball",
+    "كويك صابون 5 لتر":"Quick Soap 5L",
+    "جنقل بيبي باودر 5 لتر":"Jungle Baby Powder 5L",
+    "كويك بيبي باودر":"Quick Baby Powder",
+    "جنقل ميكس 9*14 جرام":"Jungle Mix 9×14 g"
+  });
   function serviceDefaultEnglish(name,code=''){
     const normalizedCode=String(code||'').trim();
     if(normalizedCode&&SERVICE_EN_BY_CODE[normalizedCode])return SERVICE_EN_BY_CODE[normalizedCode];
     const source=String(name||'').trim();
+    if(SERVICE_EN_BY_NAME[source])return SERVICE_EN_BY_NAME[source];
     const exact=new Map([
       ['أكياس قمامة للحيوانات','Pet Waste Bags'],['اكياس قمامة للحيوانات','Pet Waste Bags'],['اكرامية','Tip'],['إكرامية','Tip'],
       ['تقليم الاظافر','Nail Trimming'],['تقليم الأظافر','Nail Trimming'],['تشذيب المخالب','Claw Trimming'],
@@ -5226,10 +5339,78 @@
   async function saveRows(entries){if(!window.LocalizationCenterService)throw new Error(t('translationCenter.error.serviceNotReady'));const normalized=(entries||[]).map(x=>{const base=defaults.get(x.key),remote=state.remote.get(x.key),route=routeFor(x.key);return{translation_key:x.key,screen_key:route.screenKey,module_name:route.moduleName,text_type:x.type||base?.type||'label',ar_text:String(x.ar||'').trim(),en_text:String(x.en||'').trim(),default_ar:base?.ar||String(x.ar||'').trim(),default_en:base?.en||String(x.en||'').trim(),_hadEnglish:Boolean(String(remote?.en||base?.en||'').trim())}});if(normalized.some(x=>x.en_text&&ARABIC_RE.test(x.en_text)))throw new Error(t('translationCenter.validation.englishArabic'));if(normalized.some(x=>!x.ar_text||(x._hadEnglish&&!x.en_text)))throw new Error(t('translationCenter.validation.required'));const payload=normalized.filter(x=>x.ar_text&&x.en_text).map(({_hadEnglish,...x})=>x);if(payload.length)await (window.LocalizationCenterService.saveEntries?.(payload)||window.LocalizationCenterService.saveScreen(SCREEN_KEY,payload));payload.forEach(x=>state.remote.set(x.translation_key,{key:x.translation_key,ar:x.ar_text,en:x.en_text,type:x.text_type,screenKey:x.screen_key,moduleName:x.module_name}));cacheRows();window.dispatchEvent(new CustomEvent('petatoe-localization-updated',{detail:{screenKey:SCREEN_KEY}}));return getRows()}
   function setLanguage(language){state.language=language==='en'?'en':'ar';localStorage.setItem(STORAGE_LANGUAGE,state.language);applyStatic(document);window.dispatchEvent(new CustomEvent('petatoe-language-changed',{detail:{screenKey:SCREEN_KEY,language:state.language}}));return state.language}
   function getLanguage(){return state.language}
-  function applyDateLocale(root=document){const lang=effectiveLanguage();const apply=el=>{if(!el)return;if(el.dataset.petatoeDateLatn==='true'||el.dataset.petatoeDateLatin==='true'){el.lang='en-GB';el.dir='ltr';return;}el.lang=lang==='en'?'en-GB':'ar-SA';el.dir=lang==='en'?'ltr':'rtl'};if(root?.matches?.('input[type="date"]'))apply(root);root?.querySelectorAll?.('input[type="date"]').forEach(apply)}
-  function applyStatic(root=document){const lang=effectiveLanguage();const scope=root?.querySelectorAll?root:document;document.title=t('shared.app.title');scope.querySelectorAll?.('[data-execution-i18n]').forEach(el=>{el.textContent=t(el.dataset.executionI18n)});scope.querySelectorAll?.('[data-execution-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.executionI18nPlaceholder))});scope.querySelectorAll?.('[data-petatoe-i18n]').forEach(el=>{el.textContent=t(el.dataset.petatoeI18n)});scope.querySelectorAll?.('[data-petatoe-i18n-aria]').forEach(el=>{const value=t(el.dataset.petatoeI18nAria);el.setAttribute('aria-label',value);el.setAttribute('title',value)});scope.querySelectorAll?.('[data-petatoe-i18n-title]').forEach(el=>{el.setAttribute('title',t(el.dataset.petatoeI18nTitle))});scope.querySelectorAll?.('[data-petatoe-i18n-alt]').forEach(el=>{el.setAttribute('alt',t(el.dataset.petatoeI18nAlt))});scope.querySelectorAll?.('[data-petatoe-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.petatoeI18nPlaceholder))});applyDateLocale(scope);document.documentElement.lang=lang==='en'?'en':'ar';document.documentElement.dir=lang==='en'?'ltr':'rtl';const header=document.getElementById('appHeader');if(header){header.lang=lang==='en'?'en':'ar';header.dataset.petatoeLanguage=lang}const view=document.getElementById('installationExecutionView');if(view){view.dir=lang==='en'?'ltr':'rtl';view.lang=lang==='en'?'en':'ar';view.dataset.executionLanguage=lang}const sidebar=document.getElementById('mainSidebar');if(sidebar){sidebar.dir=lang==='en'?'ltr':'rtl';sidebar.lang=lang==='en'?'en':'ar';sidebar.dataset.petatoeLanguage=lang}}
+  const temporalState={target:null,kind:'date',cursor:new Date()};
+  function latinDigits(value){return String(value??'').replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))}
+  function temporalLocale(){return effectiveLanguage()==='en'?'en-US-u-ca-gregory-nu-latn':'ar-SA-u-ca-gregory-nu-latn'}
+  function temporalIso(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}
+  function temporalMonthIso(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`}
+  function parseTemporalValue(value,kind='date'){
+    const raw=latinDigits(value).trim(),match=kind==='month'?raw.match(/^(\d{4})-(\d{2})$/):raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(!match)return null;const y=Number(match[1]),m=Number(match[2]),d=kind==='month'?1:Number(match[3]);const date=new Date(y,m-1,d,12,0,0,0);
+    if(date.getFullYear()!==y||date.getMonth()!==m-1||(kind!=='month'&&date.getDate()!==d))return null;return date;
+  }
+  function temporalKind(input){return input?.dataset?.petatoeTemporalType||(['date','month'].includes(input?.type)?input.type:'date')}
+  function temporalInRange(input,value){const kind=temporalKind(input),v=String(value||''),min=latinDigits(input?.getAttribute?.('min')||''),max=latinDigits(input?.getAttribute?.('max')||'');return (!min||v>=min)&&(!max||v<=max)}
+  function temporalSvg(){return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2v3M17 2v3M3.5 9h17M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19V6A1.5 1.5 0 0 1 5 4.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'}
+  function ensureTemporalDialog(){
+    let dialog=document.getElementById('petatoeTemporalDialog');if(dialog)return dialog;
+    dialog=document.createElement('dialog');dialog.id='petatoeTemporalDialog';dialog.className='petatoe-temporal-dialog';
+    dialog.innerHTML=`<div class="petatoe-temporal-shell"><header class="petatoe-temporal-head"><button type="button" data-temporal-prev aria-label=""></button><strong data-temporal-title></strong><button type="button" data-temporal-next aria-label=""></button></header><div class="petatoe-temporal-weekdays" data-temporal-weekdays></div><div class="petatoe-temporal-grid" data-temporal-grid></div><footer class="petatoe-temporal-actions"><button type="button" class="secondary-btn" data-temporal-today></button><button type="button" class="secondary-btn" data-temporal-clear></button><button type="button" class="secondary-btn" data-temporal-cancel></button></footer></div>`;
+    document.body.appendChild(dialog);
+    dialog.querySelector('[data-temporal-prev]')?.addEventListener('click',()=>{const step=temporalState.kind==='month'?-12:-1;temporalState.cursor=new Date(temporalState.cursor.getFullYear(),temporalState.cursor.getMonth()+step,1,12);renderTemporalDialog()});
+    dialog.querySelector('[data-temporal-next]')?.addEventListener('click',()=>{const step=temporalState.kind==='month'?12:1;temporalState.cursor=new Date(temporalState.cursor.getFullYear(),temporalState.cursor.getMonth()+step,1,12);renderTemporalDialog()});
+    dialog.querySelector('[data-temporal-today]')?.addEventListener('click',()=>{const input=temporalState.target;if(!input)return;const now=new Date(),value=temporalState.kind==='month'?temporalMonthIso(now):temporalIso(now);if(temporalInRange(input,value))commitTemporalValue(value)});
+    dialog.querySelector('[data-temporal-clear]')?.addEventListener('click',()=>commitTemporalValue(''));
+    dialog.querySelector('[data-temporal-cancel]')?.addEventListener('click',()=>dialog.close());
+    dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
+    return dialog;
+  }
+  function commitTemporalValue(value){const input=temporalState.target;if(!input)return;input.value=String(value||'');input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));ensureTemporalDialog().close();input.focus?.({preventScroll:true})}
+  function renderTemporalDialog(){
+    const dialog=ensureTemporalDialog(),input=temporalState.target;if(!input)return;const locale=temporalLocale(),kind=temporalState.kind,cursor=temporalState.cursor;
+    dialog.lang=effectiveLanguage()==='en'?'en':'ar';dialog.dir=effectiveLanguage()==='en'?'ltr':'rtl';dialog.dataset.temporalKind=kind;
+    const title=dialog.querySelector('[data-temporal-title]'),prev=dialog.querySelector('[data-temporal-prev]'),next=dialog.querySelector('[data-temporal-next]'),weekdays=dialog.querySelector('[data-temporal-weekdays]'),grid=dialog.querySelector('[data-temporal-grid]');
+    if(title)title.textContent=new Intl.DateTimeFormat(locale,kind==='month'?{calendar:'gregory',year:'numeric',numberingSystem:'latn'}:{calendar:'gregory',year:'numeric',month:'long',numberingSystem:'latn'}).format(cursor);
+    if(prev){prev.textContent=effectiveLanguage()==='en'?'‹':'›';prev.setAttribute('aria-label',t('shared.temporal.previous'))}if(next){next.textContent=effectiveLanguage()==='en'?'›':'‹';next.setAttribute('aria-label',t('shared.temporal.next'))}
+    const todayBtn=dialog.querySelector('[data-temporal-today]'),clearBtn=dialog.querySelector('[data-temporal-clear]'),cancelBtn=dialog.querySelector('[data-temporal-cancel]');if(todayBtn)todayBtn.textContent=t('shared.temporal.today');if(clearBtn){clearBtn.textContent=t('shared.temporal.clear');clearBtn.disabled=Boolean(input.required)}if(cancelBtn)cancelBtn.textContent=t('shared.temporal.cancel');
+    const selected=latinDigits(input.value||'');
+    if(kind==='month'){
+      if(weekdays)weekdays.innerHTML='';grid.className='petatoe-temporal-grid is-month-grid';const months=[];
+      for(let month=0;month<12;month++){const d=new Date(cursor.getFullYear(),month,1,12),value=temporalMonthIso(d),disabled=!temporalInRange(input,value),label=new Intl.DateTimeFormat(locale,{calendar:'gregory',month:'short',numberingSystem:'latn'}).format(d);months.push(`<button type="button" data-temporal-value="${value}" ${disabled?'disabled':''} class="${selected===value?'is-selected':''}">${label}</button>`)}grid.innerHTML=months.join('');
+    }else{
+      grid.className='petatoe-temporal-grid';const names=[];for(let i=0;i<7;i++){const d=new Date(2026,7,2+i,12);names.push(`<span>${new Intl.DateTimeFormat(locale,{weekday:'short'}).format(d)}</span>`)}if(weekdays)weekdays.innerHTML=names.join('');
+      const first=new Date(cursor.getFullYear(),cursor.getMonth(),1,12),start=new Date(first);start.setDate(1-first.getDay());const cells=[];
+      for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const value=temporalIso(d),outside=d.getMonth()!==cursor.getMonth(),disabled=!temporalInRange(input,value),isToday=value===temporalIso(new Date());cells.push(`<button type="button" data-temporal-value="${value}" ${disabled?'disabled':''} class="${outside?'is-outside ':''}${selected===value?'is-selected ':''}${isToday?'is-today':''}">${d.getDate()}</button>`)}grid.innerHTML=cells.join('');
+    }
+    grid.querySelectorAll('[data-temporal-value]').forEach(button=>button.addEventListener('click',()=>commitTemporalValue(button.dataset.temporalValue||'')));
+  }
+  function openTemporalPicker(input){
+    if(!input||input.disabled||input.readOnly)return false;const kind=temporalKind(input);if(!['date','month'].includes(kind))return false;temporalState.target=input;temporalState.kind=kind;const parsed=parseTemporalValue(input.value,kind)||new Date();temporalState.cursor=new Date(parsed.getFullYear(),parsed.getMonth(),1,12);renderTemporalDialog();const dialog=ensureTemporalDialog();if(!dialog.open)dialog.showModal();return true;
+  }
+  function ownTemporalInput(input){
+    if(!input||input.classList?.contains('appointment-contact-date-input'))return;
+    const kind=input.dataset.petatoeTemporalType||(['date','month'].includes(input.type)?input.type:'');if(!kind)return;if(!input.dataset.petatoeTemporalType)input.dataset.petatoeTemporalType=kind;
+    if(input.type!=='text')input.type='text';input.classList.add('petatoe-temporal-input');input.lang='en';input.dir='ltr';input.inputMode='numeric';input.autocomplete='off';input.placeholder=kind==='month'?t('shared.temporal.monthPlaceholder'):t('shared.temporal.datePlaceholder');input.pattern=kind==='month'?'\\d{4}-\\d{2}':'\\d{4}-\\d{2}-\\d{2}';
+    if(!input.dataset.petatoeTemporalBound){input.dataset.petatoeTemporalBound='1';input.addEventListener('input',()=>{const normalized=latinDigits(input.value);if(normalized!==input.value)input.value=normalized});}
+    let wrapper=input.parentElement?.classList?.contains('petatoe-temporal-field')?input.parentElement:null;if(!wrapper){wrapper=document.createElement('span');wrapper.className='petatoe-temporal-field';input.parentNode?.insertBefore(wrapper,input);wrapper.appendChild(input);const button=document.createElement('button');button.type='button';button.className='petatoe-temporal-picker-button';button.innerHTML=temporalSvg();wrapper.appendChild(button);button.addEventListener('click',()=>openTemporalPicker(input));}
+    const button=wrapper.querySelector('.petatoe-temporal-picker-button');if(button){button.setAttribute('aria-label',t('shared.temporal.openPicker'));button.title=t('shared.temporal.openPicker');button.disabled=Boolean(input.disabled||input.readOnly)}
+  }
+  function restoreTemporalInput(input){
+    if(!input)return;const kind=input.dataset.petatoeTemporalType||'';if(!['date','month'].includes(kind))return;
+    const wrapper=input.parentElement?.classList?.contains('petatoe-temporal-field')?input.parentElement:null;
+    if(wrapper){wrapper.parentNode?.insertBefore(input,wrapper);wrapper.remove();}
+    input.type=kind;input.classList.remove('petatoe-temporal-input');input.lang='ar-SA';input.dir='rtl';input.removeAttribute('inputmode');input.removeAttribute('pattern');input.removeAttribute('autocomplete');
+  }
+  function applyInputLocale(root=document){
+    const lang=effectiveLanguage();
+    const applyNumber=input=>{if(!input)return;const english=lang==='en';input.lang=english?'en-US':'ar-SA';input.dir=english?'ltr':'rtl';input.classList.toggle('petatoe-latin-number-input',english)};
+    const temporal=[];if(root?.matches?.('input[type="date"],input[type="month"],input[data-petatoe-temporal-type]'))temporal.push(root);root?.querySelectorAll?.('input[type="date"],input[type="month"],input[data-petatoe-temporal-type]').forEach(el=>temporal.push(el));temporal.forEach(input=>lang==='en'?ownTemporalInput(input):restoreTemporalInput(input));
+    const numbers=[];if(root?.matches?.('input[type="number"]'))numbers.push(root);root?.querySelectorAll?.('input[type="number"]').forEach(el=>numbers.push(el));numbers.forEach(applyNumber);
+    const contact=root?.matches?.('.appointment-contact-date-input')?[root]:[...(root?.querySelectorAll?.('.appointment-contact-date-input')||[])];contact.forEach(el=>{el.lang=lang==='en'?'en-GB':'ar-SA';el.dir=lang==='en'?'ltr':'rtl'});
+  }
+  function applyStatic(root=document){const lang=effectiveLanguage();const scope=root?.querySelectorAll?root:document;document.title=t('shared.app.title');scope.querySelectorAll?.('[data-execution-i18n]').forEach(el=>{el.textContent=t(el.dataset.executionI18n)});scope.querySelectorAll?.('[data-execution-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.executionI18nPlaceholder))});scope.querySelectorAll?.('[data-petatoe-i18n]').forEach(el=>{el.textContent=t(el.dataset.petatoeI18n)});scope.querySelectorAll?.('[data-petatoe-i18n-aria]').forEach(el=>{const value=t(el.dataset.petatoeI18nAria);el.setAttribute('aria-label',value);el.setAttribute('title',value)});scope.querySelectorAll?.('[data-petatoe-i18n-title]').forEach(el=>{el.setAttribute('title',t(el.dataset.petatoeI18nTitle))});scope.querySelectorAll?.('[data-petatoe-i18n-alt]').forEach(el=>{el.setAttribute('alt',t(el.dataset.petatoeI18nAlt))});scope.querySelectorAll?.('[data-petatoe-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.petatoeI18nPlaceholder))});applyInputLocale(scope);document.documentElement.lang=lang==='en'?'en':'ar';document.documentElement.dir=lang==='en'?'ltr':'rtl';const header=document.getElementById('appHeader');if(header){header.lang=lang==='en'?'en':'ar';header.dataset.petatoeLanguage=lang}const view=document.getElementById('installationExecutionView');if(view){view.dir=lang==='en'?'ltr':'rtl';view.lang=lang==='en'?'en':'ar';view.dataset.executionLanguage=lang}const sidebar=document.getElementById('mainSidebar');if(sidebar){sidebar.dir=lang==='en'?'ltr':'rtl';sidebar.lang=lang==='en'?'en':'ar';sidebar.dataset.petatoeLanguage=lang}}
   function pageMeta(){return[t('execution.page.title'),t('execution.page.subtitle')]}
   loadCache();
-  window.PetatoeLocalization=Object.freeze({screenKey:SCREEN_KEY,t,statusLabel,translateMessage,getRows,loadRemote,saveRows,setLanguage,getLanguage,effectiveLanguage,applyStatic,pageMeta,desktopPilot,registerEntityCatalog,entityText,serviceDefaultEnglish,routeFor,screenKeyFor,moduleNameFor});
-  document.addEventListener('DOMContentLoaded',()=>{applyStatic(document);if(document.body&&window.MutationObserver)new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node?.nodeType===1)applyDateLocale(node)}))).observe(document.body,{childList:true,subtree:true});setTimeout(()=>loadRemote(false),0)});
+  window.PetatoeLocalization=Object.freeze({screenKey:SCREEN_KEY,t,statusLabel,translateMessage,getRows,loadRemote,saveRows,setLanguage,getLanguage,effectiveLanguage,applyStatic,pageMeta,desktopPilot,registerEntityCatalog,entityText,serviceDefaultEnglish,routeFor,screenKeyFor,moduleNameFor,openTemporalPicker,latinDigits});
+  document.addEventListener('DOMContentLoaded',()=>{applyStatic(document);if(document.body&&window.MutationObserver)new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node?.nodeType===1)applyInputLocale(node)}))).observe(document.body,{childList:true,subtree:true});setTimeout(()=>loadRemote(false),0)});
 })();

@@ -8,6 +8,8 @@
   const number = value => new Intl.NumberFormat(lang()==='en'?'en-US':'ar-SA-u-nu-latn',{maximumFractionDigits:2}).format(Number(value||0));
   const dateLabel = value => value?new Intl.DateTimeFormat(lang()==='en'?'en-GB':'ar-SA-u-ca-gregory-nu-latn',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(`${String(value).slice(0,10)}T12:00:00`)):'—';
   const uiMessage = value => window.PetatoeLocalization?.translateMessage?.(String(value||'')) || String(value||'');
+  const referenceLabel = value => { const raw=String(value||'').trim(); if (!raw) return '—'; if (raw==='بدون فاتورة') return t('vehicleTreasury.reference.noInvoice','No invoice'); return raw; };
+  const descriptionLabel = value => { const raw=String(value||'').trim(); if (!raw) return '—'; const match=raw.match(/^فاتورة نقدية(?:\s*[—-]\s*(.*))?$/); if (!match) return raw; const request=String(match[1]||'').trim(); if(!request)return t('vehicleTreasury.description.cashInvoiceOnly','Cash invoice'); const requestLabel=request==='بدون رقم طلب'?t('vehicleTreasury.reference.noRequest','No request number'):request; return t('vehicleTreasury.description.cashInvoice','Cash invoice — {request}',{request:requestLabel}); };
   const state = { data: null, editing: null, loading: false };
 
   function status(message='', type='info') {
@@ -70,7 +72,7 @@
       const income = Number(x.amount || 0) >= 0;
       return `<tr>
         <td>${number(i+1)}</td><td>${esc(dateLabel(x.movementDate))}</td><td><span class="vehicle-treasury-type ${income?'income':'expense'}">${esc(income?t('vehicleTreasury.type.revenue','إيراد'):t('vehicleTreasury.type.expense','مصروف'))}</span></td>
-        <td>${esc(x.reference||'—')}</td><td>${esc(x.description||'—')}</td><td class="${income?'vehicle-treasury-money-in':'vehicle-treasury-money-out'}">${income?'+':'-'} ${money(Math.abs(Number(x.amount||0)))}</td>
+        <td>${esc(referenceLabel(x.reference))}</td><td>${esc(descriptionLabel(x.description))}</td><td class="${income?'vehicle-treasury-money-in':'vehicle-treasury-money-out'}">${income?'+':'-'} ${money(Math.abs(Number(x.amount||0)))}</td>
         <td>${esc(x.carName||x.teamName||'—')}</td><td>${esc(x.notes||'—')}</td>
         <td>${x.editable ? `<div class="vehicle-treasury-actions">${window.PermissionEngine?.canEdit?.('vehicleTreasury') ? `<button type="button" class="secondary-btn compact-btn" data-vt-edit="${esc(x.sourceId||x.id)}">${esc(t('vehicleTreasury.edit','تعديل'))}</button>` : ''}${window.PermissionEngine?.canDelete?.('vehicleTreasury') ? `<button type="button" class="secondary-btn compact-btn danger" data-vt-delete="${esc(x.sourceId||x.id)}">${esc(t('vehicleTreasury.delete','حذف'))}</button>` : ''}</div>` : '<span class="muted">—</span>'}</td>
       </tr>`;

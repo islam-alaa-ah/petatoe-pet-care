@@ -1,19 +1,19 @@
 {
-  "version": "18.56.91",
-  "build": 185691,
+  "version": "18.56.92",
+  "build": 185692,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "استعادة ملكية عنوان الهيدر الديناميكي — R44R38R2",
+  "title": "إغلاق بواقي العرض الدلالية للتواريخ والكيانات والأرقام — R44R38R3",
   "notes": [
-    "فصل عنوان ووصف الهيدر عن ربط لوحة التحكم الثابت وجعل الشاشة النشطة هي المصدر الوحيد لبيانات الهيدر عند التنقل وتغيير اللغة.",
-    "توحيد بيانات أسماء الشاشات داخل مالك واحد يغطي جميع الشاشات بما فيها SEA VIBE والرواتب والمواعيد ومنع applyStatic من إعادة الهيدر إلى Dashboard.",
-    "لم تتغير CSS أو قيم الأعمال أو Offline/Sync/Permissions أو الحسابات أو SQL أو R44 Pruning."
+    "فصل وضع الإنجليزية عن تقويم المتصفح المحلي بمالك موحد للتاريخ والشهر يحافظ على قيم ISO ويعرض تقويمًا ميلاديًا إنجليزيًا بأرقام لاتينية، مع إبقاء سلوك العربية الأصلي.",
+    "ربط أسماء الخدمات والأحياء والمدن والمناطق ووصف حركات خزينة السيارة بطبقة العرض المترجمة دون تغيير القيم المخزنة أو الحسابات.",
+    "تثبيت الأرقام اللاتينية في مدخلات الأرقام عند الإنجليزية وإعادة مزامنة رسائل الكاش الديناميكية عند تغيير اللغة مع بقاء Offline/Sync/Permissions وR44 Pruning دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-91-header-localization-owner-r44r38r2-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r2.title",
+  "cacheToken": "petatoe-pwa-18-56-92-l7-semantic-display-closure-r44r38r3-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r3.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r2.note1",
-    "pwa.update.release.r44r38r2.note2",
-    "pwa.update.release.r44r38r2.note3"
+    "pwa.update.release.r44r38r3.note1",
+    "pwa.update.release.r44r38r3.note2",
+    "pwa.update.release.r44r38r3.note3"
   ]
 }

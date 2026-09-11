@@ -28,6 +28,37 @@ button{cursor:pointer}
 label{display:grid;gap:7px;font-weight:600;font-size:14px}
 input,select,textarea{width:100%;border:1px solid var(--border);border-radius:12px;padding:11px 12px;background:#fff;outline:none;transition:.2s}
 input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+
+/* R44R38R3 — canonical app-owned Gregorian date/month controls */
+.petatoe-temporal-field{position:relative;display:flex;align-items:center;width:100%;min-width:0;direction:ltr}
+.petatoe-temporal-field>.petatoe-temporal-input{width:100%;min-width:0;min-height:46px;padding-inline-end:44px;direction:ltr;unicode-bidi:isolate;font-family:Arial,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.petatoe-temporal-picker-button{position:absolute;inset-inline-end:5px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:9px;background:transparent;color:var(--primary);cursor:pointer;padding:0}
+.petatoe-temporal-picker-button:hover{background:rgba(37,99,235,.08)}
+.petatoe-temporal-picker-button:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
+.petatoe-temporal-picker-button:disabled{opacity:.45;cursor:not-allowed;background:transparent}
+.petatoe-temporal-picker-button svg{width:20px;height:20px;display:block}
+.petatoe-latin-number-input{direction:ltr;unicode-bidi:isolate;font-family:Arial,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.petatoe-temporal-dialog{width:min(420px,calc(100vw - 28px));max-width:420px;border:1px solid var(--border);border-radius:18px;padding:0;background:var(--surface,#fff);color:var(--text);box-shadow:0 28px 70px rgba(15,23,42,.25)}
+.petatoe-temporal-dialog::backdrop{background:rgba(15,23,42,.32);backdrop-filter:blur(3px)}
+.petatoe-temporal-shell{display:grid;gap:12px;padding:16px}
+.petatoe-temporal-head{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px}
+.petatoe-temporal-head strong{text-align:center;font-size:16px;line-height:1.3}
+.petatoe-temporal-head button{height:38px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2,#f8fafc);color:inherit;font-size:26px;line-height:1;cursor:pointer}
+.petatoe-temporal-weekdays,.petatoe-temporal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.petatoe-temporal-weekdays span{text-align:center;color:var(--muted);font-size:11px;font-weight:700;padding:3px 0}
+.petatoe-temporal-grid button{min-width:0;height:40px;border:1px solid transparent;border-radius:10px;background:transparent;color:inherit;cursor:pointer;font:700 13px/1 Arial,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.petatoe-temporal-grid button:hover:not(:disabled){border-color:var(--border);background:var(--surface-2,#f8fafc)}
+.petatoe-temporal-grid button.is-outside{opacity:.42}
+.petatoe-temporal-grid button.is-today{border-color:color-mix(in srgb,var(--primary) 52%,var(--border))}
+.petatoe-temporal-grid button.is-selected{background:var(--primary);border-color:var(--primary);color:#fff;opacity:1}
+.petatoe-temporal-grid button:disabled{opacity:.22;cursor:not-allowed}
+.petatoe-temporal-grid.is-month-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.petatoe-temporal-grid.is-month-grid button{height:46px;padding:0 6px}
+.petatoe-temporal-actions{display:flex;justify-content:flex-end;gap:8px;padding-top:4px;border-top:1px solid var(--border)}
+.petatoe-temporal-actions button{min-width:78px}
+html[data-theme="dark"] .petatoe-temporal-dialog{background:var(--surface,#10233d);box-shadow:0 28px 70px rgba(0,0,0,.5)}
+html[data-theme="dark"] .petatoe-temporal-head button,html[data-theme="dark"] .petatoe-temporal-grid button:hover:not(:disabled){background:rgba(255,255,255,.06)}
+@media(max-width:560px){.petatoe-temporal-dialog{width:calc(100vw - 18px);border-radius:16px}.petatoe-temporal-shell{padding:13px}.petatoe-temporal-grid button{height:42px}.petatoe-temporal-actions{display:grid;grid-template-columns:1fr 1fr 1fr}.petatoe-temporal-actions button{min-width:0;width:100%}}
 @media (min-width:1024px) and (min-device-width:1025px) and (hover:hover) and (pointer:fine){
   #appView .view-section:not(#dashboardView):not(#customersView):not(#followupsView) :is(input,select,textarea){
     min-height:44px;border:1px solid var(--desk-line);border-radius:13px;padding:10px 13px;

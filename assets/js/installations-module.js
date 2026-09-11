@@ -523,7 +523,7 @@
     if(!hidden||!label)return;
     const item=(opts.serviceTypes||[]).find(x=>String(x.id)===String(serviceId));
     hidden.value=item?.id||serviceId||"";
-    label.textContent=item?.name||(serviceId?appointmentT('appointmentNew.services.inactiveSaved','Saved inactive service'):appointmentT('appointmentNew.services.select','Select service type'));
+    label.textContent=item?appointmentEntity('service',item.id,item.name):(serviceId?appointmentT('appointmentNew.services.inactiveSaved','Saved inactive service'):appointmentT('appointmentNew.services.select','Select service type'));
     hidden.setCustomValidity(hidden.value?'':appointmentT('appointmentNew.services.select','Select service type'));
   }
   function hydrateServiceRows() {

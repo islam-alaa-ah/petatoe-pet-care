@@ -1671,14 +1671,24 @@ window.addEventListener("petatoe-language-changed", () => {
 window.addEventListener("petatoe-localization-updated", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
   renderActivePageMeta();
+  refreshReferenceLocalizationLabels();
   if (customersLoaded) {
     renderCustomers();
+    if (activeViewKey === "customers") showDataStatus("customersStatus", formatOfflineCacheStatus(window.CustomersService?.getLastReadStatus?.()), "info");
     if (activeViewKey === "settings") renderReferenceCustomers();
     if (activeViewKey === "dashboard") renderDashboard();
     const customer360Dialog = document.getElementById("customerDetailsDialog");
     if (customer360Dialog?.open && customer360Dialog.dataset.customerId) {
       showCustomerDetails(customer360Dialog.dataset.customerId);
     }
+  }
+  if (followupsLoaded) {
+    renderFollowups();
+    if (activeViewKey === "followups") showDataStatus("followupsStatus", formatOfflineCacheStatus(window.FollowupsService?.getLastReadStatus?.()), "info");
+  }
+  if (quotationsLoaded) {
+    renderQuotations();
+    if (activeViewKey === "quotations") showDataStatus("quotationsStatus", formatOfflineCacheStatus(window.QuotationsService?.getLastReadStatus?.()), "info");
   }
 });
 
