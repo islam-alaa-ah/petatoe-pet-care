@@ -1360,6 +1360,7 @@
     ["appointments.reports.kpi.duration","label","متوسط مدة التنفيذ","Average execution duration"],
     ["appointments.reports.tabs.aria","aria","أنواع تقارير المواعيد","Appointment report types"],
     ["appointments.reports.tab.summary","button","ملخص المواعيد","Appointment summary"],
+    ["appointments.reports.tab.monthlySummary","button","ملخص الشهر","Monthly summary"],
     ["appointments.reports.tab.services","button","تحليل الخدمات","Service analysis"],
     ["appointments.reports.tab.financial","button","التقرير المالي","Financial report"],
     ["appointments.reports.tab.representatives","button","أرباح المندوبين","Representative profits"],
@@ -1396,6 +1397,14 @@
     ["appointments.reports.summary.rescheduleNote","help","يوضح الطلبات التي تم إلغاء جدولتها وإعادتها للجدولة، والمرحلة التي كانت عليها وسبب الإعادة.","Shows appointments removed from the schedule and returned for rescheduling, including their stage and reason."],
     ["appointments.reports.summary.paymentTitle","title","ملخص طرق الدفع حسب الفريق","Payment Method Summary by Team"],
     ["appointments.reports.summary.paymentNote","help","عدد المواعيد وقيمة المبيعات شاملة الضريبة لليوم ومن بداية الشهر حتى التاريخ المحدد.","Appointment count and VAT-inclusive sales value for the day and month-to-date."],
+    ["appointments.reports.monthly.note","help","ملخص شهري لقيمة المبيعات شاملة الضريبة حسب اليوم والسيارة وطريقة الدفع.","Monthly VAT-inclusive sales summary by day, vehicle, and payment method."],
+    ["appointments.reports.monthly.day","table","اليوم","Day"],
+    ["appointments.reports.monthly.vehicle","table","السيارة","Vehicle"],
+    ["appointments.reports.monthly.total","table","الإجمالي","Total"],
+    ["appointments.reports.monthly.grandTotal","table","إجمالي الشهر","Month total"],
+    ["appointments.reports.monthly.period","label","الفترة: {from} — {to}","Period: {from} — {to}"],
+    ["appointments.reports.monthly.loading","status","جاري تجهيز ملخص الشهر...","Preparing monthly summary..."],
+    ["appointments.reports.monthly.loadError","status","تعذر تجهيز ملخص الشهر.","Unable to prepare the monthly summary."],
     ["appointments.reports.summary.contactTitle","title","ملخص بيانات التواصل","Contact Data Summary"],
     ["appointments.reports.summary.contactNote","help","ملخص اليوم والملخص التراكمي من بداية الشهر لبيانات التواصل والنتائج اليومية.","Today and month-to-date summary of communication and daily result data."],
     ["appointments.reports.summary.contactMetric","table","البند","Metric"],
@@ -5060,6 +5069,10 @@
     ["pwa.update.release.r44r38r7.note1","note","إضافة تقرير تجميعي بعد ملخص طرق الدفع يعرض اليوم ومن بداية الشهر لثمانية مؤشرات بدون مستخدم أو مندوب.","Adds an aggregate report after the payment-method summary with today and month-to-date values for eight metrics, without user or representative breakdown."],
     ["pwa.update.release.r44r38r7.note2","note","التقرير يستخدم نفس جدول بيانات التواصل اليومي عبر RPC محدودة تتحقق من صلاحية تقارير المواعيد ولا تعرض بيانات المستخدمين.","The report uses the existing daily contact-data table through a least-privilege RPC that checks Appointment Reports permission and returns no user data."],
     ["pwa.update.release.r44r38r7.note3","note","لا تغيير على منطق المواعيد أو Offline/Sync أو الحسابات أو R44 Pruning، وتمت إضافة التقرير إلى الشاشة وPDF في نفس الترتيب.","No changes to appointment logic, Offline/Sync, calculations, or R44 Pruning; the report is added to both screen and PDF in the same order."],
+    ["pwa.update.release.r44r38r8.title","title","إضافة تقرير ملخص الشهر إلى تقارير المواعيد — R44R38R8","Add Monthly Summary Report to Appointment Reports — R44R38R8"],
+    ["pwa.update.release.r44r38r8.note1","note","إضافة تبويب ملخص الشهر بجوار ملخص المواعيد لعرض كل يوم وسيارة مع قيم المبيعات حسب طرق الدفع والإجمالي.","Adds a Monthly Summary tab beside Appointment Summary showing each day and vehicle with sales values by payment method and total."],
+    ["pwa.update.release.r44r38r8.note2","note","التقرير يستخدم نفس مصدر ومعادلات ملخص طرق الدفع حسب الفريق ويجمع الشهر المحدد بالكامل دون إنشاء منطق مالي أو مصدر بيانات موازٍ.","The report reuses the same source and payment-summary calculations for the full selected month, without introducing parallel financial logic or data sources."],
+    ["pwa.update.release.r44r38r8.note3","note","لا تغيير على Offline/Sync أو الصلاحيات أو RLS أو حسابات المواعيد أو R44 Pruning، والتعديل محصور في عرض تقارير المواعيد والترجمة.","No changes to Offline/Sync, permissions, RLS, appointment calculations, or R44 Pruning; changes are limited to Appointment Reports display and localization."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

@@ -1,0 +1,51 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const read = rel => fs.readFileSync(path.join(root, rel), 'utf8');
+const html = read('index.html');
+const reports = read('assets/js/installation-operations-reports.js');
+const loc = read('assets/js/localization-center.js');
+const version = JSON.parse(read('version.json'));
+const pkg = JSON.parse(read('package.json'));
+const manifest = JSON.parse(read('supabase/migration-manifest.json'));
+const sqlRel = 'supabase/migrations/phase_p5_13_8_72_r44r38r8_monthly_payment_summary_report.sql';
+const sql = read(sqlRel);
+const checks = [];
+const check = (name, value) => checks.push([name, Boolean(value)]);
+
+check('release version is 18.56.97', version.version === '18.56.97' && pkg.version === '18.56.97');
+check('release build is 185697', version.build === 185697);
+check('release phase is R44R38R8', manifest?.release?.phase === 'R44R38R8' && manifest?.release?.build === 185697);
+check('monthly summary tab is directly after appointment summary', html.indexOf('data-installation-report-tab="summary"') < html.indexOf('data-installation-report-tab="monthlySummary"') && html.indexOf('data-installation-report-tab="monthlySummary"') < html.indexOf('data-installation-report-tab="services"'));
+check('monthly summary has one canonical panel', (html.match(/data-installation-report-panel="monthlySummary"/g)||[]).length === 1);
+check('monthly summary has year and month filters only', html.includes('id="installationMonthlySummaryYear"') && html.includes('id="installationMonthlySummaryMonth"') && !/installationMonthlySummary(?:Day|Representative|Teams)/.test(html));
+check('monthly table has day and vehicle columns', html.includes('appointments.reports.monthly.day') && html.includes('appointments.reports.monthly.vehicle'));
+check('monthly table reuses the four canonical payment-method keys', ['transfer','card','cash','online'].every(k=>html.includes(`appointments.reports.invoices.payment.${k}`)));
+check('monthly table has total column and month footer', html.includes('appointments.reports.monthly.total') && reports.includes("appointments.reports.monthly.grandTotal"));
+check('monthly report queries the canonical installationSummaryReport only', /loadMonthlyPaymentSummary\(\)[\s\S]*?InstallationsServiceSafe\.installationSummaryReport\(\{dateFrom:range\.dateFrom,dateTo:range\.dateTo\}\)/.test(reports));
+check('monthly range covers the entire selected Gregorian month', reports.includes("dateFrom:`${y}-${String(m).padStart(2,'0')}-01`") && reports.includes("new Date(y,m,0).getDate()"));
+check('monthly aggregation reuses canonical payment normalization', /monthlyPaymentRows\([\s\S]*?normalizeSummaryPaymentMethod/.test(reports));
+check('monthly aggregation reuses canonical VAT-inclusive order value', /monthlyPaymentRows\([\s\S]*?summaryOrderValue\(order\)/.test(reports));
+check('each monthly row is grouped by date and vehicle identity', reports.includes('const key=`${date}|${vehicle.key}`') && reports.includes('monthlyVehicleIdentity(order)'));
+check('vehicle label prefers car name and plate number', reports.includes("[order?.carName,order?.plateNumber].filter(Boolean).join(' - ')") );
+check('month totals aggregate every approved payment method', /for\(const method of methods\)totals\[method\]\+=/.test(reports) && reports.includes('grand+=Number(row.total||0)'));
+check('monthly tab lazy-loads its own selected month', reports.includes("btn.dataset.installationReportTab==='monthlySummary'") && reports.includes('loadMonthlyPaymentSummary()'));
+check('month filter changes reload the monthly report', reports.includes("['installationMonthlySummaryYear','installationMonthlySummaryMonth']") && reports.includes('state.monthlyPaymentLoaded=false;loadMonthlyPaymentSummary()'));
+check('language change re-renders month names and report rows', reports.includes('initMonthlySummaryDateFilters()') && reports.includes('renderMonthlyPaymentSummary(state.monthlyPaymentData)'));
+const monthlyBlock=(reports.match(/function monthlySummaryRange[\s\S]*?async function loadMonthlyPaymentSummary[\s\S]*?\n  function summaryReportStatus/)||[''])[0];
+check('monthly report has no user or representative grouping', Boolean(monthlyBlock) && !/(?:created_by|updated_by|representativeId|المندوب|المستخدم)/i.test(monthlyBlock));
+check('new translation keys exist in canonical localization catalog', ['appointments.reports.tab.monthlySummary','appointments.reports.monthly.vehicle','appointments.reports.monthly.grandTotal'].every(k=>loc.includes(k)));
+check('translation migration registers monthly report and release keys', sql.includes("'appointments.reports.tab.monthlySummary'") && sql.includes("'appointments.reports.monthly.grandTotal'") && sql.includes("'pwa.update.release.r44r38r8.title'"));
+check('translation migration preserves existing custom translations', sql.includes("ar_text=case when public.app_translations.ar_text is null") && sql.includes("en_text=case when public.app_translations.en_text is null"));
+check('migration has no destructive database operation', !/\b(delete\s+from|truncate\b|drop\s+table|drop\s+column|alter\s+table|create\s+table|create\s+or\s+replace\s+function)\b/i.test(sql));
+check('new migration fingerprint is inventoried', (()=>{const b=fs.readFileSync(path.join(root,sqlRel));const item=manifest.historicalInventory.find(x=>x.path===sqlRel);return item && item.bytes===b.length && item.sha256===crypto.createHash('sha256').update(b).digest('hex')})());
+check('pre-existing manifest drift remains exactly three files', (()=>{const physical=fs.readdirSync(path.join(root,'supabase/migrations')).filter(x=>x.endsWith('.sql')).length;return physical-manifest.inventoryStats.sqlFileCount===3})());
+check('all index local asset tokens were bumped to 18.56.97', (()=>{const tokens=[...html.matchAll(/[?&]v=(\d+\.\d+\.\d+)/g)].map(x=>x[1]);return tokens.length>0 && tokens.every(x=>x==='18.56.97')})());
+check('R44 pruning remains disabled', read('supabase/migrations/phase_p5_13_8_72_r44_bounded_pruning_engine_disabled.sql').includes('false'));
+
+let passed=0;
+for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} - ${name}`);if(ok)passed++;}
+console.log(`\n${passed}/${checks.length} PASS`);
+if(passed!==checks.length)process.exit(1);
