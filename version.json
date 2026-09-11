@@ -1,19 +1,19 @@
 {
-  "version": "18.56.81",
-  "build": 185681,
+  "version": "18.56.82",
+  "build": 185682,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "استكمال ترجمة التشغيل المالي — R44R35",
+  "title": "استكمال ترجمة SEA VIBE واعتماد L5 — R44R36",
   "notes": [
-    "استكمال ترجمة العرض التشغيلي لخزينة السيارة والرواتب والعمولات وفواتير المبيعات دون تغيير أي حسابات مالية.",
-    "ترجمة رسائل التحقق والأخطاء في طبقة العرض مع الحفاظ على خدمات المالية وعقود Offline/Sync دون تعديل.",
-    "إبقاء SEA VIBE لمرحلة L5 ومحتوى PDF وCSV وWhatsApp المولد لمرحلة L6."
+    "استكمال بواقي ترجمة SEA VIBE ورسائل التشغيل دون تغيير أي حسابات أو بيانات مخزنة.",
+    "ترجمة رسائل خدمات SEA VIBE في طبقة العرض مع بقاء خدمات البنزين وزاول والعمولات والرواتب دون تعديل.",
+    "اعتماد عرض التواريخ الميلادية والأرقام اللاتينية وإغلاق البواقي الثابتة داخل شاشات SEA VIBE."
   ],
-  "cacheToken": "petatoe-pwa-18-56-81-financial-l4-r44r35-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r35.title",
+  "cacheToken": "petatoe-pwa-18-56-82-sea-vibe-l5-r44r36-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r36.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r35.note1",
-    "pwa.update.release.r44r35.note2",
-    "pwa.update.release.r44r35.note3"
+    "pwa.update.release.r44r36.note1",
+    "pwa.update.release.r44r36.note2",
+    "pwa.update.release.r44r36.note3"
   ]
 }

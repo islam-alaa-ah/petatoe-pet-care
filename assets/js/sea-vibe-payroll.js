@@ -4,6 +4,7 @@
   const $=id=>document.getElementById(id);
   const svc=()=>window.SeaVibePayrollService;
   const t=(key,fallback,vars={})=>{const value=window.PetatoeLocalization?.t?.(key,vars);return value&&!/^\[.+\]$/.test(value)?value:fallback;};
+  const uiMessage=value=>window.PetatoeLocalization?.translateMessage?.(String(value||''))||String(value||'');
   const lang=()=>window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en':'ar';
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const money=value=>new Intl.NumberFormat(lang()==='en'?'en-SA':'ar-SA-u-nu-latn',{style:'currency',currency:'SAR',minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(value||0));
@@ -113,7 +114,7 @@
       state.management=await svc().loadManagement(month,{force});
       setStatus('seaVibePayrollManagementStatus',cacheMessage('management'),'info');
       commissionPeriod(resetPeriod);renderManagement();
-    }catch(error){setStatus('seaVibePayrollManagementStatus',error.message||String(error),'error');renderManagementEmpty();}
+    }catch(error){setStatus('seaVibePayrollManagementStatus',uiMessage(error?.message||String(error)),'error');renderManagementEmpty();}
   }
 
   function renderManagementEmpty(){
@@ -226,7 +227,7 @@
     let reference='';if(action==='mark_paid')reference=window.prompt(t('payroll.payment.referencePrompt','مرجع الصرف (اختياري):'),'')||'';
     setStatus('seaVibePayrollManagementStatus',t('payroll.saving','جاري حفظ التغيير...'));
     try{await svc().transition(id,action,reference);await loadManagement(true,false);setStatus('seaVibePayrollManagementStatus',t('payroll.saved','تم تحديث حالة الراتب بنجاح.'),'success');}
-    catch(error){setStatus('seaVibePayrollManagementStatus',error.message||String(error),'error');}
+    catch(error){setStatus('seaVibePayrollManagementStatus',uiMessage(error?.message||String(error)),'error');}
   }
 
   // -----------------------------------------------------------------------
@@ -235,7 +236,7 @@
   async function loadSalaryStatement(force=false){
     setStatus('seaVibeSalaryStatementStatus',t('payroll.loading','جاري التحميل...'));
     try{state.salary=await svc().loadSalaryStatement({force});setStatus('seaVibeSalaryStatementStatus',cacheMessage('salary'),'info');renderSalaryStatement();}
-    catch(error){setStatus('seaVibeSalaryStatementStatus',error.message||String(error),'error');}
+    catch(error){setStatus('seaVibeSalaryStatementStatus',uiMessage(error?.message||String(error)),'error');}
   }
 
   function salaryAdjustmentList(items,type,compact=false){
@@ -270,7 +271,7 @@
         if(!confirm(t('salaryStatement.approveConfirm','أؤكد موافقتي على كشف الراتب الموضح. هل تريد المتابعة؟')))return;
         setStatus('seaVibeSalaryStatementStatus',t('payroll.saving','جاري حفظ الموافقة...'));
         try{await svc().transition(current.id,'employee_approve');await loadSalaryStatement(true);setStatus('seaVibeSalaryStatementStatus',t('salaryStatement.approved','تم اعتماد كشف الراتب وأصبح جاهزًا للصرف.'),'success');}
-        catch(error){setStatus('seaVibeSalaryStatementStatus',error.message||String(error),'error');}
+        catch(error){setStatus('seaVibeSalaryStatementStatus',uiMessage(error?.message||String(error)),'error');}
       });
     }
     const history=state.salary?.history||[];
@@ -283,7 +284,7 @@
   function renderReference(){
     const reference=state.reference||{employees:[],users:[]};const rows=reference.employees||[];const body=$('seaVibePayrollReferenceContent');if(!body)return;
     const labels={name:t('seaVibePayroll.employee.name','اسم الموظف'),user:t('seaVibePayroll.employee.user','المستخدم المرتبط'),base:t('seaVibePayroll.employee.baseSalary','الراتب الأساسي'),allowances:t('seaVibePayroll.employee.allowances','البدلات'),payment:t('seaVibePayroll.employee.paymentMethod','طريقة الدفع'),status:t('seaVibePayroll.common.status','الحالة'),actions:t('seaVibePayroll.common.actions','الإجراءات')};
-    body.innerHTML=`<div class="panel payroll-table-wrap"><table class="data-table payroll-table"><thead><tr><th>${esc(labels.name)}</th><th>${esc(labels.user)}</th><th>${esc(labels.base)}</th><th>${esc(labels.allowances)}</th><th>${esc(labels.payment)}</th><th>${esc(labels.status)}</th><th>${esc(labels.actions)}</th></tr></thead><tbody>${rows.length?rows.map(row=>{const user=(reference.users||[]).find(u=>String(u.id)===String(row.userId));return `<tr><td><strong>${esc(row.fullName||'—')}</strong></td><td>${esc(user?`${user.fullName||'—'}${user.email?` — ${user.email}`:''}`:'—')}</td><td class="money">${esc(money(row.baseSalary))}</td><td class="money">${esc(money(row.allowances))}</td><td>${esc(row.paymentMethod||'—')}</td><td>${row.isActive!==false?esc(t('seaVibePayroll.status.active','نشط')):esc(t('seaVibePayroll.status.inactive','موقوف'))}</td><td><div class="payroll-row-actions"><button class="secondary-btn" type="button" data-sea-vibe-employee-edit="${esc(row.id)}" data-permission-screen="seaVibePayrollReference" data-permission-action="edit">${esc(t('common.edit','تعديل'))}</button></div></td></tr>`;}).join(''):`<tr><td colspan="7" class="payroll-empty">${esc(t('seaVibePayroll.reference.noEmployees','لا يوجد موظفو SEA VIBE حتى الآن.'))}</td></tr>`}</tbody></table></div>`;
+    body.innerHTML=`<div class="panel payroll-table-wrap"><table class="data-table payroll-table"><thead><tr><th>${esc(labels.name)}</th><th>${esc(labels.user)}</th><th>${esc(labels.base)}</th><th>${esc(labels.allowances)}</th><th>${esc(labels.payment)}</th><th>${esc(labels.status)}</th><th>${esc(labels.actions)}</th></tr></thead><tbody>${rows.length?rows.map(row=>{const user=(reference.users||[]).find(u=>String(u.id)===String(row.userId));return `<tr><td><strong>${esc(row.fullName||'—')}</strong></td><td>${esc(user?`${user.fullName||'—'}${user.email?` — ${user.email}`:''}`:'—')}</td><td class="money">${esc(money(row.baseSalary))}</td><td class="money">${esc(money(row.allowances))}</td><td>${esc(row.paymentMethod||'—')}</td><td>${row.isActive!==false?esc(t('seaVibePayroll.status.active','نشط')):esc(t('seaVibePayroll.status.inactive','موقوف'))}</td><td><div class="payroll-row-actions"><button class="secondary-btn" type="button" data-sea-vibe-employee-edit="${esc(row.id)}" data-permission-screen="seaVibePayrollReference" data-permission-action="edit">${esc(t('seaVibe.common.edit','تعديل'))}</button></div></td></tr>`;}).join(''):`<tr><td colspan="7" class="payroll-empty">${esc(t('seaVibePayroll.reference.noEmployees','لا يوجد موظفو SEA VIBE حتى الآن.'))}</td></tr>`}</tbody></table></div>`;
     window.PermissionEngine?.applyActionVisibility?.(body);
   }
 
@@ -297,7 +298,7 @@
   async function loadReference(force=false){
     setStatus('seaVibePayrollReferenceStatus',t('seaVibePayroll.common.loading','جاري تحميل بيانات موظفي SEA VIBE...'));
     try{state.reference=await svc().loadReference({force});renderReference();setStatus('seaVibePayrollReferenceStatus',cacheMessage('reference'),'info');}
-    catch(error){setStatus('seaVibePayrollReferenceStatus',error.message||String(error),'error');}
+    catch(error){setStatus('seaVibePayrollReferenceStatus',uiMessage(error?.message||String(error)),'error');}
   }
 
   // -----------------------------------------------------------------------
@@ -373,7 +374,7 @@
     const range=commissionRange(resetRange);if(!validCommissionRange(range))return;
     setStatus('seaVibeCommissionManagementStatus',t('commission.loading','جاري تحميل العمولات...'));
     try{state.commissions=await svc().loadCommissionsRange(range.from,range.to,{force});renderCommissions();setStatus('seaVibeCommissionManagementStatus',cacheMessage('commissions'),'info');}
-    catch(error){setStatus('seaVibeCommissionManagementStatus',error.message||String(error),'error');renderCommissions();}
+    catch(error){setStatus('seaVibeCommissionManagementStatus',uiMessage(error?.message||String(error)),'error');renderCommissions();}
   }
 
   function renderCommissions(){
@@ -394,7 +395,7 @@
   async function loadCommissionStatement(force=false){
     setStatus('seaVibeCommissionStatementStatus',t('commission.loading','جاري تحميل العمولات...'));
     try{state.commissionStatement=await svc().loadCommissionStatement({force});renderCommissionStatement();setStatus('seaVibeCommissionStatementStatus',cacheMessage('commissionStatement'),'info');}
-    catch(error){setStatus('seaVibeCommissionStatementStatus',error.message||String(error),'error');renderCommissionStatement();}
+    catch(error){setStatus('seaVibeCommissionStatementStatus',uiMessage(error?.message||String(error)),'error');renderCommissionStatement();}
   }
 
   function commissionStatementCurrentTable(rows,showBeneficiary=false){
@@ -445,7 +446,7 @@
       if(!confirm(`${t('payroll.prepare.confirm','سيتم تجهيز أو تحديث مسودات رواتب الشهر من البيانات المرجعية وفترة العمولات المحددة. هل تريد المتابعة؟')}${warningText}`))return;
       setStatus('seaVibePayrollManagementStatus',t('payroll.preparing','جاري تجهيز رواتب الشهر...'));
       try{state.management=await svc().prepareMonth($('seaVibePayrollManagementMonth').value,range.from,range.to);commissionPeriod(true);renderManagement();setStatus('seaVibePayrollManagementStatus',t('payroll.prepared','تم تجهيز رواتب الشهر بنجاح.'),'success');}
-      catch(error){setStatus('seaVibePayrollManagementStatus',error.message||String(error),'error');}
+      catch(error){setStatus('seaVibePayrollManagementStatus',uiMessage(error?.message||String(error)),'error');}
     });
     ['seaVibePayrollManagementSearch','seaVibePayrollPaymentFilter','seaVibePayrollStatusFilter'].forEach(id=>$(id)?.addEventListener(id==='seaVibePayrollManagementSearch'?'input':'change',renderManagement));
     $('seaVibePayrollClearFilters')?.addEventListener('click',()=>{$('seaVibePayrollManagementSearch').value='';$('seaVibePayrollPaymentFilter').value='';$('seaVibePayrollStatusFilter').value='';renderManagement();});
@@ -462,7 +463,7 @@
       event.preventDefault();const items=collectAdjustmentItems();
       if(items.some(item=>!item.name||item.amount<=0)){setStatus('seaVibePayrollManagementStatus',t('payroll.adjustment.invalidItems','اكتب بيانًا وقيمة أكبر من صفر لكل بند.'),'error');return;}
       try{state.management=await svc().saveAdjustmentItems($('seaVibePayrollAdjustmentId').value,items,$('seaVibePayrollAdjustmentNotes').value)||state.management;$('seaVibePayrollAdjustmentDialog')?.close();renderManagement();setStatus('seaVibePayrollManagementStatus',t('payroll.adjustment.saved','تم حفظ بنود الإضافي والخصومات.'),'success');}
-      catch(error){setStatus('seaVibePayrollManagementStatus',error.message||String(error),'error');}
+      catch(error){setStatus('seaVibePayrollManagementStatus',uiMessage(error?.message||String(error)),'error');}
     });
 
     $('seaVibeSalaryStatementRefresh')?.addEventListener('click',()=>loadSalaryStatement(true));
@@ -481,7 +482,7 @@
     $('seaVibeEmployeeForm')?.addEventListener('submit',async event=>{
       event.preventDefault();const record={id:$('seaVibeEmployeeId').value||null,fullName:$('seaVibeEmployeeName').value.trim(),userId:$('seaVibeEmployeeUser').value||null,baseSalary:Number($('seaVibeEmployeeBase').value||0),allowances:Number($('seaVibeEmployeeAllowances').value||0),paymentMethod:$('seaVibeEmployeePaymentMethod').value.trim(),isActive:$('seaVibeEmployeeActive').checked,notes:$('seaVibeEmployeeNotes').value.trim()};
       try{setStatus('seaVibePayrollReferenceStatus',t('seaVibePayroll.common.saving','جاري الحفظ...'));state.reference=await svc().saveEmployee(record);$('seaVibeEmployeeDialog')?.close();renderReference();setStatus('seaVibePayrollReferenceStatus',t('seaVibePayroll.employee.saved','تم حفظ موظف SEA VIBE بنجاح.'),'success');}
-      catch(error){setStatus('seaVibePayrollReferenceStatus',error.message||String(error),'error');}
+      catch(error){setStatus('seaVibePayrollReferenceStatus',uiMessage(error?.message||String(error)),'error');}
     });
 
     window.addEventListener('sea-vibe-payroll-data-updated',event=>{
