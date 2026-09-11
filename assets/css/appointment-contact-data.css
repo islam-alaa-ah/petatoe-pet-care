@@ -84,6 +84,11 @@ html[data-theme="dark"] .appointment-contact-context-icon::before,html[data-them
   .appointment-contact-actions{display:grid;grid-template-columns:1fr 1.4fr}
   .appointment-contact-actions .primary-btn,.appointment-contact-actions .secondary-btn{min-width:0;width:100%}
 }
+@media (max-width:767px), (pointer:coarse) and (max-device-width:1024px){
+  .appointment-contact-date-picker{min-height:34px;padding-inline:2px}
+  .appointment-contact-date-picker strong{position:relative;z-index:1;pointer-events:none}
+  .appointment-contact-date-input{position:absolute;inset:0;inline-size:100%;block-size:100%;margin:0;padding:0;border:0;opacity:.015;pointer-events:auto;overflow:hidden;clip:auto;clip-path:none;white-space:normal;z-index:2;-webkit-appearance:none;appearance:none;background:transparent;color:transparent;-webkit-text-fill-color:transparent;font-size:16px;cursor:pointer}
+}
 @media (max-width:430px){
   .appointment-contact-actions{grid-template-columns:1fr}
 }
