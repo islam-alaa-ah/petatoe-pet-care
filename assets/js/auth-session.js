@@ -39,7 +39,7 @@
     return data;
   }
 
-  function applyIdentity(session, profile, offline) {
+  function applyIdentity(session, profile, offline, options = {}) {
     state.session = session; state.user = session.user; state.profile = profile; state.offline = Boolean(offline);
     const e = el();
     const roleLabel = window.CustomerPermissions?.roleLabels?.[profile.role] || profile.role;
@@ -49,8 +49,12 @@
     if (avatar) avatar.textContent = (profile.full_name || session.user.email || window.PetatoeLocalization.t("auth.common.userInitial")).trim().charAt(0).toUpperCase();
     window.CustomerPermissions?.apply(profile);
     const preferredLanguage = profile?.default_language === "en" ? "en" : "ar";
-    if (window.PetatoeLocalization?.getLanguage?.() !== preferredLanguage) {
-      window.PetatoeLocalization?.setLanguage?.(preferredLanguage);
+    const preserveStoredLanguage = options.preserveStoredLanguage === true;
+    if (window.PetatoeLocalization?.applyPreferredLanguage) {
+      window.PetatoeLocalization.applyPreferredLanguage(preferredLanguage, { preserveStored: preserveStoredLanguage });
+    } else if (!preserveStoredLanguage || !window.PetatoeLocalization?.hasStoredLanguagePreference?.()) {
+      if (window.PetatoeLocalization?.getLanguage?.() !== preferredLanguage) window.PetatoeLocalization?.setLanguage?.(preferredLanguage);
+      else window.PetatoeLocalization?.applyStatic?.(document);
     } else {
       window.PetatoeLocalization?.applyStatic?.(document);
     }
@@ -64,7 +68,7 @@
     if (!profile) throw new Error(window.PetatoeLocalization.t("auth.error.offlineSessionMissing"));
     if (profile.is_active === false) throw new Error(window.PetatoeLocalization.t("auth.error.inactive"));
     if (!offline) store?.saveProfile(profile, session.user);
-    applyIdentity(session, profile, offline);
+    applyIdentity(session, profile, offline, options);
     await window.CustomerPermissions?.loadCurrentPermissions?.({ offline });
     if (window.PermissionEngine?.refresh) {
       window.PermissionEngine.refresh({ validateCurrentView: false });
@@ -82,7 +86,7 @@
       showLogin(reason || window.PetatoeLocalization.t("auth.error.offlineSessionNone"));
       return false;
     }
-    try { await activate(session, { offline: true }); return true; }
+    try { await activate(session, { offline: true, preserveStoredLanguage: true }); return true; }
     catch (error) { showLogin(error instanceof Error ? error.message : window.PetatoeLocalization.t("auth.error.offlineSessionOpen")); return false; }
   }
 
@@ -94,7 +98,7 @@
       }
       const { data, error } = await window.customerSupabase.auth.getSession();
       if (error) throw error;
-      if (data.session) await activate(data.session);
+      if (data.session) await activate(data.session, { preserveStoredLanguage: true });
       else showLogin();
     } catch (error) {
       const opened = await offlineBootstrap();

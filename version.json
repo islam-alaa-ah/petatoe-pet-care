@@ -1,19 +1,19 @@
 {
-  "version": "18.56.93",
-  "build": 185693,
+  "version": "18.56.94",
+  "build": 185694,
   "forceUpdate": true,
   "releaseDate": "2026-09-12",
-  "title": "إغلاق بواقي مركز الترجمة وأرقام شرائح العمولات — R44R38R4",
+  "title": "تثبيت اختيار اللغة بعد تحديث الصفحة — R44R38R5",
   "notes": [
-    "إغلاق بواقي ترجمة الأحياء القديمة من مصادر الجغرافيا المعتمدة مع الحفاظ على أي ترجمة إنجليزية مخصصة موجودة.",
-    "تثبيت عرض وإدخال الأرقام اللاتينية في شرائح الرواتب والعمولات عند الإنجليزية دون تغيير القيم أو الحفظ أو معادلات العمولة.",
-    "إضافة Migration جديدة فقط لإغلاق بواقي الجغرافيا مع بقاء Offline/Sync/Permissions وR44 Pruning دون تغيير."
+    "الحفاظ على اللغة التي اختارها المستخدم عند Refresh أو Reload بدل إعادة تطبيق اللغة الافتراضية للحساب في كل Bootstrap.",
+    "تبقى اللغة الافتراضية للمستخدم مطبقة عند تسجيل دخول جديد، بينما استعادة الجلسة الحالية تحترم اختيار اللغة المحلي المحفوظ.",
+    "لا تغيير في Offline/Sync/Permissions أو بيانات الأعمال أو SQL أو R44 Pruning؛ الإصلاح محصور في دورة تهيئة اللغة والجلسة."
   ],
-  "cacheToken": "petatoe-pwa-18-56-93-translation-center-tier-numerals-r44r38r4-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r4.title",
+  "cacheToken": "petatoe-pwa-18-56-94-language-refresh-persistence-r44r38r5-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r5.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r4.note1",
-    "pwa.update.release.r44r38r4.note2",
-    "pwa.update.release.r44r38r4.note3"
+    "pwa.update.release.r44r38r5.note1",
+    "pwa.update.release.r44r38r5.note2",
+    "pwa.update.release.r44r38r5.note3"
   ]
 }
