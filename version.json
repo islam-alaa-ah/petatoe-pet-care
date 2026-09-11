@@ -1,19 +1,15 @@
 {
-  "version": "18.56.86",
-  "build": 185686,
+  "version": "18.56.87",
+  "build": 185687,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "إصلاح توافق مخطط الأحياء في الإنتاج — R44R37R2R1",
+  "title": "إصلاح عرض أسماء الأحياء للعملاء القدامى — R44R37R2R2",
   "notes": [
-    "إصلاح فشل Migration عند غياب العمود name_en في بعض قواعد الإنتاج القديمة.",
-    "إضافة metadata الاسم الإنجليزي بشكل آمن ثم ملء أسماء أحياء جدة ومكة من خريطة العنوان الوطني المعتمدة داخل بيتاتو.",
-    "استعادة مفاتيح واجهة R44R37R2 التي تراجعت تلقائيًا مع فشل المعاملة الأولى، بدون تعديل Business Logic أو Offline/Sync/Permissions أو CSS."
+    "ترجمة الحي في شاشة العملاء حتى عندما يكون العميل القديم محفوظًا بعنوان نصي بدون neighborhoodId.",
+    "إعادة رسم Customers وReference Customers وCustomer 360 بعد وصول تحديثات الترجمة أو تحديث كاش البيانات الجغرافية.",
+    "توحيد عرض اسم الحي في Customer 360 والتقارير اليومية والتصدير بدون تعديل بيانات العملاء المخزنة أو Business Logic."
   ],
-  "cacheToken": "petatoe-pwa-18-56-86-geography-schema-compat-r44r37r2r1-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r37r2r1.title",
-  "notesI18nKeys": [
-    "pwa.update.release.r44r37r2r1.note1",
-    "pwa.update.release.r44r37r2r1.note2",
-    "pwa.update.release.r44r37r2r1.note3"
-  ]
+  "cacheToken": "petatoe-pwa-18-56-87-legacy-neighborhood-display-r44r37r2r2-p5-13-8-72",
+  "titleI18nKey": "",
+  "notesI18nKeys": []
 }

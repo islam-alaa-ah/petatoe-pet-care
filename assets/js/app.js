@@ -1577,6 +1577,33 @@ window.addEventListener("petatoe-language-changed", () => {
 });
 window.addEventListener("petatoe-localization-updated", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
+  if (customersLoaded) {
+    renderCustomers();
+    if (activeViewKey === "settings") renderReferenceCustomers();
+    if (activeViewKey === "dashboard") renderDashboard();
+    const customer360Dialog = document.getElementById("customerDetailsDialog");
+    if (customer360Dialog?.open && customer360Dialog.dataset.customerId) {
+      showCustomerDetails(customer360Dialog.dataset.customerId);
+    }
+  }
+});
+
+window.addEventListener("kyum-geography-cache-updated", event => {
+  const geo = event?.detail?.catalog || window.KYUMGeography?.getCatalog?.();
+  if (!geo) return;
+  customerRegionCatalog = Array.isArray(geo.regions) ? geo.regions : customerRegionCatalog;
+  customerCityCatalog = Array.isArray(geo.cities) ? geo.cities : customerCityCatalog;
+  customerDistrictCatalog = Array.isArray(geo.districts) ? geo.districts : customerDistrictCatalog;
+  customerDistrictCatalogLoaded = Boolean(customerDistrictCatalog?.length);
+  if (customersLoaded) {
+    renderCustomers();
+    if (activeViewKey === "settings") renderReferenceCustomers();
+    if (activeViewKey === "dashboard") renderDashboard();
+    const customer360Dialog = document.getElementById("customerDetailsDialog");
+    if (customer360Dialog?.open && customer360Dialog.dataset.customerId) {
+      showCustomerDetails(customer360Dialog.dataset.customerId);
+    }
+  }
 });
 
 window.KYUMNavigation = Object.freeze({
@@ -3848,13 +3875,22 @@ function customerT(key, fallback = "", vars = {}) {
 }
 
 function customerNeighborhoodLabel(id, name) {
+  const geoLabel=window.KYUMGeography?.localizedDistrictLabel?.(id,name);
+  if(geoLabel)return geoLabel;
+
+  const normalizedName=normalizeCustomerNeighborhoodSearch(name);
   const row=(customerDistrictCatalog||[]).find(item=>String(item?.id||"")===String(id||""))
     ||window.KYUMGeography?.getCatalog?.()?.districts?.find?.(item=>String(item?.id||"")===String(id||""))
+    ||(!id&&normalizedName
+      ?(customerDistrictCatalog||[]).find(item=>
+        [item?.name,item?.name_en,item?.nameEn].some(value=>normalizeCustomerNeighborhoodSearch(value)===normalizedName))
+      :null)
     ||null;
   const sourceName=String(row?.name||name||"");
   const sourceEnglish=String(row?.name_en||row?.nameEn||"").trim();
   if(window.PetatoeLocalization?.effectiveLanguage?.()==="en"&&sourceEnglish)return sourceEnglish;
-  const localized=window.PetatoeLocalization?.entityText?.("neighborhood", { id, name:sourceName, en:sourceEnglish, name_en:sourceEnglish });
+  const entityId=row?.id||id;
+  const localized=window.PetatoeLocalization?.entityText?.("neighborhood", { id:entityId, name:sourceName, en:sourceEnglish, name_en:sourceEnglish });
   return localized && !/^\[entity\.neighborhood\./.test(localized) ? localized : sourceName;
 }
 
@@ -3906,8 +3942,8 @@ function renderCustomers() {
   document.getElementById("addCustomerBtn")?.classList.toggle("hidden",!canManageCustomers("add"));
   const actions=c=>`<div class="row-actions"><button class="edit-btn customer-action-primary" data-details="${c.id}">${customerT("customers.action.view","عرض")}</button>${canManageFollowups("add")?`<button class="edit-btn customer-action-followup" data-add-followup="${c.id}">${customerT("customers.action.followup","متابعة")}</button>`:""}${canManageCustomers()?`<button class="edit-btn customer-action-edit" data-edit="${c.id}">${customerT("customers.action.edit","تعديل")}</button>`:""}${canDeleteCustomers()?`<button class="delete-btn customer-action-delete" data-delete="${c.id}">${customerT("customers.action.delete","حذف")}</button>`:""}</div>`;
   if(!rows.length){const m=customersLoaded?customerT("customers.empty","لا توجد نتائج مطابقة."):customerT("customers.loading","جاري تحميل بيانات العملاء..."); body.innerHTML=`<tr><td colspan="6" class="empty-state">${m}</td></tr>`; if(mobileCards)mobileCards.innerHTML=`<div class="customer-mobile-empty">${m}</div>`;}
-  else { body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.neighborhoodId?customerNeighborhoodLabel(c.neighborhoodId,c.address):(c.address||"—"))}</td><td>${escapeHtml(c.phone||"—")}</td><td>${c.googleMapsUrl?`<a class="text-btn" href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">${customerT("customers.action.openMap","فتح الموقع")}</a>`:"—"}</td><td>${actions(c)}</td></tr>`).join("");
-    if(mobileCards)mobileCards.innerHTML=rows.map(c=>`<article class="customer-mobile-card"><header class="customer-mobile-card-head"><span class="customer-mobile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><div><span class="customer-mobile-kicker">${customerT("customers.col.name","name")}</span><strong class="customer-mobile-name">${escapeHtml(c.name||"—")}</strong><small>${escapeHtml(c.customerNumber||"—")}</small></div></header><div class="customer-mobile-details"><div><span>${customerT("customers.col.address","address")}</span><strong>${escapeHtml(c.neighborhoodId?customerNeighborhoodLabel(c.neighborhoodId,c.address):(c.address||"—"))}</strong></div><div><span>${customerT("customers.col.mobile","mobile")}</span><strong>${escapeHtml(c.phone||"—")}</strong></div><div><span>${customerT("customers.col.maps","موقع Google Maps")}</span><strong>${c.googleMapsUrl?`<a href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">${customerT("customers.action.openMap","فتح الموقع")}</a>`:"—"}</strong></div></div><footer class="customer-mobile-card-actions row-actions">${actions(c)}</footer></article>`).join(""); }
+  else { body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(customerNeighborhoodLabel(c.neighborhoodId,c.address)||"—")}</td><td>${escapeHtml(c.phone||"—")}</td><td>${c.googleMapsUrl?`<a class="text-btn" href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">${customerT("customers.action.openMap","فتح الموقع")}</a>`:"—"}</td><td>${actions(c)}</td></tr>`).join("");
+    if(mobileCards)mobileCards.innerHTML=rows.map(c=>`<article class="customer-mobile-card"><header class="customer-mobile-card-head"><span class="customer-mobile-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span><div><span class="customer-mobile-kicker">${customerT("customers.col.name","name")}</span><strong class="customer-mobile-name">${escapeHtml(c.name||"—")}</strong><small>${escapeHtml(c.customerNumber||"—")}</small></div></header><div class="customer-mobile-details"><div><span>${customerT("customers.col.address","address")}</span><strong>${escapeHtml(customerNeighborhoodLabel(c.neighborhoodId,c.address)||"—")}</strong></div><div><span>${customerT("customers.col.mobile","mobile")}</span><strong>${escapeHtml(c.phone||"—")}</strong></div><div><span>${customerT("customers.col.maps","موقع Google Maps")}</span><strong>${c.googleMapsUrl?`<a href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">${customerT("customers.action.openMap","فتح الموقع")}</a>`:"—"}</strong></div></div><footer class="customer-mobile-card-actions row-actions">${actions(c)}</footer></article>`).join(""); }
   const info=document.getElementById("customersPaginationInfo"),pn=document.getElementById("customersPageNumber"),prev=document.getElementById("customersPrevPage"),next=document.getElementById("customersNextPage"); if(info)info.textContent=customerT("customers.count",`${allRows.length} عميل`,{count:allRows.length}); if(pn)pn.textContent=`${customersPage} / ${pageCount}`; if(prev)prev.disabled=customersPage<=1; if(next)next.disabled=customersPage>=pageCount;
 }
 
@@ -4030,7 +4066,7 @@ function renderReferenceCustomers() {
   const allRows=filteredReferenceCustomers(); const pageCount=Math.max(1,Math.ceil(allRows.length/REFERENCE_CUSTOMERS_PAGE_SIZE)); if(referenceCustomersPage>pageCount)referenceCustomersPage=pageCount; const start=(referenceCustomersPage-1)*REFERENCE_CUSTOMERS_PAGE_SIZE,rows=allRows.slice(start,start+REFERENCE_CUSTOMERS_PAGE_SIZE);
   document.getElementById("referenceAddCustomerBtn")?.classList.toggle("hidden",!canScreenAction("customers","add")); document.querySelectorAll(".customer-export-action").forEach(b=>b.classList.toggle("hidden",!canScreenAction("customers","export"))); document.querySelectorAll(".customer-import-action").forEach(b=>b.classList.toggle("hidden",!canScreenAction("customers","add")));
   if(!rows.length) body.innerHTML=`<tr><td colspan="6" class="empty-state">${escapeHtml(customerT(customersLoaded?"referenceData.customers.empty":"referenceData.customers.loading",customersLoaded?"No matching results.":"Loading customer data..."))}</td></tr>`;
-  else body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(c.neighborhoodId?customerNeighborhoodLabel(c.neighborhoodId,c.address):(c.address||"—"))}</td><td>${escapeHtml(c.phone||"—")}</td><td>${c.googleMapsUrl?`<a class="text-btn" href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(customerT("customers.action.openMap","Open location"))}</a>`:"—"}</td><td><div class="row-actions"><button class="edit-btn" type="button" data-reference-customer-details="${c.id}">${escapeHtml(customerT("referenceData.customers.open","Open"))}</button>${canScreenAction("customers","edit")?`<button class="edit-btn" type="button" data-reference-customer-edit="${c.id}">${escapeHtml(customerT("customers.action.edit","Edit"))}</button>`:""}${canScreenAction("customers","delete")?`<button class="delete-btn" type="button" data-reference-customer-delete="${c.id}">${escapeHtml(customerT("customers.action.delete","Delete"))}</button>`:""}</div></td></tr>`).join("");
+  else body.innerHTML=rows.map(c=>`<tr><td><strong>${escapeHtml(c.customerNumber||"—")}</strong></td><td><strong>${escapeHtml(c.name||"—")}</strong></td><td>${escapeHtml(customerNeighborhoodLabel(c.neighborhoodId,c.address)||"—")}</td><td>${escapeHtml(c.phone||"—")}</td><td>${c.googleMapsUrl?`<a class="text-btn" href="${escapeHtml(c.googleMapsUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(customerT("customers.action.openMap","Open location"))}</a>`:"—"}</td><td><div class="row-actions"><button class="edit-btn" type="button" data-reference-customer-details="${c.id}">${escapeHtml(customerT("referenceData.customers.open","Open"))}</button>${canScreenAction("customers","edit")?`<button class="edit-btn" type="button" data-reference-customer-edit="${c.id}">${escapeHtml(customerT("customers.action.edit","Edit"))}</button>`:""}${canScreenAction("customers","delete")?`<button class="delete-btn" type="button" data-reference-customer-delete="${c.id}">${escapeHtml(customerT("customers.action.delete","Delete"))}</button>`:""}</div></td></tr>`).join("");
   const info=document.getElementById("referenceCustomersPaginationInfo"),pn=document.getElementById("referenceCustomersPageNumber"),prev=document.getElementById("referenceCustomersPrevPage"),next=document.getElementById("referenceCustomersNextPage"); if(info)info.textContent=customerT("customers.count",`${allRows.length}`,{count:allRows.length}); if(pn)pn.textContent=`${referenceCustomersPage} / ${pageCount}`; if(prev)prev.disabled=referenceCustomersPage<=1; if(next)next.disabled=referenceCustomersPage>=pageCount;
 }
 
@@ -4589,7 +4625,7 @@ function showCustomerDetails(customerId) {
   const profile = [
     [l1T("customers.col.code"), customer.customerNumber || "—"],
     [l1T("customers.col.name"), customer.name || "—"],
-    [l1T("customers.col.address"), customer.address || "—"],
+    [l1T("customers.col.address"), customerNeighborhoodLabel(customer.neighborhoodId,customer.address) || "—"],
     [l1T("customers.col.mobile"), customer.phone || "—"]
   ];
 
@@ -6495,7 +6531,7 @@ function renderDailyOperations() {
       <tr>
         <td><strong>${escapeHtml(row.customerNumber || "—")}</strong></td>
         <td>${escapeHtml(row.name || "—")}</td>
-        <td>${escapeHtml(row.address || "—")}</td>
+        <td>${escapeHtml(customerNeighborhoodLabel(row.neighborhoodId,row.address)||"—")}</td>
         <td>${escapeHtml(row.phone || "—")}</td>
         <td>${dailyDateTime(row.createdAt)}</td>
       </tr>`).join("")

@@ -35,6 +35,31 @@
     return effectiveLanguage() === "en" && en ? en : ar;
   }
 
+  function localizedDistrictLabel(id = "", fallbackName = "") {
+    const normalizedId = normalizeValue(id);
+    const normalizedFallback = normalizeValue(fallbackName);
+    const row = (normalizedId ? relationIndex.districtById.get(String(normalizedId)) : null)
+      || (normalizedFallback ? findByName("district", normalizedFallback) : null)
+      || null;
+    if (!row) return normalizedFallback;
+
+    const direct = localizedName(row);
+    if (effectiveLanguage() !== "en" || (direct && !(/[\u0600-\u06FF]/).test(direct))) {
+      return direct || normalizedFallback;
+    }
+
+    const translated = window.PetatoeLocalization?.entityText?.("neighborhood", {
+      id: row.id,
+      name: row.name || normalizedFallback,
+      en: row.name_en || row.nameEn || "",
+      name_en: row.name_en || row.nameEn || ""
+    });
+    if (translated && !(/^\[entity\.neighborhood\./).test(translated) && !(/[\u0600-\u06FF]/).test(translated)) {
+      return translated;
+    }
+    return direct || normalizedFallback;
+  }
+
   function geoT(key, fallback) {
     const value = window.PetatoeLocalization?.t?.(key);
     return value && !/^\[.+\]$/.test(value) ? value : fallback;
@@ -587,6 +612,7 @@
   window.KYUMGeography = Object.freeze({
     normalizeValue,
     localizedName,
+    localizedDistrictLabel,
     normalizeSearch,
     tokenizeSearch,
     scoreSearch,
