@@ -3057,6 +3057,7 @@
     ["dailyOperations.suggested.addFollowup","button","إضافة متابعة","Add Follow-up"],
     ["dailyOperations.suggested.contacted","button","تم التواصل","Contacted"],
     ["dailyOperations.suggested.whatsapp","button","واتساب","WhatsApp"],
+    ["dailyOperations.suggested.imageMessage","button","صورة + رسالة","Image + Message"],
     ["dailyOperations.suggested.emptyTitle","empty","لا يوجد عملاء مقترح التواصل معهم حاليًا","No suggested customers to contact right now"],
     ["dailyOperations.suggested.emptyNote","help","أضف عملاء أو متابعات وسيتم تجهيز القائمة تلقائيًا.","Add customers or follow-ups and the list will be prepared automatically."],
     ["dailyOperations.suggested.serviceError","error","تعذر تحميل خدمة العملاء المقترحين.","Unable to load the suggested customers service."],
@@ -5035,6 +5036,10 @@
     ["pwa.update.release.r44r38r5.note1","note","الحفاظ على اللغة التي اختارها المستخدم عند Refresh أو Reload بدل إعادة تطبيق اللغة الافتراضية للحساب في كل Bootstrap.","Preserve the language explicitly selected by the user across Refresh or Reload instead of reapplying the account default on every bootstrap."],
     ["pwa.update.release.r44r38r5.note2","note","تبقى اللغة الافتراضية للمستخدم مطبقة عند تسجيل دخول جديد، بينما استعادة الجلسة الحالية تحترم اختيار اللغة المحلي المحفوظ.","Keep the user default language for a fresh sign-in while session restoration respects the locally saved active-language choice."],
     ["pwa.update.release.r44r38r5.note3","note","لا تغيير في Offline/Sync/Permissions أو بيانات الأعمال أو SQL أو R44 Pruning؛ الإصلاح محصور في دورة تهيئة اللغة والجلسة.","No changes to Offline/Sync/Permissions, business data, SQL, or R44 Pruning; the fix is limited to language/session initialization ownership."],
+    ["pwa.update.release.r44r38r6.title","title","استعادة زر صورة + رسالة للعملاء المقترحين — R44R38R6","Restore Image + Message for suggested customers — R44R38R6"],
+    ["pwa.update.release.r44r38r6.note1","note","إعادة توصيل زر صورة + رسالة بالـrenderer الأساسي للعملاء المقترحين ليظهر في Desktop وMobile من نفس المصدر.","Reconnect the Image + Message action to the canonical suggested-customer renderer so Desktop and Mobile receive it from the same source."],
+    ["pwa.update.release.r44r38r6.note2","note","إعادة استخدام خدمة وقالب واتساب الحاليين دون إنشاء مسار مشاركة موازٍ أو تغيير بيانات العملاء أو دورة المتابعة.","Reuse the existing WhatsApp template/share service without creating a parallel sharing path or changing customer data or follow-up workflow."],
+    ["pwa.update.release.r44r38r6.note3","note","لا تغيير في CSS أو SQL أو Offline/Sync/Permissions أو R44 Pruning؛ التعديل محصور في renderer وترجمة زر المشاركة.","No CSS, SQL, Offline/Sync/Permissions, or R44 Pruning changes; the update is limited to the renderer and the share-button localization key."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
