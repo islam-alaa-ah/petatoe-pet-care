@@ -86,6 +86,20 @@
     return normalizeValue(translatedByName?.en);
   }
 
+  function localizedGeographyLabel(type = "district", id = "", fallbackName = "") {
+    const normalizedType = ["region", "city", "district"].includes(String(type || "")) ? String(type) : "district";
+    if (normalizedType === "district") return localizedDistrictLabel(id, fallbackName);
+    const normalizedId = normalizeValue(id);
+    const normalizedFallback = normalizeValue(fallbackName);
+    const index = normalizedType === "region" ? relationIndex.regionById : relationIndex.cityById;
+    const row = (normalizedId ? index.get(String(normalizedId)) : null)
+      || (normalizedFallback ? findByName(normalizedType, normalizedFallback) : null)
+      || null;
+    if (row) return localizedName(row) || normalizedFallback;
+    if (effectiveLanguage() !== "en") return normalizedFallback;
+    return /[\u0600-\u06FF]/.test(normalizedFallback) ? "" : normalizedFallback;
+  }
+
   function geoT(key, fallback) {
     const value = window.PetatoeLocalization?.t?.(key);
     return value && !/^\[.+\]$/.test(value) ? value : fallback;
@@ -639,6 +653,7 @@
     normalizeValue,
     localizedName,
     localizedDistrictLabel,
+    localizedGeographyLabel,
     normalizeSearch,
     tokenizeSearch,
     scoreSearch,

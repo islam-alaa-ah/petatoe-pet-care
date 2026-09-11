@@ -5,14 +5,25 @@
   const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
   const money = value => `SAR ${Number(value || 0).toFixed(2)}`;
   const appointmentT = (key, fallback, vars = {}) => { const value = window.PetatoeLocalization?.t?.(key, vars); return (!value || value === `[${key}]`) ? fallback : value; };
-  const appointmentEntity = (kind, id, fallback = "") => window.PetatoeLocalization?.entityText?.(kind, id, fallback) || fallback;
-  const uiMessage = (value, fallback = "") => window.PetatoeLocalization?.translateMessage?.(value) || value || fallback;
+  const appointmentEntity = (kind, id, fallback = "") => {
+    const item = id && typeof id === "object" ? id : { id, name: fallback };
+    return window.PetatoeLocalization?.entityText?.(kind, item) || fallback;
+  };
+  const uiMessage = (value, fallback = "") => { const raw=String(value||""); const translated=window.PetatoeLocalization?.translateMessage?.(raw)||raw; return window.PetatoeLocalization?.effectiveLanguage?.()==="en" && /[\u0600-\u06FF]/.test(translated) && fallback ? fallback : (translated||fallback); };
   const collectionLabel = value => { const map={"غير محصل":["appointmentNew.collection.uncollected","Not Collected"],"محصل جزئيًا":["appointmentNew.collection.partial","Partially Collected"],"محصل بالكامل":["appointmentNew.collection.full","Fully Collected"]}; const item=map[value]; return item?appointmentT(item[0],item[1]):String(value||""); };
   const paymentLabel = value => { const map={"نقدي":["appointmentNew.collection.cash","Cash"],"بطاقة / شبكة":["appointmentNew.collection.card","Card / POS"],"تحويل بنكي":["appointmentNew.collection.bank","Bank Transfer"],"تحويل":["appointmentNew.collection.bank","Bank Transfer"],"الدفع عن طريق الموقع":["appointmentNew.collection.website","Website Payment"]}; const item=map[value]; return item?appointmentT(item[0],item[1]):String(value||""); };
   const appointmentStatusLabel = value => {
     const map={"جديد":"appointments.status.new","مسند":"appointments.status.assigned","مجدول":"appointments.status.scheduled","في الطريق":"appointments.status.onRoute","وصل إلى العميل":"appointments.status.arrived","قيد التنفيذ":"appointments.status.inProgress","مكتمل":"appointments.status.completed","ملغي":"appointments.status.cancelled","بانتظار المراجعة":"appointments.status.pendingReview","مؤجل":"appointments.status.deferred","متعذر":"appointments.status.blocked"};
     return map[value]?appointmentT(map[value],value):String(value||"");
   };
+  const appointmentNeighborhoodLabel = (id, fallback = "") => window.KYUMGeography?.localizedDistrictLabel?.(id, fallback) || fallback;
+  function setAppointmentStatusDisplay(value = "بانتظار المراجعة") {
+    const input = $("newInstallationAppointmentStatus");
+    if (!input) return;
+    const businessValue = String(value || "بانتظار المراجعة");
+    input.dataset.businessStatus = businessValue;
+    input.value = appointmentStatusLabel(businessValue);
+  }
   const latinDigits = value => String(value ?? "")
     .replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
     .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)));
@@ -282,7 +293,7 @@
         if($('newInstallationAmountCollected'))$('newInstallationAmountCollected').value=Number(defaults.collection.amountCollected||0).toFixed(2);
         if($('newInstallationCollectionStatus'))$('newInstallationCollectionStatus').value=defaults.collection.collectionStatus||'غير محصل';
         if($('newInstallationPaymentMethod'))$('newInstallationPaymentMethod').value=defaults.collection.paymentMethod||'';
-        if($('newInstallationAppointmentStatus'))$('newInstallationAppointmentStatus').value=defaults.collection.appointmentStatus||'بانتظار المراجعة';
+        setAppointmentStatusDisplay(defaults.collection.appointmentStatus||'بانتظار المراجعة');
       }
     }catch(error){
       console.warn('[Appointments] Historical customer defaults prefill skipped:',error);
@@ -378,7 +389,7 @@
   function syncInstallationGeoCatalog(){
     window.KYUMGeography?.setCatalog({regions:opts.regions||[],cities:opts.cities||[],neighborhoods:opts.neighborhoods||[]});
   }
-  function newNeighborhoodLabel(item){return String(item?.name||'').trim()}
+  function newNeighborhoodLabel(item){return String(appointmentNeighborhoodLabel(item?.id||'',item?.name||'')||'').trim()}
   function closeNewNeighborhoodResults(){
     $('newInstallationNeighborhoodResults')?.classList.add('hidden');
     $('newInstallationNeighborhoodSearch')?.setAttribute('aria-expanded','false');
@@ -596,7 +607,7 @@
         <td>${esc(row.quotationNumber || appointmentT('appointmentNew.customer.noContract','بدون عقد'))}</td>
         <td>${serviceSummary}</td>
         <td>${money(row.finalAmount || row.totalServicesAmount)}</td>
-        <td>${esc(row.installationAddress || row.district || "—")}</td>
+        <td>${esc(appointmentNeighborhoodLabel(row.neighborhoodId, row.installationAddress || row.district || "") || "—")}</td>
         <td>${esc(row.scheduledDate || appointmentT('appointments.common.notSpecified','غير محدد'))}</td>
         <td>${esc(row.scheduledTime ? formatAppointmentTime(row.scheduledTime) : (row.timeSlot || "—"))}</td>
         <td><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(appointmentStatusLabel(row.status))}</span></td>
@@ -612,7 +623,7 @@
         const when = [row.scheduledDate || appointmentT('appointments.common.notSpecified','غير محدد'), row.scheduledTime ? formatAppointmentTime(row.scheduledTime) : (row.timeSlot || '')].filter(Boolean).join(' — ');
         return `<article class="installation-request-mobile-card" data-install-mobile-card="${esc(row.id)}">
           <div class="installation-request-mobile-head"><div><small>${esc(appointmentT('appointments.requests.appointmentNumber','رقم الموعد'))}</small><strong>${esc(row.requestNumber)}</strong></div><span class="installation-status-badge" data-status="${esc(row.status)}">${esc(appointmentStatusLabel(row.status))}</span></div>
-          <div class="installation-request-mobile-customer"><strong>${esc(row.customerName||'—')}</strong><a href="tel:${esc(String(row.customerPhone||'').replace(/[^+\d]/g,''))}">${esc(row.customerPhone||'—')}</a><small>${esc(row.installationAddress||row.district||'—')}</small></div>
+          <div class="installation-request-mobile-customer"><strong>${esc(row.customerName||'—')}</strong><a href="tel:${esc(String(row.customerPhone||'').replace(/[^+\d]/g,''))}">${esc(row.customerPhone||'—')}</a><small>${esc(appointmentNeighborhoodLabel(row.neighborhoodId,row.installationAddress||row.district||'')||'—')}</small></div>
           <div class="installation-request-mobile-meta"><div><span>${esc(appointmentT('appointments.requests.contract','العقد'))}</span><strong>${esc(row.quotationNumber||appointmentT('appointmentNew.customer.noContract','No contract'))}</strong></div><div><span>${esc(appointmentT('appointments.requests.appointment','الموعد'))}</span><strong>${esc(when)}</strong></div><div><span>${esc(appointmentT('appointments.common.team','الفرقة'))}</span><strong>${esc(row.teamName||'—')}</strong></div><div><span>${esc(appointmentT('appointments.requests.totalVat','الإجمالي شامل الضريبة'))}</span><strong>${money(row.finalAmount||row.totalServicesAmount)}</strong></div></div>
           <div class="installation-request-mobile-services"><span>${esc(appointmentT('appointmentNew.services.title','الخدمات'))}</span>${services}</div>
           <div class="installation-request-mobile-actions"><button class="secondary-btn" data-install-view="${row.id}" type="button">${esc(appointmentT("appointments.common.view","عرض"))}</button><button class="secondary-btn" data-install-services-edit="${row.id}" type="button">${esc(appointmentT("appointments.common.editServices","تعديل الخدمات"))}</button><button class="danger-btn" data-install-delete="${row.id}" type="button">${esc(appointmentT("appointments.common.delete","حذف"))}</button></div>
@@ -700,7 +711,7 @@
       $("newInstallationAmountCollected").value = Number(row.collection?.amountCollected || 0).toFixed(2);
       $("newInstallationCollectionStatus").value = row.collection?.collectionStatus || "غير محصل";
       $("newInstallationPaymentMethod").value = row.collection?.paymentMethod || "";
-      $("newInstallationAppointmentStatus").value = row.collection?.appointmentStatus || row.status || "بانتظار المراجعة";
+      setAppointmentStatusDisplay(row.collection?.appointmentStatus || row.status || "بانتظار المراجعة");
       const editSchedule={scheduledDate:row.scheduledDate||"",scheduledTime:String(row.scheduledTime||"").slice(0,5),teamId:row.teamId||"",technicianName:row.technicianName||""};
       if($("newInstallationScheduleDate"))$("newInstallationScheduleDate").value=editSchedule.scheduledDate;
       if($("newInstallationScheduleTime"))$("newInstallationScheduleTime").value=editSchedule.scheduledTime;
@@ -814,7 +825,7 @@
     };
   }
 
-  function inlineServiceOptions(selected=''){return `<option value="">${esc(appointmentT('appointmentNew.services.select','Select service'))}</option>`+opts.serviceTypes.map(item=>`<option value="${esc(item.id)}" ${item.id===selected?'selected':''}>${esc(item.name)}</option>`).join('')}
+  function inlineServiceOptions(selected=''){return `<option value="">${esc(appointmentT('appointmentNew.services.select','Select service'))}</option>`+opts.serviceTypes.map(item=>`<option value="${esc(item.id)}" ${item.id===selected?'selected':''}>${esc(appointmentEntity('service',item.id,item.name))}</option>`).join('')}
   function renderRequestView(row){
     if(!row)return;
     $('installationRequestViewLabel').textContent=`${row.requestNumber} — ${row.customerName}`;
@@ -827,7 +838,7 @@
       <div><span>${esc(appointmentT('appointments.common.customerNumber','Customer number'))}</span><strong>${row.customerMasked===true?esc(appointmentT('appointments.common.masked','Hidden')):esc(row.customerPhone||'—')}</strong></div>
       <div><span>${esc(appointmentT('appointments.requests.contract','Contract'))}</span><strong>${esc(row.quotationNumber||appointmentT('appointmentNew.customer.noContract','No contract'))}</strong></div>
       <div><span>${esc(appointmentT('appointments.common.representative','Representative'))}</span><strong>${esc(row.representativeName||'—')}</strong></div>
-      <div><span>${esc(appointmentT('appointments.common.neighborhood','Neighborhood'))}</span><strong>${esc(row.installationAddress||row.district||'—')}</strong></div>
+      <div><span>${esc(appointmentT('appointments.common.neighborhood','Neighborhood'))}</span><strong>${esc(appointmentNeighborhoodLabel(row.neighborhoodId,row.installationAddress||row.district||'')||'—')}</strong></div>
       <div><span>${esc(appointmentT('appointments.common.status','Status'))}</span><strong>${esc(appointmentStatusLabel(row.status||''))}</strong></div>
       <div><span>${esc(appointmentT('appointments.schedule.date','Appointment date'))}</span><strong>${esc(row.scheduledDate||appointmentT('appointments.common.notSpecified','Not specified'))} ${row.scheduledTime?`— ${esc(formatAppointmentTime(row.scheduledTime))}`:''}</strong></div>
       <div><span>${esc(appointmentT('appointments.common.grossBeforeDiscount','Total incl. VAT before discount'))}</span><strong>${money(Number(row.totalServicesAmount||0)+Number(row.taxAmount||0))}</strong></div>
@@ -845,7 +856,7 @@
   function addInlineServiceRow(initial={}){const body=$("installationServicesEditBody");const tr=document.createElement('tr');tr.className='installation-inline-service-row';tr.innerHTML=`<td data-label="${esc(appointmentT('appointmentNew.services.type','Service Type'))}"><select class="inline-service-type" required>${inlineServiceOptions(initial.serviceTypeId||initial.id||'')}</select></td><td data-label="${esc(appointmentT('appointmentNew.services.quantity','Quantity'))}"><input class="inline-service-quantity" type="text" inputmode="numeric" pattern="[0-9]*" value="${esc(latinDigits(initial.quantity||1))}" required></td><td data-label="${esc(appointmentT('appointmentNew.services.unitPrice','Unit Price'))}"><input class="inline-service-price" type="text" inputmode="decimal" pattern="[0-9]+(?:\.[0-9]{0,2})?" value="${esc(latinDigits(initial.unitPrice??0))}" required></td><td data-label="${esc(appointmentT('appointmentNew.services.total','Total'))}"><output class="inline-service-total">${money((initial.quantity||1)*(initial.unitPrice||0))}</output></td><td data-label="${esc(appointmentT('appointmentNew.services.action','Action'))}"><button class="danger-btn inline-service-remove" type="button">${esc(appointmentT('appointmentNew.services.remove','Remove'))}</button></td>`;body.appendChild(tr);recalculateInlineServices()}
   function recalculateInlineServices(){let q=0,t=0;document.querySelectorAll('#installationServicesEditBody .installation-inline-service-row').forEach(row=>{const qty=Math.max(0,Number(row.querySelector('.inline-service-quantity').value||0)),price=Math.max(0,Number(row.querySelector('.inline-service-price').value||0)),line=qty*price;q+=qty;t+=line;row.querySelector('.inline-service-total').textContent=money(line)});$("installationInlineTotalQuantity").textContent=String(q);$("installationInlineGrandTotal").textContent=money(t)}
   function collectInlineServices(){return [...document.querySelectorAll('#installationServicesEditBody .installation-inline-service-row')].map(row=>({serviceTypeId:row.querySelector('.inline-service-type').value,quantity:Number(row.querySelector('.inline-service-quantity').value||0),unitPrice:Number(row.querySelector('.inline-service-price').value||0)}))}
-  function inlineNeighborhoodOptions(selected=''){return `<option value="">${esc(appointmentT('appointmentNew.customer.chooseNeighborhood','Choose neighborhood'))}</option>`+opts.neighborhoods.map(item=>`<option value="${esc(item.id)}" ${String(item.id)===String(selected)?'selected':''}>${esc(item.name)}</option>`).join('')}
+  function inlineNeighborhoodOptions(selected=''){return `<option value="">${esc(appointmentT('appointmentNew.customer.chooseNeighborhood','Choose neighborhood'))}</option>`+opts.neighborhoods.map(item=>`<option value="${esc(item.id)}" ${String(item.id)===String(selected)?'selected':''}>${esc(newNeighborhoodLabel(item))}</option>`).join('')}
   function inlineQuotationOptions(customerId,selected=""){const rows=opts.quotations.filter(item=>String(item.customer_id||'')===String(customerId||'')&&(item.status==='مقبول'||String(item.id)===String(selected)));return `<option value="">${esc(appointmentT('appointmentNew.customer.noContract','No contract'))}</option>`+rows.map(item=>`<option value="${esc(item.id)}" ${String(item.id)===String(selected)?'selected':''}>${esc(item.quotation_number||appointmentT('appointments.requests.contract','Contract'))}</option>`).join('')}
   function syncInlineMapLink(){const input=$("installationServicesEditMapUrl"),link=$("installationServicesEditOpenMap");if(!input||!link)return;const value=String(input.value||'').trim();if(/^https:\/\//i.test(value)){link.href=value;link.classList.remove('hidden')}else{link.href='#';link.classList.add('hidden')}}
   async function ensureInlineEditOptions(customerId){
@@ -919,7 +930,7 @@
     if($("newInstallationAmountCollected")) $("newInstallationAmountCollected").value = "0";
     if($("newInstallationCollectionStatus")) $("newInstallationCollectionStatus").value = "غير محصل";
     if($("newInstallationPaymentMethod")) $("newInstallationPaymentMethod").value = "";
-    if($("newInstallationAppointmentStatus")) $("newInstallationAppointmentStatus").value = "بانتظار المراجعة";
+    setAppointmentStatusDisplay("بانتظار المراجعة");
     if($("newInstallationScheduleDate")) $("newInstallationScheduleDate").value="";
     if($("newInstallationScheduleTime")) $("newInstallationScheduleTime").value="";
     if($("newInstallationScheduleTeam")) $("newInstallationScheduleTeam").value="";
@@ -1259,6 +1270,8 @@
       const search=row.querySelector('.installation-service-search');
       if(search){search.placeholder=appointmentT('appointmentNew.services.search','ابحث عن خدمة...');search.setAttribute('aria-label',appointmentT('appointmentNew.services.searchAria','البحث في الخدمات'))}
     });
+    const selectedNeighborhoodId=$("newInstallationNeighborhoodId")?.value||"";
+    if(selectedNeighborhoodId)setNewNeighborhood(selectedNeighborhoodId);
     document.querySelectorAll('#newInstallationAnimalsBody .appointment-animal-entry').forEach(row=>{
       const type=row.querySelector('.appointment-animal-type'), size=row.querySelector('.appointment-animal-size');
       const typeValue=type?.value||'', sizeValue=size?.value||'';
@@ -1267,7 +1280,7 @@
       syncBreedSelect(row);
     });
     const statusInput=$('newInstallationAppointmentStatus');
-    if(statusInput)statusInput.value='بانتظار المراجعة';
+    if(statusInput)setAppointmentStatusDisplay(statusInput.dataset.businessStatus||'بانتظار المراجعة');
     recalculateServices();
   });
 })();

@@ -724,6 +724,35 @@ function initializeCustomerInterestDropdown() {
   updateCustomerInterestDropdownSummary();
 }
 
+function referencePlaceholderLabel(id) {
+  const labels = {
+    interestFilter: ["shared.filter.allInterests", "كل مجالات الاهتمام"],
+    dashboardInterestFilter: ["shared.filter.allInterests", "كل مجالات الاهتمام"],
+    repFilter: ["dashboard.filter.allReps", "كل المندوبين"],
+    dashboardRepFilter: ["dashboard.filter.allReps", "كل المندوبين"],
+    dailyAlertsRepresentativeFilter: ["dashboard.filter.allReps", "كل المندوبين"],
+    followupRepFilter: ["followups.filter.allReps", "كل المندوبين"],
+    quotationRepFilter: ["contracts.filter.allReps", "كل المندوبين"],
+    noSaleReason: ["followups.dialog.noSaleReasonNone", "بدون سبب"],
+    followupNoSaleReason: ["followups.dialog.noSaleReasonNone", "بدون سبب"],
+    quotationRejectionReason: ["contracts.dialog.rejectionReasonChoose", "اختر سبب الرفض"]
+  };
+  const entry = labels[id];
+  return entry ? customerT(entry[0], entry[1]) : "";
+}
+
+function refreshReferenceLocalizationLabels() {
+  [
+    "interestFilter", "dashboardInterestFilter", "repFilter", "dashboardRepFilter",
+    "dailyAlertsRepresentativeFilter", "followupRepFilter", "quotationRepFilter",
+    "noSaleReason", "followupNoSaleReason", "quotationRejectionReason"
+  ].forEach(id => {
+    const select = document.getElementById(id);
+    const option = select ? [...select.options].find(item => item.value === "") : null;
+    if (option) option.textContent = referencePlaceholderLabel(id);
+  });
+}
+
 function refreshReferenceOptions() {
   interests = interestRecords.filter(item => item.is_active).map(item => item.name);
   noSaleReasons = reasonRecords.filter(item => item.is_active).map(item => item.name);
@@ -750,7 +779,7 @@ function refreshReferenceOptions() {
   replaceSelectOptions(
     document.getElementById("interestFilter"),
     interests.map(value => ({ label: value, value })),
-    "كل مجالات الاهتمام",
+    referencePlaceholderLabel("interestFilter"),
     current.interestFilter
   );
 
@@ -776,16 +805,10 @@ function refreshReferenceOptions() {
   renderCustomerInterestDropdownOptions();
 
   ["repFilter", "followupRepFilter", "quotationRepFilter", "dashboardRepFilter"].forEach(id => {
-    const labels = {
-      repFilter: "كل المندوبين",
-      followupRepFilter: "كل المندوبين",
-      quotationRepFilter: "كل المندوبين",
-      dashboardRepFilter: customerT("dashboard.filter.allReps", "كل المندوبين")
-    };
     replaceSelectOptions(
       document.getElementById(id),
       representatives.map(rep => ({ label: rep.name, value: rep.name })),
-      labels[id],
+      referencePlaceholderLabel(id),
       current[id]
     );
   });
@@ -793,7 +816,7 @@ function refreshReferenceOptions() {
   replaceSelectOptions(
     document.getElementById("dailyAlertsRepresentativeFilter"),
     representatives.map(rep => ({ label: rep.name, value: rep.uuid })),
-    "كل المندوبين",
+    referencePlaceholderLabel("dailyAlertsRepresentativeFilter"),
     current.dailyAlertsRepresentativeFilter
   );
 
@@ -825,7 +848,7 @@ function refreshReferenceOptions() {
     reasonRecords
       .filter(item => item.is_active)
       .map(item => ({ label: item.name, value: item.id })),
-    "بدون سبب",
+    referencePlaceholderLabel("noSaleReason"),
     ""
   );
   replaceSelectOptions(
@@ -833,7 +856,7 @@ function refreshReferenceOptions() {
     reasonRecords
       .filter(item => item.is_active)
       .map(item => ({ label: item.name, value: item.id })),
-    "بدون سبب",
+    referencePlaceholderLabel("followupNoSaleReason"),
     ""
   );
   replaceSelectOptions(
@@ -841,14 +864,14 @@ function refreshReferenceOptions() {
     reasonRecords
       .filter(item => item.is_active)
       .map(item => ({ label: item.name, value: item.id })),
-    "اختر سبب الرفض",
+    referencePlaceholderLabel("quotationRejectionReason"),
     ""
   );
 
   replaceSelectOptions(
     document.getElementById("dashboardInterestFilter"),
     interests.map(value => ({ label: value, value })),
-    "كل مجالات الاهتمام",
+    referencePlaceholderLabel("dashboardInterestFilter"),
     current.dashboardInterestFilter
   );
 
@@ -1559,6 +1582,7 @@ window.addEventListener("petatoe-language-changed", () => {
   if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
   else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map(key=>l1T(key));
   if (meta) { document.getElementById("pageTitle").textContent = meta[0]; document.getElementById("pageSubtitle").textContent = meta[1]; }
+  refreshReferenceLocalizationLabels();
   if (current === "followups") { renderFollowups(); showDataStatus("followupsStatus", formatOfflineCacheStatus(window.FollowupsService?.getLastReadStatus?.()), "info"); }
   if (current === "users") { populateSecurityOptions(); renderUsers(); }
   if (current === "permissions") { populateSecurityOptions(); renderPermissionsMatrix(document.getElementById("permissionsRoleSelect")?.value || "sales_manager"); }
@@ -4961,8 +4985,8 @@ function renderDailyPerformanceDetail() {
       cells: ({ employee, item }) => [
         employee.name,
         item.customerName || "—",
-        item.method || "—",
-        item.result || "—",
+        item.method ? followupMethodLabel(item.method) : "—",
+        item.result ? followupResultLabel(item.result) : "—",
         item.nextFollowupDate ? formatDate(item.nextFollowupDate) : "—"
       ]
     },
@@ -4988,7 +5012,7 @@ function renderDailyPerformanceDetail() {
         employee.name,
         item.customerName || "—",
         item.code || item.quotationNumber || "—",
-        item.status || "—",
+        item.status ? quotationStatusLabel(item.status) : "—",
         formatCurrency(item.amount || 0)
       ]
     },
@@ -5001,7 +5025,7 @@ function renderDailyPerformanceDetail() {
         employee.name,
         item.customerName || "—",
         formatDate(item.nextFollowupDate),
-        item.result || "—",
+        item.result ? followupResultLabel(item.result) : "—",
         l1T("dailyPerformance.status.overdue")
       ]
     }
@@ -5351,12 +5375,12 @@ function exportDailyPerformancePdf() {
 <style>
 @page{size:A4 landscape;margin:11mm 10mm 13mm}
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:#fff;color:#111827;font-family:Tahoma,Arial,sans-serif;direction:rtl}
+html,body{margin:0;padding:0;background:#fff;color:#111827;font-family:Tahoma,Arial,sans-serif;direction:${window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "ltr" : "rtl"}}
 body{font-size:11px;line-height:1.55;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .pdf-report-header{display:grid;grid-template-columns:170px 1fr 230px;align-items:center;gap:18px;padding:14px 18px;border:1px solid #0c3857;border-radius:18px;background:linear-gradient(135deg,#06192c,#0a3651);color:#fff;margin-bottom:14px;box-shadow:0 6px 18px rgba(2,19,35,.16)}
 .pdf-report-header img{width:150px;max-height:72px;object-fit:contain;border-radius:10px}
 .pdf-report-title{text-align:center}.pdf-report-title h1{font-size:26px;margin:0 0 4px}.pdf-report-title p{margin:0;color:#c9d8e5;font-size:12px}
-.pdf-report-meta{font-size:10px;line-height:1.9;border-right:1px solid rgba(255,255,255,.25);padding-right:14px}.pdf-report-meta strong{color:#f4bd3c}
+.pdf-report-meta{font-size:10px;line-height:1.9;border-inline-start:1px solid rgba(255,255,255,.25);padding-inline-start:14px}.pdf-report-meta strong{color:#f4bd3c}
 .pdf-report-body{width:100%}
 .pdf-report-body>.view-section{display:block!important}
 .daily-performance-manager-note,.daily-performance-kpis article,.panel{background:#fff!important;border:1px solid #d8e1ea!important;border-radius:12px!important;box-shadow:none!important;color:#111827!important}
@@ -5368,7 +5392,7 @@ body{font-size:11px;line-height:1.55;-webkit-print-color-adjust:exact;print-colo
 .panel{padding:12px!important;margin:0 0 12px!important;break-inside:auto}.panel-header{display:flex;justify-content:space-between;align-items:flex-start;margin:0 0 9px;padding:0 0 7px;border-bottom:1px solid #e5e7eb}.panel-header h3{font-size:14px;margin:0}.panel-header p{margin:2px 0 0;font-size:9px}
 .daily-performance-leaderboard{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}.daily-performance-leaderboard>*{break-inside:avoid;background:#f8fafc!important;border:1px solid #dde5ed!important;border-radius:9px!important;padding:8px!important}
 .table-wrap{overflow:visible!important;width:100%!important}
-table{width:100%!important;border-collapse:collapse!important;table-layout:auto!important;min-width:0!important;background:#fff!important}thead{display:table-header-group}tfoot{display:table-footer-group}tr{break-inside:avoid;page-break-inside:avoid}th,td{border:1px solid #dbe3ea!important;padding:5px 6px!important;text-align:right!important;vertical-align:middle!important;color:#111827!important;font-size:8.2px!important;white-space:normal!important}th{background:#eaf1f6!important;font-weight:700!important;color:#0b2940!important}
+table{width:100%!important;border-collapse:collapse!important;table-layout:auto!important;min-width:0!important;background:#fff!important}thead{display:table-header-group}tfoot{display:table-footer-group}tr{break-inside:avoid;page-break-inside:avoid}th,td{border:1px solid #dbe3ea!important;padding:5px 6px!important;text-align:${window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "left" : "right"}!important;vertical-align:middle!important;color:#111827!important;font-size:8.2px!important;white-space:normal!important}th{background:#eaf1f6!important;font-weight:700!important;color:#0b2940!important}
 .daily-activity-timeline{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}.daily-activity-timeline>*{break-inside:avoid;border:1px solid #dbe3ea!important;border-radius:8px!important;background:#f8fafc!important;padding:8px!important}
 .daily-activity-filters,.daily-performance-detail-controls,.daily-tasks-report-controls{display:none!important}
 .pdf-control-value{display:inline-block;padding:3px 7px;border:1px solid #dbe3ea;border-radius:6px;background:#f8fafc}
@@ -5415,15 +5439,16 @@ async function createDailyPerformancePdfFile() {
     || l1T('dailyPerformance.filter.allEmployees');
 
   const host = document.createElement("section");
-  host.setAttribute("dir", "rtl");
+  const pdfDir = window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "ltr" : "rtl";
+  host.setAttribute("dir", pdfDir);
   host.style.cssText = "position:fixed;left:-20000px;top:0;width:1400px;background:#fff;color:#111827;padding:28px;font-family:Tahoma,Arial,sans-serif;z-index:-1";
   host.innerHTML = `
     <header style="display:grid;grid-template-columns:180px 1fr 290px;align-items:center;gap:20px;padding:18px 22px;border-radius:20px;background:linear-gradient(135deg,#06192c,#0a3651);color:#fff;margin-bottom:18px">
       <img src="assets/images/kyum-header-logo.png" alt="KYUM" style="width:165px;max-height:78px;object-fit:contain;border-radius:12px">
-      <div style="text-align:center"><h1 style="margin:0 0 6px;font-size:30px">تقرير الأداء اليومي</h1><p style="margin:0;color:#d5e3ee;font-size:15px">متابعة تنفيذ المهام والنشاط اليومي للموظفين</p></div>
-      <div style="font-size:13px;line-height:2;border-right:1px solid rgba(255,255,255,.25);padding-right:18px">
-        <div><strong style="color:#f4bd3c">تاريخ التقرير:</strong> ${dailyPerformancePdfEscape(selectedDate)}</div>
-        <div><strong style="color:#f4bd3c">الموظف / المندوب:</strong> ${dailyPerformancePdfEscape(employeeLabel)}</div>
+      <div style="text-align:center"><h1 style="margin:0 0 6px;font-size:30px">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.pdfTitle"))}</h1><p style="margin:0;color:#d5e3ee;font-size:15px">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.pdfSubtitle"))}</p></div>
+      <div style="font-size:13px;line-height:2;border-inline-start:1px solid rgba(255,255,255,.25);padding-inline-start:18px">
+        <div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.reportDate"))}:</strong> ${dailyPerformancePdfEscape(selectedDate)}</div>
+        <div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.employeeRepresentative"))}:</strong> ${dailyPerformancePdfEscape(employeeLabel)}</div>
       </div>
     </header>
   `;
@@ -5543,9 +5568,10 @@ function reportFileSafe(value) {
 async function createFilteredListPdfFile(config) {
   if (!window.html2canvas || !window.jspdf?.jsPDF) throw new Error(l1T('shared.export.pdfToolsMissing'));
   const rows = Array.isArray(config.rows) ? config.rows : [];
-  const generatedAt = new Intl.DateTimeFormat("ar-SA-u-nu-latn", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date());
+  const generatedAt = new Intl.DateTimeFormat(l1Locale(), { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date());
   const host = document.createElement("section");
-  host.setAttribute("dir", "rtl");
+  const pdfDir = window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "ltr" : "rtl";
+  host.setAttribute("dir", pdfDir);
   host.style.cssText = "position:fixed;left:-20000px;top:0;width:1400px;background:#fff;color:#111827;padding:28px;font-family:Tahoma,Arial,sans-serif;z-index:-1";
   const meta = (config.filters || []).map(([label,value]) => `<div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(label)}:</strong> ${dailyPerformancePdfEscape(value || l1T('shared.export.all'))}</div>`).join("");
   const head = config.columns.map(col => `<th>${dailyPerformancePdfEscape(col.label)}</th>`).join("");
@@ -5559,8 +5585,9 @@ async function createFilteredListPdfFile(config) {
     <table style="width:100%;border-collapse:collapse;table-layout:auto;background:#fff">
       <thead><tr>${head}</tr></thead><tbody>${body}</tbody>
     </table>`;
-  host.querySelectorAll("th").forEach(el => el.style.cssText="border:1px solid #cbd5e1;padding:9px 7px;background:#1f5cae;color:#fff;font-size:12px;text-align:right");
-  host.querySelectorAll("td").forEach(el => el.style.cssText="border:1px solid #dbe3ea;padding:8px 7px;color:#111827;font-size:11px;text-align:right;vertical-align:top;white-space:normal");
+  const pdfTextAlign = pdfDir === "rtl" ? "right" : "left";
+  host.querySelectorAll("th").forEach(el => el.style.cssText=`border:1px solid #cbd5e1;padding:9px 7px;background:#1f5cae;color:#fff;font-size:12px;text-align:${pdfTextAlign}`);
+  host.querySelectorAll("td").forEach(el => el.style.cssText=`border:1px solid #dbe3ea;padding:8px 7px;color:#111827;font-size:11px;text-align:${pdfTextAlign};vertical-align:top;white-space:normal`);
   document.body.appendChild(host);
   try {
     const canvas = await window.html2canvas(host,{scale:1.25,useCORS:true,backgroundColor:"#ffffff",logging:false,windowWidth:1400,scrollX:0,scrollY:0});
@@ -5590,9 +5617,9 @@ function followupReportConfig() {
       {label:l1T("shared.export.customer"),value:r=>customerById(r.customerId)?.name || r.customerName || "—"},
       {label:l1T("shared.export.customerPhone"),value:r=>customerById(r.customerId)?.phone || r.customerPhone || "—"},
       {label:l1T("followups.export.contactDate"),value:r=>formatDate(r.contactDate)},
-      {label:l1T("followups.export.method"),value:"method"},
+      {label:l1T("followups.export.method"),value:r=>r.method ? followupMethodLabel(r.method) : "—"},
       {label:l1T("shared.export.representative"),value:r=>r.representative || "—"},
-      {label:l1T("followups.export.result"),value:r=>r.result || "—"},
+      {label:l1T("followups.export.result"),value:r=>r.result ? followupResultLabel(r.result) : "—"},
       {label:l1T("followups.export.contract"),value:r=>r.quotationNumber || "—"},
       {label:l1T("followups.export.nextFollowup"),value:r=>formatDate(r.nextFollowupDate)},
       {label:l1T("shared.export.status"),value:r=>statusLabel(followupStatus(r))}
@@ -5621,7 +5648,7 @@ function quotationReportConfig() {
       {label:l1T("shared.export.representative"),value:r=>r.representative || "—"},
       {label:l1T("contracts.export.date"),value:r=>formatDate(r.quotationDate)},
       {label:l1T("shared.export.value"),value:r=>formatCurrency(r.amount)},
-      {label:l1T("shared.export.status"),value:r=>canonicalQuotationStatus(r.status)},
+      {label:l1T("shared.export.status"),value:r=>r.status ? quotationStatusLabel(r.status) : "—"},
       {label:l1T("contracts.export.expiryDate"),value:r=>formatDate(r.expiryDate)},
       {label:l1T("contracts.export.rejectionReason"),value:r=>r.rejectionReason || "—"}
     ]
@@ -5663,13 +5690,14 @@ async function createDailyActivityPdfFile() {
   const typeLabel = typeSelect?.options?.[typeSelect.selectedIndex]?.textContent || l1T('dailyPerformance.export.activity.allTypes');
 
   const host = document.createElement("section");
-  host.setAttribute("dir", "rtl");
+  const pdfDir = window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "ltr" : "rtl";
+  host.setAttribute("dir", pdfDir);
   host.style.cssText = "position:fixed;left:-20000px;top:0;width:1200px;background:#fff;color:#111827;padding:28px;font-family:Tahoma,Arial,sans-serif;z-index:-1";
   host.innerHTML = `
     <header style="display:grid;grid-template-columns:160px 1fr 300px;align-items:center;gap:20px;padding:18px 22px;border-radius:18px;background:linear-gradient(135deg,#06192c,#0a3651);color:#fff;margin-bottom:18px">
       <img src="assets/images/kyum-header-logo.png" alt="KYUM" style="width:150px;max-height:72px;object-fit:contain;border-radius:10px">
       <div style="text-align:center"><h1 style="margin:0 0 6px;font-size:28px">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.title"))}</h1><p style="margin:0;color:#d5e3ee">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.subtitle"))}</p></div>
-      <div style="font-size:13px;line-height:2;border-right:1px solid rgba(255,255,255,.25);padding-right:18px">
+      <div style="font-size:13px;line-height:2;border-inline-start:1px solid rgba(255,255,255,.25);padding-inline-start:18px">
         <div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.reportDate"))}:</strong> ${dailyPerformancePdfEscape(selectedDate)}</div>
         <div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.employee"))}:</strong> ${dailyPerformancePdfEscape(employeeLabel)}</div>
         <div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.type"))}:</strong> ${dailyPerformancePdfEscape(typeLabel)}</div>
@@ -5679,7 +5707,7 @@ async function createDailyActivityPdfFile() {
     <main style="display:grid;gap:10px">
       ${events.length ? events.map(event => `
         <article style="display:grid;grid-template-columns:125px 1fr;gap:14px;border:1px solid #dbe3ea;border-radius:12px;padding:13px;background:#f8fafc;break-inside:avoid">
-          <div style="border-left:2px solid #2563eb;padding-left:10px"><strong style="display:block;font-size:15px">${dailyPerformancePdfEscape(dailyActivityTime(event.createdAt))}</strong><span style="font-size:12px;color:#64748b">${dailyPerformancePdfEscape(dailyActivityTypeLabel(event.type))}</span></div>
+          <div style="border-inline-start:2px solid #2563eb;padding-inline-start:10px"><strong style="display:block;font-size:15px">${dailyPerformancePdfEscape(dailyActivityTime(event.createdAt))}</strong><span style="font-size:12px;color:#64748b">${dailyPerformancePdfEscape(dailyActivityTypeLabel(event.type))}</span></div>
           <div><strong style="display:block;font-size:15px;margin-bottom:5px">${dailyPerformancePdfEscape(event.title || l1T("dailyPerformance.export.activity.fallback"))}</strong><p style="margin:0 0 5px;line-height:1.8">${dailyPerformancePdfEscape(event.detail || "—")}</p><small style="color:#64748b">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.performedBy"))}: ${dailyPerformancePdfEscape(event.employeeName || employeeLabel)}</small></div>
         </article>`).join("") : `<div style="padding:30px;text-align:center">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.empty"))}</div>`}
     </main>`;
@@ -6548,8 +6576,8 @@ function renderDailyOperations() {
       <tr>
         <td><strong>${escapeHtml(row.customerName || "—")}</strong><br><small>${escapeHtml(row.customerPhone || "")}</small></td>
         <td>${escapeHtml(row.representative || "—")}</td>
-        <td>${escapeHtml(row.method || "—")}</td>
-        <td>${escapeHtml(row.result || "—")}</td>
+        <td>${escapeHtml(row.method ? followupMethodLabel(row.method) : "—")}</td>
+        <td>${escapeHtml(row.result ? followupResultLabel(row.result) : "—")}</td>
         <td>${row.nextFollowupDate ? formatDate(row.nextFollowupDate) : "—"}</td>
       </tr>`).join("")
     : dailyEmptyRow(5, l1T("dailyOperations.empty.followups"));
@@ -6573,7 +6601,7 @@ function renderDailyOperations() {
         <td><strong>${escapeHtml(row.customerName || "—")}</strong></td>
         <td>${escapeHtml(row.representative || "—")}</td>
         <td>${escapeHtml(row.code || row.quotationNumber || "—")}</td>
-        <td>${escapeHtml(row.status || "—")}</td>
+        <td>${escapeHtml(row.status ? quotationStatusLabel(row.status) : "—")}</td>
         <td>${formatCurrency(row.amount || 0)}</td>
       </tr>`).join("")
     : dailyEmptyRow(5, l1T("dailyOperations.empty.quotations"));
@@ -6586,7 +6614,7 @@ function renderDailyOperations() {
         <td>${escapeHtml(row.representative || "—")}</td>
         <td>${formatDate(row.nextFollowupDate)}</td>
         <td><span class="daily-overdue-badge">${escapeHtml(l1T("dailyOperations.delay.days",{count:dailyDaysOverdue(row.nextFollowupDate)}))}</span></td>
-        <td>${escapeHtml(row.result || "—")}</td>
+        <td>${escapeHtml(row.result ? followupResultLabel(row.result) : "—")}</td>
       </tr>`).join("")
     : dailyEmptyRow(5, l1T("dailyOperations.empty.overdue"));
 }
