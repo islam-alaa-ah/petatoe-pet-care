@@ -12,6 +12,7 @@ const installations = read("assets/js/installations-module.js");
 const dailyOps = read("assets/js/daily-operations-service.js");
 const dailyAlerts = read("assets/js/daily-alerts-service.js");
 const dailyActivity = read("assets/js/daily-activity-service.js");
+const localization = read("assets/js/localization-center.js");
 const policy = JSON.parse(read("enterprise-offline-policy.json"));
 
 add("package/version.json unified", packageJson.version === versionJson.version);
@@ -32,9 +33,11 @@ add("new appointment no customer representative ownership",
   !installations.includes("representativeId: customer?.representative_id"));
 
 add("daily activity uses contracts terminology",
-  dailyActivity.includes('quotations: "عقود العملاء"'));
+  dailyActivity.includes('quotations: tr("dailyActivity.entity.quotations")')
+  && localization.includes('["dailyActivity.entity.quotations"'));
 add("daily activity uses appointments terminology",
-  dailyActivity.includes('installation_requests: "المواعيد"'));
+  dailyActivity.includes('installation_requests: tr("dailyActivity.entity.installations")')
+  && localization.includes('["dailyActivity.entity.installations"'));
 
 const requiredRegistered = [
   "assets/js/data-access-scope.js",

@@ -1502,7 +1502,7 @@ function switchView(requestedName, options = {}) {
     window.SeaVibeUI?.activate?.(name);
   }
 
-  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
+  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:pageMeta.aboutApp, dailyOperations:["dailyOperations.page.title","dailyOperations.page.subtitle"], dailyPerformanceReport:["dailyPerformance.page.title","dailyPerformance.page.subtitle"], dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"] };
   const localizedMetaKeys = localizedPageMetaKeys[name];
   const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map(key=>l1T(key)) : pageMeta[name];
   document.getElementById("pageTitle").textContent = activePageMeta[0];
@@ -4994,7 +4994,7 @@ function populateDailyPerformanceEmployees() {
   }));
 
   select.innerHTML = [
-    '<option value="">كل الموظفين</option>',
+    `<option value="">${escapeHtml(l1T('dailyPerformance.filter.allEmployees'))}</option>`,
     ...options.map(item =>
       `<option value="${escapeHtml(item.value)}">${escapeHtml(item.label)}</option>`
     )
@@ -5016,7 +5016,7 @@ function populateDailyTasksEmployees() {
   }));
 
   select.innerHTML = [
-    '<option value="">اختر الموظف</option>',
+    `<option value="">${escapeHtml(l1T('dailyPerformance.filter.chooseEmployee'))}</option>`,
     ...options.map(item =>
       `<option value="${escapeHtml(item.value)}">${escapeHtml(item.label)}</option>`
     )
@@ -5029,14 +5029,14 @@ function resetDailyTasksReportView() {
   dailyTasksReportRequested = false;
   const container = document.getElementById("dailyPerformanceDetailContent");
   if (container && dailyPerformanceDetailType === "tasks") {
-    container.innerHTML = '<div class="empty-state">اختر الموظف ثم اضغط عرض بيانات التقرير.</div>';
+    container.innerHTML = `<div class="empty-state">${escapeHtml(l1T('dailyPerformance.activity.chooseEmployee'))}</div>`;
   }
 }
 
 function dailyPerformanceStatusIcon(completed) {
   return completed
-    ? '<span class="daily-performance-status completed"><b>✓</b> تم التحديث</span>'
-    : '<span class="daily-performance-status missed"><b>×</b> لم يتم التحديث</span>';
+    ? `<span class="daily-performance-status completed"><b>✓</b> ${escapeHtml(l1T('dailyPerformance.status.updated'))}</span>`
+    : `<span class="daily-performance-status missed"><b>×</b> ${escapeHtml(l1T('dailyPerformance.status.notUpdated'))}</span>`;
 }
 
 function renderDailyPerformanceDetail() {
@@ -5049,28 +5049,28 @@ function renderDailyPerformanceDetail() {
 
   const configs = {
     tasks: {
-      title: "المهام اليومية",
-      subtitle: "حالة تنفيذ كل مهمة لكل موظف."
+      title: l1T("dailyPerformance.detail.tasksTitle"),
+      subtitle: l1T("dailyPerformance.detail.tasksSubtitle")
     },
     targets: {
-      title: "تحقيق الأهداف",
-      subtitle: "مقارنة النشاط الفعلي بالأهداف اليومية."
+      title: l1T("dailyPerformance.detail.targetsTitle"),
+      subtitle: l1T("dailyPerformance.detail.targetsSubtitle")
     },
     followups: {
-      title: "المتابعات اليومية",
-      subtitle: "تفاصيل العملاء الذين تمت متابعتهم خلال اليوم."
+      title: l1T("dailyPerformance.detail.followupsTitle"),
+      subtitle: l1T("dailyPerformance.detail.followupsSubtitle")
     },
     customers: {
-      title: "العملاء الجدد",
-      subtitle: "العملاء الذين تمت إضافتهم خلال اليوم."
+      title: l1T("dailyPerformance.detail.customersTitle"),
+      subtitle: l1T("dailyPerformance.detail.customersSubtitle")
     },
     quotations: {
-      title: "عقود العملاء",
-      subtitle: "عقود العملاء التي تم إنشاؤها خلال اليوم."
+      title: l1T("dailyPerformance.detail.quotationsTitle"),
+      subtitle: l1T("dailyPerformance.detail.quotationsSubtitle")
     },
     overdue: {
-      title: "المتابعات المتأخرة",
-      subtitle: "المتابعات غير المغلقة التي تجاوزت موعدها."
+      title: l1T("dailyPerformance.detail.overdueTitle"),
+      subtitle: l1T("dailyPerformance.detail.overdueSubtitle")
     }
   };
 
@@ -5084,7 +5084,7 @@ function renderDailyPerformanceDetail() {
   if (dailyPerformanceDetailType === "tasks") {
     const selectedEmployee = document.getElementById("dailyTasksEmployeeFilter")?.value || "";
     if (!dailyTasksReportRequested || !selectedEmployee) {
-      container.innerHTML = '<div class="empty-state">اختر الموظف ثم اضغط عرض بيانات التقرير.</div>';
+      container.innerHTML = `<div class="empty-state">${escapeHtml(l1T('dailyPerformance.activity.chooseEmployee'))}</div>`;
       return;
     }
     const taskRows = (dailyPerformanceSnapshot?.rows || []).filter(item => item.key === selectedEmployee);
@@ -5095,7 +5095,7 @@ function renderDailyPerformanceDetail() {
             <div class="daily-performance-task-card-head">
               <div>
                 <strong>${escapeHtml(item.name)}</strong>
-                <small>${item.completedTasks} من ${item.taskStates.length} مهام</small>
+                <small>${escapeHtml(l1T("dailyPerformance.detail.completedOfTasks", { completed:item.completedTasks, total:item.taskStates.length }))}</small>
               </div>
               <b>${item.checklistRate}%</b>
             </div>
@@ -5109,7 +5109,7 @@ function renderDailyPerformanceDetail() {
               `).join("")}
             </div>
           </article>
-        `).join("") || '<div class="empty-state">لا توجد بيانات.</div>'}
+        `).join("") || `<div class="empty-state">${escapeHtml(l1T('dailyPerformance.empty.noData'))}</div>`}
       </div>`;
     return;
   }
@@ -5121,12 +5121,12 @@ function renderDailyPerformanceDetail() {
           <article>
             <div class="daily-performance-target-card-head">
               <strong>${escapeHtml(item.name)}</strong>
-              <span>${item.completionRate}% إنجاز كلي</span>
+              <span>${escapeHtml(l1T("dailyPerformance.detail.overallCompletion", { rate:item.completionRate }))}</span>
             </div>
             ${[
-              ["العملاء الجدد", item.customers.length, item.targets.customers, item.targetRates.customers],
-              ["المتابعات", item.followups.length, item.targets.followups, item.targetRates.followups],
-              ["عقود العملاء", item.quotations.length, item.targets.quotations, item.targetRates.quotations]
+              [l1T("dailyPerformance.detail.customersTitle"), item.customers.length, item.targets.customers, item.targetRates.customers],
+              [l1T("dailyPerformance.col.followups"), item.followups.length, item.targets.followups, item.targetRates.followups],
+              [l1T("dailyPerformance.detail.quotationsTitle"), item.quotations.length, item.targets.quotations, item.targetRates.quotations]
             ].map(([label, actual, target, rate]) => `
               <div class="daily-performance-target-row">
                 <div><span>${label}</span><strong>${actual} / ${target}</strong></div>
@@ -5135,7 +5135,7 @@ function renderDailyPerformanceDetail() {
               </div>
             `).join("")}
           </article>
-        `).join("") || '<div class="empty-state">لا توجد بيانات.</div>'}
+        `).join("") || `<div class="empty-state">${escapeHtml(l1T('dailyPerformance.empty.noData'))}</div>`}
       </div>`;
     return;
   }
@@ -5145,7 +5145,7 @@ function renderDailyPerformanceDetail() {
       rows: rows.flatMap(employee =>
         employee.followups.map(item => ({ employee, item }))
       ),
-      headers: ["الموظف", "العميل", "الطريقة", "النتيجة", "الموعد القادم"],
+      headers: [l1T("dailyPerformance.col.employee"), l1T("dailyPerformance.col.customer"), l1T("dailyPerformance.col.method"), l1T("dailyPerformance.col.result"), l1T("dailyPerformance.col.nextAppointment")],
       cells: ({ employee, item }) => [
         employee.name,
         item.customerName || "—",
@@ -5158,7 +5158,7 @@ function renderDailyPerformanceDetail() {
       rows: rows.flatMap(employee =>
         employee.customers.map(item => ({ employee, item }))
       ),
-      headers: ["الموظف", "العميل", "التصنيف", "اسم المسؤول", "وقت الإضافة"],
+      headers: [l1T("dailyPerformance.col.employee"), l1T("dailyPerformance.col.customer"), l1T("dailyPerformance.col.classification"), l1T("dailyPerformance.col.contactPerson"), l1T("dailyPerformance.col.addedAt")],
       cells: ({ employee, item }) => [
         employee.name,
         item.name || "—",
@@ -5171,7 +5171,7 @@ function renderDailyPerformanceDetail() {
       rows: rows.flatMap(employee =>
         employee.quotations.map(item => ({ employee, item }))
       ),
-      headers: ["الموظف", "العميل", "رقم العقد", "الحالة", "القيمة"],
+      headers: [l1T("dailyPerformance.col.employee"), l1T("dailyPerformance.col.customer"), l1T("dailyPerformance.col.contractNumber"), l1T("dailyPerformance.col.status"), l1T("dailyPerformance.col.value")],
       cells: ({ employee, item }) => [
         employee.name,
         item.customerName || "—",
@@ -5184,13 +5184,13 @@ function renderDailyPerformanceDetail() {
       rows: rows.flatMap(employee =>
         employee.overdueFollowups.map(item => ({ employee, item }))
       ),
-      headers: ["الموظف", "العميل", "موعد المتابعة", "النتيجة السابقة", "الحالة"],
+      headers: [l1T("dailyPerformance.col.employee"), l1T("dailyPerformance.col.customer"), l1T("dailyPerformance.col.followupDate"), l1T("dailyPerformance.col.previousResult"), l1T("dailyPerformance.col.status")],
       cells: ({ employee, item }) => [
         employee.name,
         item.customerName || "—",
         formatDate(item.nextFollowupDate),
         item.result || "—",
-        "متأخرة"
+        l1T("dailyPerformance.status.overdue")
       ]
     }
   };
@@ -5209,7 +5209,7 @@ function renderDailyPerformanceDetail() {
             ? tableRows.map(row => `
               <tr>${source.cells(row).map(value => `<td>${escapeHtml(String(value ?? "—"))}</td>`).join("")}</tr>
             `).join("")
-            : `<tr><td colspan="${source.headers.length}" class="empty-state">لا توجد بيانات في هذا التقرير.</td></tr>`
+            : `<tr><td colspan="${source.headers.length}" class="empty-state">${escapeHtml(l1T("dailyPerformance.empty.report"))}</td></tr>`
           }
         </tbody>
       </table>
@@ -5252,25 +5252,25 @@ function renderDailyPerformanceReport() {
   document.getElementById("dailyPerformanceChecklistRate").textContent =
     `${totalTaskSlots ? Math.round(completedTaskSlots / totalTaskSlots * 100) : 0}%`;
   document.getElementById("dailyPerformanceChecklistText").textContent =
-    `${completedTaskSlots} من ${totalTaskSlots}`;
+    l1T("dailyPerformance.kpi.completedOf", { completed:completedTaskSlots, total:totalTaskSlots });
   document.getElementById("dailyPerformanceCustomersTargetMet").textContent =
     customersTargetMet;
   document.getElementById("dailyPerformanceCustomersTargetRate").textContent =
-    `${targetEmployeeCount ? Math.round(customersTargetMet / targetEmployeeCount * 100) : 0}% من الموظفين الخاضعين للأهداف`;
+    l1T("dailyPerformance.kpi.targetEmployeeRate", { rate:targetEmployeeCount ? Math.round(customersTargetMet / targetEmployeeCount * 100) : 0 });
   document.getElementById("dailyPerformanceFollowupsTargetMet").textContent =
     followupsTargetMet;
   document.getElementById("dailyPerformanceFollowupsTargetRate").textContent =
-    `${targetEmployeeCount ? Math.round(followupsTargetMet / targetEmployeeCount * 100) : 0}% من الموظفين الخاضعين للأهداف`;
+    l1T("dailyPerformance.kpi.targetEmployeeRate", { rate:targetEmployeeCount ? Math.round(followupsTargetMet / targetEmployeeCount * 100) : 0 });
   document.getElementById("dailyPerformanceQuotationsTargetMet").textContent =
     quotationsTargetMet;
   document.getElementById("dailyPerformanceQuotationsTargetRate").textContent =
-    `${targetEmployeeCount ? Math.round(quotationsTargetMet / targetEmployeeCount * 100) : 0}% من الموظفين الخاضعين للأهداف`;
+    l1T("dailyPerformance.kpi.targetEmployeeRate", { rate:targetEmployeeCount ? Math.round(quotationsTargetMet / targetEmployeeCount * 100) : 0 });
   document.getElementById("dailyPerformanceOverdue").textContent = overdue;
 
   document.getElementById("dailyPerformanceManagerNoteTitle").textContent =
-    snapshot.managerNote?.title || "لا توجد ملاحظة.";
+    snapshot.managerNote?.title || l1T("dailyPerformance.manager.noneTitle");
   document.getElementById("dailyPerformanceManagerNoteText").textContent =
-    snapshot.managerNote?.noteText || "لم يتم تسجيل توجيه لهذا اليوم.";
+    snapshot.managerNote?.noteText || l1T("dailyPerformance.manager.noneText");
   document.getElementById("dailyPerformanceManagerNoteDate").textContent =
     snapshot.managerNote?.updatedAt
       ? dailyDateTime(snapshot.managerNote.updatedAt)
@@ -5285,29 +5285,29 @@ function renderDailyPerformanceReport() {
         <span class="rank">${item.rank}</span>
         <div>
           <strong>${escapeHtml(item.name)}</strong>
-          <small>${item.completedTasks}/${item.taskStates.length} مهام · ${item.followups.length} متابعة · ${item.customers.length} عميل · ${item.quotations.length} عرض</small>
+          <small>${escapeHtml(l1T("dailyPerformance.ranking.summary", {tasks:item.completedTasks,followups:item.followups.length,customers:item.customers.length,quotations:item.quotations.length}))}</small>
           <div class="daily-performance-progress">
             <span style="width:${item.completionRate}%"></span>
           </div>
         </div>
         <div>
           <strong>${item.points}</strong>
-          <small>نقطة</small>
+          <small>${escapeHtml(l1T("dailyPerformance.ranking.points"))}</small>
         </div>
       </article>
     `).join("")
-    : '<div class="empty-state">لا توجد بيانات موظفين.</div>';
+    : `<div class="empty-state">${escapeHtml(l1T('dailyPerformance.ranking.empty'))}</div>`;
 
   const matrixHead = document.getElementById("dailyTaskMatrixHead");
   const matrixBody = document.getElementById("dailyTaskMatrixBody");
 
   matrixHead.innerHTML = `
     <tr>
-      <th>الموظف</th>
+      <th>${escapeHtml(l1T("dailyPerformance.col.employee"))}</th>
       ${snapshot.definitions.map(definition =>
         `<th>${escapeHtml(definition.task_name)}</th>`
       ).join("")}
-      <th>الإنجاز</th>
+      <th>${escapeHtml(l1T("dailyPerformance.col.completion"))}</th>
     </tr>`;
 
   matrixBody.innerHTML = rows.length
@@ -5320,7 +5320,7 @@ function renderDailyPerformanceReport() {
         <td><strong>${item.checklistRate}%</strong></td>
       </tr>
     `).join("")
-    : `<tr><td colspan="${snapshot.definitions.length + 2}" class="empty-state">لا توجد بيانات.</td></tr>`;
+    : `<tr><td colspan="${snapshot.definitions.length + 2}" class="empty-state">${escapeHtml(l1T("dailyPerformance.empty.noData"))}</td></tr>`;
 
   const body = document.getElementById("dailyPerformanceBody");
   body.innerHTML = rows.length
@@ -5341,9 +5341,9 @@ function renderDailyPerformanceReport() {
         <td>${item.quotations.length} / ${item.targets.quotations}</td>
         <td>
           <div class="daily-performance-target-badges">
-            <span class="${item.targetsMet.customers ? "met" : "pending"}">عملاء</span>
-            <span class="${item.targetsMet.followups ? "met" : "pending"}">متابعات</span>
-            <span class="${item.targetsMet.quotations ? "met" : "pending"}">عروض</span>
+            <span class="${item.targetsMet.customers ? "met" : "pending"}">${escapeHtml(l1T("dailyPerformance.activity.customers"))}</span>
+            <span class="${item.targetsMet.followups ? "met" : "pending"}">${escapeHtml(l1T("dailyPerformance.col.followups"))}</span>
+            <span class="${item.targetsMet.quotations ? "met" : "pending"}">${escapeHtml(l1T("dailyPerformance.employeeTargets.quotations"))}</span>
           </div>
         </td>
         <td class="${item.overdueFollowups.length ? "daily-performance-overdue-value" : ""}">
@@ -5358,7 +5358,7 @@ function renderDailyPerformanceReport() {
         <td><strong>${item.points}</strong></td>
       </tr>
     `).join("")
-    : '<tr><td colspan="10" class="empty-state">لا توجد بيانات مطابقة.</td></tr>';
+    : `<tr><td colspan="10" class="empty-state">${escapeHtml(l1T('dailyPerformance.empty.filtered'))}</td></tr>`;
 
   renderDailyPerformanceDetail();
   renderDailyAlertsReport();
@@ -5370,7 +5370,7 @@ async function loadDailyPerformanceReport(force = false) {
 
   showDataStatus(
     "dailyPerformanceStatus",
-    "جاري تحميل تقرير الأداء اليومي...",
+    l1T("dailyPerformance.status.loading"),
     "info"
   );
 
@@ -5399,15 +5399,15 @@ async function loadDailyPerformanceReport(force = false) {
     await loadDailyActivityReport();
     showDataStatus(
       "dailyPerformanceStatus",
-      `تم تحديث التقرير في ${new Date().toLocaleTimeString("ar-SA-u-ca-gregory-nu-latn")}.`,
+      l1T("dailyPerformance.status.updatedAt", { time:new Date().toLocaleTimeString(l1Locale(), {hour:"2-digit",minute:"2-digit"}) }),
       "success"
     );
   } catch (error) {
     showDataStatus(
       "dailyPerformanceStatus",
       error instanceof Error
-        ? error.message
-        : "تعذر تحميل تقرير الأداء اليومي.",
+        ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message)
+        : l1T("dailyPerformance.error.load"),
       "error"
     );
   } finally {
@@ -5968,14 +5968,14 @@ function dailyDaysOverdue(value) {
 }
 
 function dailyActivityStatus(session) {
-  if (!session) return { key: "not_started", label: "لم يبدأ اليوم" };
-  if (session.ended_at) return { key: "ended", label: "أنهى يومه" };
+  if (!session) return { key: "not_started", label: l1T("dailyPerformance.attendance.notStarted") };
+  if (session.ended_at) return { key: "ended", label: l1T("dailyPerformance.attendance.ended") };
 
   const last = new Date(session.last_activity_at || session.first_activity_at);
   const idleMinutes = (Date.now() - last.getTime()) / 60000;
 
-  if (idleMinutes <= 15) return { key: "active", label: "نشط الآن" };
-  return { key: "inactive", label: "غير نشط" };
+  if (idleMinutes <= 15) return { key: "active", label: l1T("dailyPerformance.attendance.active") };
+  return { key: "inactive", label: l1T("dailyPerformance.attendance.inactive") };
 }
 
 function dailyActivityDuration(session) {
@@ -5987,7 +5987,7 @@ function dailyActivityDuration(session) {
   const minutes = Math.max(0, Math.round((end - start) / 60000));
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;
-  return hours ? `${hours} س ${rest} د` : `${rest} دقيقة`;
+  return hours ? l1T("dailyPerformance.attendance.hoursMinutes",{hours,minutes:rest}) : l1T("dailyPerformance.attendance.minutes",{minutes:rest});
 }
 
 function dailyActivityTime(value) {
@@ -6000,18 +6000,18 @@ function dailyActivityTime(value) {
 
 function dailyActivityTypeLabel(type) {
   return {
-    session: "الدخول والنشاط",
-    customers: "العملاء",
-    followups: "المتابعات",
-    quotations: "عقود العملاء",
-    installations: "المواعيد",
-    invoices: "فواتير المبيعات",
-    daily_tasks: "المهام اليومية",
-    daily_alerts: "التنبيهات",
-    users: "المستخدمون والصلاحيات",
-    reference_data: "البيانات المرجعية",
-    other: "نشاط آخر"
-  }[type] || type || "نشاط";
+    session: l1T("dailyPerformance.activity.session"),
+    customers: l1T("dailyPerformance.activity.customers"),
+    followups: l1T("dailyPerformance.activity.followups"),
+    quotations: l1T("dailyPerformance.activity.quotations"),
+    installations: l1T("dailyPerformance.activity.installations"),
+    invoices: l1T("dailyPerformance.activity.invoices"),
+    daily_tasks: l1T("dailyPerformance.activity.tasks"),
+    daily_alerts: l1T("dailyPerformance.activity.alerts"),
+    users: l1T("dailyPerformance.activity.users"),
+    reference_data: l1T("dailyPerformance.activity.reference"),
+    other: l1T("dailyPerformance.activity.other")
+  }[type] || type || l1T("dailyPerformance.activity.generic");
 }
 
 function timelineAllowedUserIds() {
@@ -6033,18 +6033,18 @@ function populateDailyActivityEmployees() {
       `user:${session.user_id}`,
       session.user_profile?.full_name
         || session.representative?.full_name
-        || "غير محدد"
+        || l1T("dailyPerformance.activity.unknownEmployee")
     );
   });
 
   dailyActivitySnapshot.timeline.filter(event => !allowedUserIds.size || allowedUserIds.has(event.userId)).forEach(event => {
     if (event.userId) {
-      employees.set(`user:${event.userId}`, event.employeeName || "غير محدد");
+      employees.set(`user:${event.userId}`, event.employeeName || l1T("dailyPerformance.activity.unknownEmployee"));
     }
   });
 
   select.innerHTML = [
-    '<option value="">اختر الموظف</option>',
+    `<option value="">${escapeHtml(l1T('dailyPerformance.filter.chooseEmployee'))}</option>`,
     ...[...employees.entries()]
       .sort((a, b) => a[1].localeCompare(b[1], "ar"))
       .map(([value, label]) =>
@@ -6076,7 +6076,7 @@ function renderDailyActivityTimeline() {
 
   const employee = document.getElementById("dailyActivityEmployeeFilter")?.value || "";
   if (!dailyActivityReportRequested || !employee) {
-    container.innerHTML = '<div class="empty-state">اختر الموظف ثم اضغط عرض بيانات التقرير.</div>';
+    container.innerHTML = `<div class="empty-state">${escapeHtml(l1T('dailyPerformance.activity.chooseEmployee'))}</div>`;
     return;
   }
 
@@ -6091,14 +6091,14 @@ function renderDailyActivityTimeline() {
         <div class="daily-activity-event-dot"></div>
         <div class="daily-activity-event-content">
           <div>
-            <strong>${escapeHtml(event.title || "نشاط")}</strong>
-            <span>${escapeHtml(event.employeeName || "غير محدد")}</span>
+            <strong>${escapeHtml(event.title || l1T("dailyPerformance.activity.generic"))}</strong>
+            <span>${escapeHtml(event.employeeName || l1T("dailyPerformance.activity.unknownEmployee"))}</span>
           </div>
           <p>${escapeHtml(String(event.detail || "—"))}</p>
         </div>
       </article>
     `).join("")
-    : '<div class="empty-state">لا توجد أنشطة مطابقة للفلاتر.</div>';
+    : `<div class="empty-state">${escapeHtml(l1T('dailyPerformance.activity.empty'))}</div>`;
 }
 
 function renderDailyAttendance() {
@@ -6124,7 +6124,7 @@ function renderDailyAttendance() {
               <strong>${escapeHtml(
                 session.user_profile?.full_name
                 || session.representative?.full_name
-                || "غير محدد"
+                || l1T("dailyPerformance.activity.unknownEmployee")
               )}</strong><br>
               <small>${escapeHtml(
                 session.representative?.representative_code
@@ -6144,7 +6144,7 @@ function renderDailyAttendance() {
             </td>
           </tr>`;
       }).join("")
-    : '<tr><td colspan="7" class="empty-state">لا توجد جلسات نشاط مسجلة لهذا اليوم.</td></tr>';
+    : `<tr><td colspan="7" class="empty-state">${escapeHtml(l1T('dailyPerformance.attendance.empty'))}</td></tr>`;
 }
 
 async function loadDailyActivityReport() {
@@ -6164,7 +6164,7 @@ async function loadDailyActivityReport() {
     const body = document.getElementById("dailyAttendanceBody");
     if (body) {
       body.innerHTML = `<tr><td colspan="7" class="empty-state">${
-        escapeHtml(error instanceof Error ? error.message : "تعذر تحميل النشاط اليومي.")
+        escapeHtml(error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("dailyPerformance.activity.error"))
       }</td></tr>`;
     }
   } finally {
@@ -6185,31 +6185,31 @@ async function renderCurrentDailySession() {
       `session-status-${status.key}`;
     document.getElementById("dailyCurrentSessionMeta").textContent =
       session
-        ? `أول نشاط ${dailyActivityTime(session.first_activity_at)} · آخر نشاط ${dailyActivityTime(session.last_activity_at)}`
-        : "لم يتم تسجيل جلسة اليوم بعد.";
+        ? l1T("dailyPerformance.activity.firstLast", {first:dailyActivityTime(session.first_activity_at),last:dailyActivityTime(session.last_activity_at)})
+        : l1T("dailyPerformance.activity.noSession");
 
     document.getElementById("endDailyWorkBtn").disabled =
       !session || Boolean(session.ended_at);
   } catch (error) {
     document.getElementById("dailyCurrentSessionStatus").textContent =
-      "تعذر تحميل الجلسة";
+      l1T("dailyPerformance.activity.loadSessionError");
   }
 }
 
 function dailyAlertSeverityLabel(value) {
   return {
-    normal: "عادي",
-    important: "مهم",
-    critical: "حرج"
+    normal: l1T("dailyPerformance.alerts.normal"),
+    important: l1T("dailyPerformance.alerts.important"),
+    critical: l1T("dailyPerformance.alerts.critical")
   }[value] || value || "—";
 }
 
 function dailyAlertStatusLabel(value) {
   return {
-    open: "مفتوح",
-    in_progress: "قيد المعالجة",
-    escalated: "مصعّد",
-    closed: "مغلق"
+    open: l1T("dailyPerformance.alerts.open"),
+    in_progress: l1T("dailyPerformance.alerts.inProgress"),
+    escalated: l1T("dailyPerformance.alerts.escalated"),
+    closed: l1T("dailyPerformance.alerts.closed")
   }[value] || value || "—";
 }
 
@@ -6250,37 +6250,37 @@ function renderDailyAlerts() {
     ? rows.map(alert => {
         const employee = alert.user_profile?.full_name
           || alert.representative?.full_name
-          || "غير محدد";
+          || l1T("dailyPerformance.activity.unknownEmployee");
 
         return `
           <article class="daily-alert-card severity-${alert.severity} status-${alert.status}">
             <div class="daily-alert-card-head">
               <div>
                 <span class="daily-alert-severity">${escapeHtml(dailyAlertSeverityLabel(alert.severity))}</span>
-                <strong>${escapeHtml(alert.title || "تنبيه")}</strong>
+                <strong>${escapeHtml(alert.title || l1T("dailyPerformance.alerts.actionGeneric"))}</strong>
                 <small>${escapeHtml(employee)} · ${dailyDateTime(alert.created_at)}</small>
               </div>
               <span class="daily-alert-status">${escapeHtml(dailyAlertStatusLabel(alert.status))}</span>
             </div>
             <p>${escapeHtml(alert.details || "—")}</p>
-            ${alert.supervisor_note ? `<div class="daily-alert-note"><b>ملاحظة المشرف:</b> ${escapeHtml(alert.supervisor_note)}</div>` : ""}
+            ${alert.supervisor_note ? `<div class="daily-alert-note"><b>${escapeHtml(l1T("dailyPerformance.alerts.noteLabel"))}</b> ${escapeHtml(alert.supervisor_note)}</div>` : ""}
             ${canManage ? `
               <div class="daily-alert-card-actions">
-                ${alert.status === "open" ? `<button type="button" class="secondary-btn compact-btn" data-alert-action="start" data-alert-id="${alert.id}">بدء المعالجة</button>` : ""}
-                ${alert.status !== "escalated" && alert.status !== "closed" ? `<button type="button" class="warning-btn compact-btn" data-alert-action="escalate" data-alert-id="${alert.id}">تصعيد للمشرف</button>` : ""}
-                ${alert.status !== "closed" ? `<button type="button" class="primary-btn compact-btn" data-alert-action="close" data-alert-id="${alert.id}">تمت المعالجة</button>` : `<button type="button" class="secondary-btn compact-btn" data-alert-action="reopen" data-alert-id="${alert.id}">إعادة فتح</button>`}
+                ${alert.status === "open" ? `<button type="button" class="secondary-btn compact-btn" data-alert-action="start" data-alert-id="${alert.id}">${escapeHtml(l1T("dailyPerformance.alerts.start"))}</button>` : ""}
+                ${alert.status !== "escalated" && alert.status !== "closed" ? `<button type="button" class="warning-btn compact-btn" data-alert-action="escalate" data-alert-id="${alert.id}">${escapeHtml(l1T("dailyPerformance.alerts.escalate"))}</button>` : ""}
+                ${alert.status !== "closed" ? `<button type="button" class="primary-btn compact-btn" data-alert-action="close" data-alert-id="${alert.id}">${escapeHtml(l1T("dailyPerformance.alerts.close"))}</button>` : `<button type="button" class="secondary-btn compact-btn" data-alert-action="reopen" data-alert-id="${alert.id}">${escapeHtml(l1T("dailyPerformance.alerts.reopen"))}</button>`}
               </div>
             ` : ""}
           </article>`;
       }).join("")
-    : '<div class="empty-state">لا توجد تنبيهات مطابقة.</div>';
+    : `<div class="empty-state">${escapeHtml(l1T('dailyPerformance.alerts.empty'))}</div>`;
 }
 
 async function loadDailyAlerts(forceSync = false) {
   if (dailyAlertsLoading || !window.DailyAlertsService) return;
   dailyAlertsLoading = true;
 
-  showDataStatus("dailyAlertsStatus", "جاري تحميل التنبيهات...", "info");
+  showDataStatus("dailyAlertsStatus", l1T("dailyPerformance.alerts.loading"), "info");
   try {
     if (forceSync) {
       await window.DailyAlertsService.sync(undefined, { force: true });
@@ -6291,7 +6291,7 @@ async function loadDailyAlerts(forceSync = false) {
   } catch (error) {
     showDataStatus(
       "dailyAlertsStatus",
-      error instanceof Error ? error.message : "تعذر تحميل التنبيهات.",
+      error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("dailyPerformance.alerts.loadError"),
       "error"
     );
   } finally {
@@ -6302,13 +6302,13 @@ async function loadDailyAlerts(forceSync = false) {
 function openDailyAlertAction(alertId, actionType) {
   dailyAlertPendingAction = { alertId, actionType };
   const titles = {
-    start: "بدء معالجة التنبيه",
-    escalate: "تصعيد التنبيه للمشرف",
-    close: "إغلاق التنبيه بعد المعالجة",
-    reopen: "إعادة فتح التنبيه"
+    start: l1T("dailyPerformance.alerts.actionStart"),
+    escalate: l1T("dailyPerformance.alerts.actionEscalate"),
+    close: l1T("dailyPerformance.alerts.actionClose"),
+    reopen: l1T("dailyPerformance.alerts.actionReopen")
   };
   document.getElementById("dailyAlertActionTitle").textContent =
-    titles[actionType] || "إجراء على التنبيه";
+    titles[actionType] || l1T("dailyPerformance.alerts.actionGeneric");
   document.getElementById("dailyAlertActionId").value = alertId;
   document.getElementById("dailyAlertActionType").value = actionType;
   document.getElementById("dailyAlertActionNote").value = "";
@@ -6362,10 +6362,10 @@ function renderDailyAlertsReport() {
             <td>${byStatus("escalated")}</td>
             <td>${byStatus("closed")}</td>
             <td>${employeeAlerts.filter(alert => alert.severity === "critical").length}</td>
-            <td>${averageMinutes ? `${averageMinutes} دقيقة` : "—"}</td>
+            <td>${averageMinutes ? l1T("dailyPerformance.alerts.minutes",{minutes:averageMinutes}) : "—"}</td>
           </tr>`;
       }).join("")
-    : '<tr><td colspan="7" class="empty-state">لا توجد بيانات.</td></tr>';
+    : `<tr><td colspan="7" class="empty-state">${escapeHtml(l1T('dailyPerformance.alerts.reportEmpty'))}</td></tr>`;
 }
 
 function dailyTaskCanEdit(definition) {
@@ -6395,10 +6395,10 @@ function renderDailyChecklist(today, profile) {
   const personalSetting = currentEmployeeReportSetting();
   if (personalSetting?.requiresDailyTasks === false) {
     document.getElementById("dailyTasksCompletionRate").textContent = "—";
-    document.getElementById("dailyTasksCompletionText").textContent = "غير مطلوب";
-    document.getElementById("dailyChecklistPermission").textContent = "غير خاضع للمهام";
+    document.getElementById("dailyTasksCompletionText").textContent = l1T("dailyOperations.task.notRequired");
+    document.getElementById("dailyChecklistPermission").textContent = l1T("dailyOperations.task.notSubject");
     document.getElementById("dailyChecklistPermission").className = "daily-permission-badge readonly";
-    container.innerHTML = '<div class="empty-state">لا توجد مهام يومية مطلوبة من حسابك وفق إعدادات الإدارة.</div>';
+    container.innerHTML = `<div class="empty-state">${escapeHtml(l1T('dailyOperations.task.noneRequired'))}</div>`;
     return;
   }
 
@@ -6411,13 +6411,13 @@ function renderDailyChecklist(today, profile) {
       ? Math.round(completedCount / dailyTaskDefinitions.length * 100)
       : 0}%`;
   document.getElementById("dailyTasksCompletionText").textContent =
-    `${completedCount} من ${dailyTaskDefinitions.length}`;
+    l1T("dailyPerformance.kpi.completedOf",{completed:completedCount,total:dailyTaskDefinitions.length});
 
   const editableCount = dailyTaskDefinitions.filter(dailyTaskCanEdit).length;
   document.getElementById("dailyChecklistPermission").textContent =
     editableCount
-      ? `مصرح بـ ${editableCount} مهمة`
-      : "عرض فقط";
+      ? l1T("dailyOperations.task.editableCount",{count:editableCount})
+      : l1T("dailyOperations.task.readOnly");
   document.getElementById("dailyChecklistPermission").className =
     `daily-permission-badge ${editableCount ? "allowed" : "readonly"}`;
 
@@ -6441,17 +6441,17 @@ function renderDailyChecklist(today, profile) {
               ${canEdit ? "" : "disabled"}>
             <span class="daily-task-check" aria-hidden="true"></span>
             <div>
-              <strong>${escapeHtml(completed ? `تم ${definition.taskName}` : definition.taskName)}</strong>
+              <strong>${escapeHtml(completed ? l1T("dailyOperations.task.completedPrefix",{task:definition.taskName}) : definition.taskName)}</strong>
               <small>${
                 completed
-                  ? `تم بواسطة ${escapeHtml(completion.userName || profile?.full_name || "المستخدم الحالي")} في ${dailyDateTime(completion.completedAt)}`
-                  : escapeHtml(canEdit ? (definition.description || "حدد المهمة بعد التنفيذ.") : "لا تملك صلاحية تغيير هذه المهمة.")
+                  ? escapeHtml(l1T("dailyOperations.task.completedBy",{name:completion.userName || profile?.full_name || l1T("dailyOperations.task.currentUser"),time:dailyDateTime(completion.completedAt)}))
+                  : escapeHtml(canEdit ? (definition.description || l1T("dailyOperations.task.markAfter")) : l1T("dailyOperations.task.permission"))
               }</small>
             </div>
-            <b>${completed ? "تم التنفيذ" : "لم يتم التنفيذ"}</b>
+            <b>${escapeHtml(completed ? l1T("dailyOperations.task.done") : l1T("dailyOperations.task.notDone"))}</b>
           </label>`;
       }).join("")
-    : '<div class="empty-state">لا توجد مهام يومية مفعلة.</div>';
+    : `<div class="empty-state">${escapeHtml(l1T('dailyOperations.task.noneActive'))}</div>`;
 }
 
 function currentEmployeeReportSetting() {
@@ -6487,11 +6487,11 @@ function renderDailyTargets(actuals) {
   });
 
   document.getElementById("dailyCustomersTargetText").textContent =
-    `الهدف: ${targets.customersTarget}`;
+    l1T("dailyOperations.targets.target",{count:targets.customersTarget});
   document.getElementById("dailyFollowupsTargetText").textContent =
-    `الهدف: ${targets.followupsTarget}`;
+    l1T("dailyOperations.targets.target",{count:targets.followupsTarget});
   document.getElementById("dailyQuotationsTargetText").textContent =
-    `الهدف: ${targets.quotationsTarget}`;
+    l1T("dailyOperations.targets.target",{count:targets.quotationsTarget});
 }
 
 function dailyWhatsAppTemplateMessage() {
@@ -6524,8 +6524,8 @@ function renderDailyWhatsAppTemplate() {
   } else if (hasStored && image) {
     if (dailyWhatsAppTemplatePreviewUrl) image.src = dailyWhatsAppTemplatePreviewUrl;
     else image.removeAttribute("src");
-    image.alt = "صورة رسالة واتساب المحفوظة";
-    if (name) name.textContent = dailyWhatsAppTemplate.image_name || "صورة محفوظة";
+    image.alt = l1T("dailyOperations.whatsapp.savedImageAlt");
+    if (name) name.textContent = dailyWhatsAppTemplate.image_name || l1T("dailyOperations.whatsapp.savedImage");
     preview?.classList.remove("hidden");
   } else {
     preview?.classList.add("hidden");
@@ -6536,7 +6536,7 @@ function renderDailyWhatsAppTemplate() {
 async function loadDailyWhatsAppTemplate() {
   if (dailyWhatsAppTemplateLoading || !window.WhatsAppTemplateService) return;
   dailyWhatsAppTemplateLoading = true;
-  updateDailyWhatsAppTemplateStatus("جارٍ التحميل...");
+  updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.loading"));
   try {
     dailyWhatsAppTemplate = await window.WhatsAppTemplateService.load();
     if (dailyWhatsAppTemplatePreviewUrl) URL.revokeObjectURL(dailyWhatsAppTemplatePreviewUrl);
@@ -6547,10 +6547,10 @@ async function loadDailyWhatsAppTemplate() {
     }
     dailyWhatsAppTemplatePendingFile = null;
     dailyWhatsAppTemplateRemoveImage = false;
-    updateDailyWhatsAppTemplateStatus("الإعداد محفوظ لحسابك", "success");
+    updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.saved"), "success");
   } catch (error) {
     console.error("WhatsApp template load failed", error);
-    updateDailyWhatsAppTemplateStatus("تعذر تحميل الإعداد", "error");
+    updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.loadError"), "error");
   } finally {
     dailyWhatsAppTemplateLoading = false;
     renderDailyWhatsAppTemplate();
@@ -6562,7 +6562,7 @@ async function saveDailyWhatsAppTemplate() {
   const message = document.getElementById("dailyWhatsAppTemplateMessage")?.value || "";
   if (!window.WhatsAppTemplateService) return;
   if (button) button.disabled = true;
-  updateDailyWhatsAppTemplateStatus("جارٍ الحفظ...");
+  updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.saving"));
   try {
     dailyWhatsAppTemplate = await window.WhatsAppTemplateService.save({
       messageText: message,
@@ -6577,16 +6577,16 @@ async function saveDailyWhatsAppTemplate() {
       const storedFile = await window.WhatsAppTemplateService.downloadImage(dailyWhatsAppTemplate);
       if (storedFile) dailyWhatsAppTemplatePreviewUrl = URL.createObjectURL(storedFile);
     }
-    updateDailyWhatsAppTemplateStatus("تم حفظ الرسالة والصورة لحسابك", "success");
+    updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.savedSuccess"), "success");
     renderDailySuggestedCustomers();
   } catch (error) {
     console.error("WhatsApp template save failed", error);
     const code = error?.message || "";
     updateDailyWhatsAppTemplateStatus(
-      code === "IMAGE_TOO_LARGE" ? "حجم الصورة أكبر من 5 ميجابايت"
-        : code === "INVALID_IMAGE_TYPE" ? "صيغة الصورة غير مدعومة"
-          : code === "MESSAGE_TOO_LONG" ? "الرسالة أطول من الحد المسموح"
-            : "تعذر حفظ الإعداد",
+      code === "IMAGE_TOO_LARGE" ? l1T("dailyOperations.whatsapp.imageTooLarge")
+        : code === "INVALID_IMAGE_TYPE" ? l1T("dailyOperations.whatsapp.invalidImage")
+          : code === "MESSAGE_TOO_LONG" ? l1T("dailyOperations.whatsapp.messageTooLong")
+            : l1T("dailyOperations.whatsapp.saveError"),
       "error"
     );
   } finally {
@@ -6617,7 +6617,7 @@ async function loadDailySuggestedCustomers(force = false) {
   if (dailySuggestedSuggestionsLoading && !force) return;
   const service = window.DailySuggestionsService;
   if (!service?.load) {
-    dailySuggestedSuggestionsError = "تعذر تحميل خدمة العملاء المقترحين.";
+    dailySuggestedSuggestionsError = l1T("dailyOperations.suggested.serviceError");
     renderDailySuggestedCustomers();
     return;
   }
@@ -6630,7 +6630,7 @@ async function loadDailySuggestedCustomers(force = false) {
     dailySuggestedSuggestionRows = result.rows || [];
     dailySuggestedSuggestionProgress = result.progress || dailySuggestedSuggestionProgress;
   } catch (error) {
-    dailySuggestedSuggestionsError = error?.message || "تعذر تحميل قائمة العملاء المقترحين.";
+    dailySuggestedSuggestionsError = error?.message || l1T("dailyOperations.suggested.customersError");
     console.error("Daily suggestions load failed", error);
   } finally {
     dailySuggestedSuggestionsLoading = false;
@@ -6640,10 +6640,10 @@ async function loadDailySuggestedCustomers(force = false) {
 
 function renderDailySuggestedCustomers() {
   const body=document.getElementById("dailySuggestedCustomersBody"),summary=document.getElementById("dailySuggestedCustomersSummary"); if(!body)return; const rows=dailySuggestedCustomers(),progress=dailySuggestedSuggestionProgress||{}; renderDailySuggestedProgress();
-  if(dailySuggestedSuggestionsLoading){if(summary)summary.textContent="جارٍ تحميل قائمة اليوم...";body.innerHTML=dailyEmptyRow(7,"جارٍ تحميل العملاء المقترحين...");return;}
-  if(dailySuggestedSuggestionsError){if(summary)summary.textContent="تعذر تحميل قائمة اليوم";body.innerHTML=`<tr><td colspan="7"><div class="daily-suggested-state is-error"><strong>تعذر تحميل القائمة</strong><small>${escapeHtml(dailySuggestedSuggestionsError)}</small><button type="button" class="secondary-btn compact-btn" data-daily-suggested-retry>إعادة المحاولة</button></div></td></tr>`;return;}
-  if(summary)summary.textContent=`${Number(progress.completed||0)} تم التواصل معهم، و${rows.length} متاحون الآن`;
-  body.innerHTML=rows.length?rows.map((item,index)=>{const whatsappNumber=dailyWhatsAppNumber(item.phone),canAddFollowup=canManageFollowups("add");return `<tr><td>${index+1}</td><td><strong>${escapeHtml(item.customer_name||"—")}</strong><br><small>${escapeHtml(item.customer_number||"")}</small></td><td>${escapeHtml(item.phone||"—")}</td><td>${item.last_contact_date?formatDate(item.last_contact_date):"لم يتم التواصل"}</td><td>${item.latest_quotation_number?`<strong>${escapeHtml(item.latest_quotation_number)}</strong><br><small>${item.latest_quotation_date?formatDate(item.latest_quotation_date):""}</small>`:"—"}</td><td>${escapeHtml(item.representative_name||"—")}</td><td><div class="daily-suggested-actions">${canAddFollowup?`<button type="button" class="secondary-btn compact-btn" data-daily-suggested-followup="${escapeHtml(String(item.customer_id))}">إضافة متابعة</button><button type="button" class="primary-btn compact-btn" data-daily-suggested-contacted="${escapeHtml(String(item.customer_id))}" data-daily-suggestion-id="${escapeHtml(String(item.suggestion_id))}">تم التواصل</button>`:""}${whatsappNumber?`<a class="daily-whatsapp-btn" href="${escapeHtml(window.WhatsAppTemplateService?.directUrl?.(whatsappNumber,dailyWhatsAppTemplateMessage())||`https://wa.me/${whatsappNumber}`)}" target="_blank" rel="noopener noreferrer">واتساب</a>`:""}</div></td></tr>`;}).join(""):`<tr><td colspan="7"><div class="daily-suggested-state"><strong>لا يوجد عملاء مقترح التواصل معهم حاليًا</strong><small>أضف عملاء أو متابعات وسيتم تجهيز القائمة تلقائيًا.</small></div></td></tr>`;
+  if(dailySuggestedSuggestionsLoading){if(summary)summary.textContent=l1T("dailyOperations.suggested.loadingList");body.innerHTML=dailyEmptyRow(7,l1T("dailyOperations.suggested.loadingCustomers"));return;}
+  if(dailySuggestedSuggestionsError){if(summary)summary.textContent=l1T("dailyOperations.suggested.loadListError");body.innerHTML=`<tr><td colspan="7"><div class="daily-suggested-state is-error"><strong>${escapeHtml(l1T("dailyOperations.suggested.loadErrorTitle"))}</strong><small>${escapeHtml(window.PetatoeLocalization?.translateMessage?.(dailySuggestedSuggestionsError)||dailySuggestedSuggestionsError)}</small><button type="button" class="secondary-btn compact-btn" data-daily-suggested-retry>${escapeHtml(l1T("dailyOperations.suggested.retry"))}</button></div></td></tr>`;return;}
+  if(summary)summary.textContent=l1T("dailyOperations.suggested.summary",{completed:Number(progress.completed||0),available:rows.length});
+  body.innerHTML=rows.length?rows.map((item,index)=>{const whatsappNumber=dailyWhatsAppNumber(item.phone),canAddFollowup=canManageFollowups("add");return `<tr><td>${index+1}</td><td><strong>${escapeHtml(item.customer_name||"—")}</strong><br><small>${escapeHtml(item.customer_number||"")}</small></td><td>${escapeHtml(item.phone||"—")}</td><td>${item.last_contact_date?formatDate(item.last_contact_date):l1T("dailyOperations.suggested.notContacted")}</td><td>${item.latest_quotation_number?`<strong>${escapeHtml(item.latest_quotation_number)}</strong><br><small>${item.latest_quotation_date?formatDate(item.latest_quotation_date):""}</small>`:"—"}</td><td>${escapeHtml(item.representative_name||"—")}</td><td><div class="daily-suggested-actions">${canAddFollowup?`<button type="button" class="secondary-btn compact-btn" data-daily-suggested-followup="${escapeHtml(String(item.customer_id))}">${escapeHtml(l1T("dailyOperations.suggested.addFollowup"))}</button><button type="button" class="primary-btn compact-btn" data-daily-suggested-contacted="${escapeHtml(String(item.customer_id))}" data-daily-suggestion-id="${escapeHtml(String(item.suggestion_id))}">${escapeHtml(l1T("dailyOperations.suggested.contacted"))}</button>`:""}${whatsappNumber?`<a class="daily-whatsapp-btn" href="${escapeHtml(window.WhatsAppTemplateService?.directUrl?.(whatsappNumber,dailyWhatsAppTemplateMessage())||`https://wa.me/${whatsappNumber}`)}" target="_blank" rel="noopener noreferrer">${escapeHtml(l1T("dailyOperations.suggested.whatsapp"))}</a>`:""}</div></td></tr>`;}).join(""):`<tr><td colspan="7"><div class="daily-suggested-state"><strong>${escapeHtml(l1T("dailyOperations.suggested.emptyTitle"))}</strong><small>${escapeHtml(l1T("dailyOperations.suggested.emptyNote"))}</small></div></td></tr>`;
 }
 
 function canViewDailySuggestionsTeam() {
@@ -6660,7 +6660,7 @@ async function loadDailySuggestedTeam(force = false) {
 
   const service = window.DailySuggestionsService;
   if (!service?.loadTeamSummary) {
-    dailySuggestedTeamError = "تعذر تحميل خدمة متابعة الفريق.";
+    dailySuggestedTeamError = l1T("dailyOperations.team.serviceUnavailable");
     renderDailySuggestedTeam();
     return;
   }
@@ -6671,7 +6671,7 @@ async function loadDailySuggestedTeam(force = false) {
   try {
     dailySuggestedTeamRows = await service.loadTeamSummary();
   } catch (error) {
-    dailySuggestedTeamError = error?.message || "تعذر تحميل متابعة إنجاز الفريق.";
+    dailySuggestedTeamError = error?.message || l1T("dailyOperations.team.loadError");
     console.error("Daily suggestions team summary failed", error);
   } finally {
     dailySuggestedTeamLoading = false;
@@ -6681,10 +6681,10 @@ async function loadDailySuggestedTeam(force = false) {
 
 function renderDailySuggestedTeam() {
   const panel=document.getElementById("dailySuggestedTeamPanel"),body=document.getElementById("dailySuggestedTeamBody"),summary=document.getElementById("dailySuggestedTeamSummary"); if(!panel||!body)return; const allowed=canViewDailySuggestionsTeam(); panel.classList.toggle("hidden",!allowed); if(!allowed)return;
-  if(dailySuggestedTeamLoading){if(summary)summary.textContent="جارٍ تحميل أداء الفريق...";body.innerHTML=dailyEmptyRow(8,"جارٍ تحميل أداء الفريق...");return;}
-  if(dailySuggestedTeamError){if(summary)summary.textContent="تعذر تحميل أداء الفريق";body.innerHTML=`<tr><td colspan="8"><div class="daily-suggested-state is-error"><strong>تعذر تحميل متابعة الفريق</strong><small>${escapeHtml(dailySuggestedTeamError)}</small></div></td></tr>`;return;}
-  const completed=dailySuggestedTeamRows.reduce((s,r)=>s+Number(r.total_completed||0),0),target=dailySuggestedTeamRows.length*20;if(summary)summary.textContent=`${dailySuggestedTeamRows.length} مستخدمين — ${completed} من ${target||0} تواصل مكتمل`;
-  body.innerHTML=dailySuggestedTeamRows.length?dailySuggestedTeamRows.map(row=>{const percent=Math.max(0,Math.min(100,Number(row.completion_percent||0)));return `<tr><td><strong>${escapeHtml(row.user_name||row.user_email||"—")}</strong><br><small>${escapeHtml(row.representative_name||row.user_email||"")}</small></td><td>${escapeHtml(row.user_role||"—")}</td><td>${Number(row.total_active||0)}</td><td>${Number(row.total_completed||0)}</td><td>${Number(row.total_completed||0)} / 20</td><td><div class="daily-team-progress"><span style="width:${percent}%"></span></div><small>${percent}%</small></td><td>${Number(row.total_active||0)}</td><td>${row.last_completed_at?formatDate(row.last_completed_at):"—"}</td></tr>`;}).join(""):dailyEmptyRow(8,"لا توجد حسابات مبيعات نشطة لعرضها.");
+  if(dailySuggestedTeamLoading){const message=l1T("dailyOperations.team.loading");if(summary)summary.textContent=message;body.innerHTML=dailyEmptyRow(8,message);return;}
+  if(dailySuggestedTeamError){if(summary)summary.textContent=l1T("dailyOperations.team.summaryError");body.innerHTML=`<tr><td colspan="8"><div class="daily-suggested-state is-error"><strong>${escapeHtml(l1T("dailyOperations.team.errorTitle"))}</strong><small>${escapeHtml(window.PetatoeLocalization?.translateMessage?.(dailySuggestedTeamError)||dailySuggestedTeamError)}</small></div></td></tr>`;return;}
+  const completed=dailySuggestedTeamRows.reduce((s,r)=>s+Number(r.total_completed||0),0),target=dailySuggestedTeamRows.length*20;if(summary)summary.textContent=l1T("dailyOperations.team.summary",{users:dailySuggestedTeamRows.length,completed,target:target||0});
+  body.innerHTML=dailySuggestedTeamRows.length?dailySuggestedTeamRows.map(row=>{const percent=Math.max(0,Math.min(100,Number(row.completion_percent||0)));return `<tr><td><strong>${escapeHtml(row.user_name||row.user_email||"—")}</strong><br><small>${escapeHtml(row.representative_name||row.user_email||"")}</small></td><td>${escapeHtml(row.user_role||"—")}</td><td>${Number(row.total_active||0)}</td><td>${Number(row.total_completed||0)}</td><td>${Number(row.total_completed||0)} / 20</td><td><div class="daily-team-progress"><span style="width:${percent}%"></span></div><small>${percent}%</small></td><td>${Number(row.total_active||0)}</td><td>${row.last_completed_at?formatDate(row.last_completed_at):"—"}</td></tr>`;}).join(""):dailyEmptyRow(8,l1T("dailyOperations.team.empty"));
 }
 
 function renderDailyOperations() {
@@ -6741,7 +6741,7 @@ function renderDailyOperations() {
         <td>${escapeHtml(row.result || "—")}</td>
         <td>${row.nextFollowupDate ? formatDate(row.nextFollowupDate) : "—"}</td>
       </tr>`).join("")
-    : dailyEmptyRow(5, "لم يتم تسجيل متابعات اليوم حتى الآن.");
+    : dailyEmptyRow(5, l1T("dailyOperations.empty.followups"));
 
   const customersBody = document.getElementById("dailyCustomersBody");
   customersBody.innerHTML = todayCustomers.length
@@ -6753,7 +6753,7 @@ function renderDailyOperations() {
         <td>${escapeHtml(row.phone || "—")}</td>
         <td>${dailyDateTime(row.createdAt)}</td>
       </tr>`).join("")
-    : dailyEmptyRow(5, "لا يوجد عملاء جدد مضافون اليوم.");
+    : dailyEmptyRow(5, l1T("dailyOperations.empty.customers"));
 
   const quotationsBody = document.getElementById("dailyQuotationsBody");
   quotationsBody.innerHTML = todayQuotations.length
@@ -6765,7 +6765,7 @@ function renderDailyOperations() {
         <td>${escapeHtml(row.status || "—")}</td>
         <td>${formatCurrency(row.amount || 0)}</td>
       </tr>`).join("")
-    : dailyEmptyRow(5, "لا توجد عروض أسعار منشأة اليوم.");
+    : dailyEmptyRow(5, l1T("dailyOperations.empty.quotations"));
 
   const overdueBody = document.getElementById("dailyOverdueBody");
   overdueBody.innerHTML = overdueFollowups.length
@@ -6774,10 +6774,10 @@ function renderDailyOperations() {
         <td><strong>${escapeHtml(row.customerName || "—")}</strong><br><small>${escapeHtml(row.customerPhone || "")}</small></td>
         <td>${escapeHtml(row.representative || "—")}</td>
         <td>${formatDate(row.nextFollowupDate)}</td>
-        <td><span class="daily-overdue-badge">${dailyDaysOverdue(row.nextFollowupDate)} يوم</span></td>
+        <td><span class="daily-overdue-badge">${escapeHtml(l1T("dailyOperations.delay.days",{count:dailyDaysOverdue(row.nextFollowupDate)}))}</span></td>
         <td>${escapeHtml(row.result || "—")}</td>
       </tr>`).join("")
-    : dailyEmptyRow(5, "لا توجد متابعات متأخرة. ممتاز!");
+    : dailyEmptyRow(5, l1T("dailyOperations.empty.overdue"));
 }
 
 async function loadDailyOperations(force = false) {
@@ -6785,7 +6785,7 @@ async function loadDailyOperations(force = false) {
   dailyOperationsLoading = true;
   showDataStatus(
     "dailyOperationsStatus",
-    "جاري تحميل مركز التشغيل اليومي...",
+    l1T("dailyOperations.status.loading"),
     "info"
   );
 
@@ -6806,8 +6806,8 @@ async function loadDailyOperations(force = false) {
     showDataStatus(
       "dailyOperationsStatus",
       isPermissionDenied
-        ? "لا توجد صلاحية لعرض إدارة المهام اليومية."
-        : "تعذر تحميل بيانات مركز التشغيل اليومي.",
+        ? l1T("dailyOperations.error.permission")
+        : l1T("dailyOperations.error.load"),
       "error"
     );
   } finally {
@@ -6827,7 +6827,7 @@ async function updateDailyTask(taskKey, completed) {
     if (checkbox) checkbox.checked = !completed;
     showDataStatus(
       "dailyOperationsStatus",
-      "لا تملك صلاحية تغيير هذه المهمة.",
+      l1T("dailyOperations.task.permission"),
       "error"
     );
     return;
@@ -6836,7 +6836,7 @@ async function updateDailyTask(taskKey, completed) {
   if (checkbox) checkbox.disabled = true;
   showDataStatus(
     "dailyOperationsStatus",
-    "جاري حفظ حالة المهمة...",
+    l1T("dailyOperations.task.saving"),
     "info"
   );
 
@@ -6863,8 +6863,8 @@ async function updateDailyTask(taskKey, completed) {
     showDataStatus(
       "dailyOperationsStatus",
       completed
-        ? "تم تسجيل تنفيذ المهمة بنجاح."
-        : "تمت إعادة فتح المهمة.",
+        ? l1T("dailyOperations.task.completed")
+        : l1T("dailyOperations.task.reopened"),
       "success"
     );
   } catch (error) {
@@ -6872,8 +6872,8 @@ async function updateDailyTask(taskKey, completed) {
     showDataStatus(
       "dailyOperationsStatus",
       error instanceof Error
-        ? error.message
-        : "تعذر حفظ المهمة.",
+        ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message)
+        : l1T("dailyOperations.task.saveError"),
       "error"
     );
   } finally {
@@ -8929,7 +8929,7 @@ document.getElementById("showDailyActivityReportBtn")?.addEventListener(
   () => {
     const employee = document.getElementById("dailyActivityEmployeeFilter")?.value || "";
     if (!employee) {
-      showDataStatus("dailyPerformanceStatus", "اختر الموظف أولًا لعرض خط سير يومه.", "error");
+      showDataStatus("dailyPerformanceStatus", l1T("dailyPerformance.error.chooseTimelineEmployee"), "error");
       return;
     }
     dailyActivityReportRequested = true;
@@ -8948,7 +8948,7 @@ document.getElementById("showDailyTasksReportBtn")?.addEventListener(
   () => {
     const employee = document.getElementById("dailyTasksEmployeeFilter")?.value || "";
     if (!employee) {
-      showDataStatus("dailyPerformanceStatus", "اختر الموظف أولًا لعرض تقرير المهام اليومية.", "error");
+      showDataStatus("dailyPerformanceStatus", l1T("dailyPerformance.error.chooseTasksEmployee"), "error");
       return;
     }
     dailyTasksReportRequested = true;
@@ -8958,7 +8958,7 @@ document.getElementById("showDailyTasksReportBtn")?.addEventListener(
 );
 
 document.getElementById("endDailyWorkBtn")?.addEventListener("click", async () => {
-  if (!confirm("هل تريد إنهاء يوم العمل الحالي؟")) return;
+  if (!confirm(l1T("dailyOperations.session.endConfirm"))) return;
 
   const button = document.getElementById("endDailyWorkBtn");
   button.disabled = true;
@@ -8968,13 +8968,13 @@ document.getElementById("endDailyWorkBtn")?.addEventListener("click", async () =
     await renderCurrentDailySession();
     showDataStatus(
       "dailyOperationsStatus",
-      "تم تسجيل إنهاء يوم العمل.",
+      l1T("dailyOperations.session.ended"),
       "success"
     );
   } catch (error) {
     showDataStatus(
       "dailyOperationsStatus",
-      error instanceof Error ? error.message : "تعذر إنهاء يوم العمل.",
+      error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("dailyOperations.session.endError"),
       "error"
     );
     button.disabled = false;
@@ -9020,13 +9020,13 @@ document.getElementById("dailyAlertActionForm")?.addEventListener(
       await loadDailyAlerts(false);
       showDataStatus(
         "dailyAlertsStatus",
-        "تم تنفيذ الإجراء على التنبيه بنجاح.",
+        l1T("dailyPerformance.alerts.actionSuccess"),
         "success"
       );
     } catch (error) {
       showDataStatus(
         "dailyAlertsStatus",
-        error instanceof Error ? error.message : "تعذر تنفيذ الإجراء.",
+        error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("dailyPerformance.alerts.actionError"),
         "error"
       );
     } finally {
@@ -9077,7 +9077,7 @@ function renderManagerNoteRecipients() {
   const selected = new Set(dailyManagerNote?.recipientUserIds || []);
   container.innerHTML = employeeReportSettings.length
     ? employeeReportSettings.map(item => `<label class="daily-note-recipient"><input type="checkbox" value="${escapeAttribute(item.userId)}" ${selected.has(item.userId) ? "checked" : ""}><span>${escapeHtml(item.fullName)}</span></label>`).join("")
-    : '<div class="empty-state">لا توجد بيانات موظفين متاحة.</div>';
+    : `<div class="empty-state">${escapeHtml(l1T('dailyPerformance.employeeTargets.noEmployees'))}</div>`;
 }
 
 function syncManagerNoteRecipientsVisibility() {
@@ -9100,18 +9100,18 @@ function renderEmployeeTargetsRows() {
       <td><input type="number" min="0" max="9999" data-field="customersTarget" value="${Number(item.customersTarget || 0)}" ${item.requiresTargets ? "" : "disabled"}></td>
       <td><input type="number" min="0" max="9999" data-field="followupsTarget" value="${Number(item.followupsTarget || 0)}" ${item.requiresTargets ? "" : "disabled"}></td>
       <td><input type="number" min="0" max="9999" data-field="quotationsTarget" value="${Number(item.quotationsTarget || 0)}" ${item.requiresTargets ? "" : "disabled"}></td>
-    </tr>`).join("") : '<tr><td colspan="9">لا توجد حسابات نشطة.</td></tr>';
+    </tr>`).join("") : `<tr><td colspan="9">${escapeHtml(l1T('dailyPerformance.employeeTargets.noAccounts'))}</td></tr>`;
 }
 
 async function loadEmployeeTargetsDialog() {
   const date = document.getElementById("employeeTargetsEffectiveFrom")?.value || window.EmployeeReportSettingsService?.isoDate?.();
-  showDataStatus("employeeTargetsStatus", "جاري تحميل الإعدادات...", "info");
+  showDataStatus("employeeTargetsStatus", l1T("dailyPerformance.employeeTargets.loadingSettings"), "info");
   try {
     employeeTargetsDialogRows = await window.EmployeeReportSettingsService.listForDate(date, { force: true });
     renderEmployeeTargetsRows();
     showDataStatus("employeeTargetsStatus", "");
   } catch (error) {
-    showDataStatus("employeeTargetsStatus", error.message || "تعذر تحميل الإعدادات.", "error");
+    showDataStatus("employeeTargetsStatus", window.PetatoeLocalization?.translateMessage?.(error.message) || error.message || l1T("dailyPerformance.employeeTargets.loadError"), "error");
   }
 }
 
@@ -9140,7 +9140,7 @@ document.getElementById("employeeTargetsBody")?.addEventListener("change", event
 document.getElementById("employeeTargetsForm")?.addEventListener("submit", async event => {
   event.preventDefault();
   const effectiveFrom = document.getElementById("employeeTargetsEffectiveFrom").value;
-  showDataStatus("employeeTargetsStatus", "جاري حفظ الإعدادات...", "info");
+  showDataStatus("employeeTargetsStatus", l1T("dailyPerformance.employeeTargets.saving"), "info");
   try {
     await window.EmployeeReportSettingsService.saveMany(employeeTargetsDialogRows.map(item => ({ ...item, effectiveFrom })));
     employeeReportSettings = await window.EmployeeReportSettingsService.listForDate();
@@ -9149,9 +9149,9 @@ document.getElementById("employeeTargetsForm")?.addEventListener("submit", async
     renderDailyOperations();
     if (activeViewKey === "dashboard") renderDashboard();
     dailyPerformanceSnapshot = null;
-    showDataStatus("dailyOperationsStatus", "تم حفظ أهداف ومشاركة الموظفين في التقارير.", "success");
+    showDataStatus("dailyOperationsStatus", l1T("dailyPerformance.employeeTargets.saved"), "success");
   } catch (error) {
-    showDataStatus("employeeTargetsStatus", error.message || "تعذر حفظ الإعدادات.", "error");
+    showDataStatus("employeeTargetsStatus", window.PetatoeLocalization?.translateMessage?.(error.message) || error.message || l1T("dailyPerformance.employeeTargets.saveError"), "error");
   }
 });
 
@@ -9172,9 +9172,9 @@ document.getElementById("dailyTargetsForm")?.addEventListener("submit", async ev
     });
     closeDailyTargetsDialog();
     renderDailyOperations();
-    showDataStatus("dailyOperationsStatus", "تم حفظ الأهداف اليومية.", "success");
+    showDataStatus("dailyOperationsStatus", l1T("dailyOperations.targets.saved"), "success");
   } catch (error) {
-    showDataStatus("dailyOperationsStatus", error instanceof Error ? error.message : "تعذر حفظ الأهداف.", "error");
+    showDataStatus("dailyOperationsStatus", error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("dailyOperations.targets.saveError"), "error");
   }
 });
 
@@ -9431,7 +9431,7 @@ document.getElementById("dailyOperationsView")?.addEventListener("click", async 
     dailyWhatsAppTemplatePendingFile = null;
     dailyWhatsAppTemplateRemoveImage = true;
     renderDailyWhatsAppTemplate();
-    updateDailyWhatsAppTemplateStatus("سيتم حذف الصورة عند الحفظ");
+    updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.imageRemovePending"));
     return;
   }
   if (event.target.closest("#dailyWhatsAppTemplateSaveBtn")) {
@@ -9449,7 +9449,7 @@ document.getElementById("dailyOperationsView")?.addEventListener("click", async 
     } catch (error) {
       if (error?.name !== "AbortError") {
         console.error("WhatsApp share failed", error);
-        updateDailyWhatsAppTemplateStatus("تعذرت مشاركة الصورة؛ استخدم زر واتساب للنص", "error");
+        updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.shareImageError"), "error");
       }
     } finally {
       shareButton.disabled = false;
@@ -9510,18 +9510,18 @@ document.getElementById("dailyWhatsAppTemplateImage")?.addEventListener("change"
   const file = event.target.files?.[0] || null;
   if (!file) return;
   if (!(["image/jpeg", "image/png", "image/webp"].includes(file.type))) {
-    updateDailyWhatsAppTemplateStatus("صيغة الصورة غير مدعومة", "error");
+    updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.invalidImage"), "error");
     event.target.value = "";
     return;
   }
   if (file.size > 5 * 1024 * 1024) {
-    updateDailyWhatsAppTemplateStatus("حجم الصورة أكبر من 5 ميجابايت", "error");
+    updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.imageTooLarge"), "error");
     event.target.value = "";
     return;
   }
   dailyWhatsAppTemplatePendingFile = file;
   dailyWhatsAppTemplateRemoveImage = false;
-  updateDailyWhatsAppTemplateStatus("صورة جديدة جاهزة للحفظ");
+  updateDailyWhatsAppTemplateStatus(l1T("dailyOperations.whatsapp.newImageReady"));
   renderDailyWhatsAppTemplate();
 });
 
@@ -9568,13 +9568,13 @@ document.getElementById("dailyWhatsAppTemplateImage")?.addEventListener("change"
     resetLookupResult();
 
     if (!isValidSaudiMobile(normalizedPhone)) {
-      showLookupResult("error", "أدخل رقم جوال سعودي صحيحًا بصيغة <strong>05XXXXXXXX</strong>.");
+      showLookupResult("error", escapeHtml(l1T("dailyOperations.phoneLookup.invalid")));
       input.focus();
       return;
     }
 
     button.disabled = true;
-    button.textContent = "جاري البحث...";
+    button.textContent = l1T("dailyOperations.phoneLookup.searching");
     try {
       const customer = await findCustomerByPhone(normalizedPhone);
       if (
@@ -9582,35 +9582,35 @@ document.getElementById("dailyWhatsAppTemplateImage")?.addEventListener("change"
         || normalizePhone(input.value) !== normalizedPhone
       ) return;
       if (!customer) {
-        showLookupResult("success", `الرقم <strong>${escapeHtml(normalizedPhone)}</strong> غير مرتبط بأي عميل مسجل.`);
+        showLookupResult("success", l1T("dailyOperations.phoneLookup.notLinked",{phone:`<strong>${escapeHtml(normalizedPhone)}</strong>`}));
         return;
       }
 
       const details = customerPhoneOwnershipDetails(customer);
       const repLine = details.representativeName
-        ? `العميل يتبع المندوب <strong>«${escapeHtml(details.representativeName)}»</strong>.`
-        : "لم يتم تعيين مندوب لهذا العميل حتى الآن.";
+        ? l1T("dailyOperations.phoneLookup.assignedRep",{name:`<strong>«${escapeHtml(details.representativeName)}»</strong>`})
+        : l1T("dailyOperations.phoneLookup.noRep");
       const companyLine = details.canAccess && details.type === "شركة" && details.contactPersonName
-        ? `<br>المسؤول: <strong>«${escapeHtml(details.contactPersonName)}»</strong>.`
+        ? `<br>${l1T("dailyOperations.phoneLookup.contactPerson",{name:`<strong>«${escapeHtml(details.contactPersonName)}»</strong>`})}`
         : "";
       const scopeLine = details.canAccess
         ? ""
-        : `<br><strong>هذا العميل خارج نطاق البيانات المسموح لك بالوصول إليه، لذلك لا يمكنك استعراض بياناته.</strong>`;
+        : `<br><strong>${escapeHtml(l1T("dailyOperations.phoneLookup.outOfScope"))}</strong>`;
       showLookupResult(
         "warning",
-        `تنبيه: الرقم <strong>${escapeHtml(normalizedPhone)}</strong> مرتبط بالعميل <strong>«${escapeHtml(details.name)}»</strong>.<br>${repLine}${companyLine}${scopeLine}`
-        + (details.canAccess && details.id ? `<div class="daily-phone-result-actions"><button type="button" class="secondary-btn compact-btn" data-open-existing-customer="${escapeHtml(String(details.id))}">فتح العميل الحالي</button></div>` : "")
+        `${l1T("dailyOperations.phoneLookup.linkedWarning",{phone:`<strong>${escapeHtml(normalizedPhone)}</strong>`,name:`<strong>«${escapeHtml(details.name)}»</strong>`})}<br>${repLine}${companyLine}${scopeLine}`
+        + (details.canAccess && details.id ? `<div class="daily-phone-result-actions"><button type="button" class="secondary-btn compact-btn" data-open-existing-customer="${escapeHtml(String(details.id))}">${escapeHtml(l1T("dailyOperations.phoneLookup.openCustomer"))}</button></div>` : "")
       );
     } catch (error) {
       if (
         requestSequence === lookupRequestSequence
         && normalizePhone(input.value) === normalizedPhone
       ) {
-        showLookupResult("error", escapeHtml(error instanceof Error ? error.message : "تعذر التحقق من رقم الجوال."));
+        showLookupResult("error", escapeHtml(error instanceof Error ? (window.PetatoeLocalization?.translateMessage?.(error.message) || error.message) : l1T("dailyOperations.phoneLookup.error")));
       }
     } finally {
       button.disabled = false;
-      button.textContent = "بحث";
+      button.textContent = l1T("dailyOperations.phoneLookup.search");
     }
   });
 
@@ -9628,4 +9628,17 @@ window.addEventListener("petatoe-language-changed", () => {
   if (customersLoaded) renderCustomers();
   if (followupsLoaded) renderFollowups();
   if (quotationsLoaded) renderQuotations();
+  if (activeViewKey === "dailyOperations") {
+    renderDailyOperations();
+    renderDailyWhatsAppTemplate();
+    renderDailyChecklist(dailyLocalDate(), window.CustomerAuth?.getState?.().profile);
+  }
+  if (dailyPerformanceSnapshot) {
+    renderDailyPerformanceReport();
+    renderDailyPerformanceDetail();
+    renderDailyAttendance();
+    renderDailyActivityTimeline();
+    renderDailyAlerts();
+    renderDailyAlertsReport();
+  }
 });

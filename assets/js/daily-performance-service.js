@@ -1,5 +1,9 @@
 // KYUM Phase 16.4 — Expanded Daily Performance Analytics
 (function () {
+  const tr = (key, vars = {}) => {
+    const value = window.PetatoeLocalization?.t?.(key, vars);
+    return value && !/^\[.+\]$/.test(value) ? value : key;
+  };
   function client() {
     if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
     return window.customerSupabase;
@@ -118,7 +122,7 @@
         userId: user.id,
         representativeId: rep?.id || user.representative_id || null,
         representativeName: rep?.full_name || "",
-        name: user.full_name || rep?.full_name || "مستخدم بدون اسم",
+        name: user.full_name || rep?.full_name || tr("dailyPerformance.service.unnamedUser"),
         code: rep?.representative_code || "",
         role: user.role || "",
         active: user.is_active !== false

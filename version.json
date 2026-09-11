@@ -1,11 +1,19 @@
 {
-  "version": "18.56.77",
-  "build": 185677,
+  "version": "18.56.78",
+  "build": 185678,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "PETATOE R44R31R3",
-  "notes": [],
-  "cacheToken": "petatoe-pwa-18-56-77-mobile-date-canonical-r44r31r3-p5-13-8-72",
-  "titleI18nKey": "pwa.update.title",
-  "notesI18nKeys": []
+  "title": "استكمال ترجمة التشغيل والأداء اليومي — R44R32",
+  "notes": [
+    "استكمال ترجمة إدارة المهام اليومية وحالات التحميل والفراغ والرسائل التشغيلية.",
+    "استكمال ترجمة تقرير الأداء اليومي وخط السير والتنبيهات ومصفوفة المهام.",
+    "الحفاظ على عقود Offline/Sync ومنطق الأعمال دون تغيير؛ تمت الترجمة في طبقة العرض المعتمدة."
+  ],
+  "cacheToken": "petatoe-pwa-18-56-78-crm-l2b-daily-localization-r44r32-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r32.title",
+  "notesI18nKeys": [
+    "pwa.update.release.r44r32.note1",
+    "pwa.update.release.r44r32.note2",
+    "pwa.update.release.r44r32.note3"
+  ]
 }

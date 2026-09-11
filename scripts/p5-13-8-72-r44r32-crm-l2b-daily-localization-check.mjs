@@ -1,0 +1,45 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+const read=p=>fs.readFileSync(p,'utf8');
+const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const index=read('index.html');
+const app=read('assets/js/app.js');
+const loc=read('assets/js/localization-center.js');
+const activity=read('assets/js/daily-activity-service.js');
+const performance=read('assets/js/daily-performance-service.js');
+const dailyOps=read('assets/js/daily-operations-service.js');
+const sw=read('service-worker.js');
+const pwa=read('assets/js/pwa.js');
+const migrationPath='supabase/migrations/phase_p5_13_8_72_r44r32_crm_l2b_daily_operations_performance_localization.sql';
+const migration=read(migrationPath);
+const manifest=JSON.parse(read('supabase/migration-manifest.json'));
+const version=JSON.parse(read('version.json'));
+const pkg=JSON.parse(read('package.json'));
+const expectedVersion='18.56.78', expectedBuild=185678;
+const checks=[]; const add=(label,ok)=>checks.push([label,Boolean(ok)]);
+
+add('R44R32 version/build aligned',version.version===expectedVersion&&version.build===expectedBuild&&pkg.version===expectedVersion&&pwa.includes(`CURRENT_VERSION = "${expectedVersion}"`)&&sw.includes('18-56-78-crm-l2b-daily-localization-r44r32'));
+add('index asset tokens aligned',!index.includes('?v=18.56.77')&&index.includes('?v=18.56.78'));
+add('Daily Operations static localization wired',index.includes('dailyOperations.header.title')&&index.includes('dailyOperations.phoneLookup.title')&&index.includes('dailyOperations.suggested.title')&&index.includes('dailyOperations.whatsapp.title')&&index.includes('dailyOperations.section.customersTitle'));
+add('Daily Performance static localization wired',index.includes('dailyPerformance.page.title')&&index.includes('dailyPerformance.ranking.title')&&index.includes('dailyPerformance.attendance.title')&&index.includes('dailyPerformance.activity.title')&&index.includes('dailyPerformance.alerts.title')&&index.includes('dailyPerformance.detail.selector'));
+add('Daily dialogs localized',index.includes('dailyAlerts.dialog.title')&&index.includes('dailyTargets.dialog.title')&&index.includes('dailyPerformance.employeeTargets.title'));
+add('Daily static residual columns localized',index.includes('id="dailyPerformanceChecklistText" data-petatoe-i18n="dailyPerformance.kpi.checklistInitial"')&&index.includes('<th data-petatoe-i18n="dailyPerformance.attendance.status">الحالة</th>'));
+add('Daily Operations runtime uses canonical t()',app.includes('dailyOperations.team.summary')&&app.includes('dailyOperations.task.completed')&&app.includes('dailyOperations.phoneLookup.invalid')&&app.includes('dailyOperations.whatsapp.savedSuccess'));
+add('Daily Performance runtime uses canonical t()',app.includes('dailyPerformance.status.updatedAt')&&app.includes('dailyPerformance.activity.chooseEmployee')&&app.includes('dailyPerformance.alerts.loadError')&&app.includes('dailyPerformance.employeeTargets.saved'));
+add('language change rerenders daily surfaces',/petatoe-language-changed/.test(app)&&/renderDailyOperations\(\)/.test(app)&&/renderDailyPerformanceReport\(\)/.test(app));
+add('Daily Activity display labels use canonical localization',activity.includes('tr("dailyActivity.entity.quotations")')&&activity.includes('tr("dailyActivity.entity.installations")')&&activity.includes('tr("dailyActivity.timeline.taskComplete")'));
+add('Daily Performance service unnamed user localized',performance.includes('tr("dailyPerformance.service.unnamedUser")'));
+add('protected Daily Operations service byte-identical',sha('assets/js/daily-operations-service.js')==='e40a43345d1a0711dab58c829443735239a14093b676baba1ee5f1abcf05937d');
+add('protected offline queue byte-identical',sha('assets/js/offline-queue.js')==='5d67b6107d46feef61710d61eef7a8d9bd73aa4cd531cabd6a43a9c6a80401c7');
+add('protected smart cache byte-identical',sha('assets/js/smart-cache.js')==='b44d40476304ca595ea6902d3baa3fbbc76fe75a0cfe31fd1906ec9b931d6b0d');
+add('protected sync engine byte-identical',sha('assets/js/sync-engine.js')==='7d8b7feb1f87981e100b05b552b9b401dd0d8d0a27937e9c7ea2f9f39c0ee53e');
+add('R44R32 migration exists',fs.existsSync(migrationPath));
+add('R44R32 migration is non-destructive',!/(?:\bdelete\s+from\b|\btruncate\b|\bdrop\s+(?:table|schema|function|policy)\b|\bgrant\b|\brevoke\b|\bcreate\s+policy\b|\balter\s+policy\b)/i.test(migration));
+add('R44R32 migration preserves custom translations',migration.includes("case when nullif(trim(public.app_translations.ar_text),'') is null")&&migration.includes("case when nullif(trim(public.app_translations.en_text),'') is null"));
+add('R44R32 migration is inventoried',manifest.historicalInventory.some(x=>x.path===migrationPath&&x.sha256===sha(migrationPath)&&x.bytes===fs.statSync(migrationPath).size));
+add('R44R32 migration is in certified recent tail',manifest.policy.certifiedRecentTailOrder.includes(migrationPath));
+add('R44R32 translation namespaces routed',loc.includes("value.startsWith('dailyOperations.')")&&loc.includes("value.startsWith('dailyPerformance.')")&&loc.includes("value.startsWith('dailyActivity.')")&&loc.includes("value.startsWith('dailyAlerts.')"));
+add('R44R32 release localization keys exist',loc.includes('pwa.update.release.r44r32.title')&&loc.includes('pwa.update.release.r44r32.note3'));
+
+let fail=0;for(const [label,ok] of checks){console.log(`${ok?'PASS':'FAIL'} - ${label}`);if(!ok)fail++;}
+console.log(`R44R32 certification: ${checks.length-fail}/${checks.length} PASS`);if(fail)process.exit(1);

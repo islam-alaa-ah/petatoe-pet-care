@@ -3,6 +3,10 @@
   // Offline reads are persisted by KYUMOfflineReadCache on top of KYUMSmartCache.
   let heartbeatTimer = null;
   let lastInteractionAt = Date.now();
+  const tr = (key, vars = {}) => {
+    const value = window.PetatoeLocalization?.t?.(key, vars);
+    return value && !/^\[.+\]$/.test(value) ? value : key;
+  };
 
   function client() {
     if (!window.customerSupabase) throw new Error("اتصال Supabase غير جاهز.");
@@ -195,14 +199,20 @@
     return data || [];
   }
 
-  const entityLabels = {
-    customers: "العملاء", customer_followups: "المتابعات", quotations: "عقود العملاء",
-    installation_requests: "المواعيد", sales_invoices: "فواتير المبيعات",
-    daily_task_completions: "المهام اليومية", user_profiles: "المستخدمون",
-    role_screen_permissions: "الصلاحيات", sales_representatives: "مندوبي المبيعات"
-  };
-
-  function readableEntity(value) { return entityLabels[String(value || "").toLowerCase()] || "نشاط داخل البرنامج"; }
+  function readableEntity(value) {
+    const labels = {
+      customers: tr("dailyActivity.entity.customers"),
+      customer_followups: tr("dailyActivity.entity.followups"),
+      quotations: tr("dailyActivity.entity.quotations"),
+      installation_requests: tr("dailyActivity.entity.installations"),
+      sales_invoices: tr("dailyActivity.entity.invoices"),
+      daily_task_completions: tr("dailyActivity.entity.tasks"),
+      user_profiles: tr("dailyActivity.entity.users"),
+      role_screen_permissions: tr("dailyActivity.entity.permissions"),
+      sales_representatives: tr("dailyActivity.entity.representatives")
+    };
+    return labels[String(value || "").toLowerCase()] || tr("dailyActivity.entity.other");
+  }
 
   function businessTitle(event) {
     const action = actionLabel(event.action_key);
@@ -213,14 +223,15 @@
 
   function businessDetail(event) {
     const parts = [];
-    if (event.request_number) parts.push(`رقم الطلب: ${event.request_number}`);
-    if (event.quotation_number) parts.push(`رقم عرض السعر: ${event.quotation_number}`);
-    if (event.invoice_number) parts.push(`رقم الفاتورة: ${event.invoice_number}`);
+    if (event.request_number) parts.push(tr("dailyActivity.detail.request", `رقم الطلب: ${event.request_number}`, { value:event.request_number }));
+    if (event.quotation_number) parts.push(tr("dailyActivity.detail.quotation", `رقم عرض السعر: ${event.quotation_number}`, { value:event.quotation_number }));
+    if (event.invoice_number) parts.push(tr("dailyActivity.detail.invoice", `رقم الفاتورة: ${event.invoice_number}`, { value:event.invoice_number }));
     const d = event.details || {};
-    if (d.phone) parts.push(`رقم الجوال: ${d.phone}`);
-    if (d.source_label) parts.push(`المصدر: ${d.source_label}`);
-    if (d.description) parts.push(d.description);
-    return parts.join(" — ") || "تم تنفيذ الحركة بنجاح.";
+    if (d.phone) parts.push(tr("dailyActivity.detail.phone", `رقم الجوال: ${d.phone}`, { value:d.phone }));
+    if (d.source_label) parts.push(tr("dailyActivity.detail.source", `المصدر: ${d.source_label}`, { value:d.source_label }));
+    if (event.action_key === "open_whatsapp") parts.push(tr("dailyActivity.detail.whatsappOpened"));
+    else if (d.description) parts.push(String(d.description));
+    return parts.join(" — ") || tr("dailyActivity.detail.success");
   }
 
   function categoryFor(entityType) {
@@ -241,22 +252,22 @@
 
   function actionLabel(action) {
     const labels = {
-      create: "إضافة",
-      insert: "إضافة",
-      update: "تعديل",
-      delete: "حذف",
-      complete: "إكمال",
-      reopen: "إعادة فتح",
-      start: "بدء المعالجة",
-      escalate: "تصعيد",
-      close: "إغلاق",
-      login: "تسجيل الدخول",
-      heartbeat: "نشاط داخل النظام",
-      end_day: "إنهاء يوم العمل",
-      open_whatsapp: "فتح واتساب",
-      INSERT: "إضافة", UPDATE: "تعديل", DELETE: "حذف"
+      create: tr("dailyActivity.action.create"),
+      insert: tr("dailyActivity.action.create"),
+      update: tr("dailyActivity.action.update"),
+      delete: tr("dailyActivity.action.delete"),
+      complete: tr("dailyActivity.action.complete"),
+      reopen: tr("dailyActivity.action.reopen"),
+      start: tr("dailyActivity.action.start"),
+      escalate: tr("dailyActivity.action.escalate"),
+      close: tr("dailyActivity.action.close"),
+      login: tr("dailyActivity.action.login"),
+      heartbeat: tr("dailyActivity.action.heartbeat"),
+      end_day: tr("dailyActivity.action.endDay"),
+      open_whatsapp: tr("dailyActivity.action.whatsapp"),
+      INSERT: tr("dailyActivity.action.create"), UPDATE: tr("dailyActivity.action.update"), DELETE: tr("dailyActivity.action.delete")
     };
-    return labels[action] || action || "نشاط";
+    return labels[action] || action || tr("dailyActivity.action.generic");
   }
 
   function buildTimeline({ workDate, sessions, auditLogs, taskEvents, alertEvents, businessEvents }) {
@@ -269,11 +280,11 @@
         representativeId: session.representative_id,
         employeeName: session.user_profile?.full_name
           || session.representative?.full_name
-          || "غير محدد",
+          || tr("dailyActivity.unknown"),
         type: "session",
         action: "login",
-        title: "بدء يوم العمل",
-        detail: "تم تسجيل أول نشاط للمستخدم.",
+        title: tr("dailyActivity.timeline.startTitle"),
+        detail: tr("dailyActivity.timeline.startDetail"),
         createdAt: session.first_activity_at
       });
 
@@ -284,11 +295,11 @@
           representativeId: session.representative_id,
           employeeName: session.user_profile?.full_name
             || session.representative?.full_name
-            || "غير محدد",
+            || tr("dailyActivity.unknown"),
           type: "session",
           action: "end_day",
-          title: "إنهاء يوم العمل",
-          detail: `إجمالي العمليات المسجلة: ${session.event_count || 0}`,
+          title: tr("dailyActivity.timeline.endTitle"),
+          detail: tr("dailyActivity.timeline.endDetail", { count:session.event_count || 0 }),
           createdAt: session.ended_at
         });
       }
@@ -299,7 +310,7 @@
         id: `business-${event.id}`,
         userId: event.user_id,
         representativeId: event.representative_id || event.user?.representative_id || null,
-        employeeName: event.user?.full_name || "غير محدد",
+        employeeName: event.user?.full_name || tr("dailyActivity.unknown"),
         type: categoryFor(event.entity_type || event.section_key),
         action: event.action_key,
         title: businessTitle(event),
@@ -318,7 +329,7 @@
         id: `audit-${log.id}`,
         userId: log.user_id,
         representativeId: log.user?.representative_id || null,
-        employeeName: log.user?.full_name || "غير محدد",
+        employeeName: log.user?.full_name || tr("dailyActivity.unknown"),
         type: categoryFor(log.entity_type),
         action: log.action,
         title: `${actionLabel(log.action)} ${readableEntity(log.entity_type)}${(log.new_data?.name || log.new_data?.customer_name) ? `: ${log.new_data?.name || log.new_data?.customer_name}` : ""}`,
@@ -327,7 +338,7 @@
           || log.new_data?.name
           || log.new_data?.request_number
           || log.new_data?.quotation_number
-          || "تم تنفيذ الحركة بنجاح.",
+          || tr("dailyActivity.detail.success"),
         createdAt: log.created_at
       });
     });
@@ -337,10 +348,10 @@
         id: `task-${item.id}`,
         userId: item.user_id,
         representativeId: item.representative_id,
-        employeeName: item.user_profile?.full_name || "غير محدد",
+        employeeName: item.user_profile?.full_name || tr("dailyActivity.unknown"),
         type: "daily_tasks",
         action: item.is_completed ? "complete" : "reopen",
-        title: item.is_completed ? "إكمال مهمة يومية" : "إعادة فتح مهمة يومية",
+        title: item.is_completed ? tr("dailyActivity.timeline.taskComplete") : tr("dailyActivity.timeline.taskReopen"),
         detail: item.task?.task_name || item.task_key,
         createdAt: item.completed_at || item.updated_at
       });
@@ -353,10 +364,10 @@
         id: `alert-${item.id}`,
         userId: item.action_by,
         representativeId: item.alert?.representative_id || null,
-        employeeName: item.user?.full_name || "غير محدد",
+        employeeName: item.user?.full_name || tr("dailyActivity.unknown"),
         type: "daily_alerts",
         action: item.action_type,
-        title: `${actionLabel(item.action_type)} تنبيه`,
+        title: tr("dailyActivity.timeline.alert", { action:actionLabel(item.action_type) }),
         detail: [item.alert?.title, item.note].filter(Boolean).join(" — "),
         createdAt: item.created_at
       });
