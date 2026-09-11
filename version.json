@@ -1,19 +1,19 @@
 {
-  "version": "18.56.80",
-  "build": 185680,
+  "version": "18.56.81",
+  "build": 185681,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "استكمال ترجمة إدارة المواعيد — R44R34",
+  "title": "استكمال ترجمة التشغيل المالي — R44R35",
   "notes": [
-    "استكمال ترجمة شاشات طلبات المواعيد والجدولة والتقارير والاستثناءات والإعدادات.",
-    "استكمال ترجمة رسائل التنفيذ والتأكيد والتحصيل وحالات العرض الديناميكية دون تغيير منطق الأعمال.",
-    "الحفاظ على عقود Offline/Sync والصلاحيات والبيانات المالية مع فصل محتوى PDF وCSV وWhatsApp المولد إلى مرحلة L6."
+    "استكمال ترجمة العرض التشغيلي لخزينة السيارة والرواتب والعمولات وفواتير المبيعات دون تغيير أي حسابات مالية.",
+    "ترجمة رسائل التحقق والأخطاء في طبقة العرض مع الحفاظ على خدمات المالية وعقود Offline/Sync دون تعديل.",
+    "إبقاء SEA VIBE لمرحلة L5 ومحتوى PDF وCSV وWhatsApp المولد لمرحلة L6."
   ],
-  "cacheToken": "petatoe-pwa-18-56-80-appointments-l3-r44r34-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r34.title",
+  "cacheToken": "petatoe-pwa-18-56-81-financial-l4-r44r35-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r35.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r34.note1",
-    "pwa.update.release.r44r34.note2",
-    "pwa.update.release.r44r34.note3"
+    "pwa.update.release.r44r35.note1",
+    "pwa.update.release.r44r35.note2",
+    "pwa.update.release.r44r35.note3"
   ]
 }

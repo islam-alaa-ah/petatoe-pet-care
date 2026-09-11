@@ -2,8 +2,12 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  const money = value => `${Number(value || 0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})} ر.س`;
-  const t = (key, fallback) => window.PetatoeLocalization?.t?.(key, fallback) || fallback;
+  const t = (key, fallback, vars={}) => { const value=window.PetatoeLocalization?.t?.(key,vars); return value&&!/^\[.+\]$/.test(value)?value:fallback; };
+  const lang = () => window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en':'ar';
+  const money = value => new Intl.NumberFormat(lang()==='en'?'en-SA':'ar-SA-u-nu-latn',{style:'currency',currency:'SAR',minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(value||0));
+  const number = value => new Intl.NumberFormat(lang()==='en'?'en-US':'ar-SA-u-nu-latn',{maximumFractionDigits:2}).format(Number(value||0));
+  const dateLabel = value => value?new Intl.DateTimeFormat(lang()==='en'?'en-GB':'ar-SA-u-ca-gregory-nu-latn',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(`${String(value).slice(0,10)}T12:00:00`)):'—';
+  const uiMessage = value => window.PetatoeLocalization?.translateMessage?.(String(value||'')) || String(value||'');
   const state = { data: null, editing: null, loading: false };
 
   function status(message='', type='info') {
@@ -55,7 +59,7 @@
     if ($('vehicleTreasuryBalance')) $('vehicleTreasuryBalance').textContent = money(s.balance);
     if ($('vehicleTreasuryRevenue')) $('vehicleTreasuryRevenue').textContent = money(s.revenue);
     if ($('vehicleTreasuryExpenses')) $('vehicleTreasuryExpenses').textContent = money(s.expense);
-    if ($('vehicleTreasuryCount')) $('vehicleTreasuryCount').textContent = Number(s.count || 0).toLocaleString('en-US');
+    if ($('vehicleTreasuryCount')) $('vehicleTreasuryCount').textContent = number(s.count || 0);
   }
 
   function renderRows() {
@@ -65,7 +69,7 @@
     body.innerHTML = rows.map((x,i) => {
       const income = Number(x.amount || 0) >= 0;
       return `<tr>
-        <td>${i+1}</td><td>${esc(x.movementDate||'—')}</td><td><span class="vehicle-treasury-type ${income?'income':'expense'}">${esc(income?t('vehicleTreasury.type.revenue','إيراد'):t('vehicleTreasury.type.expense','مصروف'))}</span></td>
+        <td>${number(i+1)}</td><td>${esc(dateLabel(x.movementDate))}</td><td><span class="vehicle-treasury-type ${income?'income':'expense'}">${esc(income?t('vehicleTreasury.type.revenue','إيراد'):t('vehicleTreasury.type.expense','مصروف'))}</span></td>
         <td>${esc(x.reference||'—')}</td><td>${esc(x.description||'—')}</td><td class="${income?'vehicle-treasury-money-in':'vehicle-treasury-money-out'}">${income?'+':'-'} ${money(Math.abs(Number(x.amount||0)))}</td>
         <td>${esc(x.carName||x.teamName||'—')}</td><td>${esc(x.notes||'—')}</td>
         <td>${x.editable ? `<div class="vehicle-treasury-actions">${window.PermissionEngine?.canEdit?.('vehicleTreasury') ? `<button type="button" class="secondary-btn compact-btn" data-vt-edit="${esc(x.sourceId||x.id)}">${esc(t('vehicleTreasury.edit','تعديل'))}</button>` : ''}${window.PermissionEngine?.canDelete?.('vehicleTreasury') ? `<button type="button" class="secondary-btn compact-btn danger" data-vt-delete="${esc(x.sourceId||x.id)}">${esc(t('vehicleTreasury.delete','حذف'))}</button>` : ''}</div>` : '<span class="muted">—</span>'}</td>
@@ -76,7 +80,7 @@
   async function load(showLoader=true) {
     if (state.loading) return; state.loading=true; if(showLoader)status(t('vehicleTreasury.loading','جاري تحميل خزينة السيارة...'),'info');
     try { state.data = await window.VehicleTreasuryService.load(filters()); fillCars(); if (!filters().carId && $('vehicleTreasuryTeam')?.value) state.data = await window.VehicleTreasuryService.load(filters()); renderSummary(); renderRows(); status(window.VehicleTreasuryService.getReadStatus()==='offline-cache'?t('vehicleTreasury.offline','يتم عرض آخر بيانات محفوظة دون اتصال.'): '', 'info'); }
-    catch(e){ status(e.message||String(e),'error'); }
+    catch(e){ status(uiMessage(e?.message||String(e)),'error'); }
     finally { state.loading=false; }
   }
 
@@ -100,7 +104,7 @@
     const id=$('vehicleTreasuryExpenseId').value||'';
     await window.VehicleTreasuryService.saveExpense({id:id||null,teamId:$('vehicleTreasuryExpenseTeam').value,date:$('vehicleTreasuryExpenseDate').value,description:$('vehicleTreasuryExpenseDescription').value,amount:$('vehicleTreasuryExpenseAmount').value,notes:$('vehicleTreasuryExpenseNotes').value,baseUpdatedAt:state.editing?.updatedAt||''});
     closeExpense(); await load(false); status(t('vehicleTreasury.saved','تم حفظ حركة الصرف بنجاح.'),'success');
-  }catch(err){ const el=$('vehicleTreasuryExpenseStatus'); if(el){el.textContent=err.message||String(err);el.className='data-status error';} }}
+  }catch(err){ const el=$('vehicleTreasuryExpenseStatus'); if(el){el.textContent=uiMessage(err?.message||String(err));el.className='data-status error';} }}
 
   function bind(){
     $('vehicleTreasuryRefresh')?.addEventListener('click',()=>load());
@@ -117,8 +121,9 @@
     $('vehicleTreasuryBody')?.addEventListener('click',async e=>{
       const edit=e.target.closest('[data-vt-edit]'), del=e.target.closest('[data-vt-delete]');
       if(edit){const row=(state.data?.movements||[]).find(x=>String(x.sourceId||x.id)===String(edit.dataset.vtEdit));if(row)openExpense(row);}
-      if(del){const row=(state.data?.movements||[]).find(x=>String(x.sourceId||x.id)===String(del.dataset.vtDelete));if(!row)return;if(!confirm(t('vehicleTreasury.deleteConfirm','هل تريد حذف حركة الصرف؟')))return;try{await window.VehicleTreasuryService.deleteExpense(row.sourceId||row.id);await load(false);status(t('vehicleTreasury.deleted','تم حذف حركة الصرف.'),'success')}catch(err){status(err.message||String(err),'error')}}
+      if(del){const row=(state.data?.movements||[]).find(x=>String(x.sourceId||x.id)===String(del.dataset.vtDelete));if(!row)return;if(!confirm(t('vehicleTreasury.deleteConfirm','هل تريد حذف حركة الصرف؟')))return;try{await window.VehicleTreasuryService.deleteExpense(row.sourceId||row.id);await load(false);status(t('vehicleTreasury.deleted','تم حذف حركة الصرف.'),'success')}catch(err){status(uiMessage(err?.message||String(err)),'error')}}
     });
+    window.addEventListener('petatoe-language-changed',()=>{window.PetatoeLocalization?.applyStatic?.(document);fillCars();fillExpenseTeams($('vehicleTreasuryExpenseDate')?.value||'', $('vehicleTreasuryExpenseTeam')?.value||'');renderSummary();renderRows();if($('vehicleTreasuryExpenseDialog')?.open)$('vehicleTreasuryExpenseTitle').textContent=state.editing?t('vehicleTreasury.expense.editTitle','تعديل حركة صرف'):t('vehicleTreasury.expense.addTitle','صرف من خزينة السيارة');});
   }
 
   let initialized=false;
