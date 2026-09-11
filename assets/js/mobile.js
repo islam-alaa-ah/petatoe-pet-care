@@ -383,7 +383,7 @@
         const call = document.createElement("a");
         call.className = "mobile-customer-call";
         call.href = window.KYUMMobilePhone.telephoneUrl(phone) || `tel:${phone}`;
-        call.textContent = "اتصال";
+        call.textContent=mt('contracts.export.call','Call');
         call.setAttribute("aria-label", `اتصال بالعميل ${phone}`);
         actions.append(call);
       }
@@ -393,7 +393,7 @@
         whatsapp.href = window.KYUMMobilePhone.whatsappUrl(phone);
         whatsapp.target = "_blank";
         whatsapp.rel = "noopener noreferrer";
-        whatsapp.textContent = "WhatsApp";
+        whatsapp.textContent=mt('contracts.export.whatsapp','WhatsApp');
         whatsapp.setAttribute("aria-label", `فتح واتساب للعميل ${phone}`);
         actions.append(whatsapp);
       }
@@ -588,7 +588,7 @@
 
   function activeStatusLabel() {
     const select = document.getElementById("followupStatusFilter");
-    return select?.selectedOptions?.[0]?.textContent?.trim() || t("followups.filter.all","كل المتابعات");
+    return select?.selectedOptions?.[0]?.textContent?.trim() || t("followups.filter.all","All follow-ups");
   }
 
   function updateToolbarState() {
@@ -622,7 +622,7 @@
       <div class="mobile-followups-heading">
         <span data-petatoe-i18n="followups.mobile.communication">إدارة التواصل</span>
         <strong data-petatoe-i18n="followups.page.title">المتابعات</strong>
-        <small data-mobile-followups-active-filter>${t("followups.filter.all","كل المتابعات")}</small>
+        <small data-mobile-followups-active-filter>${t("followups.filter.all","All follow-ups")}</small>
       </div>
       <button type="button" class="mobile-followups-filter-button" data-mobile-followups-filter aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
@@ -633,7 +633,7 @@
 
     const quickNav = document.createElement("div");
     quickNav.className = "mobile-followups-quicknav";
-    quickNav.setAttribute("aria-label", t("followups.mobile.statusFilterAria","فلترة المتابعات حسب الحالة"));
+    quickNav.setAttribute("aria-label", t("followups.mobile.statusFilterAria","Filter follow-ups by status"));
     quickNav.innerHTML = `
       <button type="button" data-mobile-followups-status="" data-petatoe-i18n="followups.mobile.all">الكل</button>
       <button type="button" data-mobile-followups-status="today" data-petatoe-i18n="followups.status.today">اليوم</button>
@@ -658,7 +658,7 @@
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "mobile-followups-filter-backdrop";
-    backdrop.setAttribute("aria-label", t("followups.mobile.closeFilters","إغلاق فلاتر المتابعات"));
+    backdrop.setAttribute("aria-label", t("followups.mobile.closeFilters","Close follow-up filters"));
     followupsView.append(backdrop);
 
     toolbar.querySelector("[data-mobile-followups-filter]")?.addEventListener("click", toggleFilters);
@@ -705,7 +705,7 @@
         const call = document.createElement("a");
         call.className = "mobile-followup-call";
         call.href = window.KYUMMobilePhone.telephoneUrl(phone) || `tel:${phone}`;
-        call.textContent = "اتصال";
+        call.textContent=mt('contracts.export.call','Call');
         call.setAttribute("aria-label", "اتصال بالعميل");
         actions.prepend(call);
       }
@@ -893,11 +893,14 @@
 
   initialize();
   MOBILE_MEDIA.addEventListener?.("change", initialize);
+  window.addEventListener('petatoe-language-changed',()=>{view.querySelector('.mobile-quotations-toolbar')?.remove();view.querySelector('.mobile-quotations-sheet-header')?.remove();view.querySelector('.mobile-quotations-filter-backdrop')?.remove();[...body.rows].forEach(row=>{row.dataset.mobileQuotationReady='';row.querySelectorAll('.mobile-quotation-call,.mobile-quotation-whatsapp,.mobile-quotation-share,.mobile-quotation-print').forEach(el=>el.remove())});initialize()});
 })();
 
 
 /* Phase M7 — Mobile Quotations */
 (() => {
+  const mt=(key,fallback='')=>{const value=window.PetatoeLocalization?.t?.(key);return value&&value!==key&&!/^\[.+\]$/.test(value)?value:fallback};
+  const mlang=()=>window.PetatoeLocalization?.getLanguage?.()==='en'?'en':'ar';
   const MOBILE_MEDIA = window.matchMedia("(max-width: 767px), (pointer: coarse) and (max-device-width: 1024px), (hover: none) and (max-device-width: 1024px)");
   const view = document.getElementById("quotationsView");
   const body = document.getElementById("quotationsTableBody");
@@ -905,7 +908,7 @@
   if (!view || !body || !filters) return;
 
   let observer;
-  const labels = ["رقم العقد", "العميل", "رقم العميل", "المندوب", "تاريخ العقد", "القيمة", "الحالة", "تاريخ الانتهاء", "سبب الرفض", "الإجراءات"];
+  const labels=()=>[mt('contracts.export.number','Contract Number'),mt('shared.export.customer','Customer'),mt('shared.export.customerPhone','Customer phone'),mt('shared.export.representative','Representative'),mt('contracts.export.date','Contract Date'),mt('shared.export.value','Value'),mt('shared.export.status','Status'),mt('contracts.export.expiryDate','Expiry Date'),mt('contracts.export.rejectionReason','Rejection Reason'),mt('shared.export.actions','Actions')];
 
   function normalizePhone(value) {
     const raw = String(value || "").trim();
@@ -935,23 +938,23 @@
   async function shareQuotation(data) {
     const text = quotationText(data);
     if (navigator.share) {
-      try { await navigator.share({ title: `عقد ${data.code}`, text }); return; } catch (error) {
+      try { await navigator.share({title:mt('contracts.export.shareTitle','Contract {code}').replace('{code}',data.code),text}); return; } catch (error) {
         if (error?.name === "AbortError") return;
       }
     }
     try {
       await navigator.clipboard.writeText(text);
-      window.alert("تم نسخ بيانات العقد.");
+      window.alert(mt('contracts.export.copied','Contract details copied.'));
     } catch {
-      window.prompt("انسخ بيانات العقد:", text);
+      window.prompt(mt('contracts.export.copyPrompt','Copy contract details:'),text);
     }
   }
 
   function printQuotation(data) {
-    const popup = window.open("", "_blank", "width=720,height=900");
-    if (!popup) return;
-    const escape = value => String(value ?? "").replace(/[&<>\"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
-    popup.document.write(`<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>عقد ${escape(data.code)}</title><style>body{font-family:Arial,sans-serif;padding:32px;color:#172033}h1{font-size:24px;margin:0 0 24px}.card{border:1px solid #d8dee9;border-radius:16px;padding:20px}.row{display:grid;grid-template-columns:160px 1fr;gap:16px;padding:11px 0;border-bottom:1px solid #edf0f5}.row:last-child{border:0}.label{color:#667085;font-weight:700}@media print{body{padding:0}.card{border-color:#aaa}}</style></head><body><h1>عقد ${escape(data.code)}</h1><div class="card"><div class="row"><span class="label">العميل</span><strong>${escape(data.customer)}</strong></div><div class="row"><span class="label">رقم العميل</span><strong>${escape(data.phone || "—")}</strong></div><div class="row"><span class="label">المندوب</span><strong>${escape(data.representative)}</strong></div><div class="row"><span class="label">تاريخ العقد</span><strong>${escape(data.date)}</strong></div><div class="row"><span class="label">القيمة</span><strong>${escape(data.amount)}</strong></div><div class="row"><span class="label">الحالة</span><strong>${escape(data.status)}</strong></div><div class="row"><span class="label">تاريخ الانتهاء</span><strong>${escape(data.expiry)}</strong></div><div class="row"><span class="label">سبب الرفض</span><strong>${escape(data.rejection)}</strong></div></div><script>window.onload=()=>window.print()<\/script></body></html>`);
+    const popup=window.open('', '_blank', 'width=720,height=900');if(!popup)return;
+    const escape=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const label=(key,fallback)=>escape(mt(key,fallback));
+    popup.document.write(`<!doctype html><html dir="${mlang()==='en'?'ltr':'rtl'}" lang="${mlang()}"><head><meta charset="utf-8"><title>${escape(mt('contracts.export.printTitle','Contract {code}').replace('{code}',data.code))}</title><style>body{font-family:Arial,sans-serif;padding:32px;color:#172033}h1{font-size:24px;margin:0 0 24px}.card{border:1px solid #d8dee9;border-radius:16px;padding:20px}.row{display:grid;grid-template-columns:160px 1fr;gap:16px;padding:11px 0;border-bottom:1px solid #edf0f5}.row:last-child{border:0}.label{color:#667085;font-weight:700}@media print{body{padding:0}.card{border-color:#aaa}}</style></head><body><h1>${escape(mt('contracts.export.printTitle','Contract {code}').replace('{code}',data.code))}</h1><div class="card"><div class="row"><span class="label">${label('shared.export.customer','العميل')}</span><strong>${escape(data.customer)}</strong></div><div class="row"><span class="label">${label('shared.export.customerPhone','رقم العميل')}</span><strong>${escape(data.phone||'—')}</strong></div><div class="row"><span class="label">${label('shared.export.representative','المندوب')}</span><strong>${escape(data.representative)}</strong></div><div class="row"><span class="label">${label('contracts.export.date','تاريخ العقد')}</span><strong>${escape(data.date)}</strong></div><div class="row"><span class="label">${label('shared.export.value','القيمة')}</span><strong>${escape(data.amount)}</strong></div><div class="row"><span class="label">${label('shared.export.status','الحالة')}</span><strong>${escape(data.status)}</strong></div><div class="row"><span class="label">${label('contracts.export.expiryDate','تاريخ الانتهاء')}</span><strong>${escape(data.expiry)}</strong></div><div class="row"><span class="label">${label('contracts.export.rejectionReason','سبب الرفض')}</span><strong>${escape(data.rejection)}</strong></div></div><script>window.onload=()=>window.print()<\/script></body></html>`);
     popup.document.close();
   }
 
@@ -959,7 +962,7 @@
     if (!MOBILE_MEDIA.matches) return;
     [...body.rows].forEach(row => {
       if (row.querySelector(".empty-state")) return;
-      [...row.cells].forEach((cell, index) => cell.dataset.mobileLabel = labels[index] || "");
+      [...row.cells].forEach((cell, index) => cell.dataset.mobileLabel=labels()[index]||"");
       if (row.dataset.mobileQuotationReady === "true") return;
       row.dataset.mobileQuotationReady = "true";
       const data = getRowData(row);
@@ -971,7 +974,7 @@
         const call = document.createElement("a");
         call.className = "mobile-quotation-call";
         call.href = window.KYUMMobilePhone.telephoneUrl(phone) || `tel:${phone}`;
-        call.textContent = "اتصال";
+        call.textContent=mt('contracts.export.call','Call');
         actions.prepend(call);
 
         const whatsapp = document.createElement("a");
@@ -979,21 +982,21 @@
         whatsapp.href = window.KYUMMobilePhone.whatsappUrl(phone, quotationText(data));
         whatsapp.target = "_blank";
         whatsapp.rel = "noopener";
-        whatsapp.textContent = "WhatsApp";
+        whatsapp.textContent=mt('contracts.export.whatsapp','WhatsApp');
         actions.append(whatsapp);
       }
 
       const share = document.createElement("button");
       share.type = "button";
       share.className = "mobile-quotation-share";
-      share.textContent = "مشاركة";
+      share.textContent=mt('contracts.export.share','Share');
       share.addEventListener("click", () => shareQuotation(getRowData(row)));
       actions.append(share);
 
       const print = document.createElement("button");
       print.type = "button";
       print.className = "mobile-quotation-print";
-      print.textContent = "PDF / طباعة";
+      print.textContent=mt('contracts.export.print','PDF / Print');
       print.addEventListener("click", () => printQuotation(getRowData(row)));
       actions.append(print);
     });
@@ -1027,13 +1030,13 @@
     if (view.querySelector(".mobile-quotations-toolbar")) return;
     const toolbar = document.createElement("div");
     toolbar.className = "mobile-quotations-toolbar";
-    toolbar.innerHTML = `<div><strong>عقود العملاء</strong><small>ابحث وراجع وشارك العقود بسهولة</small></div><button type="button" data-mobile-quotations-filter aria-expanded="false">الفلاتر</button>`;
+    toolbar.innerHTML=`<div><strong>${mt('contracts.export.mobileTitle','Customer Contracts')}</strong><small>${mt('contracts.export.mobileNote','Search, review, and share contracts easily')}</small></div><button type="button" data-mobile-quotations-filter aria-expanded="false">${mt('shared.export.filters','Filters')}</button>`;
     view.querySelector(".actions-row")?.after(toolbar);
 
     filters.classList.add("mobile-quotations-filter-sheet");
     const sheetHeader = document.createElement("div");
     sheetHeader.className = "mobile-quotations-sheet-header";
-    sheetHeader.innerHTML = `<div><strong>فلترة عقود العملاء</strong><small>البحث والحالة والمندوب</small></div><button type="button" aria-label="إغلاق">×</button>`;
+    sheetHeader.innerHTML=`<div><strong>${mt('contracts.export.filterTitle','Filter Customer Contracts')}</strong><small>${mt('contracts.export.filterNote','Search, status, and representative')}</small></div><button type="button" aria-label="${mt('shared.export.close','Close')}">×</button>`;
     filters.prepend(sheetHeader);
 
     if (!filters.querySelector("[data-mobile-quotations-apply]")) {
@@ -1054,7 +1057,7 @@
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "mobile-quotations-filter-backdrop";
-    backdrop.setAttribute("aria-label", t("shared.mobile.admin.closeFilters"));
+    backdrop.setAttribute('aria-label',mt('shared.mobile.admin.closeFilters','Close filters'));
     view.append(backdrop);
 
     toolbar.querySelector("button")?.addEventListener("click", () => {
@@ -1197,7 +1200,7 @@
     const backdrop = document.createElement("button");
     backdrop.type = "button";
     backdrop.className = "mobile-reports-filter-backdrop";
-    backdrop.setAttribute("aria-label", t("shared.mobile.admin.closeFilters"));
+    backdrop.setAttribute('aria-label',mt('shared.mobile.admin.closeFilters','Close filters'));
     backdrop.addEventListener("click", closeFilters);
     view.append(backdrop);
 

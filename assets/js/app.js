@@ -3528,7 +3528,7 @@ function exportReportsExcel() {
   try {
     window.ReportsExportCenter.createExcel(currentReportsSnapshot);
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر إنشاء ملف Excel.");
+    alert(error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : l1T('reportsOverview.export.excelError'));
   }
 }
 
@@ -3537,7 +3537,7 @@ function exportReportsPdf() {
 
   const popup = window.open("", "_blank");
   if (!popup) {
-    alert("اسمح للنوافذ المنبثقة لإنشاء تقرير PDF.");
+    alert(l1T('reportsOverview.export.popupRequired'));
     return;
   }
 
@@ -3551,7 +3551,7 @@ async function exportReportsPng() {
 
   const button = document.getElementById("exportReportsPngBtn");
   button.disabled = true;
-  button.textContent = "جاري إنشاء الصورة...";
+  button.textContent = l1T('reportsOverview.export.creatingPng');
 
   try {
     await window.ReportsExportCenter.createPng(
@@ -3559,10 +3559,10 @@ async function exportReportsPng() {
       currentReportsSnapshot
     );
   } catch (error) {
-    alert(error instanceof Error ? error.message : "تعذر إنشاء صورة PNG.");
+    alert(error instanceof Error ? window.PetatoeLocalization?.translateMessage?.(error.message) || error.message : l1T('reportsOverview.export.pngError'));
   } finally {
     button.disabled = false;
-    button.textContent = "تصدير PNG";
+    button.textContent = l1T('reportsOverview.export.exportPng');
   }
 }
 
@@ -5208,7 +5208,7 @@ function dailyPerformancePdfEscape(value) {
 
 function dailyPerformancePdfClone() {
   const source = document.getElementById("dailyPerformanceReportView");
-  if (!source) throw new Error("تعذر الوصول إلى محتوى تقرير الأداء اليومي.");
+  if (!source) throw new Error(l1T('dailyPerformance.export.contentUnavailable'));
 
   const clone = source.cloneNode(true);
   clone.classList.remove("hidden");
@@ -5239,7 +5239,7 @@ function exportDailyPerformancePdf() {
   if (!dailyPerformanceSnapshot) {
     showDataStatus(
       "dailyPerformanceStatus",
-      "حمّل تقرير الأداء اليومي أولًا قبل تصدير PDF.",
+      l1T('dailyPerformance.export.loadFirst'),
       "error"
     );
     return;
@@ -5247,7 +5247,7 @@ function exportDailyPerformancePdf() {
 
   const popup = window.open("", "_blank");
   if (!popup) {
-    alert("اسمح بالنوافذ المنبثقة لتصدير تقرير PDF.");
+    alert(l1T('dailyPerformance.export.popupRequired'));
     return;
   }
 
@@ -5256,8 +5256,8 @@ function exportDailyPerformancePdf() {
     || dailyLocalDate();
   const employeeSelect = document.getElementById("dailyPerformanceRepresentativeFilter");
   const employeeLabel = employeeSelect?.options?.[employeeSelect.selectedIndex]?.textContent
-    || "كل الموظفين";
-  const generatedAt = new Date().toLocaleString("ar-SA-u-ca-gregory-nu-latn", {
+    || l1T('dailyPerformance.filter.allEmployees');
+  const generatedAt = new Date().toLocaleString(l1Locale(), {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -5269,11 +5269,11 @@ function exportDailyPerformancePdf() {
 
   popup.document.open();
   popup.document.write(`<!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="${window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "en" : "ar"}" dir="${window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "ltr" : "rtl"}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>تقرير الأداء اليومي - ${dailyPerformancePdfEscape(selectedDate)}</title>
+<title>${dailyPerformancePdfEscape(l1T("dailyPerformance.export.pdfTitle"))} - ${dailyPerformancePdfEscape(selectedDate)}</title>
 <style>
 @page{size:A4 landscape;margin:11mm 10mm 13mm}
 *{box-sizing:border-box}
@@ -5306,15 +5306,15 @@ table{width:100%!important;border-collapse:collapse!important;table-layout:auto!
 <body>
 <header class="pdf-report-header">
   <img src="${dailyPerformancePdfEscape(logoUrl)}" alt="KYUM">
-  <div class="pdf-report-title"><h1>تقرير الأداء اليومي</h1><p>متابعة تنفيذ المهام والنشاط اليومي للموظفين</p></div>
+  <div class="pdf-report-title"><h1>${dailyPerformancePdfEscape(l1T("dailyPerformance.export.pdfTitle"))}</h1><p>${dailyPerformancePdfEscape(l1T("dailyPerformance.export.pdfSubtitle"))}</p></div>
   <div class="pdf-report-meta">
-    <div><strong>تاريخ التقرير:</strong> ${dailyPerformancePdfEscape(selectedDate)}</div>
-    <div><strong>الموظف / المندوب:</strong> ${dailyPerformancePdfEscape(employeeLabel)}</div>
-    <div><strong>وقت التصدير:</strong> ${dailyPerformancePdfEscape(generatedAt)}</div>
+    <div><strong>${dailyPerformancePdfEscape(l1T("dailyPerformance.export.reportDate"))}:</strong> ${dailyPerformancePdfEscape(selectedDate)}</div>
+    <div><strong>${dailyPerformancePdfEscape(l1T("dailyPerformance.export.employeeRepresentative"))}:</strong> ${dailyPerformancePdfEscape(employeeLabel)}</div>
+    <div><strong>${dailyPerformancePdfEscape(l1T("dailyPerformance.export.exportedAt"))}:</strong> ${dailyPerformancePdfEscape(generatedAt)}</div>
   </div>
 </header>
 <main class="pdf-report-body">${reportHtml}</main>
-<footer class="pdf-report-footer"><span>PETATOE — Enterprise Daily Performance Report</span><span>نسخة مخصصة للطباعة والحفظ بصيغة PDF</span></footer>
+<footer class="pdf-report-footer"><span>${dailyPerformancePdfEscape(l1T("dailyPerformance.export.footer"))}</span><span>${dailyPerformancePdfEscape(l1T("dailyPerformance.export.printCopy"))}</span></footer>
 <script>window.addEventListener("load",()=>setTimeout(()=>window.print(),350));<\/script>
 </body>
 </html>`);
@@ -5324,21 +5324,21 @@ table{width:100%!important;border-collapse:collapse!important;table-layout:auto!
 
 async function createDailyPerformancePdfFile() {
   if (!dailyPerformanceSnapshot) {
-    throw new Error("حمّل تقرير الأداء اليومي أولًا قبل تجهيز PDF.");
+    throw new Error(l1T('dailyPerformance.export.loadFirstPrepare'));
   }
   if (!window.html2canvas || !window.jspdf?.jsPDF) {
-    throw new Error("تعذر تحميل أدوات إنشاء ملف PDF.");
+    throw new Error(l1T('shared.export.pdfToolsMissing'));
   }
 
   const source = document.getElementById("dailyPerformanceReportView");
-  if (!source) throw new Error("تعذر الوصول إلى محتوى تقرير الأداء اليومي.");
+  if (!source) throw new Error(l1T('dailyPerformance.export.contentUnavailable'));
 
   const selectedDate = document.getElementById("dailyPerformanceDate")?.value
     || dailyPerformanceSnapshot.workDate
     || dailyLocalDate();
   const employeeSelect = document.getElementById("dailyPerformanceRepresentativeFilter");
   const employeeLabel = employeeSelect?.options?.[employeeSelect.selectedIndex]?.textContent
-    || "كل الموظفين";
+    || l1T('dailyPerformance.filter.allEmployees');
 
   const host = document.createElement("section");
   host.setAttribute("dir", "rtl");
@@ -5417,33 +5417,33 @@ function downloadDailyPerformancePdfFile(file) {
 
 async function sendDailyPerformanceWhatsappPdf(event) {
   const button = event?.currentTarget || document.getElementById("sendDailyPerformanceWhatsappPdfBtn");
-  const originalText = button?.textContent || "إرسال التقرير واتساب PDF";
+  const originalText = button?.textContent || l1T('dailyPerformance.export.shareWhatsapp');
   if (button?.disabled) return;
-  if (button) { button.disabled = true; button.textContent = "جاري تجهيز PDF..."; }
+  if (button) { button.disabled = true; button.textContent = l1T('shared.export.preparingPdf'); }
 
   try {
     const file = await createDailyPerformancePdfFile();
     const selectedDate = document.getElementById("dailyPerformanceDate")?.value
       || dailyPerformanceSnapshot?.workDate
       || dailyLocalDate();
-    const message = `تقرير الأداء اليومي\nالتاريخ: ${selectedDate}\nمرفق تقرير الأداء بصيغة PDF.`;
-    const shareData = { title: `تقرير الأداء اليومي - ${selectedDate}`, text: message, files: [file] };
+    const message = l1T('dailyPerformance.export.whatsappMessage',{date:selectedDate});
+    const shareData = { title: l1T('dailyPerformance.export.shareTitle',{date:selectedDate}), text: message, files: [file] };
 
     if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
-      if (button) button.textContent = "تم تجهيز التقرير";
+      if (button) button.textContent = l1T('shared.export.reportReady');
       await navigator.share(shareData);
     } else {
       downloadDailyPerformancePdfFile(file);
-      if (button) button.textContent = "تم تجهيز التقرير";
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message + "\nتم تنزيل ملف PDF على الجهاز لإرفاقه بالمحادثة.")}`;
+      if (button) button.textContent = l1T('shared.export.reportReady');
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message + '\n' + l1T('shared.export.pdfDownloadedAttach'))}`;
       window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-      showDataStatus("dailyPerformanceStatus", "تم تنزيل ملف PDF وفتح واتساب. أرفق الملف الذي تم تنزيله بالمحادثة.", "success");
+      showDataStatus('dailyPerformanceStatus',l1T('dailyPerformance.export.whatsappDownloaded'),'success');
     }
   } catch (error) {
     if (error?.name !== "AbortError") {
       console.error("Daily performance WhatsApp PDF error", error);
-      showDataStatus("dailyPerformanceStatus", error?.message || "تعذر تجهيز تقرير PDF للمشاركة.", "error");
-      if (button) button.textContent = "تعذر التجهيز";
+      showDataStatus("dailyPerformanceStatus", error?.message || l1T('dailyPerformance.export.shareError'), "error");
+      if (button) button.textContent = l1T('shared.export.prepareFailed');
     }
   } finally {
     setTimeout(() => {
@@ -5454,7 +5454,8 @@ async function sendDailyPerformanceWhatsappPdf(event) {
 
 
 
-function filteredReportControlLabel(id, fallback = "الكل") {
+function filteredReportControlLabel(id, fallback = null) {
+  fallback = fallback ?? l1T('shared.export.all');
   const control = document.getElementById(id);
   if (!control) return fallback;
   if (control.tagName === "SELECT") return control.options?.[control.selectedIndex]?.textContent?.trim() || fallback;
@@ -5466,20 +5467,20 @@ function reportFileSafe(value) {
 }
 
 async function createFilteredListPdfFile(config) {
-  if (!window.html2canvas || !window.jspdf?.jsPDF) throw new Error("تعذر تحميل أدوات إنشاء ملف PDF.");
+  if (!window.html2canvas || !window.jspdf?.jsPDF) throw new Error(l1T('shared.export.pdfToolsMissing'));
   const rows = Array.isArray(config.rows) ? config.rows : [];
   const generatedAt = new Intl.DateTimeFormat("ar-SA-u-nu-latn", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date());
   const host = document.createElement("section");
   host.setAttribute("dir", "rtl");
   host.style.cssText = "position:fixed;left:-20000px;top:0;width:1400px;background:#fff;color:#111827;padding:28px;font-family:Tahoma,Arial,sans-serif;z-index:-1";
-  const meta = (config.filters || []).map(([label,value]) => `<div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(label)}:</strong> ${dailyPerformancePdfEscape(value || "الكل")}</div>`).join("");
+  const meta = (config.filters || []).map(([label,value]) => `<div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(label)}:</strong> ${dailyPerformancePdfEscape(value || l1T('shared.export.all'))}</div>`).join("");
   const head = config.columns.map(col => `<th>${dailyPerformancePdfEscape(col.label)}</th>`).join("");
-  const body = rows.length ? rows.map(row => `<tr>${config.columns.map(col => `<td>${dailyPerformancePdfEscape(typeof col.value === "function" ? col.value(row) : row?.[col.value] ?? "—")}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${config.columns.length}" style="padding:30px;text-align:center">لا توجد بيانات مطابقة للفلاتر المحددة.</td></tr>`;
+  const body = rows.length ? rows.map(row => `<tr>${config.columns.map(col => `<td>${dailyPerformancePdfEscape(typeof col.value === "function" ? col.value(row) : row?.[col.value] ?? "—")}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${config.columns.length}" style="padding:30px;text-align:center">${dailyPerformancePdfEscape(l1T('shared.export.noMatchingData'))}</td></tr>`;
   host.innerHTML = `
     <header style="display:grid;grid-template-columns:180px 1fr 360px;align-items:center;gap:20px;padding:18px 22px;border-radius:20px;background:linear-gradient(135deg,#06192c,#0a3651);color:#fff;margin-bottom:18px">
       <img src="assets/images/kyum-header-logo.png" alt="KYUM" style="width:165px;max-height:78px;object-fit:contain;border-radius:12px">
       <div style="text-align:center"><h1 style="margin:0 0 6px;font-size:30px">${dailyPerformancePdfEscape(config.title)}</h1><p style="margin:0;color:#d5e3ee;font-size:15px">${dailyPerformancePdfEscape(config.subtitle)}</p></div>
-      <div style="font-size:12px;line-height:1.9;border-right:1px solid rgba(255,255,255,.25);padding-right:18px">${meta}<div><strong style="color:#f4bd3c">عدد النتائج:</strong> ${rows.length}</div><div><strong style="color:#f4bd3c">وقت التصدير:</strong> ${dailyPerformancePdfEscape(generatedAt)}</div></div>
+      <div style="font-size:12px;line-height:1.9;border-right:1px solid rgba(255,255,255,.25);padding-right:18px">${meta}<div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("shared.export.resultCount"))}:</strong> ${rows.length}</div><div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("shared.export.exportedAt"))}:</strong> ${dailyPerformancePdfEscape(generatedAt)}</div></div>
     </header>
     <table style="width:100%;border-collapse:collapse;table-layout:auto;background:#fff">
       <thead><tr>${head}</tr></thead><tbody>${body}</tbody>
@@ -5502,25 +5503,25 @@ async function createFilteredListPdfFile(config) {
 function followupReportConfig() {
   const rows = filteredFollowups();
   return {
-    title:"تقرير المتابعات",
-    subtitle:"التقرير يعكس الفلاتر المحددة في شاشة المتابعات",
+    title:l1T("followups.export.title"),
+    subtitle:l1T("followups.export.subtitle"),
     fileName:`kyum-followups-${new Date().toISOString().slice(0,10)}`,
     rows,
     filters:[
-      ["البحث", filteredReportControlLabel("followupSearch","بدون بحث")],
-      ["الحالة", filteredReportControlLabel("followupStatusFilter")],
-      ["المندوب", filteredReportControlLabel("followupRepFilter")]
+      [l1T("shared.export.search"), filteredReportControlLabel("followupSearch",l1T("shared.export.noSearch"))],
+      [l1T("shared.export.status"), filteredReportControlLabel("followupStatusFilter")],
+      [l1T("shared.export.representative"), filteredReportControlLabel("followupRepFilter")]
     ],
     columns:[
-      {label:"العميل",value:r=>customerById(r.customerId)?.name || r.customerName || "—"},
-      {label:"رقم العميل",value:r=>customerById(r.customerId)?.phone || r.customerPhone || "—"},
-      {label:"تاريخ التواصل",value:r=>formatDate(r.contactDate)},
-      {label:"طريقة التواصل",value:"method"},
-      {label:"المندوب",value:r=>r.representative || "—"},
-      {label:"نتيجة التواصل",value:r=>r.result || "—"},
-      {label:"العقد",value:r=>r.quotationNumber || "—"},
-      {label:"المتابعة القادمة",value:r=>formatDate(r.nextFollowupDate)},
-      {label:"الحالة",value:r=>statusLabel(followupStatus(r))}
+      {label:l1T("shared.export.customer"),value:r=>customerById(r.customerId)?.name || r.customerName || "—"},
+      {label:l1T("shared.export.customerPhone"),value:r=>customerById(r.customerId)?.phone || r.customerPhone || "—"},
+      {label:l1T("followups.export.contactDate"),value:r=>formatDate(r.contactDate)},
+      {label:l1T("followups.export.method"),value:"method"},
+      {label:l1T("shared.export.representative"),value:r=>r.representative || "—"},
+      {label:l1T("followups.export.result"),value:r=>r.result || "—"},
+      {label:l1T("followups.export.contract"),value:r=>r.quotationNumber || "—"},
+      {label:l1T("followups.export.nextFollowup"),value:r=>formatDate(r.nextFollowupDate)},
+      {label:l1T("shared.export.status"),value:r=>statusLabel(followupStatus(r))}
     ]
   };
 }
@@ -5528,64 +5529,64 @@ function followupReportConfig() {
 function quotationReportConfig() {
   const rows = filteredQuotations();
   return {
-    title:"تقرير عقود العملاء",
-    subtitle:"التقرير يعكس الفلاتر المحددة في شاشة عقود العملاء",
+    title:l1T("contracts.export.title"),
+    subtitle:l1T("contracts.export.subtitle"),
     fileName:`kyum-quotations-${new Date().toISOString().slice(0,10)}`,
     rows,
     filters:[
-      ["البحث", filteredReportControlLabel("quotationSearch","بدون بحث")],
-      ["الحالة", filteredReportControlLabel("quotationStatusFilter")],
-      ["حالة التحويل", filteredReportControlLabel("quotationWorkflowFilter")],
-      ["المندوب", filteredReportControlLabel("quotationRepFilter")]
+      [l1T("shared.export.search"), filteredReportControlLabel("quotationSearch",l1T("shared.export.noSearch"))],
+      [l1T("shared.export.status"), filteredReportControlLabel("quotationStatusFilter")],
+      [l1T("contracts.export.workflowStatus"), filteredReportControlLabel("quotationWorkflowFilter")],
+      [l1T("shared.export.representative"), filteredReportControlLabel("quotationRepFilter")]
     ],
     columns:[
-      {label:"رقم العقد",value:r=>r.code || "—"},
-      {label:"رقم طلب العميل",value:r=>r.customerOrderNumber || "—"},
-      {label:"العميل",value:r=>customerById(r.customerId)?.name || r.customerName || "—"},
-      {label:"رقم العميل",value:r=>customerById(r.customerId)?.phone || r.customerPhone || "—"},
-      {label:"المندوب",value:r=>r.representative || "—"},
-      {label:"تاريخ العقد",value:r=>formatDate(r.quotationDate)},
-      {label:"القيمة",value:r=>formatCurrency(r.amount)},
-      {label:"الحالة",value:r=>canonicalQuotationStatus(r.status)},
-      {label:"تاريخ الانتهاء",value:r=>formatDate(r.expiryDate)},
-      {label:"سبب الرفض",value:r=>r.rejectionReason || "—"}
+      {label:l1T("contracts.export.number"),value:r=>r.code || "—"},
+      {label:l1T("contracts.export.customerOrderNumber"),value:r=>r.customerOrderNumber || "—"},
+      {label:l1T("shared.export.customer"),value:r=>customerById(r.customerId)?.name || r.customerName || "—"},
+      {label:l1T("shared.export.customerPhone"),value:r=>customerById(r.customerId)?.phone || r.customerPhone || "—"},
+      {label:l1T("shared.export.representative"),value:r=>r.representative || "—"},
+      {label:l1T("contracts.export.date"),value:r=>formatDate(r.quotationDate)},
+      {label:l1T("shared.export.value"),value:r=>formatCurrency(r.amount)},
+      {label:l1T("shared.export.status"),value:r=>canonicalQuotationStatus(r.status)},
+      {label:l1T("contracts.export.expiryDate"),value:r=>formatDate(r.expiryDate)},
+      {label:l1T("contracts.export.rejectionReason"),value:r=>r.rejectionReason || "—"}
     ]
   };
 }
 
 async function runFilteredListPdf(button, configFactory, share) {
-  const original = button?.textContent || (share ? "إرسال التقرير واتساب PDF" : "تصدير PDF");
+  const original=button?.textContent||(share?l1T('shared.export.shareWhatsappPdf'):l1T('shared.export.exportPdf'));
   if (button?.disabled) return;
   try {
-    if(button){button.disabled=true;button.textContent="جاري تجهيز PDF...";}
+    if(button){button.disabled=true;button.textContent=l1T("shared.export.preparingPdf");}
     const config=configFactory();
     const file=await createFilteredListPdfFile(config);
     if(share){
-      const message=`${config.title}\nعدد النتائج: ${config.rows.length}\nمرفق التقرير بصيغة PDF وفق الفلاتر المحددة.`;
+      const message=l1T('shared.export.filteredWhatsappMessage',{title:config.title,count:config.rows.length});
       const shareData={title:config.title,text:message,files:[file]};
-      if(navigator.share && (!navigator.canShare || navigator.canShare(shareData))){ if(button) button.textContent="تم تجهيز التقرير"; await navigator.share(shareData); }
-      else { downloadDailyPerformancePdfFile(file); window.open(`https://wa.me/?text=${encodeURIComponent(message+"\nتم تنزيل ملف PDF على الجهاز لإرفاقه بالمحادثة.")}`,"_blank","noopener,noreferrer"); }
+      if(navigator.share && (!navigator.canShare || navigator.canShare(shareData))){ if(button) button.textContent=l1T("shared.export.reportReady"); await navigator.share(shareData); }
+      else { downloadDailyPerformancePdfFile(file); window.open(`https://wa.me/?text=${encodeURIComponent(message+'\n'+l1T('shared.export.pdfDownloadedAttach'))}`,"_blank","noopener,noreferrer"); }
     } else {
       downloadDailyPerformancePdfFile(file);
     }
-    if(button) button.textContent="تم التجهيز";
+    if(button)button.textContent=l1T("shared.export.ready");
   } catch(error){
-    if(error?.name!=="AbortError") alert(error?.message || "تعذر تجهيز التقرير.");
+    if(error?.name!=="AbortError") alert(error?.message||l1T('shared.export.prepareError'));
   } finally { setTimeout(()=>{if(button){button.disabled=false;button.textContent=original;}},1200); }
 }
 
 async function createDailyActivityPdfFile() {
-  if (!dailyActivitySnapshot) throw new Error("حمّل تقرير الأداء اليومي أولًا.");
+  if (!dailyActivitySnapshot) throw new Error(l1T('dailyPerformance.export.activity.loadFirst'));
   const employeeSelect = document.getElementById("dailyActivityEmployeeFilter");
   const employeeValue = employeeSelect?.value || "";
-  if (!dailyActivityReportRequested || !employeeValue) throw new Error("اختر الموظف واعرض بيانات خط السير أولًا.");
-  if (!window.html2canvas || !window.jspdf?.jsPDF) throw new Error("تعذر تحميل أدوات إنشاء ملف PDF.");
+  if (!dailyActivityReportRequested || !employeeValue) throw new Error(l1T('dailyPerformance.export.activity.selectEmployeeFirst'));
+  if (!window.html2canvas || !window.jspdf?.jsPDF) throw new Error(l1T('shared.export.pdfToolsMissing'));
 
   const events = filteredDailyActivityTimeline();
   const typeSelect = document.getElementById("dailyActivityTypeFilter");
   const selectedDate = document.getElementById("dailyPerformanceDate")?.value || dailyPerformanceSnapshot?.workDate || dailyLocalDate();
-  const employeeLabel = employeeSelect?.options?.[employeeSelect.selectedIndex]?.textContent || "الموظف";
-  const typeLabel = typeSelect?.options?.[typeSelect.selectedIndex]?.textContent || "كل الأنشطة";
+  const employeeLabel = employeeSelect?.options?.[employeeSelect.selectedIndex]?.textContent || l1T('dailyPerformance.export.employee');
+  const typeLabel = typeSelect?.options?.[typeSelect.selectedIndex]?.textContent || l1T('dailyPerformance.export.activity.allTypes');
 
   const host = document.createElement("section");
   host.setAttribute("dir", "rtl");
@@ -5593,20 +5594,20 @@ async function createDailyActivityPdfFile() {
   host.innerHTML = `
     <header style="display:grid;grid-template-columns:160px 1fr 300px;align-items:center;gap:20px;padding:18px 22px;border-radius:18px;background:linear-gradient(135deg,#06192c,#0a3651);color:#fff;margin-bottom:18px">
       <img src="assets/images/kyum-header-logo.png" alt="KYUM" style="width:150px;max-height:72px;object-fit:contain;border-radius:10px">
-      <div style="text-align:center"><h1 style="margin:0 0 6px;font-size:28px">خط سير يوم الموظف</h1><p style="margin:0;color:#d5e3ee">سجل تفصيلي للحركات والمهام داخل البرنامج بالدقيقة</p></div>
+      <div style="text-align:center"><h1 style="margin:0 0 6px;font-size:28px">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.title"))}</h1><p style="margin:0;color:#d5e3ee">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.subtitle"))}</p></div>
       <div style="font-size:13px;line-height:2;border-right:1px solid rgba(255,255,255,.25);padding-right:18px">
-        <div><strong style="color:#f4bd3c">التاريخ:</strong> ${dailyPerformancePdfEscape(selectedDate)}</div>
-        <div><strong style="color:#f4bd3c">الموظف:</strong> ${dailyPerformancePdfEscape(employeeLabel)}</div>
-        <div><strong style="color:#f4bd3c">نوع النشاط:</strong> ${dailyPerformancePdfEscape(typeLabel)}</div>
-        <div><strong style="color:#f4bd3c">عدد الحركات:</strong> ${events.length}</div>
+        <div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.reportDate"))}:</strong> ${dailyPerformancePdfEscape(selectedDate)}</div>
+        <div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.employee"))}:</strong> ${dailyPerformancePdfEscape(employeeLabel)}</div>
+        <div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.type"))}:</strong> ${dailyPerformancePdfEscape(typeLabel)}</div>
+        <div><strong style="color:#f4bd3c">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.count"))}:</strong> ${events.length}</div>
       </div>
     </header>
     <main style="display:grid;gap:10px">
       ${events.length ? events.map(event => `
         <article style="display:grid;grid-template-columns:125px 1fr;gap:14px;border:1px solid #dbe3ea;border-radius:12px;padding:13px;background:#f8fafc;break-inside:avoid">
           <div style="border-left:2px solid #2563eb;padding-left:10px"><strong style="display:block;font-size:15px">${dailyPerformancePdfEscape(dailyActivityTime(event.createdAt))}</strong><span style="font-size:12px;color:#64748b">${dailyPerformancePdfEscape(dailyActivityTypeLabel(event.type))}</span></div>
-          <div><strong style="display:block;font-size:15px;margin-bottom:5px">${dailyPerformancePdfEscape(event.title || "نشاط")}</strong><p style="margin:0 0 5px;line-height:1.8">${dailyPerformancePdfEscape(event.detail || "—")}</p><small style="color:#64748b">نفذ بواسطة: ${dailyPerformancePdfEscape(event.employeeName || employeeLabel)}</small></div>
-        </article>`).join("") : '<div style="padding:30px;text-align:center">لا توجد حركات مطابقة للفلاتر.</div>'}
+          <div><strong style="display:block;font-size:15px;margin-bottom:5px">${dailyPerformancePdfEscape(event.title || l1T("dailyPerformance.export.activity.fallback"))}</strong><p style="margin:0 0 5px;line-height:1.8">${dailyPerformancePdfEscape(event.detail || "—")}</p><small style="color:#64748b">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.performedBy"))}: ${dailyPerformancePdfEscape(event.employeeName || employeeLabel)}</small></div>
+        </article>`).join("") : `<div style="padding:30px;text-align:center">${dailyPerformancePdfEscape(l1T("dailyPerformance.export.activity.empty"))}</div>`}
     </main>`;
   document.body.appendChild(host);
   try {
@@ -5623,27 +5624,27 @@ async function createDailyActivityPdfFile() {
 }
 
 async function exportDailyActivityPdf(event) {
-  const button=event?.currentTarget; const original=button?.textContent || "تصدير خط السير PDF";
+  const button=event?.currentTarget; const original=button?.textContent||l1T('dailyPerformance.export.activity.exportPdf');
   if(button?.disabled) return;
-  try { if(button){button.disabled=true;button.textContent="جاري تجهيز PDF...";} const file=await createDailyActivityPdfFile(); downloadDailyPerformancePdfFile(file); if(button) button.textContent="تم التصدير"; }
-  catch(error){ showDataStatus("dailyPerformanceStatus",error?.message||"تعذر تصدير خط السير.","error"); if(button) button.textContent="تعذر التصدير"; }
+  try { if(button){button.disabled=true;button.textContent=l1T("shared.export.preparingPdf");} const file=await createDailyActivityPdfFile(); downloadDailyPerformancePdfFile(file); if(button) button.textContent=l1T("shared.export.exported"); }
+  catch(error){ showDataStatus("dailyPerformanceStatus",error?.message||l1T('dailyPerformance.export.activity.exportError'),"error"); if(button) button.textContent=l1T("shared.export.exportFailed"); }
   finally { setTimeout(()=>{if(button){button.disabled=false;button.textContent=original;}},1200); }
 }
 
 async function sendDailyActivityWhatsappPdf(event) {
-  const button=event?.currentTarget; const original=button?.textContent || "إرسال خط السير واتساب PDF";
+  const button=event?.currentTarget; const original=button?.textContent||l1T('dailyPerformance.export.activity.shareWhatsapp');
   if(button?.disabled) return;
   try {
-    if(button){button.disabled=true;button.textContent="جاري تجهيز PDF...";}
+    if(button){button.disabled=true;button.textContent=l1T("shared.export.preparingPdf");}
     const file=await createDailyActivityPdfFile();
     const date=document.getElementById("dailyPerformanceDate")?.value || dailyLocalDate();
     const employee=document.getElementById("dailyActivityEmployeeFilter");
-    const name=employee?.options?.[employee.selectedIndex]?.textContent || "الموظف";
-    const message=`خط سير يوم الموظف\nالموظف: ${name}\nالتاريخ: ${date}\nمرفق التقرير بصيغة PDF وفق الفلاتر المحددة.`;
-    const shareData={title:`خط سير ${name} - ${date}`,text:message,files:[file]};
-    if(navigator.share && (!navigator.canShare || navigator.canShare(shareData))){ if(button) button.textContent="تم تجهيز التقرير"; await navigator.share(shareData); }
-    else { downloadDailyPerformancePdfFile(file); if(button) button.textContent="تم تجهيز التقرير"; window.open(`https://wa.me/?text=${encodeURIComponent(message+"\nتم تنزيل ملف PDF على الجهاز لإرفاقه بالمحادثة.")}`,"_blank","noopener,noreferrer"); }
-  } catch(error){ if(error?.name!=="AbortError") showDataStatus("dailyPerformanceStatus",error?.message||"تعذر مشاركة خط السير.","error"); }
+    const name=employee?.options?.[employee.selectedIndex]?.textContent || l1T('dailyPerformance.export.employee');
+    const message=l1T('dailyPerformance.export.activity.whatsappMessage',{name,date});
+    const shareData={title:l1T('dailyPerformance.export.activity.shareTitle',{name,date}),text:message,files:[file]};
+    if(navigator.share && (!navigator.canShare || navigator.canShare(shareData))){ if(button) button.textContent=l1T("shared.export.reportReady"); await navigator.share(shareData); }
+    else { downloadDailyPerformancePdfFile(file); if(button) button.textContent=l1T("shared.export.reportReady"); window.open(`https://wa.me/?text=${encodeURIComponent(message+'\n'+l1T('shared.export.pdfDownloadedAttach'))}`,"_blank","noopener,noreferrer"); }
+  } catch(error){ if(error?.name!=="AbortError") showDataStatus("dailyPerformanceStatus",error?.message||l1T('dailyPerformance.export.activity.shareError'),"error"); }
   finally { setTimeout(()=>{if(button){button.disabled=false;button.textContent=original;}},1200); }
 }
 
@@ -7543,7 +7544,7 @@ document.getElementById("customer360AddFollowupBtn")?.addEventListener("click", 
 document.getElementById("customer360ExportBtn")?.addEventListener("click", () => {
   if (!currentCustomer360View) return;
   document.getElementById("customer360ExportSubtitle").textContent =
-    `${currentCustomer360View.customer.name} · ${currentCustomer360View.customer.phone || "بدون جوال"}`;
+    `${currentCustomer360View.customer.name} · ${currentCustomer360View.customer.phone || l1T('customer360.export.noMobile')}`;
   document.getElementById("customer360ExportDialog").showModal();
 });
 
@@ -7592,7 +7593,7 @@ document.getElementById("customer360ExportPngBtn")?.addEventListener("click", as
 
   const button = document.getElementById("customer360ExportPngBtn");
   button.disabled = true;
-  button.textContent = "جاري إنشاء الصورة...";
+  button.textContent = l1T('reportsOverview.export.creatingPng');
 
   try {
     await window.Customer360Export.createPng(
@@ -7603,7 +7604,7 @@ document.getElementById("customer360ExportPngBtn")?.addEventListener("click", as
     alert(error instanceof Error ? error.message : "تعذر تصدير صورة PNG.");
   } finally {
     button.disabled = false;
-    button.textContent = "تصدير PNG";
+    button.textContent = l1T('reportsOverview.export.exportPng');
   }
 });
 

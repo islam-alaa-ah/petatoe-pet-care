@@ -571,43 +571,26 @@
   }
 
   function toCsv(report) {
-    const lines = [
-      ["PETATOE Executive Report", report.generatedAt],
-      ["Current Period", `${report.filters.from} to ${report.filters.to}`],
-      ["Comparison Period", `${report.previousFilters.from} to ${report.previousFilters.to}`],
-      [],
-      ["المؤشر", "القيمة", "التغير"],
-      ["إجمالي العملاء", report.totals.customers, `${report.deltas.customers.toFixed(1)}%`],
-      ["متابعات اليوم", report.totals.todayFollowups, `${report.deltas.todayFollowups.toFixed(1)}%`],
-      ["إجمالي المتابعات", report.totals.followups, `${report.deltas.followups.toFixed(1)}%`],
-      ["إجمالي عروض الأسعار", report.totals.quotations, `${report.deltas.quotations.toFixed(1)}%`],
-      ["قيمة العروض", report.totals.quotationValue, `${report.deltas.quotationValue.toFixed(1)}%`],
-      ["نسبة التحويل", `${report.totals.conversionRate.toFixed(1)}%`, `${report.deltas.conversionRate.toFixed(1)}%`],
-      ["تحقيق الهدف", `${report.totals.targetAchievement.toFixed(1)}%`, `${report.deltas.targetAchievement.toFixed(1)}%`],
-      [],
-      ["مرحلة المسار", "العدد", "تحويل المرحلة", "التحويل الكلي"],
-      ...report.funnel.map(item => [
-        `${item.label} — ${item.arabic}`,
-        item.value,
-        `${item.stageConversion.toFixed(1)}%`,
-        `${item.totalConversion.toFixed(1)}%`
-      ]),
-      [],
-      ["المندوب", "العملاء", "المتابعات", "العروض", "المقبولة", "القيمة", "نسبة التحويل"],
-      ...report.representativePerformance.map(item => [
-        item.name,
-        item.customers,
-        item.followups,
-        item.quotations,
-        item.accepted,
-        item.value,
-        `${item.conversion.toFixed(1)}%`
-      ])
+    const t=(key,fallback='')=>{const value=window.PetatoeLocalization?.t?.(key);return value&&value!==key?value:fallback};
+    const lang=window.PetatoeLocalization?.getLanguage?.()==='en'?'en':'ar';
+    const lines=[
+      [t('reportsOverview.export.csvTitle','PETATOE — Executive Report'),report.generatedAt],
+      [t('reportsOverview.period.current','Current Period'),`${report.filters.from} ${t('reportsOverview.export.to','to')} ${report.filters.to}`],
+      [t('reportsOverview.period.previous','Comparison Period'),`${report.previousFilters.from} ${t('reportsOverview.export.to','to')} ${report.previousFilters.to}`],[],
+      [t('reportsOverview.export.kpi','KPI'),t('reportsOverview.common.value','Value'),t('reportsOverview.export.change','Change')],
+      [t('reportsOverview.kpi.customers','Total Customers'),report.totals.customers,`${report.deltas.customers.toFixed(1)}%`],
+      [t('reportsOverview.kpi.todayFollowups','Today’s Follow-ups'),report.totals.todayFollowups,`${report.deltas.todayFollowups.toFixed(1)}%`],
+      [t('reportsOverview.kpi.followups','Total Follow-ups'),report.totals.followups,`${report.deltas.followups.toFixed(1)}%`],
+      [t('reportsOverview.kpi.contracts','Total Contracts'),report.totals.quotations,`${report.deltas.quotations.toFixed(1)}%`],
+      [t('reportsOverview.kpi.contractValue','Contract Value'),report.totals.quotationValue,`${report.deltas.quotationValue.toFixed(1)}%`],
+      [t('reportsOverview.kpi.conversion','Conversion Rate'),`${report.totals.conversionRate.toFixed(1)}%`,`${report.deltas.conversionRate.toFixed(1)}%`],
+      [t('reportsOverview.kpi.targetAchievement','Target Achievement'),`${report.totals.targetAchievement.toFixed(1)}%`,`${report.deltas.targetAchievement.toFixed(1)}%`],[],
+      [t('reportsOverview.export.stage','Stage'),t('reportsOverview.export.count','Count'),t('reportsOverview.export.stageConversion','Stage Conversion %'),t('reportsOverview.export.totalConversion','Total Conversion %')],
+      ...report.funnel.map(item=>[lang==='en'?item.label:item.arabic,item.value,`${item.stageConversion.toFixed(1)}%`,`${item.totalConversion.toFixed(1)}%`]),[],
+      [t('reportsOverview.filter.representative','Representative'),t('reportsOverview.common.customers','Customers'),t('reportsOverview.common.followups','Follow-ups'),t('reportsOverview.common.contracts','Contracts'),t('reportsOverview.common.accepted','Accepted'),t('reportsOverview.common.value','Value'),t('reportsOverview.kpi.conversion','Conversion Rate')],
+      ...report.representativePerformance.map(item=>[item.name,item.customers,item.followups,item.quotations,item.accepted,item.value,`${item.conversion.toFixed(1)}%`])
     ];
-
-    return "\ufeff" + lines.map(row =>
-      row.map(value => `"${String(value ?? "").replaceAll('"', '""')}"`).join(",")
-    ).join("\n");
+    return '\ufeff'+lines.map(row=>row.map(value=>`"${String(value??'').replaceAll('"','""')}"`).join(',')).join('\n');
   }
 
   window.ReportsEngine = Object.freeze({ build, toCsv });

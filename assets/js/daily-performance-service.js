@@ -371,52 +371,16 @@
   }
 
   function toCsv(report) {
-    const taskHeaders = report.definitions.map(item => item.task_name);
-
-    const lines = [
-      ["KYUM Expanded Daily Performance Report", report.workDate],
-      ["Generated At", report.generatedAt],
-      ["Manager Note", report.managerNote?.title || "", report.managerNote?.noteText || ""],
-      [],
-      [
-        "Rank",
-        "Employee",
-        "Code",
-        ...taskHeaders,
-        "Checklist %",
-        "New Customers",
-        "Customer Target %",
-        "Follow-ups",
-        "Follow-up Target %",
-        "Quotations",
-        "Quotation Target %",
-        "Overdue",
-        "Completion %",
-        "Points"
-      ],
-      ...report.rows.map(item => [
-        item.rank,
-        item.name,
-        item.code,
-        ...item.taskStates.map(task => task.completed ? "Completed" : "Not Completed"),
-        item.checklistRate,
-        item.customers.length,
-        item.targetRates.customers,
-        item.followups.length,
-        item.targetRates.followups,
-        item.quotations.length,
-        item.targetRates.quotations,
-        item.overdueFollowups.length,
-        item.completionRate,
-        item.points
-      ])
+    const t=(key,fallback='')=>{const value=window.PetatoeLocalization?.t?.(key);return value&&value!==key?value:fallback};
+    const taskHeaders=report.definitions.map(item=>item.task_name);
+    const lines=[
+      [t('dailyPerformance.export.csv.title','Expanded Daily Performance Report'),report.workDate],
+      [t('dailyPerformance.export.generatedAt','Generated At'),report.generatedAt],
+      [t('dailyPerformance.export.managerNote','Manager Note'),report.managerNote?.title||'',report.managerNote?.noteText||''],[],
+      [t('dailyPerformance.export.rank','Rank'),t('dailyPerformance.export.employee','Employee'),t('dailyPerformance.export.code','Code'),...taskHeaders,t('dailyPerformance.export.checklist','Checklist %'),t('dailyPerformance.export.newCustomers','New Customers'),t('dailyPerformance.export.customerTarget','Customer Target %'),t('dailyPerformance.export.followups','Follow-ups'),t('dailyPerformance.export.followupTarget','Follow-up Target %'),t('dailyPerformance.export.quotations','Quotations'),t('dailyPerformance.export.quotationTarget','Quotation Target %'),t('dailyPerformance.export.overdue','Overdue'),t('dailyPerformance.export.completion','Completion %'),t('dailyPerformance.export.points','Points')],
+      ...report.rows.map(item=>[item.rank,item.name,item.code,...item.taskStates.map(task=>task.completed?t('dailyPerformance.export.completed','Completed'):t('dailyPerformance.export.notCompleted','Not Completed')),item.checklistRate,item.customers.length,item.targetRates.customers,item.followups.length,item.targetRates.followups,item.quotations.length,item.targetRates.quotations,item.overdueFollowups.length,item.completionRate,item.points])
     ];
-
-    return "\ufeff" + lines.map(row =>
-      row.map(value =>
-        `"${String(value ?? "").replaceAll('"', '""')}"`
-      ).join(",")
-    ).join("\n");
+    return '\ufeff'+lines.map(row=>row.map(value=>`"${String(value??'').replaceAll('"','""')}"`).join(',')).join('\n');
   }
 
   window.DailyPerformanceService = Object.freeze({
