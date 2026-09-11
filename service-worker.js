@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-87-legacy-neighborhood-display-r44r37r2r2-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-88-neighborhood-display-regression-r44r37r2r3-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

@@ -1,15 +1,15 @@
 {
-  "version": "18.56.87",
-  "build": 185687,
+  "version": "18.56.88",
+  "build": 185688,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "إصلاح عرض أسماء الأحياء للعملاء القدامى — R44R37R2R2",
+  "title": "إصلاح Regression عرض أسماء الأحياء بالإنجليزية — R44R37R2R3",
   "notes": [
-    "ترجمة الحي في شاشة العملاء حتى عندما يكون العميل القديم محفوظًا بعنوان نصي بدون neighborhoodId.",
-    "إعادة رسم Customers وReference Customers وCustomer 360 بعد وصول تحديثات الترجمة أو تحديث كاش البيانات الجغرافية.",
-    "توحيد عرض اسم الحي في Customer 360 والتقارير اليومية والتصدير بدون تعديل بيانات العملاء المخزنة أو Business Logic."
+    "إلغاء الـshort-circuit الذي كان يعرض fallback العربي قبل اكتمال تحميل Geography Catalog.",
+    "تحميل بيانات الأحياء بالتوازي مع العملاء قبل أول Render مع الحفاظ على فشل الجغرافيا كـnon-blocking.",
+    "رفع Geography Cache إلى v3 لمنع إعادة استخدام catalog قديم ناقص name_en، مع الحفاظ على Customer/Reference/360/Mobile/Export على نفس canonical resolver."
   ],
-  "cacheToken": "petatoe-pwa-18-56-87-legacy-neighborhood-display-r44r37r2r2-p5-13-8-72",
+  "cacheToken": "petatoe-pwa-18-56-88-neighborhood-display-regression-r44r37r2r3-p5-13-8-72",
   "titleI18nKey": "",
   "notesI18nKeys": []
 }

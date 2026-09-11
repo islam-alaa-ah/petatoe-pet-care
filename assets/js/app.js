@@ -3875,23 +3875,37 @@ function customerT(key, fallback = "", vars = {}) {
 }
 
 function customerNeighborhoodLabel(id, name) {
+  const lang=window.PetatoeLocalization?.effectiveLanguage?.()==="en"?"en":"ar";
   const geoLabel=window.KYUMGeography?.localizedDistrictLabel?.(id,name);
-  if(geoLabel)return geoLabel;
+  if(geoLabel && (lang!=="en" || !/[\u0600-\u06FF]/.test(geoLabel))) return geoLabel;
 
   const normalizedName=normalizeCustomerNeighborhoodSearch(name);
+  const geoDistricts=window.KYUMGeography?.getCatalog?.()?.districts||[];
   const row=(customerDistrictCatalog||[]).find(item=>String(item?.id||"")===String(id||""))
-    ||window.KYUMGeography?.getCatalog?.()?.districts?.find?.(item=>String(item?.id||"")===String(id||""))
-    ||(!id&&normalizedName
-      ?(customerDistrictCatalog||[]).find(item=>
+    ||geoDistricts.find?.(item=>String(item?.id||"")===String(id||""))
+    ||(normalizedName
+      ?[...(customerDistrictCatalog||[]),...geoDistricts].find(item=>
         [item?.name,item?.name_en,item?.nameEn].some(value=>normalizeCustomerNeighborhoodSearch(value)===normalizedName))
       :null)
     ||null;
-  const sourceName=String(row?.name||name||"");
+  const sourceName=String(row?.name||name||"").trim();
   const sourceEnglish=String(row?.name_en||row?.nameEn||"").trim();
-  if(window.PetatoeLocalization?.effectiveLanguage?.()==="en"&&sourceEnglish)return sourceEnglish;
+  if(lang==="en"&&sourceEnglish&&!/[\u0600-\u06FF]/.test(sourceEnglish))return sourceEnglish;
   const entityId=row?.id||id;
   const localized=window.PetatoeLocalization?.entityText?.("neighborhood", { id:entityId, name:sourceName, en:sourceEnglish, name_en:sourceEnglish });
-  return localized && !/^\[entity\.neighborhood\./.test(localized) ? localized : sourceName;
+  if(localized && !/^\[entity\.neighborhood\./.test(localized) && (lang!=="en" || !/[\u0600-\u06FF]/.test(localized))) return localized;
+  if(lang==="en"){
+    const translatedByName=window.PetatoeLocalization?.getRows?.().find?.(item=>
+      String(item?.key||"").startsWith("entity.neighborhood.")
+      && normalizeCustomerNeighborhoodSearch(item?.ar)===normalizedName
+      && String(item?.en||"").trim()
+      && !/[\u0600-\u06FF]/.test(String(item.en))
+    );
+    if(translatedByName?.en)return String(translatedByName.en).trim();
+    if(sourceEnglish)return sourceEnglish;
+    return sourceName&&!/[\u0600-\u06FF]/.test(sourceName)?sourceName:"";
+  }
+  return sourceName||localized||"";
 }
 
 function canManageCustomers(action = "edit") {
@@ -3910,7 +3924,12 @@ async function loadCustomersFromSupabase(force = false) {
   showDataStatus("customersStatus", navigator.onLine === false ? customerT("customers.loading.cached","جاري تحميل آخر بيانات العملاء المحفوظة...") : customerT("customers.loading","جاري تحميل بيانات العملاء..."), "info");
 
   try {
+    const geographyReady=loadCustomerDistrictCatalog(false).catch(error=>{
+      console.warn("Customer geography catalog load deferred:",error?.message||error);
+      return customerDistrictCatalog;
+    });
     customers = await window.CustomersService.listCustomers({ force });
+    await geographyReady;
     customersLoaded = true;
     customersPage = 1;
     showDataStatus("customersStatus", formatOfflineCacheStatus(window.CustomersService.getLastReadStatus?.()), "info");

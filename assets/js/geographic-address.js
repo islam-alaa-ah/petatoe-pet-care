@@ -2,8 +2,8 @@
 (function () {
   "use strict";
 
-  const GEO_CACHE_KEY = "geography:canonical-catalog:v2";
-  const GEO_CACHE_SCHEMA_VERSION = 2;
+  const GEO_CACHE_KEY = "geography:canonical-catalog:v3";
+  const GEO_CACHE_SCHEMA_VERSION = 3;
   const GEO_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
   const GEO_CACHE_STALE_MAX_MS = 365 * 24 * 60 * 60 * 1000;
 
@@ -41,23 +41,49 @@
     const row = (normalizedId ? relationIndex.districtById.get(String(normalizedId)) : null)
       || (normalizedFallback ? findByName("district", normalizedFallback) : null)
       || null;
-    if (!row) return normalizedFallback;
+    const lang = effectiveLanguage();
 
-    const direct = localizedName(row);
-    if (effectiveLanguage() !== "en" || (direct && !(/[\u0600-\u06FF]/).test(direct))) {
-      return direct || normalizedFallback;
+    if (!row) {
+      if (lang !== "en") return normalizedFallback;
+      if (normalizedId) {
+        const translated = window.PetatoeLocalization?.entityText?.("neighborhood", {
+          id: normalizedId,
+          name: normalizedFallback
+        });
+        if (translated && !(/^\[entity\.neighborhood\./).test(translated) && !(/[\u0600-\u06FF]/).test(translated)) {
+          return translated;
+        }
+      }
+      const translatedByName = window.PetatoeLocalization?.getRows?.().find?.(item =>
+        String(item?.key || "").startsWith("entity.neighborhood.")
+        && normalizeSearch(item?.ar) === normalizeSearch(normalizedFallback)
+        && normalizeValue(item?.en)
+        && !(/[\u0600-\u06FF]/).test(String(item.en))
+      );
+      return normalizeValue(translatedByName?.en);
     }
 
+    const sourceName = normalizeValue(row.name || normalizedFallback);
+    const sourceEnglish = normalizeValue(row.name_en || row.nameEn);
+    if (lang !== "en") return sourceName || normalizedFallback;
+    if (sourceEnglish && !(/[\u0600-\u06FF]/).test(sourceEnglish)) return sourceEnglish;
+
     const translated = window.PetatoeLocalization?.entityText?.("neighborhood", {
-      id: row.id,
-      name: row.name || normalizedFallback,
-      en: row.name_en || row.nameEn || "",
-      name_en: row.name_en || row.nameEn || ""
+      id: row.id || normalizedId,
+      name: sourceName || normalizedFallback,
+      en: sourceEnglish,
+      name_en: sourceEnglish
     });
     if (translated && !(/^\[entity\.neighborhood\./).test(translated) && !(/[\u0600-\u06FF]/).test(translated)) {
       return translated;
     }
-    return direct || normalizedFallback;
+    const translatedByName = window.PetatoeLocalization?.getRows?.().find?.(item =>
+      String(item?.key || "").startsWith("entity.neighborhood.")
+      && normalizeSearch(item?.ar) === normalizeSearch(sourceName || normalizedFallback)
+      && normalizeValue(item?.en)
+      && !(/[\u0600-\u06FF]/).test(String(item.en))
+    );
+    return normalizeValue(translatedByName?.en);
   }
 
   function geoT(key, fallback) {
