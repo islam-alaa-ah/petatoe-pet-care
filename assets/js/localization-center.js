@@ -1400,6 +1400,7 @@
     ["appointments.reports.monthly.note","help","ملخص شهري لقيمة المبيعات شاملة الضريبة حسب اليوم والسيارة وطريقة الدفع.","Monthly VAT-inclusive sales summary by day, vehicle, and payment method."],
     ["appointments.reports.monthly.day","table","اليوم","Day"],
     ["appointments.reports.monthly.vehicle","table","السيارة","Vehicle"],
+    ["appointments.reports.monthly.allVehicles","option","كل السيارات","All vehicles"],
     ["appointments.reports.monthly.total","table","الإجمالي","Total"],
     ["appointments.reports.monthly.grandTotal","table","إجمالي الشهر","Month total"],
     ["appointments.reports.monthly.period","label","الفترة: {from} — {to}","Period: {from} — {to}"],
@@ -5073,6 +5074,10 @@
     ["pwa.update.release.r44r38r8.note1","note","إضافة تبويب ملخص الشهر بجوار ملخص المواعيد لعرض كل يوم وسيارة مع قيم المبيعات حسب طرق الدفع والإجمالي.","Adds a Monthly Summary tab beside Appointment Summary showing each day and vehicle with sales values by payment method and total."],
     ["pwa.update.release.r44r38r8.note2","note","التقرير يستخدم نفس مصدر ومعادلات ملخص طرق الدفع حسب الفريق ويجمع الشهر المحدد بالكامل دون إنشاء منطق مالي أو مصدر بيانات موازٍ.","The report reuses the same source and payment-summary calculations for the full selected month, without introducing parallel financial logic or data sources."],
     ["pwa.update.release.r44r38r8.note3","note","لا تغيير على Offline/Sync أو الصلاحيات أو RLS أو حسابات المواعيد أو R44 Pruning، والتعديل محصور في عرض تقارير المواعيد والترجمة.","No changes to Offline/Sync, permissions, RLS, appointment calculations, or R44 Pruning; changes are limited to Appointment Reports display and localization."],
+    ["pwa.update.release.r44r38r9.title","title","إضافة فلتر السيارة إلى ملخص الشهر — R44R38R9","Add Vehicle Filter to Monthly Summary — R44R38R9"],
+    ["pwa.update.release.r44r38r9.note1","note","إضافة فلتر السيارة داخل ملخص الشهر بقيمة افتراضية كل السيارات مع إمكانية اختيار سيارة واحدة لعرض التقرير الخاص بها.","Adds a Vehicle filter to Monthly Summary, defaulting to All vehicles, with the option to display one vehicle only."],
+    ["pwa.update.release.r44r38r9.note2","note","الفلتر يعمل على نفس بيانات ملخص الشهر بعد التحميل ويعيد حساب إجماليات طرق الدفع والإجمالي وفق السيارة المختارة دون تغيير المعادلات المالية.","The filter works on the already loaded Monthly Summary data and recalculates payment-method totals and the grand total for the selected vehicle without changing financial formulas."],
+    ["pwa.update.release.r44r38r9.note3","note","لا تغيير على قاعدة البيانات التشغيلية أو Offline/Sync أو الصلاحيات أو RLS أو R44 Pruning؛ التعديل محصور في عرض التقرير والترجمة.","No operational database, Offline/Sync, permissions, RLS, or R44 Pruning changes; the change is limited to report display and localization."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

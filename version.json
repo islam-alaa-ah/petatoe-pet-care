@@ -1,19 +1,19 @@
 {
-  "version": "18.56.97",
-  "build": 185697,
+  "version": "18.56.98",
+  "build": 185698,
   "forceUpdate": true,
   "releaseDate": "2026-09-12",
-  "title": "إضافة تقرير ملخص الشهر إلى تقارير المواعيد — R44R38R8",
+  "title": "إضافة فلتر السيارة إلى تقرير ملخص الشهر — R44R38R9",
   "notes": [
-    "إضافة تبويب ملخص الشهر بجوار ملخص المواعيد لعرض كل يوم وسيارة مع قيم المبيعات حسب طرق الدفع والإجمالي.",
-    "التقرير يستخدم نفس مصدر ومعادلات ملخص طرق الدفع حسب الفريق ويجمع الشهر المحدد بالكامل دون إنشاء منطق مالي أو مصدر بيانات موازٍ.",
-    "لا تغيير على Offline/Sync أو الصلاحيات أو RLS أو حسابات المواعيد أو R44 Pruning، والتعديل محصور في عرض تقارير المواعيد والترجمة."
+    "إضافة فلتر السيارة داخل ملخص الشهر بقيمة افتراضية كل السيارات مع إمكانية اختيار سيارة واحدة لعرض التقرير الخاص بها.",
+    "الفلتر يعيد استخدام بيانات التقرير الحالية ويعيد حساب إجماليات طرق الدفع والإجمالي وفق السيارة المختارة دون تغيير أي معادلة مالية.",
+    "لا تغيير على Offline/Sync أو الصلاحيات أو RLS أو حسابات المواعيد أو R44 Pruning؛ التعديل محصور في عرض التقرير والترجمة."
   ],
-  "cacheToken": "petatoe-pwa-18-56-97-monthly-payment-summary-r44r38r8-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r8.title",
+  "cacheToken": "petatoe-pwa-18-56-98-monthly-vehicle-filter-r44r38r9-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r9.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r8.note1",
-    "pwa.update.release.r44r38r8.note2",
-    "pwa.update.release.r44r38r8.note3"
+    "pwa.update.release.r44r38r9.note1",
+    "pwa.update.release.r44r38r9.note2",
+    "pwa.update.release.r44r38r9.note3"
   ]
 }

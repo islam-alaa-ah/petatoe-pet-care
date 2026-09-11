@@ -1,0 +1,51 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const read = rel => fs.readFileSync(path.join(root, rel), 'utf8');
+const html = read('index.html');
+const reports = read('assets/js/installation-operations-reports.js');
+const loc = read('assets/js/localization-center.js');
+const version = JSON.parse(read('version.json'));
+const pkg = JSON.parse(read('package.json'));
+const manifest = JSON.parse(read('supabase/migration-manifest.json'));
+const sqlRel = 'supabase/migrations/phase_p5_13_8_72_r44r38r9_monthly_vehicle_filter.sql';
+const sql = read(sqlRel);
+const checks=[];
+const check=(name,value)=>checks.push([name,Boolean(value)]);
+
+check('release version is 18.56.98', version.version==='18.56.98' && pkg.version==='18.56.98');
+check('release build is 185698', version.build===185698);
+check('release phase is R44R38R9', manifest?.release?.phase==='R44R38R9' && manifest?.release?.build===185698);
+check('monthly summary vehicle filter exists once', (html.match(/id="installationMonthlySummaryVehicle"/g)||[]).length===1);
+check('vehicle filter is inside monthly summary filters', /installation-summary-filters[\s\S]*?installationMonthlySummaryVehicle[\s\S]*?installationMonthlySummaryYear[\s\S]*?installationMonthlySummaryMonth/.test(html));
+check('vehicle filter defaults to all vehicles', /id="installationMonthlySummaryVehicle"[\s\S]*?<option value=""[^>]*>/.test(html));
+check('all vehicles option is localized', html.includes('appointments.reports.monthly.allVehicles') && loc.includes('appointments.reports.monthly.allVehicles'));
+check('vehicle options derive from canonical monthly rows', reports.includes('function monthlyVehicleOptions(data)') && /monthlyVehicleOptions\(data\)[\s\S]*?monthlyPaymentRows\(data\)/.test(reports));
+check('vehicle identity still uses canonical car id/name/plate fallback', reports.includes('function monthlyVehicleIdentity(order)') && reports.includes('order?.carId'));
+check('vehicle filter preserves selected vehicle when still present', reports.includes("select.value=options.some(v=>v.key===previous)?previous:''"));
+check('vehicle filter falls back to all vehicles when selection disappears', reports.includes("?previous:''"));
+check('monthly rendering filters by vehicle key only', reports.includes("rows=monthlyPaymentRows(data).filter(row=>!vehicleKey||row.vehicleKey===vehicleKey)"));
+check('vehicle change rerenders without requerying backend', reports.includes("$('installationMonthlySummaryVehicle')?.addEventListener('change',()=>{if(state.monthlyPaymentData)renderMonthlyPaymentSummary(state.monthlyPaymentData)})"));
+check('year and month still reload canonical monthly data', reports.includes("['installationMonthlySummaryYear','installationMonthlySummaryMonth']") && reports.includes('loadMonthlyPaymentSummary()'));
+check('monthly load fills vehicle options from loaded report data', /loadMonthlyPaymentSummary\(\)[\s\S]*?fillMonthlyVehicleFilter\(data\);renderMonthlyPaymentSummary\(data\)/.test(reports));
+check('reset restores all vehicles', reports.includes("$('installationMonthlySummaryVehicle').value=''"));
+check('language change rebuilds vehicle labels and keeps selection', reports.includes('fillMonthlyVehicleFilter(state.monthlyPaymentData);renderMonthlyPaymentSummary(state.monthlyPaymentData);'));
+check('filtered totals reuse same payment methods', reports.includes('const methods=SUMMARY_PAYMENT_METHODS') && /for\(const method of methods\)totals\[method\]\+=/.test(reports));
+check('filtered totals reuse same VAT-inclusive order values', /monthlyPaymentRows\(data\)[\s\S]*?summaryOrderValue\(order\)/.test(reports));
+check('monthly report still queries canonical installationSummaryReport only', /loadMonthlyPaymentSummary\(\)[\s\S]*?InstallationsServiceSafe\.installationSummaryReport\(\{dateFrom:range\.dateFrom,dateTo:range\.dateTo\}\)/.test(reports));
+check('no representative or user filter was introduced', !/installationMonthlySummary(?:Representative|User)/.test(html+reports));
+check('no CSS file required for vehicle filter', !fs.readdirSync(path.join(root,'assets/css')).some(()=>false));
+check('translation migration registers all vehicles and release keys', sql.includes("'appointments.reports.monthly.allVehicles'") && sql.includes("'pwa.update.release.r44r38r9.title'"));
+check('translation migration preserves custom translations', sql.includes('ar_text=case when public.app_translations.ar_text is null') && sql.includes('en_text=case when public.app_translations.en_text is null'));
+check('translation migration has no schema, RLS, function, or destructive change', !/\b(delete\s+from|truncate\b|drop\s+table|drop\s+column|alter\s+table|create\s+table|create\s+or\s+replace\s+function|create\s+policy|alter\s+policy)\b/i.test(sql));
+check('new migration fingerprint is inventoried', (()=>{const b=fs.readFileSync(path.join(root,sqlRel));const item=manifest.historicalInventory.find(x=>x.path===sqlRel);return item&&item.bytes===b.length&&item.sha256===crypto.createHash('sha256').update(b).digest('hex')})());
+check('pre-existing manifest drift remains exactly three files', (()=>{const physical=fs.readdirSync(path.join(root,'supabase/migrations')).filter(x=>x.endsWith('.sql')).length;return physical-manifest.inventoryStats.sqlFileCount===3})());
+check('all index local asset tokens were bumped to 18.56.98', (()=>{const tokens=[...html.matchAll(/[?&]v=(\d+\.\d+\.\d+)/g)].map(x=>x[1]);return tokens.length>0&&tokens.every(x=>x==='18.56.98')})());
+check('R44 pruning remains disabled', read('supabase/migrations/phase_p5_13_8_72_r44_bounded_pruning_engine_disabled.sql').includes('false'));
+
+let passed=0;
+for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} - ${name}`);if(ok)passed++;}
+console.log(`\n${passed}/${checks.length} PASS`);
+if(passed!==checks.length)process.exit(1);
