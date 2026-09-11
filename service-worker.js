@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-79-crm-l2c-reports-customer360-import-r44r33-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-80-appointments-l3-r44r34-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

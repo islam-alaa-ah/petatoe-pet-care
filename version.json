@@ -1,19 +1,19 @@
 {
-  "version": "18.56.79",
-  "build": 185679,
+  "version": "18.56.80",
+  "build": 185680,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "استكمال ترجمة تقارير CRM وCustomer 360 والاستيراد — R44R33",
+  "title": "استكمال ترجمة إدارة المواعيد — R44R34",
   "notes": [
-    "استكمال ترجمة مركز التقارير والتحليلات وCustomer 360 ورسائل التشغيل الديناميكية.",
-    "استكمال ترجمة واجهة استيراد وتصدير العملاء ورسائل Excel مع الحفاظ على منطق التحقق الداخلي كما هو.",
-    "إضافة ترجمة Display Layer لرسائل خدمات CRM دون تغيير عقود Offline/Sync أو منطق الأعمال."
+    "استكمال ترجمة شاشات طلبات المواعيد والجدولة والتقارير والاستثناءات والإعدادات.",
+    "استكمال ترجمة رسائل التنفيذ والتأكيد والتحصيل وحالات العرض الديناميكية دون تغيير منطق الأعمال.",
+    "الحفاظ على عقود Offline/Sync والصلاحيات والبيانات المالية مع فصل محتوى PDF وCSV وWhatsApp المولد إلى مرحلة L6."
   ],
-  "cacheToken": "petatoe-pwa-18-56-79-crm-l2c-reports-customer360-import-r44r33-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r33.title",
+  "cacheToken": "petatoe-pwa-18-56-80-appointments-l3-r44r34-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r34.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r33.note1",
-    "pwa.update.release.r44r33.note2",
-    "pwa.update.release.r44r33.note3"
+    "pwa.update.release.r44r34.note1",
+    "pwa.update.release.r44r34.note2",
+    "pwa.update.release.r44r34.note3"
   ]
 }
