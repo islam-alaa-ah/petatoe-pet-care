@@ -9,7 +9,7 @@ const CATALOG=path.join(ROOT,'assets/js/localization-center.js');
 const HTML=path.join(ROOT,'index.html');
 const BASELINE=path.join(ROOT,'scripts/localization-coverage-baseline.json');
 const AR=/[\u0600-\u06FF]/;
-const ALLOWED_PREFIXES=new Set(['common','shared','sidebar','auth','dashboard','customers','representatives','referenceData','followups','contracts','invoices','users','permissions','activityLog','backups','systemHealth','diagnostics','performance','syncRecovery','systemSettings','aboutApp','pwa','salaryStatement','commissionStatement','commission','payroll','appointments','appointmentNew','appointmentSettings','execution','vehicleTreasury','seaVibePayroll','seaVibe','translationCenter','dailyOperations','dailyPerformance','dailyActivity','dailyAlerts','dailyTargets','reportsOverview','customer360','customerImport','crmService']);
+const ALLOWED_PREFIXES=new Set(['common','shared','sidebar','auth','dashboard','customers','representatives','referenceData','followups','contracts','invoices','users','permissions','activityLog','backups','systemHealth','diagnostics','performance','syncRecovery','systemSettings','aboutApp','pwa','salaryStatement','commissionStatement','commission','payroll','appointments','appointmentNew','appointmentSettings','execution','vehicleTreasury','seaVibePayroll','seaVibe','translationCenter','dailyOperations','dailyPerformance','dailyActivity','dailyAlerts','dailyTargets','reportsOverview','customer360','customerImport','crmService','geography']);
 
 function read(file){return fs.readFileSync(file,'utf8');}
 function listFiles(dir,ext='.js'){const out=[];for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);if(entry.isDirectory())out.push(...listFiles(full,ext));else if(entry.isFile()&&entry.name.endsWith(ext))out.push(full);}return out;}
@@ -63,7 +63,7 @@ for(const row of rows){
   const prefix=row.key.split('.')[0];if(!ALLOWED_PREFIXES.has(prefix))fail(`unrouted catalog namespace ${prefix} (${row.key})`);
 }
 const source=read(CATALOG);
-for(const required of ["const routeFor=(key)=>","value.startsWith('appointmentNew.')","value.startsWith('vehicleTreasury.')","value.startsWith('seaVibePayroll.')","value.startsWith('translationCenter.')","value.startsWith('representatives.')","value.startsWith('referenceData.')","value.startsWith('reportsOverview.')","value.startsWith('customer360.')||value.startsWith('customerImport.')","value.startsWith('crmService.')","moduleNameFor=key=>routeFor(key).moduleName"]){if(!source.includes(required))fail(`routing contract missing: ${required}`);}
+for(const required of ["const routeFor=(key)=>","value.startsWith('appointmentNew.')","value.startsWith('vehicleTreasury.')","value.startsWith('seaVibePayroll.')","value.startsWith('translationCenter.')","value.startsWith('representatives.')","value.startsWith('referenceData.')","value.startsWith('reportsOverview.')","value.startsWith('customer360.')||value.startsWith('customerImport.')","value.startsWith('crmService.')","value.startsWith('geography.')","moduleNameFor=key=>routeFor(key).moduleName"]){if(!source.includes(required))fail(`routing contract missing: ${required}`);}
 const html=read(HTML);
 for(const key of htmlKeys(html)){if(!keySet.has(key))fail(`HTML references missing localization key ${key}`);}
 const staticInventory=htmlArabicInventory(html);

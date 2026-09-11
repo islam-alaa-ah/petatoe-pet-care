@@ -1177,7 +1177,7 @@ function renderCustomerNeighborhoodOptions(query=""){
   if(!matches.length){
     const empty=document.createElement("div");
     empty.className="geo-searchable-empty";
-    empty.textContent="لا توجد نتائج مطابقة.";
+    empty.textContent=customerT("geography.search.noResults","لا توجد نتائج مطابقة.");
     options.appendChild(empty);
     return;
   }
@@ -1290,8 +1290,8 @@ async function loadReferenceDataFromSupabase(force = false) {
   }
 
   referenceDataLoading = true;
-  showDataStatus("referenceDataStatus", "جاري تحميل البيانات المرجعية...", "info");
-  showDataStatus("representativesStatus", "جاري تحميل المندوبين...", "info");
+  showDataStatus("referenceDataStatus", customerT("referenceData.loading","جاري تحميل البيانات المرجعية..."), "info");
+  showDataStatus("representativesStatus", customerT("representatives.loading","جاري تحميل المندوبين..."), "info");
 
   referenceDataLoadPromise = (async () => {
     try {
@@ -3848,7 +3848,14 @@ function customerT(key, fallback = "", vars = {}) {
 }
 
 function customerNeighborhoodLabel(id, name) {
-  return window.PetatoeLocalization?.entityText?.("neighborhood", { id, name }) || String(name || "");
+  const row=(customerDistrictCatalog||[]).find(item=>String(item?.id||"")===String(id||""))
+    ||window.KYUMGeography?.getCatalog?.()?.districts?.find?.(item=>String(item?.id||"")===String(id||""))
+    ||null;
+  const sourceName=String(row?.name||name||"");
+  const sourceEnglish=String(row?.name_en||row?.nameEn||"").trim();
+  if(window.PetatoeLocalization?.effectiveLanguage?.()==="en"&&sourceEnglish)return sourceEnglish;
+  const localized=window.PetatoeLocalization?.entityText?.("neighborhood", { id, name:sourceName, en:sourceEnglish, name_en:sourceEnglish });
+  return localized && !/^\[entity\.neighborhood\./.test(localized) ? localized : sourceName;
 }
 
 function canManageCustomers(action = "edit") {
@@ -3864,7 +3871,7 @@ async function loadCustomersFromSupabase(force = false) {
   if (!window.CustomersService) return;
 
   customersLoading = true;
-  showDataStatus("customersStatus", navigator.onLine === false ? "جاري تحميل آخر بيانات العملاء المحفوظة..." : "جاري تحميل العملاء...", "info");
+  showDataStatus("customersStatus", navigator.onLine === false ? customerT("customers.loading.cached","جاري تحميل آخر بيانات العملاء المحفوظة...") : customerT("customers.loading","جاري تحميل بيانات العملاء..."), "info");
 
   try {
     customers = await window.CustomersService.listCustomers({ force });
@@ -6629,7 +6636,7 @@ async function loadQuotationsFromSupabase(force = false) {
   if (!window.QuotationsService) return;
 
   quotationsLoading = true;
-  showDataStatus("quotationsStatus", navigator.onLine === false ? "جاري تحميل آخر بيانات عقود العملاء المحفوظة..." : "جاري تحميل عقود العملاء...", "info");
+  showDataStatus("quotationsStatus", navigator.onLine === false ? customerT("contracts.loading.cached","جاري تحميل آخر بيانات عقود العملاء المحفوظة...") : customerT("contracts.loading","جاري تحميل عقود العملاء..."), "info");
 
   try {
     quotations = await window.QuotationsService.listQuotations({ force });
@@ -9314,9 +9321,15 @@ window.addEventListener("petatoe-language-changed", () => {
   refreshDashboardRepresentativeOptions();
   syncDashboardDatePlaceholderState();
   if (activeViewKey === "dashboard") renderDashboard();
-  if (customersLoaded) renderCustomers();
+  if (customersLoaded) {
+    renderCustomers();
+    if (activeViewKey === "customers") showDataStatus("customersStatus", formatOfflineCacheStatus(window.CustomersService?.getLastReadStatus?.()), "info");
+  }
   if (followupsLoaded) renderFollowups();
-  if (quotationsLoaded) renderQuotations();
+  if (quotationsLoaded) {
+    renderQuotations();
+    if (activeViewKey === "quotations") showDataStatus("quotationsStatus", formatOfflineCacheStatus(window.QuotationsService?.getLastReadStatus?.()), "info");
+  }
   if (activeViewKey === "dailyOperations") {
     renderDailyOperations();
     renderDailyWhatsAppTemplate();

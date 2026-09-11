@@ -993,6 +993,15 @@
     ["shared.cache.minutes","format","يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ {count} دقيقة.","Showing locally cached data — last synced {count} minutes ago."],
     ["shared.cache.hours","format","يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ {count} ساعة.","Showing locally cached data — last synced {count} hours ago."],
     ["shared.cache.days","format","يتم عرض بيانات محفوظة محليًا — آخر مزامنة منذ {count} يوم.","Showing locally cached data — last synced {count} days ago."],
+    ["customers.loading.cached","status","جاري تحميل آخر بيانات العملاء المحفوظة...","Loading the latest cached customer data..."],
+    ["contracts.loading.cached","status","جاري تحميل آخر بيانات عقود العملاء المحفوظة...","Loading the latest cached customer contracts..."],
+    ["referenceData.loading","status","جاري تحميل البيانات المرجعية...","Loading reference data..."],
+    ["representatives.loading","status","جاري تحميل المندوبين...","Loading sales representatives..."],
+    ["geography.search.noResults","empty","لا توجد نتائج مطابقة.","No matching results."],
+    ["geography.placeholder.citySearch","placeholder","ابحث واختر المدينة","Search and select a city"],
+    ["geography.placeholder.districtSearch","placeholder","ابحث واختر الحي","Search and select a district"],
+    ["geography.placeholder.regionFirst","placeholder","اختر المنطقة أولًا","Select a region first"],
+    ["geography.placeholder.cityFirst","placeholder","اختر المدينة أولًا","Select a city first"],
     ["contracts.action.createAppointment","button","إنشاء موعد","Create Appointment"],
     ["contracts.action.toInvoice","button","تحويل إلى فاتورة","Convert to Invoice"],
     ["contracts.action.openInvoice","button","فتح الفاتورة","Open Invoice"],
@@ -4658,6 +4667,10 @@
     ["pwa.update.release.r44r37r1.note1","note","إصلاح عدادات تقويم المواعيد ومنع ظهور المتغيرات الخام مثل {count} و{date} في العربية والإنجليزية.","Fix appointment calendar counters and prevent raw placeholders such as {count} and {date} from appearing in Arabic or English."],
     ["pwa.update.release.r44r37r1.note2","note","استكمال ترجمة عناوين وأوصاف الهيدر للشاشات غير المغطاة وإعادة رسمها فور تغيير اللغة.","Complete localized page header titles and subtitles for uncovered screens and rerender them immediately when the language changes."],
     ["pwa.update.release.r44r37r1.note3","note","تحديث رسالة بيانات الكاش في شاشة الجدولة عند تغيير اللغة دون إعادة تحميل البيانات، مع الحفاظ على Business Logic وOffline/Sync/Permissions وCSS دون تعديل.","Refresh the scheduling cached-data status when the language changes without reloading data, while keeping business logic, Offline/Sync/Permissions, and CSS unchanged."],
+    ["pwa.update.release.r44r37r2.title","title","إصلاح ترجمة الأحياء ورسائل البيانات المحفوظة — R44R37R2","Neighborhood and cached-data localization hotfix — R44R37R2"],
+    ["pwa.update.release.r44r37r2.note1","note","اعتماد الاسم الإنجليزي الفعلي للأحياء والمناطق والمدن من مصدر العنوان الوطني بدل إظهار مفتاح الترجمة الخام أو ترجمة حرفية.","Use the authoritative English names for districts, regions, and cities from the National Address source instead of raw translation keys or literal translation."],
+    ["pwa.update.release.r44r37r2.note2","note","إعادة ترجمة رسائل البيانات المحفوظة وحالات التحميل فور تغيير اللغة في شاشات العملاء والعقود والبيانات المرجعية.","Rerender cached-data and loading status messages immediately when the language changes on Customers, Contracts, and Reference Data screens."],
+    ["pwa.update.release.r44r37r2.note3","note","تحديث مسار الجغرافيا والترجمة فقط مع الحفاظ على Business Logic وOffline/Sync/Permissions وCSS دون تعديل.","Update only geographic/localization display paths while keeping Business Logic, Offline/Sync/Permissions, and CSS unchanged."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
@@ -4665,6 +4678,7 @@
     if(value.startsWith('entity.neighborhood.'))return{screenKey:'installationExecutionNeighborhoods',moduleName:'appointments'};
     if(value.startsWith('translationCenter.'))return{screenKey:'translationCenter',moduleName:'system'};
     if(value.startsWith('sidebar.'))return{screenKey:'sidebar',moduleName:'navigation'};
+    if(value.startsWith('geography.'))return{screenKey:'shared',moduleName:'core'};
     if(value.startsWith('shared.')||value.startsWith('common.'))return{screenKey:'shared',moduleName:'core'};
     if(value.startsWith('dashboard.'))return{screenKey:'dashboard',moduleName:'dashboard'};
     if(value.startsWith('reportsOverview.'))return{screenKey:'reportsOverview',moduleName:'crm'};
@@ -4851,7 +4865,7 @@
   function registerEntity(kind,item){
     const id=String(item?.id||'').trim();if(!id)return null;
     const key=entityKey(kind,id),ar=String(item?.name||item?.ar||'').trim();
-    let en=String(item?.en||'').trim();
+    let en=String(item?.en||item?.nameEn||item?.name_en||'').trim();
     if(kind==='service'&&!en)en=serviceDefaultEnglish(ar,item?.serviceCode||item?.service_code||'');
     const type=kind==='service'?'service':'neighborhood',screenKey=kind==='service'?'installationExecutionServices':'installationExecutionNeighborhoods';
     if(!defaults.has(key))defaults.set(key,Object.freeze({key,type,screenKey,moduleName:'appointments',ar,en}));
@@ -4860,8 +4874,8 @@
   function registerEntityCatalog(catalog={}){(catalog.services||[]).forEach(x=>registerEntity('service',x));(catalog.neighborhoods||[]).forEach(x=>registerEntity('neighborhood',x));return getRows()}
   function entityText(kind,item){
     const key=registerEntity(kind,item);if(!key)return effectiveLanguage()==='en'?'Not specified':String(item?.name||'');
-    const value=t(key);if(effectiveLanguage()==='en'&&ARABIC_RE.test(value))return kind==='service'?serviceDefaultEnglish(item?.name,item?.serviceCode||item?.service_code||''):`[${key}]`;
-    return value;
+    const value=t(key);if(effectiveLanguage()==='en'){const sourceEn=String(item?.en||item?.nameEn||item?.name_en||'').trim();if(sourceEn)return sourceEn;if(/^\[entity\./.test(value)||ARABIC_RE.test(value))return kind==='service'?serviceDefaultEnglish(item?.name,item?.serviceCode||item?.service_code||''):String(item?.name||'');}
+    return /^\[entity\./.test(value)?String(item?.name||''):value;
   }
   function statusLabel(value){const map={'مسند':'execution.status.assigned','في الطريق':'execution.status.onRoute','وصل إلى العميل':'execution.status.arrived','قيد التنفيذ':'execution.status.inProgress','مكتمل':'execution.status.completed','ملغي':'execution.status.cancelled','بانتظار التأكيد':'execution.status.awaitingConfirmation'};return map[value]?t(map[value]):String(value||'')}
   function translateMessage(message){const text=String(message||'');if(effectiveLanguage()==='ar'||!text)return text;for(const base of defaults.values()){if(base.type!=='error')continue;if(text===base.ar)return t(base.key);if(base.ar.endsWith(':')&&text.startsWith(base.ar))return `${t(base.key)}${text.slice(base.ar.length)}`;}return text}

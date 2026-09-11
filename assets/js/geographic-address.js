@@ -2,8 +2,8 @@
 (function () {
   "use strict";
 
-  const GEO_CACHE_KEY = "geography:canonical-catalog:v1";
-  const GEO_CACHE_SCHEMA_VERSION = 1;
+  const GEO_CACHE_KEY = "geography:canonical-catalog:v2";
+  const GEO_CACHE_SCHEMA_VERSION = 2;
   const GEO_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
   const GEO_CACHE_STALE_MAX_MS = 365 * 24 * 60 * 60 * 1000;
 
@@ -22,6 +22,22 @@
 
   function normalizeValue(value) {
     return String(value || "").trim().replace(/\s+/g, " ");
+  }
+
+  function effectiveLanguage() {
+    return window.PetatoeLocalization?.effectiveLanguage?.() === "en" ? "en" : "ar";
+  }
+
+  function localizedName(row) {
+    if (!row) return "";
+    const ar = normalizeValue(row.name);
+    const en = normalizeValue(row.name_en || row.nameEn);
+    return effectiveLanguage() === "en" && en ? en : ar;
+  }
+
+  function geoT(key, fallback) {
+    const value = window.PetatoeLocalization?.t?.(key);
+    return value && !/^\[.+\]$/.test(value) ? value : fallback;
   }
 
   function normalizeSearch(value) {
@@ -47,10 +63,13 @@
   }
 
   function buildIndexes() {
-    const buildSearch = rows => new Map(rows.map(row => [String(row.id), {
-      key: normalizeSearch(row.name),
-      tokens: tokenizeSearch(row.name)
-    }]));
+    const buildSearch = rows => new Map(rows.map(row => {
+      const searchable = `${normalizeValue(row.name)} ${normalizeValue(row.name_en || row.nameEn)}`.trim();
+      return [String(row.id), {
+        key: normalizeSearch(searchable),
+        tokens: tokenizeSearch(searchable)
+      }];
+    }));
     const groupBy = (rows, field) => {
       const result = new Map();
       rows.forEach(row => {
@@ -101,7 +120,8 @@
   function scoreSearch(type, row, query) {
     const q = normalizeSearch(query);
     if (!q) return 0;
-    const meta = searchIndex[type]?.get(String(row.id)) || { key: normalizeSearch(row.name), tokens: tokenizeSearch(row.name) };
+    const searchable = `${normalizeValue(row.name)} ${normalizeValue(row.name_en || row.nameEn)}`.trim();
+    const meta = searchIndex[type]?.get(String(row.id)) || { key: normalizeSearch(searchable), tokens: tokenizeSearch(searchable) };
     if (meta.key === q) return 1000;
     if (meta.key.startsWith(q)) return 800;
     const queryTokens = tokenizeSearch(q);
@@ -169,9 +189,9 @@
     if (networkRefreshPromise) return networkRefreshPromise;
     networkRefreshPromise = (async () => {
       const [regions, cities, districts] = await Promise.all([
-        fetchAll("installation_regions", "id,name,is_active"),
-        fetchAll("installation_cities", "id,region_id,name,is_active"),
-        fetchAll("installation_neighborhoods", "id,region_id,city_id,name,city,region,is_active")
+        fetchAll("installation_regions", "id,name,name_en,is_active"),
+        fetchAll("installation_cities", "id,region_id,name,name_en,is_active"),
+        fetchAll("installation_neighborhoods", "id,region_id,city_id,name,name_en,city,region,is_active")
       ]);
       const next = { regions, cities, districts };
       applyCatalog(next, "network");
@@ -269,7 +289,7 @@
     if (!normalized) return null;
     const rows = type === "region" ? catalog.regions : type === "city" ? catalog.cities : catalog.districts;
     return rows.find(row => {
-      if (normalizeSearch(row.name) !== normalized) return false;
+      if (![row.name, row.name_en, row.nameEn].some(value => normalizeSearch(value) === normalized)) return false;
       if (!parentId) return true;
       return String(type === "city" ? row.region_id : row.city_id) === String(parentId);
     }) || null;
@@ -390,14 +410,14 @@
       const rows = rowsFor(type)
         .map(row => ({ row, score: q ? scoreSearch(type, row, q) : 0 }))
         .filter(item => !q || item.score >= 0)
-        .sort((a, b) => b.score - a.score || normalizeValue(a.row.name).localeCompare(normalizeValue(b.row.name), "ar"))
+        .sort((a, b) => b.score - a.score || localizedName(a.row).localeCompare(localizedName(b.row), effectiveLanguage() === "en" ? "en" : "ar"))
         .slice(0, optionLimit)
         .map(item => item.row);
       options.replaceChildren();
       if (!rows.length) {
         const empty = documentRef.createElement("div");
         empty.className = "geo-searchable-empty";
-        empty.textContent = "لا توجد نتائج مطابقة.";
+        empty.textContent = geoT("geography.search.noResults", "لا توجد نتائج مطابقة.");
         options.appendChild(empty);
         return;
       }
@@ -409,7 +429,7 @@
         button.setAttribute("aria-selected", String(String(hidden?.value || "") === String(row.id)));
         button.id = `geo-option-${type}-${String(row.id)}`;
         button.dataset.geoUnifiedId = String(row.id);
-        button.textContent = normalizeValue(row.name);
+        button.textContent = localizedName(row);
         options.appendChild(button);
       });
     };
@@ -434,18 +454,18 @@
       const index = type === "region" ? relationIndex.regionById : type === "city" ? relationIndex.cityById : relationIndex.districtById;
       const row = index.get(String(id || "")) || null;
       hidden.value = row ? String(row.id) : "";
-      search.value = row ? normalizeValue(row.name) : "";
+      search.value = row ? localizedName(row) : "";
       search.dataset.selectedId = row ? String(row.id) : "";
       search.setCustomValidity("");
       if (type === "region" && cascade) {
         select("city", "", { cascade: false, closeAfter: false });
         select("district", "", { cascade: false, closeAfter: false });
-        setEnabled("city", Boolean(row), row ? "ابحث واختر المدينة" : "اختر المنطقة أولًا");
-        setEnabled("district", false, "اختر المدينة أولًا");
+        setEnabled("city", Boolean(row), row ? geoT("geography.placeholder.citySearch", "ابحث واختر المدينة") : geoT("geography.placeholder.regionFirst", "اختر المنطقة أولًا"));
+        setEnabled("district", false, geoT("geography.placeholder.cityFirst", "اختر المدينة أولًا"));
       }
       if (type === "city" && cascade) {
         select("district", "", { cascade: false, closeAfter: false });
-        setEnabled("district", Boolean(row), row ? "ابحث واختر الحي" : "اختر المدينة أولًا");
+        setEnabled("district", Boolean(row), row ? geoT("geography.placeholder.districtSearch", "ابحث واختر الحي") : geoT("geography.placeholder.cityFirst", "اختر المدينة أولًا"));
       }
       if (closeAfter) close(type);
       config.onChange?.(type, row, value());
@@ -464,8 +484,8 @@
       select("region", resolved.regionId, { cascade: true, closeAfter: false });
       select("city", resolved.cityId, { cascade: true, closeAfter: false });
       select("district", resolved.districtId, { cascade: false, closeAfter: false });
-      setEnabled("city", Boolean(resolved.regionId), resolved.regionId ? "ابحث واختر المدينة" : "اختر المنطقة أولًا");
-      setEnabled("district", Boolean(resolved.cityId), resolved.cityId ? "ابحث واختر الحي" : "اختر المدينة أولًا");
+      setEnabled("city", Boolean(resolved.regionId), resolved.regionId ? geoT("geography.placeholder.citySearch", "ابحث واختر المدينة") : geoT("geography.placeholder.regionFirst", "اختر المنطقة أولًا"));
+      setEnabled("district", Boolean(resolved.cityId), resolved.cityId ? geoT("geography.placeholder.districtSearch", "ابحث واختر الحي") : geoT("geography.placeholder.cityFirst", "اختر المدينة أولًا"));
       return resolved;
     };
 
@@ -488,11 +508,11 @@
           if (type === "region") {
             select("city", "", { cascade: false, closeAfter: false });
             select("district", "", { cascade: false, closeAfter: false });
-            setEnabled("city", false, "اختر المنطقة أولًا");
-            setEnabled("district", false, "اختر المدينة أولًا");
+            setEnabled("city", false, geoT("geography.placeholder.regionFirst", "اختر المنطقة أولًا"));
+            setEnabled("district", false, geoT("geography.placeholder.cityFirst", "اختر المدينة أولًا"));
           } else if (type === "city") {
             select("district", "", { cascade: false, closeAfter: false });
-            setEnabled("district", false, "اختر المدينة أولًا");
+            setEnabled("district", false, geoT("geography.placeholder.cityFirst", "اختر المدينة أولًا"));
           }
           render(type, search.value);
           open(type);
@@ -549,12 +569,24 @@
       return api;
     };
 
-    const api = Object.freeze({ bind, open, close, select, setValue, value, validate, setEnabled, render, elements });
+    const refreshLanguage = () => {
+      const current = value();
+      setValue(current);
+      ["region", "city", "district"].forEach(type => {
+        const { wrapper, search } = elements(type);
+        if (wrapper?.dataset.open === "true") render(type, search?.value || "");
+      });
+    };
+    window.addEventListener("petatoe-language-changed", refreshLanguage);
+    window.addEventListener("petatoe-localization-updated", refreshLanguage);
+
+    const api = Object.freeze({ bind, open, close, select, setValue, value, validate, setEnabled, render, elements, refreshLanguage });
     return api;
   }
 
   window.KYUMGeography = Object.freeze({
     normalizeValue,
+    localizedName,
     normalizeSearch,
     tokenizeSearch,
     scoreSearch,
