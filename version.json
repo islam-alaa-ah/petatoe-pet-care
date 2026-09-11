@@ -1,19 +1,19 @@
 {
-  "version": "18.56.85",
-  "build": 185685,
+  "version": "18.56.86",
+  "build": 185686,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "إصلاح ترجمة الأحياء ورسائل البيانات المحفوظة — R44R37R2",
+  "title": "إصلاح توافق مخطط الأحياء في الإنتاج — R44R37R2R1",
   "notes": [
-    "اعتماد الاسم الإنجليزي الفعلي للأحياء والمناطق والمدن من مصدر العنوان الوطني بدل إظهار مفاتيح ترجمة خام.",
-    "إعادة ترجمة رسائل البيانات المحفوظة وحالات التحميل فور تغيير اللغة في الشاشات المتأثرة.",
-    "الحفاظ على Business Logic وOffline/Sync/Permissions وCSS دون تعديل."
+    "إصلاح فشل Migration عند غياب العمود name_en في بعض قواعد الإنتاج القديمة.",
+    "إضافة metadata الاسم الإنجليزي بشكل آمن ثم ملء أسماء أحياء جدة ومكة من خريطة العنوان الوطني المعتمدة داخل بيتاتو.",
+    "استعادة مفاتيح واجهة R44R37R2 التي تراجعت تلقائيًا مع فشل المعاملة الأولى، بدون تعديل Business Logic أو Offline/Sync/Permissions أو CSS."
   ],
-  "cacheToken": "petatoe-pwa-18-56-85-geography-localization-r44r37r2-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r37r2.title",
+  "cacheToken": "petatoe-pwa-18-56-86-geography-schema-compat-r44r37r2r1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r37r2r1.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r37r2.note1",
-    "pwa.update.release.r44r37r2.note2",
-    "pwa.update.release.r44r37r2.note3"
+    "pwa.update.release.r44r37r2r1.note1",
+    "pwa.update.release.r44r37r2r1.note2",
+    "pwa.update.release.r44r37r2r1.note3"
   ]
 }

@@ -4671,6 +4671,10 @@
     ["pwa.update.release.r44r37r2.note1","note","اعتماد الاسم الإنجليزي الفعلي للأحياء والمناطق والمدن من مصدر العنوان الوطني بدل إظهار مفتاح الترجمة الخام أو ترجمة حرفية.","Use the authoritative English names for districts, regions, and cities from the National Address source instead of raw translation keys or literal translation."],
     ["pwa.update.release.r44r37r2.note2","note","إعادة ترجمة رسائل البيانات المحفوظة وحالات التحميل فور تغيير اللغة في شاشات العملاء والعقود والبيانات المرجعية.","Rerender cached-data and loading status messages immediately when the language changes on Customers, Contracts, and Reference Data screens."],
     ["pwa.update.release.r44r37r2.note3","note","تحديث مسار الجغرافيا والترجمة فقط مع الحفاظ على Business Logic وOffline/Sync/Permissions وCSS دون تعديل.","Update only geographic/localization display paths while keeping Business Logic, Offline/Sync/Permissions, and CSS unchanged."],
+    ["pwa.update.release.r44r37r2r1.title","title","إصلاح توافق مخطط الأحياء في الإنتاج — R44R37R2R1","Production neighborhood schema compatibility recovery — R44R37R2R1"],
+    ["pwa.update.release.r44r37r2r1.note1","note","إضافة حقل الاسم الإنجليزي الجغرافي بشكل آمن عند غيابه في قواعد الإنتاج القديمة دون حذف أو تغيير بيانات الأعمال.","Safely add missing geographic English-name metadata on legacy production schemas without deleting or changing business data."],
+    ["pwa.update.release.r44r37r2r1.note2","note","ملء أسماء أحياء جدة ومكة الإنجليزية من خريطة العنوان الوطني المعتمدة داخل بيتاتو بدل الترجمة الحرفية.","Backfill Jeddah and Makkah district English names from PETATOE’s approved National Address mapping instead of literal translation."],
+    ["pwa.update.release.r44r37r2r1.note3","note","استعادة مفاتيح واجهة R44R37R2 التي تراجعت تلقائيًا مع فشل المعاملة الأولى، مع الحفاظ على الخدمات والصلاحيات والمزامنة دون تعديل.","Restore the R44R37R2 UI keys rolled back with the failed transaction while keeping services, permissions, and sync logic unchanged."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
