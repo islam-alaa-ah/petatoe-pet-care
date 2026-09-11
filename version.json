@@ -1,19 +1,19 @@
 {
-  "version": "18.56.95",
-  "build": 185695,
+  "version": "18.56.96",
+  "build": 185696,
   "forceUpdate": true,
   "releaseDate": "2026-09-12",
-  "title": "استعادة زر صورة + رسالة للعملاء المقترحين — R44R38R6",
+  "title": "إضافة ملخص بيانات التواصل إلى تقارير المواعيد — R44R38R7",
   "notes": [
-    "إعادة زر صورة + رسالة إلى قائمة العملاء المقترحين على Desktop وMobile من الـrenderer الأساسي نفسه.",
-    "إعادة استخدام خدمة وقالب واتساب الحاليين دون تغيير بيانات العملاء أو دورة المتابعة.",
-    "لا تغيير في CSS أو SQL أو Offline/Sync/Permissions أو R44 Pruning."
+    "إضافة تقرير تجميعي بعد ملخص طرق الدفع يعرض اليوم ومن بداية الشهر لثمانية مؤشرات بدون مستخدم أو مندوب.",
+    "التقرير يستخدم نفس جدول بيانات التواصل اليومي عبر RPC محدودة تتحقق من صلاحية تقارير المواعيد ولا تعرض بيانات المستخدمين.",
+    "لا تغيير على منطق المواعيد أو Offline/Sync أو الحسابات أو R44 Pruning، وتمت إضافة التقرير إلى الشاشة وPDF في نفس الترتيب."
   ],
-  "cacheToken": "petatoe-pwa-18-56-95-daily-image-message-r44r38r6-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r6.title",
+  "cacheToken": "petatoe-pwa-18-56-96-contact-summary-report-r44r38r7-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r7.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r6.note1",
-    "pwa.update.release.r44r38r6.note2",
-    "pwa.update.release.r44r38r6.note3"
+    "pwa.update.release.r44r38r7.note1",
+    "pwa.update.release.r44r38r7.note2",
+    "pwa.update.release.r44r38r7.note3"
   ]
 }

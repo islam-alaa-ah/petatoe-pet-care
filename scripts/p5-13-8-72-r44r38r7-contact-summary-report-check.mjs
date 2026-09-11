@@ -1,0 +1,53 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const read = rel => fs.readFileSync(path.join(root, rel), 'utf8');
+const html = read('index.html');
+const reports = read('assets/js/installation-operations-reports.js');
+const contactService = read('assets/js/appointment-contact-data-service.js');
+const loc = read('assets/js/localization-center.js');
+const css = read('assets/css/installation-operations-reports.css');
+const sqlRel = 'supabase/migrations/phase_p5_13_8_72_r44r38r7_contact_summary_report.sql';
+const sql = read(sqlRel);
+const version = JSON.parse(read('version.json'));
+const pkg = JSON.parse(read('package.json'));
+const manifest = JSON.parse(read('supabase/migration-manifest.json'));
+const checks = [];
+const check = (name, value) => checks.push([name, Boolean(value)]);
+
+check('release version is 18.56.96', version.version === '18.56.96' && pkg.version === '18.56.96');
+check('release build is 185696', version.build === 185696);
+check('release phase is R44R38R7', manifest?.release?.phase === 'R44R38R7' && manifest?.release?.build === 185696);
+check('contact report appears after payment summary and before sales invoices', html.indexOf('installationSummaryPaymentMatricesTitle') < html.indexOf('installationSummaryContactDataTitle') && html.indexOf('installationSummaryContactDataTitle') < html.indexOf('installationSummarySalesInvoicesTitle'));
+check('contact report has one canonical host', (html.match(/id="installationSummaryContactData"/g)||[]).length === 1);
+check('report uses exactly eight metric rows', (reports.match(/appointments\.reports\.summary\.contact(?:Social|Whatsapp|Calls|Total|Website|NewCustomers|AppointmentsCreated|InventorySales)'/g)||[]).length >= 8);
+check('total communication is derived only from social + WhatsApp + calls', reports.includes("Number(x.socialMedia||0)+Number(x.whatsapp||0)+Number(x.calls||0)"));
+check('report has today and month-to-date columns', reports.includes("appointments.reports.summary.contactToday") && reports.includes("appointments.reports.summary.contactMonthToDate"));
+check('month range reuses canonical summaryMonthRange', /contactSummaryTable\([\s\S]*?summaryMonthRange\(\)/.test(reports));
+check('contact data fetch follows selected summary date', reports.includes('getReportSummary(summaryDate())'));
+check('contact summary failure cannot break the core appointment summary', reports.includes(".catch(error=>({data:null,error:") && reports.includes('state.summaryContactError'));
+check('report is re-rendered by canonical installation summary renderer', reports.includes('renderSummaryContactData(state.summaryContactData,state.summaryContactError)'));
+check('PDF contains contact summary after payment page', reports.indexOf("export.paymentSummaryTitle") < reports.indexOf("export.contactSummaryTitle") && reports.indexOf("export.contactSummaryTitle") < reports.indexOf("export.todaySalesInvoices"));
+check('PDF refreshes contact summary from canonical service', /createSummaryPdf\(\)[\s\S]*?AppointmentContactDataService\?\.getReportSummary/.test(reports));
+check('contact data service exposes report summary method', contactService.includes('async function getReportSummary(workDate)') && contactService.includes('getForDate,getReportSummary,saveForDate'));
+check('frontend report read is guarded by installationReports view permission', contactService.includes("can?.('installationReports','view')") && contactService.includes("canScreen?.('installationReports','view')"));
+check('database report uses same appointment_contact_daily_data source', sql.includes('from public.appointment_contact_daily_data d'));
+check('database RPC is least-privilege aggregate only', sql.includes("has_screen_permission('installationReports','view')") && !/created_by|updated_by|auth\.users|sales_representatives/i.test(sql.split('-- Translation Center entries.')[0]));
+check('database RPC is security definer with hardened search path', /security definer[\s\S]*set search_path = pg_catalog, public, auth/.test(sql));
+check('RPC execute is authenticated-only', sql.includes('revoke all on function public.appointment_contact_summary_report(date) from public;') && sql.includes('grant execute on function public.appointment_contact_summary_report(date) to authenticated;'));
+check('migration has no destructive DDL/DML', !/\b(delete\s+from|truncate\b|drop\s+table|drop\s+column)\b/i.test(sql));
+check('new localization keys exist in canonical catalog', loc.includes('appointments.reports.summary.contactTitle') && loc.includes('appointments.reports.summary.contactInventorySales') && loc.includes('appointments.reports.export.contactSummaryTitle'));
+check('new localization keys are registered in Translation Center migration', sql.includes("'appointments.reports.summary.contactTitle'") && sql.includes("'appointments.reports.summary.contactInventorySales'") && sql.includes("'appointments.reports.export.contactSummaryTitle'"));
+check('contact report styling extends canonical appointment report owner', css.includes('.installation-summary-contact-table') && css.includes('.installation-summary-contact-total'));
+const contactBlock=(reports.match(/function contactSummaryRows[\s\S]*?function paymentMethodMatrixPdfTable/)||[''])[0];
+check('report UI has no user or representative column', Boolean(contactBlock) && !/(?:User|Representative|المستخدم|المندوب)/.test(contactBlock));
+check('migration is inventoried with matching fingerprint', (()=>{const b=fs.readFileSync(path.join(root,sqlRel));const item=manifest.historicalInventory.find(x=>x.path===sqlRel);return item && item.bytes===b.length && item.sha256===crypto.createHash('sha256').update(b).digest('hex')})());
+check('old manifest drift did not increase beyond three files', (()=>{const physical=fs.readdirSync(path.join(root,'supabase/migrations')).filter(x=>x.endsWith('.sql')).length;return physical-manifest.inventoryStats.sqlFileCount===3})());
+check('R44 pruning remains disabled', read('supabase/migrations/phase_p5_13_8_72_r44_bounded_pruning_engine_disabled.sql').includes('false'));
+
+let passed=0;
+for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} - ${name}`);if(ok)passed++;}
+console.log(`\n${passed}/${checks.length} PASS`);
+if(passed!==checks.length)process.exit(1);

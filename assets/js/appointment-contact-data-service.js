@@ -27,6 +27,20 @@
     if(error)throw new Error((window.PetatoeLocalization?.t?.('appointments.contact.error.load')||'Unable to load communication data.')+` ${error.message||''}`.trim());
     return normalize(data);
   }
+  async function getReportSummary(workDate){
+    const canReport=Boolean(window.PermissionEngine?.can?.('installationReports','view')??window.CustomerPermissions?.canScreen?.('installationReports','view'));
+    if(!canReport)throw new Error(window.PetatoeLocalization?.t?.('appointments.contact.error.permission')||'You do not have permission for this action.');
+    if(navigator.onLine===false)throw new Error(window.PetatoeLocalization?.t?.('appointments.contact.error.onlineRequired')||'An internet connection is required.');
+    const {data,error}=await client().rpc('appointment_contact_summary_report',{p_work_date:workDate});
+    if(error)throw new Error((window.PetatoeLocalization?.t?.('appointments.reports.summary.contactUnavailable')||'Unable to load the contact data summary.')+` ${error.message||''}`.trim());
+    const row=Array.isArray(data)?data[0]:data;
+    const n=value=>Number(value||0);
+    return Object.freeze({
+      workDate:row?.work_date||workDate,monthStart:row?.month_start||String(workDate||'').slice(0,7)+'-01',
+      today:Object.freeze({socialMedia:n(row?.social_media_today),whatsapp:n(row?.whatsapp_today),calls:n(row?.calls_today),websiteAppointments:n(row?.website_appointments_today),newCustomers:n(row?.new_customers_today),appointmentsCreated:n(row?.appointments_created_today),inventorySales:n(row?.inventory_sales_today)}),
+      month:Object.freeze({socialMedia:n(row?.social_media_month),whatsapp:n(row?.whatsapp_month),calls:n(row?.calls_month),websiteAppointments:n(row?.website_appointments_month),newCustomers:n(row?.new_customers_month),appointmentsCreated:n(row?.appointments_created_month),inventorySales:n(row?.inventory_sales_month)})
+    });
+  }
   async function saveForDate(workDate,values,existing=false){
     const action=existing?'edit':'add';
     requirePermission(action);
@@ -59,5 +73,5 @@
     }
     return normalize(data);
   }
-  window.AppointmentContactDataService=Object.freeze({screenKey:SCREEN,getForDate,saveForDate,can:permission});
+  window.AppointmentContactDataService=Object.freeze({screenKey:SCREEN,getForDate,getReportSummary,saveForDate,can:permission});
 })();
