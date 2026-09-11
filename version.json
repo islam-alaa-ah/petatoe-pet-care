@@ -1,19 +1,19 @@
 {
-  "version": "18.56.90",
-  "build": 185690,
+  "version": "18.56.91",
+  "build": 185691,
   "forceUpdate": true,
   "releaseDate": "2026-09-11",
-  "title": "تنظيف بواقي الترجمة الدلالية وقت التشغيل — R44R38R1",
+  "title": "استعادة ملكية عنوان الهيدر الديناميكي — R44R38R2",
   "notes": [
-    "إغلاق مسارات العرض التي كانت تعرض حالات المتابعة والعقود والمواعيد والقيم الديناميكية بالعربية داخل الواجهة الإنجليزية دون تغيير القيم التشغيلية المخزنة.",
-    "ربط عرض الأحياء والخدمات وحالات المواعيد بالـLocalization/Geography canonical owners وإصلاح عرض حقول التاريخ الأصلية حسب اللغة الحالية.",
-    "استكمال Generated Content وCustomer 360 وعناصر الفلاتر الديناميكية مع بقاء Offline/Sync/Permissions والحسابات وR44 Pruning دون تغيير."
+    "فصل عنوان ووصف الهيدر عن ربط لوحة التحكم الثابت وجعل الشاشة النشطة هي المصدر الوحيد لبيانات الهيدر عند التنقل وتغيير اللغة.",
+    "توحيد بيانات أسماء الشاشات داخل مالك واحد يغطي جميع الشاشات بما فيها SEA VIBE والرواتب والمواعيد ومنع applyStatic من إعادة الهيدر إلى Dashboard.",
+    "لم تتغير CSS أو قيم الأعمال أو Offline/Sync/Permissions أو الحسابات أو SQL أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-90-l7-semantic-runtime-cleanup-r44r38r1-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r1.title",
+  "cacheToken": "petatoe-pwa-18-56-91-header-localization-owner-r44r38r2-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r2.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r1.note1",
-    "pwa.update.release.r44r38r1.note2",
-    "pwa.update.release.r44r38r1.note3"
+    "pwa.update.release.r44r38r2.note1",
+    "pwa.update.release.r44r38r2.note2",
+    "pwa.update.release.r44r38r2.note3"
   ]
 }

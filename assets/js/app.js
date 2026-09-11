@@ -287,6 +287,83 @@ const pageMeta = {
   aboutApp: ["حول التطبيق", "معلومات الإصدار وحالة التحديثات"]
 };
 
+const PAGE_META_I18N_KEYS = Object.freeze({
+  users: pageMeta.users,
+  permissions: pageMeta.permissions,
+  activityLog: pageMeta.activityLog,
+  backups: pageMeta.backups,
+  systemHealth: pageMeta.systemHealth,
+  systemSettings: pageMeta.systemSettings,
+  aboutApp: ["aboutApp.page.title", "aboutApp.page.note"],
+  reportsOverview: ["reportsOverview.page.title", "reportsOverview.page.subtitle"],
+  dailyOperations: ["dailyOperations.page.title", "dailyOperations.page.subtitle"],
+  dailyPerformanceReport: ["dailyPerformance.page.title", "dailyPerformance.page.subtitle"],
+  dashboard: ["dashboard.page.title", "dashboard.page.subtitle"],
+  representatives: ["representatives.page.title", "representatives.page.subtitle"],
+  settings: ["referenceData.page.title", "referenceData.page.subtitle"],
+  customers: ["customers.page.title", "customers.page.subtitle"],
+  followups: ["followups.page.title", "followups.page.subtitle"],
+  quotations: ["contracts.page.title", "contracts.page.subtitle"],
+  salesInvoices: ["invoices.page.title", "invoices.page.subtitle"],
+  installationsOverview: ["appointments.overview.page.title", "appointments.overview.page.subtitle"],
+  installationContactData: ["appointments.contact.page.title", "appointments.contact.page.subtitle"],
+  installationSettings: ["appointmentSettings.page.title", "appointmentSettings.page.subtitle"],
+  installationRequestNew: ["appointmentNew.page.title", "appointmentNew.page.subtitle"],
+  installationRequests: ["appointments.requests.title", "appointments.requests.page.subtitle"],
+  installationSchedule: ["appointments.schedule.title", "appointments.schedule.page.subtitle"],
+  installationExecution: ["execution.page.title", "execution.page.subtitle"],
+  installationCompletion: ["appointments.completion.title", "appointments.completion.page.subtitle"],
+  installationExceptions: ["appointments.exceptions.title", "appointments.exceptions.page.subtitle"],
+  installationReports: ["appointments.reports.title", "appointments.reports.page.subtitle"],
+  vehicleTreasury: ["vehicleTreasury.page.title", "vehicleTreasury.page.subtitle"],
+  payrollManagement: ["payroll.page.management.title", "payroll.page.management.subtitle"],
+  salaryStatement: ["payroll.page.salaryStatement.title", "payroll.page.salaryStatement.subtitle"],
+  commissionManagement: ["payroll.page.commissionManagement.title", "payroll.page.commissionManagement.subtitle"],
+  commissionStatement: ["payroll.page.commissionStatement.title", "payroll.page.commissionStatement.subtitle"],
+  payrollReference: ["payroll.page.reference.title", "payroll.page.reference.subtitle"],
+  seaVibePayrollManagement: ["seaVibePayroll.page.management.title", "seaVibePayroll.page.management.subtitle"],
+  seaVibeSalaryStatement: ["seaVibePayroll.page.salaryStatement.title", "seaVibePayroll.page.salaryStatement.subtitle"],
+  seaVibeCommissionManagement: ["seaVibePayroll.page.commissionManagement.title", "seaVibePayroll.page.commissionManagement.subtitle"],
+  seaVibeCommissionStatement: ["seaVibePayroll.page.commissionStatement.title", "seaVibePayroll.page.commissionStatement.subtitle"],
+  seaVibePayrollReference: ["seaVibePayroll.page.reference.title", "seaVibePayroll.page.reference.subtitle"],
+  seaVibeTrips: ["seaVibe.page.trips.title", "seaVibe.page.trips.subtitle"],
+  seaVibeCustomers: ["seaVibe.page.customers.title", "seaVibe.page.customers.subtitle"],
+  seaVibeTripNew: ["seaVibe.page.tripNew.title", "seaVibe.page.tripNew.subtitle"],
+  seaVibeTripDetails: ["seaVibe.page.tripDetails.title", "seaVibe.page.tripDetails.subtitle"],
+  seaVibeExpenseNew: ["seaVibe.page.expenseNew.title", "seaVibe.page.expenseNew.subtitle"],
+  seaVibeGeneralExpenses: ["seaVibe.page.general.title", "seaVibe.page.general.subtitle"],
+  seaVibeAssets: ["seaVibe.page.assets.title", "seaVibe.page.assets.subtitle"],
+  seaVibeTreasury: ["seaVibe.page.treasury.title", "seaVibe.page.treasury.subtitle"],
+  seaVibeZawel: ["seaVibe.page.zawel.title", "seaVibe.page.zawel.subtitle"],
+  seaVibeFuel: ["seaVibe.page.fuel.title", "seaVibe.page.fuel.subtitle"],
+  seaVibeReference: ["seaVibe.page.reference.title", "seaVibe.page.reference.subtitle"],
+  seaVibeReports: ["seaVibe.page.reports.title", "seaVibe.page.reports.subtitle"],
+  notificationCenter: ["shared.notifications.center.title", "shared.notifications.center.pageSubtitle"],
+  translationCenter: ["translationCenter.page.title", "translationCenter.page.subtitle"]
+});
+
+function resolvePageMeta(viewKey) {
+  const key = String(viewKey || "dashboard");
+  const localizationKeys = PAGE_META_I18N_KEYS[key];
+  if (localizationKeys) return localizationKeys.map(item => l1T(item));
+  return pageMeta[key] || pageMeta.dashboard;
+}
+
+function renderActivePageMeta(viewKey = activeViewKey || "dashboard") {
+  const meta = resolvePageMeta(viewKey);
+  const titleNode = document.getElementById("pageTitle");
+  const subtitleNode = document.getElementById("pageSubtitle");
+  if (titleNode) {
+    titleNode.textContent = meta?.[0] || "";
+    titleNode.dataset.petatoeActiveView = String(viewKey || "dashboard");
+  }
+  if (subtitleNode) {
+    subtitleNode.textContent = meta?.[1] || "";
+    subtitleNode.dataset.petatoeActiveView = String(viewKey || "dashboard");
+  }
+}
+
+
 function loadCustomers() {
   return [];
 }
@@ -1525,17 +1602,13 @@ function switchView(requestedName, options = {}) {
     window.SeaVibeUI?.activate?.(name);
   }
 
-  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:["aboutApp.page.title","aboutApp.page.note"], reportsOverview:["reportsOverview.page.title","reportsOverview.page.subtitle"], dailyOperations:["dailyOperations.page.title","dailyOperations.page.subtitle"], dailyPerformanceReport:["dailyPerformance.page.title","dailyPerformance.page.subtitle"], dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationsOverview:["appointments.overview.page.title","appointments.overview.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationSettings:["appointmentSettings.page.title","appointmentSettings.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], installationRequests:["appointments.requests.title","appointments.requests.page.subtitle"], installationSchedule:["appointments.schedule.title","appointments.schedule.page.subtitle"], installationCompletion:["appointments.completion.title","appointments.completion.page.subtitle"], installationExceptions:["appointments.exceptions.title","appointments.exceptions.page.subtitle"], installationReports:["appointments.reports.title","appointments.reports.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"], notificationCenter:["shared.notifications.center.title","shared.notifications.center.pageSubtitle"], translationCenter:["translationCenter.page.title","translationCenter.page.subtitle"] };
-  const localizedMetaKeys = localizedPageMetaKeys[name];
-  const activePageMeta = name === "installationExecution" && window.PetatoeLocalization?.pageMeta ? window.PetatoeLocalization.pageMeta() : localizedMetaKeys ? localizedMetaKeys.map(key=>l1T(key)) : pageMeta[name];
-  document.getElementById("pageTitle").textContent = activePageMeta[0];
+  renderActivePageMeta(name);
   requestAnimationFrame(() => {
     window.PerformanceMonitor?.recordRender(
       name,
       performance.now() - viewRenderStartedAt
     );
   });
-  document.getElementById("pageSubtitle").textContent = activePageMeta[1];
 
   if (name === "dashboard") {
     renderDashboard();
@@ -1577,11 +1650,7 @@ function switchView(requestedName, options = {}) {
 window.addEventListener("petatoe-language-changed", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
   const current = activeViewKey;
-  const localizedPageMetaKeys = { users:pageMeta.users, permissions:pageMeta.permissions, activityLog:pageMeta.activityLog, backups:pageMeta.backups, systemHealth:pageMeta.systemHealth, systemSettings:pageMeta.systemSettings, aboutApp:["aboutApp.page.title","aboutApp.page.note"], reportsOverview:["reportsOverview.page.title","reportsOverview.page.subtitle"], dailyOperations:["dailyOperations.page.title","dailyOperations.page.subtitle"], dailyPerformanceReport:["dailyPerformance.page.title","dailyPerformance.page.subtitle"], dashboard:["dashboard.page.title","dashboard.page.subtitle"], representatives:["representatives.page.title","representatives.page.subtitle"], settings:["referenceData.page.title","referenceData.page.subtitle"], customers:["customers.page.title","customers.page.subtitle"], followups:["followups.page.title","followups.page.subtitle"], quotations:["contracts.page.title","contracts.page.subtitle"], salesInvoices:["invoices.page.title","invoices.page.subtitle"], installationsOverview:["appointments.overview.page.title","appointments.overview.page.subtitle"], installationContactData:["appointments.contact.page.title","appointments.contact.page.subtitle"], installationSettings:["appointmentSettings.page.title","appointmentSettings.page.subtitle"], installationRequestNew:["appointmentNew.page.title","appointmentNew.page.subtitle"], installationRequests:["appointments.requests.title","appointments.requests.page.subtitle"], installationSchedule:["appointments.schedule.title","appointments.schedule.page.subtitle"], installationCompletion:["appointments.completion.title","appointments.completion.page.subtitle"], installationExceptions:["appointments.exceptions.title","appointments.exceptions.page.subtitle"], installationReports:["appointments.reports.title","appointments.reports.page.subtitle"], vehicleTreasury:["vehicleTreasury.page.title","vehicleTreasury.page.subtitle"], payrollManagement:["payroll.page.management.title","payroll.page.management.subtitle"], salaryStatement:["payroll.page.salaryStatement.title","payroll.page.salaryStatement.subtitle"], commissionManagement:["payroll.page.commissionManagement.title","payroll.page.commissionManagement.subtitle"], commissionStatement:["payroll.page.commissionStatement.title","payroll.page.commissionStatement.subtitle"], payrollReference:["payroll.page.reference.title","payroll.page.reference.subtitle"], seaVibePayrollManagement:["seaVibePayroll.page.management.title","seaVibePayroll.page.management.subtitle"], seaVibeSalaryStatement:["seaVibePayroll.page.salaryStatement.title","seaVibePayroll.page.salaryStatement.subtitle"], seaVibeCommissionManagement:["seaVibePayroll.page.commissionManagement.title","seaVibePayroll.page.commissionManagement.subtitle"], seaVibeCommissionStatement:["seaVibePayroll.page.commissionStatement.title","seaVibePayroll.page.commissionStatement.subtitle"], seaVibePayrollReference:["seaVibePayroll.page.reference.title","seaVibePayroll.page.reference.subtitle"], seaVibeTrips:["seaVibe.page.trips.title","seaVibe.page.trips.subtitle"], seaVibeCustomers:["seaVibe.page.customers.title","seaVibe.page.customers.subtitle"], seaVibeTripNew:["seaVibe.page.tripNew.title","seaVibe.page.tripNew.subtitle"], seaVibeTripDetails:["seaVibe.page.tripDetails.title","seaVibe.page.tripDetails.subtitle"], seaVibeExpenseNew:["seaVibe.page.expenseNew.title","seaVibe.page.expenseNew.subtitle"], seaVibeGeneralExpenses:["seaVibe.page.general.title","seaVibe.page.general.subtitle"], seaVibeAssets:["seaVibe.page.assets.title","seaVibe.page.assets.subtitle"], seaVibeTreasury:["seaVibe.page.treasury.title","seaVibe.page.treasury.subtitle"], seaVibeZawel:["seaVibe.page.zawel.title","seaVibe.page.zawel.subtitle"], seaVibeFuel:["seaVibe.page.fuel.title","seaVibe.page.fuel.subtitle"], seaVibeReference:["seaVibe.page.reference.title","seaVibe.page.reference.subtitle"], seaVibeReports:["seaVibe.page.reports.title","seaVibe.page.reports.subtitle"], notificationCenter:["shared.notifications.center.title","shared.notifications.center.pageSubtitle"], translationCenter:["translationCenter.page.title","translationCenter.page.subtitle"] };
-  let meta = null;
-  if (current === "installationExecution") meta = window.PetatoeLocalization?.pageMeta?.();
-  else if (localizedPageMetaKeys[current]) meta = localizedPageMetaKeys[current].map(key=>l1T(key));
-  if (meta) { document.getElementById("pageTitle").textContent = meta[0]; document.getElementById("pageSubtitle").textContent = meta[1]; }
+  renderActivePageMeta();
   refreshReferenceLocalizationLabels();
   if (current === "followups") { renderFollowups(); showDataStatus("followupsStatus", formatOfflineCacheStatus(window.FollowupsService?.getLastReadStatus?.()), "info"); }
   if (current === "users") { populateSecurityOptions(); renderUsers(); }
@@ -1601,6 +1670,7 @@ window.addEventListener("petatoe-language-changed", () => {
 });
 window.addEventListener("petatoe-localization-updated", () => {
   window.PetatoeLocalization?.applyStatic?.(document);
+  renderActivePageMeta();
   if (customersLoaded) {
     renderCustomers();
     if (activeViewKey === "settings") renderReferenceCustomers();
