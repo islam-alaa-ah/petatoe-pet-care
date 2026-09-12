@@ -517,6 +517,36 @@
   }
   async function signedTreasuryVoucherAttachment(path){ const {data,error}=await client().storage.from('sea-vibe-treasury-vouchers').createSignedUrl(path,300);if(error)throw new Error(`SEA_VIBE_VOUCHER_ATTACHMENT_OPEN_FAILED: ${error.message}`);return data?.signedUrl||''; }
 
+  async function loadManualJournalContext(){
+    permission('seaVibeJournals','view');
+    const chartAccounts=(await unwrap(client().from('sea_vibe_chart_accounts_view').select('*').order('account_code'),'SEA_VIBE_JOURNAL_ACCOUNTS_LOAD_FAILED')).map(mapChartAccount);
+    return {chartAccounts};
+  }
+  async function uploadManualJournalAttachment(journalId,file){
+    if(!journalId||!file)return null;
+    const allowed=new Set(['application/pdf','image/jpeg','image/png','image/webp']);
+    if(!allowed.has(file.type)||Number(file.size||0)>10*1024*1024)throw new Error('SEA_VIBE_JOURNAL_ATTACHMENT_INVALID');
+    const safe=String(file.name||'attachment').replace(/[^A-Za-z0-9._-]+/g,'_').slice(-120)||'attachment';
+    const path=`${journalId}/${Date.now()}-${Math.random().toString(16).slice(2)}-${safe}`;
+    const {error}=await client().storage.from('sea-vibe-journal-entries').upload(path,file,{contentType:file.type||undefined});
+    if(error)throw new Error(`SEA_VIBE_JOURNAL_ATTACHMENT_UPLOAD_FAILED: ${error.message}`);
+    const user=(await client().auth.getUser()).data.user?.id||null;
+    return await unwrap(client().from('sea_vibe_journal_entry_attachments').insert({journal_entry_id:journalId,storage_path:path,file_name:file.name||safe,mime_type:file.type||null,file_size:file.size||null,created_by:user}).select('*').single(),'SEA_VIBE_JOURNAL_ATTACHMENT_METADATA_FAILED');
+  }
+  async function saveManualJournal(record){
+    const isUpdate=!!record.id;
+    permission('seaVibeJournals',isUpdate?'edit':'add');
+    if(navigator.onLine===false)throw new Error('SEA_VIBE_JOURNAL_ONLINE_REQUIRED');
+    const status=record.status==='posted'?'posted':'draft';
+    const lines=(record.lines||[]).map(line=>({accountId:line.accountId||'',description:String(line.description||'').trim(),taxCode:line.taxCode==='vat15'?'vat15':'none',debit:Number(num(line.debit).toFixed(2)),credit:Number(num(line.credit).toFixed(2))}));
+    const result=await unwrap(client().rpc('sea_vibe_save_manual_journal_r44r14',{p_id:record.id||null,p_journal_date:record.date||localDateIso(),p_description:String(record.description||'').trim()||null,p_status:status,p_lines:lines}),'SEA_VIBE_JOURNAL_SAVE_FAILED');
+    const saved=Array.isArray(result)?result[0]:result;
+    const attachmentErrors=[];
+    for(const file of record.files||[]){try{await uploadManualJournalAttachment(saved?.id,file);}catch(error){attachmentErrors.push(String(error?.message||error));}}
+    await audit(isUpdate?'update':'insert','sea_vibe_journal_entries',saved?.id,{journalNo:saved?.journal_no||'',status,date:record.date||localDateIso(),lineCount:lines.length,totalDebit:saved?.total_debit,totalCredit:saved?.total_credit,attachmentCount:(record.files||[]).length,attachmentErrors});
+    return {...(saved||{}),attachmentErrors};
+  }
+
   async function signedAttachment(path){ const {data,error}=await client().storage.from('sea-vibe-expenses').createSignedUrl(path,300);if(error)throw new Error(`تعذر فتح المرفق: ${error.message}`);return data?.signedUrl||''; }
 
   async function queueServerBase(kind,id){if(!id||String(id).startsWith('local:'))return '';const table=kind==='trip'?'sea_vibe_trips':kind==='asset'?'sea_vibe_assets':null;if(!table)return '';const row=await unwrap(client().from(table).select('updated_at').eq('id',id).single(),'تعذر التحقق من نسخة SEA VIBE على الخادم');return row?.updated_at||'';}
@@ -563,5 +593,5 @@
   window.KYUMOfflineQueue?.register?.('sea_vibe',handleQueuedMutation);
 
 
-  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,getTreasuryVoucher,saveTreasuryVoucher,signedTreasuryVoucherAttachment,signedAttachment});
+  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,getTreasuryVoucher,saveTreasuryVoucher,signedTreasuryVoucherAttachment,loadManualJournalContext,saveManualJournal,signedAttachment});
 })();

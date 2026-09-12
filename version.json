@@ -1,19 +1,19 @@
 {
-  "version": "18.56.104",
-  "build": 185704,
+  "version": "18.56.105",
+  "build": 185705,
   "forceUpdate": true,
   "releaseDate": "2026-09-13",
-  "title": "استعادة توافق عرض خزينة SEA VIBE — R44R38R13R1",
+  "title": "إضافة قيود اليومية اليدوية لـ SEA VIBE — R44R38R14",
   "notes": [
-    "إصلاح توافق نوع عمود amount في عرض حركات خزينة SEA VIBE بدون تعديل Migration R13 التاريخية.",
-    "إعادة تطبيق مكونات سندات القبض والصرف بشكل آمن بعد فشل R13 داخل Transaction.",
-    "لا تغيير في الحسابات أو Offline/Sync أو الصلاحيات أو R44 Pruning."
+    "إضافة شاشة قيود اليومية داخل SEA VIBE لإدخال قيود يدوية متوازنة مرتبطة بشجرة الحسابات.",
+    "إضافة حساب ضريبة القيمة المضافة تحت الالتزامات المتداولة مع دعم المسودة والترحيل والمرفقات.",
+    "لا تغيير في الحركات الأوتوماتيكية أو Offline/Sync أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-104-treasury-view-recovery-r44r38r13r1-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r13r1.title",
+  "cacheToken": "petatoe-pwa-18-56-105-manual-journals-r44r38r14-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r14.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r13r1.note1",
-    "pwa.update.release.r44r38r13r1.note2",
-    "pwa.update.release.r44r38r13r1.note3"
+    "pwa.update.release.r44r38r14.note1",
+    "pwa.update.release.r44r38r14.note2",
+    "pwa.update.release.r44r38r14.note3"
   ]
 }

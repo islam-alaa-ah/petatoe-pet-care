@@ -237,3 +237,67 @@ html[data-theme="dark"] .sea-vibe-voucher-fixed-account{background:rgba(59,130,2
   color:var(--text-muted,#64748b);
   line-height:1.8;
 }
+
+/* R44R38R14 — SEA VIBE manual journal workspace (canonical owner) */
+.sea-vibe-journal-commandbar{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:12px;
+  padding:12px 14px;
+  margin-bottom:14px;
+}
+.sea-vibe-journal-command-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.sea-vibe-journal-head-grid{display:grid;grid-template-columns:minmax(320px,.95fr) minmax(420px,1.25fr);gap:14px;margin-bottom:14px;}
+.sea-vibe-journal-meta,.sea-vibe-journal-description-card{padding:16px;}
+.sea-vibe-journal-meta{display:grid;gap:12px;align-content:start;}
+.sea-vibe-journal-meta label,.sea-vibe-journal-description-card label{display:grid;gap:7px;font-weight:700;}
+.sea-vibe-journal-meta input,.sea-vibe-journal-description-card textarea,.sea-vibe-journal-description-card input[type="file"]{
+  width:100%;
+}
+.sea-vibe-journal-description-card{display:grid;gap:14px;}
+.sea-vibe-journal-description-card textarea{min-height:132px;resize:vertical;}
+.sea-vibe-journal-attachment{border:1px dashed var(--border-color,#c9dcf5);border-radius:14px;padding:14px;background:rgba(255,255,255,.28);}
+.sea-vibe-journal-attachment small{font-weight:500;color:var(--muted-color,#607392);}
+.sea-vibe-journal-table-wrap{padding:0;overflow:hidden;}
+.sea-vibe-journal-table{min-width:930px;}
+.sea-vibe-journal-table th,.sea-vibe-journal-table td{vertical-align:middle;}
+.sea-vibe-journal-table td{padding:8px;}
+.sea-vibe-journal-table select,.sea-vibe-journal-table input{
+  width:100%;
+  min-height:42px;
+  border:1px solid var(--border-color,#c9dcf5);
+  border-radius:10px;
+  background:var(--surface,#fff);
+  color:inherit;
+  padding:8px 10px;
+}
+.sea-vibe-journal-table [data-sv-journal-description]{min-width:220px;}
+.sea-vibe-journal-table [data-sv-journal-account]{min-width:260px;}
+.sea-vibe-journal-table [data-sv-journal-tax]{min-width:120px;}
+.sea-vibe-journal-table [data-sv-journal-debit],.sea-vibe-journal-table [data-sv-journal-credit]{min-width:110px;text-align:end;font-variant-numeric:tabular-nums;}
+.sea-vibe-journal-remove{
+  width:32px;height:32px;border-radius:50%;border:1px solid #ef6a74;background:transparent;color:#d93245;
+  display:inline-grid;place-items:center;font-size:22px;line-height:1;cursor:pointer;
+}
+.sea-vibe-journal-footer{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:14px;border-top:1px solid var(--border-color,#c9dcf5);}
+.sea-vibe-journal-totals{display:grid;gap:7px;min-width:300px;}
+.sea-vibe-journal-totals>div{display:flex;justify-content:space-between;gap:18px;padding:7px 10px;border-radius:10px;background:rgba(36,116,232,.06);}
+.sea-vibe-journal-totals strong{font-variant-numeric:tabular-nums;direction:ltr;}
+
+html[data-theme="dark"] .sea-vibe-journal-attachment{background:rgba(255,255,255,.03);}
+html[data-theme="dark"] .sea-vibe-journal-table select,
+html[data-theme="dark"] .sea-vibe-journal-table input{background:var(--surface,#101b2c);}
+
+@media (max-width: 900px){
+  .sea-vibe-journal-head-grid{grid-template-columns:1fr;}
+  .sea-vibe-journal-footer{flex-direction:column;}
+  .sea-vibe-journal-totals{width:100%;min-width:0;}
+}
+@media (max-width: 640px){
+  .sea-vibe-journal-commandbar{align-items:stretch;}
+  .sea-vibe-journal-command-actions{display:grid;grid-template-columns:1fr 1fr;width:100%;}
+  .sea-vibe-journal-command-actions .primary-btn{grid-column:1/-1;}
+  .sea-vibe-journal-meta,.sea-vibe-journal-description-card{padding:12px;}
+  .sea-vibe-journal-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+}

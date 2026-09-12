@@ -1871,6 +1871,7 @@
     ["sidebar.seaVibeAssets","navigation","الأصول","Assets"],
     ["sidebar.seaVibeReference","navigation","البيانات المرجعية","Reference Data"],
     ["sidebar.seaVibeTreasury","navigation","الخزنة","Treasury"],
+    ["sidebar.seaVibeJournals","navigation","قيود اليومية","Journal Entries"],
     ["sidebar.seaVibeZawel","navigation","رصيد زاول","Zawel Balance"],
     ["sidebar.seaVibeFuel","navigation","رصيد البنزين","Fuel Balance"],
     ["sidebar.seaVibePayrollGroup","navigation","رواتب وعمولات SEA VIBE","SEA VIBE Payroll & Commissions"],
@@ -5162,6 +5163,45 @@
     ["pwa.update.release.r44r38r12.note1","note","استبدال الجدول المسطح لشجرة الحسابات بمستعرض شجري جانبي مع لوحة تفاصيل للحساب المحدد، بما يطابق أسلوب أنظمة الحسابات الاحترافية.","Replaces the flat chart-of-accounts table with a navigable side tree and selected-account detail pane, matching professional accounting navigation patterns."],
     ["pwa.update.release.r44r38r12.note2","note","إضافة فتح وإغلاق الفروع والبحث بالكود أو الاسم وعرض الحسابات التابعة مع إمكانية إضافة حساب فرعي مباشرة من الحساب التجميعي.","Adds branch expand/collapse, code/name search, child-account browsing, and direct child-account creation from group accounts."],
     ["pwa.update.release.r44r38r12.note3","note","التغيير خاص بطريقة العرض داخل SEA VIBE فقط؛ لا تغيير على شجرة البيانات أو الحسابات المالية أو ربط المصروفات أو الصلاحيات أو Offline/Sync أو R44 Pruning.","This change only affects the SEA VIBE chart presentation; no changes to account data, financial calculations, expense mappings, permissions, Offline/Sync, or R44 Pruning."],
+    ["seaVibe.page.journals.title","title","SEA VIBE — قيود اليومية","SEA VIBE — Journal Entries"],
+    ["seaVibe.page.journals.subtitle","subtitle","إضافة قيد يومية يدوي وربطه بشجرة حسابات SEA VIBE.","Create manual journal entries linked to the SEA VIBE chart of accounts."],
+    ["seaVibe.journal.save","button","حفظ وترحيل","Save & Post"],
+    ["seaVibe.journal.saveDraft","button","حفظ كمسودة","Save as Draft"],
+    ["seaVibe.journal.cancel","button","إلغاء","Cancel"],
+    ["seaVibe.journal.date","label","التاريخ","Date"],
+    ["seaVibe.journal.currency","label","العملة","Currency"],
+    ["seaVibe.journal.currencyValue","value","SAR — ريال سعودي","SAR — Saudi Riyal"],
+    ["seaVibe.journal.number","label","رقم القيد","Journal No."],
+    ["seaVibe.journal.numberAuto","placeholder","يحدد تلقائيًا عند أول حفظ","Generated on first save"],
+    ["seaVibe.journal.description","label","الوصف","Description"],
+    ["seaVibe.journal.descriptionPlaceholder","placeholder","أدخل وصف القيد اليومي...","Enter journal description..."],
+    ["seaVibe.journal.attachments","label","المرفقات","Attachments"],
+    ["seaVibe.journal.attachmentHint","help","PDF أو JPG أو PNG أو WEBP — بحد أقصى 10 ميجابايت.","PDF, JPG, PNG or WEBP — max 10 MB."],
+    ["seaVibe.journal.account","label","اسم الحساب","Account"],
+    ["seaVibe.journal.lineDescription","label","الوصف","Description"],
+    ["seaVibe.journal.removeLineAria","aria","حذف السطر","Remove line"],
+    ["seaVibe.journal.tax","label","الضرائب","Tax"],
+    ["seaVibe.journal.debit","label","مدين","Debit"],
+    ["seaVibe.journal.credit","label","دائن","Credit"],
+    ["seaVibe.journal.selectAccount","option","اختر حساب حركة...","Select posting account..."],
+    ["seaVibe.journal.noTax","option","—","—"],
+    ["seaVibe.journal.vat15","option","VAT (15%)","VAT (15%)"],
+    ["seaVibe.journal.addLine","button","إضافة سطر","Add Line"],
+    ["seaVibe.journal.totalDebit","label","إجمالي المدين","Total Debit"],
+    ["seaVibe.journal.totalCredit","label","إجمالي الدائن","Total Credit"],
+    ["seaVibe.journal.difference","label","الفرق","Difference"],
+    ["seaVibe.journal.draftSaved","status","تم حفظ القيد كمسودة.","Journal draft saved."],
+    ["seaVibe.journal.posted","status","تم حفظ وترحيل القيد بنجاح.","Journal saved and posted successfully."],
+    ["seaVibe.journal.unbalanced","error","لا يمكن ترحيل القيد قبل تساوي إجمالي المدين والدائن.","The journal cannot be posted until total debit equals total credit."],
+    ["seaVibe.journal.twoLines","error","أضف سطرين محاسبيين على الأقل قبل الترحيل.","Add at least two accounting lines before posting."],
+    ["seaVibe.journal.onlineRequired","error","يلزم الاتصال بالإنترنت لحفظ قيود اليومية المالية.","An internet connection is required to save financial journal entries."],
+    ["seaVibe.journal.attachmentSavedWarning","status","تم حفظ القيد، لكن تعذر حفظ أحد المرفقات.","The journal was saved, but an attachment could not be saved."],
+    ["seaVibe.journal.accountRequired","error","اختر حساب حركة صالح لكل سطر.","Select a valid posting account for each line."],
+    ["seaVibe.journal.oneSideOnly","error","أدخل قيمة في المدين أو الدائن فقط لكل سطر.","Enter an amount on either debit or credit only for each line."],
+    ["seaVibe.journal.amountRequired","error","أدخل قيمة مدين أو دائن لكل سطر قبل الترحيل.","Enter a debit or credit amount for each line before posting."],
+    ["seaVibe.journal.postedLocked","error","القيد المرحل مقفل ولا يمكن تعديله.","A posted journal is locked and cannot be edited."],
+    ["seaVibe.journal.attachmentInvalid","error","المرفق غير مدعوم أو يتجاوز 10 ميجابايت.","The attachment type is unsupported or exceeds 10 MB."],
+    ["seaVibe.accounts.vatPayable","account","ضريبة القيمة المضافة","VAT Payable"],
     ["pwa.update.release.r44r38r13.title","title","إضافة سندات القبض والصرف لخزينة SEA VIBE — R44R38R13","Add SEA VIBE Treasury Receipt & Payment Vouchers — R44R38R13"],
     ["pwa.update.release.r44r38r13.note1","note","إضافة سند قبض وسند صرف يدويين داخل خزينة SEA VIBE مع رقم سند مستقل وحساب مقابل ومرفق اختياري.","Adds manual receipt and payment vouchers to SEA VIBE Treasury with independent voucher numbers, counterpart accounts, and optional attachments."],
     ["pwa.update.release.r44r38r13.note2","note","إنشاء قيد محاسبي مزدوج تلقائيًا: سند القبض يجعل خزينة 1101 مدين والحساب المقابل دائن، وسند الصرف بالعكس.","Automatically posts double-entry accounting: receipt debits Treasury 1101 and credits the counterpart; payment does the reverse."],
@@ -5170,6 +5210,10 @@
     ["pwa.update.release.r44r38r13r1.note1","note","إصلاح توافق نوع عمود amount في عرض حركات خزينة SEA VIBE بدون تعديل Migration R13 التاريخية.","Fixes the amount-column type compatibility in the SEA VIBE treasury movements view without modifying the historical R13 migration."],
     ["pwa.update.release.r44r38r13r1.note2","note","إعادة تطبيق مكونات سندات القبض والصرف بشكل آمن بعد فشل R13 داخل Transaction.","Safely reapplies receipt/payment voucher objects after the R13 transaction failed."],
     ["pwa.update.release.r44r38r13r1.note3","note","لا تغيير في الحسابات أو Offline/Sync أو الصلاحيات أو R44 Pruning.","No changes to calculations, Offline/Sync, permissions, or R44 Pruning."],
+    ["pwa.update.release.r44r38r14.title","title","إضافة قيود اليومية اليدوية لـ SEA VIBE — R44R38R14","Add SEA VIBE Manual Journal Entries — R44R38R14"],
+    ["pwa.update.release.r44r38r14.note1","note","إضافة شاشة قيود اليومية داخل SEA VIBE لإدخال قيود يدوية متوازنة مرتبطة بشجرة الحسابات.","Adds a SEA VIBE Journal Entries screen for balanced manual entries linked to the chart of accounts."],
+    ["pwa.update.release.r44r38r14.note2","note","إضافة حساب ضريبة القيمة المضافة تحت الالتزامات المتداولة مع دعم المسودة والترحيل والمرفقات.","Adds VAT Payable under Current Liabilities with draft, posting, and attachment support."],
+    ["pwa.update.release.r44r38r14.note3","note","لا تغيير في الحركات الأوتوماتيكية أو Offline/Sync أو R44 Pruning.","No changes to automatic movements, Offline/Sync, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
@@ -5238,6 +5282,7 @@
     if(value.startsWith('seaVibe.page.assets.')||value.startsWith('seaVibe.asset.')||value.startsWith('seaVibe.assets.'))return{screenKey:'seaVibeAssets',moduleName:'seaVibe'};
     if(value.startsWith('seaVibe.page.reference.')||value.startsWith('seaVibe.reference.'))return{screenKey:'seaVibeReference',moduleName:'seaVibe'};
     if(value.startsWith('seaVibe.page.reports.')||value.startsWith('seaVibe.reports.'))return{screenKey:'seaVibeReports',moduleName:'seaVibe'};
+    if(value.startsWith('seaVibe.page.journals.')||value.startsWith('seaVibe.journal.'))return{screenKey:'seaVibeJournals',moduleName:'seaVibe'};
     if(value.startsWith('seaVibe.page.treasury.')||value.startsWith('seaVibe.treasury.'))return{screenKey:'seaVibeTreasury',moduleName:'seaVibe'};
     if(value.startsWith('seaVibe.page.zawel.')||value.startsWith('seaVibe.zawel.'))return{screenKey:'seaVibeZawel',moduleName:'seaVibe'};
     if(value.startsWith('seaVibe.page.fuel.')||value.startsWith('seaVibe.fuel.'))return{screenKey:'seaVibeFuel',moduleName:'seaVibe'};
