@@ -1,19 +1,19 @@
 {
-  "version": "18.56.100",
-  "build": 185700,
+  "version": "18.56.101",
+  "build": 185701,
   "forceUpdate": true,
-  "releaseDate": "2026-09-12",
-  "title": "إضافة شجرة حسابات SEA VIBE — R44R38R11",
+  "releaseDate": "2026-09-13",
+  "title": "استعادة Migration شجرة حسابات SEA VIBE — R44R38R11R1",
   "notes": [
-    "إضافة شجرة حسابات ديناميكية لـSEA VIBE بالجذور: الأصول والالتزامات وحقوق الملكية والإيرادات والمصروفات، مع جاري الشريك ومسحوبات الشريك.",
-    "ربط أنواع المصروفات الحالية بحسابات حركة تحت مجموعة المصروفات، مع تثبيت الحساب المحاسبي تاريخيًا على حركات المصروفات الحالية والجديدة.",
-    "يمكن إضافة حسابات فرعية جديدة في أي وقت من البيانات المرجعية بدون تغيير حسابات SEA VIBE الحالية أو Offline/Sync core أو R44 Pruning."
+    "إضافة Recovery Migration قابلة لإعادة التشغيل لمعالجة التنفيذ الجزئي لـR44R38R11 بدون تعديل ملف Migration التاريخي.",
+    "إعادة تثبيت نفس Triggers وسياسات RLS داخل Transaction واحدة مع Verification Gate يمنع أي حالة جزئية جديدة.",
+    "لا تغيير على حسابات SEA VIBE أو البيانات التشغيلية أو Offline/Sync أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-100-sea-vibe-chart-of-accounts-r44r38r11-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r11.title",
+  "cacheToken": "petatoe-pwa-18-56-101-sea-vibe-chart-accounts-migration-recovery-r44r38r11r1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r11r1.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r11.note1",
-    "pwa.update.release.r44r38r11.note2",
-    "pwa.update.release.r44r38r11.note3"
+    "pwa.update.release.r44r38r11r1.note1",
+    "pwa.update.release.r44r38r11r1.note2",
+    "pwa.update.release.r44r38r11r1.note3"
   ]
 }
