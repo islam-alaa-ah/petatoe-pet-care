@@ -1,19 +1,19 @@
 {
-  "version": "18.56.102",
-  "build": 185702,
+  "version": "18.56.103",
+  "build": 185703,
   "forceUpdate": true,
   "releaseDate": "2026-09-13",
-  "title": "إعادة تصميم عرض شجرة حسابات SEA VIBE — R44R38R12",
+  "title": "إضافة سندات القبض والصرف لخزينة SEA VIBE — R44R38R13",
   "notes": [
-    "استبدال الجدول المسطح لشجرة الحسابات بمستعرض شجري جانبي مع لوحة تفاصيل للحساب المحدد.",
-    "إضافة فتح وإغلاق الفروع والبحث بالكود أو الاسم وعرض الحسابات التابعة وإضافة حساب فرعي من الحساب التجميعي.",
-    "لا تغيير على البيانات أو الحسابات المالية أو ربط المصروفات أو الصلاحيات أو Offline/Sync أو R44 Pruning."
+    "إضافة سند قبض وسند صرف يدويين داخل خزينة SEA VIBE مع رقم سند مستقل وحساب مقابل ومرفق اختياري.",
+    "إنشاء قيد محاسبي مزدوج تلقائيًا: سند القبض يجعل خزينة 1101 مدين والحساب المقابل دائن، وسند الصرف بالعكس.",
+    "حفظ سندات الخزينة Online-only لحماية البيانات المالية، بدون تعديل Offline Queue أو Sync Engine أو الحركات الأوتوماتيكية الحالية أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-102-sea-vibe-chart-tree-workspace-r44r38r12-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r12.title",
+  "cacheToken": "petatoe-pwa-18-56-103-sea-vibe-treasury-vouchers-r44r38r13-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r13.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r12.note1",
-    "pwa.update.release.r44r38r12.note2",
-    "pwa.update.release.r44r38r12.note3"
+    "pwa.update.release.r44r38r13.note1",
+    "pwa.update.release.r44r38r13.note2",
+    "pwa.update.release.r44r38r13.note3"
   ]
 }

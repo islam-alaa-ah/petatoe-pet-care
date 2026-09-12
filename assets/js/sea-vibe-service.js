@@ -36,6 +36,7 @@
   const mapFuel=r=>({id:r.id,type:r.transaction_type,litersDelta:r.liters_delta==null?null:num(r.liters_delta),valueDelta:num(r.value_delta),unitPriceSnapshot:r.unit_price_snapshot==null?null:num(r.unit_price_snapshot),valuationStatus:r.valuation_status||'valued',tripId:r.trip_id||'',reference:r.reference||'',treasuryMovementSerial:r.treasury_movement_serial||'',notes:r.notes||'',transactionDate:r.transaction_date||String(r.created_at||'').slice(0,10),createdAt:r.created_at||'',updatedAt:r.updated_at||r.created_at||''});
   const mapFuelSettlement=r=>({id:r.id,cutoffDate:r.cutoff_date||'',previousCutoffDate:r.previous_cutoff_date||'',balanceBeforeLiters:num(r.balance_before_liters),balanceBeforeValue:num(r.balance_before_value),unitPriceSnapshot:num(r.unit_price_snapshot),peopleWeightPct:num(r.people_weight_pct),hoursWeightPct:num(r.hours_weight_pct),valuePerPerson:num(r.value_per_person),valuePerHour:num(r.value_per_hour),eligibleTripCount:num(r.eligible_trip_count),totalPeople:num(r.total_people),totalHours:num(r.total_hours),ledgerTransactionId:r.ledger_transaction_id||'',createdBy:r.created_by||'',createdAt:r.created_at||''});
   const mapTreasury=r=>({id:r.movement_id,serial:r.movement_serial||'',date:r.movement_date||String(r.movement_at||'').slice(0,10),at:r.movement_at||'',type:r.movement_type||'',amount:num(r.amount),reference:r.reference||'',description:r.description||'',tripId:r.trip_id||'',assetId:r.asset_id||'',sourceKind:r.source_kind||'',sourceId:r.source_id||'',expenseGroupId:r.expense_group_id||''});
+  const mapTreasuryVoucher=r=>({id:r.id,voucherNo:r.voucher_no||'',type:r.voucher_type||'',date:r.voucher_date||'',treasuryAccountId:r.treasury_account_id||'',counterpartAccountId:r.counterpart_account_id||'',amount:num(r.amount),reference:r.reference||'',description:r.description||'',notes:r.notes||'',createdAt:r.created_at||'',updatedAt:r.updated_at||''});
   const blank=()=>({trips:[],customers:[],expenses:[],assets:[],tripTypes:[],paymentMethods:[],expenseCatalog:[],chartAccounts:[],permitFees:[],commissionRules:[],commissionEmployees:[],commissionRulesReady:false,attachments:[],zawelTransactions:[],zawelBalance:{balancePoints:0,totalChargedPoints:0,totalDeductedPoints:0,totalTopupCost:0},fuelTransactions:[],fuelBalance:{balanceLiters:0,balanceValue:0,totalTopupLiters:0,totalTopupValue:0,totalDeductedLiters:0,totalDeductedValue:0,averageUnitPrice:0,pendingValuationCount:0,unconfiguredTripCount:0,historicalReviewCount:0},fuelSettlementConfig:{peopleWeightPct:50,hoursWeightPct:50,updatedAt:''},fuelSettlements:[],treasuryMovements:[]});
   function normalizeSnapshot(value){const base=blank(),raw=value&&typeof value==='object'?value:{};return{...base,...raw,customers:Array.isArray(raw.customers)?raw.customers:[],commissionRules:Array.isArray(raw.commissionRules)?raw.commissionRules:[],commissionEmployees:Array.isArray(raw.commissionEmployees)?raw.commissionEmployees:[],chartAccounts:Array.isArray(raw.chartAccounts)?raw.chartAccounts:[],commissionRulesReady:raw.commissionRulesReady===true,zawelTransactions:Array.isArray(raw.zawelTransactions)?raw.zawelTransactions:[],zawelBalance:{...base.zawelBalance,...(raw.zawelBalance||{})},fuelTransactions:Array.isArray(raw.fuelTransactions)?raw.fuelTransactions:[],fuelBalance:{...base.fuelBalance,...(raw.fuelBalance||{})},fuelSettlementConfig:{...base.fuelSettlementConfig,...(raw.fuelSettlementConfig||{})},fuelSettlements:Array.isArray(raw.fuelSettlements)?raw.fuelSettlements:[],treasuryMovements:Array.isArray(raw.treasuryMovements)?raw.treasuryMovements:[]};}
 
@@ -480,6 +481,42 @@
   async function previewFuelSettlement(cutoffDate){permission('seaVibeFuel','view');if(navigator.onLine===false)throw new Error('يلزم الاتصال بالإنترنت لمعاينة تسوية البنزين.');if(!cutoffDate)throw new Error('حدد تاريخ التسوية.');return await unwrap(client().rpc('sea_vibe_fuel_settlement_preview_r44r4',{p_cutoff_date:cutoffDate}),'تعذر معاينة تسوية البنزين');}
   async function applyFuelSettlement(cutoffDate){permission('seaVibeFuel','edit');if(navigator.onLine===false)throw new Error('يلزم الاتصال بالإنترنت لاعتماد تسوية البنزين.');if(!cutoffDate)throw new Error('حدد تاريخ التسوية.');const result=await unwrap(client().rpc('sea_vibe_apply_fuel_settlement_r44r4',{p_cutoff_date:cutoffDate}),'تعذر اعتماد تسوية البنزين');await audit('settlement','sea_vibe_fuel_settlements',result?.settlementId||'',result||{});await refreshSections(['trips','expenses','fuelTransactions','fuelBalance','fuelSettlements']);return result;}
   async function updateFuelSettlementConfig(peopleWeightPct,hoursWeightPct){permission('seaVibeReference','edit');if(navigator.onLine===false)throw new Error('يلزم الاتصال بالإنترنت لتعديل نسب تسوية البنزين.');const people=Number(Number(peopleWeightPct||0).toFixed(2)),hours=Number(Number(hoursWeightPct||0).toFixed(2));if(people<0||people>100||hours<0||hours>100||Number((people+hours).toFixed(2))!==100)throw new Error('يجب أن تكون نسبتا الأفراد والساعات بين 0 و100 ومجموعهما 100%.');const result=await unwrap(client().rpc('sea_vibe_update_fuel_settlement_config_r44r4',{p_people_weight_pct:people,p_hours_weight_pct:hours}),'تعذر حفظ نسب تسوية البنزين');await audit('update','sea_vibe_fuel_settlement_config','1',result||{});await refreshSections(['fuelSettlementConfig']);return result;}
+  async function uploadTreasuryVoucherAttachment(voucherId,file){
+    if(!file)return null;
+    const allowed=new Set(['image/jpeg','image/png','image/webp','application/pdf']);
+    if(Number(file.size||0)>5*1024*1024)throw new Error('SEA_VIBE_VOUCHER_ATTACHMENT_TOO_LARGE');
+    if(file.type&&!allowed.has(file.type))throw new Error('SEA_VIBE_VOUCHER_ATTACHMENT_TYPE_INVALID');
+    const safe=String(file.name||'attachment').replace(/[^a-zA-Z0-9._-]+/g,'-');
+    const path=`${voucherId}/${Date.now()}-${safe}`;
+    const {error}=await client().storage.from('sea-vibe-treasury-vouchers').upload(path,file,{contentType:file.type||undefined});
+    if(error)throw new Error(`SEA_VIBE_VOUCHER_ATTACHMENT_UPLOAD_FAILED: ${error.message}`);
+    const user=(await client().auth.getUser()).data.user?.id||null;
+    const payload={voucher_id:voucherId,storage_path:path,file_name:file.name||safe,mime_type:file.type||null,file_size:file.size||null,created_by:user};
+    return await unwrap(client().from('sea_vibe_treasury_voucher_attachments').insert(payload).select('*').single(),'SEA_VIBE_VOUCHER_ATTACHMENT_METADATA_FAILED');
+  }
+  async function getTreasuryVoucher(id){
+    permission('seaVibeTreasury','view');
+    if(navigator.onLine===false)throw new Error('SEA_VIBE_VOUCHER_ONLINE_REQUIRED');
+    const row=mapTreasuryVoucher(await unwrap(client().from('sea_vibe_treasury_vouchers').select('*').eq('id',id).single(),'SEA_VIBE_VOUCHER_LOAD_FAILED'));
+    const attachments=await unwrap(client().from('sea_vibe_treasury_voucher_attachments').select('*').eq('voucher_id',id).order('created_at',{ascending:false}).limit(1),'SEA_VIBE_VOUCHER_ATTACHMENT_LOAD_FAILED');
+    row.attachment=attachments?.[0]||null;
+    return row;
+  }
+  async function saveTreasuryVoucher(record){
+    const isUpdate=!!record.id;
+    permission('seaVibeTreasury',isUpdate?'edit':'add');
+    if(navigator.onLine===false)throw new Error('SEA_VIBE_VOUCHER_ONLINE_REQUIRED');
+    const amount=Number(num(record.amount).toFixed(2));
+    if(!record.date||!record.counterpartAccountId||amount<=0||!String(record.description||'').trim())throw new Error('SEA_VIBE_VOUCHER_REQUIRED_FIELDS');
+    const result=await unwrap(client().rpc('sea_vibe_save_treasury_voucher_r44r13',{p_id:record.id||null,p_voucher_type:record.type,p_voucher_date:record.date,p_counterpart_account_id:record.counterpartAccountId,p_amount:amount,p_reference:String(record.reference||'').trim()||null,p_description:String(record.description||'').trim(),p_notes:String(record.notes||'').trim()||null}),'SEA_VIBE_VOUCHER_SAVE_FAILED');
+    let attachmentError='';
+    if(record.file){try{await uploadTreasuryVoucherAttachment(result?.id,record.file);}catch(error){attachmentError=String(error?.message||error);}}
+    await audit(isUpdate?'update':'insert','sea_vibe_treasury_vouchers',result?.id,{voucherNo:result?.voucher_no,type:record.type,date:record.date,counterpartAccountId:record.counterpartAccountId,amount,reference:String(record.reference||'').trim()||null,description:String(record.description||'').trim(),attachmentAdded:!!record.file,attachmentError:attachmentError||null});
+    await refreshSections(['treasuryMovements']);
+    return {...(result||{}),attachmentError};
+  }
+  async function signedTreasuryVoucherAttachment(path){ const {data,error}=await client().storage.from('sea-vibe-treasury-vouchers').createSignedUrl(path,300);if(error)throw new Error(`SEA_VIBE_VOUCHER_ATTACHMENT_OPEN_FAILED: ${error.message}`);return data?.signedUrl||''; }
+
   async function signedAttachment(path){ const {data,error}=await client().storage.from('sea-vibe-expenses').createSignedUrl(path,300);if(error)throw new Error(`تعذر فتح المرفق: ${error.message}`);return data?.signedUrl||''; }
 
   async function queueServerBase(kind,id){if(!id||String(id).startsWith('local:'))return '';const table=kind==='trip'?'sea_vibe_trips':kind==='asset'?'sea_vibe_assets':null;if(!table)return '';const row=await unwrap(client().from(table).select('updated_at').eq('id',id).single(),'تعذر التحقق من نسخة SEA VIBE على الخادم');return row?.updated_at||'';}
@@ -526,5 +563,5 @@
   window.KYUMOfflineQueue?.register?.('sea_vibe',handleQueuedMutation);
 
 
-  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,signedAttachment});
+  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,getTreasuryVoucher,saveTreasuryVoucher,signedTreasuryVoucherAttachment,signedAttachment});
 })();
