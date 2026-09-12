@@ -1,19 +1,19 @@
 {
-  "version": "18.56.99",
-  "build": 185699,
+  "version": "18.56.100",
+  "build": 185700,
   "forceUpdate": true,
   "releaseDate": "2026-09-12",
-  "title": "إصلاح خطأ تحليل الخدمات — R44R38R10",
+  "title": "إضافة شجرة حسابات SEA VIBE — R44R38R11",
   "notes": [
-    "إصلاح تعارض اسم متغير محلي مع دالة الترجمة داخل تحليل الخدمات والذي كان يؤدي إلى ظهور رسالة t is not a function.",
-    "التعديل يغير اسم المتغير المحلي فقط ويحافظ على نفس حسابات وإجماليات تحليل الخدمات بدون أي تغيير في البيانات.",
-    "لا تغيير على قاعدة البيانات أو Offline/Sync أو الصلاحيات أو RLS أو CSS أو R44 Pruning."
+    "إضافة شجرة حسابات ديناميكية لـSEA VIBE بالجذور: الأصول والالتزامات وحقوق الملكية والإيرادات والمصروفات، مع جاري الشريك ومسحوبات الشريك.",
+    "ربط أنواع المصروفات الحالية بحسابات حركة تحت مجموعة المصروفات، مع تثبيت الحساب المحاسبي تاريخيًا على حركات المصروفات الحالية والجديدة.",
+    "يمكن إضافة حسابات فرعية جديدة في أي وقت من البيانات المرجعية بدون تغيير حسابات SEA VIBE الحالية أو Offline/Sync core أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-99-service-analytics-runtime-hotfix-r44r38r10-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r10.title",
+  "cacheToken": "petatoe-pwa-18-56-100-sea-vibe-chart-of-accounts-r44r38r11-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r11.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r10.note1",
-    "pwa.update.release.r44r38r10.note2",
-    "pwa.update.release.r44r38r10.note3"
+    "pwa.update.release.r44r38r11.note1",
+    "pwa.update.release.r44r38r11.note2",
+    "pwa.update.release.r44r38r11.note3"
   ]
 }

@@ -1,10 +1,10 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.99",
-    "build": 185699,
+    "version": "18.56.100",
+    "build": 185700,
     "date": "2026-09-12",
-    "phase": "R44R38R10",
+    "phase": "R44R38R11",
     "releaseDate": "2026-09-12"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -115,8 +115,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 270,
-    "totalBytes": 3792181
+    "sqlFileCount": 271,
+    "totalBytes": 3817758
   },
   "orderingHazards": {
     "examples": [
@@ -1488,6 +1488,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r38r9_monthly_vehicle_filter.sql",
       "sha256": "d968509e07d3725daedbc50b75e1fabd9fd20fd5581577cf539627e528e5039b",
       "bytes": 2764
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r11_sea_vibe_chart_of_accounts.sql",
+      "sha256": "30718220d17efe1c1a372f180cffbb9eda3664b0d9db86fa3c2979747a7d6f08",
+      "bytes": 25577
     }
   ]
 }
