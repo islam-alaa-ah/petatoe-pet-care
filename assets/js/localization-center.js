@@ -5078,6 +5078,10 @@
     ["pwa.update.release.r44r38r9.note1","note","إضافة فلتر السيارة داخل ملخص الشهر بقيمة افتراضية كل السيارات مع إمكانية اختيار سيارة واحدة لعرض التقرير الخاص بها.","Adds a Vehicle filter to Monthly Summary, defaulting to All vehicles, with the option to display one vehicle only."],
     ["pwa.update.release.r44r38r9.note2","note","الفلتر يعمل على نفس بيانات ملخص الشهر بعد التحميل ويعيد حساب إجماليات طرق الدفع والإجمالي وفق السيارة المختارة دون تغيير المعادلات المالية.","The filter works on the already loaded Monthly Summary data and recalculates payment-method totals and the grand total for the selected vehicle without changing financial formulas."],
     ["pwa.update.release.r44r38r9.note3","note","لا تغيير على قاعدة البيانات التشغيلية أو Offline/Sync أو الصلاحيات أو RLS أو R44 Pruning؛ التعديل محصور في عرض التقرير والترجمة.","No operational database, Offline/Sync, permissions, RLS, or R44 Pruning changes; the change is limited to report display and localization."],
+    ["pwa.update.release.r44r38r10.title","title","إصلاح خطأ تحليل الخدمات — R44R38R10","Service Analytics Runtime Hotfix — R44R38R10"],
+    ["pwa.update.release.r44r38r10.note1","note","إصلاح تعارض اسم متغير محلي مع دالة الترجمة داخل تحليل الخدمات والذي كان يؤدي إلى ظهور رسالة t is not a function.","Fixes a local variable name collision with the translation function in Service Analytics that caused the t is not a function error."],
+    ["pwa.update.release.r44r38r10.note2","note","التعديل يغير اسم المتغير المحلي فقط ويحافظ على نفس حسابات وإجماليات تحليل الخدمات بدون أي تغيير في البيانات.","The change only renames the local variable and preserves the same Service Analytics calculations and totals without changing data."],
+    ["pwa.update.release.r44r38r10.note3","note","لا تغيير على قاعدة البيانات أو Offline/Sync أو الصلاحيات أو RLS أو CSS أو R44 Pruning.","No database, Offline/Sync, permissions, RLS, CSS, or R44 Pruning changes."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

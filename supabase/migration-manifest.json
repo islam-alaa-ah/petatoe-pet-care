@@ -1,10 +1,10 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.98",
-    "build": 185698,
+    "version": "18.56.99",
+    "build": 185699,
     "date": "2026-09-12",
-    "phase": "R44R38R9",
+    "phase": "R44R38R10",
     "releaseDate": "2026-09-12"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
