@@ -1,0 +1,57 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'..');
+const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
+const sha=rel=>crypto.createHash('sha256').update(fs.readFileSync(path.join(root,rel))).digest('hex');
+const version=JSON.parse(read('version.json'));
+const pkg=JSON.parse(read('package.json'));
+const manifest=JSON.parse(read('supabase/migration-manifest.json'));
+const html=read('index.html');
+const ui=read('assets/js/sea-vibe.js');
+const service=read('assets/js/sea-vibe-service.js');
+const css=read('assets/css/sea-vibe.css');
+const loc=read('assets/js/localization-center.js');
+const sqlRel='supabase/migrations/phase_p5_13_8_72_r44r38r12_sea_vibe_chart_tree_workspace.sql';
+const sql=read(sqlRel);
+const checks=[]; const check=(name,value)=>checks.push([name,Boolean(value)]);
+
+check('release version is 18.56.102',version.version==='18.56.102'&&pkg.version==='18.56.102');
+check('release build is 185702',version.build===185702);
+check('release phase is R44R38R12',manifest?.release?.phase==='R44R38R12'&&manifest?.release?.build===185702);
+check('all local asset tokens are 18.56.102',(()=>{const x=[...html.matchAll(/[?&]v=(\d+\.\d+\.\d+)/g)].map(m=>m[1]);return x.length===97&&x.every(v=>v==='18.56.102')})());
+check('chart renderer is a split tree workspace',ui.includes('sea-vibe-chart-layout')&&ui.includes('sea-vibe-chart-tree-pane')&&ui.includes('sea-vibe-chart-main-pane'));
+check('flat chart table renderer was removed',!ui.includes('sea-vibe-account-table')&&!css.includes('.sea-vibe-account-table')&&!css.includes('.sea-vibe-account-root'));
+check('tree selection state exists',ui.includes("let selectedChartAccountId=''")&&ui.includes('data-sv-select-chart-account'));
+check('tree branch expansion state exists',ui.includes('expandedChartAccountIds')&&ui.includes('data-sv-toggle-chart-account'));
+check('tree search supports code and bilingual account names',ui.includes('seaVibeChartAccountSearch')&&ui.includes("`${row.code||''} ${row.nameAr||''} ${row.nameEn||''}`"));
+check('search keeps matched account ancestry visible',ui.includes('chartAccountSearchVisibleIds')&&ui.includes('current=current.parentId?byId.get'));
+check('tree uses inline SVG folder and posting icons',ui.includes('function chartAccountFolderIcon')&&ui.includes('function chartAccountPostingIcon')&&ui.includes('<svg class="sea-vibe-chart-icon"'));
+check('selected account has a dedicated detail pane',ui.includes('seaVibeChartAccountDetail')&&ui.includes('renderChartAccountDetail'));
+check('detail pane lists direct child accounts',ui.includes('sea-vibe-chart-child-list')&&ui.includes("chartAccountChildren(rows).get(String(selected.id))"));
+check('group account can add child directly',ui.includes('data-sv-add-chart-child')&&ui.includes("showChartAccountEditor('',btn.dataset.svAddChartChild)"));
+check('contextual child creation reuses canonical editor',ui.includes("function showChartAccountEditor(id='',preferredParentId='')")&&ui.includes("parent.value=r?.parentId||preferredParentId||''"));
+check('existing global add account flow remains available',ui.includes("if(kind==='chartAccounts'){showChartAccountEditor(id);return;}"));
+check('existing edit flow remains available',ui.includes('data-sv-edit-chart-account')&&ui.includes('showChartAccountEditor(btn.dataset.svEditChartAccount)'));
+check('desktop chart styling is canonical replacement',css.includes('R44R38R12 — canonical SEA VIBE chart tree workspace')&&css.includes('.sea-vibe-chart-layout{display:grid;grid-template-columns:minmax(270px,330px) minmax(0,1fr)'));
+check('mobile chart workspace collapses to one column',css.includes('.sea-vibe-chart-layout{grid-template-columns:minmax(0,1fr);min-height:0}')&&css.includes('.sea-vibe-chart-tree{max-height:330px'));
+check('chart CSS uses no important override',!css.includes('!important'));
+check('new UI localization keys exist', ['seaVibe.accounts.search','seaVibe.accounts.searchPlaceholder','seaVibe.accounts.childAccounts','seaVibe.accounts.addChild','seaVibe.accounts.noChildren','seaVibe.accounts.noSearchResults','seaVibe.accounts.expand','seaVibe.accounts.collapse'].every(k=>loc.includes(`"${k}"`)));
+check('R12 PWA localization keys exist',loc.includes('pwa.update.release.r44r38r12.title')&&loc.includes('pwa.update.release.r44r38r12.note3'));
+check('translation migration only touches app translations',sql.includes('insert into public.app_translations')&&!/alter\s+table|create\s+table|drop\s+table|delete\s+from|truncate\s+/i.test(sql));
+check('translation migration preserves customized values',sql.includes("ar_text=case when public.app_translations.ar_text is null")&&sql.includes("en_text=case when public.app_translations.en_text is null"));
+check('new migration is inventoried with matching fingerprint',(()=>{const e=manifest.historicalInventory.find(x=>x.path===sqlRel);return e&&e.sha256===sha(sqlRel)&&e.bytes===fs.statSync(path.join(root,sqlRel)).size})());
+check('manifest inventory stats match inventoried entries',manifest.inventoryStats.sqlFileCount===manifest.historicalInventory.length&&manifest.inventoryStats.totalBytes===manifest.historicalInventory.reduce((n,x)=>n+Number(x.bytes||0),0));
+check('new migration preserves pre-existing three-file manifest drift',fs.readdirSync(path.join(root,'supabase/migrations')).filter(x=>x.endsWith('.sql')).length-(manifest?.inventoryStats?.sqlFileCount||0)===3);
+check('SEA VIBE service remains byte-identical to R11R1','cb427b67d1bb170cc038c3189340da81f75215b7caed22d680ac0619e865e746'===sha('assets/js/sea-vibe-service.js'));
+check('R11 chart schema migration remains byte-identical','30718220d17efe1c1a372f180cffbb9eda3664b0d9db86fa3c2979747a7d6f08'===sha('supabase/migrations/phase_p5_13_8_72_r44r38r11_sea_vibe_chart_of_accounts.sql'));
+check('R11R1 recovery migration remains byte-identical','2d284288b67a03d7bc03d43c30a55602375165516678c864119c0de0750cdc0e'===sha('supabase/migrations/phase_p5_13_8_72_r44r38r11r1_chart_of_accounts_migration_recovery.sql'));
+check('offline queue remains byte-identical','5d67b6107d46feef61710d61eef7a8d9bd73aa4cd531cabd6a43a9c6a80401c7'===sha('assets/js/offline-queue.js'));
+check('smart cache remains byte-identical','b44d40476304ca595ea6902d3baa3fbbc76fe75a0cfe31fd1906ec9b931d6b0d'===sha('assets/js/smart-cache.js'));
+check('sync engine remains byte-identical','7d8b7feb1f87981e100b05b552b9b401dd0d8d0a27937e9c7ea2f9f39c0ee53e'===sha('assets/js/sync-engine.js'));
+check('permission owners remain byte-identical','bbe1ba1f88d411aa8047188638ab0c914215101a3f79121416d9b0ee685e5456'===sha('assets/js/permissions.js')&&'e214a971a0740da9cae7b82ed2956a7998ea0095e9575e59def664b47926372a'===sha('assets/js/permissions-service.js'));
+check('R44 pruning remains disabled',read('supabase/migrations/phase_p5_13_8_72_r44_bounded_pruning_engine_disabled.sql').includes('false'));
+
+let passed=0;for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'} - ${name}`);if(ok)passed++;}
+console.log(`\n${passed}/${checks.length} PASS`);if(passed!==checks.length)process.exit(1);

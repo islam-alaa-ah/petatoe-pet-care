@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-101-sea-vibe-chart-accounts-migration-recovery-r44r38r11r1-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-102-sea-vibe-chart-tree-workspace-r44r38r12-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

@@ -2271,6 +2271,14 @@
     ["seaVibe.accounts.noAccounts","empty","لا توجد حسابات في شجرة الحسابات.","No accounts are available in the chart of accounts."],
     ["seaVibe.accounts.onlineRequired","message","يلزم الاتصال بالإنترنت لإدارة شجرة الحسابات.","An internet connection is required to manage the chart of accounts."],
     ["seaVibe.accounts.hint","help","يمكن إضافة حسابات فرعية جديدة في أي وقت. الحسابات التجميعية تستقبل حسابات فرعية، وحسابات الحركة فقط هي التي يمكن ربطها بالمصروفات.","New child accounts can be added at any time. Group accounts accept child accounts, while only posting accounts can be linked to expenses."],
+    ["seaVibe.accounts.search","label","بحث في شجرة الحسابات","Search chart of accounts"],
+    ["seaVibe.accounts.searchPlaceholder","placeholder","ابحث بالكود أو اسم الحساب...","Search by code or account name..."],
+    ["seaVibe.accounts.childAccounts","label","الحسابات التابعة","Child accounts"],
+    ["seaVibe.accounts.addChild","button","إضافة حساب فرعي","Add child account"],
+    ["seaVibe.accounts.noChildren","empty","لا توجد حسابات فرعية تحت هذا الحساب.","No child accounts are available under this account."],
+    ["seaVibe.accounts.noSearchResults","empty","لا توجد حسابات مطابقة للبحث.","No accounts match the search."],
+    ["seaVibe.accounts.expand","aria","فتح الفرع","Expand branch"],
+    ["seaVibe.accounts.collapse","aria","إغلاق الفرع","Collapse branch"],
     ["seaVibe.accounts.parentRequired","error","اختر الحساب الأب.","Select a parent account."],
     ["seaVibe.accounts.required","error","أدخل كود الحساب والاسم بالعربية.","Enter the account code and Arabic name."],
     ["seaVibe.reference.account","label","الحساب المحاسبي","Accounting account"],
@@ -5114,6 +5122,10 @@
     ["pwa.update.release.r44r38r11r1.note1","note","إضافة Recovery Migration قابلة لإعادة التشغيل لمعالجة حالة التنفيذ الجزئي لـR44R38R11 بدون تعديل ملف Migration التاريخي.","Adds an idempotent recovery migration for partially applied R44R38R11 deployments without modifying the historical migration file."],
     ["pwa.update.release.r44r38r11r1.note2","note","إعادة تثبيت نفس Triggers وسياسات RLS الخاصة بشجرة الحسابات بأمان داخل Transaction واحدة مع Verification Gate يمنع ترك حالة جزئية جديدة.","Safely re-establishes the same chart-of-accounts triggers and RLS policies in one transaction with a verification gate that prevents another partial state."],
     ["pwa.update.release.r44r38r11r1.note3","note","لا تغيير على الحسابات المالية أو بيانات SEA VIBE أو Offline/Sync أو R44 Pruning؛ الإصلاح خاص بقابلية تنفيذ Migration فقط.","No changes to financial calculations, SEA VIBE business data, Offline/Sync, or R44 Pruning; this recovery only fixes migration replay safety."],
+    ["pwa.update.release.r44r38r12.title","title","إعادة تصميم عرض شجرة حسابات SEA VIBE — R44R38R12","Redesign SEA VIBE Chart of Accounts View — R44R38R12"],
+    ["pwa.update.release.r44r38r12.note1","note","استبدال الجدول المسطح لشجرة الحسابات بمستعرض شجري جانبي مع لوحة تفاصيل للحساب المحدد، بما يطابق أسلوب أنظمة الحسابات الاحترافية.","Replaces the flat chart-of-accounts table with a navigable side tree and selected-account detail pane, matching professional accounting navigation patterns."],
+    ["pwa.update.release.r44r38r12.note2","note","إضافة فتح وإغلاق الفروع والبحث بالكود أو الاسم وعرض الحسابات التابعة مع إمكانية إضافة حساب فرعي مباشرة من الحساب التجميعي.","Adds branch expand/collapse, code/name search, child-account browsing, and direct child-account creation from group accounts."],
+    ["pwa.update.release.r44r38r12.note3","note","التغيير خاص بطريقة العرض داخل SEA VIBE فقط؛ لا تغيير على شجرة البيانات أو الحسابات المالية أو ربط المصروفات أو الصلاحيات أو Offline/Sync أو R44 Pruning.","This change only affects the SEA VIBE chart presentation; no changes to account data, financial calculations, expense mappings, permissions, Offline/Sync, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
