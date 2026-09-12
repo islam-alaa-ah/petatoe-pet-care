@@ -1,19 +1,19 @@
 {
-  "version": "18.56.105",
-  "build": 185705,
+  "version": "18.56.106",
+  "build": 185706,
   "forceUpdate": true,
   "releaseDate": "2026-09-13",
-  "title": "إضافة قيود اليومية اليدوية لـ SEA VIBE — R44R38R14",
+  "title": "استعادة آمنة لقفل قيود اليومية — R44R38R14R1",
   "notes": [
-    "إضافة شاشة قيود اليومية داخل SEA VIBE لإدخال قيود يدوية متوازنة مرتبطة بشجرة الحسابات.",
-    "إضافة حساب ضريبة القيمة المضافة تحت الالتزامات المتداولة مع دعم المسودة والترحيل والمرفقات.",
-    "لا تغيير في الحركات الأوتوماتيكية أو Offline/Sync أو R44 Pruning."
+    "استبدال قراءة شجرة الحسابات من Policy مباشرة بـ RPC محدودة تتحقق من صلاحية قيود اليومية.",
+    "تقسيم Recovery Migration إلى معاملات قصيرة قابلة لإعادة التشغيل لتقليل Locks وDeadlocks على الإنتاج.",
+    "لا تغيير في منطق القيود أو الحسابات أو Offline/Sync أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-105-manual-journals-r44r38r14-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r14.title",
+  "cacheToken": "petatoe-pwa-18-56-106-journal-lock-recovery-r44r38r14r1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r14r1.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r14.note1",
-    "pwa.update.release.r44r38r14.note2",
-    "pwa.update.release.r44r38r14.note3"
+    "pwa.update.release.r44r38r14r1.note1",
+    "pwa.update.release.r44r38r14r1.note2",
+    "pwa.update.release.r44r38r14r1.note3"
   ]
 }

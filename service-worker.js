@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-105-manual-journals-r44r38r14-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-106-journal-lock-recovery-r44r38r14r1-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

@@ -5214,6 +5214,10 @@
     ["pwa.update.release.r44r38r14.note1","note","إضافة شاشة قيود اليومية داخل SEA VIBE لإدخال قيود يدوية متوازنة مرتبطة بشجرة الحسابات.","Adds a SEA VIBE Journal Entries screen for balanced manual entries linked to the chart of accounts."],
     ["pwa.update.release.r44r38r14.note2","note","إضافة حساب ضريبة القيمة المضافة تحت الالتزامات المتداولة مع دعم المسودة والترحيل والمرفقات.","Adds VAT Payable under Current Liabilities with draft, posting, and attachment support."],
     ["pwa.update.release.r44r38r14.note3","note","لا تغيير في الحركات الأوتوماتيكية أو Offline/Sync أو R44 Pruning.","No changes to automatic movements, Offline/Sync, or R44 Pruning."],
+    ["pwa.update.release.r44r38r14r1.title","title","استعادة آمنة لقفل قيود اليومية — R44R38R14R1","Safe Journal Migration Lock Recovery — R44R38R14R1"],
+    ["pwa.update.release.r44r38r14r1.note1","note","استبدال قراءة شجرة الحسابات من Policy مباشرة بـ RPC محدودة تتحقق من صلاحية قيود اليومية.","Replaces direct chart-table policy access with a permission-checked journal account RPC."],
+    ["pwa.update.release.r44r38r14r1.note2","note","تقسيم Recovery Migration إلى معاملات قصيرة قابلة لإعادة التشغيل لتقليل Locks وDeadlocks على الإنتاج.","Splits recovery into short re-runnable transactions to reduce production locks and deadlocks."],
+    ["pwa.update.release.r44r38r14r1.note3","note","لا تغيير في منطق القيود أو الحسابات أو Offline/Sync أو R44 Pruning.","No changes to journal accounting logic, Offline/Sync, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

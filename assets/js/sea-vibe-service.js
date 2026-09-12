@@ -519,7 +519,7 @@
 
   async function loadManualJournalContext(){
     permission('seaVibeJournals','view');
-    const chartAccounts=(await unwrap(client().from('sea_vibe_chart_accounts_view').select('*').order('account_code'),'SEA_VIBE_JOURNAL_ACCOUNTS_LOAD_FAILED')).map(mapChartAccount);
+    const chartAccounts=(await unwrap(client().rpc('sea_vibe_journal_chart_accounts_r44r14r1'),'SEA_VIBE_JOURNAL_ACCOUNTS_LOAD_FAILED')).map(mapChartAccount);
     return {chartAccounts};
   }
   async function uploadManualJournalAttachment(journalId,file){
