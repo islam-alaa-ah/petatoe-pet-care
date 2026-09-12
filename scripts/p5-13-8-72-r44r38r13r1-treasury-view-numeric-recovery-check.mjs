@@ -1,0 +1,41 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const hash=p=>crypto.createHash('sha256').update(fs.readFileSync(path.join(root,p))).digest('hex');
+const checks=[];
+const add=(name,ok)=>checks.push([name,!!ok]);
+const recovery='supabase/migrations/phase_p5_13_8_72_r44r38r13r1_treasury_view_numeric_compatibility_recovery.sql';
+const historical='supabase/migrations/phase_p5_13_8_72_r44r38r13_sea_vibe_treasury_vouchers.sql';
+const sql=read(recovery);
+const version=JSON.parse(read('version.json'));
+const manifest=JSON.parse(read('supabase/migration-manifest.json'));
+
+add('phase version 18.56.104',version.version==='18.56.104');
+add('phase build 185704',version.build===185704);
+add('recovery migration exists',fs.existsSync(path.join(root,recovery)));
+add('historical R13 remains inventoried',manifest.historicalInventory.some(x=>x.path===historical));
+add('recovery migration inventoried',manifest.historicalInventory.some(x=>x.path===recovery));
+add('manifest release phase',manifest.release?.phase==='R44R38R13R1');
+add('transaction begin',/\bbegin;/.test(sql));
+add('transaction commit',/\bcommit;/.test(sql));
+add('voucher amount explicitly numeric(14,2)',/\(case when v\.voucher_type='receipt' then v\.amount else -v\.amount end\)::numeric\(14,2\)/.test(sql));
+add('view remains CREATE OR REPLACE',/create or replace view public\.sea_vibe_treasury_movements/.test(sql));
+add('no DROP VIEW',!(/drop\s+view/i.test(sql)));
+add('no DELETE',!(/\bdelete\s+from\b/i.test(sql)));
+add('no TRUNCATE statement',!(/^\s*truncate\b/im.test(sql)));
+add('no DROP TABLE',!(/drop\s+table/i.test(sql)));
+add('receipt/payment tables preserved',/create table if not exists public\.sea_vibe_treasury_vouchers/.test(sql));
+add('save RPC preserved',/sea_vibe_save_treasury_voucher_r44r13/.test(sql));
+add('private storage bucket preserved',/sea-vibe-treasury-vouchers/.test(sql));
+add('verification status present',/R44R38R13R1_TREASURY_VIEW_NUMERIC_RECOVERY_OK/.test(sql));
+add('R13R1 release translation present',read('assets/js/localization-center.js').includes('pwa.update.release.r44r38r13r1.title'));
+add('R13 historical migration not self-marked as R13R1',!read(historical).includes('R44R38R13R1'));
+add('R44 pruning DDL/DML untouched',!(/^(?!\s*--).*\b(prun|retention)\b/im.test(sql)));
+
+const failed=checks.filter(([,ok])=>!ok);
+for (const [name,ok] of checks) console.log(`${ok?'PASS':'FAIL'} - ${name}`);
+console.log(`R44R38R13R1 Certification: ${checks.length-failed.length}/${checks.length} PASS`);
+if(failed.length) process.exit(1);

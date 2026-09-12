@@ -1,10 +1,10 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.103",
-    "build": 185703,
+    "version": "18.56.104",
+    "build": 185704,
     "date": "2026-09-13",
-    "phase": "R44R38R13",
+    "phase": "R44R38R13R1",
     "releaseDate": "2026-09-13"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -115,8 +115,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 274,
-    "totalBytes": 3876187
+    "sqlFileCount": 275,
+    "totalBytes": 3901368
   },
   "orderingHazards": {
     "examples": [
@@ -1508,6 +1508,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r38r13_sea_vibe_treasury_vouchers.sql",
       "sha256": "b1d4318c80b426e5e6bc9ab99c6c961d72172bea1f0bf14d5b78e2c0a582f59b",
       "bytes": 23917
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r13r1_treasury_view_numeric_compatibility_recovery.sql",
+      "sha256": "269099742fb916f2d2b72906608968bdec98084afd13ae188ea43f4ae0075781",
+      "bytes": 25181
     }
   ]
 }

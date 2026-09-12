@@ -5166,6 +5166,10 @@
     ["pwa.update.release.r44r38r13.note1","note","إضافة سند قبض وسند صرف يدويين داخل خزينة SEA VIBE مع رقم سند مستقل وحساب مقابل ومرفق اختياري.","Adds manual receipt and payment vouchers to SEA VIBE Treasury with independent voucher numbers, counterpart accounts, and optional attachments."],
     ["pwa.update.release.r44r38r13.note2","note","إنشاء قيد محاسبي مزدوج تلقائيًا: سند القبض يجعل خزينة 1101 مدين والحساب المقابل دائن، وسند الصرف بالعكس.","Automatically posts double-entry accounting: receipt debits Treasury 1101 and credits the counterpart; payment does the reverse."],
     ["pwa.update.release.r44r38r13.note3","note","حفظ سندات الخزينة Online-only لحماية البيانات المالية، بدون تعديل Offline Queue أو Sync Engine أو الحركات الأوتوماتيكية الحالية أو R44 Pruning.","Keeps treasury voucher writes online-only to protect financial data, without changing Offline Queue, Sync Engine, existing automatic movements, or R44 Pruning."],
+    ["pwa.update.release.r44r38r13r1.title","title","استعادة توافق عرض خزينة SEA VIBE — R44R38R13R1","Recover SEA VIBE Treasury View Compatibility — R44R38R13R1"],
+    ["pwa.update.release.r44r38r13r1.note1","note","إصلاح توافق نوع عمود amount في عرض حركات خزينة SEA VIBE بدون تعديل Migration R13 التاريخية.","Fixes the amount-column type compatibility in the SEA VIBE treasury movements view without modifying the historical R13 migration."],
+    ["pwa.update.release.r44r38r13r1.note2","note","إعادة تطبيق مكونات سندات القبض والصرف بشكل آمن بعد فشل R13 داخل Transaction.","Safely reapplies receipt/payment voucher objects after the R13 transaction failed."],
+    ["pwa.update.release.r44r38r13r1.note3","note","لا تغيير في الحسابات أو Offline/Sync أو الصلاحيات أو R44 Pruning.","No changes to calculations, Offline/Sync, permissions, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

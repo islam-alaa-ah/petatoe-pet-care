@@ -1,19 +1,19 @@
 {
-  "version": "18.56.103",
-  "build": 185703,
+  "version": "18.56.104",
+  "build": 185704,
   "forceUpdate": true,
   "releaseDate": "2026-09-13",
-  "title": "إضافة سندات القبض والصرف لخزينة SEA VIBE — R44R38R13",
+  "title": "استعادة توافق عرض خزينة SEA VIBE — R44R38R13R1",
   "notes": [
-    "إضافة سند قبض وسند صرف يدويين داخل خزينة SEA VIBE مع رقم سند مستقل وحساب مقابل ومرفق اختياري.",
-    "إنشاء قيد محاسبي مزدوج تلقائيًا: سند القبض يجعل خزينة 1101 مدين والحساب المقابل دائن، وسند الصرف بالعكس.",
-    "حفظ سندات الخزينة Online-only لحماية البيانات المالية، بدون تعديل Offline Queue أو Sync Engine أو الحركات الأوتوماتيكية الحالية أو R44 Pruning."
+    "إصلاح توافق نوع عمود amount في عرض حركات خزينة SEA VIBE بدون تعديل Migration R13 التاريخية.",
+    "إعادة تطبيق مكونات سندات القبض والصرف بشكل آمن بعد فشل R13 داخل Transaction.",
+    "لا تغيير في الحسابات أو Offline/Sync أو الصلاحيات أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-103-sea-vibe-treasury-vouchers-r44r38r13-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r13.title",
+  "cacheToken": "petatoe-pwa-18-56-104-treasury-view-recovery-r44r38r13r1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r13r1.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r13.note1",
-    "pwa.update.release.r44r38r13.note2",
-    "pwa.update.release.r44r38r13.note3"
+    "pwa.update.release.r44r38r13r1.note1",
+    "pwa.update.release.r44r38r13r1.note2",
+    "pwa.update.release.r44r38r13r1.note3"
   ]
 }
