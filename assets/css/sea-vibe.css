@@ -273,7 +273,39 @@ html[data-theme="dark"] .sea-vibe-voucher-fixed-account{background:rgba(59,130,2
   padding:8px 10px;
 }
 .sea-vibe-journal-table [data-sv-journal-description]{min-width:220px;}
-.sea-vibe-journal-table [data-sv-journal-account]{min-width:260px;}
+
+.sea-vibe-journal-account-picker{position:relative;min-width:280px;}
+.sea-vibe-journal-account-picker>[data-sv-journal-account]{display:none;}
+.sea-vibe-journal-account-toggle{
+  width:100%;min-height:42px;border:1px solid var(--border-color,#c9dcf5);border-radius:10px;background:var(--surface,#fff);color:inherit;
+  padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:start;cursor:pointer;
+}
+.sea-vibe-journal-account-toggle svg{width:18px;height:18px;flex:0 0 auto;color:var(--muted-color,#607392);}
+.sea-vibe-journal-account-toggle span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sea-vibe-journal-account-picker.is-open .sea-vibe-journal-account-toggle{border-color:#2f80ed;box-shadow:0 0 0 3px rgba(47,128,237,.12);}
+.sea-vibe-journal-account-menu{
+  position:fixed;z-index:5000;max-height:360px;border:1px solid var(--border-color,#c9dcf5);border-radius:12px;background:var(--surface,#fff);
+  box-shadow:0 18px 45px rgba(15,40,75,.18);padding:8px;overflow:hidden;
+}
+.sea-vibe-journal-account-search{display:flex;align-items:center;gap:8px;border:1px solid var(--border-color,#c9dcf5);border-radius:9px;padding:0 9px;margin-bottom:7px;background:var(--surface,#fff);}
+.sea-vibe-journal-account-search svg{width:18px;height:18px;color:var(--muted-color,#607392);flex:0 0 auto;}
+.sea-vibe-journal-account-search input{border:0;box-shadow:none;min-height:38px;padding:6px 0;background:transparent;}
+.sea-vibe-journal-account-options{max-height:286px;overflow:auto;display:grid;gap:3px;}
+.sea-vibe-journal-account-option{
+  width:100%;border:0;border-radius:8px;background:transparent;color:inherit;display:grid;grid-template-columns:minmax(62px,auto) 1fr;gap:9px;
+  align-items:center;text-align:start;padding:8px 10px;padding-inline-start:calc(10px + (var(--sv-journal-account-depth,0) * 14px));cursor:pointer;
+}
+.sea-vibe-journal-account-option:hover,.sea-vibe-journal-account-option:focus-visible{background:rgba(47,128,237,.09);outline:none;}
+.sea-vibe-journal-account-option.is-selected{background:rgba(47,128,237,.13);font-weight:700;}
+.sea-vibe-journal-account-code{direction:ltr;font-variant-numeric:tabular-nums;color:var(--muted-color,#607392);font-size:.86em;}
+.sea-vibe-journal-account-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sea-vibe-journal-account-empty{padding:16px 10px;text-align:center;color:var(--muted-color,#607392);}
+.sea-vibe-journal-auto-tax-row td{background:rgba(47,128,237,.045);}
+.sea-vibe-journal-auto-account{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:260px;}
+.sea-vibe-journal-auto-account small{border-radius:999px;padding:3px 7px;background:rgba(47,128,237,.11);color:#1d65c1;font-weight:700;}
+.sea-vibe-journal-auto-description,.sea-vibe-journal-auto-tax-label{color:var(--muted-color,#607392);}
+.sea-vibe-journal-auto-amount{display:block;min-width:110px;text-align:end;font-variant-numeric:tabular-nums;font-weight:700;direction:ltr;}
+.sea-vibe-journal-auto-lock{display:inline-grid;place-items:center;width:32px;height:32px;color:#2f80ed;font-size:9px;}
 .sea-vibe-journal-table [data-sv-journal-tax]{min-width:120px;}
 .sea-vibe-journal-table [data-sv-journal-debit],.sea-vibe-journal-table [data-sv-journal-credit]{min-width:110px;text-align:end;font-variant-numeric:tabular-nums;}
 .sea-vibe-journal-remove{
@@ -288,6 +320,10 @@ html[data-theme="dark"] .sea-vibe-voucher-fixed-account{background:rgba(59,130,2
 html[data-theme="dark"] .sea-vibe-journal-attachment{background:rgba(255,255,255,.03);}
 html[data-theme="dark"] .sea-vibe-journal-table select,
 html[data-theme="dark"] .sea-vibe-journal-table input{background:var(--surface,#101b2c);}
+html[data-theme="dark"] .sea-vibe-journal-account-toggle,
+html[data-theme="dark"] .sea-vibe-journal-account-menu,
+html[data-theme="dark"] .sea-vibe-journal-account-search{background:var(--surface,#101b2c);}
+html[data-theme="dark"] .sea-vibe-journal-auto-tax-row td{background:rgba(47,128,237,.08);}
 
 @media (max-width: 900px){
   .sea-vibe-journal-head-grid{grid-template-columns:1fr;}

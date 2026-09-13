@@ -1,19 +1,19 @@
 {
-  "version": "18.56.108",
-  "build": 185708,
+  "version": "18.56.109",
+  "build": 185709,
   "forceUpdate": true,
   "releaseDate": "2026-09-13",
-  "title": "استعادة توافق أنواع حسابات قيود اليومية — R44R38R14R3",
+  "title": "ربط ضريبة قيود اليومية والبحث في الحسابات — R44R38R14R4",
   "notes": [
-    "تصحيح عدم تطابق نوع root_class بين جدول شجرة الحسابات وعقد RPC الخاصة بقيود اليومية.",
-    "الحفاظ على نفس RPC المحدودة بصلاحية seaVibeJournals:view بدون أي توسيع لـ RLS أو الصلاحيات.",
-    "لا تغيير في منطق القيود أو الخزينة أو الحسابات أو Offline/Sync أو R44 Pruning."
+    "ربط VAT (15%) تلقائيًا بالحساب 2101 ضريبة القيمة المضافة تحت الالتزامات المتداولة مع إنشاء سطر ضريبة نظامي.",
+    "إضافة بحث بالكود أو الاسم داخل قائمة حسابات قيد اليومية مع الحفاظ على شجرة الحسابات الحالية.",
+    "لا تغيير في RLS أو Offline/Sync أو الحركات الأوتوماتيكية أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-108-journal-rpc-type-recovery-r44r38r14r3-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r14r3.title",
+  "cacheToken": "petatoe-pwa-18-56-109-journal-vat-search-r44r38r14r4-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r14r4.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r14r3.note1",
-    "pwa.update.release.r44r38r14r3.note2",
-    "pwa.update.release.r44r38r14r3.note3"
+    "pwa.update.release.r44r38r14r4.note1",
+    "pwa.update.release.r44r38r14r4.note2",
+    "pwa.update.release.r44r38r14r4.note3"
   ]
 }
