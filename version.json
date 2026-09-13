@@ -1,19 +1,19 @@
 {
-  "version": "18.56.107",
-  "build": 185707,
+  "version": "18.56.108",
+  "build": 185708,
   "forceUpdate": true,
   "releaseDate": "2026-09-13",
-  "title": "استعادة سياسة شجرة الحسابات لقيود اليومية — R44R38R14R2",
+  "title": "استعادة توافق أنواع حسابات قيود اليومية — R44R38R14R3",
   "notes": [
-    "إزالة Policy قديمة خاصة بقيود اليومية من جدول شجرة الحسابات بعد التحقق من تعريفها المتوقع فقط.",
-    "تنفيذ إزالة الـ Policy كأول قفل منفرد قصير قبل أي DDL آخر لتفادي دائرة Deadlock على الإنتاج.",
-    "استمرار قيود اليومية عبر RPC محدودة بالصلاحية بدون تغيير الحسابات أو Offline/Sync أو R44 Pruning."
+    "تصحيح عدم تطابق نوع root_class بين جدول شجرة الحسابات وعقد RPC الخاصة بقيود اليومية.",
+    "الحفاظ على نفس RPC المحدودة بصلاحية seaVibeJournals:view بدون أي توسيع لـ RLS أو الصلاحيات.",
+    "لا تغيير في منطق القيود أو الخزينة أو الحسابات أو Offline/Sync أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-107-journal-policy-cleanup-r44r38r14r2-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r14r2.title",
+  "cacheToken": "petatoe-pwa-18-56-108-journal-rpc-type-recovery-r44r38r14r3-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r14r3.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r14r2.note1",
-    "pwa.update.release.r44r38r14r2.note2",
-    "pwa.update.release.r44r38r14r2.note3"
+    "pwa.update.release.r44r38r14r3.note1",
+    "pwa.update.release.r44r38r14r3.note2",
+    "pwa.update.release.r44r38r14r3.note3"
   ]
 }

@@ -5222,6 +5222,10 @@
     ["pwa.update.release.r44r38r14r2.note1","note","إزالة Policy قديمة خاصة بقيود اليومية من جدول شجرة الحسابات بعد التحقق من تعريفها المتوقع فقط.","Removes the legacy journal-only chart policy only after verifying its expected definition."],
     ["pwa.update.release.r44r38r14r2.note2","note","تنفيذ إزالة الـ Policy كأول قفل منفرد قصير قبل أي DDL آخر لتفادي دائرة Deadlock على الإنتاج.","Runs the policy removal as the first isolated short lock before any other DDL to avoid a production deadlock cycle."],
     ["pwa.update.release.r44r38r14r2.note3","note","تستمر شاشة قيود اليومية باستخدام RPC محدودة بالصلاحية؛ لا توسيع لـ RLS ولا تغيير في القيود المحاسبية أو Offline/Sync أو R44 Pruning.","Journal Entries continue using the permission-scoped RPC; no RLS widening or changes to accounting, Offline/Sync, or R44 Pruning."],
+    ["pwa.update.release.r44r38r14r3.title","title","استعادة توافق أنواع حسابات قيود اليومية — R44R38R14R3","Journal Account RPC Type Compatibility Recovery — R44R38R14R3"],
+    ["pwa.update.release.r44r38r14r3.note1","note","تصحيح عدم تطابق نوع root_class بين جدول شجرة الحسابات وعقد RPC الخاصة بقيود اليومية.","Fixes the root_class type mismatch between the chart-of-accounts table and the Journal Entries RPC contract."],
+    ["pwa.update.release.r44r38r14r3.note2","note","الحفاظ على نفس RPC المحدودة بصلاحية seaVibeJournals:view بدون أي توسيع لـ RLS أو الصلاحيات.","Preserves the same seaVibeJournals:view-scoped RPC without any RLS or permission widening."],
+    ["pwa.update.release.r44r38r14r3.note3","note","لا تغيير في منطق القيود أو الخزينة أو الحسابات أو Offline/Sync أو R44 Pruning.","No changes to journal accounting, treasury, chart logic, Offline/Sync, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
