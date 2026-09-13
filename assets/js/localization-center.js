@@ -5218,6 +5218,10 @@
     ["pwa.update.release.r44r38r14r1.note1","note","استبدال قراءة شجرة الحسابات من Policy مباشرة بـ RPC محدودة تتحقق من صلاحية قيود اليومية.","Replaces direct chart-table policy access with a permission-checked journal account RPC."],
     ["pwa.update.release.r44r38r14r1.note2","note","تقسيم Recovery Migration إلى معاملات قصيرة قابلة لإعادة التشغيل لتقليل Locks وDeadlocks على الإنتاج.","Splits recovery into short re-runnable transactions to reduce production locks and deadlocks."],
     ["pwa.update.release.r44r38r14r1.note3","note","لا تغيير في منطق القيود أو الحسابات أو Offline/Sync أو R44 Pruning.","No changes to journal accounting logic, Offline/Sync, or R44 Pruning."],
+    ["pwa.update.release.r44r38r14r2.title","title","استعادة سياسة شجرة الحسابات لقيود اليومية — R44R38R14R2","Journal Chart Policy Cleanup Recovery — R44R38R14R2"],
+    ["pwa.update.release.r44r38r14r2.note1","note","إزالة Policy قديمة خاصة بقيود اليومية من جدول شجرة الحسابات بعد التحقق من تعريفها المتوقع فقط.","Removes the legacy journal-only chart policy only after verifying its expected definition."],
+    ["pwa.update.release.r44r38r14r2.note2","note","تنفيذ إزالة الـ Policy كأول قفل منفرد قصير قبل أي DDL آخر لتفادي دائرة Deadlock على الإنتاج.","Runs the policy removal as the first isolated short lock before any other DDL to avoid a production deadlock cycle."],
+    ["pwa.update.release.r44r38r14r2.note3","note","تستمر شاشة قيود اليومية باستخدام RPC محدودة بالصلاحية؛ لا توسيع لـ RLS ولا تغيير في القيود المحاسبية أو Offline/Sync أو R44 Pruning.","Journal Entries continue using the permission-scoped RPC; no RLS widening or changes to accounting, Offline/Sync, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

@@ -1,19 +1,19 @@
 {
-  "version": "18.56.106",
-  "build": 185706,
+  "version": "18.56.107",
+  "build": 185707,
   "forceUpdate": true,
   "releaseDate": "2026-09-13",
-  "title": "استعادة آمنة لقفل قيود اليومية — R44R38R14R1",
+  "title": "استعادة سياسة شجرة الحسابات لقيود اليومية — R44R38R14R2",
   "notes": [
-    "استبدال قراءة شجرة الحسابات من Policy مباشرة بـ RPC محدودة تتحقق من صلاحية قيود اليومية.",
-    "تقسيم Recovery Migration إلى معاملات قصيرة قابلة لإعادة التشغيل لتقليل Locks وDeadlocks على الإنتاج.",
-    "لا تغيير في منطق القيود أو الحسابات أو Offline/Sync أو R44 Pruning."
+    "إزالة Policy قديمة خاصة بقيود اليومية من جدول شجرة الحسابات بعد التحقق من تعريفها المتوقع فقط.",
+    "تنفيذ إزالة الـ Policy كأول قفل منفرد قصير قبل أي DDL آخر لتفادي دائرة Deadlock على الإنتاج.",
+    "استمرار قيود اليومية عبر RPC محدودة بالصلاحية بدون تغيير الحسابات أو Offline/Sync أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-106-journal-lock-recovery-r44r38r14r1-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r14r1.title",
+  "cacheToken": "petatoe-pwa-18-56-107-journal-policy-cleanup-r44r38r14r2-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r14r2.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r14r1.note1",
-    "pwa.update.release.r44r38r14r1.note2",
-    "pwa.update.release.r44r38r14r1.note3"
+    "pwa.update.release.r44r38r14r2.note1",
+    "pwa.update.release.r44r38r14r2.note2",
+    "pwa.update.release.r44r38r14r2.note3"
   ]
 }
