@@ -1,19 +1,19 @@
 {
-  "version": "18.56.115",
-  "build": 185715,
+  "version": "18.56.116",
+  "build": 185716,
   "forceUpdate": true,
   "releaseDate": "2026-09-18",
-  "title": "إظهار الرصيد الافتتاحي داخل كشف الحساب وتمييز صف الإجمالي — R44R38R15R3",
+  "title": "تصنيف مصروفات الأصول والمعالجة الرأسمالية — R44R38R16R1",
   "notes": [
-    "إضافة صف الرصيد الافتتاحي في بداية جدول كشف الحساب قبل أول حركة مع عرضه في الجانب المحاسبي المناسب والرصيد التراكمي.",
-    "تمييز صف الإجمالي في نهاية كشف الحساب بصريًا داخل نفس التصميم الأساسي للشاشة.",
-    "لا تغيير في RPC أو مصادر دفتر الحسابات أو RLS أو الصلاحيات أو Offline/Sync أو R44 Pruning."
+    "تصفية شاشة مصروف الأصل لعرض بنود الأصول المسموح بها فقط مع توضيح المعالجة المحاسبية لكل بند.",
+    "فصل المصروفات التشغيلية عن المصروفات الرأسمالية في شاشة الأصول، ولا تزيد قيمة الأصل إلا المصروفات الرأسمالية.",
+    "الحفاظ على المصروفات التاريخية وقيم الأصول الحالية مع بقاء Offline/Sync وRLS والصلاحيات وR44 Pruning دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-115-account-statement-opening-total-r44r38r15r3-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r15r3.title",
+  "cacheToken": "petatoe-pwa-18-56-116-asset-expense-classification-r44r38r16r1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r16.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r15r3.note1",
-    "pwa.update.release.r44r38r15r3.note2",
-    "pwa.update.release.r44r38r15r3.note3"
+    "pwa.update.release.r44r38r16.note1",
+    "pwa.update.release.r44r38r16.note2",
+    "pwa.update.release.r44r38r16.note3"
   ]
 }

@@ -2319,7 +2319,11 @@
     ["seaVibe.asset.name","label","اسم الأصل","Asset Name"],
     ["seaVibe.asset.value","label","قيمة الأصل","Asset Value"],
     ["seaVibe.asset.initialValue","label","القيمة الأساسية","Initial Value"],
-    ["seaVibe.asset.capitalizedExpenses","label","مصروفات الأصل","Capitalized Expenses"],
+    ["seaVibe.asset.capitalizedExpenses","label","مصروفات رأسمالية","Capitalized Expenses"],
+    ["seaVibe.asset.operatingExpenses","label","مصروفات تشغيلية","Operating Expenses"],
+    ["seaVibe.expense.assetTreatment","label","المعالجة المحاسبية","Accounting Treatment"],
+    ["seaVibe.expense.assetTreatmentOperating","status","تشغيلي — لا يضاف لقيمة الأصل","Operating — does not increase asset value"],
+    ["seaVibe.expense.assetTreatmentCapitalized","status","رأسمالي — يضاف لقيمة الأصل","Capitalized — increases asset value"],
     ["seaVibe.asset.currentValue","label","القيمة الحالية","Current Value"],
     ["seaVibe.asset.save","button","حفظ الأصل","Save Asset"],
     ["seaVibe.reference.expenses","option","المصروفات","Expense Items"],
@@ -5285,6 +5289,10 @@
     ["pwa.update.release.r44r38r15r3.note1","note","إضافة صف الرصيد الافتتاحي في بداية جدول كشف الحساب قبل أول حركة مع عرضه في الجانب المحاسبي المناسب والرصيد التراكمي.","Adds an opening-balance row at the start of the account statement before the first movement, displayed on the proper accounting side with its running balance."],
     ["pwa.update.release.r44r38r15r3.note2","note","تمييز صف الإجمالي في نهاية كشف الحساب بصريًا داخل نفس التصميم الأساسي للشاشة.","Visually highlights the totals row at the end of the account statement within the existing canonical screen design."],
     ["pwa.update.release.r44r38r15r3.note3","note","لا تغيير في RPC أو مصادر دفتر الحسابات أو RLS أو الصلاحيات أو Offline/Sync أو R44 Pruning.","No changes to the statement RPC, ledger sources, RLS, permissions, Offline/Sync, or R44 Pruning."],
+    ["pwa.update.release.r44r38r16.title","title","تصنيف مصروفات الأصول والمعالجة الرأسمالية — R44R38R16","Asset Expense Classification & Capitalization — R44R38R16"],
+    ["pwa.update.release.r44r38r16.note1","note","فصل بنود المصروفات العامة والرحلات والأصول بحيث تعرض شاشة مصروف الأصل البنود المخصصة للأصول فقط.","Separates general, trip, and asset expense items so asset-expense entry shows only asset-eligible items."],
+    ["pwa.update.release.r44r38r16.note2","note","التفريق بين مصروف الأصل التشغيلي والمصروف الرأسمالي، ولا يرفع قيمة الأصل إلا المصروف الرأسمالي.","Distinguishes operating asset expense from capitalized expenditure; only capitalized expenditure increases asset value."],
+    ["pwa.update.release.r44r38r16.note3","note","الحفاظ على مصروفات الأصول التاريخية كرأسمالية بدون تغيير قيم الأصول الحالية أو Offline/Sync أو RLS أو الصلاحيات.","Preserves historical asset expenses as capitalized without changing current asset values, Offline/Sync, RLS, or permissions."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

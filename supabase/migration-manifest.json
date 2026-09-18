@@ -1,10 +1,10 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.115",
-    "build": 185715,
+    "version": "18.56.116",
+    "build": 185716,
     "date": "2026-09-18",
-    "phase": "R44R38R15R3",
+    "phase": "R44R38R16R1",
     "releaseDate": "2026-09-18"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -107,7 +107,8 @@
       "supabase/migrations/phase_p5_13_8_72_r44r38_full_enterprise_localization_certification.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r38r15_sea_vibe_account_statement.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r38r15r1_account_statement_expense_link_recovery.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r38r15r2_full_ledger_link_recovery.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r38r15r2_full_ledger_link_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r38r16r1_asset_expense_classification_recovery.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -118,14 +119,15 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 284,
-    "totalBytes": 4093974
+    "sqlFileCount": 286,
+    "totalBytes": 4133064
   },
   "orderingHazards": {
     "examples": [
       "phase_p5_13_8_11_* sorts lexicographically before phase_p5_13_8_1_*",
       "multiple independent phase families coexist (phase17, phase_m*, phase_p5_*, phase_petatoe_*)",
-      "legacy aliases such as p5113.sql / p5114.sql do not encode a globally comparable timestamp"
+      "legacy aliases such as p5113.sql / p5114.sql do not encode a globally comparable timestamp",
+      "R44R38R16 failed transactionally at CREATE OR REPLACE VIEW column-order validation; R44R38R16R1 is the certified recovery and must be applied instead of treating R16 as a successful ledger step"
     ],
     "uppercaseFilenames": [
       "PETATOE_P3_3_MAKKAH_JEDDAH_NEIGHBORHOODS_SEED.sql",
@@ -1561,6 +1563,16 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r38r15r2_full_ledger_link_recovery.sql",
       "sha256": "a3ad5f5ee25671dc0addf15f18575dd8b7650785ff570f56aff79c81d37d98b6",
       "bytes": 22786
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r16_asset_expense_classification.sql",
+      "sha256": "3621ef86bea9af25533baf1bf2d7aae3e4be25919ce1792a5387c9e1e1bfc402",
+      "bytes": 19352
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r16r1_asset_expense_classification_recovery.sql",
+      "sha256": "eb188ab7ecbb9c816155138c650df1bdf1d438b768fffc21a11baf57b4d1f6b7",
+      "bytes": 19738
     }
   ]
 }
