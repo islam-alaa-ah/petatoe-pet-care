@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-111-treasury-payment-multiline-vat-r44r38r14r6-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-112-sea-vibe-account-statement-r44r38r15-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

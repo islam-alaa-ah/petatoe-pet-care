@@ -211,6 +211,7 @@ const views = {
   seaVibeZawel: document.getElementById("seaVibeZawelView"),
   seaVibeFuel: document.getElementById("seaVibeFuelView"),
   seaVibeReference: document.getElementById("seaVibeReferenceView"),
+  seaVibeAccountStatement: document.getElementById("seaVibeAccountStatementView"),
   seaVibeReports: document.getElementById("seaVibeReportsView"),
   users: document.getElementById("usersView"),
   permissions: document.getElementById("permissionsView"),
@@ -275,6 +276,7 @@ const pageMeta = {
   seaVibeZawel: ["رصيد زاول — SEA VIBE", "شحن وخصم نقاط رسوم تصريح الإبحار"],
   seaVibeFuel: ["رصيد البنزين — SEA VIBE", "متابعة رصيد البنزين باللتر والقيمة وخصم تكلفة الرحلات تلقائيًا"],
   seaVibeReference: ["البيانات المرجعية — SEA VIBE", "إدارة المصروفات وأنواع الرحلات وطرق الدفع ورسوم التصريح"],
+  seaVibeAccountStatement: ["SEA VIBE — كشف حساب", "استعراض حركة ورصيد أي حساب محاسبي خلال فترة محددة"],
   seaVibeReports: ["تقارير وتحليلات SEA VIBE", "متابعة إيرادات الرحلات والمصروفات وصافي الربح التشغيلي"],
   users: ["users.page.title", "users.page.note"],
   permissions: ["permissions.page.title", "permissions.page.note"],
@@ -340,6 +342,7 @@ const PAGE_META_I18N_KEYS = Object.freeze({
   seaVibeZawel: ["seaVibe.page.zawel.title", "seaVibe.page.zawel.subtitle"],
   seaVibeFuel: ["seaVibe.page.fuel.title", "seaVibe.page.fuel.subtitle"],
   seaVibeReference: ["seaVibe.page.reference.title", "seaVibe.page.reference.subtitle"],
+  seaVibeAccountStatement: ["seaVibe.page.accountStatement.title", "seaVibe.page.accountStatement.subtitle"],
   seaVibeReports: ["seaVibe.page.reports.title", "seaVibe.page.reports.subtitle"],
   notificationCenter: ["shared.notifications.center.title", "shared.notifications.center.pageSubtitle"],
   translationCenter: ["translationCenter.page.title", "translationCenter.page.subtitle"]
