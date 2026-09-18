@@ -1,19 +1,19 @@
 {
-  "version": "18.56.114",
-  "build": 185714,
+  "version": "18.56.115",
+  "build": 185715,
   "forceUpdate": true,
   "releaseDate": "2026-09-18",
-  "title": "استكمال الربط المحاسبي التشغيلي وإجماليات كشف الحساب — R44R38R15R2",
+  "title": "إظهار الرصيد الافتتاحي داخل كشف الحساب وتمييز صف الإجمالي — R44R38R15R3",
   "notes": [
-    "ربط إيرادات الرحلات بالحسابات 4101/4102/4103/4201 مع Revenue Snapshot لكل رحلة.",
-    "استكمال الأطراف المحاسبية للحركات التشغيلية للبنزين وزاول والمصروفات والخزينة ضمن كشف الحساب.",
-    "إضافة صف إجماليات في نهاية كشف الحساب لمدين ودائن والرصيد الختامي."
+    "إضافة صف الرصيد الافتتاحي في بداية جدول كشف الحساب قبل أول حركة مع عرضه في الجانب المحاسبي المناسب والرصيد التراكمي.",
+    "تمييز صف الإجمالي في نهاية كشف الحساب بصريًا داخل نفس التصميم الأساسي للشاشة.",
+    "لا تغيير في RPC أو مصادر دفتر الحسابات أو RLS أو الصلاحيات أو Offline/Sync أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-114-account-statement-full-ledger-r44r38r15r2-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r15r2.title",
+  "cacheToken": "petatoe-pwa-18-56-115-account-statement-opening-total-r44r38r15r3-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r15r3.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r15r2.note1",
-    "pwa.update.release.r44r38r15r2.note2",
-    "pwa.update.release.r44r38r15r2.note3"
+    "pwa.update.release.r44r38r15r3.note1",
+    "pwa.update.release.r44r38r15r3.note2",
+    "pwa.update.release.r44r38r15r3.note3"
   ]
 }

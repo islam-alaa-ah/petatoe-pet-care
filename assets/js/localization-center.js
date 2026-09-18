@@ -5281,6 +5281,10 @@
     ["pwa.update.release.r44r38r15r2.note1","note","ربط إيرادات الرحلات بحسابات الإيرادات وحفظ Revenue Snapshot لكل رحلة مع إظهار الحركات في كشف الحساب.","Links trip revenues to revenue accounts, stores a revenue snapshot per trip, and exposes those movements in account statements."],
     ["pwa.update.release.r44r38r15r2.note2","note","استكمال الأطراف المقابلة للحركات التشغيلية للبنزين وزاول والمصروفات والخزينة ضمن دفتر الحسابات بدون تكرار الحركة.","Completes counterpart entries for operational fuel, Zawel, expenses, and treasury movements without duplicating transactions."],
     ["pwa.update.release.r44r38r15r2.note3","note","إضافة صف إجماليات في نهاية كشف الحساب يعرض إجمالي المدين وإجمالي الدائن والرصيد الختامي.","Adds a totals row to the end of the account statement showing total debit, total credit, and closing balance."],
+    ["pwa.update.release.r44r38r15r3.title","title","إظهار الرصيد الافتتاحي داخل كشف الحساب وتمييز صف الإجمالي — R44R38R15R3","Opening Balance Row & Highlighted Account Statement Total — R44R38R15R3"],
+    ["pwa.update.release.r44r38r15r3.note1","note","إضافة صف الرصيد الافتتاحي في بداية جدول كشف الحساب قبل أول حركة مع عرضه في الجانب المحاسبي المناسب والرصيد التراكمي.","Adds an opening-balance row at the start of the account statement before the first movement, displayed on the proper accounting side with its running balance."],
+    ["pwa.update.release.r44r38r15r3.note2","note","تمييز صف الإجمالي في نهاية كشف الحساب بصريًا داخل نفس التصميم الأساسي للشاشة.","Visually highlights the totals row at the end of the account statement within the existing canonical screen design."],
+    ["pwa.update.release.r44r38r15r3.note3","note","لا تغيير في RPC أو مصادر دفتر الحسابات أو RLS أو الصلاحيات أو Offline/Sync أو R44 Pruning.","No changes to the statement RPC, ledger sources, RLS, permissions, Offline/Sync, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
