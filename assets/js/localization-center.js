@@ -2262,6 +2262,17 @@
     ["seaVibe.treasury.referencePlaceholder","placeholder","رقم فاتورة أو مرجع اختياري","Optional invoice or reference number"],
     ["seaVibe.treasury.descriptionPlaceholder","placeholder","أدخل بيان السند","Enter voucher description"],
     ["seaVibe.treasury.notesPlaceholder","placeholder","أي ملاحظات إضافية","Any additional notes"],
+    ["seaVibe.treasury.paymentLines","title","بنود المصروف","Expense Lines"],
+    ["seaVibe.treasury.addExpenseLine","button","إضافة مصروف","Add Expense"],
+    ["seaVibe.treasury.removeExpenseLine","button","حذف السطر","Remove Line"],
+    ["seaVibe.treasury.paymentLineAccount","label","حساب المصروف","Expense Account"],
+    ["seaVibe.treasury.paymentLineAmount","label","القيمة (شاملة الضريبة)","Amount (Tax Inclusive)"],
+    ["seaVibe.treasury.paymentLineTax","label","الضريبة","Tax"],
+    ["seaVibe.treasury.noTax","option","بدون ضريبة","No Tax"],
+    ["seaVibe.treasury.vat15","option","ضريبة قيمة مضافة 15%","VAT 15%"],
+    ["seaVibe.treasury.paymentLineTotal","label","إجمالي الصرف من الخزينة","Total Treasury Outflow"],
+    ["seaVibe.treasury.paymentLinesHint","help","كل مبلغ يُكتب شامل الضريبة. VAT 15% تقسم 115 إلى 100 مصروف و15 ضريبة.","Each amount is tax-inclusive. VAT 15% splits 115 into 100 expense and 15 tax."],
+    ["seaVibe.treasury.voucherPaymentRequired","error","أكمل التاريخ وبنود المصروف والمبالغ والبيان.","Complete the date, expense lines, amounts, and description."],
 
     ["seaVibe.reports.title","title","تقارير وتحليلات SEA VIBE","SEA VIBE Reports & Analytics"],
     ["seaVibe.reports.subtitle","subtitle","تحليل إيرادات الرحلات والمصروفات وصافي الربح التشغيلي.","Analyze trip revenue, expenses, and operating net profit."],
@@ -5239,6 +5250,10 @@
     ["pwa.update.release.r44r38r14r5.note1","note","اعتبار مبلغ سطر VAT (15%) في قيود اليومية مبلغًا شاملًا للضريبة، بحيث 115 ريال = 100 صافي + 15 ضريبة.","Treats VAT (15%) journal amounts as tax-inclusive, so SAR 115 = SAR 100 net + SAR 15 VAT."],
     ["pwa.update.release.r44r38r14r5.note2","note","توحيد حساب الواجهة مع منطق الحفظ المعتمد في قاعدة البيانات مع إبقاء سطر الضريبة في نفس اتجاه المدين أو الدائن.","Aligns the frontend calculation with the authoritative database posting logic while keeping VAT on the same debit or credit side."],
     ["pwa.update.release.r44r38r14r5.note3","note","لا تغيير في حساب 2101 أو RLS أو Offline/Sync أو الصلاحيات أو R44 Pruning.","No changes to account 2101, RLS, Offline/Sync, permissions, or R44 Pruning."],
+    ["pwa.update.release.r44r38r14r6.title","title","سند صرف متعدد البنود مع ضريبة مستقلة لكل مصروف — R44R38R14R6","Multi-Line Payment Voucher with Per-Expense Tax — R44R38R14R6"],
+    ["pwa.update.release.r44r38r14r6.note1","note","إضافة أكثر من مصروف داخل سند الصرف الواحد، مع اختيار حساب مستقل لكل بند داخل السند.","Adds multiple expense lines to one payment voucher, with an independent account for each line."],
+    ["pwa.update.release.r44r38r14r6.note2","note","إتاحة تطبيق VAT 15% أو بدون ضريبة لكل بند على حدة، مع اعتبار المبلغ المُدخل شاملًا للضريبة مثل 115 = 100 مصروف + 15 ضريبة.","Lets each line apply VAT 15% or no tax independently, treating the entered amount as tax-inclusive so 115 = 100 expense + 15 tax."],
+    ["pwa.update.release.r44r38r14r6.note3","note","إنشاء قيود الصرف تلقائيًا كسطور متعددة على الحسابات المختارة وسطر ضريبة 2101 عند الحاجة، بدون تغيير Offline/Sync أو RLS أو الصلاحيات أو R44 Pruning.","Automatically posts payment vouchers as multi-line entries with account 2101 VAT lines when needed, without changing Offline/Sync, RLS, permissions, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

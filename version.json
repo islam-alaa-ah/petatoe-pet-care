@@ -1,6 +1,6 @@
 {
-  "version": "18.56.110",
-  "build": 185710,
+  "version": "18.56.111",
+  "build": 185711,
   "forceUpdate": true,
   "releaseDate": "2026-09-18",
   "title": "احتساب ضريبة قيود اليومية من المبلغ الشامل — R44R38R14R5",
@@ -9,11 +9,11 @@
     "توحيد حساب الواجهة مع منطق الحفظ المعتمد في قاعدة البيانات مع إبقاء سطر الضريبة في نفس اتجاه المدين أو الدائن.",
     "لا تغيير في حساب 2101 أو RLS أو Offline/Sync أو الصلاحيات أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-110-journal-inclusive-vat-r44r38r14r5-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r14r5.title",
+  "cacheToken": "petatoe-pwa-18-56-111-treasury-payment-multiline-vat-r44r38r14r6-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r14r6.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r14r5.note1",
-    "pwa.update.release.r44r38r14r5.note2",
-    "pwa.update.release.r44r38r14r5.note3"
+    "pwa.update.release.r44r38r14r6.note1",
+    "pwa.update.release.r44r38r14r6.note2",
+    "pwa.update.release.r44r38r14r6.note3"
   ]
 }

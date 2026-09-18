@@ -37,6 +37,7 @@
   const mapFuelSettlement=r=>({id:r.id,cutoffDate:r.cutoff_date||'',previousCutoffDate:r.previous_cutoff_date||'',balanceBeforeLiters:num(r.balance_before_liters),balanceBeforeValue:num(r.balance_before_value),unitPriceSnapshot:num(r.unit_price_snapshot),peopleWeightPct:num(r.people_weight_pct),hoursWeightPct:num(r.hours_weight_pct),valuePerPerson:num(r.value_per_person),valuePerHour:num(r.value_per_hour),eligibleTripCount:num(r.eligible_trip_count),totalPeople:num(r.total_people),totalHours:num(r.total_hours),ledgerTransactionId:r.ledger_transaction_id||'',createdBy:r.created_by||'',createdAt:r.created_at||''});
   const mapTreasury=r=>({id:r.movement_id,serial:r.movement_serial||'',date:r.movement_date||String(r.movement_at||'').slice(0,10),at:r.movement_at||'',type:r.movement_type||'',amount:num(r.amount),reference:r.reference||'',description:r.description||'',tripId:r.trip_id||'',assetId:r.asset_id||'',sourceKind:r.source_kind||'',sourceId:r.source_id||'',expenseGroupId:r.expense_group_id||''});
   const mapTreasuryVoucher=r=>({id:r.id,voucherNo:r.voucher_no||'',type:r.voucher_type||'',date:r.voucher_date||'',treasuryAccountId:r.treasury_account_id||'',counterpartAccountId:r.counterpart_account_id||'',amount:num(r.amount),reference:r.reference||'',description:r.description||'',notes:r.notes||'',createdAt:r.created_at||'',updatedAt:r.updated_at||''});
+  const mapTreasuryVoucherPaymentLine=r=>({id:r.id||'',lineNo:num(r.line_no),accountId:r.expense_account_id||'',amountInclusive:num(r.amount_inclusive),taxCode:(String(r.tax_code||'none').toLowerCase()==='vat15'?'vat15':'none'),createdAt:r.created_at||'',updatedAt:r.updated_at||''});
   const blank=()=>({trips:[],customers:[],expenses:[],assets:[],tripTypes:[],paymentMethods:[],expenseCatalog:[],chartAccounts:[],permitFees:[],commissionRules:[],commissionEmployees:[],commissionRulesReady:false,attachments:[],zawelTransactions:[],zawelBalance:{balancePoints:0,totalChargedPoints:0,totalDeductedPoints:0,totalTopupCost:0},fuelTransactions:[],fuelBalance:{balanceLiters:0,balanceValue:0,totalTopupLiters:0,totalTopupValue:0,totalDeductedLiters:0,totalDeductedValue:0,averageUnitPrice:0,pendingValuationCount:0,unconfiguredTripCount:0,historicalReviewCount:0},fuelSettlementConfig:{peopleWeightPct:50,hoursWeightPct:50,updatedAt:''},fuelSettlements:[],treasuryMovements:[]});
   function normalizeSnapshot(value){const base=blank(),raw=value&&typeof value==='object'?value:{};return{...base,...raw,customers:Array.isArray(raw.customers)?raw.customers:[],commissionRules:Array.isArray(raw.commissionRules)?raw.commissionRules:[],commissionEmployees:Array.isArray(raw.commissionEmployees)?raw.commissionEmployees:[],chartAccounts:Array.isArray(raw.chartAccounts)?raw.chartAccounts:[],commissionRulesReady:raw.commissionRulesReady===true,zawelTransactions:Array.isArray(raw.zawelTransactions)?raw.zawelTransactions:[],zawelBalance:{...base.zawelBalance,...(raw.zawelBalance||{})},fuelTransactions:Array.isArray(raw.fuelTransactions)?raw.fuelTransactions:[],fuelBalance:{...base.fuelBalance,...(raw.fuelBalance||{})},fuelSettlementConfig:{...base.fuelSettlementConfig,...(raw.fuelSettlementConfig||{})},fuelSettlements:Array.isArray(raw.fuelSettlements)?raw.fuelSettlements:[],treasuryMovements:Array.isArray(raw.treasuryMovements)?raw.treasuryMovements:[]};}
 
@@ -499,6 +500,11 @@
     if(navigator.onLine===false)throw new Error('SEA_VIBE_VOUCHER_ONLINE_REQUIRED');
     const row=mapTreasuryVoucher(await unwrap(client().from('sea_vibe_treasury_vouchers').select('*').eq('id',id).single(),'SEA_VIBE_VOUCHER_LOAD_FAILED'));
     const attachments=await unwrap(client().from('sea_vibe_treasury_voucher_attachments').select('*').eq('voucher_id',id).order('created_at',{ascending:false}).limit(1),'SEA_VIBE_VOUCHER_ATTACHMENT_LOAD_FAILED');
+    const paymentLines=await unwrap(client().from('sea_vibe_treasury_voucher_payment_lines').select('*').eq('voucher_id',id).order('line_no',{ascending:true}),'SEA_VIBE_VOUCHER_LINES_LOAD_FAILED');
+    row.paymentLines=(paymentLines||[]).map(mapTreasuryVoucherPaymentLine);
+    if(row.type==='payment'&&!row.paymentLines.length&&row.counterpartAccountId&&row.amount>0){
+      row.paymentLines=[{id:'',lineNo:1,accountId:row.counterpartAccountId,amountInclusive:num(row.amount),taxCode:'none',createdAt:'',updatedAt:''}];
+    }
     row.attachment=attachments?.[0]||null;
     return row;
   }
@@ -506,12 +512,19 @@
     const isUpdate=!!record.id;
     permission('seaVibeTreasury',isUpdate?'edit':'add');
     if(navigator.onLine===false)throw new Error('SEA_VIBE_VOUCHER_ONLINE_REQUIRED');
-    const amount=Number(num(record.amount).toFixed(2));
-    if(!record.date||!record.counterpartAccountId||amount<=0||!String(record.description||'').trim())throw new Error('SEA_VIBE_VOUCHER_REQUIRED_FIELDS');
-    const result=await unwrap(client().rpc('sea_vibe_save_treasury_voucher_r44r13',{p_id:record.id||null,p_voucher_type:record.type,p_voucher_date:record.date,p_counterpart_account_id:record.counterpartAccountId,p_amount:amount,p_reference:String(record.reference||'').trim()||null,p_description:String(record.description||'').trim(),p_notes:String(record.notes||'').trim()||null}),'SEA_VIBE_VOUCHER_SAVE_FAILED');
+    const type=record.type==='payment'?'payment':'receipt';
+    const paymentLines=type==='payment'?(record.paymentLines||[]).map((line,index)=>({accountId:line.accountId||'',amountInclusive:Number(num(line.amountInclusive).toFixed(2)),taxCode:line.taxCode==='vat15'?'vat15':'none',lineNo:index+1})).filter(line=>line.accountId||line.amountInclusive>0):[];
+    const amount=type==='payment'?Number(paymentLines.reduce((sum,line)=>sum+num(line.amountInclusive),0).toFixed(2)):Number(num(record.amount).toFixed(2));
+    const counterpartAccountId=type==='payment'?(paymentLines[0]?.accountId||''):(record.counterpartAccountId||'');
+    if(type==='payment'){
+      if(!record.date||!paymentLines.length||paymentLines.some(line=>!line.accountId||line.amountInclusive<=0)||!String(record.description||'').trim())throw new Error('SEA_VIBE_VOUCHER_PAYMENT_LINES_REQUIRED');
+    }else if(!record.date||!counterpartAccountId||amount<=0||!String(record.description||'').trim()){
+      throw new Error('SEA_VIBE_VOUCHER_REQUIRED_FIELDS');
+    }
+    const result=await unwrap(client().rpc('sea_vibe_save_treasury_voucher_r44r38r14r6',{p_id:record.id||null,p_voucher_type:type,p_voucher_date:record.date,p_counterpart_account_id:counterpartAccountId||null,p_amount:amount,p_reference:String(record.reference||'').trim()||null,p_description:String(record.description||'').trim(),p_notes:String(record.notes||'').trim()||null,p_payment_lines:type==='payment'?paymentLines:[]}),'SEA_VIBE_VOUCHER_SAVE_FAILED');
     let attachmentError='';
     if(record.file){try{await uploadTreasuryVoucherAttachment(result?.id,record.file);}catch(error){attachmentError=String(error?.message||error);}}
-    await audit(isUpdate?'update':'insert','sea_vibe_treasury_vouchers',result?.id,{voucherNo:result?.voucher_no,type:record.type,date:record.date,counterpartAccountId:record.counterpartAccountId,amount,reference:String(record.reference||'').trim()||null,description:String(record.description||'').trim(),attachmentAdded:!!record.file,attachmentError:attachmentError||null});
+    await audit(isUpdate?'update':'insert','sea_vibe_treasury_vouchers',result?.id,{voucherNo:result?.voucher_no,type,date:record.date,counterpartAccountId:counterpartAccountId||null,amount,reference:String(record.reference||'').trim()||null,description:String(record.description||'').trim(),paymentLineCount:paymentLines.length,taxablePaymentLineCount:paymentLines.filter(line=>line.taxCode==='vat15').length,attachmentAdded:!!record.file,attachmentError:attachmentError||null});
     await refreshSections(['treasuryMovements']);
     return {...(result||{}),attachmentError};
   }
