@@ -5235,6 +5235,10 @@
     ["pwa.update.release.r44r38r14r4.note1","note","ربط VAT (15%) تلقائيًا بالحساب 2101 ضريبة القيمة المضافة تحت الالتزامات المتداولة مع إنشاء سطر ضريبة نظامي.","Automatically links VAT (15%) to account 2101 under Current Liabilities and creates a system VAT line."],
     ["pwa.update.release.r44r38r14r4.note2","note","إضافة بحث بالكود أو الاسم داخل قائمة حسابات قيد اليومية مع الحفاظ على شجرة الحسابات الحالية.","Adds code/name search inside the Journal Entries account picker while preserving the existing chart of accounts."],
     ["pwa.update.release.r44r38r14r4.note3","note","لا تغيير في RLS أو Offline/Sync أو الحركات الأوتوماتيكية أو R44 Pruning.","No changes to RLS, Offline/Sync, automatic movements, or R44 Pruning."],
+    ["pwa.update.release.r44r38r14r5.title","title","احتساب ضريبة قيود اليومية من المبلغ الشامل — R44R38R14R5","Journal Inclusive VAT Calculation — R44R38R14R5"],
+    ["pwa.update.release.r44r38r14r5.note1","note","اعتبار مبلغ سطر VAT (15%) في قيود اليومية مبلغًا شاملًا للضريبة، بحيث 115 ريال = 100 صافي + 15 ضريبة.","Treats VAT (15%) journal amounts as tax-inclusive, so SAR 115 = SAR 100 net + SAR 15 VAT."],
+    ["pwa.update.release.r44r38r14r5.note2","note","توحيد حساب الواجهة مع منطق الحفظ المعتمد في قاعدة البيانات مع إبقاء سطر الضريبة في نفس اتجاه المدين أو الدائن.","Aligns the frontend calculation with the authoritative database posting logic while keeping VAT on the same debit or credit side."],
+    ["pwa.update.release.r44r38r14r5.note3","note","لا تغيير في حساب 2101 أو RLS أو Offline/Sync أو الصلاحيات أو R44 Pruning.","No changes to account 2101, RLS, Offline/Sync, permissions, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
