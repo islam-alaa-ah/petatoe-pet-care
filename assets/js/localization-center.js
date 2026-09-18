@@ -5277,6 +5277,10 @@
     ["pwa.update.release.r44r38r15r1.note1","note","إضافة الحركات الموجودة في sea_vibe_expenses إلى كشف الحساب اعتمادًا على account_id المحفوظ لكل مصروف.","Adds existing sea_vibe_expenses movements to the account statement using each expense's persisted account_id."],
     ["pwa.update.release.r44r38r15r1.note2","note","إظهار مصروفات الحساب 5103 ورسوم تصريح الإبحار وباقي المصروفات المرتبطة ضمن المدين والرصيد الافتتاحي والتراكمي والختامي.","Shows account 5103 sailing-permit charges and other mapped expenses in debit, opening, running, and closing balances."],
     ["pwa.update.release.r44r38r15r1.note3","note","لا تغيير في ربط الحسابات أو البيانات المخزنة أو مسارات الحفظ أو Offline/Sync أو الصلاحيات أو R44 Pruning.","No changes to account mappings, stored business data, write paths, Offline/Sync, permissions, or R44 Pruning."],
+    ["pwa.update.release.r44r38r15r2.title","title","استكمال الربط المحاسبي التشغيلي وإجماليات كشف الحساب — R44R38R15R2","Complete Operational Ledger Link & Account Statement Totals — R44R38R15R2"],
+    ["pwa.update.release.r44r38r15r2.note1","note","ربط إيرادات الرحلات بحسابات الإيرادات وحفظ Revenue Snapshot لكل رحلة مع إظهار الحركات في كشف الحساب.","Links trip revenues to revenue accounts, stores a revenue snapshot per trip, and exposes those movements in account statements."],
+    ["pwa.update.release.r44r38r15r2.note2","note","استكمال الأطراف المقابلة للحركات التشغيلية للبنزين وزاول والمصروفات والخزينة ضمن دفتر الحسابات بدون تكرار الحركة.","Completes counterpart entries for operational fuel, Zawel, expenses, and treasury movements without duplicating transactions."],
+    ["pwa.update.release.r44r38r15r2.note3","note","إضافة صف إجماليات في نهاية كشف الحساب يعرض إجمالي المدين وإجمالي الدائن والرصيد الختامي.","Adds a totals row to the end of the account statement showing total debit, total credit, and closing balance."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

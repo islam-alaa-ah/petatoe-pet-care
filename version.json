@@ -1,19 +1,19 @@
 {
-  "version": "18.56.113",
-  "build": 185713,
+  "version": "18.56.114",
+  "build": 185714,
   "forceUpdate": true,
   "releaseDate": "2026-09-18",
-  "title": "ربط المصروفات التشغيلية بكشف حساب SEA VIBE — R44R38R15R1",
+  "title": "استكمال الربط المحاسبي التشغيلي وإجماليات كشف الحساب — R44R38R15R2",
   "notes": [
-    "إضافة حركات المصروفات المرتبطة بحساباتها إلى كشف الحساب اعتمادًا على account_id المحفوظ لكل مصروف.",
-    "إظهار رسوم تصريح الإبحار على الحساب 5103 وباقي المصروفات المرتبطة ضمن المدين والأرصدة الافتتاحية والتراكمية والختامية.",
-    "لا تغيير في ربط الحسابات أو البيانات المخزنة أو مسارات الحفظ أو Offline/Sync أو الصلاحيات أو R44 Pruning."
+    "ربط إيرادات الرحلات بالحسابات 4101/4102/4103/4201 مع Revenue Snapshot لكل رحلة.",
+    "استكمال الأطراف المحاسبية للحركات التشغيلية للبنزين وزاول والمصروفات والخزينة ضمن كشف الحساب.",
+    "إضافة صف إجماليات في نهاية كشف الحساب لمدين ودائن والرصيد الختامي."
   ],
-  "cacheToken": "petatoe-pwa-18-56-113-account-statement-expense-link-r44r38r15r1-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r15r1.title",
+  "cacheToken": "petatoe-pwa-18-56-114-account-statement-full-ledger-r44r38r15r2-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r15r2.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r15r1.note1",
-    "pwa.update.release.r44r38r15r1.note2",
-    "pwa.update.release.r44r38r15r1.note3"
+    "pwa.update.release.r44r38r15r2.note1",
+    "pwa.update.release.r44r38r15r2.note2",
+    "pwa.update.release.r44r38r15r2.note3"
   ]
 }

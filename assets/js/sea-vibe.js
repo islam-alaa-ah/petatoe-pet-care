@@ -378,6 +378,9 @@
     if(kind==='receipt_voucher')return t('seaVibe.accountStatement.sourceReceipt','Receipt Voucher');
     if(kind==='payment_voucher')return t('seaVibe.accountStatement.sourcePayment','Payment Voucher');
     if(kind==='expense')return t('seaVibe.accountStatement.sourceExpense','Expense');
+    if(kind==='trip_revenue')return t('seaVibe.treasury.tripRevenue','Trip Revenue');
+    if(kind==='fuel_topup')return t('seaVibe.treasury.fuelTopup','Fuel Top-up');
+    if(kind==='zawel_topup')return t('seaVibe.treasury.zawelTopup','Zawel Top-up');
     return String(kind||'—');
   }
   function accountStatementAccountOptions(query='',currentId=''){
@@ -401,6 +404,9 @@
     const selected=$('seaVibeAccountStatementSelectedAccount');if(selected){const account=data?.account,local=account?(lang()==='en'?(account.nameEn||account.nameAr):(account.nameAr||account.nameEn)):'';selected.textContent=account?`${account.code||''} — ${local}`:'—';}
     const q=String($('seaVibeAccountStatementMovementSearch')?.value||'').trim().toLowerCase(),rows=Array.isArray(data?.rows)?data.rows:[],visible=q?rows.filter(row=>`${row.date||''} ${row.documentNo||''} ${row.reference||''} ${row.description||''} ${row.accountCode||''} ${row.accountNameAr||''} ${row.accountNameEn||''} ${accountStatementSourceText(row.sourceKind)}`.toLowerCase().includes(q)):rows,body=$('seaVibeAccountStatementBody');if(!body)return;
     body.innerHTML=visible.length?visible.map(row=>{const lineName=lang()==='en'?(row.accountNameEn||row.accountNameAr||''):(row.accountNameAr||row.accountNameEn||'');return `<tr><td>${esc(dateText(row.date))}</td><td><strong>${esc(row.documentNo||'—')}</strong></td><td>${esc(accountStatementSourceText(row.sourceKind))}</td><td>${esc(`${row.accountCode||''}${lineName?` — ${lineName}`:''}`||'—')}</td><td>${esc(row.description||'—')}</td><td>${esc(row.reference||'—')}</td><td class="sea-vibe-money">${Number(row.debit||0)>0?esc(money(row.debit)):'—'}</td><td class="sea-vibe-money">${Number(row.credit||0)>0?esc(money(row.credit)):'—'}</td><td class="sea-vibe-money">${esc(money(row.runningBalance))}</td></tr>`;}).join(''):`<tr><td colspan="9" class="empty-cell">${esc(t('seaVibe.accountStatement.empty','No account movements were found in the selected period.'))}</td></tr>`;
+    if($('seaVibeAccountStatementFooterDebit'))$('seaVibeAccountStatementFooterDebit').textContent=money(debit);
+    if($('seaVibeAccountStatementFooterCredit'))$('seaVibeAccountStatementFooterCredit').textContent=money(credit);
+    if($('seaVibeAccountStatementFooterClosing'))$('seaVibeAccountStatementFooterClosing').textContent=money(closing);
   }
   async function ensureAccountStatementAccounts(){
     if(accountStatementAccounts.length){renderAccountStatementAccountOptions();return accountStatementAccounts;}
