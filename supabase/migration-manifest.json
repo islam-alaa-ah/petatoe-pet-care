@@ -1,11 +1,11 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.120",
-    "build": 185720,
-    "date": "2026-09-18",
-    "phase": "R44R38R19R1",
-    "releaseDate": "2026-09-18"
+    "version": "18.56.121",
+    "build": 185721,
+    "date": "2026-09-19",
+    "phase": "R44R38R20R2",
+    "releaseDate": "2026-09-19"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
   "policy": {
@@ -111,7 +111,9 @@
       "supabase/migrations/phase_p5_13_8_72_r44r38r16r1_asset_expense_classification_recovery.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r38r17r1_asset_expense_vat_payment_source_recovery.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r38r18_roles_captain_chairman.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r38r19_financial_statements.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r38r19_financial_statements.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r38r20_appointment_historical_data_import.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r38r20r1_historical_import_schema_recovery.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -122,8 +124,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 290,
-    "totalBytes": 4261666
+    "sqlFileCount": 292,
+    "totalBytes": 4358431
   },
   "orderingHazards": {
     "examples": [
@@ -1596,6 +1598,16 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r38r19_financial_statements.sql",
       "sha256": "5fff651064fa71ba8c5b9c6817fe001ad5b34054b1e97f0aedee40a3832859c7",
       "bytes": 43132
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r20_appointment_historical_data_import.sql",
+      "sha256": "43a9d7e3a1127e97b26c92c28e01f3b5c9256b1c8cbedaec6f54323cffca2dda",
+      "bytes": 35822
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r20r1_historical_import_schema_recovery.sql",
+      "sha256": "08d0f108276638bb65b643cc147b23ac6085b7c3acedd7f5270fbe31c764a6b9",
+      "bytes": 60943
     }
   ]
 }

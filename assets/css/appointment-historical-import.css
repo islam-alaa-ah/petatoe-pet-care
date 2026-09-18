@@ -1,0 +1,81 @@
+.appointment-history-import-view{display:grid;gap:16px}
+.appointment-history-import-view .appointment-history-import-header{align-items:flex-start;margin-bottom:0}
+.appointment-history-import-view .appointment-history-import-header h3{margin:0 0 6px}
+.appointment-history-import-view .appointment-history-import-header p{margin:0;color:var(--muted);line-height:1.8}
+.appointment-history-import-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.appointment-history-import-upload{display:grid;gap:14px}
+.appointment-history-import-file-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px;border:1px dashed color-mix(in srgb,var(--primary) 30%,var(--border));border-radius:15px;background:color-mix(in srgb,var(--surface-2) 88%,transparent)}
+.appointment-history-import-file-copy{min-width:0;display:grid;gap:4px}
+.appointment-history-import-file-copy strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.appointment-history-import-file-copy small{color:var(--muted);line-height:1.6}
+.appointment-history-import-rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.appointment-history-import-rule{border:1px solid var(--border);background:var(--surface-2);border-radius:13px;padding:11px 12px;color:var(--muted);font-size:12px;line-height:1.75}
+.appointment-history-import-rule strong{display:block;color:var(--text);font-size:13px;margin-bottom:2px}
+.appointment-history-import-progress{display:grid;gap:8px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2)}
+.appointment-history-import-progress-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted)}
+.appointment-history-import-progress-head strong{color:var(--text);font-variant-numeric:tabular-nums}
+.appointment-history-import-progress-track{height:8px;background:color-mix(in srgb,var(--border) 86%,transparent);border-radius:999px;overflow:hidden}
+.appointment-history-import-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--primary),#7c3aed);border-radius:inherit;transition:width .2s ease}
+.appointment-history-import-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--border);border-radius:15px;overflow:hidden;background:var(--surface)}
+.appointment-history-import-summary>div{display:grid;gap:3px;padding:11px 12px;border-inline-end:1px solid var(--border);min-width:0}
+.appointment-history-import-summary>div:last-child{border-inline-end:0}
+.appointment-history-import-summary span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appointment-history-import-summary strong{font-size:18px;font-variant-numeric:tabular-nums}
+.appointment-history-import-summary .is-success strong{color:var(--success)}
+.appointment-history-import-summary .is-warning strong{color:var(--warning)}
+.appointment-history-import-summary .is-danger strong{color:var(--danger)}
+.appointment-history-import-preview-panel{padding:0;overflow:hidden}
+.appointment-history-import-preview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border)}
+.appointment-history-import-preview-head h3{margin:0 0 4px}
+.appointment-history-import-preview-head p{margin:0;color:var(--muted);font-size:12px;line-height:1.7}
+.appointment-history-import-table-wrap{overflow:auto;max-height:56vh}
+.appointment-history-import-table{width:max(1480px,100%);border-collapse:collapse;font-size:12px}
+.appointment-history-import-table th,.appointment-history-import-table td{padding:10px 11px;border-bottom:1px solid var(--border);vertical-align:top;text-align:start}
+.appointment-history-import-table th{position:sticky;top:0;z-index:2;background:var(--surface-2);color:var(--muted);font-weight:800;white-space:nowrap}
+.appointment-history-import-table td{max-width:250px}
+.appointment-history-import-table .numeric{direction:ltr;text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap}
+.appointment-history-import-table .nowrap{white-space:nowrap}
+.appointment-history-import-table .appointment-history-import-customer{display:grid;gap:3px}
+.appointment-history-import-table .appointment-history-import-customer small{color:var(--muted)}
+.appointment-history-import-state{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800;white-space:nowrap;background:var(--surface-2);border:1px solid var(--border)}
+.appointment-history-import-state.is-success{color:var(--success);border-color:color-mix(in srgb,var(--success) 30%,var(--border));background:color-mix(in srgb,var(--success) 7%,var(--surface))}
+.appointment-history-import-state.is-warning{color:var(--warning);border-color:color-mix(in srgb,var(--warning) 30%,var(--border));background:color-mix(in srgb,var(--warning) 7%,var(--surface))}
+.appointment-history-import-state.is-danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 30%,var(--border));background:color-mix(in srgb,var(--danger) 7%,var(--surface))}
+.appointment-history-import-state.is-info{color:var(--primary);border-color:color-mix(in srgb,var(--primary) 30%,var(--border));background:color-mix(in srgb,var(--primary) 7%,var(--surface))}
+.appointment-history-import-notes{display:grid;gap:4px;min-width:220px;max-width:340px}
+.appointment-history-import-notes small{line-height:1.55;color:var(--muted)}
+.appointment-history-import-notes .error{color:var(--danger)}
+.appointment-history-import-notes .warning{color:var(--warning)}
+.appointment-history-import-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-top:1px solid var(--border);background:var(--surface-2)}
+.appointment-history-import-footer-actions{display:flex;gap:9px;flex-wrap:wrap}
+.appointment-history-import-load-more{display:flex;justify-content:center;padding:12px;border-top:1px solid var(--border)}
+.appointment-history-import-empty{padding:34px 18px;text-align:center;color:var(--muted)}
+.appointment-history-import-status[data-type="success"]{color:var(--success)}
+.appointment-history-import-status[data-type="warning"]{color:var(--warning)}
+.appointment-history-import-status[data-type="error"]{color:var(--danger)}
+.appointment-history-import-status[data-type="info"]{color:var(--primary)}
+html[data-theme="dark"] .appointment-history-import-file-row,
+html[data-theme="dark"] .appointment-history-import-rule,
+html[data-theme="dark"] .appointment-history-import-progress,
+html[data-theme="dark"] .appointment-history-import-summary,
+html[data-theme="dark"] .appointment-history-import-preview-panel{background:color-mix(in srgb,var(--surface) 92%,#091526)}
+@media(max-width:1100px){
+  .appointment-history-import-rules{grid-template-columns:1fr}
+  .appointment-history-import-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .appointment-history-import-summary>div:nth-child(3n){border-inline-end:0}
+}
+@media(max-width:720px){
+  .appointment-history-import-view{gap:12px}
+  .appointment-history-import-view .appointment-history-import-header{display:grid;gap:12px}
+  .appointment-history-import-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .appointment-history-import-actions button{width:100%}
+  .appointment-history-import-file-row{grid-template-columns:1fr}
+  .appointment-history-import-file-row button{width:100%}
+  .appointment-history-import-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .appointment-history-import-summary>div{border-bottom:1px solid var(--border)}
+  .appointment-history-import-summary>div:nth-child(2n){border-inline-end:0}
+  .appointment-history-import-preview-head,.appointment-history-import-footer{display:grid}
+  .appointment-history-import-footer-actions{display:grid;grid-template-columns:1fr}
+  .appointment-history-import-footer-actions button{width:100%}
+  .appointment-history-import-table-wrap{max-height:62vh}
+}
