@@ -3,6 +3,7 @@ window.CustomerPermissions = {
     const t = key => window.PetatoeLocalization?.t?.(key) || key;
     return {
       super_admin: t("permissions.role.super_admin"),
+      chairman: t("permissions.role.chairman"),
       sales_manager: t("permissions.role.sales_manager"),
       sales_supervisor: t("permissions.role.sales_supervisor"),
       sales_representative: t("permissions.role.sales_representative"),
@@ -10,7 +11,7 @@ window.CustomerPermissions = {
       viewer: t("permissions.role.viewer")
     };
   },
-  roleOptions: ["super_admin","sales_manager","sales_supervisor","sales_representative","customer_service","viewer"],
+  roleOptions: ["super_admin","chairman","sales_manager","sales_supervisor","sales_representative","customer_service","viewer"],
   screenPermissions: new Map(),
   permissionsLoaded: false,
 

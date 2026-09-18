@@ -1,19 +1,19 @@
 {
-  "version": "18.56.117",
-  "build": 185717,
+  "version": "18.56.118",
+  "build": 185718,
   "forceUpdate": true,
   "releaseDate": "2026-09-18",
-  "title": "ضريبة مصروف الأصل ومصدر الدفع — R44R38R17R1",
+  "title": "تحديث الأدوار: كابتن القارب ورئيس مجلس الإدارة — R44R38R18",
   "notes": [
-    "إضافة ضريبة VAT 15% أو بدون ضريبة لكل بند مصروف أصل مع اعتبار القيمة المدخلة شاملة الضريبة.",
-    "إضافة مصدر دفع لكل مصروف أصل مع جعل خزينة SEA VIBE 1101 هي الاختيار الافتراضي وإتاحة حساب ميزانية آخر.",
-    "احتساب الصافي فقط كمصروف أو كزيادة في قيمة الأصل، وترحيل الضريبة إلى 2101 وإجمالي الدفع إلى الحساب الدائن المحدد."
+    "تغيير الاسم المعروض لدور مشرف المبيعات إلى كابتن القارب مع الحفاظ على المفتاح والصلاحيات والمستخدمين الحاليين.",
+    "إضافة دور رئيس مجلس الإدارة كدور مستقل بدون أي صلاحيات افتراضية حتى يتم ضبطها من شاشة إدارة الصلاحيات.",
+    "إضافة الدور الجديد إلى إنشاء المستخدم وإدارة الصلاحيات والإشعارات وواجهة manage-user بدون تغيير RLS أو Offline/Sync."
   ],
-  "cacheToken": "petatoe-pwa-18-56-117-asset-expense-vat-payment-r44r38r17r1-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r17.title",
+  "cacheToken": "petatoe-pwa-18-56-118-roles-captain-chairman-r44r38r18-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r18.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r17.note1",
-    "pwa.update.release.r44r38r17.note2",
-    "pwa.update.release.r44r38r17.note3"
+    "pwa.update.release.r44r38r18.note1",
+    "pwa.update.release.r44r38r18.note2",
+    "pwa.update.release.r44r38r18.note3"
   ]
 }

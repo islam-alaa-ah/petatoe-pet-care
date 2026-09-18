@@ -2676,8 +2676,9 @@
     ["auth.logout.success","status","تم تسجيل الخروج بنجاح.","Signed out successfully."],
     ["auth.error.sessionActivate","error","تعذر تفعيل الجلسة.","Unable to activate the session."],
     ["permissions.role.super_admin","label","مدير النظام","System Administrator"],
+    ["permissions.role.chairman","label","رئيس مجلس الإدارة","Chairman of the Board"],
     ["permissions.role.sales_manager","label","مدير المبيعات","Sales Manager"],
-    ["permissions.role.sales_supervisor","label","مشرف المبيعات","Sales Supervisor"],
+    ["permissions.role.sales_supervisor","label","كابتن القارب","Boat Captain"],
     ["permissions.role.sales_representative","label","مندوب مبيعات","Sales Representative"],
     ["permissions.role.customer_service","label","مشرف التركيبات","Appointments Supervisor"],
     ["permissions.role.viewer","label","جرومر / سائق","Groomer / Driver"],
@@ -5306,6 +5307,10 @@
     ["pwa.update.release.r44r38r17.note1","note","إضافة VAT 15% أو بدون ضريبة لكل بند مصروف أصل مع اعتبار القيمة المدخلة شاملة الضريبة.","Adds VAT 15% or no-tax selection per asset-expense line using tax-inclusive entered amounts."],
     ["pwa.update.release.r44r38r17.note2","note","إضافة مصدر دفع لكل مصروف أصل، والافتراضي خزينة SEA VIBE 1101 مع إمكانية اختيار حساب ميزانية آخر.","Adds a payment-source account per asset expense, defaulting to SEA VIBE Treasury 1101 with another balance-sheet account selectable when needed."],
     ["pwa.update.release.r44r38r17.note3","note","يبقى صافي المصروف فقط في الربحية وقيمة الأصل، وتذهب الضريبة إلى 2101 بينما يخرج الإجمالي من مصدر الدفع المحدد.","Keeps only net expense in profitability and asset value, posts VAT to 2101, and credits the selected payment source with the gross amount."],
+    ["pwa.update.release.r44r38r18.title","title","تحديث الأدوار: كابتن القارب ورئيس مجلس الإدارة — R44R38R18","Role Update: Boat Captain & Chairman — R44R38R18"],
+    ["pwa.update.release.r44r38r18.note1","note","تغيير الاسم المعروض لدور مشرف المبيعات إلى كابتن القارب مع الحفاظ على المفتاح والصلاحيات والمستخدمين الحاليين.","Renames the Sales Supervisor display label to Boat Captain while preserving the stable role key, permissions, and existing users."],
+    ["pwa.update.release.r44r38r18.note2","note","إضافة دور رئيس مجلس الإدارة كدور مستقل بدون أي صلاحيات افتراضية حتى يتم ضبطها من شاشة إدارة الصلاحيات.","Adds Chairman of the Board as an independent role with no default permissions until configured in Permission Management."],
+    ["pwa.update.release.r44r38r18.note3","note","لا تغيير في RLS أو نطاقات البيانات أو صلاحيات الأدوار الحالية أو Offline/Sync أو R44 Pruning.","No changes to RLS, data scopes, existing-role permissions, Offline/Sync, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

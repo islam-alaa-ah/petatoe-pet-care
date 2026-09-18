@@ -55,6 +55,7 @@ function normalizeRole(value: unknown) {
   const role = String(value ?? "viewer").trim();
   const allowedRoles = new Set([
     "super_admin",
+    "chairman",
     "sales_manager",
     "sales_supervisor",
     "sales_representative",
