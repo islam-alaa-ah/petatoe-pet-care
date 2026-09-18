@@ -1,10 +1,10 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.121",
-    "build": 185721,
+    "version": "18.56.122",
+    "build": 185722,
     "date": "2026-09-19",
-    "phase": "R44R38R20R2",
+    "phase": "R44R38R20R11",
     "releaseDate": "2026-09-19"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -113,7 +113,11 @@
       "supabase/migrations/phase_p5_13_8_72_r44r38r18_roles_captain_chairman.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r38r19_financial_statements.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r38r20_appointment_historical_data_import.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r38r20r1_historical_import_schema_recovery.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r38r20r1_historical_import_schema_recovery.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r38r20r4_legacy_customer_code_normalization.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r38r20r6_exact_unique_name_fallback.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r38r20r7_null_safe_name_fallback.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r38r20r10_new_customer_creation_gate.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -124,8 +128,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 292,
-    "totalBytes": 4358431
+    "sqlFileCount": 296,
+    "totalBytes": 4447064
   },
   "orderingHazards": {
     "examples": [
@@ -1608,6 +1612,26 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r38r20r1_historical_import_schema_recovery.sql",
       "sha256": "08d0f108276638bb65b643cc147b23ac6085b7c3acedd7f5270fbe31c764a6b9",
       "bytes": 60943
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r20r4_legacy_customer_code_normalization.sql",
+      "sha256": "909527aac0408ab52081b8e4b51b64f862cbb8cc563b0298e82fdfe814c2657e",
+      "bytes": 10514
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r20r6_exact_unique_name_fallback.sql",
+      "sha256": "74a56f042835931e6016329d2e486025141076aad0222df31554fd042b00bbaa",
+      "bytes": 13949
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r20r7_null_safe_name_fallback.sql",
+      "sha256": "66aeb15964760e3b3f7ac58e6b33e8a428be9aac84d258e709c7efb654e12d30",
+      "bytes": 13794
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r20r10_new_customer_creation_gate.sql",
+      "sha256": "a9ae0cbce2abe59cb278833765593c10f59225a9d7fa0d485c77274a3f36397b",
+      "bytes": 50376
     }
   ]
 }

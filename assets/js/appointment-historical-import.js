@@ -33,6 +33,8 @@
     rows:[],
     results:[],
     summary:null,
+    customerPlan:null,
+    customerPlanByRaw:new Map(),
     displayLimit:PREVIEW_STEP,
     busy:false,
     validated:false,
@@ -93,13 +95,15 @@
     const failed=$('appointmentHistoricalImportFailedExportBtn');
     if(choose) choose.disabled=state.busy||!can('view');
     if(validate) validate.disabled=state.busy||offline||!state.rows.length||!can('view');
-    if(execute) execute.disabled=state.busy||offline||!state.validated||Number(state.summary?.valid||0)<=0||!can('add');
+    if(execute) execute.disabled=state.busy||offline||!state.validated||Number(state.summary?.valid||0)<=0||!can('add')||!window.AppointmentHistoricalImportService?.canCustomerAdd?.();
     if(failed) failed.disabled=state.busy||!state.results.some(row=>row?.valid===false&&!row?.duplicate)||!can('export');
   }
   function setBusy(value){state.busy=Boolean(value);syncActions();}
   function resetValidation(){
     state.results=[];
     state.summary=null;
+    state.customerPlan=null;
+    state.customerPlanByRaw=new Map();
     state.displayLimit=PREVIEW_STEP;
     state.validated=false;
     state.imported=false;
@@ -185,7 +189,7 @@
   }
 
   function blankSummary(){
-    return {total:0,valid:0,errors:0,duplicates:0,matchedCustomers:0,unmatchedCustomers:0,reviewCustomers:0,cashAggregates:0,correctedDates:0};
+    return {total:0,valid:0,errors:0,duplicates:0,matchedCustomers:0,unmatchedCustomers:0,reviewCustomers:0,cashAggregates:0,correctedDates:0,newCustomers:0,newCustomerRows:0};
   }
   function mergeSummary(target,source){
     Object.keys(target).forEach(key=>target[key]+=Number(source?.[key]||0));
@@ -213,16 +217,26 @@
         setProgress(percent,t('appointmentDataImport.progress.validating','جاري فحص وربط البيانات...'),t('appointmentDataImport.progress.rowCount','{done} / {total}',{done,total}));
         renderSummary(state.summary);
       }
+      setProgress(73,t('appointmentDataImport.progress.customerPlan','جاري تجهيز خطة العملاء الجدد...'));
+      const plan=await window.AppointmentHistoricalImportService.planCustomerCreation(state.rows);
+      state.customerPlan=plan||{summary:{},rows:[]};
+      state.customerPlanByRaw=new Map((Array.isArray(plan?.rows)?plan.rows:[]).map(item=>[String(item?.source_customer_raw||'').trim(),item]));
+      state.summary.newCustomers=Number(plan?.summary?.newCustomers||0);
+      state.summary.newCustomerRows=Number(plan?.summary?.newCustomerSourceRows||0);
+      state.summary.reviewCustomers=Number(plan?.summary?.reviewSourceRows??state.summary.reviewCustomers??0);
       state.validated=true;
-      setProgress(72,t('appointmentDataImport.progress.ready','اكتمل الفحص والملف جاهز للمراجعة.'));
+      setProgress(78,t('appointmentDataImport.progress.ready','اكتمل الفحص والملف جاهز للمراجعة.'));
+      renderSummary(state.summary);
       renderPreview();
       const errors=Number(state.summary.errors||0);
       const duplicates=Number(state.summary.duplicates||0);
       const review=Number(state.summary.reviewCustomers||0);
+      const newCustomers=Number(state.summary.newCustomers||0);
+      const newCustomerRows=Number(state.summary.newCustomerRows||0);
       if(errors||review){
-        showStatus(t('appointmentDataImport.status.review','اكتمل الفحص: {valid} صف صالح، {errors} به أخطاء، {review} يحتاج مراجعة ربط عميل، و{duplicates} مكرر.',{valid:state.summary.valid,errors,review,duplicates}),'warning');
+        showStatus(t('appointmentDataImport.status.reviewWithNewCustomers','اكتمل الفحص: {valid} صف صالح، {newCustomers} عميل جديد سيتم إنشاؤه ({newCustomerRows} صف)، {review} صف يحتاج مراجعة، و{duplicates} مكرر.',{valid:state.summary.valid,newCustomers,newCustomerRows,review,duplicates}),'warning');
       }else{
-        showStatus(t('appointmentDataImport.status.ready','اكتمل الفحص: {valid} صف صالح و{duplicates} مكرر. يمكنك بدء الاستيراد.',{valid:state.summary.valid,duplicates}),'success');
+        showStatus(t('appointmentDataImport.status.readyWithNewCustomers','اكتمل الفحص: {valid} صف صالح، {newCustomers} عميل جديد سيتم إنشاؤه، و{duplicates} مكرر. يمكنك بدء الاستيراد.',{valid:state.summary.valid,newCustomers,duplicates}),'success');
       }
     }catch(error){
       state.validated=false;
@@ -245,10 +259,13 @@
     if(!raw)return '';
     return t(`appointmentDataImport.code.${raw}`,raw);
   }
-  function matchLabel(status,method,recordType){
+  function matchLabel(status,method,recordType,plan){
     if(recordType==='cash_aggregate')return t('appointmentDataImport.match.cash','بيانات نقدية مجمعة');
+    if(plan?.action==='create')return t('appointmentDataImport.match.created','عميل جديد سيتم إنشاؤه');
     if(status==='matched'&&method==='legacy_code')return t('appointmentDataImport.match.code','مطابق بكود العميل');
     if(status==='matched'&&method==='mobile')return t('appointmentDataImport.match.mobile','مطابق برقم الجوال');
+    if(status==='matched'&&method==='exact_unique_name')return t('appointmentDataImport.match.name','مطابق بالاسم المؤكد');
+    if(status==='matched'&&method==='historical_customer_map')return t('appointmentDataImport.match.created','عميل جديد تم إنشاؤه');
     if(status==='needs_review')return t('appointmentDataImport.match.review','يحتاج مراجعة');
     if(status==='not_applicable')return t('appointmentDataImport.match.notApplicable','غير منطبق');
     return t('appointmentDataImport.match.unmatched','لا يوجد عميل مطابق');
@@ -257,6 +274,8 @@
     if(row?.duplicate)return {label:t('appointmentDataImport.row.duplicate','مكرر'),cls:'is-info'};
     if(row?.valid===false)return {label:t('appointmentDataImport.row.error','خطأ'),cls:'is-danger'};
     const n=row?.normalized||{};
+    const plan=state.customerPlanByRaw.get(String(n.customerRaw||'').trim());
+    if(plan?.action==='create')return {label:t('appointmentDataImport.row.newCustomer','عميل جديد'),cls:'is-info'};
     if(n.recordType==='cash_aggregate')return {label:t('appointmentDataImport.row.cash','نقدي مجمع'),cls:'is-info'};
     if(n.customerMatchStatus==='needs_review')return {label:t('appointmentDataImport.row.review','مراجعة'),cls:'is-warning'};
     if(n.customerMatchStatus==='matched')return {label:t('appointmentDataImport.row.ready','جاهز'),cls:'is-success'};
@@ -276,7 +295,8 @@
       Unmatched:summary.unmatchedCustomers,
       Review:summary.reviewCustomers,
       Cash:summary.cashAggregates,
-      Corrected:summary.correctedDates
+      Corrected:summary.correctedDates,
+      NewCustomers:summary.newCustomers
     };
     Object.entries(values).forEach(([key,value])=>{const el=$(`appointmentHistoricalImportSummary${key}`);if(el)el.textContent=String(Number(value||0));});
   }
@@ -289,6 +309,7 @@
   function previewRowHtml(row){
     const n=row?.normalized||{};
     const descriptor=stateDescriptor(row);
+    const plan=state.customerPlanByRaw.get(String(n.customerRaw||'').trim());
     const matched=[n.matchedCustomerNumber,n.matchedCustomerName].filter(Boolean).join(' — ')||'—';
     const sourceIdentity=[n.customerCode?`#${n.customerCode}`:'',n.customerPhone||''].filter(Boolean).join(' / ')||'—';
     return `<tr>
@@ -299,7 +320,7 @@
       <td>${escapeHtml(text(n.itemNameDisplay))}</td>
       <td>${escapeHtml(text(n.vehicle))}</td>
       <td><div class="appointment-history-import-customer"><strong>${escapeHtml(text(n.customerRaw))}</strong><small>${escapeHtml(sourceIdentity)}</small></div></td>
-      <td><div class="appointment-history-import-customer"><strong>${escapeHtml(matchLabel(n.customerMatchStatus,n.customerMatchMethod,n.recordType))}</strong><small>${escapeHtml(matched)}</small></div></td>
+      <td><div class="appointment-history-import-customer"><strong>${escapeHtml(matchLabel(n.customerMatchStatus,n.customerMatchMethod,n.recordType,plan))}</strong><small>${escapeHtml(plan?.action==='create'?t('appointmentDataImport.match.createdHint','سيتم إنشاء العميل في سجل العملاء وربط الفاتورة تلقائيًا'):matched)}</small></div></td>
       <td class="numeric">${escapeHtml(money(n.unitPrice))}</td>
       <td class="numeric">${escapeHtml(money(n.quantity))}</td>
       <td class="numeric">${escapeHtml(money(n.discount))}</td>
@@ -355,7 +376,7 @@
           'المبيعات شامل الضريبة':source.salesInclusive??'',
           'المبيعات قبل الضريبة':source.salesBeforeTax??'',
           'طريقة السداد':source.paymentMethod??'',
-          'حالة ربط العميل':matchLabel(n.customerMatchStatus,n.customerMatchMethod,n.recordType),
+          'حالة ربط العميل':matchLabel(n.customerMatchStatus,n.customerMatchMethod,n.recordType,state.customerPlanByRaw.get(String(n.customerRaw||'').trim())),
           'العميل المطابق':[n.matchedCustomerNumber,n.matchedCustomerName].filter(Boolean).join(' — '),
           'الأخطاء':(result.errors||[]).map(codeLabel).join(' — '),
           'التحذيرات':(result.warnings||[]).map(codeLabel).join(' — ')
@@ -378,7 +399,7 @@
         ['PETATOE — رفع البيانات التاريخية'],
         ['القاعدة','التفاصيل'],
         ['الصنف غير المحدد','مقبول، ولا يتم إنشاء صنف جديد تلقائيًا.'],
-        ['العميل','الربط الآلي يتم بكود العميل أولًا ثم رقم الجوال. لا يتم الربط بالاسم وحده.'],
+        ['العميل','الربط الآلي: كود العميل، ثم الجوال، ثم الاسم المطابق الوحيد كبديل محمي. العملاء غير الموجودين فعليًا يتم إنشاؤهم وربط فواتيرهم تلقائيًا.'],
         ['الفاتورة بدون ضريبة','إذا كانت الضريبة 0 يمكن أن يتساوى المبلغ قبل الضريبة مع المبلغ شامل الضريبة.'],
         ['التاريخ','التاريخ هو المصدر الأساسي، وعمود الشهر للتحقق. تواريخ يوليو المؤكدة يتم تصحيحها بواسطة قاعدة الاستيراد المعتمدة.'],
         ['التكرار','إعادة رفع نفس الملف لا تكرر السطر المستورد مسبقًا.']
@@ -422,7 +443,9 @@
     const valid=Number(state.summary?.valid||0);
     const errors=Number(state.summary?.errors||0);
     const duplicates=Number(state.summary?.duplicates||0);
-    const message=t('appointmentDataImport.confirm.import','سيتم استيراد الصفوف الصالحة فقط. صالح: {valid}، أخطاء: {errors}، مكرر: {duplicates}. هل تريد المتابعة؟',{valid,errors,duplicates});
+    const newCustomers=Number(state.summary?.newCustomers||0);
+    const review=Number(state.summary?.reviewCustomers||0);
+    const message=t('appointmentDataImport.confirm.importWithCustomers','سيتم إنشاء {newCustomers} عميل جديد ثم استيراد الصفوف الصالحة وربطها. صالح: {valid}، يحتاج مراجعة: {review}، أخطاء: {errors}، مكرر: {duplicates}. هل تريد المتابعة؟',{newCustomers,valid,review,errors,duplicates});
     if(!window.confirm(message))return;
     setBusy(true);
     showStatus(t('appointmentDataImport.status.importing','جاري حفظ البيانات التاريخية... لا تغلق الصفحة.'),'info');
@@ -430,6 +453,8 @@
     try{
       const result=await window.AppointmentHistoricalImportService.importRows(state.file.name,state.fileSha256,state.rows);
       state.results=Array.isArray(result?.rows)?result.rows:state.results;
+      state.customerPlan=null;
+      state.customerPlanByRaw=new Map();
       state.summary={
         total:Number(result?.summary?.total||state.rows.length),
         valid:Number(result?.summary?.inserted||0),
@@ -439,14 +464,16 @@
         unmatchedCustomers:Number(result?.summary?.unmatchedCustomers||0),
         reviewCustomers:Number(result?.summary?.reviewCustomers||0),
         cashAggregates:Number(result?.summary?.cashAggregates||0),
-        correctedDates:Number(result?.summary?.correctedDates||0)
+        correctedDates:Number(result?.summary?.correctedDates||0),
+        newCustomers:Number(result?.summary?.createdCustomers||0),
+        newCustomerRows:Number(result?.summary?.mappedSourceIdentities||0)
       };
       state.imported=true;
       state.validated=true;
       renderSummary(state.summary);
       renderPreview();
       setProgress(100,t('appointmentDataImport.progress.complete','اكتمل الاستيراد.'),t('appointmentDataImport.progress.rowCount','{done} / {total}',{done:state.rows.length,total:state.rows.length}));
-      showStatus(t('appointmentDataImport.status.complete','اكتمل الاستيراد: تم إدخال {inserted} صف، تجاهل {duplicates} مكرر، ورفض {rejected} صف.',{inserted:result?.summary?.inserted||0,duplicates:result?.summary?.duplicates||0,rejected:result?.summary?.rejected||0}),'success');
+      showStatus(t('appointmentDataImport.status.completeWithCustomers','اكتمل الاستيراد: تم إنشاء {createdCustomers} عميل جديد، وإدخال {inserted} صف، وتجاهل {duplicates} مكرر، ورفض {rejected} صف.',{createdCustomers:result?.summary?.createdCustomers||0,inserted:result?.summary?.inserted||0,duplicates:result?.summary?.duplicates||0,rejected:result?.summary?.rejected||0}),'success');
     }catch(error){
       showStatus(error?.message||t('appointmentDataImport.error.import','تعذر تنفيذ استيراد البيانات القديمة.'),'error');
       setProgress(72,t('appointmentDataImport.progress.importFailed','تعذر إكمال الاستيراد. يمكنك المراجعة والمحاولة مرة أخرى.'));

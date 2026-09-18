@@ -24,6 +24,7 @@
 .appointment-history-import-summary .is-success strong{color:var(--success)}
 .appointment-history-import-summary .is-warning strong{color:var(--warning)}
 .appointment-history-import-summary .is-danger strong{color:var(--danger)}
+.appointment-history-import-summary .is-info strong{color:var(--primary)}
 .appointment-history-import-preview-panel{padding:0;overflow:hidden}
 .appointment-history-import-preview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border)}
 .appointment-history-import-preview-head h3{margin:0 0 4px}

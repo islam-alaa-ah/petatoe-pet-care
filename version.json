@@ -1,19 +1,19 @@
 {
-  "version": "18.56.121",
-  "build": 185721,
+  "version": "18.56.122",
+  "build": 185722,
   "forceUpdate": true,
   "releaseDate": "2026-09-19",
-  "title": "رفع البيانات التاريخية وربط العملاء — R44R38R20R2",
+  "title": "إنشاء العملاء الجدد وربط البيانات التاريخية — R44R38R20R11",
   "notes": [
-    "إضافة شاشة رفع البيانات داخل إدارة المواعيد لاستيراد بيانات المبيعات التاريخية من Excel بعد فحصها ومعاينتها.",
-    "ربط العملاء الحاليين بأمان باستخدام كود العميل أولًا ثم رقم الجوال، بدون ربط تلقائي بالاسم وحده.",
-    "دعم الصنف غير المحدد والفواتير بدون ضريبة والمرتجعات التاريخية وتصحيح تواريخ يوليو المؤكدة مع منع تكرار إعادة رفع نفس البيانات."
+    "إظهار العملاء الجدد في معاينة رفع البيانات قبل الاستيراد.",
+    "إنشاء العملاء غير الموجودين فعليًا داخل سجل العملاء الرسمي وربط فواتيرهم التاريخية تلقائيًا.",
+    "إبقاء حالات التعارض والخطأ للمراجعة بدون إنشاء عميل مكرر."
   ],
-  "cacheToken": "petatoe-pwa-18-56-121-appointment-historical-import-r44r38r20r2-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r20r2.title",
+  "cacheToken": "petatoe-pwa-18-56-122-historical-new-customer-import-r44r38r20r11-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r20r11.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r2.note1",
-    "pwa.update.release.r44r38r20r2.note2",
-    "pwa.update.release.r44r38r20r2.note3"
+    "pwa.update.release.r44r38r20r11.note1",
+    "pwa.update.release.r44r38r20r11.note2",
+    "pwa.update.release.r44r38r20r11.note3"
   ]
 }

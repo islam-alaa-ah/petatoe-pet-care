@@ -4,6 +4,7 @@
   const SCREEN='appointmentDataImport';
   const VALIDATE_RPC='validate_appointment_historical_sales_r44r38r20';
   const IMPORT_RPC='import_appointment_historical_sales_r44r38r20';
+  const CUSTOMER_PLAN_RPC='plan_appointment_historical_customer_creation_r44r38r20';
 
   const t=(key,fallback)=>window.PetatoeLocalization?.t?.(key)||fallback;
   const client=()=>{
@@ -11,6 +12,7 @@
     return window.customerSupabase;
   };
   const can=action=>Boolean(window.PermissionEngine?.can?.(SCREEN,action)??window.CustomerPermissions?.canScreen?.(SCREEN,action));
+  const canCustomerAdd=()=>Boolean(window.PermissionEngine?.can?.('customers','add')??window.CustomerPermissions?.canScreen?.('customers','add'));
   const requirePermission=action=>{
     if(can(action)) return true;
     throw new Error(t('appointmentDataImport.error.permission','You do not have permission for this action.'));
@@ -37,8 +39,18 @@
     return unwrap(data)||{summary:{},rows:[]};
   }
 
+  async function planCustomerCreation(rows){
+    requirePermission('view');
+    requireOnline();
+    if(!Array.isArray(rows)||rows.length===0) throw new Error(t('appointmentDataImport.error.noRows','There are no data rows to import.'));
+    const {data,error}=await client().rpc(CUSTOMER_PLAN_RPC,{p_rows:rows});
+    if(error) throw new Error(translatedError(error,t('appointmentDataImport.error.customerPlan','Unable to prepare the new-customer creation plan.')));
+    return unwrap(data)||{summary:{},rows:[]};
+  }
+
   async function importRows(fileName,fileSha256,rows){
     requirePermission('add');
+    if(!canCustomerAdd()) throw new Error(t('appointmentDataImport.error.customerAddPermission','Customer Add permission is required because this import can create new customers.'));
     requireOnline();
     if(!Array.isArray(rows)||rows.length===0) throw new Error(t('appointmentDataImport.error.noRows','There are no data rows to import.'));
     const {data,error}=await client().rpc(IMPORT_RPC,{
@@ -53,7 +65,9 @@
   window.AppointmentHistoricalImportService=Object.freeze({
     screenKey:SCREEN,
     validateRows,
+    planCustomerCreation,
     importRows,
-    can
+    can,
+    canCustomerAdd
   });
 })();
