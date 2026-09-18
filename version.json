@@ -1,19 +1,19 @@
 {
-  "version": "18.56.112",
-  "build": 185712,
+  "version": "18.56.113",
+  "build": 185713,
   "forceUpdate": true,
   "releaseDate": "2026-09-18",
-  "title": "إضافة كشف حساب محاسبي لـ SEA VIBE — R44R38R15",
+  "title": "ربط المصروفات التشغيلية بكشف حساب SEA VIBE — R44R38R15R1",
   "notes": [
-    "إضافة شاشة كشف حساب لاختيار أي حساب محاسبي وفترة وعرض الرصيد الافتتاحي والمدين والدائن والرصيد الختامي.",
-    "يعتمد الكشف على قيود اليومية المرحلة وسندات الخزينة المحاسبية فقط، مع استبعاد المسودات ودعم الحسابات الأب وفروعها.",
-    "لا تغيير في مسارات الحفظ أو Offline/Sync أو R44 Pruning، وتظل شاشة كشف الحساب بصلاحية عرض مستقلة."
+    "إضافة حركات المصروفات المرتبطة بحساباتها إلى كشف الحساب اعتمادًا على account_id المحفوظ لكل مصروف.",
+    "إظهار رسوم تصريح الإبحار على الحساب 5103 وباقي المصروفات المرتبطة ضمن المدين والأرصدة الافتتاحية والتراكمية والختامية.",
+    "لا تغيير في ربط الحسابات أو البيانات المخزنة أو مسارات الحفظ أو Offline/Sync أو الصلاحيات أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-112-sea-vibe-account-statement-r44r38r15-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r15.title",
+  "cacheToken": "petatoe-pwa-18-56-113-account-statement-expense-link-r44r38r15r1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r15r1.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r15.note1",
-    "pwa.update.release.r44r38r15.note2",
-    "pwa.update.release.r44r38r15.note3"
+    "pwa.update.release.r44r38r15r1.note1",
+    "pwa.update.release.r44r38r15r1.note2",
+    "pwa.update.release.r44r38r15r1.note3"
   ]
 }

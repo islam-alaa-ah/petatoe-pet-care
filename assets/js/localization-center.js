@@ -2287,6 +2287,7 @@
     ["seaVibe.accountStatement.sourceJournal","status","قيد يومية","Journal Entry"],
     ["seaVibe.accountStatement.sourceReceipt","status","سند قبض","Receipt Voucher"],
     ["seaVibe.accountStatement.sourcePayment","status","سند صرف","Payment Voucher"],
+    ["seaVibe.accountStatement.sourceExpense","status","مصروف","Expense"],
     ["seaVibe.accountStatement.empty","empty","لا توجد حركات على الحساب خلال الفترة المحددة.","No account movements were found in the selected period."],
     ["seaVibe.accountStatement.selectAccount","error","اختر الحساب المطلوب أولًا.","Select an account first."],
     ["seaVibe.accountStatement.invalidRange","error","تاريخ البداية يجب ألا يكون بعد تاريخ النهاية.","From Date cannot be after To Date."],
@@ -5272,6 +5273,10 @@
     ["pwa.update.release.r44r38r15.note1","note","إضافة شاشة كشف حساب لاختيار أي حساب محاسبي وفترة وعرض الرصيد الافتتاحي والمدين والدائن والرصيد الختامي.","Adds an account statement screen for selecting any accounting account and period, with opening, debit, credit, and closing balances."],
     ["pwa.update.release.r44r38r15.note2","note","يعتمد الكشف على قيود اليومية المرحلة وسندات الخزينة المحاسبية فقط، مع استبعاد المسودات ودعم الحسابات الأب وفروعها.","The statement uses posted journals and accounting treasury vouchers only, excludes drafts, and supports parent accounts with descendants."],
     ["pwa.update.release.r44r38r15.note3","note","لا تغيير في مسارات الحفظ أو Offline/Sync أو R44 Pruning، وتظل شاشة كشف الحساب بصلاحية عرض مستقلة.","No changes to write paths, Offline/Sync, or R44 Pruning; the account statement keeps an independent view permission."],
+    ["pwa.update.release.r44r38r15r1.title","title","ربط المصروفات التشغيلية بكشف حساب SEA VIBE — R44R38R15R1","Link Operational Expenses to SEA VIBE Account Statement — R44R38R15R1"],
+    ["pwa.update.release.r44r38r15r1.note1","note","إضافة الحركات الموجودة في sea_vibe_expenses إلى كشف الحساب اعتمادًا على account_id المحفوظ لكل مصروف.","Adds existing sea_vibe_expenses movements to the account statement using each expense's persisted account_id."],
+    ["pwa.update.release.r44r38r15r1.note2","note","إظهار مصروفات الحساب 5103 ورسوم تصريح الإبحار وباقي المصروفات المرتبطة ضمن المدين والرصيد الافتتاحي والتراكمي والختامي.","Shows account 5103 sailing-permit charges and other mapped expenses in debit, opening, running, and closing balances."],
+    ["pwa.update.release.r44r38r15r1.note3","note","لا تغيير في ربط الحسابات أو البيانات المخزنة أو مسارات الحفظ أو Offline/Sync أو الصلاحيات أو R44 Pruning.","No changes to account mappings, stored business data, write paths, Offline/Sync, permissions, or R44 Pruning."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');

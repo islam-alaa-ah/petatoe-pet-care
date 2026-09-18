@@ -377,6 +377,7 @@
     if(kind==='journal')return t('seaVibe.accountStatement.sourceJournal','Journal Entry');
     if(kind==='receipt_voucher')return t('seaVibe.accountStatement.sourceReceipt','Receipt Voucher');
     if(kind==='payment_voucher')return t('seaVibe.accountStatement.sourcePayment','Payment Voucher');
+    if(kind==='expense')return t('seaVibe.accountStatement.sourceExpense','Expense');
     return String(kind||'—');
   }
   function accountStatementAccountOptions(query='',currentId=''){

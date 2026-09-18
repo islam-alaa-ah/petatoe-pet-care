@@ -1,10 +1,10 @@
 {
   "manifestVersion": 1,
   "release": {
-    "version": "18.56.112",
-    "build": 185712,
+    "version": "18.56.113",
+    "build": 185713,
     "date": "2026-09-18",
-    "phase": "R44R38R15",
+    "phase": "R44R38R15R1",
     "releaseDate": "2026-09-18"
   },
   "scope": "PETATOE database migration inventory and fresh-deployment guard",
@@ -105,7 +105,8 @@
       "supabase/migrations/phase_p5_13_8_72_r44r37r2_geography_cache_localization_hotfix.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r37r2r1_geography_schema_compatibility_recovery.sql",
       "supabase/migrations/phase_p5_13_8_72_r44r38_full_enterprise_localization_certification.sql",
-      "supabase/migrations/phase_p5_13_8_72_r44r38r15_sea_vibe_account_statement.sql"
+      "supabase/migrations/phase_p5_13_8_72_r44r38r15_sea_vibe_account_statement.sql",
+      "supabase/migrations/phase_p5_13_8_72_r44r38r15r1_account_statement_expense_link_recovery.sql"
     ],
     "recentCertifiedTail": [
       "supabase/migrations/phase_p5_13_8_50_completion_workspace_request_service_identity.sql",
@@ -116,8 +117,8 @@
     ]
   },
   "inventoryStats": {
-    "sqlFileCount": 282,
-    "totalBytes": 4058958
+    "sqlFileCount": 283,
+    "totalBytes": 4071188
   },
   "orderingHazards": {
     "examples": [
@@ -1549,6 +1550,11 @@
       "path": "supabase/migrations/phase_p5_13_8_72_r44r38r15_sea_vibe_account_statement.sql",
       "sha256": "87dc4790d1c338a46ad765e607af5ec1b3d149c800d4064cdd2ec16bb76ab906",
       "bytes": 18647
+    },
+    {
+      "path": "supabase/migrations/phase_p5_13_8_72_r44r38r15r1_account_statement_expense_link_recovery.sql",
+      "sha256": "b37788a21732ff31d014b6b321d31b05cb5ab80df2d28e1b2cbd8ec0210b408f",
+      "bytes": 12230
     }
   ]
 }
