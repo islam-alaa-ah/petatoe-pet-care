@@ -1,19 +1,19 @@
 {
-  "version": "18.56.116",
-  "build": 185716,
+  "version": "18.56.117",
+  "build": 185717,
   "forceUpdate": true,
   "releaseDate": "2026-09-18",
-  "title": "تصنيف مصروفات الأصول والمعالجة الرأسمالية — R44R38R16R1",
+  "title": "ضريبة مصروف الأصل ومصدر الدفع — R44R38R17R1",
   "notes": [
-    "تصفية شاشة مصروف الأصل لعرض بنود الأصول المسموح بها فقط مع توضيح المعالجة المحاسبية لكل بند.",
-    "فصل المصروفات التشغيلية عن المصروفات الرأسمالية في شاشة الأصول، ولا تزيد قيمة الأصل إلا المصروفات الرأسمالية.",
-    "الحفاظ على المصروفات التاريخية وقيم الأصول الحالية مع بقاء Offline/Sync وRLS والصلاحيات وR44 Pruning دون تغيير."
+    "إضافة ضريبة VAT 15% أو بدون ضريبة لكل بند مصروف أصل مع اعتبار القيمة المدخلة شاملة الضريبة.",
+    "إضافة مصدر دفع لكل مصروف أصل مع جعل خزينة SEA VIBE 1101 هي الاختيار الافتراضي وإتاحة حساب ميزانية آخر.",
+    "احتساب الصافي فقط كمصروف أو كزيادة في قيمة الأصل، وترحيل الضريبة إلى 2101 وإجمالي الدفع إلى الحساب الدائن المحدد."
   ],
-  "cacheToken": "petatoe-pwa-18-56-116-asset-expense-classification-r44r38r16r1-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r16.title",
+  "cacheToken": "petatoe-pwa-18-56-117-asset-expense-vat-payment-r44r38r17r1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r17.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r16.note1",
-    "pwa.update.release.r44r38r16.note2",
-    "pwa.update.release.r44r38r16.note3"
+    "pwa.update.release.r44r38r17.note1",
+    "pwa.update.release.r44r38r17.note2",
+    "pwa.update.release.r44r38r17.note3"
   ]
 }

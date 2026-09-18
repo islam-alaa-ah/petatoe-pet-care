@@ -2049,6 +2049,15 @@
     ["seaVibe.expense.selectItem","option","اختر المصروف","Choose Expense"],
     ["seaVibe.expense.amount","label","القيمة","Amount"],
     ["seaVibe.expense.payment","label","طريقة الدفع","Payment Method"],
+    ["seaVibe.expense.tax","label","الضريبة","Tax"],
+    ["seaVibe.expense.taxNone","option","بدون ضريبة","No Tax"],
+    ["seaVibe.expense.taxVat15","option","ضريبة قيمة مضافة 15%","VAT 15%"],
+    ["seaVibe.expense.taxInclusiveHint","help","القيمة المدخلة شاملة الضريبة؛ 115 = 100 صافي + 15 ضريبة.","Entered amount is tax-inclusive; 115 = 100 net + 15 VAT."],
+    ["seaVibe.expense.paymentAccount","label","مصدر الدفع","Payment Source"],
+    ["seaVibe.expense.paymentAccountDefaultTreasury","help","الافتراضي خزينة SEA VIBE (1101).","Defaults to SEA VIBE Treasury (1101)."],
+    ["seaVibe.expense.paymentAccountRequired","error","اختر مصدر الدفع.","Select a payment source."],
+    ["seaVibe.expense.netAmount","label","صافي المصروف","Net Expense"],
+    ["seaVibe.expense.grossAmount","label","الإجمالي الشامل","Tax-Inclusive Total"],
     ["seaVibe.expense.attachment","label","مرفق اختياري","Optional Attachment"],
     ["seaVibe.expense.attachments","label","المرفقات","Attachments"],
     ["seaVibe.expense.saveAll","button","حفظ المصروفات","Save Expenses"],
@@ -5293,6 +5302,10 @@
     ["pwa.update.release.r44r38r16.note1","note","فصل بنود المصروفات العامة والرحلات والأصول بحيث تعرض شاشة مصروف الأصل البنود المخصصة للأصول فقط.","Separates general, trip, and asset expense items so asset-expense entry shows only asset-eligible items."],
     ["pwa.update.release.r44r38r16.note2","note","التفريق بين مصروف الأصل التشغيلي والمصروف الرأسمالي، ولا يرفع قيمة الأصل إلا المصروف الرأسمالي.","Distinguishes operating asset expense from capitalized expenditure; only capitalized expenditure increases asset value."],
     ["pwa.update.release.r44r38r16.note3","note","الحفاظ على مصروفات الأصول التاريخية كرأسمالية بدون تغيير قيم الأصول الحالية أو Offline/Sync أو RLS أو الصلاحيات.","Preserves historical asset expenses as capitalized without changing current asset values, Offline/Sync, RLS, or permissions."],
+    ["pwa.update.release.r44r38r17.title","title","ضريبة مصروف الأصل ومصدر الدفع — R44R38R17R1","Asset Expense VAT & Payment Source — R44R38R17R1"],
+    ["pwa.update.release.r44r38r17.note1","note","إضافة VAT 15% أو بدون ضريبة لكل بند مصروف أصل مع اعتبار القيمة المدخلة شاملة الضريبة.","Adds VAT 15% or no-tax selection per asset-expense line using tax-inclusive entered amounts."],
+    ["pwa.update.release.r44r38r17.note2","note","إضافة مصدر دفع لكل مصروف أصل، والافتراضي خزينة SEA VIBE 1101 مع إمكانية اختيار حساب ميزانية آخر.","Adds a payment-source account per asset expense, defaulting to SEA VIBE Treasury 1101 with another balance-sheet account selectable when needed."],
+    ["pwa.update.release.r44r38r17.note3","note","يبقى صافي المصروف فقط في الربحية وقيمة الأصل، وتذهب الضريبة إلى 2101 بينما يخرج الإجمالي من مصدر الدفع المحدد.","Keeps only net expense in profitability and asset value, posts VAT to 2101, and credits the selected payment source with the gross amount."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
