@@ -1,19 +1,19 @@
 {
-  "version": "18.56.118",
-  "build": 185718,
+  "version": "18.56.119",
+  "build": 185719,
   "forceUpdate": true,
   "releaseDate": "2026-09-18",
-  "title": "تحديث الأدوار: كابتن القارب ورئيس مجلس الإدارة — R44R38R18",
+  "title": "القوائم المالية لـ SEA VIBE — R44R38R19",
   "notes": [
-    "تغيير الاسم المعروض لدور مشرف المبيعات إلى كابتن القارب مع الحفاظ على المفتاح والصلاحيات والمستخدمين الحاليين.",
-    "إضافة دور رئيس مجلس الإدارة كدور مستقل بدون أي صلاحيات افتراضية حتى يتم ضبطها من شاشة إدارة الصلاحيات.",
-    "إضافة الدور الجديد إلى إنشاء المستخدم وإدارة الصلاحيات والإشعارات وواجهة manage-user بدون تغيير RLS أو Offline/Sync."
+    "إضافة ميزان المراجعة وقائمة الدخل وقائمة المركز المالي كمخرجات مستقلة مبنية على دفتر الأستاذ الموحد.",
+    "توحيد كشف الحساب والقوائم المالية على نفس مصدر القيود لمنع اختلاف الأرصدة أو تكرار الحركات.",
+    "الشاشات الجديدة بدون كروت ملخص، وبصلاحيات عرض مستقلة وبدون تغيير Offline/Sync أو R44 Pruning."
   ],
-  "cacheToken": "petatoe-pwa-18-56-118-roles-captain-chairman-r44r38r18-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r18.title",
+  "cacheToken": "petatoe-pwa-18-56-119-financial-statements-r44r38r19-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r19.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r18.note1",
-    "pwa.update.release.r44r38r18.note2",
-    "pwa.update.release.r44r38r18.note3"
+    "pwa.update.release.r44r38r19.note1",
+    "pwa.update.release.r44r38r19.note2",
+    "pwa.update.release.r44r38r19.note3"
   ]
 }

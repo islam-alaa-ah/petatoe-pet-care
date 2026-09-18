@@ -531,6 +531,26 @@
     if(String(fromDate)>String(toDate))throw new Error('SEA_VIBE_ACCOUNT_STATEMENT_DATE_RANGE_INVALID');
     return await unwrap(client().rpc('sea_vibe_account_statement_r44r38r15',{p_account_id:accountId,p_from_date:fromDate,p_to_date:toDate}),'SEA_VIBE_ACCOUNT_STATEMENT_LOAD_FAILED');
   }
+  async function loadTrialBalance(fromDate,toDate){
+    permission('seaVibeTrialBalance','view');
+    if(navigator.onLine===false)throw new Error('SEA_VIBE_FINANCIAL_REPORT_ONLINE_REQUIRED');
+    if(!fromDate||!toDate)throw new Error('SEA_VIBE_TRIAL_BALANCE_DATE_REQUIRED');
+    if(String(fromDate)>String(toDate))throw new Error('SEA_VIBE_TRIAL_BALANCE_DATE_RANGE_INVALID');
+    return await unwrap(client().rpc('sea_vibe_trial_balance_r44r38r19',{p_from_date:fromDate,p_to_date:toDate}),'SEA_VIBE_TRIAL_BALANCE_LOAD_FAILED');
+  }
+  async function loadIncomeStatement(fromDate,toDate){
+    permission('seaVibeIncomeStatement','view');
+    if(navigator.onLine===false)throw new Error('SEA_VIBE_FINANCIAL_REPORT_ONLINE_REQUIRED');
+    if(!fromDate||!toDate)throw new Error('SEA_VIBE_INCOME_STATEMENT_DATE_REQUIRED');
+    if(String(fromDate)>String(toDate))throw new Error('SEA_VIBE_INCOME_STATEMENT_DATE_RANGE_INVALID');
+    return await unwrap(client().rpc('sea_vibe_income_statement_r44r38r19',{p_from_date:fromDate,p_to_date:toDate}),'SEA_VIBE_INCOME_STATEMENT_LOAD_FAILED');
+  }
+  async function loadBalanceSheet(asOfDate){
+    permission('seaVibeBalanceSheet','view');
+    if(navigator.onLine===false)throw new Error('SEA_VIBE_FINANCIAL_REPORT_ONLINE_REQUIRED');
+    if(!asOfDate)throw new Error('SEA_VIBE_BALANCE_SHEET_DATE_REQUIRED');
+    return await unwrap(client().rpc('sea_vibe_balance_sheet_r44r38r19',{p_as_of_date:asOfDate}),'SEA_VIBE_BALANCE_SHEET_LOAD_FAILED');
+  }
 
   async function loadManualJournalContext(){
     permission('seaVibeJournals','view');
@@ -608,5 +628,5 @@
   window.KYUMOfflineQueue?.register?.('sea_vibe',handleQueuedMutation);
 
 
-  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,getTreasuryVoucher,saveTreasuryVoucher,signedTreasuryVoucherAttachment,loadAccountStatementAccounts,loadAccountStatement,loadManualJournalContext,saveManualJournal,signedAttachment});
+  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,getTreasuryVoucher,saveTreasuryVoucher,signedTreasuryVoucherAttachment,loadAccountStatementAccounts,loadAccountStatement,loadTrialBalance,loadIncomeStatement,loadBalanceSheet,loadManualJournalContext,saveManualJournal,signedAttachment});
 })();
