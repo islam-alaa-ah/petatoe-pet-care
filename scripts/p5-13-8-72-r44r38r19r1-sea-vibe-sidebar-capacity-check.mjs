@@ -1,0 +1,24 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'..');
+const read=rel=>fs.readFileSync(path.join(root,rel),'utf8');
+const version=JSON.parse(read('version.json'));
+const pkg=JSON.parse(read('package.json'));
+const manifest=JSON.parse(read('supabase/migration-manifest.json'));
+const html=read('index.html');
+const css=read('assets/css/petatoe-navigation-shell.css');
+const loc=read('assets/js/localization-center.js');
+const checks=[]; const check=(name,value)=>checks.push([name,Boolean(value)]);
+check('release version 18.56.120',version.version==='18.56.120'&&pkg.version==='18.56.120');
+check('release build 185720',version.build===185720);
+check('manifest release R44R38R19R1',manifest.release?.phase==='R44R38R19R1'&&manifest.release?.version==='18.56.120'&&manifest.release?.build===185720);
+check('all index cache tokens use 18.56.120',(()=>{const xs=[...html.matchAll(/[?&]v=(\d+\.\d+\.\d+)/g)].map(x=>x[1]);return xs.length>0&&xs.every(x=>x==='18.56.120')})());
+check('PWA current version updated',read('assets/js/pwa.js').includes('const CURRENT_VERSION = "18.56.120"'));
+check('service worker token updated',read('service-worker.js').includes('petatoe-pwa-18-56-120-sea-vibe-sidebar-capacity-r44r38r19r1'));
+check('balance sheet nav item exists',html.includes('data-view="seaVibeBalanceSheet"'));
+check('financial menu order preserved',html.indexOf('data-view="seaVibeAccountStatement"')<html.indexOf('data-view="seaVibeTrialBalance"')&&html.indexOf('data-view="seaVibeTrialBalance"')<html.indexOf('data-view="seaVibeIncomeStatement"')&&html.indexOf('data-view="seaVibeIncomeStatement"')<html.indexOf('data-view="seaVibeBalanceSheet"')&&html.indexOf('data-view="seaVibeBalanceSheet"')<html.indexOf('data-view="seaVibeReports"'));
+check('expanded SEA VIBE nav group no longer capped',css.includes('#mainSidebar .nav-group-content{')&&css.includes('max-height:none!important;'));
+check('collapsed nav group remains closed',css.includes('#mainSidebar .nav-group.is-collapsed .nav-group-content{')&&css.includes('max-height:0!important;'));
+check('release localization keys added',loc.includes('pwa.update.release.r44r38r19r1.title')&&loc.includes('pwa.update.release.r44r38r19r1.note3'));
+let passed=0; for(const [name,ok] of checks){console.log(`${ok?'PASS':'FAIL'}  ${name}`);if(ok)passed++;}
+console.log(`\nR44R38R19R1 certification: ${passed}/${checks.length} PASS`); if(passed!==checks.length)process.exit(1);

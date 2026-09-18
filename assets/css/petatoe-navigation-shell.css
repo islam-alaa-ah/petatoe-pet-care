@@ -613,7 +613,7 @@ html[data-theme="dark"] #appHeader.topbar{color:var(--pet-nav-text)!important}
   margin-inline-start:12px!important;
   padding:5px 3px 4px 12px!important;
   border-inline-start:1px solid rgba(35,136,255,.18)!important;
-  max-height:640px!important;
+  max-height:none!important;
 }
 #mainSidebar .nav-group.is-collapsed .nav-group-content{
   max-height:0!important;

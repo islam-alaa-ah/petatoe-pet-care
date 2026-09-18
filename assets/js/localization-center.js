@@ -5355,6 +5355,10 @@
     ["pwa.update.release.r44r38r19.note1","note","إضافة ميزان المراجعة وقائمة الدخل وقائمة المركز المالي كمخرجات مستقلة مبنية على دفتر الأستاذ الموحد.","Adds Trial Balance, Income Statement, and Statement of Financial Position as independent reports backed by the unified general ledger."],
     ["pwa.update.release.r44r38r19.note2","note","توحيد كشف الحساب والقوائم المالية على نفس مصدر القيود لمنع اختلاف الأرصدة أو تكرار الحركات.","Aligns the account statement and financial statements to the same ledger source to prevent balance divergence or duplicate movements."],
     ["pwa.update.release.r44r38r19.note3","note","الشاشات الجديدة بدون كروت ملخص، وبصلاحيات عرض مستقلة وبدون تغيير Offline/Sync أو R44 Pruning.","The new screens use direct report layouts without summary cards, with independent view permissions and no Offline/Sync or R44 Pruning changes."],
+    ["pwa.update.release.r44r38r19r1.title","title","إصلاح ظهور جميع شاشات SEA VIBE في القائمة — R44R38R19R1","Show All SEA VIBE Screens in Navigation — R44R38R19R1"],
+    ["pwa.update.release.r44r38r19r1.note1","note","إزالة حد الارتفاع الثابت من مجموعة SEA VIBE المفتوحة حتى لا يتم قص الشاشات الأخيرة بعد زيادة عدد عناصر القائمة.","Removes the fixed expanded-height cap from the SEA VIBE navigation group so newly added screens are not clipped."],
+    ["pwa.update.release.r44r38r19r1.note2","note","إظهار قائمة المركز المالي بعد قائمة الدخل مع الإبقاء على سلوك الطي والفتح الحالي للقائمة.","Keeps the Statement of Financial Position visible after the Income Statement while preserving the existing collapse behavior."],
+    ["pwa.update.release.r44r38r19r1.note3","note","تعديل واجهة فقط بدون تغيير الصلاحيات أو قاعدة البيانات أو Offline/Sync أو R44 Pruning.","Frontend-only change with no permissions, database, Offline/Sync, or R44 Pruning changes."],
   ];
   const routeFor=(key)=>{
     const value=String(key||'');
