@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   const $=id=>document.getElementById(id);
-  const state={exceptions:[],technicians:[],reportRows:[],summaryData:null,summaryMonthlyData:null,summaryContactData:null,summaryContactError:'',summaryTeams:[],summarySelectedTeams:new Set(),summaryTeamsInitialized:false,monthlyPaymentData:null,monthlyHistoricalPaymentData:null,monthlyPaymentLoaded:false,historicalInvoiceData:null,serviceData:null,servicePreviousData:null,serviceHistoricalData:null,serviceTeams:[],serviceSelectedTeams:new Set(),serviceTeamsInitialized:false,serviceLoaded:false};
+  const state={exceptions:[],technicians:[],reportRows:[],summaryData:null,summaryMonthlyData:null,summaryContactData:null,summaryContactError:'',summaryTeams:[],summarySelectedTeams:new Set(),summaryTeamsInitialized:false,monthlyPaymentData:null,monthlyHistoricalPaymentData:null,monthlyPaymentLoaded:false,historicalInvoiceData:null,serviceData:null,servicePreviousData:null,serviceHistoricalData:null,servicePreviousHistoricalData:null,serviceTeams:[],serviceSelectedTeams:new Set(),serviceTeamsInitialized:false,serviceLoaded:false};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const t=(key,fallback,vars={})=>{const value=window.PetatoeLocalization?.t?.(key,vars);return value&&!/^\[.+\]$/.test(value)?value:fallback};
   const lang=()=>window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en':'ar';
@@ -592,54 +592,181 @@
     if($('installationServiceSummaryExecutionHeader'))$('installationServiceSummaryExecutionHeader').textContent=labels.execution;
     if($('installationServiceKpiTopExecutionLabel'))$('installationServiceKpiTopExecutionLabel').textContent=labels.topExecution;
     if($('installationServiceTopExecutionTitle'))$('installationServiceTopExecutionTitle').textContent=labels.rankingExecution;
+    const operationalExecutionHeader=$('installationServiceOperationalExecutionHeader');
+    if(operationalExecutionHeader)operationalExecutionHeader.textContent=labels.execution;
+    const teamExecutionHeader=$('installationServiceTeamExecutionHeader');
+    if(teamExecutionHeader)teamExecutionHeader.textContent=labels.execution;
+    const currentComparisonHeader=$('installationServiceComparisonCurrentExecutionHeader');
+    if(currentComparisonHeader)currentComparisonHeader.textContent=historical?t('appointments.reports.services.currentInvoiceOccurrences','ظهور الفواتير الحالي'):t('appointments.reports.services.todayExecution','تنفيذ اليوم');
+    const previousComparisonHeader=$('installationServiceComparisonPreviousExecutionHeader');
+    if(previousComparisonHeader)previousComparisonHeader.textContent=historical?t('appointments.reports.services.previousInvoiceOccurrences','ظهور الفواتير السابق'):t('appointments.reports.services.previousExecution','تنفيذ السابق');
   }
-  function renderHistoricalOnlyUnsupportedSections(){
-    const unavailable=serviceUnavailableMessage();
-    for(const id of ['installationServiceFinanceMargin','installationServiceFinanceAverageCost','installationServiceFinanceAverageProfit','installationServiceOpsTimedOrders','installationServiceOpsAverageTotal','installationServiceOpsAverageTravel','installationServiceOpsAverageWait','installationServiceOpsAverageInstallation','installationServiceGeoRegions','installationServiceGeoCities','installationServiceGeoDistricts','installationServiceGeoRepresentatives']){
+  function historicalServiceMap(data){
+    const map=new Map();
+    for(const row of data?.rows||[]){
+      const name=String(row.serviceName||t('appointments.reports.services.unspecifiedService','Unspecified service'));
+      map.set(serviceOverviewKey(name),{
+        name,
+        invoiceOccurrences:Number(row.invoiceOccurrences||0),
+        sourceLines:Number(row.sourceLines||0),
+        quantity:Number(row.quantity||0),
+        salesBeforeTax:Number(row.salesBeforeTax||0),
+        taxAmount:Number(row.taxAmount||0),
+        discountAmount:Number(row.discountAmount||0),
+        salesInclusive:Number(row.salesInclusive||0),
+        averageUnitInclusive:row.averageUnitInclusive===null||row.averageUnitInclusive===undefined?null:Number(row.averageUnitInclusive)
+      });
+    }
+    return map;
+  }
+  function historicalTeamSummary(data){
+    const grouped=new Map();
+    for(const row of data?.byTeam||[]){
+      const key=String(row.teamId||row.teamKey||'unassigned');
+      let item=grouped.get(key);
+      if(!item){
+        item={
+          id:row.teamId||'',
+          name:row.teamName||t('appointments.reports.services.unassigned','Unassigned'),
+          services:new Set(),
+          invoiceOccurrences:0,
+          quantity:0,
+          salesInclusive:0
+        };
+        grouped.set(key,item);
+      }
+      item.services.add(String(row.serviceKey||row.serviceName||''));
+      item.invoiceOccurrences+=Number(row.invoiceOccurrences||0);
+      item.quantity+=Number(row.quantity||0);
+      item.salesInclusive+=Number(row.salesInclusive||0);
+    }
+    return [...grouped.values()].map(item=>({
+      ...item,
+      distinctServices:item.services.size
+    })).sort((a,b)=>b.salesInclusive-a.salesInclusive||b.quantity-a.quantity||String(a.name).localeCompare(String(b.name),lang()==='en'?'en':'ar'));
+  }
+  function historicalChange(current,previous){
+    const c=Number(current||0),p=Number(previous||0);
+    if(!p)return c?100:0;
+    return Math.round(((c-p)/Math.abs(p))*1000)/10;
+  }
+  function renderHistoricalFinancialCompatible(data){
+    const summary=data?.summary||{},rows=data?.rows||[];
+    $('installationServiceFinanceMargin').textContent='—';
+    $('installationServiceFinanceAveragePrice').textContent=summary.quantity?money(Number(summary.salesInclusive||0)/Number(summary.quantity||1)):'—';
+    $('installationServiceFinanceAverageCost').textContent='—';
+    $('installationServiceFinanceAverageProfit').textContent='—';
+
+    const body=$('installationServiceFinancialBody');
+    if(body){
+      body.innerHTML=rows.length?rows.map(r=>`<tr>
+        <td><strong>${esc(serviceLabel({name:r.serviceName}))}</strong></td>
+        <td>${money(r.salesInclusive||0)}</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td>${r.averageUnitInclusive===null||r.averageUnitInclusive===undefined?'—':money(r.averageUnitInclusive)}</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>`).join(''):empty(9);
+    }
+
+    $('installationServiceTopMarginList').innerHTML=serviceUnavailableRanking();
+    $('installationServiceTopExpenseList').innerHTML=serviceUnavailableRanking();
+    $('installationServiceLowMarginList').innerHTML=serviceUnavailableRanking();
+  }
+  function renderHistoricalOperationalCompatible(data){
+    const rows=data?.rows||[];
+    const body=$('installationServiceOperationalBody');
+    if(body){
+      body.innerHTML=rows.length?rows.map(r=>`<tr>
+        <td><strong>${esc(serviceLabel({name:r.serviceName}))}</strong></td>
+        <td>${num(r.invoiceOccurrences||0)}</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>`).join(''):empty(8);
+    }
+
+    const teams=historicalTeamSummary(data),teamBody=$('installationServiceTeamOpsBody');
+    if(teamBody){
+      teamBody.innerHTML=teams.length?teams.map(team=>`<tr>
+        <td><strong>${esc(team.name)}</strong></td>
+        <td>${num(team.distinctServices)}</td>
+        <td>${num(team.invoiceOccurrences)}</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>`).join(''):empty(5);
+    }
+
+    for(const id of ['installationServiceOpsTimedOrders','installationServiceOpsAverageTotal','installationServiceOpsAverageTravel','installationServiceOpsAverageWait','installationServiceOpsAverageInstallation']){
       if($(id))$(id).textContent='—';
     }
-    if($('installationServiceFinanceAveragePrice'))$('installationServiceFinanceAveragePrice').textContent=money(state.serviceHistoricalData?.summary?.quantity?Number(state.serviceHistoricalData.summary.salesInclusive||0)/Number(state.serviceHistoricalData.summary.quantity||1):0);
-    serviceUnavailableTable('installationServiceFinancialBody',9);
-    serviceUnavailableTable('installationServiceOperationalBody',8);
-    serviceUnavailableTable('installationServiceTeamOpsBody',5);
+    $('installationServiceSlowestList').innerHTML=serviceUnavailableRanking();
+    $('installationServiceFastestList').innerHTML=serviceUnavailableRanking();
+    if($('installationServiceOperationalFilterLabel'))$('installationServiceOperationalFilterLabel').textContent=serviceFilterLabel();
+  }
+  function renderHistoricalComparison(currentData,previousData){
+    const current=historicalServiceMap(currentData),previous=historicalServiceMap(previousData);
+    const keys=new Set([...current.keys(),...previous.keys()]);
+    const rows=[...keys].map(key=>{
+      const c=current.get(key)||{name:previous.get(key)?.name||'',invoiceOccurrences:0,quantity:0,salesInclusive:0};
+      const p=previous.get(key)||{name:c.name,invoiceOccurrences:0,quantity:0,salesInclusive:0};
+      return {
+        name:c.name||p.name,
+        executions:c.invoiceOccurrences,
+        previousExecutions:p.invoiceOccurrences,
+        executionChange:historicalChange(c.invoiceOccurrences,p.invoiceOccurrences),
+        quantity:c.quantity,
+        previousQuantity:p.quantity,
+        quantityChange:historicalChange(c.quantity,p.quantity),
+        value:c.salesInclusive,
+        previousValue:p.salesInclusive,
+        revenueChange:historicalChange(c.salesInclusive,p.salesInclusive)
+      };
+    }).sort((a,b)=>b.value-a.value||b.quantity-a.quantity||String(a.name).localeCompare(String(b.name),lang()==='en'?'en':'ar'));
+
+    const body=$('installationServiceComparisonBody');
+    if(body){
+      body.innerHTML=rows.length?rows.map(r=>`<tr>
+        <td><strong>${esc(serviceLabel(r))}</strong></td>
+        <td>${num(r.executions)}</td>
+        <td>${num(r.previousExecutions)}</td>
+        <td>${changeBadge(r.executionChange)}</td>
+        <td>${num(r.quantity)}</td>
+        <td>${num(r.previousQuantity)}</td>
+        <td>${changeBadge(r.quantityChange)}</td>
+        <td>${money(r.value)}</td>
+        <td>${money(r.previousValue)}</td>
+        <td>${changeBadge(r.revenueChange)}</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>`).join(''):empty(13);
+    }
+    if($('installationServiceComparisonLabel'))$('installationServiceComparisonLabel').textContent=serviceFilterLabel();
+  }
+  function renderHistoricalGeographyUnavailable(){
+    for(const id of ['installationServiceGeoRegions','installationServiceGeoCities','installationServiceGeoDistricts','installationServiceGeoRepresentatives']){
+      if($(id))$(id).textContent='—';
+    }
     serviceUnavailableTable('installationServiceRegionBody',7);
     serviceUnavailableTable('installationServiceCityBody',7);
     serviceUnavailableTable('installationServiceDistrictBody',7);
     serviceUnavailableTable('installationServiceRepresentativeBody',7);
-    serviceUnavailableTable('installationServiceComparisonBody',13);
-    for(const id of ['installationServiceTopMarginList','installationServiceTopExpenseList','installationServiceLowMarginList','installationServiceSlowestList','installationServiceFastestList']){
-      if($(id))$(id).innerHTML=serviceUnavailableRanking();
-    }
-    if($('installationServiceOperationalFilterLabel'))$('installationServiceOperationalFilterLabel').textContent=serviceFilterLabel();
     if($('installationServiceGeographicFilterLabel'))$('installationServiceGeographicFilterLabel').textContent=serviceFilterLabel();
-    if($('installationServiceComparisonLabel'))$('installationServiceComparisonLabel').textContent=unavailable;
   }
-  function validMinutes(a,b){if(!a||!b)return null;const x=new Date(a).getTime(),y=new Date(b).getTime(),m=(y-x)/60000;return Number.isFinite(m)&&m>=0?m:null}
-  function avgMinutes(values){const clean=(values||[]).filter(Number.isFinite);return clean.length?Math.round(clean.reduce((a,b)=>a+b,0)/clean.length):null}
-  function buildServiceOperational(data){
-    const serviceMap=new Map(),teamMap=new Map(),overall={total:[],travel:[],siteWait:[],installation:[],mapOpen:[],samples:0};
-    for(const group of data.executionGroups||[]){
-      for(const order of group.orders||[]){
-        const stages={mapOpen:validMinutes(order.onRouteAt,order.mapOpenedAt),travel:validMinutes(order.onRouteAt,order.arrivedAt),siteWait:validMinutes(order.arrivedAt,order.startedAt),installation:validMinutes(order.startedAt,order.completedAt),total:validMinutes(order.onRouteAt,order.completedAt)};
-        const serviceNames=[...new Set((order.services||[]).map(x=>String(x.name||t('appointments.reports.services.unspecifiedService','Unspecified service'))))];
-        if(Number.isFinite(stages.total)){overall.samples++;overall.total.push(stages.total)}
-        for(const key of ['mapOpen','travel','siteWait','installation'])if(Number.isFinite(stages[key]))overall[key].push(stages[key]);
-        for(const name of serviceNames){
-          let row=serviceMap.get(name);if(!row){row={name,executions:0,timedOrders:new Set(),total:[],travel:[],siteWait:[],installation:[],mapOpen:[],teams:new Map()};serviceMap.set(name,row)}
-          row.executions++;
-          if(Number.isFinite(stages.total))row.timedOrders.add(order.entryKey||order.requestId||order.requestNumber);
-          for(const key of ['total','travel','siteWait','installation','mapOpen'])if(Number.isFinite(stages[key]))row[key].push(stages[key]);
-          const tkey=String(group.id||order.teamId||'unassigned');let team=row.teams.get(tkey);if(!team){team={id:tkey,name:group.name||order.teamName||t('appointments.reports.services.unassigned','Unassigned'),executions:0,total:[]};row.teams.set(tkey,team)}team.executions++;if(Number.isFinite(stages.total))team.total.push(stages.total);
-          let trow=teamMap.get(tkey);if(!trow){trow={id:tkey,name:group.name||order.teamName||t('appointments.reports.services.unassigned','Unassigned'),executions:0,total:[],services:new Set()};teamMap.set(tkey,trow)}trow.executions++;trow.services.add(name);if(Number.isFinite(stages.total))trow.total.push(stages.total);
-        }
-      }
-    }
-    const rows=[...serviceMap.values()].map(r=>({name:r.name,executions:r.executions,timedOrders:r.timedOrders.size,coverage:r.executions?Math.round(r.timedOrders.size/r.executions*100):0,averageTotal:avgMinutes(r.total),averageTravel:avgMinutes(r.travel),averageSiteWait:avgMinutes(r.siteWait),averageInstallation:avgMinutes(r.installation),averageMapOpen:avgMinutes(r.mapOpen),teams:[...r.teams.values()].map(t=>({...t,averageTotal:avgMinutes(t.total)})).sort((a,b)=>(a.averageTotal??Infinity)-(b.averageTotal??Infinity))})).sort((a,b)=>(b.timedOrders-a.timedOrders)||(b.executions-a.executions)||a.name.localeCompare(b.name,lang()==='en'?'en':'ar'));
-    const teams=[...teamMap.values()].map(t=>({id:t.id,name:t.name,executions:t.executions,services:t.services.size,timed:t.total.length,averageTotal:avgMinutes(t.total)})).sort((a,b)=>(a.averageTotal??Infinity)-(b.averageTotal??Infinity));
-    const timed=rows.filter(r=>Number.isFinite(r.averageTotal));
-    return {rows,teams,summary:{timedOrders:overall.samples,averageTotal:avgMinutes(overall.total),averageTravel:avgMinutes(overall.travel),averageSiteWait:avgMinutes(overall.siteWait),averageInstallation:avgMinutes(overall.installation)},slowest:timed.slice().sort((a,b)=>b.averageTotal-a.averageTotal),fastest:timed.slice().sort((a,b)=>a.averageTotal-b.averageTotal)};
+  function renderHistoricalOnlyCompatibleSections(data,previousHistoricalData){
+    renderHistoricalFinancialCompatible(data);
+    renderHistoricalOperationalCompatible(data);
+    renderHistoricalGeographyUnavailable();
+    renderHistoricalComparison(data,previousHistoricalData||{rows:[]});
   }
-  function durationLabel(v){if(!Number.isFinite(v))return '—';const h=Math.floor(v/60),m=Math.round(v%60);return h?t('appointments.reports.services.duration.hoursMinutes','{hours} h {minutes} min',{hours:num(h),minutes:num(m)}):t('appointments.reports.services.duration.minutes','{minutes} min',{minutes:num(m)})}
+
   function renderServiceOperational(data){
     const op=buildServiceOperational(data),s=op.summary;
     $('installationServiceOpsTimedOrders').textContent=num(s.timedOrders);$('installationServiceOpsAverageTotal').textContent=durationLabel(s.averageTotal);$('installationServiceOpsAverageTravel').textContent=durationLabel(s.averageTravel);$('installationServiceOpsAverageWait').textContent=durationLabel(s.averageSiteWait);$('installationServiceOpsAverageInstallation').textContent=durationLabel(s.averageInstallation);
@@ -767,7 +894,7 @@
     $('installationServiceFinancialFilterLabel').textContent=serviceFilterLabel();
 
     if(historicalOnly){
-      renderHistoricalOnlyUnsupportedSections();
+      renderHistoricalOnlyCompatibleSections(historical,state.servicePreviousHistoricalData);
     }else{
       $('installationServiceFinanceMargin').textContent=`${analytics.totals.margin}%`;
       $('installationServiceFinanceAveragePrice').textContent=money(analytics.totals.average);
@@ -782,7 +909,7 @@
       renderServiceGeographic(data,state.servicePreviousData);
     }
   }
-  async function loadServiceAnalytics(){updateServiceDayNav();const box=$('installationServiceAnalyticsStatus');status(box,t('appointments.reports.services.loading','Preparing service analysis...'));try{const allTeamIds=new Set(state.serviceTeams.map(x=>String(x.id))),explicitTeamFilter=state.serviceTeamsInitialized&&state.serviceSelectedTeams.size!==allTeamIds.size,period=servicePeriod(),baseFilters={representativeId:$('installationServiceRepresentative')?.value||'',teamIds:[...state.serviceSelectedTeams],teamFilterApplied:explicitTeamFilter};const currentFilters={...baseFilters,dateFrom:period.dateFrom,dateTo:period.dateTo},previousFilters=period.previous?{...baseFilters,dateFrom:period.previous.dateFrom,dateTo:period.previous.dateTo}:null;const historicalPromise=window.InstallationsServiceSafe.historicalServiceSalesAnalysis(currentFilters).then(data=>({data,error:''})).catch(error=>({data:null,error:uiMessage(error?.message,t('appointments.reports.services.loadError','Unable to prepare service analysis.'))}));const [data,previousData,historicalResult]=await Promise.all([window.InstallationsServiceSafe.installationSummaryReport(currentFilters),previousFilters?window.InstallationsServiceSafe.installationSummaryReport(previousFilters):Promise.resolve({rows:[],executionGroups:[],summary:{teams:0,visits:0,quantity:0,value:0,expenses:0,profit:0,average:0},teams:[],representatives:[]}),historicalPromise]);state.serviceData=data;state.servicePreviousData=previousData;state.serviceHistoricalData=historicalResult.data;state.serviceLoaded=true;fillServiceSelectors(data,historicalResult.data);renderServiceAnalytics(data,historicalResult.data);if(historicalResult.data)renderHistoricalServiceSales(historicalResult.data);else{renderHistoricalServiceSales({summary:{},rows:[]});status($('installationServiceHistoricalStatus'),historicalResult.error,'error')}status(box,window.InstallationsService?.getReadStatusMessage?.('summaryReport')||window.InstallationsService?.getReadStatusMessage?.('historicalServiceSalesAnalysis')||'')}catch(e){status(box,uiMessage(e.message,t('appointments.reports.services.loadError','Unable to prepare service analysis.')),'error')}}
+  async function loadServiceAnalytics(){updateServiceDayNav();const box=$('installationServiceAnalyticsStatus');status(box,t('appointments.reports.services.loading','Preparing service analysis...'));try{const allTeamIds=new Set(state.serviceTeams.map(x=>String(x.id))),explicitTeamFilter=state.serviceTeamsInitialized&&state.serviceSelectedTeams.size!==allTeamIds.size,period=servicePeriod(),baseFilters={representativeId:$('installationServiceRepresentative')?.value||'',teamIds:[...state.serviceSelectedTeams],teamFilterApplied:explicitTeamFilter};const currentFilters={...baseFilters,dateFrom:period.dateFrom,dateTo:period.dateTo},previousFilters=period.previous?{...baseFilters,dateFrom:period.previous.dateFrom,dateTo:period.previous.dateTo}:null;const historicalPromise=window.InstallationsServiceSafe.historicalServiceSalesAnalysis(currentFilters).then(data=>({data,error:''})).catch(error=>({data:null,error:uiMessage(error?.message,t('appointments.reports.services.loadError','Unable to prepare service analysis.'))})),previousHistoricalPromise=previousFilters?window.InstallationsServiceSafe.historicalServiceSalesAnalysis(previousFilters).then(data=>({data,error:''})).catch(error=>({data:null,error:uiMessage(error?.message,t('appointments.reports.services.loadError','Unable to prepare service analysis.'))})):Promise.resolve({data:{rows:[],byTeam:[],summary:{}},error:''});const [data,previousData,historicalResult,previousHistoricalResult]=await Promise.all([window.InstallationsServiceSafe.installationSummaryReport(currentFilters),previousFilters?window.InstallationsServiceSafe.installationSummaryReport(previousFilters):Promise.resolve({rows:[],executionGroups:[],summary:{teams:0,visits:0,quantity:0,value:0,expenses:0,profit:0,average:0},teams:[],representatives:[]}),historicalPromise,previousHistoricalPromise]);state.serviceData=data;state.servicePreviousData=previousData;state.serviceHistoricalData=historicalResult.data;state.servicePreviousHistoricalData=previousHistoricalResult.data;state.serviceLoaded=true;fillServiceSelectors(data,historicalResult.data);renderServiceAnalytics(data,historicalResult.data);if(historicalResult.data)renderHistoricalServiceSales(historicalResult.data);else{renderHistoricalServiceSales({summary:{},rows:[]});status($('installationServiceHistoricalStatus'),historicalResult.error,'error')}status(box,window.InstallationsService?.getReadStatusMessage?.('summaryReport')||window.InstallationsService?.getReadStatusMessage?.('historicalServiceSalesAnalysis')||'')}catch(e){status(box,uiMessage(e.message,t('appointments.reports.services.loadError','Unable to prepare service analysis.')),'error')}}
 
   function exportCsv(){
     const rows=state.reportRows;if(!rows.length)return;
