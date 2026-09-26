@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   const $=id=>document.getElementById(id);
-  const state={exceptions:[],technicians:[],reportRows:[],summaryData:null,summaryMonthlyData:null,summaryContactData:null,summaryContactError:'',summaryTeams:[],summarySelectedTeams:new Set(),summaryTeamsInitialized:false,monthlyPaymentData:null,monthlyHistoricalPaymentData:null,monthlyPaymentLoaded:false,serviceData:null,servicePreviousData:null,serviceTeams:[],serviceSelectedTeams:new Set(),serviceTeamsInitialized:false,serviceLoaded:false};
+  const state={exceptions:[],technicians:[],reportRows:[],summaryData:null,summaryMonthlyData:null,summaryContactData:null,summaryContactError:'',summaryTeams:[],summarySelectedTeams:new Set(),summaryTeamsInitialized:false,monthlyPaymentData:null,monthlyHistoricalPaymentData:null,monthlyPaymentLoaded:false,historicalInvoiceData:null,serviceData:null,servicePreviousData:null,serviceTeams:[],serviceSelectedTeams:new Set(),serviceTeamsInitialized:false,serviceLoaded:false};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const t=(key,fallback,vars={})=>{const value=window.PetatoeLocalization?.t?.(key,vars);return value&&!/^\[.+\]$/.test(value)?value:fallback};
   const lang=()=>window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en':'ar';
@@ -84,10 +84,55 @@
   }
   async function loadReports(){
     const box=$('installationReportsStatus');status(box,t('appointments.reports.loading','Preparing financial and operational reports...'));
-    try{const data=await window.InstallationsServiceSafe.operationalReport({dateFrom:$('installationReportsDateFrom')?.value||'',dateTo:$('installationReportsDateTo')?.value||'',representativeId:$('installationReportsRepresentativeFilter')?.value||'',teamId:$('installationReportsTeamFilter')?.value||'',technicianId:$('installationReportsTechnicianFilter')?.value||'',status:$('installationReportsStatusFilter')?.value||''});state.reportRows=data.rows;state.reportData=data;state.technicians=data.technicians;fillTechs();fillReportOptions(data);renderReport(data);status(box,window.InstallationsService?.getReadStatusMessage?.('operationalReport')||'');}
+    try{
+      const filters={dateFrom:$('installationReportsDateFrom')?.value||'',dateTo:$('installationReportsDateTo')?.value||'',representativeId:$('installationReportsRepresentativeFilter')?.value||'',teamId:$('installationReportsTeamFilter')?.value||'',technicianId:$('installationReportsTechnicianFilter')?.value||'',status:$('installationReportsStatusFilter')?.value||''};
+      const [data,historical]=await Promise.all([
+        window.InstallationsServiceSafe.operationalReport(filters),
+        window.InstallationsServiceSafe.historicalInvoiceReport(filters)
+      ]);
+      state.reportRows=data.rows;
+      state.reportData=data;
+      state.historicalInvoiceData=historical;
+      state.technicians=data.technicians;
+      fillTechs();
+      fillReportOptions(data);
+      renderReport({...data,invoiceRows:combinedInvoiceRows(data,historical),historicalInvoiceData:historical});
+      const cacheStatus=window.InstallationsService?.getReadStatusMessage?.('operationalReport')||window.InstallationsService?.getReadStatusMessage?.('historicalInvoiceReport')||'';
+      const suppressed=historical?.suppressedByUnsupportedOperationalFilters?t('appointments.reports.invoices.operationalFilterHistoricalSuppressed','When representative, technician, or appointment-status filters are active, only current operational data is shown because historical data does not contain those fields.'):'';
+      status(box,[cacheStatus,suppressed].filter(Boolean).join(' — '));
+    }
     catch(e){status(box,uiMessage(e.message,t('appointments.reports.loadError','Unable to prepare appointment reports.')),'error');}
   }
   const empty=(cols,msg=t('appointments.reports.empty','No data for the selected period.'))=>`<tr><td colspan="${cols}" class="empty-cell">${esc(msg)}</td></tr>`;
+  function combinedInvoiceRows(data,historical){
+    const current=(data?.rows||[]).map(row=>({...row,isHistorical:false,sourceType:'operational'}));
+    const historicalRows=(historical?.rows||[]).map(row=>({
+      id:row.id||'',
+      sourceType:'historical',
+      isHistorical:true,
+      requestNumber:t('appointments.reports.invoices.historicalRequest','Historical data'),
+      invoiceNumber:row.invoiceNumber||'—',
+      customerName:row.customerName||t('appointments.reports.summary.unknownCustomer','Unknown customer'),
+      representativeName:'—',
+      teamId:row.teamId||'',
+      teamName:row.teamName||'',
+      invoiceDate:row.invoiceDate||'',
+      isInvoiced:true,
+      revenue:Number(row.invoiceAmount||0),
+      expenses:null,
+      profit:null,
+      historicalItems:Array.isArray(row.items)?row.items:[],
+      historicalPaymentMethods:Array.isArray(row.paymentMethods)?row.paymentMethods:[],
+      historicalSourceLines:Number(row.sourceLines||0)
+    }));
+    return [...current,...historicalRows].sort((a,b)=>{
+      const dateDiff=String(b.invoiceDate||b.scheduledDate||'').localeCompare(String(a.invoiceDate||a.scheduledDate||''));
+      if(dateDiff)return dateDiff;
+      return String(a.invoiceNumber||a.requestNumber||'').localeCompare(String(b.invoiceNumber||b.requestNumber||''),lang()==='en'?'en':'ar');
+    });
+  }
+  const invoiceMoney=value=>value===null||value===undefined?'—':money(value);
+
   function renderReport(data){
     const s=data.summary;
     $('installationReportsKpiTotal').textContent=num(s.total);$('installationReportsKpiCompleted').textContent=num(s.completed);$('installationReportsKpiRevenue').textContent=money(s.revenue);$('installationReportsKpiExpenses').textContent=money(s.expenses);$('installationReportsKpiProfit').textContent=money(s.profit);$('installationReportsKpiMargin').textContent=`${s.margin}%`;$('installationReportsKpiCompletionRate').textContent=`${s.completionRate}%`;$('installationReportsKpiRevisitRate').textContent=`${s.revisitRate}%`;$('installationReportsKpiDuration').textContent=s.averageDurationMinutes==null?'—':t('appointments.reports.durationMinutes','{count} min',{count:num(s.averageDurationMinutes)});
@@ -95,7 +140,8 @@
     $('installationRepresentativeReportBody').innerHTML=data.byRepresentative.length?data.byRepresentative.map(r=>`<tr><td>${esc(r.name)}</td><td>${num(r.total)}</td><td>${num(r.completed)}</td><td>${money(r.revenue)}</td><td>${money(r.expenses)}</td><td>${money(r.profit)}</td><td>${money(r.averageOrderValue)}</td><td>${r.completionRate}%</td></tr>`).join(''):empty(8);
     $('installationTeamReportBody').innerHTML=data.byTeam.length?data.byTeam.map(r=>`<tr><td>${esc(r.name)}</td><td>${num(r.total)}</td><td>${num(r.completed)}</td><td>${money(r.revenue)}</td><td>${money(r.expenses)}</td><td>${money(r.profit)}</td><td>${r.averageDurationMinutes==null?'—':t('appointments.reports.durationMinutes','{count} min',{count:num(r.averageDurationMinutes)})}</td><td>${num(r.revisits)}</td><td>${r.completionRate}%</td></tr>`).join(''):empty(9);
     $('installationTechnicianReportBody').innerHTML=data.byTechnician.length?data.byTechnician.map(r=>`<tr><td>${esc(r.name)}</td><td>${num(r.total)}</td><td>${num(r.completed)}</td><td>${money(r.revenue)}</td><td>${money(r.expenses)}</td><td>${money(r.profit)}</td><td>${num(r.exceptions)}</td><td>${num(r.revisits)}</td><td>${r.completionRate}%</td></tr>`).join(''):empty(9);
-    $('installationInvoiceReportBody').innerHTML=data.rows.length?data.rows.map(r=>`<tr><td>${esc(r.requestNumber)}</td><td>${esc(r.invoiceNumber||'—')}</td><td>${esc(r.customerName)}</td><td>${esc(r.representativeName)}</td><td>${money(r.revenue)}</td><td>${money(r.expenses)}</td><td>${money(r.profit)}</td><td>${fmt(r.invoiceDate)}</td><td><span class="status-badge">${esc(r.isInvoiced?t('appointments.reports.invoices.invoiced','Invoiced'):t('appointments.reports.invoices.notInvoiced','Not invoiced'))}</span></td></tr>`).join(''):empty(9);
+    const invoiceRows=data.invoiceRows||data.rows||[];
+    $('installationInvoiceReportBody').innerHTML=invoiceRows.length?invoiceRows.map(r=>{const historical=Boolean(r.isHistorical),statusText=historical?t('appointments.reports.invoices.historicalStatus','Historical'):(r.isInvoiced?t('appointments.reports.invoices.invoiced','Invoiced'):t('appointments.reports.invoices.notInvoiced','Not invoiced')),statusTitle=historical?t('appointments.reports.invoices.historicalSourceNote','This invoice comes from imported historical data and is not a current operational appointment.'):'';return `<tr data-invoice-source="${historical?'historical':'operational'}"><td>${esc(r.requestNumber)}</td><td>${esc(r.invoiceNumber||'—')}</td><td>${esc(r.customerName)}</td><td>${esc(r.representativeName||'—')}</td><td>${money(r.revenue)}</td><td>${invoiceMoney(r.expenses)}</td><td class="${r.profit===null||r.profit===undefined?'':r.profit<0?'negative-value':'positive-value'}">${invoiceMoney(r.profit)}</td><td>${fmt(r.invoiceDate)}</td><td><span class="status-badge" ${statusTitle?`title="${esc(statusTitle)}"`:''}>${esc(statusText)}</span></td></tr>`}).join(''):empty(9);
     const max=Math.max(1,...data.rows.map(r=>Math.max(0,r.profit)));$('installationProfitabilityBars').innerHTML=data.rows.length?data.rows.slice().sort((a,b)=>b.profit-a.profit).slice(0,12).map(r=>`<div class="installation-profitability-row"><div><strong>${esc(r.requestNumber)}</strong><span>${esc(r.customerName)}</span></div><div class="installation-profitability-track"><span style="width:${Math.max(2,Math.round(Math.max(0,r.profit)/max*100))}%"></span></div><strong>${money(r.profit)}</strong></div>`).join(''):`<p class="empty-cell">${esc(t('appointments.reports.emptyProfitability','No profitability data.'))}</p>`;
     const reasons=$('installationFailureReasonsReport');reasons.innerHTML=data.failureReasons.length?data.failureReasons.map(r=>`<div><span>${esc(r.reason)}</span><strong>${r.count}</strong></div>`).join(''):`<p class="empty-cell">${esc(t('appointments.reports.emptyFailureReasons','No failure reasons recorded.'))}</p>`;
   }

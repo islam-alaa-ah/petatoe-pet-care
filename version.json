@@ -1,19 +1,19 @@
 {
-  "version": "18.56.125",
-  "build": 185725,
+  "version": "18.56.126",
+  "build": 185726,
   "forceUpdate": true,
   "releaseDate": "2026-09-27",
-  "title": "دمج المبيعات التاريخية في ملخص الشهر — R44R38R20R24",
+  "title": "دمج الفواتير التاريخية في تقارير المواعيد — R44R38R20R25",
   "notes": [
-    "ملخص الشهر في تقارير المواعيد يدمج الآن بيانات التشغيل الحالية مع المبيعات التاريخية المستوردة.",
-    "الدمج يقتصر على التقرير المالي الشهري ولا يغيّر مؤشرات المواعيد التشغيلية أو ينشئ مواعيد وهمية.",
-    "فلتر السيارة وإجماليات طرق الدفع يعرضان المصدرين مع الحفاظ على نطاق الصلاحيات الحالي."
+    "تبويب فواتير المواعيد يدمج الآن الفواتير التشغيلية الحالية مع الفواتير التاريخية المستوردة.",
+    "البيانات التاريخية تُجمع على مستوى الفاتورة دون نقلها إلى sales_invoices أو إنشاء مواعيد تشغيل وهمية.",
+    "فلاتر المندوب والفني وحالة الموعد تظل تشغيلية فقط لأن البيانات التاريخية لا تحتوي هذه الحقول."
   ],
-  "cacheToken": "petatoe-pwa-18-56-125-historical-monthly-report-r44r38r20r24-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r20r24.title",
+  "cacheToken": "petatoe-pwa-18-56-126-historical-invoice-report-r44r38r20r25-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r20r25.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r24.note1",
-    "pwa.update.release.r44r38r20r24.note2",
-    "pwa.update.release.r44r38r20r24.note3"
+    "pwa.update.release.r44r38r20r25.note1",
+    "pwa.update.release.r44r38r20r25.note2",
+    "pwa.update.release.r44r38r20r25.note3"
   ]
 }
