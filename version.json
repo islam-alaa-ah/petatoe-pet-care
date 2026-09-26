@@ -1,19 +1,19 @@
 {
-  "version": "18.56.131",
-  "build": 185731,
+  "version": "18.56.132",
+  "build": 185732,
   "forceUpdate": true,
   "releaseDate": "2026-09-27",
-  "title": "استكمال الحقول التاريخية المتوافقة داخل تقارير الخدمات — R44R38R20R30",
+  "title": "إصلاح تحميل تحليل الخدمات التشغيلي — R44R38R20R30R1",
   "notes": [
-    "التحليل المالي التاريخي يعرض الآن الإيراد ومتوسط سعر الوحدة لكل خدمة، مع إبقاء التكلفة والربح والهامش غير متاحة.",
-    "التحليل التشغيلي التاريخي يعرض الخدمة ومرات الظهور في الفواتير، ومقارنة الفرق تعرض الخدمات المختلفة ومرات الظهور، مع إبقاء أزمنة التنفيذ غير متاحة.",
-    "مقارنة الفترات التاريخية أصبحت تقارن مرات الظهور والكمية والإيراد مع الفترة السابقة، بينما يبقى الربح والجغرافيا والمندوب غير متاحين لعدم وجود مصدر تاريخي موثوق."
+    "إصلاح الخطأ buildServiceOperational is not defined الذي ظهر بعد R20R30.",
+    "تمت استعادة مساعدات حساب الأزمنة التشغيلية الأصلية من R20R29 بدون تغيير منطق التقارير التاريخية أو التشغيلية.",
+    "لا توجد تغييرات على قاعدة البيانات أو الصلاحيات أو الحسابات المالية."
   ],
-  "cacheToken": "petatoe-pwa-18-56-131-historical-compatible-service-report-completion-r44r38r20r30-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r20r30.title",
+  "cacheToken": "petatoe-pwa-18-56-132-service-operational-helper-recovery-r44r38r20r30r1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r20r30r1.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r30.note1",
-    "pwa.update.release.r44r38r20r30.note2",
-    "pwa.update.release.r44r38r20r30.note3"
+    "pwa.update.release.r44r38r20r30r1.note1",
+    "pwa.update.release.r44r38r20r30r1.note2",
+    "pwa.update.release.r44r38r20r30r1.note3"
   ]
 }

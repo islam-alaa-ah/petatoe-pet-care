@@ -767,6 +767,32 @@
     renderHistoricalComparison(data,previousHistoricalData||{rows:[]});
   }
 
+  function validMinutes(a,b){if(!a||!b)return null;const x=new Date(a).getTime(),y=new Date(b).getTime(),m=(y-x)/60000;return Number.isFinite(m)&&m>=0?m:null}
+  function avgMinutes(values){const clean=(values||[]).filter(Number.isFinite);return clean.length?Math.round(clean.reduce((a,b)=>a+b,0)/clean.length):null}
+  function buildServiceOperational(data){
+    const serviceMap=new Map(),teamMap=new Map(),overall={total:[],travel:[],siteWait:[],installation:[],mapOpen:[],samples:0};
+    for(const group of data.executionGroups||[]){
+      for(const order of group.orders||[]){
+        const stages={mapOpen:validMinutes(order.onRouteAt,order.mapOpenedAt),travel:validMinutes(order.onRouteAt,order.arrivedAt),siteWait:validMinutes(order.arrivedAt,order.startedAt),installation:validMinutes(order.startedAt,order.completedAt),total:validMinutes(order.onRouteAt,order.completedAt)};
+        const serviceNames=[...new Set((order.services||[]).map(x=>String(x.name||t('appointments.reports.services.unspecifiedService','Unspecified service'))))];
+        if(Number.isFinite(stages.total)){overall.samples++;overall.total.push(stages.total)}
+        for(const key of ['mapOpen','travel','siteWait','installation'])if(Number.isFinite(stages[key]))overall[key].push(stages[key]);
+        for(const name of serviceNames){
+          let row=serviceMap.get(name);if(!row){row={name,executions:0,timedOrders:new Set(),total:[],travel:[],siteWait:[],installation:[],mapOpen:[],teams:new Map()};serviceMap.set(name,row)}
+          row.executions++;
+          if(Number.isFinite(stages.total))row.timedOrders.add(order.entryKey||order.requestId||order.requestNumber);
+          for(const key of ['total','travel','siteWait','installation','mapOpen'])if(Number.isFinite(stages[key]))row[key].push(stages[key]);
+          const tkey=String(group.id||order.teamId||'unassigned');let team=row.teams.get(tkey);if(!team){team={id:tkey,name:group.name||order.teamName||t('appointments.reports.services.unassigned','Unassigned'),executions:0,total:[]};row.teams.set(tkey,team)}team.executions++;if(Number.isFinite(stages.total))team.total.push(stages.total);
+          let trow=teamMap.get(tkey);if(!trow){trow={id:tkey,name:group.name||order.teamName||t('appointments.reports.services.unassigned','Unassigned'),executions:0,total:[],services:new Set()};teamMap.set(tkey,trow)}trow.executions++;trow.services.add(name);if(Number.isFinite(stages.total))trow.total.push(stages.total);
+        }
+      }
+    }
+    const rows=[...serviceMap.values()].map(r=>({name:r.name,executions:r.executions,timedOrders:r.timedOrders.size,coverage:r.executions?Math.round(r.timedOrders.size/r.executions*100):0,averageTotal:avgMinutes(r.total),averageTravel:avgMinutes(r.travel),averageSiteWait:avgMinutes(r.siteWait),averageInstallation:avgMinutes(r.installation),averageMapOpen:avgMinutes(r.mapOpen),teams:[...r.teams.values()].map(t=>({...t,averageTotal:avgMinutes(t.total)})).sort((a,b)=>(a.averageTotal??Infinity)-(b.averageTotal??Infinity))})).sort((a,b)=>(b.timedOrders-a.timedOrders)||(b.executions-a.executions)||a.name.localeCompare(b.name,lang()==='en'?'en':'ar'));
+    const teams=[...teamMap.values()].map(t=>({id:t.id,name:t.name,executions:t.executions,services:t.services.size,timed:t.total.length,averageTotal:avgMinutes(t.total)})).sort((a,b)=>(a.averageTotal??Infinity)-(b.averageTotal??Infinity));
+    const timed=rows.filter(r=>Number.isFinite(r.averageTotal));
+    return {rows,teams,summary:{timedOrders:overall.samples,averageTotal:avgMinutes(overall.total),averageTravel:avgMinutes(overall.travel),averageSiteWait:avgMinutes(overall.siteWait),averageInstallation:avgMinutes(overall.installation)},slowest:timed.slice().sort((a,b)=>b.averageTotal-a.averageTotal),fastest:timed.slice().sort((a,b)=>a.averageTotal-b.averageTotal)};
+  }
+  function durationLabel(v){if(!Number.isFinite(v))return '—';const h=Math.floor(v/60),m=Math.round(v%60);return h?t('appointments.reports.services.duration.hoursMinutes','{hours} h {minutes} min',{hours:num(h),minutes:num(m)}):t('appointments.reports.services.duration.minutes','{minutes} min',{minutes:num(m)})}
   function renderServiceOperational(data){
     const op=buildServiceOperational(data),s=op.summary;
     $('installationServiceOpsTimedOrders').textContent=num(s.timedOrders);$('installationServiceOpsAverageTotal').textContent=durationLabel(s.averageTotal);$('installationServiceOpsAverageTravel').textContent=durationLabel(s.averageTravel);$('installationServiceOpsAverageWait').textContent=durationLabel(s.averageSiteWait);$('installationServiceOpsAverageInstallation').textContent=durationLabel(s.averageInstallation);
