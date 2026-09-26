@@ -38,7 +38,8 @@
     displayLimit:PREVIEW_STEP,
     busy:false,
     validated:false,
-    imported:false
+    imported:false,
+    importResult:null
   };
 
   function normHeader(value){
@@ -95,7 +96,7 @@
     const failed=$('appointmentHistoricalImportFailedExportBtn');
     if(choose) choose.disabled=state.busy||!can('view');
     if(validate) validate.disabled=state.busy||offline||!state.rows.length||!can('view');
-    if(execute) execute.disabled=state.busy||offline||!state.validated||Number(state.summary?.valid||0)<=0||!can('add')||!window.AppointmentHistoricalImportService?.canCustomerAdd?.();
+    if(execute) execute.disabled=state.busy||state.imported||offline||!state.validated||Number(state.summary?.valid||0)<=0||!can('add')||!window.AppointmentHistoricalImportService?.canCustomerAdd?.();
     if(failed) failed.disabled=state.busy||!state.results.some(row=>row?.valid===false&&!row?.duplicate)||!can('export');
   }
   function setBusy(value){state.busy=Boolean(value);syncActions();}
@@ -107,7 +108,9 @@
     state.displayLimit=PREVIEW_STEP;
     state.validated=false;
     state.imported=false;
+    state.importResult=null;
     renderSummary(null);
+    renderImportResult(null);
     renderPreview();
     hideProgress();
     syncActions();
@@ -203,6 +206,8 @@
     state.displayLimit=PREVIEW_STEP;
     state.validated=false;
     state.imported=false;
+    state.importResult=null;
+    renderImportResult(null);
     renderSummary(state.summary);
     renderPreview();
     try{
@@ -287,7 +292,7 @@
     if(!summary){shell.classList.add('hidden');return;}
     shell.classList.remove('hidden');
 
-    const planReady=state.customerPlan!==null;
+    const planReady=state.customerPlan!==null||state.imported;
     const unmatchedLabel=$('appointmentHistoricalImportSummaryUnmatchedLabel');
     if(unmatchedLabel){
       const key=planReady?'appointmentDataImport.summary.newCustomerRows':'appointmentDataImport.summary.unmatched';
@@ -310,6 +315,41 @@
       NewCustomers:summary.newCustomers
     };
     Object.entries(values).forEach(([key,value])=>{const el=$(`appointmentHistoricalImportSummary${key}`);if(el)el.textContent=String(Number(value||0));});
+  }
+  function formatResultDate(value){
+    const d=new Date(value||'');
+    if(Number.isNaN(d.getTime()))return '—';
+    try{return new Intl.DateTimeFormat('en-GB',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(d);}catch(_error){return d.toISOString();}
+  }
+  function renderImportResult(result){
+    const shell=$('appointmentHistoricalImportResult');
+    if(!shell)return;
+    if(!result){shell.classList.add('hidden');return;}
+    shell.classList.remove('hidden');
+    const summary=result?.summary||{};
+    const completed=String(result?.status||'').toLowerCase()==='completed';
+    const title=$('appointmentHistoricalImportResultTitle');
+    if(title)title.textContent=completed?t('appointmentDataImport.result.completed','تم الاستيراد بنجاح'):t('appointmentDataImport.result.partial','اكتمل الاستيراد مع ملاحظات');
+    const badge=$('appointmentHistoricalImportResultBadge');
+    if(badge)badge.textContent=t('appointmentDataImport.result.verified','نتيجة مؤكدة من قاعدة البيانات');
+    const meta=$('appointmentHistoricalImportResultMeta');
+    if(meta)meta.textContent=t('appointmentDataImport.result.meta','Batch: {batch} • Completed: {completed}',{batch:text(result?.batchId),completed:formatResultDate(result?.completedAt)});
+    const unlinked=Number(summary?.unmatchedCustomers||0)+Number(summary?.reviewCustomers||0);
+    const values={
+      Inserted:summary?.inserted,
+      Existing:summary?.existingCustomerRows,
+      NewCustomers:summary?.createdCustomers,
+      NewRows:summary?.newCustomerRows,
+      Unlinked:unlinked,
+      Review:summary?.reviewCustomers,
+      Unmatched:summary?.unmatchedCustomers,
+      Cash:summary?.cashAggregates,
+      Duplicates:summary?.duplicates,
+      Rejected:summary?.rejected,
+      Corrected:summary?.correctedDates,
+      Mapped:summary?.mappedSourceIdentities
+    };
+    Object.entries(values).forEach(([key,value])=>{const el=$(`appointmentHistoricalImportResult${key}`);if(el)el.textContent=String(Number(value||0));});
   }
   function notesHtml(row){
     const errors=(Array.isArray(row?.errors)?row.errors:[]).map(codeLabel).filter(Boolean);
@@ -410,7 +450,7 @@
         ['PETATOE — رفع البيانات التاريخية'],
         ['القاعدة','التفاصيل'],
         ['الصنف غير المحدد','مقبول، ولا يتم إنشاء صنف جديد تلقائيًا.'],
-        ['العميل','الربط الآلي: كود العميل، ثم الجوال، ثم الاسم المطابق الوحيد كبديل محمي. العملاء غير الموجودين فعليًا يتم إنشاؤهم وربط فواتيرهم تلقائيًا.'],
+        ['العميل','الربط الآلي: كود العميل، ثم الجوال، ثم الاسم المطابق الوحيد كبديل محمي. العميل غير الموجود يُنشأ تلقائيًا فقط عند وجود جوال سعودي صالح؛ باقي الحالات تبقى للمراجعة.'],
         ['الفاتورة بدون ضريبة','إذا كانت الضريبة 0 يمكن أن يتساوى المبلغ قبل الضريبة مع المبلغ شامل الضريبة.'],
         ['التاريخ','التاريخ هو المصدر الأساسي، وعمود الشهر للتحقق. تواريخ يوليو المؤكدة يتم تصحيحها بواسطة قاعدة الاستيراد المعتمدة.'],
         ['التكرار','إعادة رفع نفس الملف لا تكرر السطر المستورد مسبقًا.']
@@ -462,29 +502,43 @@
     showStatus(t('appointmentDataImport.status.importing','جاري حفظ البيانات التاريخية... لا تغلق الصفحة.'),'info');
     setProgress(82,t('appointmentDataImport.progress.importing','جاري حفظ الصفوف الصالحة في السجل التاريخي...'),t('appointmentDataImport.progress.rowCount','{done} / {total}',{done:0,total:state.rows.length}));
     try{
-      const result=await window.AppointmentHistoricalImportService.importRows(state.file.name,state.fileSha256,state.rows);
-      state.results=Array.isArray(result?.rows)?result.rows:state.results;
+      const committed=await window.AppointmentHistoricalImportService.importRows(state.file.name,state.fileSha256,state.rows);
+      let result=committed;
+      const batchId=committed?.batchId;
+      if(batchId){
+        try{
+          setProgress(96,t('appointmentDataImport.progress.confirmingResult','تم الحفظ. جاري تأكيد نتيجة الاستيراد من قاعدة البيانات...'),t('appointmentDataImport.progress.rowCount','{done} / {total}',{done:state.rows.length,total:state.rows.length}));
+          result=await window.AppointmentHistoricalImportService.getImportResult(batchId);
+        }catch(resultError){
+          console.warn('[PETATOE][HistoricalImport] committed import result reload failed',resultError);
+          result={...committed,batchId,completedAt:new Date().toISOString(),status:'completed'};
+        }
+      }
+      state.results=Array.isArray(committed?.rows)?committed.rows:state.results;
       state.customerPlan=null;
       state.customerPlanByRaw=new Map();
+      const summary=result?.summary||committed?.summary||{};
       state.summary={
-        total:Number(result?.summary?.total||state.rows.length),
-        valid:Number(result?.summary?.inserted||0),
-        errors:Number(result?.summary?.rejected||0),
-        duplicates:Number(result?.summary?.duplicates||0),
-        matchedCustomers:Number(result?.summary?.matchedCustomers||0),
-        unmatchedCustomers:Number(result?.summary?.unmatchedCustomers||0),
-        reviewCustomers:Number(result?.summary?.reviewCustomers||0),
-        cashAggregates:Number(result?.summary?.cashAggregates||0),
-        correctedDates:Number(result?.summary?.correctedDates||0),
-        newCustomers:Number(result?.summary?.createdCustomers||0),
-        newCustomerRows:Number(result?.summary?.mappedSourceIdentities||0)
+        total:Number(summary?.total||state.rows.length),
+        valid:Number(summary?.inserted||0),
+        errors:Number(summary?.rejected||0),
+        duplicates:Number(summary?.duplicates||0),
+        matchedCustomers:Number(summary?.matchedCustomers||0),
+        unmatchedCustomers:Number(summary?.unmatchedCustomers||0),
+        reviewCustomers:Number(summary?.reviewCustomers||0),
+        cashAggregates:Number(summary?.cashAggregates||0),
+        correctedDates:Number(summary?.correctedDates||0),
+        newCustomers:Number(summary?.createdCustomers||0),
+        newCustomerRows:Number(summary?.newCustomerRows||0)
       };
+      state.importResult={...result,batchId:result?.batchId||batchId};
       state.imported=true;
       state.validated=true;
       renderSummary(state.summary);
+      renderImportResult(state.importResult);
       renderPreview();
       setProgress(100,t('appointmentDataImport.progress.complete','اكتمل الاستيراد.'),t('appointmentDataImport.progress.rowCount','{done} / {total}',{done:state.rows.length,total:state.rows.length}));
-      showStatus(t('appointmentDataImport.status.completeWithCustomers','اكتمل الاستيراد: تم إنشاء {createdCustomers} عميل جديد، وإدخال {inserted} صف، وتجاهل {duplicates} مكرر، ورفض {rejected} صف.',{createdCustomers:result?.summary?.createdCustomers||0,inserted:result?.summary?.inserted||0,duplicates:result?.summary?.duplicates||0,rejected:result?.summary?.rejected||0}),'success');
+      showStatus(t('appointmentDataImport.status.completeWithCustomers','اكتمل الاستيراد: تم إنشاء {createdCustomers} عميل جديد، وإدخال {inserted} صف، وتجاهل {duplicates} مكرر، ورفض {rejected} صف.',{createdCustomers:summary?.createdCustomers||0,inserted:summary?.inserted||0,duplicates:summary?.duplicates||0,rejected:summary?.rejected||0}),'success');
     }catch(error){
       showStatus(error?.message||t('appointmentDataImport.error.import','تعذر تنفيذ استيراد البيانات القديمة.'),'error');
       setProgress(72,t('appointmentDataImport.progress.importFailed','تعذر إكمال الاستيراد. يمكنك المراجعة والمحاولة مرة أخرى.'));
@@ -493,6 +547,7 @@
 
   function onLanguage(){
     renderSummary(state.summary);
+    renderImportResult(state.importResult);
     renderPreview();
     syncActions();
   }

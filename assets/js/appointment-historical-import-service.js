@@ -5,6 +5,7 @@
   const VALIDATE_RPC='validate_appointment_historical_sales_r44r38r20';
   const IMPORT_RPC='import_appointment_historical_sales_r44r38r20';
   const CUSTOMER_PLAN_RPC='plan_appointment_historical_customer_creation_r44r38r20';
+  const RESULT_RPC='get_appointment_historical_import_result_r44r38r20';
 
   const t=(key,fallback)=>window.PetatoeLocalization?.t?.(key)||fallback;
   const client=()=>{
@@ -62,11 +63,22 @@
     return unwrap(data)||{summary:{},rows:[]};
   }
 
+  async function getImportResult(batchId){
+    requirePermission('view');
+    requireOnline();
+    const id=String(batchId||'').trim();
+    if(!id) throw new Error(t('appointmentDataImport.error.resultBatch','Import batch ID is missing.'));
+    const {data,error}=await client().rpc(RESULT_RPC,{p_batch_id:id});
+    if(error) throw new Error(translatedError(error,t('appointmentDataImport.error.resultLoad','Unable to load the saved import result.')));
+    return unwrap(data)||{summary:{}};
+  }
+
   window.AppointmentHistoricalImportService=Object.freeze({
     screenKey:SCREEN,
     validateRows,
     planCustomerCreation,
     importRows,
+    getImportResult,
     can,
     canCustomerAdd
   });

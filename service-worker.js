@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-123-historical-import-review-ui-cleanup-r44r38r20r15-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-124-historical-import-result-r44r38r20r19-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

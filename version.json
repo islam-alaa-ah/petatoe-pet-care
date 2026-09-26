@@ -1,19 +1,19 @@
 {
-  "version": "18.56.123",
-  "build": 185723,
+  "version": "18.56.124",
+  "build": 185724,
   "forceUpdate": true,
-  "releaseDate": "2026-09-26",
-  "title": "تنظيف واجهة مراجعة الاستيراد التاريخي — R44R38R20R15",
+  "releaseDate": "2026-09-27",
+  "title": "نتيجة الاستيراد المؤكدة — R44R38R20R19",
   "notes": [
-    "استبدال إحصائية غير مرتبط حاليًا بعد اكتمال الخطة بعدد صفوف العملاء الجدد النهائي.",
-    "إكمال شريط الفحص إلى 100% عند انتهاء الفحص وخطة العملاء.",
-    "لا تغيير في منطق المطابقة أو إنشاء العملاء أو الاستيراد."
+    "عرض نتيجة الاستيراد النهائية من سجل الدفعة المحفوظ في قاعدة البيانات.",
+    "إظهار الصفوف المدخلة والعملاء الجدد والربط والمراجعات والمكرر والمرفوض والتواريخ المصححة ورقم الدفعة.",
+    "قفل زر بدء الاستيراد بعد النجاح لمنع إعادة التنفيذ بالخطأ."
   ],
-  "cacheToken": "petatoe-pwa-18-56-123-historical-import-review-ui-cleanup-r44r38r20r15-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r20r15.title",
+  "cacheToken": "petatoe-pwa-18-56-124-historical-import-result-r44r38r20r19-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r20r19.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r15.note1",
-    "pwa.update.release.r44r38r20r15.note2",
-    "pwa.update.release.r44r38r20r15.note3"
+    "pwa.update.release.r44r38r20r19.note1",
+    "pwa.update.release.r44r38r20r19.note2",
+    "pwa.update.release.r44r38r20r19.note3"
   ]
 }
