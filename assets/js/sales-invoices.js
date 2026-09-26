@@ -15,7 +15,7 @@
   const serviceLabel=item=>window.PetatoeLocalization?.entityText?.("service",item)||item?.name||"";
   const uiMessage=value=>window.PetatoeLocalization?.translateMessage?.(String(value||""))||String(value||"");
   const attachmentName=(file,index)=>{const raw=String(file?.originalName||"").trim();return !raw||raw==="\u0645\u0631\u0641\u0642"?`${t("invoices.attachments.item","Attachment")} ${index+1}`:raw};
-  const sourceLabel=value=>value==="installation"?t("invoices.source.appointment","موعد"):value==="manual"?t("invoices.source.manual","فاتورة يدوية"):t("invoices.source.contract","عقد");
+  const sourceLabel=value=>value==="historical"?t("invoices.source.historical","تاريخية"):value==="installation"?t("invoices.source.appointment","موعد"):value==="manual"?t("invoices.source.manual","فاتورة يدوية"):t("invoices.source.contract","عقد");
   const paymentLabel=value=>{const v=String(value||"").trim();if(["بطاقة","بطاقة / شبكة","شبكة"].includes(v))return t("appointmentNew.collection.card","بطاقة / شبكة");if(["دفع إلكتروني","الدفع عن طريق الموقع"].includes(v))return t("appointmentNew.collection.website","الدفع عن طريق الموقع");if(["تحويل","تحويل بنكي"].includes(v))return t("appointmentNew.collection.bank","تحويل بنكي");if(v==="نقدي")return t("appointmentNew.collection.cash","نقدي");return v||"—"};
   function status(msg,type=""){const el=$("salesInvoicesStatus");if(!el)return;el.textContent=msg||"";el.classList.toggle("hidden",!msg);el.classList.toggle("error",type==="error")}
   function manualStatus(msg,type=""){const el=$("manualSalesInvoiceStatus");if(!el)return;el.textContent=msg||"";el.classList.toggle("hidden",!msg);el.classList.toggle("error",type==="error")}
@@ -27,17 +27,25 @@
   function referenceText(r){if(!r?.referenceInvoice)return "—";const x=r.referenceInvoice;return [x.requestNumber||"—",x.invoiceNumber||"—",date(x.invoiceDate)].join(" · ")}
   function render(){
     const list=filtered();
+    const hasHistorical=list.some(r=>r.isHistorical||r.sourceType==="historical");
     $("salesInvoicesCount").textContent=String(list.length);
-    $("salesInvoicesAmount").textContent=wholeMoney(list.reduce((s,r)=>s+r.invoiceAmountInclTax,0));
-    $("salesInvoicesInstallationCost").textContent=money(list.reduce((s,r)=>s+r.installationExpenses,0));
+    $("salesInvoicesAmount").textContent=wholeMoney(list.reduce((s,r)=>s+Number(r.invoiceAmountInclTax||0),0));
+    const costEl=$("salesInvoicesInstallationCost");
+    if(costEl){
+      costEl.textContent=hasHistorical?"—":money(list.reduce((s,r)=>s+Number(r.installationExpenses||0),0));
+      costEl.title=hasHistorical?t("invoices.summary.costUnavailableHistorical","مصاريف المواعيد غير متاحة للفواتير التاريخية."):"";
+    }
     const canEdit=Boolean(window.CustomerPermissions?.canAction?.("salesInvoices","edit"));
     const canAdd=Boolean(window.CustomerPermissions?.canAction?.("salesInvoices","add"));
     if($("addManualSalesInvoiceBtn"))$("addManualSalesInvoiceBtn").classList.toggle("hidden",!canAdd);
     const body=$("salesInvoicesTableBody");
     body.innerHTML=list.length?list.map(r=>{
-      const attachments=r.attachments?.length?`<button class="secondary-btn compact-btn" type="button" data-sales-invoice-attachments="${esc(r.id)}">${esc(t("invoices.attachments.view","عرض المرفقات"))} (${r.attachments.length})</button>`:`<span class="field-hint">${esc(t("invoices.attachments.none","لا توجد مرفقات"))}</span>`;
-      const edit=canEdit?`<button class="secondary-btn compact-btn" type="button" data-sales-invoice-edit="${esc(r.id)}">${esc(t("invoices.edit.action","تعديل"))}</button>`:`<span class="field-hint">—</span>`;
-      return `<tr><td data-label="${esc(t("invoices.col.request","رقم الطلب"))}"><strong>${esc(r.requestNumber)}</strong></td><td data-label="${esc(t("invoices.col.customer","اسم العميل"))}">${esc(r.customerName)}</td><td data-label="${esc(t("invoices.col.invoice","رقم الفاتورة"))}">${esc(r.invoiceNumber)}</td><td data-label="${esc(t("invoices.col.amountInclTax","القيمة شاملة الضريبة"))}">${esc(wholeMoney(r.invoiceAmountInclTax))}</td><td data-label="${esc(t("appointmentNew.collection.payment","طريقة الدفع"))}">${esc(paymentLabel(r.paymentMethod))}</td><td data-label="${esc(t("invoices.col.date","تاريخ الفاتورة"))}">${esc(date(r.invoiceDate))}</td><td data-label="${esc(t("invoices.col.source","المصدر"))}">${esc(sourceLabel(r.sourceType))}</td><td data-label="${esc(t("invoices.manual.reference","مرجع الفاتورة"))}">${esc(referenceText(r))}</td><td data-label="${esc(t("invoices.attachments.title","المرفقات"))}">${attachments}</td><td data-label="${esc(t("invoices.edit.title","تعديل"))}">${edit}</td></tr>`;
+      const historical=Boolean(r.isHistorical||r.sourceType==="historical");
+      const requestText=historical?t("invoices.historical.request","بيانات تاريخية"):(r.requestNumber||"—");
+      const readOnlyText=t("invoices.historical.readOnly","الفاتورة من البيانات التاريخية المستوردة وهي للعرض فقط.");
+      const attachments=historical?`<span class="field-hint" title="${esc(readOnlyText)}">—</span>`:r.attachments?.length?`<button class="secondary-btn compact-btn" type="button" data-sales-invoice-attachments="${esc(r.id)}">${esc(t("invoices.attachments.view","عرض المرفقات"))} (${r.attachments.length})</button>`:`<span class="field-hint">${esc(t("invoices.attachments.none","لا توجد مرفقات"))}</span>`;
+      const edit=canEdit&&!r.readOnly&&!historical?`<button class="secondary-btn compact-btn" type="button" data-sales-invoice-edit="${esc(r.id)}">${esc(t("invoices.edit.action","تعديل"))}</button>`:`<span class="field-hint" ${historical?`title="${esc(readOnlyText)}"`:""}>—</span>`;
+      return `<tr data-invoice-source="${esc(r.sourceType||"")}"><td data-label="${esc(t("invoices.col.request","رقم الطلب"))}"><strong>${esc(requestText)}</strong></td><td data-label="${esc(t("invoices.col.customer","اسم العميل"))}">${esc(r.customerName)}</td><td data-label="${esc(t("invoices.col.invoice","رقم الفاتورة"))}">${esc(r.invoiceNumber)}</td><td data-label="${esc(t("invoices.col.amountInclTax","القيمة شاملة الضريبة"))}">${esc(wholeMoney(r.invoiceAmountInclTax))}</td><td data-label="${esc(t("appointmentNew.collection.payment","طريقة الدفع"))}">${esc(paymentLabel(r.paymentMethod))}</td><td data-label="${esc(t("invoices.col.date","تاريخ الفاتورة"))}">${esc(date(r.invoiceDate))}</td><td data-label="${esc(t("invoices.col.source","المصدر"))}">${esc(sourceLabel(r.sourceType))}</td><td data-label="${esc(t("invoices.manual.reference","مرجع الفاتورة"))}">${esc(referenceText(r))}</td><td data-label="${esc(t("invoices.attachments.title","المرفقات"))}">${attachments}</td><td data-label="${esc(t("invoices.edit.title","تعديل"))}">${edit}</td></tr>`;
     }).join(""):`<tr><td colspan="10" class="empty-state">${esc(t("invoices.empty","لا توجد فواتير مطابقة."))}</td></tr>`;
   }
   function syncEditNoInvoice(){const checked=Boolean($("salesInvoiceEditNoInvoice")?.checked),input=$("salesInvoiceEditNumber");if(!input)return;input.disabled=checked;input.required=!checked;if(checked)input.value=""}
@@ -94,7 +102,7 @@
     $("refreshSalesInvoicesBtn")?.addEventListener("click",()=>load(true));
     ["salesInvoicesSearch","salesInvoicesSourceFilter","salesInvoicesStatusFilter","salesInvoicesDateFrom","salesInvoicesDateTo"].forEach(id=>$(id)?.addEventListener(id.includes("Search")?"input":"change",render));
     $("resetSalesInvoicesFilters")?.addEventListener("click",()=>{$("salesInvoicesSearch").value="";$("salesInvoicesSourceFilter").value="";$("salesInvoicesStatusFilter").value="";$("salesInvoicesDateFrom").value="";$("salesInvoicesDateTo").value="";render()});
-    $("salesInvoicesTableBody")?.addEventListener("click",e=>{const edit=e.target.closest("[data-sales-invoice-edit]");if(edit){const r=rows.find(x=>x.id===edit.dataset.salesInvoiceEdit);if(r)openEdit(r).catch(err=>status(uiMessage(err?.message),"error"));return}const att=e.target.closest("[data-sales-invoice-attachments]");if(att){const r=rows.find(x=>x.id===att.dataset.salesInvoiceAttachments);if(r)openAttachments(r)}});
+    $("salesInvoicesTableBody")?.addEventListener("click",e=>{const edit=e.target.closest("[data-sales-invoice-edit]");if(edit){const r=rows.find(x=>x.id===edit.dataset.salesInvoiceEdit);if(r?.readOnly||r?.isHistorical||r?.sourceType==="historical"){status(t("invoices.historical.readOnly","الفاتورة من البيانات التاريخية المستوردة وهي للعرض فقط."));return}if(r)openEdit(r).catch(err=>status(uiMessage(err?.message),"error"));return}const att=e.target.closest("[data-sales-invoice-attachments]");if(att){const r=rows.find(x=>x.id===att.dataset.salesInvoiceAttachments);if(r?.isHistorical||r?.sourceType==="historical"){status(t("invoices.historical.readOnly","الفاتورة من البيانات التاريخية المستوردة وهي للعرض فقط."));return}if(r)openAttachments(r)}});
     $("salesInvoiceEditNoInvoice")?.addEventListener("change",syncEditNoInvoice);
     $("addSalesInvoiceEditService")?.addEventListener("click",()=>addEditServiceRow());
     $("salesInvoiceEditServicesBody")?.addEventListener("input",calculateEditServices);

@@ -1,19 +1,19 @@
 {
-  "version": "18.56.132",
-  "build": 185732,
+  "version": "18.56.133",
+  "build": 185733,
   "forceUpdate": true,
   "releaseDate": "2026-09-27",
-  "title": "إصلاح تحميل تحليل الخدمات التشغيلي — R44R38R20R30R1",
+  "title": "دمج الفواتير التاريخية في سجل فواتير المبيعات — R44R38R20R31",
   "notes": [
-    "إصلاح الخطأ buildServiceOperational is not defined الذي ظهر بعد R20R30.",
-    "تمت استعادة مساعدات حساب الأزمنة التشغيلية الأصلية من R20R29 بدون تغيير منطق التقارير التاريخية أو التشغيلية.",
-    "لا توجد تغييرات على قاعدة البيانات أو الصلاحيات أو الحسابات المالية."
+    "شاشة فواتير المبيعات تعرض الآن الفواتير الحالية والتاريخية في سجل واحد مع البحث والفلاتر والتواريخ.",
+    "الفواتير التاريخية للعرض فقط ولا يمكن تعديلها أو فتح مرفقات لها، ولا يتم نقلها إلى جدول الفواتير الحالية.",
+    "إجمالي قيمة الفواتير يشمل التاريخي، بينما إجمالي مصاريف الموعد يظهر كغير متاح عند وجود تاريخي لأن التكلفة غير موجودة في مصدر الاستيراد."
   ],
-  "cacheToken": "petatoe-pwa-18-56-132-service-operational-helper-recovery-r44r38r20r30r1-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r20r30r1.title",
+  "cacheToken": "petatoe-pwa-18-56-133-historical-sales-invoice-registry-r44r38r20r31-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r20r31.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r30r1.note1",
-    "pwa.update.release.r44r38r20r30r1.note2",
-    "pwa.update.release.r44r38r20r30r1.note3"
+    "pwa.update.release.r44r38r20r31.note1",
+    "pwa.update.release.r44r38r20r31.note2",
+    "pwa.update.release.r44r38r20r31.note3"
   ]
 }
