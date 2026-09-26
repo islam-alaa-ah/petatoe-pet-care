@@ -1,19 +1,19 @@
 {
-  "version": "18.56.122",
-  "build": 185722,
+  "version": "18.56.123",
+  "build": 185723,
   "forceUpdate": true,
-  "releaseDate": "2026-09-19",
-  "title": "إنشاء العملاء الجدد وربط البيانات التاريخية — R44R38R20R11",
+  "releaseDate": "2026-09-26",
+  "title": "تنظيف واجهة مراجعة الاستيراد التاريخي — R44R38R20R15",
   "notes": [
-    "إظهار العملاء الجدد في معاينة رفع البيانات قبل الاستيراد.",
-    "إنشاء العملاء غير الموجودين فعليًا داخل سجل العملاء الرسمي وربط فواتيرهم التاريخية تلقائيًا.",
-    "إبقاء حالات التعارض والخطأ للمراجعة بدون إنشاء عميل مكرر."
+    "استبدال إحصائية غير مرتبط حاليًا بعد اكتمال الخطة بعدد صفوف العملاء الجدد النهائي.",
+    "إكمال شريط الفحص إلى 100% عند انتهاء الفحص وخطة العملاء.",
+    "لا تغيير في منطق المطابقة أو إنشاء العملاء أو الاستيراد."
   ],
-  "cacheToken": "petatoe-pwa-18-56-122-historical-new-customer-import-r44r38r20r11-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r20r11.title",
+  "cacheToken": "petatoe-pwa-18-56-123-historical-import-review-ui-cleanup-r44r38r20r15-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r20r15.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r11.note1",
-    "pwa.update.release.r44r38r20r11.note2",
-    "pwa.update.release.r44r38r20r11.note3"
+    "pwa.update.release.r44r38r20r15.note1",
+    "pwa.update.release.r44r38r20r15.note2",
+    "pwa.update.release.r44r38r20r15.note3"
   ]
 }

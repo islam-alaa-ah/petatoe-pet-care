@@ -225,7 +225,7 @@
       state.summary.newCustomerRows=Number(plan?.summary?.newCustomerSourceRows||0);
       state.summary.reviewCustomers=Number(plan?.summary?.reviewSourceRows??state.summary.reviewCustomers??0);
       state.validated=true;
-      setProgress(78,t('appointmentDataImport.progress.ready','اكتمل الفحص والملف جاهز للمراجعة.'));
+      setProgress(100,t('appointmentDataImport.progress.ready','اكتمل الفحص والملف جاهز للمراجعة.'),t('appointmentDataImport.progress.rowCount','{done} / {total}',{done:total,total}));
       renderSummary(state.summary);
       renderPreview();
       const errors=Number(state.summary.errors||0);
@@ -286,13 +286,24 @@
     if(!shell)return;
     if(!summary){shell.classList.add('hidden');return;}
     shell.classList.remove('hidden');
+
+    const planReady=state.customerPlan!==null;
+    const unmatchedLabel=$('appointmentHistoricalImportSummaryUnmatchedLabel');
+    if(unmatchedLabel){
+      const key=planReady?'appointmentDataImport.summary.newCustomerRows':'appointmentDataImport.summary.unmatched';
+      unmatchedLabel.setAttribute('data-petatoe-i18n',key);
+      unmatchedLabel.textContent=planReady
+        ?t(key,'صفوف العملاء الجدد')
+        :t(key,'غير مرتبط حاليًا');
+    }
+
     const values={
       Total:summary.total,
       Valid:summary.valid,
       Errors:summary.errors,
       Duplicates:summary.duplicates,
       Matched:summary.matchedCustomers,
-      Unmatched:summary.unmatchedCustomers,
+      Unmatched:planReady?summary.newCustomerRows:summary.unmatchedCustomers,
       Review:summary.reviewCustomers,
       Cash:summary.cashAggregates,
       Corrected:summary.correctedDates,
