@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   const $=id=>document.getElementById(id);
-  const state={exceptions:[],technicians:[],reportRows:[],summaryData:null,summaryMonthlyData:null,summaryContactData:null,summaryContactError:'',summaryTeams:[],summarySelectedTeams:new Set(),summaryTeamsInitialized:false,monthlyPaymentData:null,monthlyHistoricalPaymentData:null,monthlyPaymentLoaded:false,historicalInvoiceData:null,serviceData:null,servicePreviousData:null,serviceTeams:[],serviceSelectedTeams:new Set(),serviceTeamsInitialized:false,serviceLoaded:false};
+  const state={exceptions:[],technicians:[],reportRows:[],summaryData:null,summaryMonthlyData:null,summaryContactData:null,summaryContactError:'',summaryTeams:[],summarySelectedTeams:new Set(),summaryTeamsInitialized:false,monthlyPaymentData:null,monthlyHistoricalPaymentData:null,monthlyPaymentLoaded:false,historicalInvoiceData:null,serviceData:null,servicePreviousData:null,serviceHistoricalData:null,serviceTeams:[],serviceSelectedTeams:new Set(),serviceTeamsInitialized:false,serviceLoaded:false};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const t=(key,fallback,vars={})=>{const value=window.PetatoeLocalization?.t?.(key,vars);return value&&!/^\[.+\]$/.test(value)?value:fallback};
   const lang=()=>window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en':'ar';
@@ -537,8 +537,49 @@
     const period=servicePeriod();$('installationServiceComparisonLabel').textContent=period.previous?t('appointments.reports.services.compareLabel','Compare {current} with {previous}',{current:period.label,previous:period.previous.label}):t('appointments.reports.services.compareUnavailable','Comparison is unavailable when all years are selected');
     const rep=$('installationServiceRepresentative')?.selectedOptions?.[0]?.textContent||t('appointments.reports.summary.allRepresentatives','All representatives'),teams=state.serviceSelectedTeams.size===state.serviceTeams.length?t('appointments.reports.services.teamFilter.all','All teams'):state.serviceSelectedTeams.size?t('appointments.reports.services.teamFilter.selected','{count} selected teams',{count:num(state.serviceSelectedTeams.size)}):t('appointments.reports.services.teamFilter.none','No teams selected');$('installationServiceGeographicFilterLabel').textContent=serviceFilterLabel();
   }
+  function renderHistoricalServiceSales(data){
+    const box=$('installationServiceHistoricalStatus');
+    const section=$('installationServiceHistoricalSection');
+    if(!section)return;
+
+    if(data?.suppressedByRepresentativeFilter){
+      status(
+        box,
+        t(
+          'appointments.reports.services.historicalRepresentativeSuppressed',
+          'When a representative is selected, historical service sales are hidden because imported data does not contain a reliable representative.'
+        )
+      );
+    }else{
+      status(box,'');
+    }
+
+    const summary=data?.summary||{};
+    $('installationServiceHistoricalDistinct').textContent=num(summary.distinctServices||0);
+    $('installationServiceHistoricalInvoiceOccurrences').textContent=num(summary.serviceInvoiceOccurrences||0);
+    $('installationServiceHistoricalQuantity').textContent=num(summary.quantity||0);
+    $('installationServiceHistoricalRevenue').textContent=money(summary.salesInclusive||0);
+    $('installationServiceHistoricalFilterLabel').textContent=serviceFilterLabel();
+
+    const rows=data?.rows||[];
+    const body=$('installationServiceHistoricalBody');
+    if(body){
+      body.innerHTML=rows.length?rows.map(r=>`<tr>
+        <td><strong>${esc(serviceLabel({name:r.serviceName}))}</strong></td>
+        <td>${num(r.invoiceOccurrences||0)}</td>
+        <td>${num(r.sourceLines||0)}</td>
+        <td>${num(r.quantity||0)}</td>
+        <td>${money(r.salesBeforeTax||0)}</td>
+        <td>${money(r.taxAmount||0)}</td>
+        <td>${money(r.discountAmount||0)}</td>
+        <td>${money(r.salesInclusive||0)}</td>
+        <td>${r.averageUnitInclusive===null||r.averageUnitInclusive===undefined?'—':money(r.averageUnitInclusive)}</td>
+      </tr>`).join(''):empty(9);
+    }
+  }
+
   function renderServiceAnalytics(data){const analytics=buildServiceAnalytics(data),totals=analytics.totals,topProfit=analytics.byProfit[0],topExec=analytics.byExecutions[0];$('installationServiceKpiDistinct').textContent=num(analytics.rows.length);$('installationServiceKpiExecutions').textContent=num(totals.executions);$('installationServiceKpiQuantity').textContent=num(totals.quantity);$('installationServiceKpiRevenue').textContent=money(totals.value);$('installationServiceKpiExpenses').textContent=money(totals.expenses);$('installationServiceKpiProfit').textContent=money(totals.profit);$('installationServiceKpiTopProfit').textContent=topProfit?serviceLabel(topProfit):'—';$('installationServiceKpiTopProfitValue').textContent=money(topProfit?.profit||0);$('installationServiceKpiTopExecution').textContent=topExec?serviceLabel(topExec):'—';$('installationServiceKpiTopExecutionValue').textContent=t('appointments.reports.services.executionTimes','{count} times',{count:num(topExec?.executions||0)});const body=$('installationServiceAnalyticsBody');body.innerHTML=analytics.rows.length?analytics.rows.map(r=>`<tr><td><strong>${esc(serviceLabel(r))}</strong></td><td>${num(r.executions)}</td><td>${num(r.quantity)}</td><td>${money(r.value)}</td><td>${money(r.expenses)}</td><td class="${r.profit<0?'negative-value':'positive-value'}">${money(r.profit)}</td><td class="${r.margin<0?'negative-value':'positive-value'}">${r.margin}%</td><td>${money(r.average)}</td></tr>`).join(''):empty(8);$('installationServiceTopProfitList').innerHTML=serviceRanking(analytics.byProfit,'profit',money);$('installationServiceTopRevenueList').innerHTML=serviceRanking(analytics.byRevenue,'value',money);$('installationServiceTopExecutionList').innerHTML=serviceRanking(analytics.byExecutions,'executions',v=>t('appointments.reports.services.executionTimes','{count} times',{count:num(v)}));$('installationServiceFinanceMargin').textContent=`${totals.margin}%`;$('installationServiceFinanceAveragePrice').textContent=money(totals.average);$('installationServiceFinanceAverageCost').textContent=money(totals.averageCost);$('installationServiceFinanceAverageProfit').textContent=money(totals.averageProfit);const financeBody=$('installationServiceFinancialBody');financeBody.innerHTML=analytics.rows.length?analytics.rows.map(r=>`<tr><td><strong>${esc(serviceLabel(r))}</strong></td><td>${money(r.value)}</td><td>${money(r.expenses)}</td><td class="${r.profit<0?'negative-value':'positive-value'}">${money(r.profit)}</td><td class="${r.margin<0?'negative-value':'positive-value'}">${r.margin}%</td><td>${r.costRate}%</td><td>${money(r.average)}</td><td>${money(r.averageCost)}</td><td class="${r.averageProfit<0?'negative-value':'positive-value'}">${money(r.averageProfit)}</td></tr>`).join(''):empty(9);$('installationServiceTopMarginList').innerHTML=serviceRanking(analytics.byMargin,'margin',v=>`${Number(v||0).toFixed(1)}%`);$('installationServiceTopExpenseList').innerHTML=serviceRanking(analytics.byExpenses,'expenses',money);$('installationServiceLowMarginList').innerHTML=serviceRanking(analytics.byLowMargin,'margin',v=>`${Number(v||0).toFixed(1)}%`);const rep=$('installationServiceRepresentative')?.selectedOptions?.[0]?.textContent||t('appointments.reports.summary.allRepresentatives','All representatives'),teams=state.serviceSelectedTeams.size===state.serviceTeams.length?t('appointments.reports.services.teamFilter.all','All teams'):state.serviceSelectedTeams.size?t('appointments.reports.services.teamFilter.selected','{count} selected teams',{count:num(state.serviceSelectedTeams.size)}):t('appointments.reports.services.teamFilter.none','No teams selected');$('installationServiceAnalyticsFilterLabel').textContent=serviceFilterLabel();$('installationServiceFinancialFilterLabel').textContent=serviceFilterLabel();renderServiceOperational(data);renderServiceGeographic(data,state.servicePreviousData)}
-  async function loadServiceAnalytics(){updateServiceDayNav();const box=$('installationServiceAnalyticsStatus');status(box,t('appointments.reports.services.loading','Preparing service analysis...'));try{const allTeamIds=new Set(state.serviceTeams.map(x=>String(x.id))),explicitTeamFilter=state.serviceTeamsInitialized&&state.serviceSelectedTeams.size!==allTeamIds.size,period=servicePeriod(),baseFilters={representativeId:$('installationServiceRepresentative')?.value||'',teamIds:[...state.serviceSelectedTeams],teamFilterApplied:explicitTeamFilter};const currentFilters={...baseFilters,dateFrom:period.dateFrom,dateTo:period.dateTo},previousFilters=period.previous?{...baseFilters,dateFrom:period.previous.dateFrom,dateTo:period.previous.dateTo}:null;const [data,previousData]=await Promise.all([window.InstallationsServiceSafe.installationSummaryReport(currentFilters),previousFilters?window.InstallationsServiceSafe.installationSummaryReport(previousFilters):Promise.resolve({rows:[],executionGroups:[],summary:{teams:0,visits:0,quantity:0,value:0,expenses:0,profit:0,average:0},teams:[],representatives:[]})]);state.serviceData=data;state.servicePreviousData=previousData;state.serviceLoaded=true;fillServiceSelectors(data);renderServiceAnalytics(data);status(box,window.InstallationsService?.getReadStatusMessage?.('summaryReport')||'')}catch(e){status(box,uiMessage(e.message,t('appointments.reports.services.loadError','Unable to prepare service analysis.')),'error')}}
+  async function loadServiceAnalytics(){updateServiceDayNav();const box=$('installationServiceAnalyticsStatus');status(box,t('appointments.reports.services.loading','Preparing service analysis...'));try{const allTeamIds=new Set(state.serviceTeams.map(x=>String(x.id))),explicitTeamFilter=state.serviceTeamsInitialized&&state.serviceSelectedTeams.size!==allTeamIds.size,period=servicePeriod(),baseFilters={representativeId:$('installationServiceRepresentative')?.value||'',teamIds:[...state.serviceSelectedTeams],teamFilterApplied:explicitTeamFilter};const currentFilters={...baseFilters,dateFrom:period.dateFrom,dateTo:period.dateTo},previousFilters=period.previous?{...baseFilters,dateFrom:period.previous.dateFrom,dateTo:period.previous.dateTo}:null;const historicalPromise=window.InstallationsServiceSafe.historicalServiceSalesAnalysis(currentFilters).then(data=>({data,error:''})).catch(error=>({data:null,error:uiMessage(error?.message,t('appointments.reports.services.loadError','Unable to prepare service analysis.'))}));const [data,previousData,historicalResult]=await Promise.all([window.InstallationsServiceSafe.installationSummaryReport(currentFilters),previousFilters?window.InstallationsServiceSafe.installationSummaryReport(previousFilters):Promise.resolve({rows:[],executionGroups:[],summary:{teams:0,visits:0,quantity:0,value:0,expenses:0,profit:0,average:0},teams:[],representatives:[]}),historicalPromise]);state.serviceData=data;state.servicePreviousData=previousData;state.serviceHistoricalData=historicalResult.data;state.serviceLoaded=true;fillServiceSelectors(data);renderServiceAnalytics(data);if(historicalResult.data)renderHistoricalServiceSales(historicalResult.data);else{renderHistoricalServiceSales({summary:{},rows:[]});status($('installationServiceHistoricalStatus'),historicalResult.error,'error')}status(box,window.InstallationsService?.getReadStatusMessage?.('summaryReport')||window.InstallationsService?.getReadStatusMessage?.('historicalServiceSalesAnalysis')||'')}catch(e){status(box,uiMessage(e.message,t('appointments.reports.services.loadError','Unable to prepare service analysis.')),'error')}}
 
   function exportCsv(){
     const rows=state.reportRows;if(!rows.length)return;

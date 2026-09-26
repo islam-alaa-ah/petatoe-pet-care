@@ -1560,6 +1560,59 @@
     fetcher:()=>historicalInvoiceReport(filters)
   });
 
+  async function historicalServiceSalesAnalysis(filters={}){
+    requireAction('view','installationReports');
+    const dateFrom=String(filters.dateFrom||'').slice(0,10)||null;
+    const dateTo=String(filters.dateTo||'').slice(0,10)||null;
+    const teamIds=filters.teamFilterApplied
+      ? (Array.isArray(filters.teamIds)?filters.teamIds.filter(Boolean):[])
+      : null;
+    const representativeId=filters.representativeId||null;
+    const emptyResult=()=>({
+      dateFrom,dateTo,
+      teamIds:teamIds||[],
+      representativeId,
+      suppressedByRepresentativeFilter:Boolean(representativeId),
+      summary:{
+        distinctServices:0,
+        sourceLines:0,
+        serviceInvoiceOccurrences:0,
+        quantity:0,
+        discountAmount:0,
+        taxAmount:0,
+        salesBeforeTax:0,
+        salesInclusive:0
+      },
+      rows:[],
+      byTeam:[]
+    });
+    const {data,error}=await db().rpc('appointment_historical_service_sales_analysis_r44r38r20',{
+      p_date_from:dateFrom,
+      p_date_to:dateTo,
+      p_team_ids:teamIds,
+      p_representative_id:representativeId
+    });
+    if(error)throw new Error(
+      appointmentT(
+        'appointments.reports.services.loadError',
+        'Unable to prepare service analysis.'
+      )+' '+String(error.message||'')
+    );
+    return data||emptyResult();
+  }
+
+  const readHistoricalServiceSalesAnalysis=(filters={})=>appointmentCachedRead({
+    kind:'historicalServiceSalesAnalysis',
+    actions:[['installationReports','view']],
+    parts:['filters',JSON.stringify({
+      dateFrom:String(filters?.dateFrom||''),
+      dateTo:String(filters?.dateTo||''),
+      teamIds:filters?.teamFilterApplied?(filters?.teamIds||[]):null,
+      representativeId:String(filters?.representativeId||'')
+    })],
+    fetcher:()=>historicalServiceSalesAnalysis(filters)
+  });
+
   const readInstallationSummaryReport=(filters={})=>appointmentCachedRead({kind:'summaryReport',actions:[['installationReports','view']],parts:['filters',JSON.stringify(filters||{})],fetcher:()=>installationSummaryReport(filters)});
 
   const writeSaveCustomerLocationDefaults=appointmentOnlineWrite(saveCustomerLocationDefaults);
@@ -1587,6 +1640,6 @@
   });
 
   if(window.KYUMSyncEngine?.register)window.KYUMSyncEngine.register('appointments_read',()=>refreshActiveAppointmentContexts());
-  window.InstallationsService={list:readInstallationList,options:readInstallationOptions,customerAppointmentDefaults:readCustomerAppointmentDefaults,saveCustomerLocationDefaults:writeSaveCustomerLocationDefaults,requestEditDetail:readRequestEditDetail,requestEditOptions:readRequestEditOptions,createRequest:writeCreateRequest,updateRequest:writeUpdateRequest,updateRequestServices:writeUpdateRequestServices,updateRequestContextServices:writeUpdateRequestContextServices,save:writeSave,remove:writeRemove,technicians:readTechnicians,scheduleTeams:readScheduleTeams,technicianNameSuggestions:readTechnicianNameSuggestions,scheduleList:readScheduleList,schedulePlan:readSchedulePlan,assignMultiDay:writeAssignMultiDay,cancelSchedule:writeCancelSchedule,scheduleDayLocks:readScheduleDayLocks,setScheduleDayLock:writeSetScheduleDayLock,technicianBookedTimes:onlineTechnicianBookedTimes,teamAssignmentForDate:onlineTeamAssignmentForDate,assign:writeAssign,saveTechnician:writeSaveTechnician,removeTechnician:writeRemoveTechnician,executionWorkspace:readExecutionWorkspace,executionIdentity:readExecutionIdentity,selectExecutionRequest:writeSelectExecutionRequest,recordMapOpened:writeRecordMapOpened,returnExecutionToSchedule:writeReturnExecutionToSchedule,completeCollectionStage:writeCompleteCollectionStage,advanceExecution:writeAdvanceExecution,subscribeExecutionWorkspace,completionList:readCompletionList,completionQuantitySummary,completionInvoiceFinancials,saveCompletionWorkspace,completionCollectionRecoveryState:onlineCompletionCollectionRecoveryState,recoverCompletionCollectionStage:writeRecoverCompletionCollectionStage,confirmActualQuantities:writeConfirmActualQuantities,confirmActualQuantitiesAndInvoice:writeConfirmActualQuantitiesAndInvoice,cancelConfirmedQuantity:writeCancelConfirmedQuantity,saveCompletion:writeSaveCompletion,signedFileUrl:onlineSignedFileUrl,exceptionList:readExceptionList,saveRevisit:writeSaveRevisit,operationalReport:readOperationalReport,installationSummaryReport:readInstallationSummaryReport,historicalMonthlyPaymentSummary:readHistoricalMonthlyPaymentSummary,historicalInvoiceReport:readHistoricalInvoiceReport,getSettings:onlineGetSettings,saveSettings:writeSaveSettings,settingsCatalog:onlineSettingsCatalog,saveSettingItem:writeSaveSettingItem,toggleSettingItem:writeToggleSettingItem,removeSettingItem:writeRemoveSettingItem,invalidateCache:invalidateAppointmentCache,getReadStatus:kind=>kind?appointmentReadStatus[kind]||null:{...appointmentReadStatus},getReadStatusMessage:appointmentCacheStatusMessage,refreshActiveContexts:refreshActiveAppointmentContexts,getScopeSnapshot:()=>appointmentScopeSnapshot(),assertFinancialBoundaryReady:ensureFinancialBoundaryReady,buildFinancialOperationKey:financialOperationKey};
+  window.InstallationsService={list:readInstallationList,options:readInstallationOptions,customerAppointmentDefaults:readCustomerAppointmentDefaults,saveCustomerLocationDefaults:writeSaveCustomerLocationDefaults,requestEditDetail:readRequestEditDetail,requestEditOptions:readRequestEditOptions,createRequest:writeCreateRequest,updateRequest:writeUpdateRequest,updateRequestServices:writeUpdateRequestServices,updateRequestContextServices:writeUpdateRequestContextServices,save:writeSave,remove:writeRemove,technicians:readTechnicians,scheduleTeams:readScheduleTeams,technicianNameSuggestions:readTechnicianNameSuggestions,scheduleList:readScheduleList,schedulePlan:readSchedulePlan,assignMultiDay:writeAssignMultiDay,cancelSchedule:writeCancelSchedule,scheduleDayLocks:readScheduleDayLocks,setScheduleDayLock:writeSetScheduleDayLock,technicianBookedTimes:onlineTechnicianBookedTimes,teamAssignmentForDate:onlineTeamAssignmentForDate,assign:writeAssign,saveTechnician:writeSaveTechnician,removeTechnician:writeRemoveTechnician,executionWorkspace:readExecutionWorkspace,executionIdentity:readExecutionIdentity,selectExecutionRequest:writeSelectExecutionRequest,recordMapOpened:writeRecordMapOpened,returnExecutionToSchedule:writeReturnExecutionToSchedule,completeCollectionStage:writeCompleteCollectionStage,advanceExecution:writeAdvanceExecution,subscribeExecutionWorkspace,completionList:readCompletionList,completionQuantitySummary,completionInvoiceFinancials,saveCompletionWorkspace,completionCollectionRecoveryState:onlineCompletionCollectionRecoveryState,recoverCompletionCollectionStage:writeRecoverCompletionCollectionStage,confirmActualQuantities:writeConfirmActualQuantities,confirmActualQuantitiesAndInvoice:writeConfirmActualQuantitiesAndInvoice,cancelConfirmedQuantity:writeCancelConfirmedQuantity,saveCompletion:writeSaveCompletion,signedFileUrl:onlineSignedFileUrl,exceptionList:readExceptionList,saveRevisit:writeSaveRevisit,operationalReport:readOperationalReport,installationSummaryReport:readInstallationSummaryReport,historicalMonthlyPaymentSummary:readHistoricalMonthlyPaymentSummary,historicalInvoiceReport:readHistoricalInvoiceReport,historicalServiceSalesAnalysis:readHistoricalServiceSalesAnalysis,getSettings:onlineGetSettings,saveSettings:writeSaveSettings,settingsCatalog:onlineSettingsCatalog,saveSettingItem:writeSaveSettingItem,toggleSettingItem:writeToggleSettingItem,removeSettingItem:writeRemoveSettingItem,invalidateCache:invalidateAppointmentCache,getReadStatus:kind=>kind?appointmentReadStatus[kind]||null:{...appointmentReadStatus},getReadStatusMessage:appointmentCacheStatusMessage,refreshActiveContexts:refreshActiveAppointmentContexts,getScopeSnapshot:()=>appointmentScopeSnapshot(),assertFinancialBoundaryReady:ensureFinancialBoundaryReady,buildFinancialOperationKey:financialOperationKey};
   window.dispatchEvent(new CustomEvent('kyum-installations-service-ready'));
 })();
