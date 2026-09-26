@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-129-historical-reports-final-cert-r44r38r20r28-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-130-historical-compatible-service-overview-r44r38r20r29-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
