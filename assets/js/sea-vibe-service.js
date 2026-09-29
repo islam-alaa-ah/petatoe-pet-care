@@ -372,6 +372,35 @@
   async function deleteExpenseOnline(id){ const row=(memory||blank()).expenses.find(x=>x.id===id); if(row?.systemGenerated)throw new Error('لا يمكن حذف مصروف نظامي.'); await unwrap(client().from('sea_vibe_expenses').delete().eq('id',id),'تعذر حذف المصروف');await audit('delete','sea_vibe_expenses',id,row||{});await refreshSections(['expenses','attachments','trips','assets','treasuryMovements']);return id; }
   async function deleteExpense(id){permission('seaVibeExpenseNew','delete');if(navigator.onLine===false)throw new Error('يلزم الاتصال بالإنترنت لحذف المصروف.');return deleteExpenseOnline(id);}
 
+  async function setTripAutomaticExpenseExcluded(tripId,commissionRuleId,excluded=true){
+    permission('seaVibeTrips','edit');
+    if(navigator.onLine===false)throw new Error(t('seaVibe.trip.removeAutomaticExpenseOnlineOnly','حذف المصروف التلقائي يحتاج اتصالًا بالإنترنت.'));
+    if(!tripId||!commissionRuleId)throw new Error('SEA_VIBE_TRIP_COMMISSION_EXCLUSION_INPUT_REQUIRED');
+    const result=await unwrap(
+      client().rpc('sea_vibe_set_trip_commission_exclusion_r44r38r20r32',{
+        p_trip_id:tripId,
+        p_commission_rule_id:commissionRuleId,
+        p_excluded:excluded!==false
+      }),
+      excluded===false?'تعذر استعادة المصروف التلقائي':'تعذر حذف المصروف التلقائي من الرحلة'
+    );
+    await audit(
+      excluded===false?'restore':'delete',
+      'sea_vibe_trip_commission_exclusions',
+      `${tripId}:${commissionRuleId}`,
+      {
+        tripId,
+        commissionRuleId,
+        excluded:excluded!==false,
+        deletedExpenseRows:Number(result?.deletedExpenseRows||0),
+        tripExpenses:Number(result?.tripExpenses||0),
+        netProfit:Number(result?.netProfit||0)
+      }
+    );
+    await refreshSections(['expenses','trips','treasuryMovements']);
+    return result;
+  }
+
   async function setExpenseCatalogAccount(catalogId,accountId,{skipRefresh=false}={}){
     permission('seaVibeReference','edit');if(!catalogId||!accountId)return false;
     await unwrap(client().rpc('sea_vibe_set_expense_catalog_account_r44r11',{p_catalog_id:catalogId,p_account_id:accountId}),'SEA_VIBE_EXPENSE_ACCOUNT_LINK_FAILED');
@@ -628,5 +657,5 @@
   window.KYUMOfflineQueue?.register?.('sea_vibe',handleQueuedMutation);
 
 
-  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,getTreasuryVoucher,saveTreasuryVoucher,signedTreasuryVoucherAttachment,loadAccountStatementAccounts,loadAccountStatement,loadTrialBalance,loadIncomeStatement,loadBalanceSheet,loadManualJournalContext,saveManualJournal,signedAttachment});
+  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,setTripAutomaticExpenseExcluded,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,getTreasuryVoucher,saveTreasuryVoucher,signedTreasuryVoucherAttachment,loadAccountStatementAccounts,loadAccountStatement,loadTrialBalance,loadIncomeStatement,loadBalanceSheet,loadManualJournalContext,saveManualJournal,signedAttachment});
 })();
