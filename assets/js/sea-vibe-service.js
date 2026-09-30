@@ -7,12 +7,16 @@
   const SNAPSHOT_META_KEY='__seaVibeSnapshotMeta';
   const ALL_SECTIONS=['trips','customers','expenses','assets','tripTypes','paymentMethods','expenseCatalog','chartAccounts','permitFees','commissionRules','commissionEmployees','attachments','zawelTransactions','zawelBalance','fuelTransactions','fuelBalance','fuelSettlementConfig','fuelSettlements','treasuryMovements'];
   const LEGACY_CREATE_ACTIONS=new Set(['trip_create','asset_create','expense_create','expense_batch_create','reference_create','zawel_topup']);
+  const NONEXISTENT_BACKEND_SECTIONS=new Set(['fuelSettlementConfig','fuelSettlements']);
+  const DEFAULT_NETWORK_SECTIONS=ALL_SECTIONS.filter(name=>!NONEXISTENT_BACKEND_SECTIONS.has(name));
+  const SECTION_PERMISSION_GUARDS={customers:['seaVibeCustomers','view'],commissionEmployees:['seaVibeReference','view']};
   let memory=null;
   let readStatus={source:'none',updatedAt:0,stale:false,failedSections:[],refreshedSections:[]};
   let revalidationPromise=null;
   let lastRevalidationStartedAt=0;
   let memoryRevision=0;
   const pendingSyncSections=new Set();
+  let activeSections=null;
 
   function client(){ if(!window.customerSupabase) throw new Error('اتصال Supabase غير جاهز.'); return window.customerSupabase; }
   function permission(screen,action='view'){ if(!window.CustomerPermissions?.requireAction?.(screen,action,{silent:true})) throw new Error(`Permission denied: ${screen}.${action}`); }
@@ -41,6 +45,10 @@
   function normalizeSnapshot(value){const base=blank(),raw=value&&typeof value==='object'?value:{};return{...base,...raw,customers:Array.isArray(raw.customers)?raw.customers:[],commissionRules:Array.isArray(raw.commissionRules)?raw.commissionRules:[],commissionEmployees:Array.isArray(raw.commissionEmployees)?raw.commissionEmployees:[],chartAccounts:Array.isArray(raw.chartAccounts)?raw.chartAccounts:[],commissionRulesReady:raw.commissionRulesReady===true,zawelTransactions:Array.isArray(raw.zawelTransactions)?raw.zawelTransactions:[],zawelBalance:{...base.zawelBalance,...(raw.zawelBalance||{})},fuelTransactions:Array.isArray(raw.fuelTransactions)?raw.fuelTransactions:[],fuelBalance:{...base.fuelBalance,...(raw.fuelBalance||{})},fuelSettlementConfig:{...base.fuelSettlementConfig,...(raw.fuelSettlementConfig||{})},fuelSettlements:Array.isArray(raw.fuelSettlements)?raw.fuelSettlements:[],treasuryMovements:Array.isArray(raw.treasuryMovements)?raw.treasuryMovements:[]};}
 
   function snapshotMeta(snapshot){const raw=snapshot?.[SNAPSHOT_META_KEY];return raw&&typeof raw==='object'?raw:{failedSections:[],sectionUpdatedAt:{},refreshedAt:0};}
+  function normalizeSectionNames(names){return[...new Set((Array.isArray(names)?names:[]).filter(name=>ALL_SECTIONS.includes(name)))];}
+  function sectionPermitted(name){const guard=SECTION_PERMISSION_GUARDS[name],checker=window.CustomerPermissions?.requireAction;if(!guard||typeof checker!=='function')return true;return checker.call(window.CustomerPermissions,guard[0],guard[1],{silent:true})!==false;}
+  function requestableSections(names){return normalizeSectionNames(names).filter(sectionPermitted);}
+  function sectionLoaded(snapshot,name){return Number(snapshotMeta(snapshot).sectionUpdatedAt?.[name]||0)>0;}
   function applySnapshotMeta(snapshot,{refreshedSections=[],failedSections=[],full=false,refreshedAt=Date.now()}={}){
     const current=snapshotMeta(snapshot),failed=new Set(full?[]:(current.failedSections||[])),sectionUpdatedAt={...(current.sectionUpdatedAt||{})};
     for(const name of refreshedSections||[]){failed.delete(name);sectionUpdatedAt[name]=refreshedAt;}
@@ -150,13 +158,13 @@
   }
 
   async function fetchSections(names=ALL_SECTIONS){
-    const requested=[...new Set((names||[]).filter(name=>ALL_SECTIONS.includes(name)))],c=client(),out={};
+    const requested=requestableSections(names),c=client(),out={};
     await Promise.all(requested.map(async name=>Object.assign(out,await fetchSection(name,c))));
     return out;
   }
 
   async function fetchSectionsPartial(names=ALL_SECTIONS){
-    const requested=[...new Set((names||[]).filter(name=>ALL_SECTIONS.includes(name)))],c=client();
+    const requested=requestableSections(names),c=client();
     const settled=await Promise.allSettled(requested.map(async name=>({name,patch:await fetchSection(name,c)})));
     const patch={},refreshedSections=[],failedSections=[],errors={};
     settled.forEach((result,index)=>{const name=requested[index];if(result.status==='fulfilled'){Object.assign(patch,result.value.patch);refreshedSections.push(name);}else{failedSections.push(name);errors[name]=String(result.reason?.message||result.reason||'unknown error');}});
@@ -172,7 +180,7 @@
   }
 
   function revalidationDue(force=false){
-    if(navigator.onLine===false||!memory)return false;
+    if(navigator.onLine===false||!memory||activeSections===null||!activeSections.length)return false;
     if(force)return true;
     const now=Date.now();
     if(now-lastRevalidationStartedAt<REVALIDATE_MIN_INTERVAL_MS)return false;
@@ -183,18 +191,20 @@
     if(navigator.onLine===false||!memory)return memory||blank();
     if(revalidationPromise)return revalidationPromise;
     if(!revalidationDue(options.force===true))return memory;
+    const requested=requestableSections(options.sections??activeSections??DEFAULT_NETWORK_SECTIONS);
+    if(!requested.length)return memory;
     lastRevalidationStartedAt=Date.now();
-    const base=memory,startRevision=memoryRevision;
+    const base=memory,startRevision=memoryRevision,startActiveKey=activeSections?.join('|')||'';
     revalidationPromise=(async()=>{
-      const result=await fetchSectionsPartial(ALL_SECTIONS);
-      if(memoryRevision!==startRevision||memory!==base){console.warn('SEA VIBE background revalidation discarded because the snapshot changed while the network refresh was in flight.');return memory||base;}
+      const result=await fetchSectionsPartial(requested);
+      if(memoryRevision!==startRevision||memory!==base||startActiveKey!==(activeSections?.join('|')||'')){ console.warn('SEA VIBE background revalidation discarded because the snapshot changed while the network refresh was in flight.');return memory||base;}
       if(!result.refreshedSections.length){
         updateReadStatus(readStatus.source||'cache',{updatedAt:readStatus.updatedAt||Date.now(),stale:true,failedSections:result.failedSections,refreshedSections:[],refreshError:Object.values(result.errors)[0]||'SEA VIBE background refresh failed'});
         console.warn('SEA VIBE background revalidation failed for all sections.',result.errors);
         return base;
       }
       if(result.failedSections.length)console.warn('SEA VIBE background revalidation completed with partial section failures.',result.errors);
-      return persist({...blank(),...base,...result.patch},{source:result.failedSections.length?'network-partial':'network-background',refreshedSections:result.refreshedSections,failedSections:result.failedSections,stale:result.failedSections.length>0,full:true});
+      return persist({...blank(),...base,...result.patch},{source:result.failedSections.length?'network-partial':'network-background',refreshedSections:result.refreshedSections,failedSections:result.failedSections,stale:result.failedSections.length>0,full:false});
     })();
     try{return await revalidationPromise;}finally{revalidationPromise=null;}
   }
@@ -204,9 +214,27 @@
   }
 
   async function load(options={}){
-    const force=options.force===true,available=memory||await readCache();
-    if(available&&!force){scheduleRevalidation();return available;}
-    try{return await persist(await fetchNetwork(),{source:'network',refreshedSections:ALL_SECTIONS,failedSections:[],full:true});}catch(error){
+    const requested=normalizeSectionNames(options.sections??(activeSections===null?DEFAULT_NETWORK_SECTIONS:activeSections));
+    activeSections=requested;
+    const requestable=requestableSections(requested),force=options.force===true,available=memory||await readCache();
+    if(!requestable.length)return available||blank();
+    if(available&&!force){
+      const missing=requestable.filter(name=>!sectionLoaded(available,name));
+      if(missing.length){
+        const result=await fetchSectionsPartial(missing);
+        if(result.refreshedSections.length){
+          await persist({...blank(),...available,...result.patch},{source:result.failedSections.length?'network-partial':'network-sections',refreshedSections:result.refreshedSections,failedSections:result.failedSections,stale:result.failedSections.length>0,full:false});
+        }
+        if(result.failedSections.length)throw new Error(Object.values(result.errors)[0]||'SEA VIBE section load failed');
+        return memory||available;
+      }
+      scheduleRevalidation();return available;
+    }
+    try{
+      const result=await fetchSectionsPartial(requestable);
+      if(result.failedSections.length)throw new Error(Object.values(result.errors)[0]||'SEA VIBE section load failed');
+      return await persist({...blank(),...result.patch},{source:'network',refreshedSections:result.refreshedSections,failedSections:[],full:false});
+    }catch(error){
       if(available){updateReadStatus(readStatus.source||'cache',{updatedAt:readStatus.updatedAt||Date.now(),stale:true,failedSections:readStatus.failedSections||[],refreshedSections:[],refreshError:error?.message||String(error)});return available;}
       throw error;
     }
@@ -219,8 +247,9 @@
     return (memory||blank()).commissionEmployees||[];
   }
   function getSnapshot(){ return memory||blank(); }
+  function setActiveSections(names=[]){activeSections=normalizeSectionNames(names);if(!activeSections.length)lastRevalidationStartedAt=0;return [...activeSections];}
   function getReadStatus(){ return {...readStatus,failedSections:[...(readStatus.failedSections||[])],refreshedSections:[...(readStatus.refreshedSections||[])]}; }
-  async function invalidate(){ memory=null; memoryRevision+=1; revalidationPromise=null; lastRevalidationStartedAt=0; const ns=await namespace(); await window.KYUMSmartCache?.removePrefix?.('sea-vibe:',{namespace:ns}); }
+  async function invalidate(){ memory=null; memoryRevision+=1; revalidationPromise=null; lastRevalidationStartedAt=0; activeSections=null; const ns=await namespace(); await window.KYUMSmartCache?.removePrefix?.('sea-vibe:',{namespace:ns}); }
 
   window.addEventListener('online',()=>{if(memory)scheduleRevalidation({force:true});});
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&memory)scheduleRevalidation();});
@@ -657,5 +686,5 @@
   window.KYUMOfflineQueue?.register?.('sea_vibe',handleQueuedMutation);
 
 
-  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,setTripAutomaticExpenseExcluded,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,getTreasuryVoucher,saveTreasuryVoucher,signedTreasuryVoucherAttachment,loadAccountStatementAccounts,loadAccountStatement,loadTrialBalance,loadIncomeStatement,loadBalanceSheet,loadManualJournalContext,saveManualJournal,signedAttachment});
+  window.SeaVibeService=Object.freeze({load,refresh,refreshCommissionEmployees,setActiveSections,getSnapshot,getReadStatus,invalidate,previewTripAutomaticCosts,previewTripSerial,saveTrip,setTripStatus,setTripAutomaticExpenseExcluded,saveCustomer,deleteCustomer,ensureTripCustomer,saveAsset,addExpenses,getExpenseMovement,updateExpenseMovement,deleteExpenseMovement,deleteExpense,saveReference,setExpenseCatalogAccount,saveChartAccount,saveCommissionRule,deleteCommissionRule,previewCommissionRuleBackfill,backfillCommissionRule,savePermitFee,savePermitFees,topupZawel,updateZawelTopup,deleteZawelTopup,topupFuel,updateFuelTopup,deleteFuelTopup,previewFuelSettlement,applyFuelSettlement,updateFuelSettlementConfig,getTreasuryVoucher,saveTreasuryVoucher,signedTreasuryVoucherAttachment,loadAccountStatementAccounts,loadAccountStatement,loadTrialBalance,loadIncomeStatement,loadBalanceSheet,loadManualJournalContext,saveManualJournal,signedAttachment});
 })();

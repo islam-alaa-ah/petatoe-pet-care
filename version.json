@@ -1,19 +1,19 @@
 {
-  "version": "18.56.134",
-  "build": 185734,
+  "version": "18.56.135",
+  "build": 185735,
   "forceUpdate": true,
-  "releaseDate": "2026-09-29",
-  "title": "حذف مصروف تلقائي من رحلة SEA VIBE واحدة — R44R38R20R32R2",
+  "releaseDate": "2026-10-01",
+  "title": "تقليل طلبات SEA VIBE الخلفية — R44R38R20R34A",
   "notes": [
-    "يمكن الآن من تعديل الرحلة حذف عمولة أو مصروف تلقائي محدد من الرحلة الحالية فقط.",
-    "الحذف لا يغير إعدادات نوع الرحلة ولا يؤثر على الرحلات الأخرى، والاستثناء يمنع إعادة إنشاء المصروف تلقائيًا لنفس الرحلة.",
-    "تكلفة البنزين ورسوم تصريح الإبحار تظل خارج نطاق الحذف، والعملية تحتاج اتصالًا بالإنترنت وصلاحية تعديل الرحلات."
+    "يتم الآن تحميل بيانات SEA VIBE حسب الشاشة المطلوبة بدل إعادة طلب جميع الأقسام في كل تحميل خلفي.",
+    "تم تقييد إعادة التحقق الخلفية بالأقسام النشطة، مع منع طلب أقسام غير موجودة في Production حاليًا.",
+    "لم يتم تغيير Business Logic أو Offline Queue أو Permissions/RLS أو الحسابات المالية."
   ],
-  "cacheToken": "petatoe-pwa-18-56-134-sea-vibe-trip-auto-expense-removal-r44r38r20r32r2-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r20r32r2.title",
+  "cacheToken": "petatoe-pwa-18-56-135-sea-vibe-usage-containment-r44r38r20r34a-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r20r34a.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r32r2.note1",
-    "pwa.update.release.r44r38r20r32r2.note2",
-    "pwa.update.release.r44r38r20r32r2.note3"
+    "pwa.update.release.r44r38r20r34a.note1",
+    "pwa.update.release.r44r38r20r34a.note2",
+    "pwa.update.release.r44r38r20r34a.note3"
   ]
 }
