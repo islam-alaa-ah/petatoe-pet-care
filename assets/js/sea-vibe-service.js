@@ -175,8 +175,9 @@
   async function refreshSections(names){ const requested=[...new Set((names||[]).filter(name=>ALL_SECTIONS.includes(name)))],patch=await fetchSections(requested); return persist({...blank(),...(memory||blank()),...patch},{source:'network-sections',refreshedSections:requested,failedSections:[],full:false}); }
   function markSyncSections(names){ for(const name of names||[]) if(ALL_SECTIONS.includes(name))pendingSyncSections.add(name); }
   async function syncRefresh(context={}){
-    if(context.reason==='offline-queue'&&pendingSyncSections.size){const names=[...pendingSyncSections];pendingSyncSections.clear();return refreshSections(names);}
-    return refresh();
+    if(pendingSyncSections.size){const names=[...pendingSyncSections];pendingSyncSections.clear();return refreshSections(names);}
+    if(activeSections?.length){scheduleRevalidation({force:context.reason==='online'});return memory||blank();}
+    return memory||blank();
   }
 
   function revalidationDue(force=false){
