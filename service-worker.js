@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-136-followups-call-runtime-hotfix-r44r38r20r34a1-p5-13-8-72";
+const CACHE_VERSION = "petatoe-pwa-18-56-136-followups-call-runtime-hotfix-r44r38r20r34a1-pwa-sync-fix-p5-13-8-72";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
