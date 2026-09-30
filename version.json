@@ -1,19 +1,17 @@
 {
-  "version": "18.56.135",
-  "build": 185735,
+  "version": "18.56.136",
+  "build": 185736,
   "forceUpdate": true,
   "releaseDate": "2026-10-01",
-  "title": "تقليل طلبات SEA VIBE الخلفية — R44R38R20R34A",
+  "title": "إصلاح خطأ زر الاتصال في المتابعات — R44R38R20R34A1",
   "notes": [
-    "يتم الآن تحميل بيانات SEA VIBE حسب الشاشة المطلوبة بدل إعادة طلب جميع الأقسام في كل تحميل خلفي.",
-    "تم تقييد إعادة التحقق الخلفية بالأقسام النشطة، مع منع طلب أقسام غير موجودة في Production حاليًا.",
-    "لم يتم تغيير Business Logic أو Offline Queue أو Permissions/RLS أو الحسابات المالية."
+    "إصلاح ReferenceError في واجهة الموبايل عند إنشاء زر اتصال العميل داخل المتابعات.",
+    "استخدام مفتاح الترجمة الصحيح للمتابعات مع الحفاظ على منطق البيانات والمزامنة والصلاحيات كما هو."
   ],
-  "cacheToken": "petatoe-pwa-18-56-135-sea-vibe-usage-containment-r44r38r20r34a-p5-13-8-72",
-  "titleI18nKey": "pwa.update.release.r44r38r20r34a.title",
+  "cacheToken": "petatoe-pwa-18-56-136-followups-call-runtime-hotfix-r44r38r20r34a1-p5-13-8-72",
+  "titleI18nKey": "pwa.update.release.r44r38r20r34a1.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r34a.note1",
-    "pwa.update.release.r44r38r20r34a.note2",
-    "pwa.update.release.r44r38r20r34a.note3"
+    "pwa.update.release.r44r38r20r34a1.note1",
+    "pwa.update.release.r44r38r20r34a1.note2"
   ]
 }

@@ -728,7 +728,7 @@
         const call = document.createElement("a");
         call.className = "mobile-followup-call";
         call.href = window.KYUMMobilePhone.telephoneUrl(phone) || `tel:${phone}`;
-        call.textContent=mt('contracts.export.call','Call');
+        call.textContent = t('followups.mobile.call','Call');
         call.setAttribute("aria-label", t("followups.mobile.callAria", "Call customer"));
         actions.prepend(call);
       }
