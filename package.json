@@ -1,6 +1,6 @@
 {
   "name": "petatoe-pet-care-mobile",
-  "version": "18.56.138",
+  "version": "18.56.139",
   "private": true,
   "description": "Native Android/iOS packaging layer for PETATOE.",
   "scripts": {
@@ -16,6 +16,7 @@
     "offline:runtime:check": "node scripts/offline-runtime-reliability-check.mjs",
     "offline:cache-first:check": "node scripts/cache-first-connectivity-check.mjs",
     "offline:queue:check": "node scripts/sync-queue-recovery-check.mjs",
+    "check:r44r38r20r34a4": "node scripts/phase-r44r38r20r34a4-queue-ack-stability-check.mjs",
     "enterprise:remaining-offline:check": "node scripts/remaining-modules-offline-check.mjs",
     "enterprise:full-offline:check": "node scripts/full-enterprise-offline-certification-check.mjs",
     "offline:write-completion:check": "node scripts/offline-write-completion-check.mjs",

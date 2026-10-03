@@ -16,6 +16,7 @@
   const lastAckAt = new Map();
   const inflightQueueAcks = new Map();
   const lastQueueAckAt = new Map();
+  const lastQueueAckSignature = new Map();
   let queueAckTimer = null;
 
   function hashText(value) {
@@ -178,12 +179,33 @@
     };
   }
 
+  function queueSummarySignature(summary) {
+    return JSON.stringify([
+      summary.openCount,
+      summary.counts.pending,
+      summary.counts.retry,
+      summary.counts.processing,
+      summary.counts.failed,
+      summary.counts.conflict,
+      summary.oldestOpenAt,
+      summary.newestOpenAt,
+      summary.replayPolicyVersion,
+      summary.replayHorizonDays,
+      summary.replayableFailedConflictCount,
+      summary.expiredFailedConflictCount,
+      summary.oldestReplayableAt,
+      summary.latestReplayDeadlineAt
+    ]);
+  }
+
   async function ackQueueDomain(domain, rows, options = {}) {
     const userId = currentUserId();
     if (!userId || navigator.onLine === false || !window.customerSupabase?.rpc) return false;
     const summary = queueSummary(queueDomainRows(rows, domain));
+    const signature = queueSummarySignature(summary);
     const key = `${userId}:${domain}`;
     const now = Date.now();
+    if (lastQueueAckSignature.get(key) === signature) return true;
     if (!options.force && now - Number(lastQueueAckAt.get(key) || 0) < QUEUE_ACK_THROTTLE_MS) return true;
     if (inflightQueueAcks.has(key)) return inflightQueueAcks.get(key);
 
@@ -208,6 +230,7 @@
       });
       if (error) throw new Error(error.message || "sync_queue_watermark_ack_failed");
       lastQueueAckAt.set(key, Date.now());
+      lastQueueAckSignature.set(key, signature);
       return true;
     })();
 
