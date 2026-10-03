@@ -683,7 +683,18 @@
     throw new Error('SEA VIBE offline action unsupported');
   }
 
-  window.KYUMSyncEngine?.register?.('sea_vibe',context=>syncRefresh(context));
+  window.KYUMSyncEngine?.register?.('sea_vibe',context=>syncRefresh(context), {
+    isActive: () => {
+      const view = String(window.KYUMNavigation?.current?.() || '');
+      return view.startsWith('seaVibe') && ![
+        'seaVibePayrollManagement',
+        'seaVibeSalaryStatement',
+        'seaVibeCommissionManagement',
+        'seaVibeCommissionStatement',
+        'seaVibePayrollReference'
+      ].includes(view);
+    }
+  });
   window.KYUMOfflineQueue?.register?.('sea_vibe',handleQueuedMutation);
 
 

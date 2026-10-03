@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-137-sea-vibe-sync-scope-guard-r44r38r20r34a2";
+const CACHE_VERSION = "petatoe-pwa-18-56-138-foreground-sync-scope-guard-r44r38r20r34a3";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;

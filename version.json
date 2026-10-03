@@ -1,14 +1,14 @@
 {
-  "version": "18.56.137",
-  "build": 185737,
+  "version": "18.56.138",
+  "build": 185738,
   "forceUpdate": false,
-  "releaseDate": "2026-10-01",
-  "title": "إيقاف التحديث الكامل أثناء دورة Sync لـ SEA VIBE — R44R38R20R34A2",
+  "releaseDate": "2026-10-03",
+  "title": "تقييد Foreground Sync حسب الشاشة النشطة — R44R38R20R34A3",
   "notes": [
-    "منع دورة Sync وForeground من إعادة تحميل جميع أقسام SEA VIBE عندما تكون شاشة واحدة فقط نشطة.",
-    "الحفاظ على إعادة التحقق الخلفية المقيّدة بالأقسام النشطة وعدم تغيير منطق الأعمال أو المزامنة."
+    "منع تشغيل Foreground Sync لكل الوحدات عند كل عودة للواجهة؛ يتم تشغيل الوحدات المرتبطة بالشاشة النشطة فقط مع حد زمني 30 ثانية.",
+    "الحفاظ على مسارات Online/Offline وManual Sync ومنطق الأعمال دون تغيير."
   ],
-  "cacheToken": "petatoe-pwa-18-56-137-sea-vibe-sync-scope-guard-r44r38r20r34a2",
+  "cacheToken": "petatoe-pwa-18-56-138-foreground-sync-scope-guard-r44r38r20r34a3",
   "titleI18nKey": "pwa.update.release.r44r38r20r34a2.title",
   "notesI18nKeys": [
     "pwa.update.release.r44r38r20r34a2.note1",

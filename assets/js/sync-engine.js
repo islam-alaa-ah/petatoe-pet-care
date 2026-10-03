@@ -5,9 +5,11 @@
   const STATE_PREFIX = "kyum:delta-sync:v1";
   const FULL_RECONCILE_MS = 6 * 60 * 60 * 1000;
   const CURSOR_OVERLAP_MS = 5000;
+  const FOREGROUND_MIN_INTERVAL_MS = 30 * 1000;
   const tasks = new Map();
   const inFlight = new Map();
   const retryTimers = new Map();
+  const lastForegroundRunAt = new Map();
   let lifecycleInstalled = false;
 
   function stateKey(namespace, entity, scopeKey) {
@@ -116,18 +118,33 @@
     try { return await operation; } finally { inFlight.delete(flightKey); }
   }
 
-  function register(entity, task) {
+  function register(entity, task, options = {}) {
     if (!entity || typeof task !== "function") return () => {};
-    tasks.set(entity, task);
+    tasks.set(entity, {
+      task,
+      foreground: options.foreground !== false,
+      isActive: typeof options.isActive === "function" ? options.isActive : null
+    });
     installLifecycle();
-    return () => tasks.delete(entity);
+    return () => {
+      tasks.delete(entity);
+      lastForegroundRunAt.delete(entity);
+    };
   }
 
   async function runTask(entity, reason) {
-    const task = tasks.get(entity);
-    if (!task) return;
+    const entry = tasks.get(entity);
+    if (!entry) return;
+    if (reason === "foreground") {
+      if (entry.foreground === false) return;
+      if (entry.isActive && entry.isActive() !== true) return;
+      const now = Date.now();
+      const lastRunAt = Number(lastForegroundRunAt.get(entity) || 0);
+      if (lastRunAt > 0 && now - lastRunAt < FOREGROUND_MIN_INTERVAL_MS) return;
+      lastForegroundRunAt.set(entity, now);
+    }
     try {
-      await task({ reason });
+      await entry.task({ reason });
       const timer = retryTimers.get(entity);
       if (timer) clearTimeout(timer);
       retryTimers.delete(entity);

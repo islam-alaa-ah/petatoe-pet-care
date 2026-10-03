@@ -512,7 +512,9 @@
     }
   }
 
-  window.KYUMSyncEngine?.register?.("followups", () => listFollowups());
+  window.KYUMSyncEngine?.register?.("followups", () => listFollowups(), {
+    isActive: () => window.KYUMNavigation?.current?.() === "followups"
+  });
   window.KYUMOfflineQueue?.register?.("followups", async (operation, helpers) => {
     const record = { ...operation.payload };
     if (operation.action === "delete") {

@@ -1,3 +1,25 @@
+# R44R38R20R34A3 — Foreground Sync Scope Guard
+
+## Modified/New Files
+- `assets/js/sync-engine.js`
+- `assets/js/customers-service.js`
+- `assets/js/followups-service.js`
+- `assets/js/quotations-service.js`
+- `assets/js/sea-vibe-service.js`
+- `assets/js/sea-vibe.js`
+- `assets/js/pwa.js`
+- `service-worker.js`
+- `version.json`
+- `package.json`
+- `index.html`
+
+## Implemented
+- Foreground Sync is scoped to the active screen for the affected CRM/SEA VIBE domains.
+- Foreground execution is throttled to one run per entity per 30 seconds.
+- SEA VIBE active sections are cleared when leaving the SEA VIBE module.
+- Online/manual/offline sync paths are unchanged.
+- PWA release/cache version is advanced to `18.56.138`.
+
 # KYUM Phase 16.6 — Daily Attendance & Activity Timeline
 
 ## Modified/New Files

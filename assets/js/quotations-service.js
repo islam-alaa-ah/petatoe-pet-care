@@ -553,7 +553,9 @@
     }
   }
 
-  window.KYUMSyncEngine?.register?.("quotations", () => listQuotations());
+  window.KYUMSyncEngine?.register?.("quotations", () => listQuotations(), {
+    isActive: () => window.KYUMNavigation?.current?.() === "quotations"
+  });
   window.KYUMOfflineQueue?.register?.("quotations", async (operation, helpers) => {
     const record = { ...operation.payload };
     if (operation.action === "delete") {

@@ -701,7 +701,9 @@
     return results;
   }
 
-  window.KYUMSyncEngine?.register?.("customers", () => listCustomers());
+  window.KYUMSyncEngine?.register?.("customers", () => listCustomers(), {
+    isActive: () => window.KYUMNavigation?.current?.() === "customers"
+  });
   window.KYUMOfflineQueue?.register?.("customers", async operation => {
     const record = { ...operation.payload };
     if (operation.action === "delete") {
