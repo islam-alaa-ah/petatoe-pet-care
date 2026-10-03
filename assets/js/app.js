@@ -223,6 +223,7 @@ const views = {
   backups: document.getElementById("backupsView"),
   systemHealth: document.getElementById("systemHealthView"),
   reportsOverview: document.getElementById("reportsOverviewView"),
+  salesReports: document.getElementById("salesReportsView"),
   dailyPerformanceReport: document.getElementById("dailyPerformanceReportView"),
   notificationCenter: document.getElementById("notificationCenterView"),
   translationCenter: document.getElementById("translationCenterView"),
@@ -292,6 +293,7 @@ const pageMeta = {
   backups: ["backups.page.title", "backups.page.note"],
   systemHealth: ["systemHealth.page.title", "systemHealth.page.note"],
   reportsOverview: ["reportsOverview.page.title", "reportsOverview.page.subtitle"],
+  salesReports: ["salesReports.page.title", "salesReports.page.subtitle"],
   dailyPerformanceReport: ["تقرير الأداء اليومي", "متابعة تنفيذ المهام والنشاط اليومي للموظفين"],
   notificationCenter: ["مركز الإشعارات", "إدارة الأحداث والمستلمين وقنوات الإشعار"],
   translationCenter: ["مركز الترجمه", "إدارة قاموس الترجمة المركزي ومراجعة تغطية الشاشات"],
@@ -308,6 +310,7 @@ const PAGE_META_I18N_KEYS = Object.freeze({
   systemSettings: pageMeta.systemSettings,
   aboutApp: ["aboutApp.page.title", "aboutApp.page.note"],
   reportsOverview: ["reportsOverview.page.title", "reportsOverview.page.subtitle"],
+  salesReports: ["salesReports.page.title", "salesReports.page.subtitle"],
   dailyOperations: ["dailyOperations.page.title", "dailyOperations.page.subtitle"],
   dailyPerformanceReport: ["dailyPerformance.page.title", "dailyPerformance.page.subtitle"],
   dashboard: ["dashboard.page.title", "dashboard.page.subtitle"],
@@ -1035,6 +1038,7 @@ function applyCustomerCacheUpdate(event) {
   renderReferenceCustomers();
   renderDashboard();
   renderRepresentatives();
+  if (activeViewKey === "salesReports") window.SalesReportsUI?.render?.();
 }
 
 window.addEventListener("kyum-customer-cache-updated", applyCustomerCacheUpdate);
@@ -1595,6 +1599,9 @@ function switchView(requestedName, options = {}) {
   if (name === "reportsOverview") {
     ensureReportsData().then(renderReportsOverview);
   }
+  if (name === "salesReports") {
+    window.SalesReportsUI?.activate?.(false);
+  }
   if (name === "dailyPerformanceReport") {
     loadDailyPerformanceReport(true);
   }
@@ -1681,6 +1688,7 @@ window.addEventListener("petatoe-language-changed", () => {
   if (current === "representatives") renderRepresentatives();
   if (current === "settings") { renderReferenceData(); renderReferenceCustomers(); }
   if (current === "reportsOverview" && currentReportsSnapshot) { populateReportsRepresentativeFilter(); renderReportsOverview(); }
+  if (current === "salesReports") window.SalesReportsUI?.render?.();
   const customer360Dialog = document.getElementById("customerDetailsDialog");
   if (customer360Dialog?.open && customer360Dialog.dataset.customerId) showCustomerDetails(customer360Dialog.dataset.customerId);
   if (document.getElementById("customerImportDialog")?.open && customerImportPreview) renderCustomerImportPreview(customerImportPreview);
@@ -1721,6 +1729,7 @@ window.addEventListener("kyum-geography-cache-updated", event => {
     renderCustomers();
     if (activeViewKey === "settings") renderReferenceCustomers();
     if (activeViewKey === "dashboard") renderDashboard();
+    if (activeViewKey === "salesReports") window.SalesReportsUI?.render?.();
     const customer360Dialog = document.getElementById("customerDetailsDialog");
     if (customer360Dialog?.open && customer360Dialog.dataset.customerId) {
       showCustomerDetails(customer360Dialog.dataset.customerId);

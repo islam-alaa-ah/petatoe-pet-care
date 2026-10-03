@@ -1,17 +1,17 @@
 {
-  "version": "18.56.139",
-  "build": 185739,
+  "version": "18.56.138",
+  "build": 185738,
   "forceUpdate": false,
   "releaseDate": "2026-10-03",
-  "title": "منع تكرار ACK لطابور المزامنة ومحاذاة Runtime Cache — R44R38R20R34A4",
+  "title": "إضافة شاشة تقارير المبيعات — R44R38R20R35",
   "notes": [
-    "إرسال ACK لطابور المزامنة فقط عند إنشاء حالة Queue جديدة أو تغير ملخصها الفعلي، مع الحفاظ على ACK الأولي عند بدء الجلسة.",
-    "محاذاة إصدار ملفات Runtime وService Worker مع 18.56.139 لمنع تشغيل sync-retention من Cache قديم."
+    "إضافة شاشة مستقلة لتقارير المبيعات بفلاتر السنة والشهر والتصفية حسب السيارة والعميل والفريق وطريقة السداد وحالة الفاتورة.",
+    "تقارير المبيعات منظمة رأسيًا بعرض الشاشة بالكامل، مع المبيعات حسب الحي المرتبطة ببيانات العميل الحالية."
   ],
-  "cacheToken": "petatoe-pwa-18-56-139-queue-ack-stability-r44r38r20r34a4",
-  "titleI18nKey": "pwa.update.release.r44r38r20r34a4.title",
+  "cacheToken": "petatoe-pwa-18-56-138-sales-reports-r44r38r20r35",
+  "titleI18nKey": "pwa.update.release.r44r38r20r35.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r34a4.note1",
-    "pwa.update.release.r44r38r20r34a4.note2"
+    "pwa.update.release.r44r38r20r35.note1",
+    "pwa.update.release.r44r38r20r35.note2"
   ]
 }

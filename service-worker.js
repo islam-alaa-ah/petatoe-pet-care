@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-139-queue-ack-stability-r44r38r20r34a4";
+const CACHE_VERSION = "petatoe-pwa-18-56-138-sales-reports-r44r38r20r35";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -31,6 +31,7 @@ const CORE_APP_SHELL = [
   "./assets/css/installation-dashboard-settings.css",
   "./assets/css/mobile-theme-canonical.css",
   "./assets/css/sales-invoices.css",
+  "./assets/css/sales-reports.css",
   "./assets/css/sea-vibe.css",
   "./assets/css/vehicle-treasury.css",
   "./assets/css/payroll.css",
@@ -76,6 +77,7 @@ const CORE_APP_SHELL = [
   "./assets/js/sea-vibe-service.js",
   "./assets/js/installations-service-contract.js",
   "./assets/js/app.js",
+  "./assets/js/sales-reports.js",
   "./assets/js/customer-excel-actions-hotfix.js",
   "./assets/js/notification-center.js",
   "./assets/js/installations-module.js",
