@@ -68,6 +68,7 @@ ok('Reporting RPC registered', migration.includes('create or replace function pu
 ok('RPC checks screen permission', migration.includes("public.has_screen_permission('salesReports','view')"));
 ok('RPC preserves representative scope', migration.includes('public.can_access_representative(si.representative_id)'));
 ok('Historical rows are included', migration.includes('from public.appointment_historical_sales_reporting h'));
+ok('Historical vehicle uses reporting-view alias', migration.includes("coalesce(ha.car_name_snapshot,hc.name,h.vehicle,'') as car_name") && !migration.includes('h.vehicle_raw'));
 ok('Translation rows registered', migration.includes("'salesReports.page.title'"));
 
 const failed = checks.filter(item => !item.pass);

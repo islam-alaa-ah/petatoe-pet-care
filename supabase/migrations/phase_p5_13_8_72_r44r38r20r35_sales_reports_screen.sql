@@ -1,4 +1,5 @@
 -- R44R38R20R35 — Sales Reports screen + scoped reporting read surface
+-- HOTFIX R1: use the exposed `vehicle` alias from appointment_historical_sales_reporting.
 -- Scope: sales reporting UI/data read only. No invoice creation/editing, pricing, VAT,
 -- commission, appointment state, offline queue, sync/ACK, or existing sales-invoice logic changes.
 
@@ -170,7 +171,7 @@ as $$
       ha.installation_team_id as team_id,
       coalesce(ha.team_name_snapshot,'') as team_name,
       h.appointment_car_id as car_id,
-      coalesce(ha.car_name_snapshot,hc.name,h.vehicle_raw,'') as car_name,
+      coalesce(ha.car_name_snapshot,hc.name,h.vehicle,'') as car_name,
       coalesce(ha.plate_number_snapshot,hc.plate_number,'') as plate_number,
       true as is_historical,
       coalesce(h.record_type,'invoice_line') as record_type
