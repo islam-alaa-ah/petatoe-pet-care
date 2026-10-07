@@ -1,17 +1,17 @@
 {
-  "version": "18.56.138",
-  "build": 185738,
+  "version": "18.56.140",
+  "build": 185740,
   "forceUpdate": false,
-  "releaseDate": "2026-10-03",
-  "title": "إضافة شاشة تقارير المبيعات — R44R38R20R35",
+  "releaseDate": "2026-10-04",
+  "title": "دقة تقارير المبيعات وطرق السداد — R44R38R20R35A1",
   "notes": [
-    "إضافة شاشة مستقلة لتقارير المبيعات بفلاتر السنة والشهر والتصفية حسب السيارة والعميل والفريق وطريقة السداد وحالة الفاتورة.",
-    "تقارير المبيعات منظمة رأسيًا بعرض الشاشة بالكامل، مع المبيعات حسب الحي المرتبطة ببيانات العميل الحالية."
+    "تصحيح عرض جميع طرق السداد الفعلية في تقرير المبيعات بدل تجميعها تحت غير محدد.",
+    "تصحيح تحليل الضريبة ليعرض الإجمالي الفعلي شامل الضريبة مع إظهار فرق إعادة البناء عند وجوده."
   ],
-  "cacheToken": "petatoe-pwa-18-56-138-sales-reports-r44r38r20r35",
-  "titleI18nKey": "pwa.update.release.r44r38r20r35.title",
+  "cacheToken": "petatoe-pwa-18-56-140-sales-reports-accuracy-r44r38r20r35a1",
+  "titleI18nKey": "pwa.update.release.r44r38r20r35a1.title",
   "notesI18nKeys": [
-    "pwa.update.release.r44r38r20r35.note1",
-    "pwa.update.release.r44r38r20r35.note2"
+    "pwa.update.release.r44r38r20r35a1.note1",
+    "pwa.update.release.r44r38r20r35a1.note2"
   ]
 }

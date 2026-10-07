@@ -226,6 +226,8 @@
     const key = String(value || "").trim();
     if (key === "نقدي") return t("salesReports.common.cash", "نقدي");
     if (key === "آجل") return t("salesReports.common.credit", "آجل");
+    if (key === "بطاقة / شبكة") return t("salesReports.common.card", "بطاقة / شبكة");
+    if (key === "تحويل بنكي") return t("salesReports.common.bankTransfer", "تحويل بنكي");
     return key || t("salesReports.common.undefined", "غير محدد");
   }
 
@@ -281,8 +283,18 @@
     const tax = source.reduce((sum, row) => sum + row.tax, 0);
     const discount = source.reduce((sum, row) => sum + row.discount, 0);
     const total = source.reduce((sum, row) => sum + row.total, 0);
-    const cash = source.filter(row => row.paymentMethod === "نقدي").reduce((sum, row) => sum + row.total, 0);
-    const credit = source.filter(row => row.paymentMethod === "آجل").reduce((sum, row) => sum + row.total, 0);
+    const reconstructedTotal = beforeTax + tax;
+    const financialDelta = total - reconstructedTotal;
+    const paymentMap = new Map();
+    source.forEach(row => {
+      const key = String(row.paymentMethod || "").trim() || "غير محدد";
+      paymentMap.set(key, (paymentMap.get(key) || 0) + row.total);
+    });
+    const paymentMethods = [...paymentMap.entries()]
+      .map(([key, value]) => ({ key, value, pct: total ? value / total * 100 : 0 }))
+      .sort((a, b) => b.value - a.value);
+    const cash = paymentMap.get("نقدي") || 0;
+    const credit = paymentMap.get("آجل") || 0;
     return {
       source,
       issued,
@@ -291,8 +303,11 @@
       tax,
       discount,
       total,
+      reconstructedTotal,
+      financialDelta,
       cash,
       credit,
+      paymentMethods,
       invoiceCount: invoiceRows.length,
       averageInvoice: invoiceRows.length ? total / invoiceRows.length : 0,
       issuedShare: rows.length ? issued.length / rows.length * 100 : 0
@@ -390,20 +405,30 @@
       : `<div class="sales-report-empty-chart">${esc(t("salesReports.report.daily.note", "اختر شهرًا لعرض حركة المبيعات اليومية."))}</div>`;
   }
 
+  const PAYMENT_COLORS = Object.freeze([
+    "var(--primary)",
+    "#f59e0b",
+    "#60a5fa",
+    "#22c55e",
+    "#8b5cf6",
+    "#94a3b8"
+  ]);
+
   function renderDonut(summary) {
     const host = $("salesReportsPaymentChart");
     if (!host) return;
-    const cash = summary.cash, credit = summary.credit, other = Math.max(summary.total - cash - credit, 0);
     const total = Math.max(summary.total, 0);
-    const cashPct = total ? cash / total * 100 : 0;
-    const creditPct = total ? credit / total * 100 : 0;
-    const cashDeg = cashPct * 3.6;
-    const creditDeg = creditPct * 3.6;
-    host.innerHTML = `<div class="sales-donut" style="--cash:${cashDeg}deg;--credit:${creditDeg}deg" aria-hidden="true"><div><strong>${esc(money(total))}</strong><span>${esc(t("salesReports.kpi.totalSales", "إجمالي المبيعات"))}</span></div></div>
+    const methods = summary.paymentMethods || [];
+    let cursor = 0;
+    const segments = methods.map((method, index) => {
+      const start = cursor;
+      cursor += method.pct * 3.6;
+      return `${PAYMENT_COLORS[index % PAYMENT_COLORS.length]} ${start}deg ${cursor}deg`;
+    });
+    const gradient = segments.length ? segments.join(", ") : "var(--surface-2) 0deg 360deg";
+    host.innerHTML = `<div class="sales-donut" style="--payment-gradient:${gradient}" aria-hidden="true"><div><strong>${esc(money(total))}</strong><span>${esc(t("salesReports.kpi.totalSales", "إجمالي المبيعات"))}</span></div></div>
       <div class="sales-chart-legend">
-        <div><i class="sales-legend-dot sales-legend-dot--cash"></i><span>${esc(paymentLabel("نقدي"))}</span><strong>${esc(money(cash))} · ${esc(pct(cashPct))}</strong></div>
-        <div><i class="sales-legend-dot sales-legend-dot--credit"></i><span>${esc(paymentLabel("آجل"))}</span><strong>${esc(money(credit))} · ${esc(pct(creditPct))}</strong></div>
-        ${other ? `<div><i class="sales-legend-dot sales-legend-dot--other"></i><span>${esc(t("salesReports.common.undefined", "غير محدد"))}</span><strong>${esc(money(other))}</strong></div>` : ""}
+        ${methods.length ? methods.map((method, index) => `<div><i class="sales-legend-dot" style="background:${PAYMENT_COLORS[index % PAYMENT_COLORS.length]}"></i><span>${esc(paymentLabel(method.key))}</span><strong>${esc(money(method.value))} · ${esc(pct(method.pct))}</strong></div>`).join("") : `<div><span>${esc(t("salesReports.common.undefined", "غير محدد"))}</span><strong>${esc(money(0))}</strong></div>`}
       </div>`;
   }
 
@@ -491,9 +516,11 @@
     if (!host) return;
     const beforeTax = rows.reduce((sum, row) => sum + row.beforeTax, 0);
     const tax = rows.reduce((sum, row) => sum + row.tax, 0);
-    const total = beforeTax + tax;
-    const taxRate = total ? tax / total * 100 : 0;
-    host.innerHTML = `<div class="sales-vat-total"><strong>${esc(money(total))}</strong><span>${esc(t("salesReports.table.total", "شامل الضريبة"))}</span></div><div class="sales-vat-stack"><span style="width:${Math.max(0, 100 - taxRate)}%"></span><i style="width:${Math.max(0, taxRate)}%"></i></div><div class="sales-vat-legend"><span>${esc(t("salesReports.table.beforeTax", "قبل الضريبة"))}<strong>${esc(money(beforeTax))}</strong></span><span>${esc(t("salesReports.table.tax", "الضريبة"))}<strong>${esc(money(tax))}</strong></span></div>`;
+    const total = rows.reduce((sum, row) => sum + row.total, 0);
+    const taxRate = total ? Math.max(0, Math.min(100, tax / total * 100)) : 0;
+    const reconstructionDelta = total - (beforeTax + tax);
+    const mismatch = Math.abs(reconstructionDelta) > 0.005;
+    host.innerHTML = `<div class="sales-vat-total"><strong>${esc(money(total))}</strong><span>${esc(t("salesReports.table.total", "شامل الضريبة"))}</span></div><div class="sales-vat-stack"><span style="width:${Math.max(0, 100 - taxRate)}%"></span><i style="width:${taxRate}%"></i></div><div class="sales-vat-legend"><span>${esc(t("salesReports.table.beforeTax", "قبل الضريبة"))}<strong>${esc(money(beforeTax))}</strong></span><span>${esc(t("salesReports.table.tax", "الضريبة"))}<strong>${esc(money(tax))}</strong></span></div>${mismatch ? `<div class="sales-vat-note">${esc(t("salesReports.report.vat.mismatch", "يوجد فرق بين الإجمالي الفعلي وإعادة بناء الإجمالي من قبل الضريبة والضريبة"))}: ${esc(money(reconstructionDelta))}</div>` : ""}`;
   }
 
   function renderTable(summary) {
