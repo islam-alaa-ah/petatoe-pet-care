@@ -442,7 +442,7 @@
     const gradient = segments.length ? segments.join(", ") : "var(--surface-2) 0deg 360deg";
     host.innerHTML = `<div class="sales-donut" style="--payment-gradient:${gradient}" aria-hidden="true"><div><strong>${esc(money(total))}</strong><span>${esc(t("salesReports.kpi.totalSales", "إجمالي المبيعات"))}</span></div></div>
       <div class="sales-chart-legend">
-        ${methods.length ? methods.map((method, index) => `<div><i class="sales-legend-dot" style="background:${PAYMENT_COLORS[index % PAYMENT_COLORS.length]}"></i><span>${esc(paymentLabel(method.key))}</span><strong>${esc(money(method.value))} · ${esc(pct(method.pct))}</strong></div>`).join("") : `<div><span>${esc(t("salesReports.common.undefined", "غير محدد"))}</span><strong>${esc(money(0))}</strong></div>`}
+        ${methods.length ? methods.map((method, index) => `<div><i class="sales-legend-dot" style="background:${PAYMENT_COLORS[index % PAYMENT_COLORS.length]}"></i><span>${esc(paymentLabel(method.key))}</span><strong><bdi dir="ltr">${esc(money(method.value))}</bdi><small><bdi dir="ltr">${esc(pct(method.pct))}</bdi></small></strong></div>`).join("") : `<div><span>${esc(t("salesReports.common.undefined", "غير محدد"))}</span><strong><bdi dir="ltr">${esc(money(0))}</bdi><small><bdi dir="ltr">${esc(pct(0))}</bdi></small></strong></div>`}
       </div>`;
   }
 
@@ -511,20 +511,28 @@
   // Values remain in the reporting contract; only their presentation changes.
   function comparisonChart(labels, current, previous, year) {
     const length = labels.length;
-    const width = length === 12 ? 1440 : length === 4 ? 1100 : 780;
-    const height = 395;
-    const pad = { left: 92, right: 42, top: 95, bottom: 61 };
+    const isMonth = length === 12;
+    const isQuarter = length === 4;
+    const isYear = length === 1;
+    const width = isMonth ? 1760 : isQuarter ? 1120 : 620;
+    const height = isYear ? 320 : 395;
+    const pad = isMonth
+      ? { left: 116, right: 44, top: 108, bottom: 66 }
+      : isYear
+        ? { left: 104, right: 36, top: 88, bottom: 60 }
+        : { left: 96, right: 40, top: 96, bottom: 62 };
     const plotWidth = width - pad.left - pad.right;
     const plotHeight = height - pad.top - pad.bottom;
     const maxValue = Math.max(1, ...current, ...previous);
-    const ceiling = maxValue * 1.18;
+    const ceiling = maxValue * (isYear ? 1.12 : isMonth ? 1.22 : 1.18);
     const y = value => pad.top + plotHeight * (1 - Math.max(0, value) / ceiling);
     const baseline = y(0);
     const group = plotWidth / length;
-    const gap = length === 12 ? 7 : 12;
-    const bar = Math.min(length === 12 ? 30 : 82, (group - gap) * .35);
+    const gap = isMonth ? 12 : isQuarter ? 14 : 18;
+    const bar = Math.min(isMonth ? 30 : isQuarter ? 82 : 104, (group - gap) * .36);
     const tick = n => number(n);
-    const grid = [0, .25, .5, .75, 1].map(fraction => {
+    const fractions = isYear ? [0, .33, .66, 1] : [0, .25, .5, .75, 1];
+    const grid = fractions.map(fraction => {
       const yy = pad.top + plotHeight * (1 - fraction);
       return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-comparison-grid"/><text x="${pad.left - 14}" y="${yy + 5}" text-anchor="end" class="sales-comparison-axis">${esc(tick(ceiling * fraction))}</text>`;
     }).join("");
@@ -537,15 +545,16 @@
       const pair = entries.map(({ value, cx, kind, barYear, lane }) => {
         const top = y(value);
         const h = Math.max(0, baseline - top);
-        const rect = h > 0 ? `<rect x="${cx - bar / 2}" y="${top}" width="${bar}" height="${h}" rx="5" class="sales-comparison-bar sales-comparison-bar--${kind}"><title>${esc(label)} — ${barYear}: ${esc(money(value))}</title></rect>` : "";
-        // Separate the two data-label lanes to keep near-equal values readable.
-        const labelY = Math.max(lane === 0 ? 41 : 59, top - (lane === 0 ? 28 : 9));
-        const valueLabel = value > 0 ? `<text x="${cx}" y="${labelY}" text-anchor="middle" class="sales-comparison-value sales-comparison-value--${kind}">${esc(tick(value))}</text>` : "";
+        const rect = h > 0 ? `<rect x="${cx - bar / 2}" y="${top}" width="${bar}" height="${h}" rx="6" class="sales-comparison-bar sales-comparison-bar--${kind}"><title>${esc(label)} — ${barYear}: ${esc(money(value))}</title></rect>` : "";
+        const labelX = isMonth ? cx + (lane === 0 ? -6 : 6) : cx;
+        const labelAnchor = isMonth ? (lane === 0 ? 'end' : 'start') : 'middle';
+        const labelY = Math.max(lane === 0 ? 34 : 54, top - (lane === 0 ? 26 : 8));
+        const valueLabel = value > 0 ? `<text x="${labelX}" y="${labelY}" text-anchor="${labelAnchor}" class="sales-comparison-value sales-comparison-value--${kind}">${esc(tick(value))}</text>` : "";
         return rect + valueLabel;
       }).join("");
       return pair + `<text x="${center}" y="${height - 21}" text-anchor="middle" class="sales-comparison-axis sales-comparison-category">${esc(label)}</text>`;
     }).join("");
-    return `<div class="sales-comparison-visual" role="group" aria-label="${esc(isEnglish() ? "Sales by period, two-year comparison" : "رسم مقارنة المبيعات بين سنتين")}"><div class="sales-comparison-legend"><span><i class="sales-comparison-legend-current"></i>${esc(String(year))}</span><span><i class="sales-comparison-legend-previous"></i>${esc(String(year - 1))}</span></div><div class="sales-comparison-chart-scroll"><svg class="sales-comparison-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(isEnglish() ? "Grouped sales bar chart" : "رسم أعمدة المبيعات المقارنة")}">${grid}${bars}</svg></div></div>`;
+    return `<div class="sales-comparison-visual" role="group" aria-label="${esc(isEnglish() ? "Sales by period, two-year comparison" : "رسم مقارنة المبيعات بين سنتين")}"><div class="sales-comparison-legend"><span><i class="sales-comparison-legend-current"></i>${esc(String(year))}</span><span><i class="sales-comparison-legend-previous"></i>${esc(String(year - 1))}</span></div><div class="sales-comparison-chart-scroll"><svg class="sales-comparison-svg${isYear ? ' sales-comparison-svg--year' : isMonth ? ' sales-comparison-svg--month' : ''}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(isEnglish() ? "Grouped sales bar chart" : "رسم أعمدة المبيعات المقارنة")}">${grid}${bars}</svg></div></div>`;
   }
 
   function comparisonTable(labels, current, previous, year) {
