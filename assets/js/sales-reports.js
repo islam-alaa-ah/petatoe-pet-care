@@ -1,10 +1,12 @@
 (() => {
   "use strict";
 
-  const CACHE_PREFIX = "sales-reports:v1:";
+  const CACHE_PREFIX = "sales-reports:v3-complete:";
   const CACHE_TTL_MS = 10 * 60 * 1000;
   const CACHE_STALE_MAX_MS = 30 * 24 * 60 * 60 * 1000;
-  const CACHE_SCHEMA_VERSION = 1;
+  const CACHE_SCHEMA_VERSION = 3;
+  const RPC_PAGE_SIZE = 500;
+  const RPC_MAX_PAGES = 200;
   const MONTH_KEYS = Object.freeze([
     "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
     "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
@@ -129,13 +131,13 @@
 
   function selectedFilters() {
     return {
-      year: Number($("salesReportsYear")?.value || currentYear()),
-      month: Number($("salesReportsMonth")?.value || currentMonth()),
+      year: $("salesReportsYear")?.value === "" ? 0 : Number($("salesReportsYear")?.value || currentYear()),
+      month: $("salesReportsMonth")?.value === "" ? 0 : Number($("salesReportsMonth")?.value || currentMonth()),
       vehicle: $("salesReportsVehicle")?.value || "",
       customer: $("salesReportsCustomer")?.value || "",
       team: $("salesReportsTeam")?.value || "",
       payment: $("salesReportsPayment")?.value || "",
-      status: $("salesReportsStatusFilter")?.value || "صادرة"
+      status: $("salesReportsStatusFilter")?.value || ""
     };
   }
 
@@ -163,20 +165,20 @@
     const yearSelect = $("salesReportsYear");
     const monthSelect = $("salesReportsMonth");
     if (!yearSelect || !monthSelect) return;
-    const previousYear = preserve ? Number(yearSelect.value || currentYear()) : currentYear();
+    const previousYear = preserve && yearSelect.value === "" ? 0 : (preserve ? Number(yearSelect.value || currentYear()) : currentYear());
     const years = availableYears();
-    const year = years.includes(previousYear) ? previousYear : (years.includes(currentYear()) ? currentYear() : years[0]);
-    yearSelect.innerHTML = years.map(y => option(y, y, y === year)).join("");
+    const year = previousYear === 0 ? 0 : (years.includes(previousYear) ? previousYear : (years.includes(currentYear()) ? currentYear() : years[0]));
+    yearSelect.innerHTML = option("", t("salesReports.filter.allYears", "كل السنوات"), year === 0) + years.map(y => option(y, y, y === year)).join("");
 
-    const previousMonth = preserve ? Number(monthSelect.value || currentMonth()) : currentMonth();
-    const months = availableMonths(year);
+    const previousMonth = preserve && monthSelect.value === "" ? 0 : (preserve ? Number(monthSelect.value || currentMonth()) : currentMonth());
+    const months = year === 0 ? [...new Set(allRows.map(row => dateOnly(row.invoiceDate)?.getMonth() + 1).filter(Boolean))].sort((a,b)=>a-b) : availableMonths(year);
     const monthOptions = months.length ? months : [currentMonth()];
     const month = monthOptions.includes(previousMonth)
       ? previousMonth
       : (monthOptions.includes(currentMonth()) ? currentMonth() : monthOptions[monthOptions.length - 1]);
     monthSelect.innerHTML = option("", t("salesReports.filter.allMonths", "كل الشهور المتاحة"), previousMonth === 0 || !months.includes(previousMonth))
       + monthOptions.map(m => option(m, monthLabel(m), m === month)).join("");
-    if (previousMonth === 0) monthSelect.value = "";
+    monthSelect.value = previousMonth === 0 || !months.includes(previousMonth) ? "" : String(previousMonth);
   }
 
   function populateFilters(preserve = true) {
@@ -200,8 +202,7 @@
       if (kind === "payment") html += values.payment.map(x => option(x, paymentLabel(x), x === current)).join("");
       if (kind === "status") html += values.status.map(x => option(x, statusLabel(x), x === current)).join("");
       select.innerHTML = html;
-      if (kind === "status" && !preserve) select.value = "صادرة";
-      if (kind === "status" && preserve && !current) select.value = "صادرة";
+
     });
   }
 
@@ -245,7 +246,7 @@
   function filterRows(filters) {
     return allRows.filter(row => {
       const d = dateOnly(row.invoiceDate);
-      if (!d || d.getFullYear() !== filters.year) return false;
+      if (!d || (filters.year && d.getFullYear() !== filters.year)) return false;
       if (filters.month && d.getMonth() + 1 !== filters.month) return false;
       if (filters.vehicle && row.carId !== filters.vehicle) return false;
       if (filters.customer && row.customerId !== filters.customer) return false;
@@ -457,10 +458,10 @@
     );
     const values = Array.from({ length: 12 }, (_, i) => baseRows.filter(row => {
       const d = dateOnly(row.invoiceDate);
-      return d && d.getFullYear() === filters.year && d.getMonth() === i;
+      return d && (!filters.year || d.getFullYear() === filters.year) && d.getMonth() === i;
     }).reduce((sum, row) => sum + row.total, 0));
     const max = Math.max(...values, 1);
-    host.innerHTML = values.map((value, i) => `<div class="sales-month-column"><div class="sales-month-value">${esc(number(value))}</div><div class="sales-month-track"><span style="height:${Math.max(3, value / max * 100)}%"${filters.month === i + 1 ? " class=\"is-selected\"" : ""}></span></div><small>${esc(monthLabel(i + 1))}</small></div>`).join("");
+    host.innerHTML = values.map((value, i) => `<div class="sales-month-column"><div class="sales-month-value">${esc(number(value))}</div><div class="sales-month-track"><span style="height:${value > 0 ? Math.max(3, value / max * 100) : 0}%"${filters.month === i + 1 ? " class=\"is-selected\"" : ""}></span></div><small>${esc(monthLabel(i + 1))}</small></div>`).join("");
   }
 
   function renderNeighborhood(rows) {
@@ -486,9 +487,10 @@
   function renderComparison(filters) {
     const host = $("salesReportsComparisonChart");
     if (!host) return;
+    if (!filters.year) { host.innerHTML = `<div class="sales-report-empty-chart">${esc(t("salesReports.filter.selectYearComparison", "اختر سنة لعرض المقارنة بالفترة السابقة."))}</div>`; return; }
     const { current, previous, delta, previousFilters } = comparisonSummary(filters);
     const max = Math.max(current.total, previous.total, 1);
-    const currentLabel = filters.month ? `${monthLabel(filters.month)} ${filters.year}` : String(filters.year);
+    const currentLabel = filters.year ? (filters.month ? `${monthLabel(filters.month)} ${filters.year}` : String(filters.year)) : (filters.month ? `${monthLabel(filters.month)} — ${t("salesReports.filter.allYears", "كل السنوات")}` : t("salesReports.filter.allYears", "كل السنوات"));
     const previousLabel = previousFilters.month ? `${monthLabel(previousFilters.month)} ${previousFilters.year}` : String(previousFilters.year);
     const tone = delta >= 0 ? "positive" : "negative";
     host.innerHTML = `<div class="sales-comparison-summary"><strong class="${tone}">${delta >= 0 ? "+" : ""}${esc(delta.toFixed(1))}%</strong><span>${esc(currentLabel)} مقابل ${esc(previousLabel)}</span></div><div class="sales-comparison-bars"><div><span>${esc(currentLabel)}</span><div><i style="height:${Math.max(4, current.total / max * 100)}%"></i></div><strong>${esc(money(current.total))}</strong></div><div><span>${esc(previousLabel)}</span><div><i style="height:${Math.max(4, previous.total / max * 100)}%"></i></div><strong>${esc(money(previous.total))}</strong></div></div>`;
@@ -504,7 +506,7 @@
     });
     const max = Math.max(...values, 1);
     const labels = isEnglish() ? WEEKDAY_EN : WEEKDAY_AR;
-    host.innerHTML = values.map((value, i) => `<div class="sales-weekday-column"><strong>${esc(number(value))}</strong><div><span style="height:${Math.max(3, value / max * 100)}%"></span></div><small>${esc(labels[i])}</small></div>`).join("");
+    host.innerHTML = values.map((value, i) => `<div class="sales-weekday-column"><strong>${esc(number(value))}</strong><div><span style="height:${value > 0 ? Math.max(3, value / max * 100) : 0}%"></span></div><small>${esc(labels[i])}</small></div>`).join("");
   }
 
   function renderDiscount(rows) {
@@ -574,7 +576,7 @@
     renderVat(summary.source);
     renderTable(summary);
     const period = $("salesReportsPeriodLabel");
-    if (period) period.textContent = filters.month ? `${monthLabel(filters.month)} ${filters.year}` : String(filters.year);
+    if (period) period.textContent = filters.year ? (filters.month ? `${monthLabel(filters.month)} ${filters.year}` : String(filters.year)) : t("salesReports.filter.allYears", "كل السنوات");
     const empty = $("salesReportsEmptyState");
     if (empty) empty.classList.toggle("hidden", filteredRows.length > 0);
     setStatus(t("salesReports.status.ready", "تم تحديث تقرير المبيعات."));
@@ -590,9 +592,27 @@
       let rows = !force ? await readCache() : null;
       if (!Array.isArray(rows)) {
         if (navigator.onLine === false) throw new Error(t("payroll.error.onlineRequired", "هذه العملية تحتاج اتصالًا بالإنترنت."));
-        const { data, error } = await window.customerSupabase.rpc("sales_reports_rows_r44r38r20r35");
-        if (error) throw error;
-        rows = Array.isArray(data) ? data : [];
+        // PostgREST applies its max-rows limit to RPC results. Fetch every page;
+        // a single RPC call silently truncates earlier years because SQL sorts DESC.
+        rows = [];
+        const seen = new Set();
+        let complete = false;
+        for (let page = 0; page < RPC_MAX_PAGES; page++) {
+          const start = page * RPC_PAGE_SIZE;
+          const { data, error } = await window.customerSupabase
+            .rpc("sales_reports_rows_r44r38r20r35")
+            .range(start, start + RPC_PAGE_SIZE - 1);
+          if (error) throw error;
+          if (!Array.isArray(data)) throw new Error("Unexpected sales RPC response");
+          for (const row of data) {
+            const id = `${row.is_historical ? "h" : "c"}:${row.row_id}`;
+            if (!row.row_id || seen.has(id)) throw new Error("Sales report pagination returned duplicate or missing row identifier");
+            seen.add(id);
+            rows.push(row);
+          }
+          if (data.length < RPC_PAGE_SIZE) { complete = true; break; }
+        }
+        if (!complete) throw new Error("Sales report result exceeded safe pagination limit; refusing incomplete totals");
         await writeCache(rows);
       }
       allRows = rows.map(normalizeRow).filter(row => row.invoiceDate);
@@ -619,7 +639,7 @@
       month.value = months.includes(currentMonth()) ? String(currentMonth()) : String(months[months.length - 1] || currentMonth());
     }
     ["salesReportsVehicle", "salesReportsCustomer", "salesReportsTeam", "salesReportsPayment"].forEach(id => { if ($(id)) $(id).value = ""; });
-    if ($("salesReportsStatusFilter")) $("salesReportsStatusFilter").value = "صادرة";
+    if ($("salesReportsStatusFilter")) $("salesReportsStatusFilter").value = "";
     renderedRows = 10;
     render();
   }
@@ -630,13 +650,14 @@
     if (!view) return;
     initialized = true;
     $("salesReportsYear")?.addEventListener("change", () => {
-      const year = Number($("salesReportsYear")?.value || currentYear());
-      const months = availableMonths(year);
+      const year = $("salesReportsYear")?.value === "" ? 0 : Number($("salesReportsYear")?.value || currentYear());
+      const months = year ? availableMonths(year) : [...new Set(allRows.map(row => dateOnly(row.invoiceDate)?.getMonth() + 1).filter(Boolean))].sort((a,b)=>a-b);
       const select = $("salesReportsMonth");
       if (!select) return;
-      const current = Number(select.value || currentMonth());
+      const current = select.value === "" ? 0 : Number(select.value || currentMonth());
       select.innerHTML = option("", t("salesReports.filter.allMonths", "كل الشهور المتاحة"), !current || !months.includes(current)) + (months.length ? months : [currentMonth()]).map(m => option(m, monthLabel(m), m === current || (!months.includes(current) && m === (months.includes(currentMonth()) ? currentMonth() : months[months.length - 1])))).join("");
-      if (months.includes(current)) select.value = String(current);
+      select.value = current && months.includes(current) ? String(current) : "";
+      renderedRows = 10;
       render();
     });
     ["salesReportsMonth", "salesReportsVehicle", "salesReportsCustomer", "salesReportsTeam", "salesReportsPayment", "salesReportsStatusFilter"].forEach(id => $(id)?.addEventListener("change", () => { renderedRows = 10; }));
