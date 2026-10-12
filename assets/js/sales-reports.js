@@ -224,10 +224,11 @@
   }
 
   // Presentation-only reconciliation of synonymous card/network payment labels.
-  // Other electronic and website payment methods remain separate until source reconciliation.
+  // Source values remain unchanged; confirmed website/electronic labels share a report category.
   function canonicalPaymentMethod(value) {
     const key = String(value || "").trim().replace(/\s+/g, " ");
     if (["شبكة", "بطاقة", "بطاقة / شبكة", "بطاقة/شبكة"].includes(key)) return "بطاقة / شبكة";
+    if (["دفع إلكتروني", "الدفع الإلكتروني", "الدفع عن طريق الموقع"].includes(key)) return "الدفع عن طريق الموقع";
     return key || "غير محدد";
   }
 
@@ -237,6 +238,7 @@
     if (key === "آجل") return t("salesReports.common.credit", "آجل");
     if (key === "بطاقة / شبكة") return t("salesReports.common.card", "بطاقة / شبكة");
     if (key === "تحويل بنكي") return t("salesReports.common.bankTransfer", "تحويل بنكي");
+    if (key === "الدفع عن طريق الموقع") return isEnglish() ? "Website payment" : "الدفع عن طريق الموقع";
     return key || t("salesReports.common.undefined", "غير محدد");
   }
 
@@ -302,7 +304,7 @@
       const key = canonicalPaymentMethod(row.paymentMethod);
       paymentMap.set(key, (paymentMap.get(key) || 0) + row.total);
     });
-    const paymentMethods = [...paymentMap.entries()]
+    const paymentMethods = [...paymentMap.entries()].filter(([key, value]) => key !== "غير محدد" || Math.abs(value) > 0.005)
       .map(([key, value]) => ({ key, value, pct: total ? value / total * 100 : 0 }))
       .sort((a, b) => b.value - a.value);
     const cash = paymentMap.get("نقدي") || 0;
@@ -482,16 +484,61 @@
     host.innerHTML = values.length ? `<div class="sales-neighborhood-head"><span>${esc(t("salesReports.table.neighborhood", "الحي"))}</span><span>${esc(t("salesReports.table.customer", "العملاء"))}</span><span>${esc(t("salesReports.table.invoice", "الفواتير"))}</span><span>${esc(t("salesReports.kpi.totalSales", "إجمالي المبيعات"))}</span></div>${values.map(item => `<div class="sales-neighborhood-row"><strong>${esc(item.label)}</strong><span>${esc(number(item.customers.size))}</span><span>${esc(number(item.invoices.size))}</span><div><div class="sales-neighborhood-track"><span style="width:${Math.max(2, item.total / max * 100)}%"></span></div><strong>${esc(money(item.total))}</strong></div></div>`).join("")}` : emptyBlock();
   }
 
+  // Year-to-year comparisons always use the full corresponding periods;
+  // month selector affects operational charts/KPIs but does not truncate annual comparisons.
+  // All non-date filters apply identically to both years.
+  function comparisonYears(filters) {
+    const year = filters.year || currentYear();
+    const baseline = allRows.filter(row =>
+      (!filters.vehicle || row.carId === filters.vehicle) &&
+      (!filters.customer || row.customerId === filters.customer) &&
+      (!filters.team || row.teamId === filters.team) &&
+      (!filters.payment || canonicalPaymentMethod(row.paymentMethod) === filters.payment) &&
+      (!filters.status || row.status === filters.status)
+    );
+    const current = Array.from({length: 12}, () => 0);
+    const previous = Array.from({length: 12}, () => 0);
+    baseline.forEach(row => {
+      const d = dateOnly(row.invoiceDate);
+      if (!d) return;
+      if (d.getFullYear() === year) current[d.getMonth()] += row.total;
+      if (d.getFullYear() === year - 1) previous[d.getMonth()] += row.total;
+    });
+    return { year, current, previous };
+  }
+
+  function comparisonTable(labels, current, previous, year) {
+    const totalCurrent = current.reduce((a, b) => a + b, 0);
+    const totalPrevious = previous.reduce((a, b) => a + b, 0);
+    const headers = isEnglish()
+      ? ["Period", String(year), String(year - 1), "Change"]
+      : ["الفترة", String(year), String(year - 1), "التغير"];
+    const change = (a, b) => b === 0 ? (a === 0 ? "—" : (isEnglish() ? "New" : "جديد")) : `${a >= b ? "+" : ""}${pct((a - b) / Math.abs(b) * 100)}`;
+    const cells = (label, a, b, isTotal = false) => `<div class="sales-period-row${isTotal ? " is-total" : ""}"><strong>${esc(label)}</strong><span>${esc(money(a))}</span><span>${esc(money(b))}</span><strong class="${a >= b ? "positive" : "negative"}">${esc(change(a,b))}</strong></div>`;
+    return `<div class="sales-period-comparison"><div class="sales-period-row sales-period-head">${headers.map(h => `<span>${esc(h)}</span>`).join("")}</div>${labels.map((label,i) => cells(label,current[i],previous[i])).join("")}${cells(isEnglish() ? "Total" : "الإجمالي",totalCurrent,totalPrevious,true)}</div>`;
+  }
+
   function renderComparison(filters) {
+    const data = comparisonYears(filters);
     const host = $("salesReportsComparisonChart");
     if (!host) return;
-    if (!filters.year) { host.innerHTML = `<div class="sales-report-empty-chart">${esc(t("salesReports.filter.selectYearComparison", "اختر سنة لعرض المقارنة بالفترة السابقة."))}</div>`; return; }
-    const { current, previous, delta, previousFilters } = comparisonSummary(filters);
-    const max = Math.max(current.total, previous.total, 1);
-    const currentLabel = filters.year ? (filters.month ? `${monthLabel(filters.month)} ${filters.year}` : String(filters.year)) : (filters.month ? `${monthLabel(filters.month)} — ${t("salesReports.filter.allYears", "كل السنوات")}` : t("salesReports.filter.allYears", "كل السنوات"));
-    const previousLabel = previousFilters.month ? `${monthLabel(previousFilters.month)} ${previousFilters.year}` : String(previousFilters.year);
-    const tone = delta >= 0 ? "positive" : "negative";
-    host.innerHTML = `<div class="sales-comparison-summary"><strong class="${tone}">${delta >= 0 ? "+" : ""}${esc(delta.toFixed(1))}%</strong><span>${esc(currentLabel)} مقابل ${esc(previousLabel)}</span></div><div class="sales-comparison-bars"><div><span>${esc(currentLabel)}</span><div><i style="height:${Math.max(4, current.total / max * 100)}%"></i></div><strong>${esc(money(current.total))}</strong></div><div><span>${esc(previousLabel)}</span><div><i style="height:${Math.max(4, previous.total / max * 100)}%"></i></div><strong>${esc(money(previous.total))}</strong></div></div>`;
+    host.innerHTML = comparisonTable([isEnglish() ? "Full year" : "السنة كاملة"],
+      [data.current.reduce((a,b) => a+b,0)], [data.previous.reduce((a,b) => a+b,0)], data.year);
+  }
+
+  function renderQuarterComparison(filters) {
+    const host = $("salesReportsQuarterChart");
+    if (!host) return;
+    const data = comparisonYears(filters);
+    const quarters = array => [0,1,2,3].map(q => array.slice(q*3, q*3+3).reduce((a,b) => a+b,0));
+    host.innerHTML = comparisonTable([1,2,3,4].map(q => isEnglish() ? `Q${q}` : `الربع ${q}`), quarters(data.current), quarters(data.previous), data.year);
+  }
+
+  function renderMonthComparison(filters) {
+    const host = $("salesReportsMonthComparisonChart");
+    if (!host) return;
+    const data = comparisonYears(filters);
+    host.innerHTML = comparisonTable(Array.from({length:12},(_,i) => monthLabel(i+1)), data.current, data.previous, data.year);
   }
 
   function renderWeekday(rows) {
@@ -567,7 +614,10 @@
     renderDonut(summary);
     renderMonthly(allRows, filters);
     renderNeighborhood(summary.source);
+    [["salesReportsComparisonTitle", "Year comparison", "مقارنة السنوات"], ["salesReportsQuarterTitle", "Quarterly comparison", "مقارنة كل ربع"], ["salesReportsMonthTitle", "Monthly comparison", "مقارنة الشهور"]].forEach(([id,en,ar]) => { if ($(id)) $(id).textContent = isEnglish() ? en : ar; });
     renderComparison(filters);
+    renderQuarterComparison(filters);
+    renderMonthComparison(filters);
     renderWeekday(summary.source);
     renderDiscount(summary.source);
     renderVat(summary.source);
