@@ -277,8 +277,11 @@
 
   function summarize(rows) {
     const issued = rows.filter(row => row.status === "صادرة");
-    const invoiceRows = aggregateInvoiceRows(issued);
-    const source = issued.length ? issued : rows;
+    // All visuals and the detail table must use the same explicit status-filtered dataset.
+    // Cash aggregates remain revenue records, not distinct customer invoices.
+    const source = rows;
+    const invoiceSource = source.filter(row => row.recordType !== "cash_aggregate");
+    const invoiceRows = aggregateInvoiceRows(invoiceSource);
     const beforeTax = source.reduce((sum, row) => sum + row.beforeTax, 0);
     const tax = source.reduce((sum, row) => sum + row.tax, 0);
     const discount = source.reduce((sum, row) => sum + row.discount, 0);
@@ -309,7 +312,7 @@
       credit,
       paymentMethods,
       invoiceCount: invoiceRows.length,
-      averageInvoice: invoiceRows.length ? total / invoiceRows.length : 0,
+      averageInvoice: invoiceRows.length ? invoiceSource.reduce((sum, row) => sum + row.total, 0) / invoiceRows.length : 0,
       issuedShare: rows.length ? issued.length / rows.length * 100 : 0
     };
   }
@@ -469,7 +472,9 @@
       const label = key === "__undefined__" ? t("salesReports.common.undefined", "غير محدد") : customerNeighborhood(row);
       const item = map.get(key) || { label, total: 0, invoices: new Set(), customers: new Set() };
       item.total += row.total;
-      item.invoices.add(row.historical ? `${row.invoiceNumber}|${row.invoiceDate}|${row.customerId}` : row.rowId);
+      if (row.recordType !== "cash_aggregate") {
+        item.invoices.add(row.historical ? `${row.invoiceNumber}|${row.invoiceDate}|${row.customerId}` : row.rowId);
+      }
       if (row.customerId) item.customers.add(row.customerId);
       map.set(key, item);
     });
