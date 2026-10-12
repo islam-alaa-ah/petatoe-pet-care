@@ -374,8 +374,8 @@
   }
 
   function svgLineChart(rows, year, month, chartWidth) {
-    const width = Math.max(720, chartWidth || 1000), height = 310, pad = { left: 78, right: 30, top: 25, bottom: 46 };
     const days = month ? daysInMonth(year, month) : 31;
+    const width = Math.max(920, days * 34, chartWidth || 1100), height = 330, pad = { left: 112, right: 28, top: 28, bottom: 58 };
     const values = Array.from({ length: days }, (_, index) => {
       const day = index + 1;
       return rows.filter(row => {
@@ -390,33 +390,55 @@
     const grid = Array.from({ length: 5 }, (_, i) => {
       const value = max * i / 4;
       const yy = y(value);
-      return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-chart-grid"/><text x="${pad.left - 10}" y="${yy + 4}" text-anchor="end" class="sales-chart-label">${esc(number(value))}</text>`;
+      return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-chart-grid"/><text x="${pad.left - 18}" y="${yy + 4}" text-anchor="end" class="sales-chart-label sales-chart-label--axis">${esc(number(value))}</text>`;
     }).join("");
     const labels = values.map((_, i) => {
       const day = i + 1;
-      if (day !== 1 && day !== 5 && day !== 10 && day !== 15 && day !== 20 && day !== 25 && day !== values.length) return "";
-      return `<text x="${x(i)}" y="${height - 13}" text-anchor="middle" class="sales-chart-label">${day}</text>`;
+      return `<text x="${x(i)}" y="${height - 15}" text-anchor="middle" class="sales-chart-label sales-chart-label--day">${day}</text>`;
     }).join("");
-    const circles = values.map((value, index) => `<circle cx="${x(index)}" cy="${y(value)}" r="3.2" class="sales-chart-point"><title>${dayLabel(index + 1)}: ${money(value)}</title></circle>`).join("");
+    const circles = values.map((value, index) => `<circle cx="${x(index)}" cy="${y(value)}" r="4" class="sales-chart-point" data-day="${index + 1}" data-value="${esc(money(value))}" tabindex="0"><title>${dayLabel(index + 1)}: ${money(value)}</title></circle>`).join("");
     const areaPoints = `${pad.left},${height - pad.bottom} ${points} ${x(values.length - 1)},${height - pad.bottom}`;
-    return `<svg class="sales-line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(t("salesReports.report.daily.title", "المبيعات عبر أيام الشهر"))}">
-      ${grid}
-      <polygon points="${areaPoints}" class="sales-chart-area"/>
-      <polyline points="${points}" class="sales-chart-line"/>
-      ${circles}${labels}
-    </svg>`;
+    return `<svg class="sales-line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(t("salesReports.report.daily.title", "المبيعات عبر أيام الشهر"))}">${grid}<polygon points="${areaPoints}" class="sales-chart-area"/><polyline points="${points}" class="sales-chart-line"/>${circles}${labels}</svg>`;
   }
 
   function dayLabel(day) {
     return `${day}`;
   }
 
+  function bindDailyTooltip(host) {
+    const tooltip = host.querySelector('.sales-chart-tooltip');
+    if (!tooltip) return;
+    const show = (target, clientX, clientY) => {
+      const rect = host.getBoundingClientRect();
+      tooltip.innerHTML = `<strong>${esc(isEnglish() ? `Day ${target.dataset.day}` : `اليوم ${target.dataset.day}`)}</strong><span>${esc(target.dataset.value || money(0))}</span>`;
+      tooltip.hidden = false;
+      const left = Math.min(Math.max(12, clientX - rect.left + 14), rect.width - 180);
+      const top = Math.max(10, clientY - rect.top - 56);
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    };
+    const hide = () => { tooltip.hidden = true; };
+    host.querySelectorAll('.sales-chart-point').forEach(point => {
+      point.addEventListener('mouseenter', event => show(point, event.clientX, event.clientY));
+      point.addEventListener('mousemove', event => show(point, event.clientX, event.clientY));
+      point.addEventListener('mouseleave', hide);
+      point.addEventListener('focus', () => {
+        const box = point.getBoundingClientRect();
+        show(point, box.left + box.width / 2, box.top);
+      });
+      point.addEventListener('blur', hide);
+    });
+  }
+
   function renderDaily(rows, filters) {
     const host = $("salesReportsDailyChart");
     if (!host) return;
-    host.innerHTML = filters.month
-      ? svgLineChart(rows, filters.year, filters.month, Math.round(host.getBoundingClientRect().width))
-      : `<div class="sales-report-empty-chart">${esc(t("salesReports.report.daily.note", "اختر شهرًا لعرض حركة المبيعات اليومية."))}</div>`;
+    if (!filters.month) {
+      host.innerHTML = `<div class="sales-report-empty-chart">${esc(t("salesReports.report.daily.note", "اختر شهرًا لعرض حركة المبيعات اليومية."))}</div>`;
+      return;
+    }
+    host.innerHTML = `<div class="sales-daily-chart-shell">${svgLineChart(rows, filters.year, filters.month, Math.round(host.getBoundingClientRect().width))}<div class="sales-chart-tooltip" hidden></div></div>`;
+    bindDailyTooltip(host);
   }
 
   const PAYMENT_COLORS = Object.freeze([
@@ -440,10 +462,10 @@
       return `${PAYMENT_COLORS[index % PAYMENT_COLORS.length]} ${start}deg ${cursor}deg`;
     });
     const gradient = segments.length ? segments.join(", ") : "var(--surface-2) 0deg 360deg";
-    host.innerHTML = `<div class="sales-donut" style="--payment-gradient:${gradient}" aria-hidden="true"><div><strong>${esc(money(total))}</strong><span>${esc(t("salesReports.kpi.totalSales", "إجمالي المبيعات"))}</span></div></div>
-      <div class="sales-chart-legend">
-        ${methods.length ? methods.map((method, index) => `<div><i class="sales-legend-dot" style="background:${PAYMENT_COLORS[index % PAYMENT_COLORS.length]}"></i><span>${esc(paymentLabel(method.key))}</span><strong><bdi dir="ltr">${esc(money(method.value))}</bdi><small><bdi dir="ltr">${esc(pct(method.pct))}</bdi></small></strong></div>`).join("") : `<div><span>${esc(t("salesReports.common.undefined", "غير محدد"))}</span><strong><bdi dir="ltr">${esc(money(0))}</bdi><small><bdi dir="ltr">${esc(pct(0))}</bdi></small></strong></div>`}
-      </div>`;
+    const headMethod = esc(isEnglish() ? 'Payment method' : 'طريقة السداد');
+    const headAmount = esc(isEnglish() ? 'Sales total' : 'إجمالي المبيعات');
+    const headPct = esc(isEnglish() ? 'Share' : 'النسبة');
+    host.innerHTML = `<div class="sales-payment-table"><div class="sales-payment-table-head"><span>${headMethod}</span><span>${headAmount}</span><span>${headPct}</span></div>${methods.length ? methods.map((method, index) => `<div class="sales-payment-table-row"><span class="sales-payment-method"><i class="sales-legend-dot" style="background:${PAYMENT_COLORS[index % PAYMENT_COLORS.length]}"></i>${esc(paymentLabel(method.key))}</span><strong><bdi dir="ltr">${esc(money(method.value))}</bdi></strong><span class="sales-payment-share"><bdi dir="ltr">${esc(pct(method.pct))}</bdi></span></div>`).join("") : `<div class="sales-payment-table-row"><span class="sales-payment-method">${esc(t("salesReports.common.undefined", "غير محدد"))}</span><strong><bdi dir="ltr">${esc(money(0))}</bdi></strong><span class="sales-payment-share"><bdi dir="ltr">${esc(pct(0))}</bdi></span></div>`}</div><div class="sales-donut" style="--payment-gradient:${gradient}" aria-hidden="true"><div><strong>${esc(money(total))}</strong><span>${esc(t("salesReports.kpi.totalSales", "إجمالي المبيعات"))}</span></div></div>`;
   }
 
   function renderMonthly(rows, filters) {
@@ -461,7 +483,11 @@
       return d && (!filters.year || d.getFullYear() === filters.year) && d.getMonth() === i;
     }).reduce((sum, row) => sum + row.total, 0));
     const max = Math.max(...values, 1);
-    host.innerHTML = values.map((value, i) => `<div class="sales-month-column"><div class="sales-month-value">${esc(number(value))}</div><div class="sales-month-track"><span style="height:${value > 0 ? Math.max(3, value / max * 100) : 0}%"${filters.month === i + 1 ? " class=\"is-selected\"" : ""}></span></div><small>${esc(monthLabel(i + 1))}</small></div>`).join("");
+    host.innerHTML = values.map((value, i) => {
+      const height = value > 0 ? Math.max(3, value / max * 100) : 0;
+      const labelBottom = `calc(${height}% + 10px)`;
+      return `<div class="sales-month-column"><div class="sales-month-track"><span style="height:${height}%"${filters.month === i + 1 ? " class=\"is-selected\"" : ""}></span><strong class="sales-month-value" style="bottom:${labelBottom}">${esc(number(value))}</strong></div><small>${esc(monthLabel(i + 1))}</small></div>`;
+    }).join("");
   }
 
   function renderNeighborhood(rows) {
@@ -514,47 +540,57 @@
     const isMonth = length === 12;
     const isQuarter = length === 4;
     const isYear = length === 1;
-    const width = isMonth ? 1760 : isQuarter ? 1120 : 620;
-    const height = isYear ? 320 : 395;
+    const width = isMonth ? 1960 : isQuarter ? 1180 : 660;
+    const height = isYear ? 300 : isMonth ? 430 : 400;
     const pad = isMonth
-      ? { left: 116, right: 44, top: 108, bottom: 66 }
+      ? { left: 142, right: 48, top: 92, bottom: 74 }
       : isYear
-        ? { left: 104, right: 36, top: 88, bottom: 60 }
-        : { left: 96, right: 40, top: 96, bottom: 62 };
+        ? { left: 128, right: 42, top: 76, bottom: 58 }
+        : { left: 124, right: 44, top: 84, bottom: 68 };
     const plotWidth = width - pad.left - pad.right;
     const plotHeight = height - pad.top - pad.bottom;
     const maxValue = Math.max(1, ...current, ...previous);
-    const ceiling = maxValue * (isYear ? 1.12 : isMonth ? 1.22 : 1.18);
+    const ceiling = maxValue * (isYear ? 1.14 : isMonth ? 1.26 : 1.20);
     const y = value => pad.top + plotHeight * (1 - Math.max(0, value) / ceiling);
     const baseline = y(0);
     const group = plotWidth / length;
-    const gap = isMonth ? 12 : isQuarter ? 14 : 18;
-    const bar = Math.min(isMonth ? 30 : isQuarter ? 82 : 104, (group - gap) * .36);
+    const gap = isMonth ? 16 : isQuarter ? 18 : 20;
+    const bar = Math.min(isMonth ? 34 : isQuarter ? 84 : 118, (group - gap) * .36);
     const tick = n => number(n);
     const fractions = isYear ? [0, .33, .66, 1] : [0, .25, .5, .75, 1];
     const grid = fractions.map(fraction => {
       const yy = pad.top + plotHeight * (1 - fraction);
-      return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-comparison-grid"/><text x="${pad.left - 14}" y="${yy + 5}" text-anchor="end" class="sales-comparison-axis">${esc(tick(ceiling * fraction))}</text>`;
+      return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-comparison-grid"/><text x="${pad.left - 24}" y="${yy + 5}" text-anchor="end" class="sales-comparison-axis sales-comparison-axis--guide">${esc(tick(ceiling * fraction))}</text>`;
     }).join("");
     const bars = labels.map((label, index) => {
       const center = pad.left + group * (index + .5);
-      const entries = [
-        { value: previous[index], cx: center - (bar + gap) / 2, kind: "previous", barYear: year - 1, lane: 0 },
-        { value: current[index], cx: center + (bar + gap) / 2, kind: "current", barYear: year, lane: 1 }
-      ];
-      const pair = entries.map(({ value, cx, kind, barYear, lane }) => {
-        const top = y(value);
-        const h = Math.max(0, baseline - top);
-        const rect = h > 0 ? `<rect x="${cx - bar / 2}" y="${top}" width="${bar}" height="${h}" rx="6" class="sales-comparison-bar sales-comparison-bar--${kind}"><title>${esc(label)} — ${barYear}: ${esc(money(value))}</title></rect>` : "";
-        const labelX = isMonth ? cx + (lane === 0 ? -6 : 6) : cx;
-        const labelAnchor = isMonth ? (lane === 0 ? 'end' : 'start') : 'middle';
-        const labelY = Math.max(lane === 0 ? 34 : 54, top - (lane === 0 ? 26 : 8));
-        const valueLabel = value > 0 ? `<text x="${labelX}" y="${labelY}" text-anchor="${labelAnchor}" class="sales-comparison-value sales-comparison-value--${kind}">${esc(tick(value))}</text>` : "";
+      const prev = { value: previous[index], cx: center - (bar + gap) / 2, kind: 'previous', barYear: year - 1 };
+      const curr = { value: current[index], cx: center + (bar + gap) / 2, kind: 'current', barYear: year };
+      const entries = [prev, curr].map(entry => {
+        entry.top = y(entry.value);
+        entry.h = Math.max(0, baseline - entry.top);
+        return entry;
+      });
+      const close = Math.abs(entries[0].top - entries[1].top) < 22;
+      const pair = entries.map((entry, lane) => {
+        const rect = entry.h > 0 ? `<rect x="${entry.cx - bar / 2}" y="${entry.top}" width="${bar}" height="${entry.h}" rx="6" class="sales-comparison-bar sales-comparison-bar--${entry.kind}"><title>${esc(label)} — ${entry.barYear}: ${esc(money(entry.value))}</title></rect>` : "";
+        let labelX = entry.cx;
+        let labelAnchor = 'middle';
+        let labelY = entry.top - 10;
+        if (isMonth) {
+          labelX = entry.cx + (lane === 0 ? -4 : 4);
+          labelAnchor = lane === 0 ? 'end' : 'start';
+          labelY = entry.top - (close ? (lane === 0 ? 18 : 4) : 10);
+        } else if (close) {
+          labelY = entry.top - (lane === 0 ? 18 : 4);
+        }
+        labelY = Math.max(26, labelY);
+        const valueLabel = entry.value > 0 ? `<text x="${labelX}" y="${labelY}" text-anchor="${labelAnchor}" class="sales-comparison-value sales-comparison-value--${entry.kind}">${esc(tick(entry.value))}</text>` : "";
         return rect + valueLabel;
       }).join("");
-      return pair + `<text x="${center}" y="${height - 21}" text-anchor="middle" class="sales-comparison-axis sales-comparison-category">${esc(label)}</text>`;
+      return pair + `<text x="${center}" y="${height - 22}" text-anchor="middle" class="sales-comparison-axis sales-comparison-category">${esc(label)}</text>`;
     }).join("");
-    return `<div class="sales-comparison-visual" role="group" aria-label="${esc(isEnglish() ? "Sales by period, two-year comparison" : "رسم مقارنة المبيعات بين سنتين")}"><div class="sales-comparison-legend"><span><i class="sales-comparison-legend-current"></i>${esc(String(year))}</span><span><i class="sales-comparison-legend-previous"></i>${esc(String(year - 1))}</span></div><div class="sales-comparison-chart-scroll"><svg class="sales-comparison-svg${isYear ? ' sales-comparison-svg--year' : isMonth ? ' sales-comparison-svg--month' : ''}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(isEnglish() ? "Grouped sales bar chart" : "رسم أعمدة المبيعات المقارنة")}">${grid}${bars}</svg></div></div>`;
+    return `<div class="sales-comparison-visual" role="group" aria-label="${esc(isEnglish() ? 'Sales by period, two-year comparison' : 'رسم مقارنة المبيعات بين سنتين')}"><div class="sales-comparison-legend"><span><i class="sales-comparison-legend-current"></i>${esc(String(year))}</span><span><i class="sales-comparison-legend-previous"></i>${esc(String(year - 1))}</span></div><div class="sales-comparison-chart-scroll"><svg class="sales-comparison-svg${isYear ? ' sales-comparison-svg--year' : isMonth ? ' sales-comparison-svg--month' : ''}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(isEnglish() ? 'Grouped sales bar chart' : 'رسم أعمدة المبيعات المقارنة')}">${grid}${bars}</svg></div></div>`;
   }
 
   function comparisonTable(labels, current, previous, year) {
@@ -564,7 +600,7 @@
       ? ["Period", String(year), String(year - 1), "Change"]
       : ["الفترة", String(year), String(year - 1), "التغير"];
     const change = (a, b) => b === 0 ? (a === 0 ? "—" : (isEnglish() ? "New" : "جديد")) : `${a >= b ? "+" : ""}${pct((a - b) / Math.abs(b) * 100)}`;
-    const cells = (label, a, b, isTotal = false) => `<div class="sales-period-row${isTotal ? " is-total" : ""}"><strong>${esc(label)}</strong><span>${esc(money(a))}</span><span>${esc(money(b))}</span><strong class="${a > b ? "positive" : a < b ? "negative" : "neutral"}"><bdi dir="ltr">${esc(change(a,b))}</bdi></strong></div>`;
+    const cells = (label, a, b, isTotal = false) => `<div class="sales-period-row${isTotal ? " is-total" : ""}"><strong>${esc(label)}</strong><span>${esc(money(a))}</span><span>${esc(money(b))}</span><strong data-role="change" class="${a > b ? "positive" : a < b ? "negative" : "neutral"}"><bdi dir="ltr">${esc(change(a,b))}</bdi></strong></div>`;
     return `<div class="sales-period-comparison"><div class="sales-period-row sales-period-head">${headers.map(h => `<span>${esc(h)}</span>`).join("")}</div>${labels.map((label,i) => cells(label,current[i],previous[i])).join("")}${cells(isEnglish() ? "Total" : "الإجمالي",totalCurrent,totalPrevious,true)}</div>`;
   }
 
