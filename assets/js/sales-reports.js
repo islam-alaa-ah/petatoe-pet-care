@@ -375,7 +375,7 @@
 
   function svgLineChart(rows, year, month, chartWidth) {
     const days = month ? daysInMonth(year, month) : 31;
-    const width = Math.max(920, days * 34, chartWidth || 1100), height = 330, pad = { left: 144, right: 32, top: 28, bottom: 58 };
+    const width = Math.max(920, days * 34, chartWidth || 1100), height = 330, pad = { left: 184, right: 32, top: 28, bottom: 58 };
     const values = Array.from({ length: days }, (_, index) => {
       const day = index + 1;
       return rows.filter(row => {
@@ -390,7 +390,7 @@
     const grid = Array.from({ length: 5 }, (_, i) => {
       const value = max * i / 4;
       const yy = y(value);
-      return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-chart-grid"/><text x="${pad.left - 28}" y="${yy + 4}" text-anchor="end" class="sales-chart-label sales-chart-label--axis">${esc(number(value))}</text>`;
+      return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-chart-grid"/><text x="${pad.left - 54}" y="${yy + 4}" text-anchor="end" class="sales-chart-label sales-chart-label--axis">${esc(number(value))}</text>`;
     }).join("");
     const labels = values.map((_, i) => {
       const day = i + 1;
