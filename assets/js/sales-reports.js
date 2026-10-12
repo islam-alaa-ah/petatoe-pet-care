@@ -507,26 +507,37 @@
     return { year, current, previous };
   }
 
-  // A6: All comparison dashboards consume exactly the same period arrays as their tables.
-  function comparisonDashboard(labels, current, previous, year, periodLabel) {
-    const totalCurrent = current.reduce((sum, value) => sum + value, 0);
-    const totalPrevious = previous.reduce((sum, value) => sum + value, 0);
-    const delta = totalCurrent - totalPrevious;
-    const deltaText = totalPrevious === 0
-      ? (totalCurrent === 0 ? "—" : (isEnglish() ? "New" : "جديد"))
-      : `${delta >= 0 ? "+" : ""}${pct(delta / Math.abs(totalPrevious) * 100)}`;
-    const hasValidComparison = totalPrevious !== 0;
-    const leadingIndex = current.length > 1 ? current.reduce((best, amount, index) => amount > current[best] ? index : best, 0) : -1;
-    const leaderLabel = leadingIndex < 0 ? String(year) : labels[leadingIndex];
-    const leaderValue = leadingIndex < 0 ? totalCurrent : current[leadingIndex];
-    const cards = [
-      [String(year), money(totalCurrent), "current"],
-      [String(year - 1), money(totalPrevious), "previous"],
-      [isEnglish() ? "Difference" : "فرق المبيعات", money(delta), delta < 0 ? "negative" : "positive"],
-      [isEnglish() ? "Change %" : "نسبة التغير", deltaText, hasValidComparison ? (delta < 0 ? "negative" : "positive") : "neutral"],
-      [isEnglish() ? `Top ${periodLabel}` : `أعلى ${periodLabel}`, `${leaderLabel} · ${money(leaderValue)}`, "leader"]
-    ];
-    return `<div class="sales-comparison-dashboard" role="group" aria-label="${esc(isEnglish() ? "Comparison summary" : "ملخص المقارنة")}">${cards.map(([label,value,tone]) => `<div class="sales-comparison-kpi sales-comparison-kpi--${tone}"><span>${esc(label)}</span><strong title="${esc(value)}">${esc(value)}</strong></div>`).join("")}</div>`;
+  // A7: paired-column visualizations and tables consume the exact same arrays.
+  // Values remain in the reporting contract; only their presentation changes.
+  function comparisonChart(labels, current, previous, year) {
+    const length = labels.length;
+    const width = length === 12 ? 1200 : length === 4 ? 920 : 740;
+    const height = 340;
+    const pad = { left: 75, right: 22, top: 65, bottom: 65 };
+    const plotWidth = width - pad.left - pad.right;
+    const plotHeight = height - pad.top - pad.bottom;
+    const maxValue = Math.max(1, ...current, ...previous);
+    const ceiling = maxValue * 1.13;
+    const y = value => pad.top + plotHeight * (1 - Math.max(0, value) / ceiling);
+    const baseline = y(0);
+    const group = plotWidth / length;
+    const bar = Math.min(length === 12 ? 24 : 66, group * .30);
+    const tick = n => number(n);
+    const grid = [0, .25, .5, .75, 1].map(fraction => {
+      const yy = pad.top + plotHeight * (1-fraction);
+      return `<line x1="${pad.left}" y1="${yy}" x2="${width-pad.right}" y2="${yy}" class="sales-comparison-grid"/><text x="${pad.left-12}" y="${yy+5}" text-anchor="end" class="sales-comparison-axis">${esc(tick(ceiling*fraction))}</text>`;
+    }).join("");
+    const bars = labels.map((label, index) => {
+      const center = pad.left + group * (index + .5);
+      return [[previous[index],center-bar-3,"previous",year-1],[current[index],center+3,"current",year]].map(([value,cx,kind,barYear]) => {
+        const top = y(value);
+        const h = Math.max(0, baseline - top);
+        const barMarkup = h > 0 ? `<rect x="${cx-bar/2}" y="${top}" width="${bar}" height="${h}" rx="5" class="sales-comparison-bar sales-comparison-bar--${kind}"><title>${esc(label)} — ${barYear}: ${esc(money(value))}</title></rect>` : "";
+        const valueLabel = value > 0 ? `<text x="${cx}" y="${Math.max(48,top-9)}" text-anchor="middle" class="sales-comparison-value">${esc(tick(value))}</text>` : "";
+        return barMarkup + valueLabel;
+      }).join("") + `<text x="${center}" y="${height-24}" text-anchor="middle" class="sales-comparison-axis sales-comparison-category">${esc(label)}</text>`;
+    }).join("");
+    return `<div class="sales-comparison-visual" role="group" aria-label="${esc(isEnglish() ? "Sales by period, two-year comparison" : "رسم مقارنة المبيعات بين سنتين")}"><div class="sales-comparison-legend"><span><i class="sales-comparison-legend-current"></i>${esc(String(year))}</span><span><i class="sales-comparison-legend-previous"></i>${esc(String(year-1))}</span></div><div class="sales-comparison-chart-scroll"><svg class="sales-comparison-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(isEnglish() ? "Grouped sales bar chart" : "رسم أعمدة المبيعات المقارنة")}">${grid}${bars}</svg></div></div>`;
   }
 
   function comparisonTable(labels, current, previous, year) {
@@ -547,7 +558,7 @@
     const currentTotal = data.current.reduce((a,b) => a+b,0);
     const previousTotal = data.previous.reduce((a,b) => a+b,0);
     const labels = [isEnglish() ? "Full year" : "السنة كاملة"];
-    host.innerHTML = comparisonDashboard(labels, [currentTotal], [previousTotal], data.year, isEnglish() ? "year" : "سنة")
+    host.innerHTML = comparisonChart([String(data.year)], [currentTotal], [previousTotal], data.year)
       + comparisonTable(labels, [currentTotal], [previousTotal], data.year);
   }
 
@@ -558,7 +569,7 @@
     const quarters = array => [0,1,2,3].map(q => array.slice(q*3, q*3+3).reduce((a,b) => a+b,0));
     const labels = [1,2,3,4].map(q => isEnglish() ? `Q${q}` : `الربع ${q}`);
     const current = quarters(data.current), previous = quarters(data.previous);
-    host.innerHTML = comparisonDashboard(labels, current, previous, data.year, isEnglish() ? "quarter" : "ربع")
+    host.innerHTML = comparisonChart(labels, current, previous, data.year)
       + comparisonTable(labels, current, previous, data.year);
   }
 
@@ -567,7 +578,7 @@
     if (!host) return;
     const data = comparisonYears(filters);
     const labels = Array.from({length:12},(_,i) => monthLabel(i+1));
-    host.innerHTML = comparisonDashboard(labels, data.current, data.previous, data.year, isEnglish() ? "month" : "شهر")
+    host.innerHTML = comparisonChart(labels, data.current, data.previous, data.year)
       + comparisonTable(labels, data.current, data.previous, data.year);
   }
 

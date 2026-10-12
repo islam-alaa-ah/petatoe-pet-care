@@ -124,17 +124,22 @@ html[data-theme="dark"] .sales-comparison-bars>div:last-child i,
 html[data-theme="dark"] .sales-weekday-column span,
 html[data-theme="dark"] .sales-vat-stack span{background:rgba(96,165,250,.48)}
 
-/* A6: comparison KPIs use the same data as the table directly beneath them. */
-.sales-comparison-dashboard{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:4px}
-.sales-comparison-kpi{display:grid;align-content:center;gap:9px;min-width:0;min-height:108px;padding:15px;border:1px solid var(--border);border-radius:13px;background:var(--surface);box-shadow:var(--shadow);border-inline-start:4px solid var(--primary)}
-.sales-comparison-kpi span{font-size:13px;font-weight:750;color:var(--muted)}
-.sales-comparison-kpi strong{font-size:18px;font-weight:850;line-height:1.4;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-.sales-comparison-kpi--previous{border-inline-start-color:#60a5fa}
-.sales-comparison-kpi--positive{border-inline-start-color:var(--success)}
-.sales-comparison-kpi--negative{border-inline-start-color:var(--danger)}
-.sales-comparison-kpi--leader{border-inline-start-color:var(--warning)}
-@media (max-width:1150px){.sales-comparison-dashboard{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:700px){.sales-comparison-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.sales-comparison-kpi{min-height:95px;padding:11px}.sales-comparison-kpi strong{font-size:15px}.sales-report-chart--daily{overflow-x:auto}}
+/* A7 canonical comparison chart owner: paired bars above each existing table. */
+.sales-comparison-visual{width:100%;min-width:0;padding:16px 18px 8px;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+.sales-comparison-legend{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:8px;font-size:15px;font-weight:800;color:var(--text);direction:ltr}
+.sales-comparison-legend span{display:inline-flex;align-items:center;gap:8px}
+.sales-comparison-legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.sales-comparison-legend-current{background:#2563eb}
+.sales-comparison-legend-previous{background:#93c5fd}
+.sales-comparison-chart-scroll{width:100%;min-width:0;overflow-x:auto;overflow-y:hidden}
+.sales-comparison-svg{display:block;width:100%;height:auto;min-width:680px;max-height:370px;overflow:visible}
+.sales-comparison-grid{stroke:var(--border);stroke-width:1}
+.sales-comparison-axis{fill:var(--muted);font-size:13px;font-weight:700;font-family:inherit}
+.sales-comparison-category{fill:var(--text);font-size:14px;font-weight:800}
+.sales-comparison-value{fill:var(--text);font-size:12px;font-weight:800;font-family:inherit}
+.sales-comparison-bar--current{fill:#2563eb}
+.sales-comparison-bar--previous{fill:#93c5fd}
+@media (max-width:700px){.sales-comparison-visual{padding:12px 8px 6px}.sales-comparison-svg{width:780px;max-width:none}.sales-report-chart--daily{overflow-x:auto}}
 /* A5 canonical-owned comparative tables. No external overrides. */
 .sales-report-period-chart{width:100%;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;overflow-x:auto}
 .sales-period-comparison{display:grid;gap:5px;min-width:640px;font-size:14px;font-variant-numeric:tabular-nums}
