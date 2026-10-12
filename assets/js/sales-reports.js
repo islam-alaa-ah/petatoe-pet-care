@@ -188,7 +188,7 @@
       vehicle: uniqueOptions("carId", "carName", "plateNumber"),
       customer: uniqueOptions("customerId", "customerName"),
       team: uniqueOptions("teamId", "teamName"),
-      payment: uniqueTextOptions("paymentMethod"),
+      payment: [...new Set(allRows.map(row => canonicalPaymentMethod(row.paymentMethod)))].sort((a, b) => a.localeCompare(b, isEnglish() ? "en" : "ar")),
       status: uniqueTextOptions("status")
     };
     ["vehicle", "customer", "team", "payment", "status"].forEach(kind => {
@@ -223,6 +223,14 @@
     return [...new Set(allRows.map(row => String(row[key] || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, isEnglish() ? "en" : "ar"));
   }
 
+  // Presentation-only reconciliation of synonymous card/network payment labels.
+  // Other electronic and website payment methods remain separate until source reconciliation.
+  function canonicalPaymentMethod(value) {
+    const key = String(value || "").trim().replace(/\s+/g, " ");
+    if (["شبكة", "بطاقة", "بطاقة / شبكة", "بطاقة/شبكة"].includes(key)) return "بطاقة / شبكة";
+    return key || "غير محدد";
+  }
+
   function paymentLabel(value) {
     const key = String(value || "").trim();
     if (key === "نقدي") return t("salesReports.common.cash", "نقدي");
@@ -251,7 +259,7 @@
       if (filters.vehicle && row.carId !== filters.vehicle) return false;
       if (filters.customer && row.customerId !== filters.customer) return false;
       if (filters.team && row.teamId !== filters.team) return false;
-      if (filters.payment && row.paymentMethod !== filters.payment) return false;
+      if (filters.payment && canonicalPaymentMethod(row.paymentMethod) !== filters.payment) return false;
       if (filters.status && row.status !== filters.status) return false;
       return true;
     });
@@ -291,7 +299,7 @@
     const financialDelta = total - reconstructedTotal;
     const paymentMap = new Map();
     source.forEach(row => {
-      const key = String(row.paymentMethod || "").trim() || "غير محدد";
+      const key = canonicalPaymentMethod(row.paymentMethod);
       paymentMap.set(key, (paymentMap.get(key) || 0) + row.total);
     });
     const paymentMethods = [...paymentMap.entries()]
@@ -436,16 +444,6 @@
       </div>`;
   }
 
-  function renderStatus(rows) {
-    const host = $("salesReportsStatusChart");
-    if (!host) return;
-    const map = new Map();
-    rows.forEach(row => map.set(row.status, (map.get(row.status) || 0) + row.total));
-    const values = [...map.entries()].sort((a, b) => b[1] - a[1]);
-    const max = Math.max(...values.map(x => x[1]), 1);
-    host.innerHTML = values.length ? values.map(([status, value]) => `<div class="sales-status-row"><div><span>${esc(statusLabel(status))}</span><strong>${esc(money(value))}</strong></div><div class="sales-status-track"><span style="width:${Math.max(2, value / max * 100)}%"></span></div></div>`).join("") : emptyBlock();
-  }
-
   function renderMonthly(rows, filters) {
     const host = $("salesReportsMonthlyChart");
     if (!host) return;
@@ -453,7 +451,7 @@
       (!filters.vehicle || row.carId === filters.vehicle)
       && (!filters.customer || row.customerId === filters.customer)
       && (!filters.team || row.teamId === filters.team)
-      && (!filters.payment || row.paymentMethod === filters.payment)
+      && (!filters.payment || canonicalPaymentMethod(row.paymentMethod) === filters.payment)
       && (!filters.status || row.status === filters.status)
     );
     const values = Array.from({ length: 12 }, (_, i) => baseRows.filter(row => {
@@ -544,7 +542,7 @@
       <td>${esc(customerNeighborhood(row))}</td>
       <td>${esc(row.teamName || t("salesReports.common.undefined", "غير محدد"))}</td>
       <td>${esc([row.carName, row.plateNumber].filter(Boolean).join(" — ") || t("salesReports.common.undefined", "غير محدد"))}</td>
-      <td>${esc(paymentLabel(row.paymentMethod))}</td>
+      <td>${esc(paymentLabel(canonicalPaymentMethod(row.paymentMethod)))}</td>
       <td>${esc(statusLabel(row.status))}</td>
       <td>${esc(money(row.beforeTax))}</td>
       <td>${esc(money(row.tax))}</td>
@@ -567,7 +565,6 @@
     renderKpis(summary);
     renderDaily(summary.source, filters);
     renderDonut(summary);
-    renderStatus(filteredRows);
     renderMonthly(allRows, filters);
     renderNeighborhood(summary.source);
     renderComparison(filters);

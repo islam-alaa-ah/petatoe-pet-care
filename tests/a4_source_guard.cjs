@@ -1,0 +1,15 @@
+const fs=require('fs'), assert=require('assert');
+const js=fs.readFileSync(__dirname+'/../assets/js/sales-reports.js','utf8');
+const html=fs.readFileSync(__dirname+'/../index.html','utf8');
+assert(!html.includes('id="salesReportsStatusChart"'),'Status chart removed');
+assert(!js.includes('renderStatus(filteredRows)'),'Status renderer call removed');
+assert(html.indexOf('id="salesReportsNeighborhoodTable"') < html.indexOf('id="salesReportsTableBody"'),'Neighborhood immediately before detail area');
+const between=html.slice(html.indexOf('id="salesReportsNeighborhoodTable"'),html.indexOf('id="salesReportsTableBody"'));
+assert(!between.includes('id="salesReportsVatChart"'),'No report between neighborhood and detail');
+for (const method of ['"شبكة"','"بطاقة"','"بطاقة / شبكة"']) assert(js.includes(method),'Card alias '+method);
+assert(js.includes('canonicalPaymentMethod(row.paymentMethod) !== filters.payment'),'Payment filter canonical');
+assert(js.includes('canonicalPaymentMethod(row.paymentMethod) === filters.payment'),'Monthly chart canonical');
+assert(js.includes('const key = canonicalPaymentMethod(row.paymentMethod);'),'Chart aggregation canonical');
+assert(js.includes('paymentLabel(canonicalPaymentMethod(row.paymentMethod))'),'Details canonical');
+assert(html.includes('id="salesReportsStatusFilter"'),'Status filter preserved');
+console.log('A4 source regression: PASS');

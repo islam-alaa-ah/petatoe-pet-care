@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict');
+const fs=require('fs'),vm=require('vm');
+const file=fs.readFileSync(__dirname+'/../assets/js/sales-reports.js','utf8');
+const exposed=file.replace(/\}\)\(\);\s*$/,'\nwindow.__TEST={normalizeRow,summarize,canonicalPaymentMethod};\n})();');
+const context={window:{addEventListener(){}},document:{addEventListener(){}},navigator:{},Intl,Date,Map,Set,Number,String,Math,console};
+vm.runInNewContext(exposed,context);
+const {normalizeRow,summarize,canonicalPaymentMethod}=context.window.__TEST;
+const data=[['شبكة',100],['بطاقة / شبكة',200],['بطاقة',300],['بطاقة/شبكة',400],['دفع إلكتروني',50],['الدفع عن طريق الموقع',60]];
+const rows=data.map(([method,total],index)=>normalizeRow({row_id:String(index),invoice_number:String(index),record_type:'invoice',invoice_date:'2026-10-12',status:'صادرة',payment_method:method,amount_incl_tax:total}));
+const summary=summarize(rows);
+assert.equal(summary.total,1110);
+assert.equal(summary.paymentMethods.reduce((sum,method)=>sum+method.value,0),1110);
+assert.equal(summary.paymentMethods.find(method=>method.key==='بطاقة / شبكة').value,1000);
+assert.equal(summary.paymentMethods.length,3);
+assert.equal(canonicalPaymentMethod('الدفع عن طريق الموقع'),'الدفع عن طريق الموقع');
+console.log('A4 payment totals: 5 PASS');
