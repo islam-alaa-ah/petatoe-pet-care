@@ -375,7 +375,7 @@
 
   function svgLineChart(rows, year, month, chartWidth) {
     const days = month ? daysInMonth(year, month) : 31;
-    const width = Math.max(920, days * 34, chartWidth || 1100), height = 330, pad = { left: 112, right: 28, top: 28, bottom: 58 };
+    const width = Math.max(920, days * 34, chartWidth || 1100), height = 330, pad = { left: 144, right: 32, top: 28, bottom: 58 };
     const values = Array.from({ length: days }, (_, index) => {
       const day = index + 1;
       return rows.filter(row => {
@@ -390,7 +390,7 @@
     const grid = Array.from({ length: 5 }, (_, i) => {
       const value = max * i / 4;
       const yy = y(value);
-      return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-chart-grid"/><text x="${pad.left - 18}" y="${yy + 4}" text-anchor="end" class="sales-chart-label sales-chart-label--axis">${esc(number(value))}</text>`;
+      return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-chart-grid"/><text x="${pad.left - 28}" y="${yy + 4}" text-anchor="end" class="sales-chart-label sales-chart-label--axis">${esc(number(value))}</text>`;
     }).join("");
     const labels = values.map((_, i) => {
       const day = i + 1;
@@ -484,7 +484,7 @@
     }).reduce((sum, row) => sum + row.total, 0));
     const max = Math.max(...values, 1);
     host.innerHTML = values.map((value, i) => {
-      const height = value > 0 ? Math.max(3, value / max * 100) : 0;
+      const height = value > 0 ? Math.max(3, value / max * 82) : 0;
       const labelBottom = `calc(${height}% + 10px)`;
       return `<div class="sales-month-column"><div class="sales-month-track"><span style="height:${height}%"${filters.month === i + 1 ? " class=\"is-selected\"" : ""}></span><strong class="sales-month-value" style="bottom:${labelBottom}">${esc(number(value))}</strong></div><small>${esc(monthLabel(i + 1))}</small></div>`;
     }).join("");
@@ -540,7 +540,7 @@
     const isMonth = length === 12;
     const isQuarter = length === 4;
     const isYear = length === 1;
-    const width = isMonth ? 1960 : isQuarter ? 1180 : 660;
+    const width = isMonth ? 2160 : isQuarter ? 1180 : 660;
     const height = isYear ? 300 : isMonth ? 430 : 400;
     const pad = isMonth
       ? { left: 142, right: 48, top: 92, bottom: 74 }
@@ -554,7 +554,7 @@
     const y = value => pad.top + plotHeight * (1 - Math.max(0, value) / ceiling);
     const baseline = y(0);
     const group = plotWidth / length;
-    const gap = isMonth ? 16 : isQuarter ? 18 : 20;
+    const gap = isMonth ? 30 : isQuarter ? 18 : 20;
     const bar = Math.min(isMonth ? 34 : isQuarter ? 84 : 118, (group - gap) * .36);
     const tick = n => number(n);
     const fractions = isYear ? [0, .33, .66, 1] : [0, .25, .5, .75, 1];
@@ -578,11 +578,12 @@
         let labelAnchor = 'middle';
         let labelY = entry.top - 10;
         if (isMonth) {
-          labelX = entry.cx + (lane === 0 ? -4 : 4);
-          labelAnchor = lane === 0 ? 'end' : 'start';
-          labelY = entry.top - (close ? (lane === 0 ? 18 : 4) : 10);
+          // Keep the label centered above its actual bar; stagger only vertically.
+          labelX = entry.cx;
+          labelAnchor = 'middle';
+          labelY = entry.top - (close ? (lane === 0 ? 28 : 10) : 12);
         } else if (close) {
-          labelY = entry.top - (lane === 0 ? 18 : 4);
+          labelY = entry.top - (lane === 0 ? 24 : 8);
         }
         labelY = Math.max(26, labelY);
         const valueLabel = entry.value > 0 ? `<text x="${labelX}" y="${labelY}" text-anchor="${labelAnchor}" class="sales-comparison-value sales-comparison-value--${entry.kind}">${esc(tick(entry.value))}</text>` : "";
@@ -645,7 +646,10 @@
     });
     const max = Math.max(...values, 1);
     const labels = isEnglish() ? WEEKDAY_EN : WEEKDAY_AR;
-    host.innerHTML = values.map((value, i) => `<div class="sales-weekday-column"><strong>${esc(number(value))}</strong><div><span style="height:${value > 0 ? Math.max(3, value / max * 100) : 0}%"></span></div><small>${esc(labels[i])}</small></div>`).join("");
+    host.innerHTML = values.map((value, i) => {
+      const height = value > 0 ? Math.max(3, value / max * 80) : 0;
+      return `<div class="sales-weekday-column"><div class="sales-weekday-track"><span style="height:${height}%"></span><strong class="sales-weekday-value" style="bottom:calc(${height}% + 10px)">${esc(number(value))}</strong></div><small>${esc(labels[i])}</small></div>`;
+    }).join("");
   }
 
   function renderDiscount(rows) {
