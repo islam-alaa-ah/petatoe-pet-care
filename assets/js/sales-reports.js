@@ -373,8 +373,8 @@
       </article>`).join("");
   }
 
-  function svgLineChart(rows, year, month) {
-    const width = 1000, height = 300, pad = { left: 55, right: 20, top: 22, bottom: 42 };
+  function svgLineChart(rows, year, month, chartWidth) {
+    const width = Math.max(720, chartWidth || 1000), height = 310, pad = { left: 78, right: 30, top: 25, bottom: 46 };
     const days = month ? daysInMonth(year, month) : 31;
     const values = Array.from({ length: days }, (_, index) => {
       const day = index + 1;
@@ -415,7 +415,7 @@
     const host = $("salesReportsDailyChart");
     if (!host) return;
     host.innerHTML = filters.month
-      ? svgLineChart(rows, filters.year, filters.month)
+      ? svgLineChart(rows, filters.year, filters.month, Math.round(host.getBoundingClientRect().width))
       : `<div class="sales-report-empty-chart">${esc(t("salesReports.report.daily.note", "اختر شهرًا لعرض حركة المبيعات اليومية."))}</div>`;
   }
 
@@ -507,6 +507,28 @@
     return { year, current, previous };
   }
 
+  // A6: All comparison dashboards consume exactly the same period arrays as their tables.
+  function comparisonDashboard(labels, current, previous, year, periodLabel) {
+    const totalCurrent = current.reduce((sum, value) => sum + value, 0);
+    const totalPrevious = previous.reduce((sum, value) => sum + value, 0);
+    const delta = totalCurrent - totalPrevious;
+    const deltaText = totalPrevious === 0
+      ? (totalCurrent === 0 ? "—" : (isEnglish() ? "New" : "جديد"))
+      : `${delta >= 0 ? "+" : ""}${pct(delta / Math.abs(totalPrevious) * 100)}`;
+    const hasValidComparison = totalPrevious !== 0;
+    const leadingIndex = current.length > 1 ? current.reduce((best, amount, index) => amount > current[best] ? index : best, 0) : -1;
+    const leaderLabel = leadingIndex < 0 ? String(year) : labels[leadingIndex];
+    const leaderValue = leadingIndex < 0 ? totalCurrent : current[leadingIndex];
+    const cards = [
+      [String(year), money(totalCurrent), "current"],
+      [String(year - 1), money(totalPrevious), "previous"],
+      [isEnglish() ? "Difference" : "فرق المبيعات", money(delta), delta < 0 ? "negative" : "positive"],
+      [isEnglish() ? "Change %" : "نسبة التغير", deltaText, hasValidComparison ? (delta < 0 ? "negative" : "positive") : "neutral"],
+      [isEnglish() ? `Top ${periodLabel}` : `أعلى ${periodLabel}`, `${leaderLabel} · ${money(leaderValue)}`, "leader"]
+    ];
+    return `<div class="sales-comparison-dashboard" role="group" aria-label="${esc(isEnglish() ? "Comparison summary" : "ملخص المقارنة")}">${cards.map(([label,value,tone]) => `<div class="sales-comparison-kpi sales-comparison-kpi--${tone}"><span>${esc(label)}</span><strong title="${esc(value)}">${esc(value)}</strong></div>`).join("")}</div>`;
+  }
+
   function comparisonTable(labels, current, previous, year) {
     const totalCurrent = current.reduce((a, b) => a + b, 0);
     const totalPrevious = previous.reduce((a, b) => a + b, 0);
@@ -522,8 +544,11 @@
     const data = comparisonYears(filters);
     const host = $("salesReportsComparisonChart");
     if (!host) return;
-    host.innerHTML = comparisonTable([isEnglish() ? "Full year" : "السنة كاملة"],
-      [data.current.reduce((a,b) => a+b,0)], [data.previous.reduce((a,b) => a+b,0)], data.year);
+    const currentTotal = data.current.reduce((a,b) => a+b,0);
+    const previousTotal = data.previous.reduce((a,b) => a+b,0);
+    const labels = [isEnglish() ? "Full year" : "السنة كاملة"];
+    host.innerHTML = comparisonDashboard(labels, [currentTotal], [previousTotal], data.year, isEnglish() ? "year" : "سنة")
+      + comparisonTable(labels, [currentTotal], [previousTotal], data.year);
   }
 
   function renderQuarterComparison(filters) {
@@ -531,14 +556,19 @@
     if (!host) return;
     const data = comparisonYears(filters);
     const quarters = array => [0,1,2,3].map(q => array.slice(q*3, q*3+3).reduce((a,b) => a+b,0));
-    host.innerHTML = comparisonTable([1,2,3,4].map(q => isEnglish() ? `Q${q}` : `الربع ${q}`), quarters(data.current), quarters(data.previous), data.year);
+    const labels = [1,2,3,4].map(q => isEnglish() ? `Q${q}` : `الربع ${q}`);
+    const current = quarters(data.current), previous = quarters(data.previous);
+    host.innerHTML = comparisonDashboard(labels, current, previous, data.year, isEnglish() ? "quarter" : "ربع")
+      + comparisonTable(labels, current, previous, data.year);
   }
 
   function renderMonthComparison(filters) {
     const host = $("salesReportsMonthComparisonChart");
     if (!host) return;
     const data = comparisonYears(filters);
-    host.innerHTML = comparisonTable(Array.from({length:12},(_,i) => monthLabel(i+1)), data.current, data.previous, data.year);
+    const labels = Array.from({length:12},(_,i) => monthLabel(i+1));
+    host.innerHTML = comparisonDashboard(labels, data.current, data.previous, data.year, isEnglish() ? "month" : "شهر")
+      + comparisonTable(labels, data.current, data.previous, data.year);
   }
 
   function renderWeekday(rows) {
@@ -712,6 +742,16 @@
     $("resetSalesReportsFilters")?.addEventListener("click", resetFilters);
     $("refreshSalesReportsBtn")?.addEventListener("click", () => load(true));
     $("salesReportsShowMore")?.addEventListener("click", () => { renderedRows += 10; render(); });
+    // Recalculate chart width after viewport changes without changing sales data.
+    let chartResizeFrame = 0;
+    window.addEventListener("resize", () => {
+      if (window.KYUMNavigation?.current?.() !== "salesReports") return;
+      cancelAnimationFrame(chartResizeFrame);
+      chartResizeFrame = requestAnimationFrame(() => {
+        const filters = selectedFilters();
+        renderDaily(summarize(filterRows(filters)).source, filters);
+      });
+    });
     window.addEventListener("petatoe-language-changed", () => { if (initialized) { window.PetatoeLocalization?.applyStatic?.(view); populateFilters(true); render(); } });
     window.addEventListener("petatoe-localization-updated", () => { if (initialized) { populateFilters(true); render(); } });
     window.addEventListener("kyum-customer-cache-updated", () => { if (window.KYUMNavigation?.current?.() === "salesReports") load(true); });
