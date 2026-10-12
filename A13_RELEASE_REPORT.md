@@ -1,22 +1,28 @@
-# A13 — Sales Reports blank customer/team option labels
+# A13 — Discount ABS reporting correction
 
-## Baseline
-A12_Daily_Axis_Spacing/assets/js/sales-reports.js (phase A12). The original project ZIP is older than A12; retain the previously approved A2–A12 deliveries in the live project.
+## Baseline / dependencies
+Uses **A13_Filter_Labels_Fix/assets/js/sales-reports.js**, carrying forward the two approved customer/team label repairs on top of A12. Do not overlay an older A12 file afterward.
 
-## Root cause
-`uniqueOptions()` returns `{id,name,plate}`, while `populateFilters()` used `x.label` for customer and team. `option()` escapes undefined into blank text. Native select options therefore had values but no visible captions in Light and Dark mode.
+## Root Cause
+The report summed signed `discount_amount` values, canceling positive and negative source discounts. The invoice detail merger also summed signed values across same-invoice lines. The discount graph used a signed denominator (`beforeTax + signedDiscount`).
 
 ## Impact
-Customer and team options become readable; existing option values, selection preservation, dataset filtering, calculations, caching, SQL/RPC, and layout remain unchanged.
+For the verified all-years dataset: positive discounts SAR 50,175.87 + magnitudes of negative discounts SAR 42,668.09 = **SAR 92,843.96**. Gross basis for the existing report's discount-rate formula is `beforeTax + sum(abs(discount))`, equal to **SAR 1,257,607.65** for the validated all-years dataset; indicative rate 7.383% (2–3 decimals depend on existing formatter). This is the application's selected analytical convention, not a change to actual sales or VAT values.
 
 ## Scope
-Only `assets/js/sales-reports.js`, two property references: `x.label` -> `x.name` in customer and team option builders.
+Only `assets/js/sales-reports.js`. Five targeted expressions in three owners: invoice detail merge, `summarize()`, and `renderDiscount()`. **Do not modify `normalizeRow()`** so that raw RPC/source signs remain intact.
 
 ## Regression risk
-Low. No CSS, DOM structure, option values, or data logic altered. `node --check` PASS; exact 2-hunk diff audit PASS. Browser live regression (all years/months, customer/team selections, Light/Dark) pending user verification.
+Medium: discount KPI, aggregated invoice detail discount column, analysis graph and rate change as intended. Sales totals, tax, invoice count, average, payment breakdown, SQL, RPC, cache, filters and permissions unchanged. Recheck combined invoices with mixed-sign line discounts and the monthly/year filters in browser.
 
-## CSS Ownership/Cascade Audit
-No CSS modified, no override layer added. Existing owner `assets/css/sales-reports.css` untouched. Issue originates in JS label selection, not cascade.
+## CSS Ownership / Cascade Audit
+No CSS changes; canonical `assets/css/sales-reports.css` is untouched. No layered overrides.
 
-## Deploy
-Overlay the single modified file at its original path, preserving all other A12-approved assets. Refresh app without clearing any offline queue.
+## Acceptance
+- No negative discount shown as a negative amount in report breakdown after row-by-row abs.
+- For **all years / all filters**, discount KPI and chart total: **SAR 92,843.96** (same snapshot as previous live audit).
+- Total sales **SAR 1,322,168.83**, before tax **SAR 1,164,763.69**, tax **SAR 157,410.53**, cash **SAR 171,800.01**, and invoice count **2606** must remain unchanged for the same snapshot.
+- Live browser checks still required; static checks cannot certify deployed UI.
+
+## Deployment
+Overlay the single file at the original path. Don't clear IndexedDB/offline queue. Refresh page to load changed JS. Verify prior filter-label A13 fix still present.

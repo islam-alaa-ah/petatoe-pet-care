@@ -275,12 +275,12 @@
         : `current:${row.rowId}`;
       const existing = map.get(key);
       if (!existing) {
-        map.set(key, { ...row });
+        map.set(key, { ...row, discount: Math.abs(row.discount) });
         return;
       }
       existing.beforeTax += row.beforeTax;
       existing.tax += row.tax;
-      existing.discount += row.discount;
+      existing.discount += Math.abs(row.discount);
       existing.total += row.total;
     });
     return [...map.values()].sort((a, b) => String(b.invoiceDate).localeCompare(String(a.invoiceDate)) || String(a.invoiceNumber).localeCompare(String(b.invoiceNumber)));
@@ -295,7 +295,7 @@
     const invoiceRows = aggregateInvoiceRows(invoiceSource);
     const beforeTax = source.reduce((sum, row) => sum + row.beforeTax, 0);
     const tax = source.reduce((sum, row) => sum + row.tax, 0);
-    const discount = source.reduce((sum, row) => sum + row.discount, 0);
+    const discount = source.reduce((sum, row) => sum + Math.abs(row.discount), 0);
     const total = source.reduce((sum, row) => sum + row.total, 0);
     const reconstructedTotal = beforeTax + tax;
     const financialDelta = total - reconstructedTotal;
@@ -655,8 +655,8 @@
   function renderDiscount(rows) {
     const host = $("salesReportsDiscountChart");
     if (!host) return;
-    const gross = rows.reduce((sum, row) => sum + row.beforeTax + row.discount, 0);
-    const discount = rows.reduce((sum, row) => sum + row.discount, 0);
+    const gross = rows.reduce((sum, row) => sum + row.beforeTax + Math.abs(row.discount), 0);
+    const discount = rows.reduce((sum, row) => sum + Math.abs(row.discount), 0);
     const rate = gross ? discount / gross * 100 : 0;
     host.innerHTML = `<div class="sales-analysis-cards"><article><span>${esc(t("salesReports.kpi.discount", "إجمالي الخصومات"))}</span><strong>${esc(money(discount))}</strong></article><article><span>${esc(t("salesReports.table.beforeTax", "قبل الضريبة"))}</span><strong>${esc(money(gross))}</strong></article><article><span>${esc(t("salesReports.kpi.discount", "نسبة الخصم"))}</span><strong>${esc(pct(rate))}</strong></article></div><div class="sales-analysis-progress"><span style="width:${Math.min(100, Math.max(0, rate))}%"></span></div>`;
   }
