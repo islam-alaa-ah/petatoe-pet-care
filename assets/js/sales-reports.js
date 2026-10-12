@@ -197,8 +197,8 @@
       const current = preserve ? (kind === "status" ? filters.status : filters[kind]) : "";
       let html = option("", t("salesReports.filter.all", "الكل"), !current);
       if (kind === "vehicle") html += values.vehicle.map(x => option(x.id, `${x.name}${x.plate ? ` — ${x.plate}` : ""}`, x.id === current)).join("");
-      if (kind === "customer") html += values.customer.map(x => option(x.id, x.label, x.id === current)).join("");
-      if (kind === "team") html += values.team.map(x => option(x.id, x.label, x.id === current)).join("");
+      if (kind === "customer") html += values.customer.map(x => option(x.id, x.name, x.id === current)).join("");
+      if (kind === "team") html += values.team.map(x => option(x.id, x.name, x.id === current)).join("");
       if (kind === "payment") html += values.payment.map(x => option(x, paymentLabel(x), x === current)).join("");
       if (kind === "status") html += values.status.map(x => option(x, statusLabel(x), x === current)).join("");
       select.innerHTML = html;
