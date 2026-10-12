@@ -511,33 +511,41 @@
   // Values remain in the reporting contract; only their presentation changes.
   function comparisonChart(labels, current, previous, year) {
     const length = labels.length;
-    const width = length === 12 ? 1200 : length === 4 ? 920 : 740;
-    const height = 340;
-    const pad = { left: 75, right: 22, top: 65, bottom: 65 };
+    const width = length === 12 ? 1440 : length === 4 ? 1100 : 780;
+    const height = 395;
+    const pad = { left: 92, right: 42, top: 95, bottom: 61 };
     const plotWidth = width - pad.left - pad.right;
     const plotHeight = height - pad.top - pad.bottom;
     const maxValue = Math.max(1, ...current, ...previous);
-    const ceiling = maxValue * 1.13;
+    const ceiling = maxValue * 1.18;
     const y = value => pad.top + plotHeight * (1 - Math.max(0, value) / ceiling);
     const baseline = y(0);
     const group = plotWidth / length;
-    const bar = Math.min(length === 12 ? 24 : 66, group * .30);
+    const gap = length === 12 ? 7 : 12;
+    const bar = Math.min(length === 12 ? 30 : 82, (group - gap) * .35);
     const tick = n => number(n);
     const grid = [0, .25, .5, .75, 1].map(fraction => {
-      const yy = pad.top + plotHeight * (1-fraction);
-      return `<line x1="${pad.left}" y1="${yy}" x2="${width-pad.right}" y2="${yy}" class="sales-comparison-grid"/><text x="${pad.left-12}" y="${yy+5}" text-anchor="end" class="sales-comparison-axis">${esc(tick(ceiling*fraction))}</text>`;
+      const yy = pad.top + plotHeight * (1 - fraction);
+      return `<line x1="${pad.left}" y1="${yy}" x2="${width - pad.right}" y2="${yy}" class="sales-comparison-grid"/><text x="${pad.left - 14}" y="${yy + 5}" text-anchor="end" class="sales-comparison-axis">${esc(tick(ceiling * fraction))}</text>`;
     }).join("");
     const bars = labels.map((label, index) => {
       const center = pad.left + group * (index + .5);
-      return [[previous[index],center-bar-3,"previous",year-1],[current[index],center+3,"current",year]].map(([value,cx,kind,barYear]) => {
+      const entries = [
+        { value: previous[index], cx: center - (bar + gap) / 2, kind: "previous", barYear: year - 1, lane: 0 },
+        { value: current[index], cx: center + (bar + gap) / 2, kind: "current", barYear: year, lane: 1 }
+      ];
+      const pair = entries.map(({ value, cx, kind, barYear, lane }) => {
         const top = y(value);
         const h = Math.max(0, baseline - top);
-        const barMarkup = h > 0 ? `<rect x="${cx-bar/2}" y="${top}" width="${bar}" height="${h}" rx="5" class="sales-comparison-bar sales-comparison-bar--${kind}"><title>${esc(label)} — ${barYear}: ${esc(money(value))}</title></rect>` : "";
-        const valueLabel = value > 0 ? `<text x="${cx}" y="${Math.max(48,top-9)}" text-anchor="middle" class="sales-comparison-value">${esc(tick(value))}</text>` : "";
-        return barMarkup + valueLabel;
-      }).join("") + `<text x="${center}" y="${height-24}" text-anchor="middle" class="sales-comparison-axis sales-comparison-category">${esc(label)}</text>`;
+        const rect = h > 0 ? `<rect x="${cx - bar / 2}" y="${top}" width="${bar}" height="${h}" rx="5" class="sales-comparison-bar sales-comparison-bar--${kind}"><title>${esc(label)} — ${barYear}: ${esc(money(value))}</title></rect>` : "";
+        // Separate the two data-label lanes to keep near-equal values readable.
+        const labelY = Math.max(lane === 0 ? 41 : 59, top - (lane === 0 ? 28 : 9));
+        const valueLabel = value > 0 ? `<text x="${cx}" y="${labelY}" text-anchor="middle" class="sales-comparison-value sales-comparison-value--${kind}">${esc(tick(value))}</text>` : "";
+        return rect + valueLabel;
+      }).join("");
+      return pair + `<text x="${center}" y="${height - 21}" text-anchor="middle" class="sales-comparison-axis sales-comparison-category">${esc(label)}</text>`;
     }).join("");
-    return `<div class="sales-comparison-visual" role="group" aria-label="${esc(isEnglish() ? "Sales by period, two-year comparison" : "رسم مقارنة المبيعات بين سنتين")}"><div class="sales-comparison-legend"><span><i class="sales-comparison-legend-current"></i>${esc(String(year))}</span><span><i class="sales-comparison-legend-previous"></i>${esc(String(year-1))}</span></div><div class="sales-comparison-chart-scroll"><svg class="sales-comparison-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(isEnglish() ? "Grouped sales bar chart" : "رسم أعمدة المبيعات المقارنة")}">${grid}${bars}</svg></div></div>`;
+    return `<div class="sales-comparison-visual" role="group" aria-label="${esc(isEnglish() ? "Sales by period, two-year comparison" : "رسم مقارنة المبيعات بين سنتين")}"><div class="sales-comparison-legend"><span><i class="sales-comparison-legend-current"></i>${esc(String(year))}</span><span><i class="sales-comparison-legend-previous"></i>${esc(String(year - 1))}</span></div><div class="sales-comparison-chart-scroll"><svg class="sales-comparison-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(isEnglish() ? "Grouped sales bar chart" : "رسم أعمدة المبيعات المقارنة")}">${grid}${bars}</svg></div></div>`;
   }
 
   function comparisonTable(labels, current, previous, year) {
@@ -547,7 +555,7 @@
       ? ["Period", String(year), String(year - 1), "Change"]
       : ["الفترة", String(year), String(year - 1), "التغير"];
     const change = (a, b) => b === 0 ? (a === 0 ? "—" : (isEnglish() ? "New" : "جديد")) : `${a >= b ? "+" : ""}${pct((a - b) / Math.abs(b) * 100)}`;
-    const cells = (label, a, b, isTotal = false) => `<div class="sales-period-row${isTotal ? " is-total" : ""}"><strong>${esc(label)}</strong><span>${esc(money(a))}</span><span>${esc(money(b))}</span><strong class="${a >= b ? "positive" : "negative"}">${esc(change(a,b))}</strong></div>`;
+    const cells = (label, a, b, isTotal = false) => `<div class="sales-period-row${isTotal ? " is-total" : ""}"><strong>${esc(label)}</strong><span>${esc(money(a))}</span><span>${esc(money(b))}</span><strong class="${a > b ? "positive" : a < b ? "negative" : "neutral"}"><bdi dir="ltr">${esc(change(a,b))}</bdi></strong></div>`;
     return `<div class="sales-period-comparison"><div class="sales-period-row sales-period-head">${headers.map(h => `<span>${esc(h)}</span>`).join("")}</div>${labels.map((label,i) => cells(label,current[i],previous[i])).join("")}${cells(isEnglish() ? "Total" : "الإجمالي",totalCurrent,totalPrevious,true)}</div>`;
   }
 
