@@ -91,6 +91,11 @@
 
   async function load() {
     if (busy) return;
+    if (window.PermissionEngine?.canView?.("customerReports") !== true || window.PermissionEngine?.canView?.("salesReports") !== true) {
+      const status = $("a14OverviewStatus");
+      if (status) status.textContent = "لا توجد صلاحية معتمدة لعرض تقارير العملاء والمبيعات.";
+      return;
+    }
     busy = true; const run = ++version;
     const button = $("a14OverviewLoad"), status = $("a14OverviewStatus"), grid = $("a14OverviewMetrics"), note = $("a14OverviewNote");
     button.disabled = true;

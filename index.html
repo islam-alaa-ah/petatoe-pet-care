@@ -55,8 +55,8 @@
   <link rel="stylesheet" href="assets/css/appointment-historical-import.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.140" />
+  <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=18.56.142" />
   <link rel="stylesheet" href="assets/css/sales-reports.css?v=18.56.140" />
-  <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=18.56.141" />
   <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/vehicle-treasury.css?v=18.56.140" />
@@ -228,6 +228,7 @@
           </button>
           <div class="nav-group-content">
             <button class="nav-item" data-view="reportsOverview" data-petatoe-i18n="sidebar.reportsOverview">مركز التقارير</button>
+            <button class="nav-item" data-view="customerReports">تقارير العملاء</button>
             <button class="nav-item" data-view="salesReports" data-petatoe-i18n="sidebar.salesReports">تقارير المبيعات</button>
             <button class="nav-item" data-view="dailyPerformanceReport" data-petatoe-i18n="sidebar.dailyPerformance">تقرير الأداء اليومي</button>
           </div>
@@ -2517,6 +2518,23 @@
         <div class="sea-vibe-toolbar"><div><h3 data-petatoe-i18n="seaVibe.reports.title">تقارير وتحليلات SEA VIBE</h3><p data-petatoe-i18n="seaVibe.reports.subtitle">تحليل إيرادات الرحلات والمصروفات وصافي الربح التشغيلي.</p></div></div><div class="panel sea-vibe-filters"><label><span data-petatoe-i18n="seaVibe.common.fromDate">من تاريخ</span><input id="seaVibeReportFrom" type="date"></label><label><span data-petatoe-i18n="seaVibe.common.toDate">إلى تاريخ</span><input id="seaVibeReportTo" type="date"></label><label><span data-petatoe-i18n="seaVibe.trip.type">نوع الرحلة</span><select id="seaVibeReportType"><option value="" data-petatoe-i18n="seaVibe.common.all">الكل</option></select></label></div><div id="seaVibeReportsContent"></div>
       </section>
 
+      <!-- A14.3B: dedicated Customer Reports view. Existing report center unchanged. -->
+      <section id="customerReportsView" class="view-section hidden a14-customer-reports-view" aria-hidden="true">
+        <header class="a14-report-page-header">
+          <h3>تقارير العملاء</h3>
+          <p>تحليل المشتريات الفعلية للعملاء، بعيدًا عن عروض الأسعار ونشاط التواصل.</p>
+        </header>
+        <section class="a14-customer-overview" aria-labelledby="a14OverviewTitle">
+          <div class="a14-overview-toolbar">
+            <div><h4 id="a14OverviewTitle">تقارير العملاء — نظرة عامة</h4><p>المشتريات الفعلية، وليس عروض الأسعار أو نشاط التواصل. بيانات الفترة المتاحة للمستخدم.</p></div>
+            <button id="a14OverviewLoad" class="secondary-btn" type="button">عرض / تحديث نظرة العملاء</button>
+          </div>
+          <p id="a14OverviewStatus" class="a14-overview-status" role="status" aria-live="polite">اضغط عرض لتحميل بيانات العملاء والمبيعات والتحقق من اكتمالها.</p>
+          <div id="a14OverviewMetrics" class="a14-overview-metrics" aria-live="polite"></div>
+          <p id="a14OverviewNote" class="a14-overview-note"></p>
+        </section>
+      </section>
+
       <section id="reportsOverviewView" class="view-section hidden">
         <div class="actions-row reports-header-row">
           <div>
@@ -2552,16 +2570,6 @@
         </div>
 
         <div id="reportsStatus" class="data-status hidden"></div>
-        <section class="a14-customer-overview" aria-labelledby="a14OverviewTitle">
-          <div class="a14-overview-toolbar">
-            <div><h4 id="a14OverviewTitle">تقارير العملاء — نظرة عامة</h4><p>المشتريات الفعلية، وليس عروض الأسعار أو نشاط التواصل. بيانات الفترة المتاحة للمستخدم.</p></div>
-            <button id="a14OverviewLoad" class="secondary-btn" type="button">عرض / تحديث نظرة العملاء</button>
-          </div>
-          <p id="a14OverviewStatus" class="a14-overview-status" role="status" aria-live="polite">اضغط عرض لتحميل بيانات العملاء والمبيعات والتحقق من اكتمالها.</p>
-          <div id="a14OverviewMetrics" class="a14-overview-metrics" aria-live="polite"></div>
-          <p id="a14OverviewNote" class="a14-overview-note"></p>
-        </section>
-
 
         <div class="executive-period-summary">
           <div>
@@ -4801,8 +4809,8 @@
   <script src="assets/js/daily-activity-service.js?v=18.56.140"></script>
   <script src="assets/js/notification-center-service.js?v=18.56.140"></script>
   <script src="assets/js/app.js?v=18.56.140"></script>
+  <script src="assets/js/customer-reports-overview.js?v=18.56.142"></script>
   <script src="assets/js/sales-reports.js?v=18.56.140"></script>
-  <script src="assets/js/customer-reports-overview.js?v=18.56.141"></script>
   <script src="assets/js/appointment-historical-import.js?v=18.56.140"></script>
   <script src="assets/js/appointment-contact-data.js?v=18.56.140"></script>
   <script src="assets/js/customer-excel-actions-hotfix.js?v=18.56.140"></script>

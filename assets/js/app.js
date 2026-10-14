@@ -223,6 +223,7 @@ const views = {
   backups: document.getElementById("backupsView"),
   systemHealth: document.getElementById("systemHealthView"),
   reportsOverview: document.getElementById("reportsOverviewView"),
+  customerReports: document.getElementById("customerReportsView"),
   salesReports: document.getElementById("salesReportsView"),
   dailyPerformanceReport: document.getElementById("dailyPerformanceReportView"),
   notificationCenter: document.getElementById("notificationCenterView"),
