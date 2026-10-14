@@ -139,7 +139,7 @@
     if (!result.ranks.length) {
       const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;td.textContent="لا توجد مبيعات مرتبطة بعملاء في البيانات المتاحة.";tr.append(td);table.append(tr);
     }
-    $("a14PurchaseStatus").textContent=`${integer(result.buyers)} عميل له مبيعات، ${integer(result.purchaseInvoices)} فاتورة مميزة. البيانات حسب صلاحيات الجلسة، ومن أول بيع موثق في المصادر المتاحة.`;
+    $("a14PurchaseStatus").textContent=`${integer(result.buyers)} عميل له مبيعات، ${integer(result.purchaseInvoices)} فاتورة بدون تكرار. البيانات حسب صلاحيات الجلسة، ومن أول بيع موثق في المصادر المتاحة.`;
   }
 
 
@@ -330,11 +330,11 @@
       grid.append(
         metric("العملاء المتاحون", integer(result.customers), "حسب صلاحيات الجلسة"),
         metric("عملاء لديهم فواتير", integer(result.buyers)),
-        metric("لديهم أكثر من فاتورة", integer(result.repeat), "فاتورتان مميزتان أو أكثر"),
+        metric("لديهم أكثر من فاتورة", integer(result.repeat), "فاتورتان أو أكثر بدون تكرار السطور"),
         metric("لديهم فاتورة واحدة", integer(result.once)),
         metric("مبيعات العملاء المرتبطين", `${fmt(result.sales)} SAR`, "شامل الضريبة"),
         metric("متوسط المبيعات لكل عميل له مبيعات", `${fmt(result.average)} SAR`),
-        metric("الفواتير المميزة المرتبطة", integer(result.purchaseInvoices)),
+        metric("عدد الفواتير المرتبطة بالعملاء", integer(result.purchaseInvoices)),
         metric("مبيعات غير منسوبة لعميل", `${fmt(result.excluded)} SAR`, `${integer(result.excludedRows)} سجلًا`)
       );
       renderAnalysis(result);
