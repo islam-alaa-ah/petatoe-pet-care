@@ -41,3 +41,11 @@
 .a14-activity-analysis{width:100%;min-width:0}
 .a14-analysis-description{color:var(--muted);font-size:13px;line-height:1.7;margin:0 0 14px}
 .a14-activity-analysis .a14-analysis-grid{grid-template-columns:minmax(0,1fr)}
+
+/* A14.3E — canonical report actions and full-width geography */
+.a14-geography{width:100%;min-width:0}
+.a14-contact-actions{display:flex;gap:8px;align-items:center;justify-content:flex-start}
+.a14-contact-action{border:1px solid var(--border);border-radius:9px;padding:8px 12px;background:var(--surface);color:var(--text);font:inherit;white-space:nowrap;cursor:pointer}
+.a14-contact-action:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+.a14-whatsapp{color:var(--success);border-color:var(--success)}
+.a14-contact-action:disabled{opacity:.5;cursor:not-allowed}

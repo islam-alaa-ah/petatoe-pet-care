@@ -38,6 +38,7 @@
     }
     const byCustomer = new Map();
     const customerNames = new Map(customers.map(x => [x.id, String(x.name || x.customer_name || x.customerName || "").trim()]));
+    const customerContacts = new Map(customers.map(x => [x.id, {phone: String(x.phone || x.mobile || "").trim(), region: String(x.address || x.neighborhoodName || x.neighborhood_name || "").trim() || "غير محدد"}]));
     let excludedTotal = 0;
     let customerTotalCents = 0;
     let unknownCustomerRows = 0;
@@ -79,7 +80,7 @@
     const ranks = [...byCustomer.entries()]
       .filter(([,x]) => x.invoices.size > 0)
       .map(([id,x]) => ({ id, name: customerNames.get(id) || `عميل (${id.slice(0,8)})`,
-        invoices: x.invoices.size, cents: x.cents, first: x.first, last: x.last, invoiceDates: [...x.invoiceDates.values()] }))
+        invoices: x.invoices.size, cents: x.cents, phone: customerContacts.get(id)?.phone || "", first: x.first, last: x.last, invoiceDates: [...x.invoiceDates.values()] }))
       .sort((a,b) => b.cents - a.cents || a.id.localeCompare(b.id));
     const frequencies = [
       { name: "مرة واحدة", count: purchasing.filter(x => x.invoices.size === 1).length },
@@ -90,7 +91,7 @@
     ];
     if (frequencies.reduce((sum,x)=>sum+x.count,0) !== purchasing.length) throw new Error("عدم تطابق شرائح تكرار الشراء.");
     if (ranks.reduce((sum,x)=>sum+x.cents,0) !== customerTotalCents) throw new Error("عدم تطابق إجمالي ترتيب العملاء.");
-    return { ranks, frequencies, customers: ids.size, buyers: purchasing.length, repeat, once,
+    return { ranks, frequencies, customerContacts, customers: ids.size, buyers: purchasing.length, repeat, once,
       sales: customerTotalCents / 100, average: purchasing.length ? customerTotalCents / 100 / purchasing.length : 0,
       excluded: excludedTotal / 100, excludedRows: withoutCustomerRows,
       salesRows: sales.length, purchaseInvoices: purchasing.reduce((n,x) => n + x.invoices.size, 0) };
@@ -189,12 +190,47 @@
     ranked.filter(r=>r.gap>90).sort((a,b)=>b.gap-a.gap || a.id.localeCompare(b.id)).slice(0,10).forEach(r=>{
       const tr=document.createElement("tr");
       for (const v of [r.name,integer(r.invoices),r.last,integer(r.gap),`${fmt(r.cents/100)} SAR`]) { const td=document.createElement("td");td.textContent=v;tr.append(td); }
+      const actions=document.createElement("td");actions.className="a14-contact-actions";
+      const whatsapp=document.createElement("button");whatsapp.type="button";whatsapp.className="a14-contact-action a14-whatsapp";whatsapp.textContent="واتساب";
+      const digits=String(r.phone || "").replace(/\D/g,"");
+      let number=digits.startsWith("00966")?digits.slice(5):digits.startsWith("966")?digits.slice(3):digits;
+      if (number.startsWith("0")) number=number.slice(1);
+      if (/^5\d{8}$/.test(number)) number=`966${number}`; else number="";
+      whatsapp.disabled=!number;
+      whatsapp.title=number?"فتح محادثة واتساب دون تسجيل متابعة تلقائيًا":"لا يوجد رقم جوال سعودي صالح";
+      whatsapp.addEventListener("click",()=>{if(number)window.open(`https://wa.me/${number}`,"_blank","noopener,noreferrer");});
+      const contacted=document.createElement("button");contacted.type="button";contacted.className="a14-contact-action";contacted.textContent="تم التواصل";
+      contacted.dataset.dailySuggestedContacted=r.id;
+      contacted.title="فتح نموذج المتابعة الرسمي؛ لا يُسجل التواصل إلا بعد الحفظ";
+      actions.append(whatsapp,contacted);tr.append(actions);
       $("a14DormantCustomers").append(tr);
     });
     if (!$("a14DormantCustomers").children.length) {
-      const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=5;td.textContent="لا يوجد عملاء منقطعون أكثر من 90 يومًا حسب تاريخ القياس.";tr.append(td);$("a14DormantCustomers").append(tr);
+      const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=6;td.textContent="لا يوجد عملاء منقطعون أكثر من 90 يومًا حسب تاريخ القياس.";tr.append(td);$("a14DormantCustomers").append(tr);
     }
     $("a14ActivityStatus").textContent=`اكتمل تحليل النشاط وفق تاريخ مرجعي ${reference}، بدون تعديل أو إنشاء بيانات.`;
+  }
+
+  function renderGeography(result) {
+    const metrics=$("a14GeoMetrics"), table=$("a14GeoRows");metrics.replaceChildren();table.replaceChildren();
+    const regions=new Map();
+    for (const [id,contact] of result.customerContacts) {
+      const region=contact.region;
+      if (!regions.has(region))regions.set(region,{name:region,customers:0,buyers:0,cents:0});
+      regions.get(region).customers++;
+    }
+    for (const r of result.ranks) {
+      const region=result.customerContacts.get(r.id)?.region || "غير محدد";
+      const entry=regions.get(region);
+      if (!entry)throw new Error("نطاق جغرافي غير متسق مع قائمة العملاء.");
+      entry.buyers++;entry.cents+=r.cents;
+    }
+    const rows=[...regions.values()].sort((a,b)=>b.cents-a.cents || a.name.localeCompare(b.name,"ar"));
+    if(rows.reduce((n,r)=>n+r.customers,0)!==result.customers || rows.reduce((n,r)=>n+r.cents,0)!==Math.round(result.sales*100))throw new Error("عدم تطابق إجماليات التقرير الجغرافي.");
+    const unspecified=regions.get("غير محدد")?.customers||0;
+    metrics.append(metric("مناطق مسجلة",integer(rows.filter(r=>r.name!=="غير محدد").length)),metric("عملاء دون منطقة محددة",integer(unspecified)),metric("المبيعات المرتبطة بالمناطق",`${fmt(result.sales)} SAR`));
+    for (const r of rows) {const tr=document.createElement("tr");for(const v of [r.name,integer(r.customers),integer(r.buyers),`${fmt(r.cents/100)} SAR`]){const td=document.createElement("td");td.textContent=v;tr.append(td);}table.append(tr);}
+    $("a14GeoStatus").textContent="التحليل بحسب عنوان العميل المسجل؛ المناطق غير المحددة معروضة منفصلة. لا يتم توزيع المبيعات غير المنسوبة لعميل.";
   }
 
   async function load() {
@@ -214,6 +250,7 @@
     for (const id of ["a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers"]) $(id).replaceChildren();
     $("a14ActivityReference").textContent = ""; $("a14RetentionDescription").textContent = "";
     $("a14ActivityStatus").textContent = "جاري تحليل تواريخ الفواتير...";
+    $("a14GeoMetrics").replaceChildren();$("a14GeoRows").replaceChildren();$("a14GeoStatus").textContent="جاري تحليل التوزيع الجغرافي...";
     try {
       if (navigator.onLine === false) throw new Error("التحقق من البيانات يحتاج اتصالًا بالإنترنت.");
       if (!window.CustomersService?.listCustomers) throw new Error("خدمة العملاء غير متاحة.");
@@ -236,6 +273,7 @@
       );
       renderAnalysis(result);
       renderActivity(result);
+      renderGeography(result);
       note.textContent = `قراءة مكتملة: ${integer(result.salesRows)} صف مبيعات. التجميعات النقدية غير المرتبطة لا تُنشئ عملاء أو فواتير. تاريخ تسجيل العميل ليس تاريخ أول شراء.`;
       status.textContent = "اكتمل التحميل والمطابقة دون صفوف مكررة أو عملاء خارج النطاق.";
       window.A14CustomerOverviewLastResult = Object.freeze({ ...result });
@@ -248,6 +286,7 @@
       for (const id of ["a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers"]) $(id).replaceChildren();
       $("a14ActivityReference").textContent = ""; $("a14RetentionDescription").textContent = "";
       $("a14ActivityStatus").textContent = "تم إيقاف تحليل النشاط لمنع عرض بيانات ناقصة.";
+      $("a14GeoMetrics").replaceChildren();$("a14GeoRows").replaceChildren();$("a14GeoStatus").textContent="تم إيقاف التحليل الجغرافي لمنع عرض بيانات ناقصة.";
     } finally { busy = false; button.disabled = false; }
   }
   const initialize = () => $("a14OverviewLoad")?.addEventListener("click", load);
