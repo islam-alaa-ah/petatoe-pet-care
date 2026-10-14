@@ -97,7 +97,7 @@
       { name: "6 إلى 10", count: purchasing.filter(x => x.invoices.size >= 6 && x.invoices.size <= 10).length },
       { name: "أكثر من 10", count: purchasing.filter(x => x.invoices.size > 10).length }
     ];
-    if (frequencies.reduce((sum,x)=>sum+x.count,0) !== purchasing.length) throw new Error("عدم تطابق شرائح تكرار الشراء.");
+    if (frequencies.reduce((sum,x)=>sum+x.count,0) !== purchasing.length) throw new Error("عدم تطابق شرائح تكرار المبيعات.");
     if (ranks.reduce((sum,x)=>sum+x.cents,0) !== customerTotalCents) throw new Error("عدم تطابق إجمالي ترتيب العملاء.");
     return { ranks, frequencies, customerContacts, customers: ids.size, buyers: purchasing.length, repeat, once,
       sales: customerTotalCents / 100, average: purchasing.length ? customerTotalCents / 100 / purchasing.length : 0,
@@ -118,7 +118,7 @@
     const summary = $("a14FrequencyMetrics"), bands = $("a14PurchaseFrequency"), table = $("a14TopCustomers");
     summary.replaceChildren(
       metric("متوسط عدد الفواتير للعميل المشترِي", result.buyers ? (result.purchaseInvoices/result.buyers).toFixed(2) : "0.00"),
-      metric("معدل المشترين المتكررين", result.buyers ? `${(result.repeat/result.buyers*100).toFixed(1)}%` : "0.0%"),
+      metric("نسبة العملاء متكرري التعامل", result.buyers ? `${(result.repeat/result.buyers*100).toFixed(1)}%` : "0.0%"),
       metric("العملاء أصحاب 3 فواتير أو أكثر", integer(result.ranks.filter(x=>x.invoices>=3).length))
     );
     bands.replaceChildren();
@@ -137,9 +137,9 @@
       table.append(tr);
     }
     if (!result.ranks.length) {
-      const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;td.textContent="لا توجد مشتريات مرتبطة بعملاء في البيانات المتاحة.";tr.append(td);table.append(tr);
+      const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;td.textContent="لا توجد مبيعات مرتبطة بعملاء في البيانات المتاحة.";tr.append(td);table.append(tr);
     }
-    $("a14PurchaseStatus").textContent=`${integer(result.buyers)} عميل مشترٍ، ${integer(result.purchaseInvoices)} فاتورة مميزة. البيانات حسب صلاحيات الجلسة، ومن أول شراء موثق في المصادر المتاحة.`;
+    $("a14PurchaseStatus").textContent=`${integer(result.buyers)} عميل له مبيعات، ${integer(result.purchaseInvoices)} فاتورة مميزة. البيانات حسب صلاحيات الجلسة، ومن أول بيع موثق في المصادر المتاحة.`;
   }
 
 
@@ -149,7 +149,7 @@
     for (const id of activityIds) $(id).replaceChildren();
     const dated = result.ranks.filter(r => /^\d{4}-\d{2}-\d{2}$/.test(r.last));
     if (!dated.length) {
-      $("a14ActivityStatus").textContent = "لا توجد تواريخ شراء موثقة صالحة لتحليل النشاط.";
+      $("a14ActivityStatus").textContent = "لا توجد تواريخ بيع موثقة صالحة لتحليل النشاط.";
       $("a14ActivityReference").textContent = "";
       $("a14RetentionDescription").textContent = "";
       return;
@@ -159,13 +159,13 @@
     const referenceDay = day(reference);
     const counts = [0,0,0,0];
     const ranked = dated.map(r => ({ ...r, gap: referenceDay - day(r.last) }));
-    if (ranked.some(r => !Number.isFinite(r.gap) || r.gap < 0)) throw new Error("تاريخ شراء غير صالح في نشاط العملاء.");
+    if (ranked.some(r => !Number.isFinite(r.gap) || r.gap < 0)) throw new Error("تاريخ بيع غير صالح في نشاط العملاء.");
     for (const r of ranked) counts[r.gap <= 30 ? 0 : r.gap <= 60 ? 1 : r.gap <= 90 ? 2 : 3]++;
-    if (counts.reduce((a,b)=>a+b,0) !== dated.length) throw new Error("عدم تطابق شرائح نشاط الشراء.");
+    if (counts.reduce((a,b)=>a+b,0) !== dated.length) throw new Error("عدم تطابق شرائح نشاط المبيعات.");
     const undated = result.buyers - dated.length;
     $("a14ActivityMetrics").append(
-      metric("آخر تاريخ شراء موثق", reference),
-      metric("نشط شرائيًا خلال 30 يومًا", integer(counts[0])),
+      metric("آخر تاريخ بيع موثق", reference),
+      metric("نشط في المبيعات خلال 30 يومًا", integer(counts[0])),
       metric("منقطع أكثر من 90 يومًا", integer(counts[3])),
       metric("عملاء بلا فواتير مسجلة", integer(result.customers-result.buyers))
     );
@@ -188,11 +188,11 @@
     }
     const returning = [...previous].filter(id=>current.has(id)).length;
     const rate = previous.size ? returning/previous.size*100 : null;
-    $("a14RetentionDescription").textContent = `الشهر السابق ${prev} ← الشهر المرجعي ${month}. الاحتفاظ = عملاء الشهر السابق الذين اشتروا في الشهر المرجعي ÷ عملاء الشهر السابق. ليس معدل الاحتفاظ منذ أول شراء.`;
+    $("a14RetentionDescription").textContent = `الشهر السابق ${prev} ← الشهر المرجعي ${month}. الاحتفاظ = عملاء الشهر السابق الذين سُجلت لهم مبيعات في الشهر المرجعي ÷ عملاء الشهر السابق. ليس معدل الاحتفاظ منذ أول بيع.`;
     $("a14RetentionMetrics").append(
       metric(`مشترون في ${prev}`,integer(previous.size)),
       metric(`مشترون في ${month}`,integer(current.size)),
-      metric("عادوا للشراء في الشهرين",integer(returning)),
+      metric("استمر التعامل معهم في الشهرين",integer(returning)),
       metric("معدل الاحتفاظ الشهري",rate===null?"غير متاح":`${rate.toFixed(1)}%`)
     );
     ranked.filter(r=>r.gap>90).sort((a,b)=>b.gap-a.gap || a.id.localeCompare(b.id)).slice(0,10).forEach(r=>{
@@ -287,15 +287,15 @@
       throw new Error("المبيعات المرتبطة تحتوي على تواريخ غير صالحة أو غير مكتملة؛ توقّف التحليل الزمني.");
     }
     if (firstRecordedTotal !== firstMonthByCustomer.size || firstMonthByCustomer.size !== result.buyers) {
-      throw new Error("فشل التحقق من أول شراء موثق للعملاء.");
+      throw new Error("فشل التحقق من أول بيع موثق للعملاء.");
     }
     metrics.append(
-      metric("الشهور التي تحتوي على مشتريات",integer(rows.length)),
+      metric("الشهور التي سُجلت فيها مبيعات",integer(rows.length)),
       metric("سنوات المبيعات المتاحة",integer(years.size)),
-      metric("عملاء حسب أول شراء موثق",integer(firstRecordedTotal)),
+      metric("عملاء حسب أول بيع موثق",integer(firstRecordedTotal)),
       metric("إجمالي المبيعات المرتبطة",`${fmt(sumCents/100)} SAR`)
     );
-    $("a14TrendStatus").textContent=`تمت المطابقة عبر ${integer(rows.length)} شهرًا. «أول شراء» يعني أول فاتورة مرقمة في البيانات المتاحة فقط، وليس تاريخ اكتساب العميل. العملاء الفريدون سنويًا لا يُجمعون بين السنوات.`;
+    $("a14TrendStatus").textContent=`تمت المطابقة عبر ${integer(rows.length)} شهرًا. «أول بيع» يعني أول فاتورة مرقمة في البيانات المتاحة فقط، وليس تاريخ اكتساب العميل. العملاء الفريدون سنويًا لا يُجمعون بين السنوات.`;
   }
 
   async function load() {
@@ -311,7 +311,7 @@
     status.textContent = "جاري تحميل كل صفحات العملاء والمبيعات والتحقق من الربط...";
     grid.replaceChildren(); note.textContent = "";
     $("a14FrequencyMetrics").replaceChildren(); $("a14PurchaseFrequency").replaceChildren(); $("a14TopCustomers").replaceChildren();
-    $("a14PurchaseStatus").textContent = "جاري التحقق من بيانات المشتريات...";
+    $("a14PurchaseStatus").textContent = "جاري التحقق من بيانات المبيعات...";
     for (const id of ["a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers"]) $(id).replaceChildren();
     $("a14ActivityReference").textContent = ""; $("a14RetentionDescription").textContent = "";
     $("a14ActivityStatus").textContent = "جاري تحليل تواريخ الفواتير...";
@@ -330,10 +330,10 @@
       grid.append(
         metric("العملاء المتاحون", integer(result.customers), "حسب صلاحيات الجلسة"),
         metric("عملاء لديهم فواتير", integer(result.buyers)),
-        metric("اشتروا أكثر من مرة", integer(result.repeat), "فاتورتان مميزتان أو أكثر"),
-        metric("اشتروا مرة واحدة", integer(result.once)),
+        metric("لديهم أكثر من فاتورة", integer(result.repeat), "فاتورتان مميزتان أو أكثر"),
+        metric("لديهم فاتورة واحدة", integer(result.once)),
         metric("مبيعات العملاء المرتبطين", `${fmt(result.sales)} SAR`, "شامل الضريبة"),
-        metric("متوسط المبيعات لكل عميل مشترٍ", `${fmt(result.average)} SAR`),
+        metric("متوسط المبيعات لكل عميل له مبيعات", `${fmt(result.average)} SAR`),
         metric("الفواتير المميزة المرتبطة", integer(result.purchaseInvoices)),
         metric("مبيعات غير منسوبة لعميل", `${fmt(result.excluded)} SAR`, `${integer(result.excludedRows)} سجلًا`)
       );
@@ -341,7 +341,7 @@
       renderActivity(result);
       renderGeography(result);
       renderTrends(result);
-      note.textContent = `قراءة مكتملة: ${integer(result.salesRows)} صف مبيعات. التجميعات النقدية غير المرتبطة لا تُنشئ عملاء أو فواتير. تاريخ تسجيل العميل ليس تاريخ أول شراء.`;
+      note.textContent = `قراءة مكتملة: ${integer(result.salesRows)} صف مبيعات. التجميعات النقدية غير المرتبطة لا تُنشئ عملاء أو فواتير. تاريخ تسجيل العميل ليس تاريخ أول بيع.`;
       status.textContent = "اكتمل التحميل والمطابقة دون صفوف مكررة أو عملاء خارج النطاق.";
       window.A14CustomerOverviewLastResult = Object.freeze({ ...result });
     } catch (error) {

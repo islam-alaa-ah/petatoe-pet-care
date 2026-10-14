@@ -2522,11 +2522,11 @@
       <section id="customerReportsView" class="view-section hidden a14-customer-reports-view" aria-hidden="true">
         <header class="a14-report-page-header">
           <h3>تقارير العملاء</h3>
-          <p>تحليل المشتريات الفعلية للعملاء، بعيدًا عن عروض الأسعار ونشاط التواصل.</p>
+          <p>تحليل المبيعات الفعلية المرتبطة بالعملاء، بعيدًا عن عروض الأسعار ونشاط التواصل.</p>
         </header>
         <section class="a14-customer-overview" aria-labelledby="a14OverviewTitle">
           <div class="a14-overview-toolbar">
-            <div><h4 id="a14OverviewTitle">تقارير العملاء — نظرة عامة</h4><p>المشتريات الفعلية، وليس عروض الأسعار أو نشاط التواصل. بيانات الفترة المتاحة للمستخدم.</p></div>
+            <div><h4 id="a14OverviewTitle">تقارير العملاء — نظرة عامة</h4><p>المبيعات الفعلية، وليس عروض الأسعار أو نشاط التواصل. بيانات الفترة المتاحة للمستخدم.</p></div>
             <button id="a14OverviewLoad" class="secondary-btn" type="button">عرض / تحديث نظرة العملاء</button>
           </div>
           <p id="a14OverviewStatus" class="a14-overview-status" role="status" aria-live="polite">اضغط عرض لتحميل بيانات العملاء والمبيعات والتحقق من اكتمالها.</p>
@@ -2534,22 +2534,22 @@
           <p id="a14OverviewNote" class="a14-overview-note"></p>
         </section>
         <section class="a14-customer-overview a14-purchase-analysis" aria-labelledby="a14PurchaseTitle">
-          <div class="a14-overview-toolbar"><div><h4 id="a14PurchaseTitle">تحليل مشتريات العملاء وتكرار الشراء</h4><p>الفواتير المميزة فقط، مع فصل سطور الفواتير والتجميعات النقدية غير المنسوبة.</p></div></div>
+          <div class="a14-overview-toolbar"><div><h4 id="a14PurchaseTitle">تحليل مبيعات العملاء وتكرار التعامل</h4><p>الفواتير المميزة فقط، مع فصل سطور الفواتير والتجميعات النقدية غير المنسوبة.</p></div></div>
           <p id="a14PurchaseStatus" class="a14-overview-status" role="status" aria-live="polite">اضغط «عرض / تحديث نظرة العملاء» لعرض التحليل.</p>
           <div id="a14FrequencyMetrics" class="a14-overview-metrics"></div>
           <div class="a14-analysis-grid">
-            <section class="a14-analysis-panel"><h5>توزيع العملاء حسب تكرار الشراء</h5><div id="a14PurchaseFrequency" class="a14-frequency-list"></div></section>
-            <section class="a14-analysis-panel"><h5>أعلى 10 عملاء حسب المبيعات المحققة</h5><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>العميل</th><th>فواتير</th><th>مبيعات شامل الضريبة</th><th>آخر شراء موثق</th></tr></thead><tbody id="a14TopCustomers"></tbody></table></div></section>
+            <section class="a14-analysis-panel"><h5>توزيع العملاء حسب تكرار المبيعات</h5><div id="a14PurchaseFrequency" class="a14-frequency-list"></div></section>
+            <section class="a14-analysis-panel"><h5>أعلى 10 عملاء حسب المبيعات المحققة</h5><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>العميل</th><th>فواتير</th><th>مبيعات شامل الضريبة</th><th>آخر بيع موثق</th></tr></thead><tbody id="a14TopCustomers"></tbody></table></div></section>
           </div>
         </section>
         <section class="a14-customer-overview a14-activity-analysis" aria-labelledby="a14ActivityTitle">
-          <div class="a14-overview-toolbar"><div><h4 id="a14ActivityTitle">نشاط الشراء والاحتفاظ بالعملاء</h4><p>التقييم بناءً على آخر عملية شراء موثقة في نطاق البيانات المتاحة، وليس آخر تواصل أو تاريخ تسجيل العميل.</p></div></div>
+          <div class="a14-overview-toolbar"><div><h4 id="a14ActivityTitle">نشاط المبيعات والاحتفاظ بالعملاء</h4><p>التقييم بناءً على آخر عملية بيع موثقة في نطاق البيانات المتاحة، وليس آخر تواصل أو تاريخ تسجيل العميل.</p></div></div>
           <p id="a14ActivityStatus" class="a14-overview-status" role="status" aria-live="polite">اضغط «عرض / تحديث نظرة العملاء» لعرض النشاط.</p>
           <div id="a14ActivityMetrics" class="a14-overview-metrics"></div>
           <div class="a14-analysis-grid">
-            <section class="a14-analysis-panel"><h5>شرائح العملاء حسب المدة منذ آخر شراء</h5><p class="a14-analysis-description" id="a14ActivityReference"></p><div id="a14ActivityBands" class="a14-frequency-list"></div></section>
-            <section class="a14-analysis-panel"><h5>الاحتفاظ الشرائي بين آخر شهرين متاحين</h5><p class="a14-analysis-description" id="a14RetentionDescription"></p><div id="a14RetentionMetrics" class="a14-overview-metrics"></div></section>
-            <section class="a14-analysis-panel"><h5>عملاء تحتاج متابعة شراء — الأقدم انقطاعًا</h5><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>العميل</th><th>الفواتير</th><th>آخر شراء موثق</th><th>أيام الانقطاع</th><th>المبيعات الشاملة</th><th>الإجراءات</th></tr></thead><tbody id="a14DormantCustomers"></tbody></table></div></section>
+            <section class="a14-analysis-panel"><h5>شرائح العملاء حسب المدة منذ آخر بيع</h5><p class="a14-analysis-description" id="a14ActivityReference"></p><div id="a14ActivityBands" class="a14-frequency-list"></div></section>
+            <section class="a14-analysis-panel"><h5>الاحتفاظ بعملاء المبيعات بين آخر شهرين متاحين</h5><p class="a14-analysis-description" id="a14RetentionDescription"></p><div id="a14RetentionMetrics" class="a14-overview-metrics"></div></section>
+            <section class="a14-analysis-panel"><h5>عملاء تحتاج متابعة مبيعات — الأقدم انقطاعًا</h5><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>العميل</th><th>الفواتير</th><th>آخر بيع موثق</th><th>أيام الانقطاع</th><th>المبيعات الشاملة</th><th>الإجراءات</th></tr></thead><tbody id="a14DormantCustomers"></tbody></table></div></section>
           </div>
         </section>
         <section class="a14-customer-overview a14-geography" aria-labelledby="a14GeoTitle">
@@ -2557,17 +2557,17 @@
           <p id="a14GeoStatus" class="a14-overview-status" role="status" aria-live="polite">اضغط تحديث نظرة العملاء لتحليل المناطق.</p>
           <div id="a14GeoMetrics" class="a14-overview-metrics"></div>
           <div class="a14-analysis-grid">
-            <section class="a14-analysis-panel"><h5>العملاء والمبيعات حسب المنطقة المسجلة</h5><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>المنطقة</th><th>عدد العملاء</th><th>عملاء مشترون</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14GeoRows"></tbody></table></div></section>
+            <section class="a14-analysis-panel"><h5>العملاء والمبيعات حسب المنطقة المسجلة</h5><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>المنطقة</th><th>عدد العملاء</th><th>عملاء ذوو مبيعات</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14GeoRows"></tbody></table></div></section>
           </div>
         </section>
 
         <section class="a14-customer-overview a14-trends" aria-labelledby="a14TrendTitle">
-          <div class="a14-overview-toolbar"><div><h4 id="a14TrendTitle">المقارنات الزمنية ونمو مشتريات العملاء</h4><p>المبيعات المحققة المرتبطة بعملاء حقيقيين، وفق أول شراء موثق داخل البيانات المتاحة فقط، وليس تاريخ تسجيل العميل.</p></div></div>
+          <div class="a14-overview-toolbar"><div><h4 id="a14TrendTitle">المقارنات الزمنية ونمو مبيعات العملاء</h4><p>المبيعات المحققة المرتبطة بعملاء حقيقيين، وفق أول بيع موثق داخل البيانات المتاحة فقط، وليس تاريخ تسجيل العميل.</p></div></div>
           <p id="a14TrendStatus" class="a14-overview-status" role="status" aria-live="polite">اضغط تحديث نظرة العملاء لعرض المقارنات الزمنية.</p>
           <div id="a14TrendMetrics" class="a14-overview-metrics"></div>
           <div class="a14-analysis-grid">
-            <section class="a14-analysis-panel"><h5>تطور المشتريات والعملاء شهريًا</h5><p class="a14-analysis-description">«عادوا للشراء» يقارن المشترين مع الشهر السابق المعروض؛ الأشهر بدون مشتريات لا تُعتبر فترة مقارنة صالحة تلقائيًا.</p><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>الشهر</th><th>العملاء المشترون</th><th>الفواتير المميزة</th><th>أول شراء موثق</th><th>اشتروا في الشهر السابق أيضًا</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14TrendMonthlyRows"></tbody></table></div></section>
-            <section class="a14-analysis-panel"><h5>المقارنة السنوية للمبيعات والعملاء</h5><p class="a14-analysis-description">العميل يحسب مرة واحدة داخل كل سنة، وقد يظهر في أكثر من سنة. المبيعات غير المنسوبة لعميل ليست ضمن هذا التقرير.</p><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>السنة</th><th>العملاء المشترون</th><th>الفواتير المميزة</th><th>أول شراء موثق خلال السنة</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14TrendAnnualRows"></tbody></table></div></section>
+            <section class="a14-analysis-panel"><h5>تطور المبيعات والعملاء شهريًا</h5><p class="a14-analysis-description">«استمر التعامل» يقارن العملاء ذوي المبيعات مع الشهر السابق المعروض؛ الأشهر بدون مبيعات لا تُعتبر فترة مقارنة صالحة تلقائيًا.</p><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>الشهر</th><th>العملاء ذوو المبيعات</th><th>الفواتير المميزة</th><th>أول بيع موثق</th><th>لديهم مبيعات في الشهر السابق أيضًا</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14TrendMonthlyRows"></tbody></table></div></section>
+            <section class="a14-analysis-panel"><h5>المقارنة السنوية للمبيعات والعملاء</h5><p class="a14-analysis-description">العميل يحسب مرة واحدة داخل كل سنة، وقد يظهر في أكثر من سنة. المبيعات غير المنسوبة لعميل ليست ضمن هذا التقرير.</p><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>السنة</th><th>العملاء ذوو المبيعات</th><th>الفواتير المميزة</th><th>أول بيع موثق خلال السنة</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14TrendAnnualRows"></tbody></table></div></section>
           </div>
         </section>
 
