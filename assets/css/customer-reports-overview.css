@@ -23,7 +23,7 @@
 @media(max-width:600px){.a14-customer-reports-view{padding:12px}.a14-customer-overview{padding:12px}.a14-overview-toolbar button{width:100%}.a14-overview-metrics article{padding:13px 11px;min-height:105px}.a14-overview-metrics article strong{font-size:clamp(16px,4vw,20px)}}
 
 /* A14.3C — Purchase analysis canonical owner (no legacy overrides). */
-.a14-analysis-grid{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,2fr);gap:14px;margin-top:16px}
+.a14-analysis-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:16px;width:100%;min-width:0}
 .a14-analysis-panel{min-width:0;border:1px solid var(--border);border-radius:15px;background:var(--surface);padding:16px}
 .a14-analysis-panel h5{margin:0 0 16px;color:var(--text);font-size:15px}
 .a14-frequency-list{display:grid;gap:13px}
@@ -35,5 +35,4 @@
 .a14-purchase-table th,.a14-purchase-table td{padding:11px 9px;border-bottom:1px solid var(--border);text-align:start;color:var(--text)}
 .a14-purchase-table th{color:var(--muted);font-weight:800}
 .a14-purchase-table td:nth-child(3){font-variant-numeric:tabular-nums}
-@media(max-width:900px){.a14-analysis-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.a14-analysis-panel{padding:12px}}
