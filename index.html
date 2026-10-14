@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="assets/css/appointment-historical-import.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.140" />
-  <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=18.56.147" />
+  <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=18.57.0" />
   <link rel="stylesheet" href="assets/css/sales-reports.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.140" />
@@ -2524,6 +2524,22 @@
           <h3>تقارير العملاء</h3>
           <p>تحليل المبيعات الفعلية المرتبطة بالعملاء، بعيدًا عن عروض الأسعار ونشاط التواصل.</p>
         </header>
+        <section class="a14-customer-overview a14-filter-panel" aria-labelledby="a14FilterTitle">
+          <h4 id="a14FilterTitle">فلاتر تقارير العملاء والتصدير</h4>
+          <p class="a14-analysis-description">الفلاتر تطبق على كل كروت وتقارير العملاء، من بيانات تم تحميلها بالكامل والتحقق منها. مؤشرات أول بيع وتكرار التعامل تخص الفترة المختارة.</p>
+          <div class="a14-filter-fields" dir="rtl">
+            <label>السنة<select id="a14FilterYear"><option value="">كل السنوات</option></select></label>
+            <label>الشهر<select id="a14FilterMonth"><option value="">كل الشهور</option></select></label>
+            <label>العميل<select id="a14FilterCustomer"><option value="">كل العملاء</option></select></label>
+          </div>
+          <div class="a14-filter-actions">
+            <button type="button" id="a14ApplyFilters" class="primary-btn">تطبيق الفلاتر</button>
+            <button type="button" id="a14ResetFilters" class="secondary-btn">إعادة تعيين</button>
+            <button type="button" id="a14ExportCsv" class="secondary-btn" disabled>تصدير CSV (Excel)</button>
+            <button type="button" id="a14PrintReport" class="secondary-btn" disabled>طباعة / حفظ PDF</button>
+          </div>
+          <p class="a14-analysis-description">التصدير يشمل الجداول الحالية بعد الفلترة فقط. زر PDF يفتح نافذة طباعة المتصفح، ويمكن اختيار «حفظ كـ PDF».</p>
+        </section>
         <section class="a14-customer-overview" aria-labelledby="a14OverviewTitle">
           <div class="a14-overview-toolbar">
             <div><h4 id="a14OverviewTitle">تقارير العملاء — نظرة عامة</h4><p>المبيعات الفعلية، وليس عروض الأسعار أو نشاط التواصل. بيانات الفترة المتاحة للمستخدم.</p></div>
@@ -4847,7 +4863,7 @@
   <script src="assets/js/daily-activity-service.js?v=18.56.140"></script>
   <script src="assets/js/notification-center-service.js?v=18.56.140"></script>
   <script src="assets/js/app.js?v=18.56.140"></script>
-  <script src="assets/js/customer-reports-overview.js?v=18.56.147"></script>
+  <script src="assets/js/customer-reports-overview.js?v=18.57.0"></script>
   <script src="assets/js/sales-reports.js?v=18.56.140"></script>
   <script src="assets/js/appointment-historical-import.js?v=18.56.140"></script>
   <script src="assets/js/appointment-contact-data.js?v=18.56.140"></script>

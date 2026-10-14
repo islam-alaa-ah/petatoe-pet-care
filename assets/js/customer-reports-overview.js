@@ -8,6 +8,113 @@
   const integer = amount => Number(amount || 0).toLocaleString("en-US");
   let busy = false;
   let version = 0;
+  let verifiedSnapshot = null;
+  let filteredResult = null;
+  const selected = id => $(id)?.value || "";
+  const isValidDate = value => /^\d{4}-\d{2}-\d{2}$/.test(String(value || ""));
+
+  function setOptions(select, items, allLabel) {
+    select.replaceChildren(new Option(allLabel, ""));
+    for (const [value, label] of items) select.add(new Option(label, value));
+  }
+  function refreshFilterOptions(customers, sales) {
+    const years = [...new Set(sales.map(x => String(x.invoice_date || "").slice(0,4)).filter(x => /^\d{4}$/.test(x)))].sort();
+    const months = [...new Set(sales.map(x => String(x.invoice_date || "").slice(5,7)).filter(x => /^(0[1-9]|1[0-2])$/.test(x)))].sort();
+    const names = customers.map(x => [x.id, String(x.name || x.customer_name || x.customerName || x.id).trim()]).sort((a,b) => a[1].localeCompare(b[1], "ar"));
+    const old = [selected("a14FilterYear"),selected("a14FilterMonth"),selected("a14FilterCustomer")];
+    setOptions($("a14FilterYear"),years.map(x=>[x,x]),"كل السنوات");
+    setOptions($("a14FilterMonth"),months.map(x=>[x,x]),"كل الشهور");
+    setOptions($("a14FilterCustomer"),names,"كل العملاء");
+    ["a14FilterYear","a14FilterMonth","a14FilterCustomer"].forEach((id,i)=> {if ([...$(id).options].some(o=>o.value===old[i])) $(id).value=old[i];});
+  }
+  function currentScope() {
+    if (!verifiedSnapshot) throw new Error("حدّث البيانات أولًا قبل استخدام الفلاتر.");
+    const year=selected("a14FilterYear"),month=selected("a14FilterMonth"),customerId=selected("a14FilterCustomer");
+    const customers = customerId ? verifiedSnapshot.customers.filter(c => c.id === customerId) : verifiedSnapshot.customers;
+    const sales = verifiedSnapshot.sales.filter(row => {
+      const d=String(row.invoice_date || "").slice(0,10);
+      return (!year || d.slice(0,4)===year) && (!month || d.slice(5,7)===month)
+        && (!customerId || row.customer_id===customerId);
+    });
+    return {customers,sales,year,month,customerId};
+  }
+  function clearRendered() {
+    for(const id of ["a14OverviewMetrics","a14FrequencyMetrics","a14PurchaseFrequency","a14TopCustomers", "a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers","a14GeoMetrics","a14GeoRows","a14TrendMetrics","a14TrendMonthlyRows","a14TrendAnnualRows"]) $(id)?.replaceChildren();
+    for(const id of ["a14PurchaseStatus","a14ActivityStatus","a14GeoStatus","a14TrendStatus","a14ActivityReference","a14RetentionDescription"]) if($(id)) $(id).textContent="";
+    filteredResult=null;
+    $("a14ExportCsv").disabled = true;
+    $("a14PrintReport").disabled = true;
+  }
+  function renderScope() {
+    const scope = currentScope();
+    clearRendered();
+    try {
+      const result = calculate(scope.customers, scope.sales);
+      const grid=$("a14OverviewMetrics"),note=$("a14OverviewNote"),status=$("a14OverviewStatus");
+      grid.append(
+        metric("العملاء المتاحون في النطاق", integer(result.customers), "بحسب صلاحيات الجلسة وفلتر العميل"),
+        metric("عملاء لديهم فواتير في الفترة", integer(result.buyers)),
+        metric("لديهم أكثر من فاتورة", integer(result.repeat), "فاتورتان أو أكثر في نطاق الفلترة"),
+        metric("لديهم فاتورة واحدة", integer(result.once)),
+        metric("مبيعات العملاء المرتبطين", `${fmt(result.sales)} SAR`, "شامل الضريبة"),
+        metric("متوسط المبيعات لكل عميل له مبيعات", `${fmt(result.average)} SAR`),
+        metric("عدد الفواتير المرتبطة بالعملاء", integer(result.purchaseInvoices)),
+        metric("مبيعات غير منسوبة لعميل", `${fmt(result.excluded)} SAR`, `${integer(result.excludedRows)} سجلًا`)
+      );
+      renderAnalysis(result);
+      renderActivity(result);
+      renderGeography(result);
+      // Empty date-range has no comparable months; renderTrends can handle zero safely.
+      renderTrends(result);
+      const label = `${scope.year || "كل السنوات"} / ${scope.month || "كل الشهور"} / ${scope.customerId ? "عميل محدد" : "كل العملاء"}`;
+      note.textContent = `النطاق: ${label}. ${integer(result.salesRows)} صف مبيعات؛ التجميعات النقدية غير المنسوبة لا تُنشئ عملاء أو فواتير. أول بيع موثق داخل النطاق المختار فقط.`;
+      status.textContent = "تم تطبيق الفلاتر على نسخة بيانات مكتملة ومتحقق منها، دون قراءة جزئية.";
+      filteredResult = result;
+      $("a14ExportCsv").disabled = false;
+      $("a14PrintReport").disabled = false;
+      window.A14CustomerOverviewLastResult = Object.freeze({ ...result });
+    } catch(err) {
+      clearRendered();
+      $("a14OverviewStatus").textContent=`تعذر حساب الفلاتر بأمان: ${err.message || err}`;
+      $("a14OverviewNote").textContent="لم تُعرض أرقام جزئية.";
+      console.error("A14 scoped report error",err);
+    }
+  }
+  function csvCell(value) {
+    const text=String(value ?? "");
+    const neutral=/^[\s]*[=+@\-]/.test(text) ? "'"+text : text;
+    return '"'+neutral.replace(/"/g,'""')+'"';
+  }
+  function exportCsv() {
+    if (!filteredResult || !verifiedSnapshot || !window.PermissionEngine?.canView?.("customerReports") || !window.PermissionEngine?.canView?.("salesReports")) return;
+    const sections=[
+      ["أعلى 10 عملاء حسب المبيعات", "a14TopCustomers"],
+      ["العملاء الذين يحتاجون متابعة", "a14DormantCustomers"],
+      ["التوزيع الجغرافي", "a14GeoRows"],
+      ["المقارنة الشهرية", "a14TrendMonthlyRows"],
+      ["المقارنة السنوية", "a14TrendAnnualRows"]
+    ];
+    const lines=[];
+    for(const [name,id] of sections) {
+      const tbody=$(id); const table=tbody?.closest("table"); if (!table) continue;
+      lines.push([name].map(csvCell).join(","));
+      lines.push([...table.querySelectorAll("thead th")].map(th=>csvCell(th.textContent)).join(","));
+      for (const tr of tbody.querySelectorAll("tr")) {
+        const cells=[...tr.children].map(td=> td.classList.contains("a14-contact-actions") ? "" : td.textContent);
+        lines.push(cells.map(csvCell).join(","));
+      }
+      lines.push("");
+    }
+    const blob=new Blob(["\uFEFF"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
+    const url=URL.createObjectURL(blob);const anchor=document.createElement("a");anchor.href=url;
+    anchor.download="A14_customer_reports_filtered.csv";document.body.append(anchor);anchor.click();anchor.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+  }
+  function printReport() {
+    if (!filteredResult || !window.PermissionEngine?.canView?.("customerReports") || !window.PermissionEngine?.canView?.("salesReports")) return;
+    window.print();
+  }
+
 
   async function getSales() {
     const client = window.customerSupabase;
@@ -117,7 +224,7 @@
   function renderAnalysis(result) {
     const summary = $("a14FrequencyMetrics"), bands = $("a14PurchaseFrequency"), table = $("a14TopCustomers");
     summary.replaceChildren(
-      metric("متوسط عدد الفواتير للعميل المشترِي", result.buyers ? (result.purchaseInvoices/result.buyers).toFixed(2) : "0.00"),
+      metric("متوسط عدد الفواتير للعميل ذي المبيعات", result.buyers ? (result.purchaseInvoices/result.buyers).toFixed(2) : "0.00"),
       metric("نسبة العملاء متكرري التعامل", result.buyers ? `${(result.repeat/result.buyers*100).toFixed(1)}%` : "0.0%"),
       metric("العملاء أصحاب 3 فواتير أو أكثر", integer(result.ranks.filter(x=>x.invoices>=3).length))
     );
@@ -190,8 +297,8 @@
     const rate = previous.size ? returning/previous.size*100 : null;
     $("a14RetentionDescription").textContent = `الشهر السابق ${prev} ← الشهر المرجعي ${month}. الاحتفاظ = عملاء الشهر السابق الذين سُجلت لهم مبيعات في الشهر المرجعي ÷ عملاء الشهر السابق. ليس معدل الاحتفاظ منذ أول بيع.`;
     $("a14RetentionMetrics").append(
-      metric(`مشترون في ${prev}`,integer(previous.size)),
-      metric(`مشترون في ${month}`,integer(current.size)),
+      metric(`عملاء ذوو مبيعات في ${prev}`,integer(previous.size)),
+      metric(`عملاء ذوو مبيعات في ${month}`,integer(current.size)),
       metric("استمر التعامل معهم في الشهرين",integer(returning)),
       metric("معدل الاحتفاظ الشهري",rate===null?"غير متاح":`${rate.toFixed(1)}%`)
     );
@@ -309,7 +416,7 @@
     const button = $("a14OverviewLoad"), status = $("a14OverviewStatus"), grid = $("a14OverviewMetrics"), note = $("a14OverviewNote");
     button.disabled = true;
     status.textContent = "جاري تحميل كل صفحات العملاء والمبيعات والتحقق من الربط...";
-    grid.replaceChildren(); note.textContent = "";
+    verifiedSnapshot = null; clearRendered(); note.textContent = "";
     $("a14FrequencyMetrics").replaceChildren(); $("a14PurchaseFrequency").replaceChildren(); $("a14TopCustomers").replaceChildren();
     $("a14PurchaseStatus").textContent = "جاري التحقق من بيانات المبيعات...";
     for (const id of ["a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers"]) $(id).replaceChildren();
@@ -327,23 +434,9 @@
       if (!sales.length) throw new Error("لم ترجع المبيعات أي بيانات. تحقق من صلاحية تقارير المبيعات؛ لن نعرض مؤشرات مضللة.");
       const result = calculate(customers, sales);
       if (run !== version) return;
-      grid.append(
-        metric("العملاء المتاحون", integer(result.customers), "حسب صلاحيات الجلسة"),
-        metric("عملاء لديهم فواتير", integer(result.buyers)),
-        metric("لديهم أكثر من فاتورة", integer(result.repeat), "فاتورتان أو أكثر بدون تكرار السطور"),
-        metric("لديهم فاتورة واحدة", integer(result.once)),
-        metric("مبيعات العملاء المرتبطين", `${fmt(result.sales)} SAR`, "شامل الضريبة"),
-        metric("متوسط المبيعات لكل عميل له مبيعات", `${fmt(result.average)} SAR`),
-        metric("عدد الفواتير المرتبطة بالعملاء", integer(result.purchaseInvoices)),
-        metric("مبيعات غير منسوبة لعميل", `${fmt(result.excluded)} SAR`, `${integer(result.excludedRows)} سجلًا`)
-      );
-      renderAnalysis(result);
-      renderActivity(result);
-      renderGeography(result);
-      renderTrends(result);
-      note.textContent = `قراءة مكتملة: ${integer(result.salesRows)} صف مبيعات. التجميعات النقدية غير المرتبطة لا تُنشئ عملاء أو فواتير. تاريخ تسجيل العميل ليس تاريخ أول بيع.`;
-      status.textContent = "اكتمل التحميل والمطابقة دون صفوف مكررة أو عملاء خارج النطاق.";
-      window.A14CustomerOverviewLastResult = Object.freeze({ ...result });
+      verifiedSnapshot={customers,sales};
+      refreshFilterOptions(customers,sales);
+      renderScope();
     } catch (error) {
       console.error("A14 customer overview load failed", error);
       status.textContent = `تعذر اعتماد نظرة العملاء: ${error.message || error}`;
@@ -357,7 +450,16 @@
       $("a14TrendMetrics").replaceChildren();$("a14TrendMonthlyRows").replaceChildren();$("a14TrendAnnualRows").replaceChildren();$("a14TrendStatus").textContent="تم إيقاف المقارنات الزمنية لمنع عرض بيانات ناقصة.";
     } finally { busy = false; button.disabled = false; }
   }
-  const initialize = () => $("a14OverviewLoad")?.addEventListener("click", load);
+  const initialize = () => {
+    $("a14OverviewLoad")?.addEventListener("click", load);
+    $("a14ApplyFilters")?.addEventListener("click", () => {if(!busy) renderScope();});
+    $("a14ResetFilters")?.addEventListener("click", () => {
+      for(const id of ["a14FilterYear","a14FilterMonth","a14FilterCustomer"]) $(id).value="";
+      if(verifiedSnapshot && !busy) renderScope();
+    });
+    $("a14ExportCsv")?.addEventListener("click", exportCsv);
+    $("a14PrintReport")?.addEventListener("click", printReport);
+  };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialize, { once: true });
   else initialize();
 })();
