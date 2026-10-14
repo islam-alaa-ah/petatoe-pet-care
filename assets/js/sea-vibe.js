@@ -83,7 +83,7 @@
   function resetReportVisibleCounts(){seaVibeReportTripsVisible=SEA_VIBE_REPORTS_PAGE_SIZE;seaVibeReportExpensesVisible=SEA_VIBE_REPORTS_PAGE_SIZE;}
 
   function permitDurationKey(hours){return Math.min(5,Math.max(1,Math.trunc(Number(hours)||1)));}
-  function permitPoints(people,hours){return Math.max(0,Math.trunc(Number(snap().permitFees.find(x=>x.peopleCount===Number(people)&&x.durationHours===permitDurationKey(hours))?.points||0)));}
+  function permitPoints(people,hours){if(isKhorTripType($('seaVibeTripType')?.value||''))return 0;return Math.max(0,Math.trunc(Number(snap().permitFees.find(x=>x.peopleCount===Number(people)&&x.durationHours===permitDurationKey(hours))?.points||0)));}
   function permitFee(people,hours){return zawelCost(permitPoints(people,hours));}
   function fuelCostForTripType(id){return Number(findRef(snap().tripTypes,id)?.fuelCostAmount||0);}
   function tripFuelCostForForm(){const s=snap(),tripId=$('seaVibeTripId')?.value||'',typeId=$('seaVibeTripType')?.value||'',existing=s.trips.find(x=>String(x.id)===String(tripId));if(existing&&String(existing.tripTypeId)===String(typeId)){const fuelExpense=s.expenses.find(x=>String(x.tripId)===String(tripId)&&x.systemKey==='fuel_cost');if(fuelExpense)return Number(fuelExpense.amount||0);const manual=s.expenses.find(e=>String(e.tripId)===String(tripId)&&!e.systemGenerated&&(()=>{const c=findRef(s.expenseCatalog,e.catalogId);return /بنزين/i.test(c?.nameAr||'')||/fuel/i.test(c?.nameEn||'');})());if(manual)return Number(manual.amount||0);}return fuelCostForTripType(typeId);}
@@ -113,7 +113,7 @@
     const el=$('seaVibeTripDuration');if(!el)return;
     const current=el.value;
     const typeId=$('seaVibeTripType')?.value||'';
-    const values=isKhorTripType(typeId)?[0.5,...Array.from({length:10},(_,i)=>i+1)]:Array.from({length:isLongTripType(typeId)?12:10},(_,i)=>i+1);
+    const values=isKhorTripType(typeId)?[0.5,1,2]:Array.from({length:isLongTripType(typeId)?12:10},(_,i)=>i+1);
     // Preserve a saved legacy duration while editing; never rewrite historical trips silently.
     const savedId=$('seaVibeTripId')?.value||'';
     const saved=snap().trips.find(x=>String(x.id)===String(savedId));
