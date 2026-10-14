@@ -293,6 +293,7 @@ const pageMeta = {
   activityLog: ["activityLog.page.title", "activityLog.page.note"],
   backups: ["backups.page.title", "backups.page.note"],
   systemHealth: ["systemHealth.page.title", "systemHealth.page.note"],
+  customerReports: ["تقارير العملاء", "تحليل المشتريات الفعلية للعملاء وتكرار الشراء"],
   reportsOverview: ["reportsOverview.page.title", "reportsOverview.page.subtitle"],
   salesReports: ["salesReports.page.title", "salesReports.page.subtitle"],
   dailyPerformanceReport: ["تقرير الأداء اليومي", "متابعة تنفيذ المهام والنشاط اليومي للموظفين"],
