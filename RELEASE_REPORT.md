@@ -1,23 +1,27 @@
-# SEA VIBE Duration R1 — conditional release (NOT DEPLOYED)
+# SEA VIBE — R1.1 guarded migration (R1 HOLD correction)
 
-Baseline: ZIP 2026-10-14T232533.371. Supabase deployed definitions supplied Oct 14.
+## Result of supplied diagnostics
+- `exact_guard_position = 0` confirms R1's literal formatting anchor did not match.
+- Core markers for duration, permit matrix, Zawel ledger and upsert all true, but these are **presence probes**, not proof of complete semantic equivalence.
+- Supabase function MD5 observed by user: `166a8e949bc7fb00deabe8eacb373ec0`.
+- R1 failed inside a transaction at a preflight gate; verify live state before proceeding.
 
-## Changes
-- `assets/js/sea-vibe.js`: Khor selectable durations exactly 0.5,1,2; hide person field; 1 by default (based on previously staged UI).
-- `assets/js/sea-vibe-service.js`: Khor permit zero in previews, optimistic expense and Zawel wallet; no change to fuel/commissions.
-- `sql/02_GUARDED_MIGRATION.sql`: guarded transaction to change trip duration to numeric(4,1), preserve View/GRANTs, update deployed functions with exact-match replacement, explicitly block trip-type transition crossing Khor boundary (needs separate migration), exclude Khor from new permits and reconciliation, preserves fee matrix (11/12 use capped lookup at 5).
+## Scope of R1.1 vs R1
+- Replace indentation-sensitive injection location with one guarded regex anchor, and verify one and only one match.
+- Strict MD5 gate on deployed permit function, so formatting tolerant anchor does **not** allow a changed function body.
+- Zawel preview insertion anchor accepts whitespace differences but must match exactly one occurrence; verify safeguard after migration.
+- All other migration logic, frontend files, existing trip/fee constraints and historical safeguards are unchanged from R1.
 
-## Root Cause
-INTEGER duration and 1..10 DB check, casts in sync, unconditional permit trigger, no Khor exception in Zawel preview, missing trip_type_id trigger dependency, offline optimistic permit calculation.
+## WARNING / prerequisites
+1. DO NOT execute directly in production. Take backup and rehearse on matching staging database.
+2. Run `sql/01_PRE_DEPLOY_READONLY.sql`, compare with prior 20 trips and Zawel 20 permit ledger entries / -9150 points.
+3. Execute `sql/02_GUARDED_MIGRATION.sql` as **one script** on staging. No separate pasting of sub-blocks.
+4. Run `sql/03_POST_DEPLOY_READONLY.sql`, verify 20 historic trips and financial ledger unchanged.
+5. Exercise create/edit Khor 0.5/1/2, fishing/Bayadah 11/12, permit exemptions, Zawel preview, offline queue, idempotency and conflicts. Frontend JS only after SQL verified.
+6. STOP on every HOLD/ERROR; do not bypass checks.
 
-## Risk / scope
-**HIGH**: financial triggers & dependent View. SQL has NOT been tested against a live DB in this environment. Requires DB backup, stage clone execution, compare historical 20 trip fingerprints/expenses/ledger, then controlled production maintenance window. No mid-session forced refresh. The migration refuses if trip count differs from 20; rebaseline rather than removing guard.
-
-## Known limitations / follow-up
-- Cross-type edits between Khor and fee-bearing trips are deliberately blocked to avoid unsafe retroactive refunds/charges.
-- If there are more hidden dependencies or deployed definitions drifted, transaction aborts; do not use CASCADE.
-- For current online and offline flows, test creating 0.5 Khor with no permit points/expenses, then 11/12 fishing/bayadah with capped permit points, and edits and reload.
-- Existing third-party dependent functions may need updated return types and could block View recreation; treat as HOLD, never force.
-- Database permission design: previous View grants are replayed, not broadened. SECURITY DEFINER function bodies reused.
-- Validate all records of 20 legacy trips individually, not just aggregate sums.
-- Source file versions: UI staged file precedes last A14 modifications but touches SEA VIBE JS only; verify against newest deployment before replacing.
+## Limits
+- No direct execution against Supabase was possible here; no LIVE PASS claimed.
+- R1.1 keeps the R1 implementation and constraints; staging might expose further mismatches.
+- `get_sea_vibe_zawel_reconciliation_preview_r44r1` excludes Khor from matching, which is appropriate only while there are no legacy Khor transactions (checked by preflight). No historical ledger deletion.
+- The preflight still expects 20 original trips and zero historical Khor trips.

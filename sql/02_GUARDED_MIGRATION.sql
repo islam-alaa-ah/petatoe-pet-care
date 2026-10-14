@@ -1,4 +1,4 @@
--- SEA VIBE R1 — guarded transactional migration. RUN ONLY AFTER DATABASE BACKUP AND REVIEW.
+-- SEA VIBE R1.1 — guarded transactional migration. RUN ONLY AFTER DATABASE BACKUP AND REVIEW.
 -- IMPORTANT: Releases must apply SQL before frontend and then verify live.
 BEGIN;
 SET LOCAL lock_timeout='7s';
@@ -15,7 +15,7 @@ WHERE table_schema='public' AND table_name='sea_vibe_trip_financials'
 GROUP BY grantee;
 
 DO $gate$
-DECLARE v_dep_count integer; v_cast_count integer; v_def text;
+DECLARE v_dep_count integer; v_cast_count integer; v_def text; v_match_count integer;
 BEGIN
  IF (SELECT data_type FROM information_schema.columns WHERE table_schema='public' AND table_name='sea_vibe_trips' AND column_name='duration_hours') <> 'integer' THEN
     RAISE EXCEPTION 'SV_R1_HOLD: duration column drift'; END IF;
@@ -33,9 +33,13 @@ BEGIN
  v_cast_count:=(length(v_def)-length(replace(v_def, 'coalesce((p_payload->>''durationHours'')::integer,0)', '')))/length('coalesce((p_payload->>''durationHours'')::integer,0)');
  IF v_cast_count<>3 THEN RAISE EXCEPTION 'SV_R1_HOLD: unexpected duration cast count %', v_cast_count; END IF;
  v_def:=pg_get_functiondef('public.sea_vibe_sync_permit_expense()'::regprocedure);
- IF position('begin' || chr(10) || '  v_duration :=' IN v_def)=0 THEN RAISE EXCEPTION 'SV_R1_HOLD: permit trigger function drift'; END IF;
+ IF md5(v_def) <> '166a8e949bc7fb00deabe8eacb373ec0' THEN RAISE EXCEPTION 'SV_R1_HOLD: permit trigger function hash drift'; END IF;
+ SELECT count(*) INTO v_match_count FROM regexp_matches(v_def, '(begin[[:space:]]+)(v_duration[[:space:]]*:=)', 'gi');
+ IF v_match_count<>1 THEN RAISE EXCEPTION 'SV_R1_HOLD: permit insertion anchor count %',v_match_count; END IF;
  v_def:=pg_get_functiondef('public.get_sea_vibe_zawel_reconciliation_preview_r44r1()'::regprocedure);
- IF position('    group by' || chr(10) || '      t.id,' IN v_def)=0 THEN RAISE EXCEPTION 'SV_R1_HOLD: Zawel preview definition drift'; END IF;
+ SELECT count(*) INTO v_match_count FROM regexp_matches(v_def, 'group[[:space:]]+by[[:space:]]+t[.]id[[:space:]]*,', 'gi');
+ IF v_match_count<>1 OR position('from public.sea_vibe_trips t' IN v_def)=0 THEN
+   RAISE EXCEPTION 'SV_R1_HOLD: Zawel preview anchor or source drift'; END IF;
 END $gate$;
 
 DROP VIEW public.sea_vibe_trip_financials; -- no CASCADE; fails safely on unexpected dependencies
@@ -70,20 +74,27 @@ BEGIN
  EXECUTE replace(v_fn,v_old,v_new);
 
  v_fn:=pg_get_functiondef('public.sea_vibe_sync_permit_expense()'::regprocedure);
- v_old:='begin' || chr(10) || '  v_duration :=';
- v_new:='begin' || chr(10) ||
- '  -- R1: no permit for Khor; forbid changing existing trip across permit boundary.' || chr(10) ||
+ -- R1.1: single anchored insert after BEGIN; do not depend on indentation/newline exactness.
+ v_new:='  -- R1.1: no permit for Khor; block permit-boundary type changes.' || chr(10) ||
  '  if tg_op=''UPDATE'' and ((old.trip_type_id=''36e3498c-7acd-4074-beae-3a4259152110''::uuid) is distinct from (new.trip_type_id=''36e3498c-7acd-4074-beae-3a4259152110''::uuid)) then' || chr(10) ||
  '    raise exception ''SEA_VIBE_TRIP_TYPE_PERMIT_BOUNDARY_CHANGE_REQUIRES_SEPARATE_REVIEW'';' || chr(10) ||
  '  end if;' || chr(10) ||
- '  if new.trip_type_id=''36e3498c-7acd-4074-beae-3a4259152110''::uuid then return new; end if;' || chr(10) ||
- '  v_duration :=';
- EXECUTE replace(v_fn,v_old,v_new);
+ '  if new.trip_type_id=''36e3498c-7acd-4074-beae-3a4259152110''::uuid then return new; end if;' || chr(10);
+ v_fn:=regexp_replace(v_fn,
+   '(begin[[:space:]]+)(v_duration[[:space:]]*:=)',
+   E'\\1' || v_new || E'\\2', 'i');
+ IF position('SEA_VIBE_TRIP_TYPE_PERMIT_BOUNDARY_CHANGE_REQUIRES_SEPARATE_REVIEW' IN v_fn)=0 THEN
+   RAISE EXCEPTION 'SV_R11_HOLD: permit function injection missing'; END IF;
+ EXECUTE v_fn;
 
  v_fn:=pg_get_functiondef('public.get_sea_vibe_zawel_reconciliation_preview_r44r1()'::regprocedure);
- v_old:='    group by' || chr(10) || '      t.id,';
- v_new:='    where t.trip_type_id <> ''36e3498c-7acd-4074-beae-3a4259152110''::uuid' || chr(10) || '    group by' || chr(10) || '      t.id,';
- EXECUTE replace(v_fn,v_old,v_new);
+ v_new:='where t.trip_type_id <> ''36e3498c-7acd-4074-beae-3a4259152110''::uuid' || chr(10) || '    ';
+ v_fn:=regexp_replace(v_fn,
+   '(group[[:space:]]+by[[:space:]]+t[.]id[[:space:]]*,)',
+   v_new || E'\\1', 'i');
+ IF position('where t.trip_type_id <>' IN v_fn)=0 THEN
+   RAISE EXCEPTION 'SV_R11_HOLD: Zawel Khor exclusion missing'; END IF;
+ EXECUTE v_fn;
 END $rewrite$;
 
 -- Re-fire permit trigger when type changes, ensuring boundary safeguard above runs.
@@ -99,6 +110,10 @@ BEGIN
  IF (SELECT count(*) FROM public.sea_vibe_trips)<>20 THEN RAISE EXCEPTION 'SV_R1_VERIFY_FAILED: historical trip count'; END IF;
  IF EXISTS (SELECT 1 FROM public.sea_vibe_trips WHERE duration_hours<>trunc(duration_hours)) THEN
    RAISE EXCEPTION 'SV_R1_VERIFY_FAILED: legacy duration changed'; END IF;
+ IF position('SEA_VIBE_TRIP_TYPE_PERMIT_BOUNDARY_CHANGE_REQUIRES_SEPARATE_REVIEW' IN pg_get_functiondef('public.sea_vibe_sync_permit_expense()'::regprocedure))=0 THEN
+   RAISE EXCEPTION 'SV_R11_VERIFY_FAILED: permit boundary guard missing'; END IF;
+ IF position('where t.trip_type_id <>' IN pg_get_functiondef('public.get_sea_vibe_zawel_reconciliation_preview_r44r1()'::regprocedure))=0 THEN
+   RAISE EXCEPTION 'SV_R11_VERIFY_FAILED: Zawel Khor exclusion missing'; END IF;
  IF (SELECT count(*) FROM information_schema.role_table_grants WHERE table_schema='public' AND table_name='sea_vibe_trip_financials')
    < (SELECT count(*) FROM sv_r1_view_grants) THEN RAISE EXCEPTION 'SV_R1_VERIFY_FAILED: view grants'; END IF;
 END $post$;
