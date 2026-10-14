@@ -56,6 +56,7 @@
   <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sales-reports.css?v=18.56.140" />
+  <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=18.56.141" />
   <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/vehicle-treasury.css?v=18.56.140" />
@@ -2551,6 +2552,16 @@
         </div>
 
         <div id="reportsStatus" class="data-status hidden"></div>
+        <section class="a14-customer-overview" aria-labelledby="a14OverviewTitle">
+          <div class="a14-overview-toolbar">
+            <div><h4 id="a14OverviewTitle">تقارير العملاء — نظرة عامة</h4><p>المشتريات الفعلية، وليس عروض الأسعار أو نشاط التواصل. بيانات الفترة المتاحة للمستخدم.</p></div>
+            <button id="a14OverviewLoad" class="secondary-btn" type="button">عرض / تحديث نظرة العملاء</button>
+          </div>
+          <p id="a14OverviewStatus" class="a14-overview-status" role="status" aria-live="polite">اضغط عرض لتحميل بيانات العملاء والمبيعات والتحقق من اكتمالها.</p>
+          <div id="a14OverviewMetrics" class="a14-overview-metrics" aria-live="polite"></div>
+          <p id="a14OverviewNote" class="a14-overview-note"></p>
+        </section>
+
 
         <div class="executive-period-summary">
           <div>
@@ -4791,6 +4802,7 @@
   <script src="assets/js/notification-center-service.js?v=18.56.140"></script>
   <script src="assets/js/app.js?v=18.56.140"></script>
   <script src="assets/js/sales-reports.js?v=18.56.140"></script>
+  <script src="assets/js/customer-reports-overview.js?v=18.56.141"></script>
   <script src="assets/js/appointment-historical-import.js?v=18.56.140"></script>
   <script src="assets/js/appointment-contact-data.js?v=18.56.140"></script>
   <script src="assets/js/customer-excel-actions-hotfix.js?v=18.56.140"></script>
