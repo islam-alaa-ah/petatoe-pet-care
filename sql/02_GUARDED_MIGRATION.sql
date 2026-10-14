@@ -1,4 +1,4 @@
--- SEA VIBE R1.1 — guarded transactional migration. RUN ONLY AFTER DATABASE BACKUP AND REVIEW.
+-- SEA VIBE R1.2 — guarded transactional migration. RUN ONLY AFTER DATABASE BACKUP AND REVIEW.
 -- IMPORTANT: Releases must apply SQL before frontend and then verify live.
 BEGIN;
 SET LOCAL lock_timeout='7s';
@@ -41,6 +41,25 @@ BEGIN
  IF v_match_count<>1 OR position('from public.sea_vibe_trips t' IN v_def)=0 THEN
    RAISE EXCEPTION 'SV_R1_HOLD: Zawel preview anchor or source drift'; END IF;
 END $gate$;
+
+-- R1.2: PostgreSQL forbids ALTER TYPE while a column-specific trigger exists.
+-- Snapshot the exact installed trigger and drop it inside this transaction;
+-- rollback restores it if ANY subsequent statement fails.
+DO $trigger_gate$
+DECLARE v_actual text;
+BEGIN
+ SELECT pg_get_triggerdef(t.oid, true) INTO v_actual
+ FROM pg_trigger t
+ WHERE t.tgrelid='public.sea_vibe_trips'::regclass
+   AND t.tgname='trg_sea_vibe_trip_permit_expense'
+   AND NOT t.tgisinternal AND t.tgenabled='O';
+ IF v_actual IS NULL
+    OR v_actual NOT ILIKE '%AFTER INSERT OR UPDATE OF%'
+    OR v_actual NOT ILIKE '%duration_hours%'
+    OR v_actual NOT ILIKE '%sea_vibe_sync_permit_expense%'
+ THEN RAISE EXCEPTION 'SV_R12_HOLD: unexpected permit trigger definition'; END IF;
+END $trigger_gate$;
+DROP TRIGGER trg_sea_vibe_trip_permit_expense ON public.sea_vibe_trips;
 
 DROP VIEW public.sea_vibe_trip_financials; -- no CASCADE; fails safely on unexpected dependencies
 ALTER TABLE public.sea_vibe_trips DROP CONSTRAINT sea_vibe_trips_duration_hours_check;
@@ -97,14 +116,21 @@ BEGIN
  EXECUTE v_fn;
 END $rewrite$;
 
--- Re-fire permit trigger when type changes, ensuring boundary safeguard above runs.
-DROP TRIGGER trg_sea_vibe_trip_permit_expense ON public.sea_vibe_trips;
+-- Recreate the permit trigger before COMMIT, including trip_type_id boundary changes.
 CREATE TRIGGER trg_sea_vibe_trip_permit_expense
 AFTER INSERT OR UPDATE OF trip_date,duration_hours,people_count,trip_type_id
 ON public.sea_vibe_trips FOR EACH ROW EXECUTE FUNCTION public.sea_vibe_sync_permit_expense();
 
 DO $post$
 BEGIN
+ IF NOT EXISTS (
+  SELECT 1 FROM pg_trigger t
+  WHERE t.tgrelid='public.sea_vibe_trips'::regclass
+   AND t.tgname='trg_sea_vibe_trip_permit_expense'
+   AND t.tgenabled='O'
+   AND pg_get_triggerdef(t.oid) ILIKE '%trip_type_id%'
+   AND pg_get_triggerdef(t.oid) ILIKE '%duration_hours%'
+ ) THEN RAISE EXCEPTION 'SV_R12_VERIFY_FAILED: permit trigger not restored'; END IF;
  IF (SELECT data_type FROM information_schema.columns WHERE table_schema='public' AND table_name='sea_vibe_trips' AND column_name='duration_hours') <> 'numeric' THEN
    RAISE EXCEPTION 'SV_R1_VERIFY_FAILED: duration type'; END IF;
  IF (SELECT count(*) FROM public.sea_vibe_trips)<>20 THEN RAISE EXCEPTION 'SV_R1_VERIFY_FAILED: historical trip count'; END IF;
