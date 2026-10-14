@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="assets/css/appointment-historical-import.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.140" />
-  <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=18.56.144" />
+  <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=18.56.145" />
   <link rel="stylesheet" href="assets/css/sales-reports.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.140" />
@@ -2542,6 +2542,16 @@
             <section class="a14-analysis-panel"><h5>أعلى 10 عملاء حسب المبيعات المحققة</h5><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>العميل</th><th>فواتير</th><th>مبيعات شامل الضريبة</th><th>آخر شراء موثق</th></tr></thead><tbody id="a14TopCustomers"></tbody></table></div></section>
           </div>
         </section>
+        <section class="a14-customer-overview a14-activity-analysis" aria-labelledby="a14ActivityTitle">
+          <div class="a14-overview-toolbar"><div><h4 id="a14ActivityTitle">نشاط الشراء والاحتفاظ بالعملاء</h4><p>التقييم بناءً على آخر عملية شراء موثقة في نطاق البيانات المتاحة، وليس آخر تواصل أو تاريخ تسجيل العميل.</p></div></div>
+          <p id="a14ActivityStatus" class="a14-overview-status" role="status" aria-live="polite">اضغط «عرض / تحديث نظرة العملاء» لعرض النشاط.</p>
+          <div id="a14ActivityMetrics" class="a14-overview-metrics"></div>
+          <div class="a14-analysis-grid">
+            <section class="a14-analysis-panel"><h5>شرائح العملاء حسب المدة منذ آخر شراء</h5><p class="a14-analysis-description" id="a14ActivityReference"></p><div id="a14ActivityBands" class="a14-frequency-list"></div></section>
+            <section class="a14-analysis-panel"><h5>الاحتفاظ الشرائي بين آخر شهرين متاحين</h5><p class="a14-analysis-description" id="a14RetentionDescription"></p><div id="a14RetentionMetrics" class="a14-overview-metrics"></div></section>
+            <section class="a14-analysis-panel"><h5>عملاء تحتاج متابعة شراء — الأقدم انقطاعًا</h5><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>العميل</th><th>الفواتير</th><th>آخر شراء موثق</th><th>أيام الانقطاع</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14DormantCustomers"></tbody></table></div></section>
+          </div>
+        </section>
       </section>
 
       <section id="reportsOverviewView" class="view-section hidden">
@@ -4818,7 +4828,7 @@
   <script src="assets/js/daily-activity-service.js?v=18.56.140"></script>
   <script src="assets/js/notification-center-service.js?v=18.56.140"></script>
   <script src="assets/js/app.js?v=18.56.140"></script>
-  <script src="assets/js/customer-reports-overview.js?v=18.56.144"></script>
+  <script src="assets/js/customer-reports-overview.js?v=18.56.145"></script>
   <script src="assets/js/sales-reports.js?v=18.56.140"></script>
   <script src="assets/js/appointment-historical-import.js?v=18.56.140"></script>
   <script src="assets/js/appointment-contact-data.js?v=18.56.140"></script>

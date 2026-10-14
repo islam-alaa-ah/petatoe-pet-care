@@ -56,7 +56,7 @@
         continue;
       }
       customerTotalCents += cents;
-      if (!byCustomer.has(customer)) byCustomer.set(customer, { invoices: new Set(), cents: 0, last: "", first: "" });
+      if (!byCustomer.has(customer)) byCustomer.set(customer, { invoices: new Set(), invoiceDates: new Map(), cents: 0, last: "", first: "" });
       const item = byCustomer.get(customer);
       item.cents += cents;
       const date = String(row.invoice_date || "").slice(0, 10);
@@ -65,10 +65,10 @@
       const number = String(row.invoice_number || "").trim();
       if (row.is_historical) {
         if (row.record_type === "invoice_line" && number && !["نقدي", "كاش", "cash", "بدون فاتورة"].includes(number.toLowerCase())) {
-          item.invoices.add(`h:${customer}:${date}:${number}`);
+          const key = `h:${customer}:${date}:${number}`; item.invoices.add(key); item.invoiceDates.set(key, date);
         }
       } else if (row.record_type === "invoice" && row.row_id) {
-        item.invoices.add(`c:${row.row_id}`);
+        const key = `c:${row.row_id}`; item.invoices.add(key); item.invoiceDates.set(key, date);
       }
     }
     // Never present a seemingly complete customer sales dashboard when identity coverage is incomplete.
@@ -79,7 +79,7 @@
     const ranks = [...byCustomer.entries()]
       .filter(([,x]) => x.invoices.size > 0)
       .map(([id,x]) => ({ id, name: customerNames.get(id) || `عميل (${id.slice(0,8)})`,
-        invoices: x.invoices.size, cents: x.cents, first: x.first, last: x.last }))
+        invoices: x.invoices.size, cents: x.cents, first: x.first, last: x.last, invoiceDates: [...x.invoiceDates.values()] }))
       .sort((a,b) => b.cents - a.cents || a.id.localeCompare(b.id));
     const frequencies = [
       { name: "مرة واحدة", count: purchasing.filter(x => x.invoices.size === 1).length },
@@ -133,6 +133,70 @@
     $("a14PurchaseStatus").textContent=`${integer(result.buyers)} عميل مشترٍ، ${integer(result.purchaseInvoices)} فاتورة مميزة. البيانات حسب صلاحيات الجلسة، ومن أول شراء موثق في المصادر المتاحة.`;
   }
 
+
+  // A14.3D — purchase activity as-of latest known sale date, not current device date.
+  function renderActivity(result) {
+    const activityIds = ["a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers"];
+    for (const id of activityIds) $(id).replaceChildren();
+    const dated = result.ranks.filter(r => /^\d{4}-\d{2}-\d{2}$/.test(r.last));
+    if (!dated.length) {
+      $("a14ActivityStatus").textContent = "لا توجد تواريخ شراء موثقة صالحة لتحليل النشاط.";
+      $("a14ActivityReference").textContent = "";
+      $("a14RetentionDescription").textContent = "";
+      return;
+    }
+    const reference = dated.reduce((max,r) => r.last > max ? r.last : max, "");
+    const day = value => Math.floor(Date.parse(`${value}T00:00:00Z`) / 86400000);
+    const referenceDay = day(reference);
+    const counts = [0,0,0,0];
+    const ranked = dated.map(r => ({ ...r, gap: referenceDay - day(r.last) }));
+    if (ranked.some(r => !Number.isFinite(r.gap) || r.gap < 0)) throw new Error("تاريخ شراء غير صالح في نشاط العملاء.");
+    for (const r of ranked) counts[r.gap <= 30 ? 0 : r.gap <= 60 ? 1 : r.gap <= 90 ? 2 : 3]++;
+    if (counts.reduce((a,b)=>a+b,0) !== dated.length) throw new Error("عدم تطابق شرائح نشاط الشراء.");
+    const undated = result.buyers - dated.length;
+    $("a14ActivityMetrics").append(
+      metric("آخر تاريخ شراء موثق", reference),
+      metric("نشط شرائيًا خلال 30 يومًا", integer(counts[0])),
+      metric("منقطع أكثر من 90 يومًا", integer(counts[3])),
+      metric("عملاء بلا فواتير مسجلة", integer(result.customers-result.buyers))
+    );
+    $("a14ActivityReference").textContent = `تاريخ القياس: ${reference}. التوزيع يشمل ${integer(dated.length)} عميلًا لديهم فاتورة بتاريخ صالح؛ ${integer(undated)} بدون تاريخ صالح.`;
+    const names = ["0–30 يومًا", "31–60 يومًا", "61–90 يومًا", "أكثر من 90 يومًا"];
+    names.forEach((name,i) => {
+      const row=document.createElement("div"), label=document.createElement("span"), count=document.createElement("strong"), track=document.createElement("div"), fill=document.createElement("span");
+      row.className="a14-frequency-item";label.textContent=name;count.textContent=integer(counts[i]);track.className="a14-frequency-track";
+      fill.style.width=`${dated.length?100*counts[i]/dated.length:0}%`;track.append(fill);row.append(label,count,track);$("a14ActivityBands").append(row);
+    });
+    // Two adjacent calendar months ending at the latest observed purchase month.
+    const month = reference.slice(0,7);
+    const [year,m] = month.split("-").map(Number);
+    const prevDate = new Date(Date.UTC(year,m-2,1));
+    const prev = `${prevDate.getUTCFullYear()}-${String(prevDate.getUTCMonth()+1).padStart(2,"0")}`;
+    const previous = new Set(), current = new Set();
+    for (const r of result.ranks) for (const date of r.invoiceDates) {
+      if (date.slice(0,7) === prev) previous.add(r.id);
+      if (date.slice(0,7) === month) current.add(r.id);
+    }
+    const returning = [...previous].filter(id=>current.has(id)).length;
+    const rate = previous.size ? returning/previous.size*100 : null;
+    $("a14RetentionDescription").textContent = `الشهر السابق ${prev} ← الشهر المرجعي ${month}. الاحتفاظ = عملاء الشهر السابق الذين اشتروا في الشهر المرجعي ÷ عملاء الشهر السابق. ليس معدل الاحتفاظ منذ أول شراء.`;
+    $("a14RetentionMetrics").append(
+      metric(`مشترون في ${prev}`,integer(previous.size)),
+      metric(`مشترون في ${month}`,integer(current.size)),
+      metric("عادوا للشراء في الشهرين",integer(returning)),
+      metric("معدل الاحتفاظ الشهري",rate===null?"غير متاح":`${rate.toFixed(1)}%`)
+    );
+    ranked.filter(r=>r.gap>90).sort((a,b)=>b.gap-a.gap || a.id.localeCompare(b.id)).slice(0,10).forEach(r=>{
+      const tr=document.createElement("tr");
+      for (const v of [r.name,integer(r.invoices),r.last,integer(r.gap),`${fmt(r.cents/100)} SAR`]) { const td=document.createElement("td");td.textContent=v;tr.append(td); }
+      $("a14DormantCustomers").append(tr);
+    });
+    if (!$("a14DormantCustomers").children.length) {
+      const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=5;td.textContent="لا يوجد عملاء منقطعون أكثر من 90 يومًا حسب تاريخ القياس.";tr.append(td);$("a14DormantCustomers").append(tr);
+    }
+    $("a14ActivityStatus").textContent=`اكتمل تحليل النشاط وفق تاريخ مرجعي ${reference}، بدون تعديل أو إنشاء بيانات.`;
+  }
+
   async function load() {
     if (busy) return;
     if (window.PermissionEngine?.canView?.("customerReports") !== true || window.PermissionEngine?.canView?.("salesReports") !== true) {
@@ -147,6 +211,9 @@
     grid.replaceChildren(); note.textContent = "";
     $("a14FrequencyMetrics").replaceChildren(); $("a14PurchaseFrequency").replaceChildren(); $("a14TopCustomers").replaceChildren();
     $("a14PurchaseStatus").textContent = "جاري التحقق من بيانات المشتريات...";
+    for (const id of ["a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers"]) $(id).replaceChildren();
+    $("a14ActivityReference").textContent = ""; $("a14RetentionDescription").textContent = "";
+    $("a14ActivityStatus").textContent = "جاري تحليل تواريخ الفواتير...";
     try {
       if (navigator.onLine === false) throw new Error("التحقق من البيانات يحتاج اتصالًا بالإنترنت.");
       if (!window.CustomersService?.listCustomers) throw new Error("خدمة العملاء غير متاحة.");
@@ -168,6 +235,7 @@
         metric("مبيعات غير منسوبة لعميل", `${fmt(result.excluded)} SAR`, `${integer(result.excludedRows)} سجلًا`)
       );
       renderAnalysis(result);
+      renderActivity(result);
       note.textContent = `قراءة مكتملة: ${integer(result.salesRows)} صف مبيعات. التجميعات النقدية غير المرتبطة لا تُنشئ عملاء أو فواتير. تاريخ تسجيل العميل ليس تاريخ أول شراء.`;
       status.textContent = "اكتمل التحميل والمطابقة دون صفوف مكررة أو عملاء خارج النطاق.";
       window.A14CustomerOverviewLastResult = Object.freeze({ ...result });
@@ -177,6 +245,9 @@
       grid.replaceChildren(); note.textContent = "لم تُعرض أرقام جزئية.";
       $("a14FrequencyMetrics").replaceChildren(); $("a14PurchaseFrequency").replaceChildren(); $("a14TopCustomers").replaceChildren();
       $("a14PurchaseStatus").textContent = "تم إيقاف التحليل لمنع عرض بيانات ناقصة.";
+      for (const id of ["a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers"]) $(id).replaceChildren();
+      $("a14ActivityReference").textContent = ""; $("a14RetentionDescription").textContent = "";
+      $("a14ActivityStatus").textContent = "تم إيقاف تحليل النشاط لمنع عرض بيانات ناقصة.";
     } finally { busy = false; button.disabled = false; }
   }
   const initialize = () => $("a14OverviewLoad")?.addEventListener("click", load);

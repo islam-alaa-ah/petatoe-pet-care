@@ -36,3 +36,8 @@
 .a14-purchase-table th{color:var(--muted);font-weight:800}
 .a14-purchase-table td:nth-child(3){font-variant-numeric:tabular-nums}
 @media(max-width:600px){.a14-analysis-panel{padding:12px}}
+
+/* A14.3D — report sections stay full-width and stacked; canonical screen owner. */
+.a14-activity-analysis{width:100%;min-width:0}
+.a14-analysis-description{color:var(--muted);font-size:13px;line-height:1.7;margin:0 0 14px}
+.a14-activity-analysis .a14-analysis-grid{grid-template-columns:minmax(0,1fr)}
