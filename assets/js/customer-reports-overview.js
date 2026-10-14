@@ -43,6 +43,7 @@
     let customerTotalCents = 0;
     let unknownCustomerRows = 0;
     let withoutCustomerRows = 0;
+    const monthly = new Map();
     for (const row of sales) {
       const cents = Math.round(Number(row.amount_incl_tax || 0) * 100);
       if (!Number.isFinite(cents)) throw new Error("مبلغ مبيعات غير صالح.");
@@ -61,15 +62,22 @@
       const item = byCustomer.get(customer);
       item.cents += cents;
       const date = String(row.invoice_date || "").slice(0, 10);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(`${date}T00:00:00Z`))) {
+        const month = date.slice(0,7);
+        if (!monthly.has(month)) monthly.set(month, { month, cents: 0, customers: new Set(), invoices: new Set() });
+        const bucket = monthly.get(month);
+        bucket.cents += cents;
+        bucket.customers.add(customer);
+      }
       if (date > item.last) item.last = date;
       if (date && (!item.first || date < item.first)) item.first = date;
       const number = String(row.invoice_number || "").trim();
       if (row.is_historical) {
         if (row.record_type === "invoice_line" && number && !["نقدي", "كاش", "cash", "بدون فاتورة"].includes(number.toLowerCase())) {
-          const key = `h:${customer}:${date}:${number}`; item.invoices.add(key); item.invoiceDates.set(key, date);
+          const key = `h:${customer}:${date}:${number}`; item.invoices.add(key); item.invoiceDates.set(key, date); if (monthly.has(date.slice(0,7))) monthly.get(date.slice(0,7)).invoices.add(key);
         }
       } else if (row.record_type === "invoice" && row.row_id) {
-        const key = `c:${row.row_id}`; item.invoices.add(key); item.invoiceDates.set(key, date);
+        const key = `c:${row.row_id}`; item.invoices.add(key); item.invoiceDates.set(key, date); if (monthly.has(date.slice(0,7))) monthly.get(date.slice(0,7)).invoices.add(key);
       }
     }
     // Never present a seemingly complete customer sales dashboard when identity coverage is incomplete.
@@ -94,7 +102,7 @@
     return { ranks, frequencies, customerContacts, customers: ids.size, buyers: purchasing.length, repeat, once,
       sales: customerTotalCents / 100, average: purchasing.length ? customerTotalCents / 100 / purchasing.length : 0,
       excluded: excludedTotal / 100, excludedRows: withoutCustomerRows,
-      salesRows: sales.length, purchaseInvoices: purchasing.reduce((n,x) => n + x.invoices.size, 0) };
+      salesRows: sales.length, purchaseInvoices: purchasing.reduce((n,x) => n + x.invoices.size, 0), monthly };
   }
 
   function metric(label, value, detail = "") {
@@ -233,6 +241,63 @@
     $("a14GeoStatus").textContent="التحليل بحسب عنوان العميل المسجل؛ المناطق غير المحددة معروضة منفصلة. لا يتم توزيع المبيعات غير المنسوبة لعميل.";
   }
 
+
+  // A14.3F — recorded first purchase (within accessible dataset), not registration/acquisition.
+  function renderTrends(result) {
+    const monthlyTable = $("a14TrendMonthlyRows"), annualTable = $("a14TrendAnnualRows"), metrics = $("a14TrendMetrics");
+    monthlyTable.replaceChildren(); annualTable.replaceChildren(); metrics.replaceChildren();
+    const firstMonthByCustomer = new Map();
+    for (const customer of result.ranks) {
+      const firstInvoiceDate = customer.invoiceDates.filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort()[0];
+      if (firstInvoiceDate) firstMonthByCustomer.set(customer.id, firstInvoiceDate.slice(0,7));
+    }
+    const rows = [...result.monthly.values()].sort((a,b) => a.month.localeCompare(b.month));
+    const years = new Map();
+    let previousBuyers = null;
+    let previousMonth = null;
+    let sumCents = 0, firstRecordedTotal = 0;
+    for (const bucket of rows) {
+      const initial = [...bucket.customers].filter(id => firstMonthByCustomer.get(id) === bucket.month).length;
+      firstRecordedTotal += initial;
+      sumCents += bucket.cents;
+      const previousCalendarMonth = new Date(Date.UTC(Number(bucket.month.slice(0,4)), Number(bucket.month.slice(5,7)) - 2, 1));
+      const previousCalendarKey = `${previousCalendarMonth.getUTCFullYear()}-${String(previousCalendarMonth.getUTCMonth()+1).padStart(2,"0")}`;
+      const returning = previousMonth !== previousCalendarKey ? null : [...bucket.customers].filter(id => previousBuyers.has(id)).length;
+      const year = bucket.month.slice(0,4);
+      if (!years.has(year)) years.set(year, {year, cents:0, customers:new Set(), invoices:new Set(), first:0});
+      const y=years.get(year); y.cents+=bucket.cents; y.first+=initial;
+      for(const id of bucket.customers) y.customers.add(id);
+      for(const key of bucket.invoices) y.invoices.add(key);
+      const tr=document.createElement("tr");
+      for(const value of [bucket.month,integer(bucket.customers.size),integer(bucket.invoices.size),integer(initial),returning===null?"—":integer(returning),`${fmt(bucket.cents/100)} SAR`]) {
+        const td=document.createElement("td");td.textContent=value;tr.append(td);
+      }
+      monthlyTable.append(tr);
+      previousBuyers = bucket.customers;
+      previousMonth = bucket.month;
+    }
+    for (const y of years.values()) {
+      const tr=document.createElement("tr");
+      for(const value of [y.year,integer(y.customers.size),integer(y.invoices.size),integer(y.first),`${fmt(y.cents/100)} SAR`]) {
+        const td=document.createElement("td");td.textContent=value;tr.append(td);
+      }
+      annualTable.append(tr);
+    }
+    if (sumCents !== Math.round(result.sales*100)) {
+      throw new Error("المبيعات المرتبطة تحتوي على تواريخ غير صالحة أو غير مكتملة؛ توقّف التحليل الزمني.");
+    }
+    if (firstRecordedTotal !== firstMonthByCustomer.size || firstMonthByCustomer.size !== result.buyers) {
+      throw new Error("فشل التحقق من أول شراء موثق للعملاء.");
+    }
+    metrics.append(
+      metric("الشهور التي تحتوي على مشتريات",integer(rows.length)),
+      metric("سنوات المبيعات المتاحة",integer(years.size)),
+      metric("عملاء حسب أول شراء موثق",integer(firstRecordedTotal)),
+      metric("إجمالي المبيعات المرتبطة",`${fmt(sumCents/100)} SAR`)
+    );
+    $("a14TrendStatus").textContent=`تمت المطابقة عبر ${integer(rows.length)} شهرًا. «أول شراء» يعني أول فاتورة مرقمة في البيانات المتاحة فقط، وليس تاريخ اكتساب العميل. العملاء الفريدون سنويًا لا يُجمعون بين السنوات.`;
+  }
+
   async function load() {
     if (busy) return;
     if (window.PermissionEngine?.canView?.("customerReports") !== true || window.PermissionEngine?.canView?.("salesReports") !== true) {
@@ -251,6 +316,7 @@
     $("a14ActivityReference").textContent = ""; $("a14RetentionDescription").textContent = "";
     $("a14ActivityStatus").textContent = "جاري تحليل تواريخ الفواتير...";
     $("a14GeoMetrics").replaceChildren();$("a14GeoRows").replaceChildren();$("a14GeoStatus").textContent="جاري تحليل التوزيع الجغرافي...";
+    $("a14TrendMetrics").replaceChildren();$("a14TrendMonthlyRows").replaceChildren();$("a14TrendAnnualRows").replaceChildren();$("a14TrendStatus").textContent="جاري التحقق من الاتجاهات الزمنية...";
     try {
       if (navigator.onLine === false) throw new Error("التحقق من البيانات يحتاج اتصالًا بالإنترنت.");
       if (!window.CustomersService?.listCustomers) throw new Error("خدمة العملاء غير متاحة.");
@@ -274,6 +340,7 @@
       renderAnalysis(result);
       renderActivity(result);
       renderGeography(result);
+      renderTrends(result);
       note.textContent = `قراءة مكتملة: ${integer(result.salesRows)} صف مبيعات. التجميعات النقدية غير المرتبطة لا تُنشئ عملاء أو فواتير. تاريخ تسجيل العميل ليس تاريخ أول شراء.`;
       status.textContent = "اكتمل التحميل والمطابقة دون صفوف مكررة أو عملاء خارج النطاق.";
       window.A14CustomerOverviewLastResult = Object.freeze({ ...result });
@@ -287,6 +354,7 @@
       $("a14ActivityReference").textContent = ""; $("a14RetentionDescription").textContent = "";
       $("a14ActivityStatus").textContent = "تم إيقاف تحليل النشاط لمنع عرض بيانات ناقصة.";
       $("a14GeoMetrics").replaceChildren();$("a14GeoRows").replaceChildren();$("a14GeoStatus").textContent="تم إيقاف التحليل الجغرافي لمنع عرض بيانات ناقصة.";
+      $("a14TrendMetrics").replaceChildren();$("a14TrendMonthlyRows").replaceChildren();$("a14TrendAnnualRows").replaceChildren();$("a14TrendStatus").textContent="تم إيقاف المقارنات الزمنية لمنع عرض بيانات ناقصة.";
     } finally { busy = false; button.disabled = false; }
   }
   const initialize = () => $("a14OverviewLoad")?.addEventListener("click", load);

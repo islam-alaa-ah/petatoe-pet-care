@@ -49,3 +49,7 @@
 .a14-contact-action:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
 .a14-whatsapp{color:var(--success);border-color:var(--success)}
 .a14-contact-action:disabled{opacity:.5;cursor:not-allowed}
+
+/* A14.3F — report panels stay stacked and full-width in all breakpoints. */
+.a14-trends{width:100%;min-width:0}
+.a14-trends .a14-analysis-grid{grid-template-columns:minmax(0,1fr)}
