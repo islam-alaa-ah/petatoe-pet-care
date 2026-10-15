@@ -85,7 +85,7 @@
   const operationAllowed = () => permitted() && window.PermissionEngine?.canView?.("installationReports") === true;
   function opStatus(message){ const el=$("a15OperationsStatus");if(el)el.textContent=message; }
   function opGroup(rows, property){const groups=new Map();for(const row of rows){const id=String(row[property]||"");const name=String(row[property==="teamCarId"?"teamCarName":"teamName"]||"").trim()||t("unassigned");const key=id||"__unassigned";if(!groups.has(key))groups.set(key,{name,total:0,completed:0,cancelled:0,quantity:0});const item=groups.get(key);item.total++;const cancelled=["ملغي","ملغاة"].includes(String(row.status||"").trim());const completed=row.status==="مكتمل"||row.isInvoiced===true;if(cancelled)item.cancelled++;else if(completed)item.completed++;item.quantity+=Number(row.executedQuantity||0);}return [...groups.values()].sort((a,b)=>b.total-a.total);}
-  function renderOperations(){if(!operational||!operationAllowed()){for(const id of ["a15OperationsKpis","a15OpCarBody","a15OpTeamBody","a15OpMonthBody","a15OpDetailsBody"]){$(id)?.replaceChildren();$(`${id}Total`)?.replaceChildren();}return;}
+  function renderOperations(){if(!operational||!operationAllowed()){for(const id of ["a15OperationsKpis","a15OpCarBody","a15OpTeamBody","a15OpMonthBody","a15OpDetailsBody","a15ProductivityCarsBody","a15ProductivityTeamsBody"]){$(id)?.replaceChildren();$(`${id}Total`)?.replaceChildren();}return;}
     const year=value("a15Year"),month=value("a15Month"),car=value("a15Car"),team=value("a15Team");
     const rows=operational.filter(r=>{const date=String(r.scheduledDate||"").slice(0,10);return (!year||date.startsWith(year))&&(!month||date.slice(5,7)===month)&&(!car||String(r.teamCarId||"")===car)&&(!team||String(r.teamId||"")===team);});
     const completed=rows.filter(r=>r.status==="مكتمل"||r.isInvoiced===true).length,cancelled=rows.filter(r=>["ملغي","ملغاة"].includes(String(r.status||"").trim())).length,qty=rows.reduce((v,r)=>v+Number(r.executedQuantity||0),0);
@@ -93,6 +93,15 @@
     $("a15OperationsKpis").innerHTML=values.map(([key,value])=>`<div class="a15-kpi"><span>${escapeHtml(t(key))}</span><strong>${escapeHtml(typeof value==="number"?num(value):value)}</strong></div>`).join("");
     const draw=(id,field)=>{const arr=opGroup(rows,field);$(id).innerHTML=arr.length?arr.map(x=>td([x.name,num(x.total),num(x.completed),num(x.cancelled),`${(x.total?x.completed/x.total*100:0).toFixed(1)}%`,num(x.quantity)])).join(""):`<tr><td colspan="6">${escapeHtml(t("none"))}</td></tr>`;};
     draw("a15OpCarBody","teamCarId");draw("a15OpTeamBody","teamId");
+    // Quantities come from operationalReport; do not infer service types or financial amounts.
+    const productivity=(target,field)=>{
+      const groups=opGroup(rows,field);
+      $(target).innerHTML=groups.length?groups.map(g=>td([g.name,num(g.completed),num(g.quantity),g.completed?(g.quantity/g.completed).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—"])).join(""):`<tr><td colspan="4">${escapeHtml(t("none"))}</td></tr>`;
+      const totalCompleted=groups.reduce((n,g)=>n+g.completed,0),totalQty=groups.reduce((n,g)=>n+g.quantity,0);
+      footer(target,[t("total"),num(totalCompleted),num(totalQty),totalCompleted?(totalQty/totalCompleted).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—"]);
+    };
+    productivity("a15ProductivityCarsBody","teamCarId");
+    productivity("a15ProductivityTeamsBody","teamId");
     const opCompleted=opGroup(rows,"teamCarId").reduce((n,g)=>n+g.completed,0);const opCancelled=opGroup(rows,"teamCarId").reduce((n,g)=>n+g.cancelled,0);
     const opTotals=[t("total"),num(rows.length),num(opCompleted),num(opCancelled),pct(opCompleted,rows.length),num(qty)];
     footer("a15OpCarBody",opTotals);footer("a15OpTeamBody",opTotals);
