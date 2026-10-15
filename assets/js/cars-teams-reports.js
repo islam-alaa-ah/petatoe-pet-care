@@ -5,6 +5,7 @@
   const num = x => Number(x).toLocaleString("en-US");
   const page = 500, maxPages = 200;
   let records = [], ready = false, busy = false, operational=null, operationalBusy=false;
+  let operationDetailLimit=10;
   const sizes = { cars: 10, teams: 10, details: 10 };
   const currency = n => `${(n / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} SAR`;
   const escapeHtml = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;", ">":"&gt;",'"':"&quot;", "'":"&#39;"}[c]));
@@ -78,14 +79,22 @@
   const operationAllowed = () => permitted() && window.PermissionEngine?.canView?.("installationReports") === true;
   function opStatus(message){ const el=$("a15OperationsStatus");if(el)el.textContent=message; }
   function opGroup(rows, property){const groups=new Map();for(const row of rows){const id=String(row[property]||"");const name=String(row[property==="teamCarId"?"teamCarName":"teamName"]||"").trim()||t("unassigned");const key=id||"__unassigned";if(!groups.has(key))groups.set(key,{name,total:0,completed:0,cancelled:0,quantity:0});const item=groups.get(key);item.total++;const cancelled=["ملغي","ملغاة"].includes(String(row.status||"").trim());const completed=row.status==="مكتمل"||row.isInvoiced===true;if(cancelled)item.cancelled++;else if(completed)item.completed++;item.quantity+=Number(row.executedQuantity||0);}return [...groups.values()].sort((a,b)=>b.total-a.total);}
-  function renderOperations(){if(!operational||!operationAllowed()){for(const id of ["a15OperationsKpis","a15OpCarBody","a15OpTeamBody"])$(id)?.replaceChildren();return;}
+  function renderOperations(){if(!operational||!operationAllowed()){for(const id of ["a15OperationsKpis","a15OpCarBody","a15OpTeamBody","a15OpMonthBody","a15OpDetailsBody"])$(id)?.replaceChildren();return;}
     const year=value("a15Year"),month=value("a15Month"),car=value("a15Car"),team=value("a15Team");
     const rows=operational.filter(r=>{const date=String(r.scheduledDate||"").slice(0,10);return (!year||date.startsWith(year))&&(!month||date.slice(5,7)===month)&&(!car||String(r.teamCarId||"")===car)&&(!team||String(r.teamId||"")===team);});
     const completed=rows.filter(r=>r.status==="مكتمل"||r.isInvoiced===true).length,cancelled=rows.filter(r=>["ملغي","ملغاة"].includes(String(r.status||"").trim())).length,qty=rows.reduce((v,r)=>v+Number(r.executedQuantity||0),0);
     const values=[["appointments",rows.length],["completed",completed],["cancelled",cancelled],["completionRate",rows.length?`${(completed/rows.length*100).toFixed(1)}%`:"0%"],["servicesExecuted",qty]];
     $("a15OperationsKpis").innerHTML=values.map(([key,value])=>`<div class="a15-kpi"><span>${escapeHtml(t(key))}</span><strong>${escapeHtml(typeof value==="number"?num(value):value)}</strong></div>`).join("");
     const draw=(id,field)=>{const arr=opGroup(rows,field);$(id).innerHTML=arr.length?arr.map(x=>td([x.name,num(x.total),num(x.completed),num(x.cancelled),`${(x.total?x.completed/x.total*100:0).toFixed(1)}%`,num(x.quantity)])).join(""):`<tr><td colspan="6">${escapeHtml(t("none"))}</td></tr>`;};
-    draw("a15OpCarBody","teamCarId");draw("a15OpTeamBody","teamId");opStatus(t("operationLoaded",{count:num(rows.length)}));
+    draw("a15OpCarBody","teamCarId");draw("a15OpTeamBody","teamId");
+    const monthGroups=new Map();
+    for(const r of rows){const date=String(r.scheduledDate||"").slice(0,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(date))continue;const key=date.slice(0,7);if(!monthGroups.has(key))monthGroups.set(key,{key,total:0,done:0,cancel:0,qty:0});const g=monthGroups.get(key);g.total++;const isCancelled=["ملغي","ملغاة"].includes(String(r.status||"").trim());if(isCancelled)g.cancel++;else if(r.status==="مكتمل"||r.isInvoiced===true)g.done++;g.qty+=Number(r.executedQuantity||0);}
+    const monthRows=[...monthGroups.values()].sort((a,b)=>a.key.localeCompare(b.key));
+    $("a15OpMonthBody").innerHTML=monthRows.length?monthRows.map(g=>td([g.key,num(g.total),num(g.done),num(g.cancel),`${(g.total?g.done/g.total*100:0).toFixed(1)}%`,num(g.qty)])).join(""):`<tr><td colspan="6">${escapeHtml(t("none"))}</td></tr>`;
+    const dated=[...rows].sort((a,b)=>String(b.scheduledDate||"").localeCompare(String(a.scheduledDate||"")));
+    $("a15OpDetailsBody").innerHTML=dated.length?dated.slice(0,operationDetailLimit).map(r=>td([String(r.scheduledDate||"").slice(0,10)||"—",String(r.teamCarName||t("unassignedCar")),String(r.teamName||t("unassignedTeam")),String(r.status||t("unassigned")),num(Number(r.executedQuantity||0))])).join(""):`<tr><td colspan="5">${escapeHtml(t("none"))}</td></tr>`;
+    $("a15OpDetailsMore").hidden=dated.length<=operationDetailLimit;
+    opStatus(t("operationLoaded",{count:num(rows.length)}));
   }
   async function loadOperations(){if(operationalBusy)return;if(!operationAllowed()){opStatus(t("operationNoPermission"));return;}
     operationalBusy=true;$("a15OperationsRefresh").disabled=true;opStatus(t("operationLoading"));
@@ -94,7 +103,7 @@
     finally{operationalBusy=false;$("a15OperationsRefresh").disabled=false;}
   }
   let bound=false;
-  function bind(){if(bound)return;bound=true;$("a15OperationsRefresh").addEventListener("click",loadOperations);window.addEventListener("petatoe-language-changed",()=>{if(ready){populate();render();}if(operational)renderOperations();else if(operationAllowed())opStatus(t("operationPending"));});$("a15Refresh").addEventListener("click",load);$("a15Apply").addEventListener("click",()=>{sizes.cars=sizes.teams=sizes.details=10;render();renderOperations();});$("a15Reset").addEventListener("click",()=>{for(const id of ["a15Year","a15Month","a15Car","a15Team"])$(id).value="";sizes.cars=sizes.teams=sizes.details=10;render();renderOperations();});for(const [btn,field] of [["a15CarsMore","cars"],["a15TeamsMore","teams"],["a15DetailsMore","details"]])$(btn).addEventListener("click",()=>{sizes[field]+=10;render();});}
+  function bind(){if(bound)return;bound=true;$("a15OpDetailsMore").addEventListener("click",()=>{operationDetailLimit+=10;renderOperations();});$("a15OperationsRefresh").addEventListener("click",loadOperations);window.addEventListener("petatoe-language-changed",()=>{if(ready){populate();render();}if(operational)renderOperations();else if(operationAllowed())opStatus(t("operationPending"));});$("a15Refresh").addEventListener("click",load);$("a15Apply").addEventListener("click",()=>{sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();});$("a15Reset").addEventListener("click",()=>{for(const id of ["a15Year","a15Month","a15Car","a15Team"])$(id).value="";sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();});for(const [btn,field] of [["a15CarsMore","cars"],["a15TeamsMore","teams"],["a15DetailsMore","details"]])$(btn).addEventListener("click",()=>{sizes[field]+=10;render();});}
   async function activate(){bind();if(!permitted()){clear();status(t("noPermission"));return;}if(!ready)await load();else render();if(operationAllowed()){if(operational)renderOperations();else opStatus(t("operationPending"));}else opStatus(t("operationNoPermission"));}
   window.CarsTeamsReportsUI=Object.freeze({activate,render});
 })();
