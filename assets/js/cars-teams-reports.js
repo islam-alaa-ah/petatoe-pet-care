@@ -60,7 +60,9 @@
   function grouping(rows, field) { const map=new Map(); for(const r of rows){const id = field==="car" ? r.carId : field==="team" ? r.teamId : r.date.slice(0,7); const label=field==="car"?r.car:field==="team"?r.team:id;const key=id||`__unassigned_${field}`;if(!map.has(key))map.set(key,{label, cents:0,count:0});const item=map.get(key); item.cents+=r.cents;item.count++;}return [...map.values()].sort((a,b)=>b.cents-a.cents); }
   function cells(body, rows, limit, map) { $(body).innerHTML = rows.slice(0,limit).map(map).join("") || `<tr><td colspan="5">${escapeHtml(t("none"))}</td></tr>`; }
   const td = fields => `<tr>${fields.map(f=>`<td>${escapeHtml(f)}</td>`).join("")}</tr>`;
-  function clear(){ $("a15Kpis").replaceChildren(); for(const id of ["a15CarsBody","a15TeamsBody","a15MonthsBody","a15DetailsBody"]) $(id).replaceChildren(); }
+  const footer = (body, fields) => { const target=$(`${body}Total`); if (target) target.innerHTML=td(fields); };
+  const pct=(done,all)=>`${(all?done/all*100:0).toFixed(1)}%`;
+  function clear(){ $("a15Kpis").replaceChildren(); for(const id of ["a15CarsBody","a15TeamsBody","a15MonthsBody","a15DetailsBody"]){ $(id).replaceChildren(); $(`${id}Total`)?.replaceChildren(); } }
   function render() {
     if(!ready || !permitted()){ clear(); return; }
     const rows=subset(), cars=grouping(rows,"car"), teams=grouping(rows,"team"), months=grouping(rows,"month").sort((a,b)=>a.label.localeCompare(b.label)), total=rows.reduce((s,r)=>s+r.cents,0);
@@ -70,8 +72,12 @@
     cells("a15CarsBody",cars,sizes.cars,r=>td([r.label,r.count,currency(r.cents)]));
     cells("a15TeamsBody",teams,sizes.teams,r=>td([r.label,r.count,currency(r.cents)]));
     cells("a15MonthsBody",months,Infinity,r=>td([r.label,r.count,currency(r.cents)]));
+    footer("a15CarsBody",[t("total"),num(rows.length),currency(total)]);
+    footer("a15TeamsBody",[t("total"),num(rows.length),currency(total)]);
+    footer("a15MonthsBody",[t("total"),num(rows.length),currency(total)]);
     const detail=[...rows].sort((a,b)=>b.date.localeCompare(a.date));
     cells("a15DetailsBody",detail,sizes.details,r=>td([r.date,r.invoice||"—",r.car,r.team,currency(r.cents)]));
+    footer("a15DetailsBody",[t("total"),"—","—",num(rows.length),currency(total)]);
     [["a15CarsMore",cars.length,sizes.cars],["a15TeamsMore",teams.length,sizes.teams],["a15DetailsMore",detail.length,sizes.details]].forEach(([id,len,limit])=>{$(id).hidden=len<=limit;});
     status(t("statusLoaded",{all:num(records.length),shown:num(rows.length)}));
   }
@@ -79,7 +85,7 @@
   const operationAllowed = () => permitted() && window.PermissionEngine?.canView?.("installationReports") === true;
   function opStatus(message){ const el=$("a15OperationsStatus");if(el)el.textContent=message; }
   function opGroup(rows, property){const groups=new Map();for(const row of rows){const id=String(row[property]||"");const name=String(row[property==="teamCarId"?"teamCarName":"teamName"]||"").trim()||t("unassigned");const key=id||"__unassigned";if(!groups.has(key))groups.set(key,{name,total:0,completed:0,cancelled:0,quantity:0});const item=groups.get(key);item.total++;const cancelled=["ملغي","ملغاة"].includes(String(row.status||"").trim());const completed=row.status==="مكتمل"||row.isInvoiced===true;if(cancelled)item.cancelled++;else if(completed)item.completed++;item.quantity+=Number(row.executedQuantity||0);}return [...groups.values()].sort((a,b)=>b.total-a.total);}
-  function renderOperations(){if(!operational||!operationAllowed()){for(const id of ["a15OperationsKpis","a15OpCarBody","a15OpTeamBody","a15OpMonthBody","a15OpDetailsBody"])$(id)?.replaceChildren();return;}
+  function renderOperations(){if(!operational||!operationAllowed()){for(const id of ["a15OperationsKpis","a15OpCarBody","a15OpTeamBody","a15OpMonthBody","a15OpDetailsBody"]){$(id)?.replaceChildren();$(`${id}Total`)?.replaceChildren();}return;}
     const year=value("a15Year"),month=value("a15Month"),car=value("a15Car"),team=value("a15Team");
     const rows=operational.filter(r=>{const date=String(r.scheduledDate||"").slice(0,10);return (!year||date.startsWith(year))&&(!month||date.slice(5,7)===month)&&(!car||String(r.teamCarId||"")===car)&&(!team||String(r.teamId||"")===team);});
     const completed=rows.filter(r=>r.status==="مكتمل"||r.isInvoiced===true).length,cancelled=rows.filter(r=>["ملغي","ملغاة"].includes(String(r.status||"").trim())).length,qty=rows.reduce((v,r)=>v+Number(r.executedQuantity||0),0);
@@ -87,10 +93,14 @@
     $("a15OperationsKpis").innerHTML=values.map(([key,value])=>`<div class="a15-kpi"><span>${escapeHtml(t(key))}</span><strong>${escapeHtml(typeof value==="number"?num(value):value)}</strong></div>`).join("");
     const draw=(id,field)=>{const arr=opGroup(rows,field);$(id).innerHTML=arr.length?arr.map(x=>td([x.name,num(x.total),num(x.completed),num(x.cancelled),`${(x.total?x.completed/x.total*100:0).toFixed(1)}%`,num(x.quantity)])).join(""):`<tr><td colspan="6">${escapeHtml(t("none"))}</td></tr>`;};
     draw("a15OpCarBody","teamCarId");draw("a15OpTeamBody","teamId");
+    const opCompleted=opGroup(rows,"teamCarId").reduce((n,g)=>n+g.completed,0);const opCancelled=opGroup(rows,"teamCarId").reduce((n,g)=>n+g.cancelled,0);
+    const opTotals=[t("total"),num(rows.length),num(opCompleted),num(opCancelled),pct(opCompleted,rows.length),num(qty)];
+    footer("a15OpCarBody",opTotals);footer("a15OpTeamBody",opTotals);
     const monthGroups=new Map();
     for(const r of rows){const date=String(r.scheduledDate||"").slice(0,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(date))continue;const key=date.slice(0,7);if(!monthGroups.has(key))monthGroups.set(key,{key,total:0,done:0,cancel:0,qty:0});const g=monthGroups.get(key);g.total++;const isCancelled=["ملغي","ملغاة"].includes(String(r.status||"").trim());if(isCancelled)g.cancel++;else if(r.status==="مكتمل"||r.isInvoiced===true)g.done++;g.qty+=Number(r.executedQuantity||0);}
     const monthRows=[...monthGroups.values()].sort((a,b)=>a.key.localeCompare(b.key));
     $("a15OpMonthBody").innerHTML=monthRows.length?monthRows.map(g=>td([g.key,num(g.total),num(g.done),num(g.cancel),`${(g.total?g.done/g.total*100:0).toFixed(1)}%`,num(g.qty)])).join(""):`<tr><td colspan="6">${escapeHtml(t("none"))}</td></tr>`;
+    footer("a15OpMonthBody",[t("total"),num(monthRows.reduce((n,g)=>n+g.total,0)),num(monthRows.reduce((n,g)=>n+g.done,0)),num(monthRows.reduce((n,g)=>n+g.cancel,0)),pct(monthRows.reduce((n,g)=>n+g.done,0),monthRows.reduce((n,g)=>n+g.total,0)),num(monthRows.reduce((n,g)=>n+g.qty,0))]);
     const dated=[...rows].sort((a,b)=>String(b.scheduledDate||"").localeCompare(String(a.scheduledDate||"")));
     $("a15OpDetailsBody").innerHTML=dated.length?dated.slice(0,operationDetailLimit).map(r=>td([String(r.scheduledDate||"").slice(0,10)||"—",String(r.teamCarName||t("unassignedCar")),String(r.teamName||t("unassignedTeam")),String(r.status||t("unassigned")),num(Number(r.executedQuantity||0))])).join(""):`<tr><td colspan="5">${escapeHtml(t("none"))}</td></tr>`;
     $("a15OpDetailsMore").hidden=dated.length<=operationDetailLimit;

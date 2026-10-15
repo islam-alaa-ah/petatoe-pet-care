@@ -314,6 +314,7 @@
     ["carsTeamsReports.operationStatus","label","حالة الموعد","Appointment Status"],
     ["carsTeamsReports.avgInvoiceNote","label","متوسط الفاتورة يتطلب ربط الفواتير المميزة بالمواعيد؛ لا يُستنتج من صفوف المبيعات.","Average invoice value requires verified invoice-to-appointment linkage; it is not inferred from sales rows."],
     ["carsTeamsReports.unassigned","label","غير مسند","Unassigned"],
+    ["carsTeamsReports.total","label","الإجمالي","Total"],
     ['sidebar.salesReports','navigation','تقارير المبيعات','Sales Reports'],
     ['sidebar.dailyPerformance','navigation','تقرير الأداء اليومي','Daily Performance Report'],
     ['salesReports.page.title','title','تقارير المبيعات','Sales Reports'],

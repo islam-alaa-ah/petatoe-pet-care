@@ -13,3 +13,6 @@
 /* A15.2.2 operational reporting — canonical additions */
 .a15-operation-tables{display:grid;gap:18px;margin-top:16px}.a15-operation-tables>section{min-width:0;width:100%}.a15-operation-tables h4{margin:0 0 10px}.a15-operational>.a15-header h4{margin:0}.a15-operational>.a15-header p{color:var(--muted);font-size:13px;margin:7px 0}.a15-operational .a15-kpis{grid-template-columns:repeat(5,minmax(0,1fr));margin-top:14px}
 @media(max-width:900px){.a15-operational .a15-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* A15.2.5 — canonical table footer, sums full filtered scope */
+.a15-scroll tfoot.a15-totals td{font-weight:800;background:var(--surface);border-top:2px solid var(--border);border-bottom:0;font-variant-numeric:tabular-nums}
+.a15-scroll tfoot.a15-totals td:last-child{font-weight:900}
