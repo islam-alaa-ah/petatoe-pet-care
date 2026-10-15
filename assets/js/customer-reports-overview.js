@@ -75,7 +75,8 @@
         metric("مبيعات العملاء المرتبطين", `${fmt(result.sales)} SAR`, "شامل الضريبة"),
         metric("متوسط المبيعات لكل عميل له مبيعات", `${fmt(result.average)} SAR`),
         metric("عدد الفواتير المرتبطة بالعملاء", integer(result.purchaseInvoices)),
-        metric("مبيعات غير منسوبة لعميل", `${fmt(result.excluded)} SAR`, `${integer(result.excludedRows)} سجلًا`)
+        metric("مبيعات غير منسوبة لعميل", `${fmt(result.excluded)} SAR`, `${integer(result.excludedRows)} سجلًا`),
+        metric("إجمالي المبيعات شامل الضريبة", `${fmt(result.allSales)} SAR`, "مجموع المبيعات المرتبطة وغير المنسوبة في النطاق")
       );
       renderAnalysis(result);
       renderActivity(result);
@@ -85,7 +86,7 @@
       detailVisible=10;
       renderCustomerDetails(result);
       const label = `${scope.year || "كل السنوات"} / ${scope.month || "كل الشهور"} / ${scope.customerId ? "عميل محدد" : "كل العملاء"} / ${scope.neighborhoodId ? "حي محدد" : "كل الأحياء"}`;
-      note.textContent = `النطاق: ${label}. ${integer(result.salesRows)} صف مبيعات؛ التجميعات النقدية غير المنسوبة لا تُنشئ عملاء أو فواتير. أول بيع موثق داخل النطاق المختار فقط.`;
+      note.textContent = `النطاق: ${label}. ${scope.customerId || scope.neighborhoodId ? "عند تحديد عميل أو حي لا تدخل المبيعات بلا عميل في النطاق؛ لا تُقارن بإجمالي الشركة." : "عند اختيار كل العملاء وكل الأحياء، إجمالي المبيعات يشمل السجلات غير المنسوبة."}  ${integer(result.salesRows)} صف مبيعات؛ التجميعات النقدية غير المنسوبة لا تُنشئ عملاء أو فواتير. أول بيع موثق داخل النطاق المختار فقط.`;
       status.textContent = "تم تطبيق الفلاتر على نسخة بيانات مكتملة ومتحقق منها، دون قراءة جزئية.";
       filteredResult = result;
       $("a14ExportCsv").disabled = false;
@@ -169,13 +170,25 @@
     let customerTotalCents = 0;
     let unknownCustomerRows = 0;
     let withoutCustomerRows = 0;
+    let allTotalCents = 0;
     const monthly = new Map();
+    const hasValidDate = date => /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(`${date}T00:00:00Z`));
     for (const row of sales) {
-      const cents = Math.round(Number(row.amount_incl_tax || 0) * 100);
-      if (!Number.isFinite(cents)) throw new Error("مبلغ مبيعات غير صالح.");
+      const rawAmount = Number(row.amount_incl_tax);
+      if (!Number.isFinite(rawAmount)) throw new Error("مبلغ مبيعات غير صالح.");
+      const cents = Math.round(rawAmount * 100);
+      if (!Number.isSafeInteger(cents)) throw new Error("قيمة مبيعات خارج حدود الحساب الآمن.");
+      const date = String(row.invoice_date || "").slice(0, 10);
+      if (!hasValidDate(date)) throw new Error("تاريخ مبيعات غير صالح؛ تم منع عرض إجمالي شهري ناقص.");
+      const month = date.slice(0,7);
+      if (!monthly.has(month)) monthly.set(month, {month, cents:0, excludedCents:0, totalCents:0, customers:new Set(), invoices:new Set()});
+      const bucket = monthly.get(month);
+      bucket.totalCents += cents;
+      allTotalCents += cents;
       const customer = row.customer_id;
       if (!customer || row.record_type === "cash_aggregate") {
         excludedTotal += cents;
+        bucket.excludedCents += cents;
         withoutCustomerRows++;
         continue;
       }
@@ -187,14 +200,8 @@
       if (!byCustomer.has(customer)) byCustomer.set(customer, { invoices: new Set(), invoiceDates: new Map(), cents: 0, last: "", first: "" });
       const item = byCustomer.get(customer);
       item.cents += cents;
-      const date = String(row.invoice_date || "").slice(0, 10);
-      if (/^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(`${date}T00:00:00Z`))) {
-        const month = date.slice(0,7);
-        if (!monthly.has(month)) monthly.set(month, { month, cents: 0, customers: new Set(), invoices: new Set() });
-        const bucket = monthly.get(month);
-        bucket.cents += cents;
-        bucket.customers.add(customer);
-      }
+      bucket.cents += cents;
+      bucket.customers.add(customer);
       if (date > item.last) item.last = date;
       if (date && (!item.first || date < item.first)) item.first = date;
       const number = String(row.invoice_number || "").trim();
@@ -208,6 +215,10 @@
     }
     // Never present a seemingly complete customer sales dashboard when identity coverage is incomplete.
     if (unknownCustomerRows) throw new Error(`${integer(unknownCustomerRows)} سجل مبيعات بعميل خارج نطاق بيانات العملاء؛ تم منع أرقام جزئية.`);
+    if (allTotalCents !== customerTotalCents + excludedTotal) throw new Error("فشل مطابقة إجمالي المبيعات مع المبيعات المرتبطة وغير المنسوبة.");
+    for (const bucket of monthly.values()) {
+      if (bucket.totalCents !== bucket.cents + bucket.excludedCents) throw new Error(`فرق تسوية في شهر ${bucket.month}.`);
+    }
     const purchasing = [...byCustomer.values()].filter(x => x.invoices.size > 0);
     const repeat = purchasing.filter(x => x.invoices.size >= 2).length;
     const once = purchasing.filter(x => x.invoices.size === 1).length;
@@ -226,7 +237,7 @@
     if (frequencies.reduce((sum,x)=>sum+x.count,0) !== purchasing.length) throw new Error("عدم تطابق شرائح تكرار المبيعات.");
     if (ranks.reduce((sum,x)=>sum+x.cents,0) !== customerTotalCents) throw new Error("عدم تطابق إجمالي ترتيب العملاء.");
     return { ranks, frequencies, customerContacts, customers: ids.size, buyers: purchasing.length, repeat, once,
-      sales: customerTotalCents / 100, average: purchasing.length ? customerTotalCents / 100 / purchasing.length : 0,
+      sales: customerTotalCents / 100, allSales: allTotalCents / 100, average: purchasing.length ? customerTotalCents / 100 / purchasing.length : 0,
       excluded: excludedTotal / 100, excludedRows: withoutCustomerRows,
       salesRows: sales.length, purchaseInvoices: purchasing.reduce((n,x) => n + x.invoices.size, 0), monthly };
   }
@@ -396,21 +407,23 @@
     const years = new Map();
     let previousBuyers = null;
     let previousMonth = null;
-    let sumCents = 0, firstRecordedTotal = 0;
+    let sumCents = 0, sumExcludedCents = 0, sumAllCents = 0, firstRecordedTotal = 0;
     for (const bucket of rows) {
       const initial = [...bucket.customers].filter(id => firstMonthByCustomer.get(id) === bucket.month).length;
       firstRecordedTotal += initial;
       sumCents += bucket.cents;
+      sumExcludedCents += bucket.excludedCents;
+      sumAllCents += bucket.totalCents;
       const previousCalendarMonth = new Date(Date.UTC(Number(bucket.month.slice(0,4)), Number(bucket.month.slice(5,7)) - 2, 1));
       const previousCalendarKey = `${previousCalendarMonth.getUTCFullYear()}-${String(previousCalendarMonth.getUTCMonth()+1).padStart(2,"0")}`;
       const returning = previousMonth !== previousCalendarKey ? null : [...bucket.customers].filter(id => previousBuyers.has(id)).length;
       const year = bucket.month.slice(0,4);
-      if (!years.has(year)) years.set(year, {year, cents:0, customers:new Set(), invoices:new Set(), first:0});
-      const y=years.get(year); y.cents+=bucket.cents; y.first+=initial;
+      if (!years.has(year)) years.set(year, {year, cents:0, excludedCents:0, totalCents:0, customers:new Set(), invoices:new Set(), first:0});
+      const y=years.get(year); y.cents+=bucket.cents; y.excludedCents+=bucket.excludedCents; y.totalCents+=bucket.totalCents; y.first+=initial;
       for(const id of bucket.customers) y.customers.add(id);
       for(const key of bucket.invoices) y.invoices.add(key);
       const tr=document.createElement("tr");
-      for(const value of [bucket.month,integer(bucket.customers.size),integer(bucket.invoices.size),integer(initial),returning===null?"—":integer(returning),`${fmt(bucket.cents/100)} SAR`]) {
+      for(const value of [bucket.month,integer(bucket.customers.size),integer(bucket.invoices.size),integer(initial),returning===null?"—":integer(returning),`${fmt(bucket.cents/100)} SAR`,`${fmt(bucket.excludedCents/100)} SAR`,`${fmt(bucket.totalCents/100)} SAR`]) {
         const td=document.createElement("td");td.textContent=value;tr.append(td);
       }
       monthlyTable.append(tr);
@@ -419,11 +432,17 @@
     }
     for (const y of years.values()) {
       const tr=document.createElement("tr");
-      for(const value of [y.year,integer(y.customers.size),integer(y.invoices.size),integer(y.first),`${fmt(y.cents/100)} SAR`]) {
+      for(const value of [y.year,integer(y.customers.size),integer(y.invoices.size),integer(y.first),`${fmt(y.cents/100)} SAR`,`${fmt(y.excludedCents/100)} SAR`,`${fmt(y.totalCents/100)} SAR`]) {
         const td=document.createElement("td");td.textContent=value;tr.append(td);
       }
       annualTable.append(tr);
     }
+    if (sumAllCents !== sumCents + sumExcludedCents ||
+        sumExcludedCents !== Math.round(result.excluded*100) ||
+        sumAllCents !== Math.round(result.allSales*100)) {
+      throw new Error("فشل مطابقة الإجمالي الشهري والسنوي مع جميع مبيعات المصدر.");
+    }
+    if ([...years.values()].some(y => y.totalCents !== y.cents + y.excludedCents)) throw new Error("فشل مطابقة سنة مالية.");
     if (sumCents !== Math.round(result.sales*100)) {
       throw new Error("المبيعات المرتبطة تحتوي على تواريخ غير صالحة أو غير مكتملة؛ توقّف التحليل الزمني.");
     }
@@ -434,9 +453,9 @@
       metric("الشهور التي سُجلت فيها مبيعات",integer(rows.length)),
       metric("سنوات المبيعات المتاحة",integer(years.size)),
       metric("عملاء حسب أول بيع موثق",integer(firstRecordedTotal)),
-      metric("إجمالي المبيعات المرتبطة",`${fmt(sumCents/100)} SAR`)
+      metric("إجمالي المبيعات شامل الضريبة",`${fmt(sumAllCents/100)} SAR`,"مبيعات العملاء + المبيعات غير المنسوبة")
     );
-    $("a14TrendStatus").textContent=`تمت المطابقة عبر ${integer(rows.length)} شهرًا. «أول بيع» يعني أول فاتورة مرقمة في البيانات المتاحة فقط، وليس تاريخ اكتساب العميل. العملاء الفريدون سنويًا لا يُجمعون بين السنوات.`;
+    $("a14TrendStatus").textContent=`تمت تسوية إجمالي المصدر عبر ${integer(rows.length)} شهرًا دون فروق داخل نطاق الفلاتر. «أول بيع» يعني أول فاتورة مرقمة في البيانات المتاحة فقط، وليس تاريخ اكتساب العميل. العملاء الفريدون سنويًا لا يُجمعون بين السنوات.`;
   }
 
   async function load() {
