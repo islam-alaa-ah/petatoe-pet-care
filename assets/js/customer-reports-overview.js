@@ -10,6 +10,7 @@
   let version = 0;
   let verifiedSnapshot = null;
   let filteredResult = null;
+  let detailVisible = 10;
   const selected = id => $(id)?.value || "";
   const isValidDate = value => /^\d{4}-\d{2}-\d{2}$/.test(String(value || ""));
 
@@ -21,27 +22,42 @@
     const years = [...new Set(sales.map(x => String(x.invoice_date || "").slice(0,4)).filter(x => /^\d{4}$/.test(x)))].sort();
     const months = [...new Set(sales.map(x => String(x.invoice_date || "").slice(5,7)).filter(x => /^(0[1-9]|1[0-2])$/.test(x)))].sort();
     const names = customers.map(x => [x.id, String(x.name || x.customer_name || x.customerName || x.id).trim()]).sort((a,b) => a[1].localeCompare(b[1], "ar"));
-    const old = [selected("a14FilterYear"),selected("a14FilterMonth"),selected("a14FilterCustomer")];
+    const areaNames = new Map();
+    for (const row of sales) {
+      const areaId = String(row.neighborhood_id || "").trim();
+      const areaName = String(row.neighborhood_name_ar || row.neighborhood_name_en || "").trim();
+      if (areaId && areaName && !areaNames.has(areaId)) areaNames.set(areaId, areaName);
+    }
+    const areas = [...new Set(customers.map(c=>String(c.neighborhoodId || "").trim()).filter(Boolean))]
+      .map(id=>[id, areaNames.get(id) || `حي غير مسمى (${id.slice(0,8)})`])
+      .sort((a,b)=>a[1].localeCompare(b[1], "ar"));
+    const old = [selected("a14FilterYear"),selected("a14FilterMonth"),selected("a14FilterCustomer"),selected("a14FilterNeighborhood")];
     setOptions($("a14FilterYear"),years.map(x=>[x,x]),"كل السنوات");
     setOptions($("a14FilterMonth"),months.map(x=>[x,x]),"كل الشهور");
     setOptions($("a14FilterCustomer"),names,"كل العملاء");
-    ["a14FilterYear","a14FilterMonth","a14FilterCustomer"].forEach((id,i)=> {if ([...$(id).options].some(o=>o.value===old[i])) $(id).value=old[i];});
+    setOptions($("a14FilterNeighborhood"),areas,"كل الأحياء");
+    ["a14FilterYear","a14FilterMonth","a14FilterCustomer","a14FilterNeighborhood"].forEach((id,i)=> {if ([...$(id).options].some(o=>o.value===old[i])) $(id).value=old[i];});
   }
   function currentScope() {
     if (!verifiedSnapshot) throw new Error("حدّث البيانات أولًا قبل استخدام الفلاتر.");
-    const year=selected("a14FilterYear"),month=selected("a14FilterMonth"),customerId=selected("a14FilterCustomer");
-    const customers = customerId ? verifiedSnapshot.customers.filter(c => c.id === customerId) : verifiedSnapshot.customers;
+    const year=selected("a14FilterYear"),month=selected("a14FilterMonth"),customerId=selected("a14FilterCustomer"),neighborhoodId=selected("a14FilterNeighborhood");
+    const customers = verifiedSnapshot.customers.filter(c =>
+      (!customerId || c.id === customerId) && (!neighborhoodId || c.neighborhoodId === neighborhoodId));
+    const allowedIds = new Set(customers.map(c=>c.id));
     const sales = verifiedSnapshot.sales.filter(row => {
       const d=String(row.invoice_date || "").slice(0,10);
       return (!year || d.slice(0,4)===year) && (!month || d.slice(5,7)===month)
-        && (!customerId || row.customer_id===customerId);
+        && (!customerId || row.customer_id===customerId)
+        && (!neighborhoodId || (row.customer_id && allowedIds.has(row.customer_id)));
     });
-    return {customers,sales,year,month,customerId};
+    return {customers,sales,year,month,customerId,neighborhoodId};
   }
   function clearRendered() {
-    for(const id of ["a14OverviewMetrics","a14FrequencyMetrics","a14PurchaseFrequency","a14TopCustomers", "a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers","a14GeoMetrics","a14GeoRows","a14TrendMetrics","a14TrendMonthlyRows","a14TrendAnnualRows"]) $(id)?.replaceChildren();
-    for(const id of ["a14PurchaseStatus","a14ActivityStatus","a14GeoStatus","a14TrendStatus","a14ActivityReference","a14RetentionDescription"]) if($(id)) $(id).textContent="";
+    for(const id of ["a14OverviewMetrics","a14FrequencyMetrics","a14PurchaseFrequency","a14TopCustomers", "a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers","a14GeoMetrics","a14GeoRows","a14TrendMetrics","a14TrendMonthlyRows","a14TrendAnnualRows","a14DetailRows"]) $(id)?.replaceChildren();
+    for(const id of ["a14PurchaseStatus","a14ActivityStatus","a14GeoStatus","a14TrendStatus","a14ActivityReference","a14RetentionDescription","a14DetailStatus"]) if($(id)) $(id).textContent="";
     filteredResult=null;
+    detailVisible=10;
+    $("a14DetailMore").disabled=true;
     $("a14ExportCsv").disabled = true;
     $("a14PrintReport").disabled = true;
   }
@@ -66,7 +82,9 @@
       renderGeography(result);
       // Empty date-range has no comparable months; renderTrends can handle zero safely.
       renderTrends(result);
-      const label = `${scope.year || "كل السنوات"} / ${scope.month || "كل الشهور"} / ${scope.customerId ? "عميل محدد" : "كل العملاء"}`;
+      detailVisible=10;
+      renderCustomerDetails(result);
+      const label = `${scope.year || "كل السنوات"} / ${scope.month || "كل الشهور"} / ${scope.customerId ? "عميل محدد" : "كل العملاء"} / ${scope.neighborhoodId ? "حي محدد" : "كل الأحياء"}`;
       note.textContent = `النطاق: ${label}. ${integer(result.salesRows)} صف مبيعات؛ التجميعات النقدية غير المنسوبة لا تُنشئ عملاء أو فواتير. أول بيع موثق داخل النطاق المختار فقط.`;
       status.textContent = "تم تطبيق الفلاتر على نسخة بيانات مكتملة ومتحقق منها، دون قراءة جزئية.";
       filteredResult = result;
@@ -92,7 +110,8 @@
       ["العملاء الذين يحتاجون متابعة", "a14DormantCustomers"],
       ["التوزيع الجغرافي", "a14GeoRows"],
       ["المقارنة الشهرية", "a14TrendMonthlyRows"],
-      ["المقارنة السنوية", "a14TrendAnnualRows"]
+      ["المقارنة السنوية", "a14TrendAnnualRows"],
+      ["التقرير التفصيلي لمبيعات العملاء", "a14DetailRows"]
     ];
     const lines=[];
     for(const [name,id] of sections) {
@@ -210,6 +229,21 @@
       sales: customerTotalCents / 100, average: purchasing.length ? customerTotalCents / 100 / purchasing.length : 0,
       excluded: excludedTotal / 100, excludedRows: withoutCustomerRows,
       salesRows: sales.length, purchaseInvoices: purchasing.reduce((n,x) => n + x.invoices.size, 0), monthly };
+  }
+
+  function renderCustomerDetails(result) {
+    const tbody=$("a14DetailRows"),more=$("a14DetailMore"),status=$("a14DetailStatus");
+    tbody.replaceChildren();
+    for(const row of result.ranks.slice(0,detailVisible)) {
+      const tr=document.createElement("tr");
+      for(const cell of [row.name,integer(row.invoices),row.first||"—",row.last||"—",`${fmt(row.cents/100)} SAR`]) {
+        const td=document.createElement("td");td.textContent=cell;tr.append(td);
+      }
+      tbody.append(tr);
+    }
+    if(!result.ranks.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=5;td.textContent="لا توجد فواتير مرتبطة بعملاء في نطاق الفلاتر.";tr.append(td);tbody.append(tr);}
+    more.disabled=detailVisible>=result.ranks.length;
+    status.textContent=`عرض ${integer(Math.min(detailVisible,result.ranks.length))} من ${integer(result.ranks.length)} عميل ذي مبيعات؛ جميع القيم من البيانات المحمّلة بالكامل.`;
   }
 
   function metric(label, value, detail = "") {
@@ -454,11 +488,16 @@
     $("a14OverviewLoad")?.addEventListener("click", load);
     $("a14ApplyFilters")?.addEventListener("click", () => {if(!busy) renderScope();});
     $("a14ResetFilters")?.addEventListener("click", () => {
-      for(const id of ["a14FilterYear","a14FilterMonth","a14FilterCustomer"]) $(id).value="";
+      for(const id of ["a14FilterYear","a14FilterMonth","a14FilterCustomer","a14FilterNeighborhood"]) $(id).value="";
       if(verifiedSnapshot && !busy) renderScope();
     });
     $("a14ExportCsv")?.addEventListener("click", exportCsv);
     $("a14PrintReport")?.addEventListener("click", printReport);
+    $("a14DetailMore")?.addEventListener("click",()=>{
+      if(!filteredResult||busy) return;
+      detailVisible=Math.min(detailVisible+10,filteredResult.ranks.length);
+      renderCustomerDetails(filteredResult);
+    });
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialize, { once: true });
   else initialize();

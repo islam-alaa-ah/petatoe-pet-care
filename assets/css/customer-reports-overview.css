@@ -18,7 +18,7 @@
 .a14-overview-metrics article span{font-weight:700}
 .a14-overview-metrics article strong{display:block;margin:5px 0;direction:ltr;text-align:start;font-size:clamp(18px,1.6vw,22px);font-weight:800;font-variant-numeric:tabular-nums;color:var(--text);overflow-wrap:anywhere}
 .a14-overview-note{margin-top:14px}
-@media(max-width:1100px){.a14-overview-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1100px){.a14-overview-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:780px){.a14-overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.a14-customer-reports-view{padding:12px}.a14-customer-overview{padding:12px}.a14-overview-toolbar button{width:100%}.a14-overview-metrics article{padding:13px 11px;min-height:105px}.a14-overview-metrics article strong{font-size:clamp(16px,4vw,20px)}}
 
@@ -57,7 +57,7 @@
 /* A14.3G — canonical filters, exports and print for dedicated customer reports. */
 .a14-filter-panel{width:100%;min-width:0}
 .a14-filter-panel h4{margin:0 0 10px;font-size:18px;color:var(--text)}
-.a14-filter-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0}
+.a14-filter-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:15px 0}
 .a14-filter-fields label{display:grid;gap:8px;font-size:13px;font-weight:700;color:var(--text);min-width:0}
 .a14-filter-fields select{width:100%;min-width:0;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font:inherit}
 .a14-filter-actions{display:flex;flex-wrap:wrap;gap:10px}
@@ -73,3 +73,8 @@
   #customerReportsView .a14-table-scroll{overflow:visible!important}
   #customerReportsView table{white-space:normal!important}
 }
+
+/* A14.3G.2 — full-width detailed customer sales report; canonical owner. */
+.a14-customer-detail-report{width:100%;min-width:0;display:grid;gap:14px}
+.a14-customer-detail-report .a14-table-scroll{width:100%;min-width:0}
+.a14-customer-detail-report .a14-filter-actions{justify-content:center}

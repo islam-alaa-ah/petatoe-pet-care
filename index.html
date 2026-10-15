@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="assets/css/appointment-historical-import.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/mobile-theme-canonical.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.140" />
-  <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=18.57.0" />
+  <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=A14.3G3" />
   <link rel="stylesheet" href="assets/css/sales-reports.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/sea-vibe.css?v=18.56.140" />
@@ -2531,6 +2531,7 @@
             <label>السنة<select id="a14FilterYear"><option value="">كل السنوات</option></select></label>
             <label>الشهر<select id="a14FilterMonth"><option value="">كل الشهور</option></select></label>
             <label>العميل<select id="a14FilterCustomer"><option value="">كل العملاء</option></select></label>
+            <label>الحي<select id="a14FilterNeighborhood"><option value="">كل الأحياء</option></select></label>
           </div>
           <div class="a14-filter-actions">
             <button type="button" id="a14ApplyFilters" class="primary-btn">تطبيق الفلاتر</button>
@@ -2585,6 +2586,12 @@
             <section class="a14-analysis-panel"><h5>تطور المبيعات والعملاء شهريًا</h5><p class="a14-analysis-description">«استمر التعامل» يقارن العملاء ذوي المبيعات مع الشهر السابق المعروض؛ الأشهر بدون مبيعات لا تُعتبر فترة مقارنة صالحة تلقائيًا.</p><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>الشهر</th><th>العملاء ذوو المبيعات</th><th>عدد الفواتير خلال الشهر</th><th>أول بيع موثق</th><th>لديهم مبيعات في الشهر السابق أيضًا</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14TrendMonthlyRows"></tbody></table></div></section>
             <section class="a14-analysis-panel"><h5>المقارنة السنوية للمبيعات والعملاء</h5><p class="a14-analysis-description">العميل يحسب مرة واحدة داخل كل سنة، وقد يظهر في أكثر من سنة. المبيعات غير المنسوبة لعميل ليست ضمن هذا التقرير.</p><div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>السنة</th><th>العملاء ذوو المبيعات</th><th>عدد الفواتير خلال السنة</th><th>أول بيع موثق خلال السنة</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14TrendAnnualRows"></tbody></table></div></section>
           </div>
+        </section>
+        <section class="a14-customer-overview a14-customer-detail-report" aria-labelledby="a14DetailTitle">
+          <div class="a14-overview-toolbar"><div><h4 id="a14DetailTitle">التقرير التفصيلي لمبيعات العملاء</h4><p>جميع العملاء ذوي الفواتير في نطاق الفلاتر؛ عدد الفواتير بدون تكرار السطور، والمبيعات شاملة الضريبة.</p></div></div>
+          <p id="a14DetailStatus" class="a14-analysis-description" role="status" aria-live="polite">حدّث البيانات لعرض التفاصيل.</p>
+          <div class="a14-table-scroll"><table class="a14-purchase-table"><thead><tr><th>العميل</th><th>عدد الفواتير</th><th>أول بيع موثق في النطاق</th><th>آخر بيع موثق في النطاق</th><th>المبيعات الشاملة</th></tr></thead><tbody id="a14DetailRows"></tbody></table></div>
+          <div class="a14-filter-actions"><button type="button" class="secondary-btn" id="a14DetailMore" disabled>عرض المزيد</button></div>
         </section>
 
       </section>
@@ -4863,7 +4870,7 @@
   <script src="assets/js/daily-activity-service.js?v=18.56.140"></script>
   <script src="assets/js/notification-center-service.js?v=18.56.140"></script>
   <script src="assets/js/app.js?v=18.56.140"></script>
-  <script src="assets/js/customer-reports-overview.js?v=18.57.0"></script>
+  <script src="assets/js/customer-reports-overview.js?v=A14.3G3"></script>
   <script src="assets/js/sales-reports.js?v=18.56.140"></script>
   <script src="assets/js/appointment-historical-import.js?v=18.56.140"></script>
   <script src="assets/js/appointment-contact-data.js?v=18.56.140"></script>
