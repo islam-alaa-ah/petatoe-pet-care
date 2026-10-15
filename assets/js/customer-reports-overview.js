@@ -112,7 +112,6 @@
       ["التوزيع الجغرافي", "a14GeoRows"],
       ["المقارنة الشهرية", "a14TrendMonthlyRows"],
       ["المقارنة السنوية", "a14TrendAnnualRows"],
-      ["التقرير التفصيلي لمبيعات العملاء", "a14DetailRows"]
     ];
     const lines=[];
     for(const [name,id] of sections) {
@@ -125,6 +124,14 @@
       }
       lines.push("");
     }
+    // Export the entire permission-scoped, filtered result — never the 10-row UI slice.
+    // A rank is one customer; invoice counts and amounts are already reconciled by calculate().
+    lines.push(csvCell("التقرير التفصيلي لمبيعات العملاء"));
+    lines.push(["العميل", "عدد الفواتير", "أول بيع موثق في النطاق", "آخر بيع موثق في النطاق", "المبيعات الشاملة"].map(csvCell).join(","));
+    for (const row of filteredResult.ranks) {
+      lines.push([row.name, integer(row.invoices), row.first || "—", row.last || "—", `${fmt(row.cents / 100)} SAR`].map(csvCell).join(","));
+    }
+    lines.push("");
     const blob=new Blob(["\uFEFF"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
     const url=URL.createObjectURL(blob);const anchor=document.createElement("a");anchor.href=url;
     anchor.download="A14_customer_reports_filtered.csv";document.body.append(anchor);anchor.click();anchor.remove();
