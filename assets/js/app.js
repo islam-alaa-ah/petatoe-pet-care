@@ -225,6 +225,7 @@ const views = {
   reportsOverview: document.getElementById("reportsOverviewView"),
   customerReports: document.getElementById("customerReportsView"),
   salesReports: document.getElementById("salesReportsView"),
+  carsTeamsReports: document.getElementById("carsTeamsReportsView"),
   dailyPerformanceReport: document.getElementById("dailyPerformanceReportView"),
   notificationCenter: document.getElementById("notificationCenterView"),
   translationCenter: document.getElementById("translationCenterView"),
@@ -296,6 +297,7 @@ const pageMeta = {
   customerReports: ["تقارير العملاء", "تحليل المشتريات الفعلية للعملاء وتكرار الشراء"],
   reportsOverview: ["reportsOverview.page.title", "reportsOverview.page.subtitle"],
   salesReports: ["salesReports.page.title", "salesReports.page.subtitle"],
+  carsTeamsReports: ["تقارير السيارات والفرق", "مقارنة مبيعات السيارات والفرق حسب الفترة"],
   dailyPerformanceReport: ["تقرير الأداء اليومي", "متابعة تنفيذ المهام والنشاط اليومي للموظفين"],
   notificationCenter: ["مركز الإشعارات", "إدارة الأحداث والمستلمين وقنوات الإشعار"],
   translationCenter: ["مركز الترجمه", "إدارة قاموس الترجمة المركزي ومراجعة تغطية الشاشات"],
@@ -1601,6 +1603,9 @@ function switchView(requestedName, options = {}) {
   if (name === "reportsOverview") {
     ensureReportsData().then(renderReportsOverview);
   }
+  if (name === "carsTeamsReports") {
+    window.CarsTeamsReportsUI?.activate?.();
+  }
   if (name === "salesReports") {
     window.SalesReportsUI?.activate?.(false);
   }
@@ -1691,6 +1696,7 @@ window.addEventListener("petatoe-language-changed", () => {
   if (current === "settings") { renderReferenceData(); renderReferenceCustomers(); }
   if (current === "reportsOverview" && currentReportsSnapshot) { populateReportsRepresentativeFilter(); renderReportsOverview(); }
   if (current === "salesReports") window.SalesReportsUI?.render?.();
+  if (current === "carsTeamsReports") window.CarsTeamsReportsUI?.render?.();
   const customer360Dialog = document.getElementById("customerDetailsDialog");
   if (customer360Dialog?.open && customer360Dialog.dataset.customerId) showCustomerDetails(customer360Dialog.dataset.customerId);
   if (document.getElementById("customerImportDialog")?.open && customerImportPreview) renderCustomerImportPreview(customerImportPreview);
