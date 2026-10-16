@@ -85,7 +85,7 @@
   const operationAllowed = () => permitted() && window.PermissionEngine?.canView?.("installationReports") === true;
   function opStatus(message){ const el=$("a15OperationsStatus");if(el)el.textContent=message; }
   function opGroup(rows, property){const groups=new Map();for(const row of rows){const id=String(row[property]||"");const name=String(row[property==="teamCarId"?"teamCarName":"teamName"]||"").trim()||t("unassigned");const key=id||"__unassigned";if(!groups.has(key))groups.set(key,{name,total:0,completed:0,cancelled:0,quantity:0});const item=groups.get(key);item.total++;const cancelled=["ملغي","ملغاة"].includes(String(row.status||"").trim());const completed=row.status==="مكتمل"||row.isInvoiced===true;if(cancelled)item.cancelled++;else if(completed)item.completed++;item.quantity+=Number(row.executedQuantity||0);}return [...groups.values()].sort((a,b)=>b.total-a.total);}
-  function renderOperations(){if(!operational||!operationAllowed()){for(const id of ["a15OperationsKpis","a15OpCarBody","a15OpTeamBody","a15OpMonthBody","a15OpDetailsBody","a15ProductivityCarsBody","a15ProductivityTeamsBody"]){$(id)?.replaceChildren();$(`${id}Total`)?.replaceChildren();}return;}
+  function renderOperations(){if(!operational||!operationAllowed()){for(const id of ["a15OperationsKpis","a15OpCarBody","a15OpTeamBody","a15OpMonthBody","a15OpDetailsBody","a15ProductivityCarsBody","a15ProductivityTeamsBody","a15WorkloadCarBody","a15WorkloadTeamBody"]){$(id)?.replaceChildren();$(`${id}Total`)?.replaceChildren();}return;}
     const year=value("a15Year"),month=value("a15Month"),car=value("a15Car"),team=value("a15Team");
     const rows=operational.filter(r=>{const date=String(r.scheduledDate||"").slice(0,10);return (!year||date.startsWith(year))&&(!month||date.slice(5,7)===month)&&(!car||String(r.teamCarId||"")===car)&&(!team||String(r.teamId||"")===team);});
     const completed=rows.filter(r=>r.status==="مكتمل"||r.isInvoiced===true).length,cancelled=rows.filter(r=>["ملغي","ملغاة"].includes(String(r.status||"").trim())).length,qty=rows.reduce((v,r)=>v+Number(r.executedQuantity||0),0);
@@ -100,6 +100,28 @@
       const totalCompleted=groups.reduce((n,g)=>n+g.completed,0),totalQty=groups.reduce((n,g)=>n+g.quantity,0);
       footer(target,[t("total"),num(totalCompleted),num(totalQty),totalCompleted?(totalQty/totalCompleted).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—"]);
     };
+    // A15.2.7: Workload metrics are appointment-only. Distinct active calendar days
+    // are counted separately for each vehicle/team, not summed across groups.
+    const workDay = r => {const date=String(r.scheduledDate||"").slice(0,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return "";const time=Date.parse(`${date}T00:00:00Z`);return Number.isFinite(time)&&new Date(time).toISOString().slice(0,10)===date?date:"";};
+    const avgDay = (appointments, days) => days ? (appointments/days).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—";
+    const workload = (target,field) => {
+      const groups=new Map(), allDays=new Set();
+      for(const r of rows){
+        const id=String(r[field]||"")||"__unassigned";
+        if(!groups.has(id))groups.set(id,{name:String(r[field==="teamCarId"?"teamCarName":"teamName"]||"").trim()||t("unassigned"),total:0,done:0,days:new Set()});
+        const g=groups.get(id);g.total++;
+        const cancelled=["ملغي","ملغاة"].includes(String(r.status||"").trim());
+        if(!cancelled&&(r.status==="مكتمل"||r.isInvoiced===true))g.done++;
+        const day=workDay(r);if(day){g.days.add(day);allDays.add(day);}
+      }
+      const ordered=[...groups.values()].sort((a,b)=>b.total-a.total);
+      $(target).innerHTML=ordered.length?ordered.map(g=>td([g.name,num(g.total),num(g.days.size),avgDay(g.total,g.days.size),num(g.done),pct(g.done,g.total)])).join(""):`<tr><td colspan="6">${escapeHtml(t("none"))}</td></tr>`;
+      // The global day count is a union, never the sum of per-resource active days.
+      const done=ordered.reduce((n,g)=>n+g.done,0);
+      footer(target,[t("total"),num(rows.length),num(allDays.size),avgDay(rows.length,allDays.size),num(done),pct(done,rows.length)]);
+    };
+    workload("a15WorkloadCarBody","teamCarId");
+    workload("a15WorkloadTeamBody","teamId");
     productivity("a15ProductivityCarsBody","teamCarId");
     productivity("a15ProductivityTeamsBody","teamId");
     const opCompleted=opGroup(rows,"teamCarId").reduce((n,g)=>n+g.completed,0);const opCancelled=opGroup(rows,"teamCarId").reduce((n,g)=>n+g.cancelled,0);
