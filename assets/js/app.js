@@ -224,6 +224,7 @@ const views = {
   systemHealth: document.getElementById("systemHealthView"),
   reportsOverview: document.getElementById("reportsOverviewView"),
   customerReports: document.getElementById("customerReportsView"),
+  advancedAnalytics: document.getElementById("advancedAnalyticsView"),
   servicesReports: document.getElementById("servicesReportsView"),
   salesReports: document.getElementById("salesReportsView"),
   dailyPerformanceReport: document.getElementById("dailyPerformanceReportView"),
@@ -296,6 +297,7 @@ const pageMeta = {
   systemHealth: ["systemHealth.page.title", "systemHealth.page.note"],
   customerReports: ["تقارير العملاء", "تحليل المشتريات الفعلية للعملاء وتكرار الشراء"],
   reportsOverview: ["reportsOverview.page.title", "reportsOverview.page.subtitle"],
+  advancedAnalytics: ["advancedAnalytics.title", "advancedAnalytics.subtitle"],
   servicesReports: ["servicesReports.title", "servicesReports.subtitle"],
   salesReports: ["salesReports.page.title", "salesReports.page.subtitle"],
   dailyPerformanceReport: ["تقرير الأداء اليومي", "متابعة تنفيذ المهام والنشاط اليومي للموظفين"],
@@ -314,6 +316,7 @@ const PAGE_META_I18N_KEYS = Object.freeze({
   systemSettings: pageMeta.systemSettings,
   aboutApp: ["aboutApp.page.title", "aboutApp.page.note"],
   reportsOverview: ["reportsOverview.page.title", "reportsOverview.page.subtitle"],
+  advancedAnalytics: ["advancedAnalytics.title", "advancedAnalytics.subtitle"],
   servicesReports: ["servicesReports.title", "servicesReports.subtitle"],
   salesReports: ["salesReports.page.title", "salesReports.page.subtitle"],
   dailyOperations: ["dailyOperations.page.title", "dailyOperations.page.subtitle"],
@@ -1604,6 +1607,7 @@ function switchView(requestedName, options = {}) {
   if (name === "reportsOverview") {
     ensureReportsData().then(renderReportsOverview);
   }
+  if (name === "advancedAnalytics") window.AdvancedAnalyticsUI?.activate?.();
   if (name === "servicesReports") window.ServicesReportsUI?.activate?.();
   if (name === "salesReports") {
     window.SalesReportsUI?.activate?.(false);
@@ -1694,6 +1698,7 @@ window.addEventListener("petatoe-language-changed", () => {
   if (current === "representatives") renderRepresentatives();
   if (current === "settings") { renderReferenceData(); renderReferenceCustomers(); }
   if (current === "reportsOverview" && currentReportsSnapshot) { populateReportsRepresentativeFilter(); renderReportsOverview(); }
+  if (current === "advancedAnalytics") window.AdvancedAnalyticsUI?.render?.();
   if (current === "servicesReports") window.ServicesReportsUI?.render?.();
   if (current === "salesReports") window.SalesReportsUI?.render?.();
   const customer360Dialog = document.getElementById("customerDetailsDialog");

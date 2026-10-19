@@ -57,6 +57,7 @@
   <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=A14_FIN_REC_1" />
   <link rel="stylesheet" href="assets/css/cars-teams-reports.css?v=A15_2_2" />
+  <link rel="stylesheet" href="assets/css/advanced-analytics.css?v=A17_2_1" />
   <link rel="stylesheet" href="assets/css/services-reports.css?v=A16_2" />
   <link rel="stylesheet" href="assets/css/sales-reports.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.140" />
@@ -231,6 +232,7 @@
           <div class="nav-group-content">
             <button class="nav-item" data-view="reportsOverview" data-petatoe-i18n="sidebar.reportsOverview">مركز التقارير</button>
             <button class="nav-item" data-view="customerReports">تقارير العملاء</button>
+            <button class="nav-item" data-view="advancedAnalytics" type="button" data-petatoe-i18n="sidebar.advancedAnalytics">التحليلات المتقدمة</button>
             <button class="nav-item" data-view="servicesReports" type="button" data-petatoe-i18n="sidebar.servicesReports">تقارير الخدمات</button>
             <button class="nav-item" data-view="carsTeamsReports" type="button" data-petatoe-i18n="sidebar.carsTeamsReports">تقارير السيارات والفرق</button>
             <button class="nav-item" data-view="salesReports" data-petatoe-i18n="sidebar.salesReports">تقارير المبيعات</button>
@@ -932,7 +934,19 @@
         </div>
       </section>
 
-      <section id="servicesReportsView" class="view-section hidden a16-reports-view" aria-hidden="true">
+      <section id="advancedAnalyticsView" class="view-section hidden a17-view" aria-hidden="true">
+ <header class="a17-header"><div><h3 data-petatoe-i18n="advancedAnalytics.title">التحليلات المتقدمة</h3><p data-petatoe-i18n="advancedAnalytics.subtitle">رؤى مرئية قابلة للتحقق — الفترة السابقة ونفس الفترة من العام الماضي</p></div><button type="button" id="a17Refresh" data-petatoe-i18n="advancedAnalytics.refresh">تحديث البيانات</button></header>
+ <div class="a17-filters"><label><span data-petatoe-i18n="advancedAnalytics.year">السنة</span><select id="a17Year"></select></label><label><span data-petatoe-i18n="advancedAnalytics.month">الشهر</span><select id="a17Month"></select></label><label><span data-petatoe-i18n="advancedAnalytics.compare">المقارنة</span><select id="a17Compare"><option value="previous" data-petatoe-i18n="advancedAnalytics.previous">الفترة السابقة</option><option value="yoy" data-petatoe-i18n="advancedAnalytics.yoy">نفس الفترة العام الماضي</option></select></label><button type="button" id="a17Apply" data-petatoe-i18n="advancedAnalytics.apply">تطبيق</button></div>
+ <div id="a17Status" role="status" aria-live="polite" class="a17-status"></div>
+ <div class="a17-kpis" id="a17Kpis"></div>
+ <article class="a17-panel"><div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.salesTitle">اتجاهات المبيعات والنمو</h4><span data-petatoe-i18n="advancedAnalytics.salesNote">مبيعات شاملة الضريبة — من مصدر تقارير المبيعات المعتمد</span></div><div id="a17SalesChart" class="a17-chart" role="img"></div><button id="a17SalesToggle" type="button" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17SalesDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.period">الفترة</th><th data-petatoe-i18n="advancedAnalytics.current">الحالية</th><th data-petatoe-i18n="advancedAnalytics.reference">المرجعية</th><th data-petatoe-i18n="advancedAnalytics.difference">الفرق</th></tr></thead><tbody id="a17SalesBody"></tbody><tfoot id="a17SalesFoot"></tfoot></table></div></div></article>
+ <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.customersTitle">نشاط العملاء والاحتفاظ بهم</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
+ <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.teamsTitle">أداء السيارات والفرق</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
+ <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.servicesTitle">اتجاهات الخدمات</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
+ <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.peaksTitle">أوقات الذروة — وقت الموعد المجدول</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
+ <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.alertsTitle">التنبيهات التحليلية المتوازنة</h4><p data-petatoe-i18n="advancedAnalytics.alertsNote">الحدود المبدئية تحتاج اختبار كفاية العينة واكتمال الفترات قبل تفعيل التنبيهات.</p></article>
+</section>
+<section id="servicesReportsView" class="view-section hidden a16-reports-view" aria-hidden="true">
         <header class="a16-header"><div><h3 data-petatoe-i18n="servicesReports.title">تقارير الخدمات</h3><p data-petatoe-i18n="servicesReports.subtitle">تحليل مبيعات الخدمات المصنفة، وتحديد المبيعات غير المصنفة بدون تقدير أو توزيع افتراضي.</p></div><button id="a16Refresh" type="button" class="secondary-btn" data-petatoe-i18n="servicesReports.refresh">تحديث البيانات</button></header>
         <article class="a16-card"><h4 data-petatoe-i18n="servicesReports.filters">فلاتر التقارير</h4><div class="a16-filters"><label><span data-petatoe-i18n="servicesReports.year">السنة</span><select id="a16Year"></select></label><label><span data-petatoe-i18n="servicesReports.month">الشهر</span><select id="a16Month"></select></label><label><span data-petatoe-i18n="servicesReports.service">الخدمة</span><select id="a16Service"></select></label><button id="a16Apply" type="button" class="primary-btn" data-petatoe-i18n="servicesReports.apply">تطبيق</button><button id="a16Reset" type="button" class="secondary-btn" data-petatoe-i18n="servicesReports.reset">إعادة تعيين</button></div><p id="a16Status" role="status" aria-live="polite" class="a16-status"></p></article>
         <section id="a16Kpis" class="a16-kpis" aria-label="Service KPIs"></section>
@@ -4904,6 +4918,7 @@
   <script src="assets/js/app.js?v=18.56.140"></script>
   <script src="assets/js/customer-reports-overview.js?v=A14_FIN_REC_1"></script>
   <script src="assets/js/cars-teams-reports.js?v=A15_2_9"></script>
+  <script src="assets/js/advanced-analytics.js?v=A17_2_1"></script>
   <script src="assets/js/services-reports.js?v=A16_5"></script>
   <script src="assets/js/sales-reports.js?v=18.56.140"></script>
   <script src="assets/js/appointment-historical-import.js?v=18.56.140"></script>
