@@ -57,7 +57,7 @@
   <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=A14_FIN_REC_1" />
   <link rel="stylesheet" href="assets/css/cars-teams-reports.css?v=A15_2_2" />
-  <link rel="stylesheet" href="assets/css/advanced-analytics.css?v=A17_2_1" />
+  <link rel="stylesheet" href="assets/css/advanced-analytics.css?v=A17_2_2" />
   <link rel="stylesheet" href="assets/css/services-reports.css?v=A16_2" />
   <link rel="stylesheet" href="assets/css/sales-reports.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.140" />
@@ -940,7 +940,13 @@
  <div id="a17Status" role="status" aria-live="polite" class="a17-status"></div>
  <div class="a17-kpis" id="a17Kpis"></div>
  <article class="a17-panel"><div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.salesTitle">اتجاهات المبيعات والنمو</h4><span data-petatoe-i18n="advancedAnalytics.salesNote">مبيعات شاملة الضريبة — من مصدر تقارير المبيعات المعتمد</span></div><div id="a17SalesChart" class="a17-chart" role="img"></div><button id="a17SalesToggle" type="button" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17SalesDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.period">الفترة</th><th data-petatoe-i18n="advancedAnalytics.current">الحالية</th><th data-petatoe-i18n="advancedAnalytics.reference">المرجعية</th><th data-petatoe-i18n="advancedAnalytics.difference">الفرق</th></tr></thead><tbody id="a17SalesBody"></tbody><tfoot id="a17SalesFoot"></tfoot></table></div></div></article>
- <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.customersTitle">نشاط العملاء والاحتفاظ بهم</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
+ <article class="a17-panel" id="a17CustomerPanel"><div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.customersTitle">نشاط العملاء والاحتفاظ بهم</h4><span data-petatoe-i18n="advancedAnalytics.customerSourceNote">عملاء مسموح بعرضهم ومبيعات مرتبطة بهم فقط</span></div>
+ <button type="button" id="a17CustomerLoad" data-petatoe-i18n="advancedAnalytics.customerLoad">تحميل تحليل العملاء</button><p id="a17CustomerStatus" class="a17-status" role="status" aria-live="polite"></p>
+ <div id="a17CustomerMetrics" class="a17-kpis"></div>
+ <h5 data-petatoe-i18n="advancedAnalytics.customerActivityTitle">توزيع العملاء حسب آخر بيع موثق</h5><div id="a17CustomerActivityChart" class="a17-bar-chart" role="img"></div>
+ <button type="button" id="a17CustomerActivityToggle" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17CustomerActivityDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.customerSegment">الشريحة</th><th data-petatoe-i18n="advancedAnalytics.customerCount">العملاء</th></tr></thead><tbody id="a17CustomerActivityBody"></tbody><tfoot id="a17CustomerActivityFoot"></tfoot></table></div></div>
+ <h5 data-petatoe-i18n="advancedAnalytics.retentionTitle">مقارنة العملاء بين الفترة الحالية والمرجعية</h5><div id="a17RetentionChart" class="a17-bar-chart" role="img"></div><button type="button" id="a17RetentionToggle" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17RetentionDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.customerSegment">المؤشر</th><th data-petatoe-i18n="advancedAnalytics.customerCount">العملاء</th></tr></thead><tbody id="a17RetentionBody"></tbody></table></div></div>
+ <p class="a17-fineprint" data-petatoe-i18n="advancedAnalytics.customerMethod">تصنيف النشاط وصفي فقط ويعتمد على آخر بيع موثق. الاحتفاظ = العملاء المشتركون في الفترتين ÷ عملاء الفترة المرجعية. لا تُحسب فترة جارية غير مكتملة.</p></article>
  <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.teamsTitle">أداء السيارات والفرق</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
  <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.servicesTitle">اتجاهات الخدمات</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
  <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.peaksTitle">أوقات الذروة — وقت الموعد المجدول</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
@@ -4918,7 +4924,8 @@
   <script src="assets/js/app.js?v=18.56.140"></script>
   <script src="assets/js/customer-reports-overview.js?v=A14_FIN_REC_1"></script>
   <script src="assets/js/cars-teams-reports.js?v=A15_2_9"></script>
-  <script src="assets/js/advanced-analytics.js?v=A17_2_1"></script>
+  <script src="assets/js/advanced-analytics.js?v=A17_2_2"></script>
+  <script src="assets/js/advanced-analytics-customers.js?v=A17_2_2"></script>
   <script src="assets/js/services-reports.js?v=A16_5"></script>
   <script src="assets/js/sales-reports.js?v=18.56.140"></script>
   <script src="assets/js/appointment-historical-import.js?v=18.56.140"></script>

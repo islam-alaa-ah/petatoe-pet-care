@@ -19,3 +19,13 @@
 @media(max-width:820px){.a17-filters {grid-template-columns:repeat(2,minmax(0,1fr))}.a17-kpis {grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.a17-filters {grid-template-columns:1fr}.a17-kpis {grid-template-columns:1fr}.a17-panel,.a17-kpi {padding:13px}}
 @media print {.a17-filters,.a17-header button,.a17-panel button {display:none!important}.a17-panel {break-inside:avoid;box-shadow:none}}
+
+/* A17.2.2 — customer analytics owner */
+.a17-panel h5 {margin:16px 0 10px;font-size:.98rem}
+.a17-bar-chart {display:grid;gap:12px;min-height:58px;margin:12px 0 8px}
+.a17-bar-row {display:grid;grid-template-columns:minmax(115px,195px) minmax(0,1fr) auto;align-items:center;gap:12px;font-size:.88rem}
+.a17-bar-track {background:rgba(128,145,150,.13);border-radius:9px;height:17px;overflow:hidden}
+.a17-bar-fill {background:#198768;border-radius:9px;height:100%;min-width:0}
+.a17-bar-number {direction:ltr;font-variant-numeric:tabular-nums;min-width:40px;text-align:end}
+.a17-fineprint {font-size:.83rem;color:var(--text-muted,#68747f);line-height:1.7;margin-top:18px}
+@media(max-width:480px){.a17-bar-row {grid-template-columns:minmax(90px,112px) minmax(0,1fr) auto;gap:6px;font-size:.78rem}}
