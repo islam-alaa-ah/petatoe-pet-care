@@ -9,10 +9,11 @@
   const allowed = () => window.PermissionEngine?.canView?.('servicesReports')===true && window.PermissionEngine?.canView?.('salesReports')===true;
   const PAGE=500, MAX=200;
   let rows=[], catalogue=new Map(), ready=false, busy=false, shown=10;
+  let executed=[], executionReady=false, executionBusy=false;
   const status = msg => {if($('a16Status'))$('a16Status').textContent=msg;};
   const empty = () => {for(const id of ['a16Kpis','a16ClassificationBody','a16ClassificationTotal','a16ServicesBody','a16ServicesTotal','a16MonthsBody','a16MonthsTotal','a16Ranking'])$(id)?.replaceChildren();if($('a16ServicesMore'))$('a16ServicesMore').hidden=true;};
   async function all(query,name){let result=[],seen=new Set(),completed=false;for(let i=0;i<MAX;i++){const {data,error}=await query.range(i*PAGE,(i+1)*PAGE-1);if(error)throw error;if(!Array.isArray(data))throw Error(`${name}: INVALID_DATA`);for(const r of data){if(!r.id||seen.has(r.id))throw Error(`${name}: DUPLICATE_ID`);seen.add(r.id);result.push(r);}if(data.length<PAGE){completed=true;break;}}if(!completed)throw Error(`${name}: INCOMPLETE_PAGINATION`);return result;}
-  async function load(){if(busy)return;if(!allowed()){ready=false;empty();status(t('noAccess'));return;}busy=true;ready=false;empty();status(t('loading'));$('a16Refresh').disabled=true;
+  async function load(){if(busy)return;if(!allowed()){ready=false;empty();status(t('noAccess'));return;}busy=true;ready=false;executionReady=false;executed=[];clearExecution();empty();status(t('loading'));$('a16Refresh').disabled=true;
     try{
       if(!window.customerSupabase?.rpc || navigator.onLine===false)throw Error('OFFLINE');
       const rpc=[],seen=new Set();let complete=false;
@@ -78,9 +79,74 @@
     const byMonth=new Map();for(const r of data){const key=r.date.slice(0,7);if(!byMonth.has(key))byMonth.set(key,{total:0,known:0});const m=byMonth.get(key);m.total+=r.amount;if(r.category==='historicalClassified')m.known+=r.amount;}
     draw('a16MonthsBody',[...byMonth].sort(([a],[b])=>a.localeCompare(b)).map(([month,g])=>[month,money(g.known),money(g.total-g.known),money(g.total)]),4);
     draw('a16MonthsTotal',[[t('total'),money(known),money(unknown),money(total)]],4);
+    renderExecution();
+  }
+  const executionAllowed=()=>allowed()&&window.PermissionEngine?.canView?.('installationReports')===true;
+  const executionIds=['a16ExecutionServiceBody','a16ExecutionServiceTotal','a16ExecutionCarBody','a16ExecutionCarTotal','a16ExecutionTeamBody','a16ExecutionTeamTotal'];
+  const clearExecution=()=>executionIds.forEach(id=>$(id)?.replaceChildren());
+  const validQuantity=n=>{const x=Number(n);if(!Number.isFinite(x)||x<0)throw Error('INVALID_EXECUTION_QUANTITY');return x;};
+  async function loadExecution(){
+    if(executionBusy)return;
+    executionReady=false;executed=[];clearExecution();
+    if(!executionAllowed()){$('a16ExecutionStatus').textContent=t('executionNoAccess');return;}
+    if(!ready){$('a16ExecutionStatus').textContent=t('executionNeedSales');return;}
+    executionBusy=true;$('a16ExecutionRefresh').disabled=true;$('a16ExecutionStatus').textContent=t('executionLoading');
+    try{
+      if(navigator.onLine===false||!window.customerSupabase?.from)throw Error('OFFLINE');
+      const db=window.customerSupabase;
+      // A visit is the unit of execution. Never infer execution from requested quantities.
+      const [visits,lines,requestServices]=await Promise.all([
+        all(db.from('installation_execution_visits').select('id,installation_request_id,installation_team_id,status,scheduled_date,completed_at'),'EXECUTION_VISITS'),
+        all(db.from('installation_execution_visit_services').select('id,visit_id,request_service_id,executed_quantity'),'EXECUTION_LINES'),
+        all(db.from('installation_request_services').select('id,installation_request_id,service_type_id'),'REQUEST_SERVICES')
+      ]);
+      const visitsById=new Map(visits.map(v=>[v.id,v]));
+      const servicesById=new Map(requestServices.map(r=>[r.id,r]));
+      // The canonical appointment report is used for team/car display attribution; never infer a car from a current team assignment.
+      const report=await window.InstallationsServiceSafe?.operationalReport?.({});
+      if(!report||!Array.isArray(report.rows))throw Error('OPERATIONAL_SCOPE_UNAVAILABLE');
+      const reportByRequest=new Map(report.rows.map(r=>[r.id,r]));
+      const built=[];
+      for(const line of lines){
+        const v=visitsById.get(line.visit_id);if(!v)throw Error('MISSING_EXECUTION_VISIT');
+        if(String(v.status||'').trim()!=='مؤكدة')continue;
+        const rs=servicesById.get(line.request_service_id);if(!rs||rs.installation_request_id!==v.installation_request_id)throw Error('EXECUTION_SERVICE_LINK_MISMATCH');
+        if(!rs.service_type_id||!catalogue.has(rs.service_type_id))throw Error('UNKNOWN_EXECUTION_SERVICE');
+        const op=reportByRequest.get(v.installation_request_id);if(!op)throw Error('EXECUTION_OUTSIDE_REPORT_SCOPE');
+        const date=String(v.scheduled_date||'').slice(0,10);
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw Error('INVALID_EXECUTION_DATE');
+        const qty=validQuantity(line.executed_quantity||0);if(!qty)continue;
+        const sameTeam=String(op.teamId||'')===String(v.installation_team_id||'');
+        built.push({serviceId:rs.service_type_id,visitId:v.id,date,qty,
+          teamId:v.installation_team_id||'',teamName:sameTeam?op.teamName||'':'',
+          carId:sameTeam?op.teamCarId||'':'',carName:sameTeam?op.teamCarName||'':''});
+      }
+      executed=built;executionReady=true;renderExecution();
+      $('a16ExecutionStatus').textContent=t('executionLoaded',{count:number(built.length)});
+    }catch(e){console.error('A16 execution reports',e);executionReady=false;executed=[];clearExecution();$('a16ExecutionStatus').textContent=t('executionFailed',{reason:e.message});}
+    finally{executionBusy=false;$('a16ExecutionRefresh').disabled=false;}
+  }
+  function renderExecution(){
+    clearExecution();if(!executionReady||!executionAllowed())return;
+    const y=$('a16Year').value,m=$('a16Month').value,service=$('a16Service').value;
+    const data=executed.filter(r=>(!y||r.date.startsWith(y))&&(!m||r.date.slice(5,7)===m)&&(!service||r.serviceId===service));
+    function table(kind,body,total){
+      const groups=new Map();
+      for(const r of data){const id=kind==='service'?r.serviceId:kind==='car'?r.carId:r.teamId;
+        const name=kind==='service'?catalogue.get(id):kind==='car'?r.carName:r.teamName;
+        const key=id||'__unassigned__';let g=groups.get(key);if(!g){g={name:name||t('unassigned'),visits:new Set(),qty:0};groups.set(key,g);}
+        g.visits.add(r.visitId);g.qty+=r.qty;
+      }
+      const list=[...groups.values()].sort((a,b)=>b.qty-a.qty||a.name.localeCompare(b.name));
+      draw(body,list.map(g=>[g.name,number(g.visits.size),number(g.qty)]),3);
+      draw(total,[[t('total'),number(new Set(data.map(r=>r.visitId)).size),number(data.reduce((n,r)=>n+r.qty,0))]],3);
+    }
+    table('service','a16ExecutionServiceBody','a16ExecutionServiceTotal');
+    table('car','a16ExecutionCarBody','a16ExecutionCarTotal');
+    table('team','a16ExecutionTeamBody','a16ExecutionTeamTotal');
   }
   function activate(){if(!allowed()){empty();status(t('noAccess'));return;}if(!ready&&!busy)load();else render();}
-  document.addEventListener('DOMContentLoaded',()=>{$('a16Refresh')?.addEventListener('click',load);$('a16Apply')?.addEventListener('click',()=>{shown=10;render();});$('a16Reset')?.addEventListener('click',()=>{for(const id of ['a16Year','a16Month','a16Service'])$(id).value='';shown=10;render();});$('a16ServicesMore')?.addEventListener('click',()=>{shown+=10;render();});});
-  window.addEventListener('petatoe-language-changed',()=>{if(ready){populate();render();}});
+  document.addEventListener('DOMContentLoaded',()=>{$('a16Refresh')?.addEventListener('click',load);$('a16ExecutionRefresh')?.addEventListener('click',loadExecution);$('a16Apply')?.addEventListener('click',()=>{shown=10;render();renderExecution();});$('a16Reset')?.addEventListener('click',()=>{for(const id of ['a16Year','a16Month','a16Service'])$(id).value='';shown=10;render();renderExecution();});$('a16ServicesMore')?.addEventListener('click',()=>{shown+=10;render();});});
+  window.addEventListener('petatoe-language-changed',()=>{if(ready){populate();render();}else renderExecution();});
   window.ServicesReportsUI=Object.freeze({activate,render});
 })();
