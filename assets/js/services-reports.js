@@ -10,7 +10,7 @@
   const PAGE=500, MAX=200;
   let rows=[], catalogue=new Map(), ready=false, busy=false, shown=10;
   const status = msg => {if($('a16Status'))$('a16Status').textContent=msg;};
-  const empty = () => {for(const id of ['a16Kpis','a16ClassificationBody','a16ClassificationTotal','a16ServicesBody','a16ServicesTotal','a16MonthsBody','a16MonthsTotal'])$(id)?.replaceChildren();if($('a16ServicesMore'))$('a16ServicesMore').hidden=true;};
+  const empty = () => {for(const id of ['a16Kpis','a16ClassificationBody','a16ClassificationTotal','a16ServicesBody','a16ServicesTotal','a16MonthsBody','a16MonthsTotal','a16Ranking'])$(id)?.replaceChildren();if($('a16ServicesMore'))$('a16ServicesMore').hidden=true;};
   async function all(query,name){let result=[],seen=new Set(),completed=false;for(let i=0;i<MAX;i++){const {data,error}=await query.range(i*PAGE,(i+1)*PAGE-1);if(error)throw error;if(!Array.isArray(data))throw Error(`${name}: INVALID_DATA`);for(const r of data){if(!r.id||seen.has(r.id))throw Error(`${name}: DUPLICATE_ID`);seen.add(r.id);result.push(r);}if(data.length<PAGE){completed=true;break;}}if(!completed)throw Error(`${name}: INCOMPLETE_PAGINATION`);return result;}
   async function load(){if(busy)return;if(!allowed()){ready=false;empty();status(t('noAccess'));return;}busy=true;ready=false;empty();status(t('loading'));$('a16Refresh').disabled=true;
     try{
@@ -57,8 +57,24 @@
     $('a16Kpis').innerHTML=[['totalKpi',money(total)],['classifiedKpi',money(known)],['unknownKpi',money(unknown)],['coverageKpi',total?`${(known/total*100).toFixed(2)}%`:'—']].map(([k,v])=>`<div class="a16-kpi"><span>${esc(t(k))}</span><strong>${esc(v)}</strong></div>`).join('');
     draw('a16ClassificationBody',groups.map(g=>[t(g.key),number(g.rs.length),money(sum(g.rs))]),3);draw('a16ClassificationTotal',[[t('total'),number(data.length),money(total)]],3);
     const byService=new Map();for(const r of classified){if(!byService.has(r.serviceId))byService.set(r.serviceId,{count:0,qty:0,cents:0});const g=byService.get(r.serviceId);g.count++;g.qty+=r.qty;g.cents+=r.amount;}
-    const list=[...byService].map(([id,g])=>[catalogue.get(id),number(g.count),number(g.qty),money(g.cents),g.cents]).sort((a,b)=>b[4]-a[4]);
-    draw('a16ServicesBody',list.slice(0,shown).map(g=>g.slice(0,4)),4);draw('a16ServicesTotal',[[t('total'),number(classified.length),number(classified.reduce((n,r)=>n+r.qty,0)),money(known)]],4);$('a16ServicesMore').hidden=list.length<=shown;
+    const list=[...byService].map(([id,g])=>({id,name:catalogue.get(id),count:g.count,qty:g.qty,amount:g.cents})).sort((a,b)=>b.amount-a.amount||String(a.name).localeCompare(String(b.name)));
+    if(list.reduce((n,g)=>n+g.amount,0)!==known){empty();status(t('incomplete'));return;}
+    const pct=n=>known?`${(100*n/known).toFixed(2)}%`:'—';
+    draw('a16ServicesBody',list.slice(0,shown).map(g=>[g.name,number(g.count),number(g.qty),money(g.amount),pct(g.amount)]),5);
+    draw('a16ServicesTotal',[[t('total'),number(classified.length),number(classified.reduce((n,r)=>n+r.qty,0)),money(known),known?'100.00%':'—']],5);
+    $('a16ServicesMore').hidden=list.length<=shown;
+    const ranking=$('a16Ranking');ranking.replaceChildren();
+    if(!list.length){ranking.textContent=t('none');}
+    else for(const g of list.slice(0,10)){
+      const item=document.createElement('div');item.className='a16-rank-item';item.setAttribute('role','listitem');
+      const label=document.createElement('div');label.className='a16-rank-label';
+      const name=document.createElement('span');name.textContent=g.name;
+      const value=document.createElement('strong');value.textContent=`${money(g.amount)} · ${pct(g.amount)}`;
+      label.append(name,value);
+      const track=document.createElement('div');track.className='a16-rank-track';
+      const fill=document.createElement('div');fill.className='a16-rank-fill';fill.style.width=`${Math.min(100,Math.max(0,known?100*g.amount/known:0))}%`;
+      track.appendChild(fill);item.append(label,track);ranking.appendChild(item);
+    }
     const byMonth=new Map();for(const r of data){const key=r.date.slice(0,7);if(!byMonth.has(key))byMonth.set(key,{total:0,known:0});const m=byMonth.get(key);m.total+=r.amount;if(r.category==='historicalClassified')m.known+=r.amount;}
     draw('a16MonthsBody',[...byMonth].sort(([a],[b])=>a.localeCompare(b)).map(([month,g])=>[month,money(g.known),money(g.total-g.known),money(g.total)]),4);
     draw('a16MonthsTotal',[[t('total'),money(known),money(unknown),money(total)]],4);
