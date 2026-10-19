@@ -72,7 +72,11 @@
       const item=document.createElement('div');item.className='a16-rank-item';item.setAttribute('role','listitem');
       const label=document.createElement('div');label.className='a16-rank-label';
       const name=document.createElement('span');name.textContent=g.name;
-      const value=document.createElement('strong');value.textContent=`${money(g.amount)} · ${pct(g.amount)}`;
+      const value=document.createElement('strong');value.className='a16-rank-value';value.dir='ltr';
+      const amount=document.createElement('span');amount.textContent=money(g.amount);
+      const separator=document.createElement('span');separator.className='a16-rank-separator';separator.textContent='|';separator.setAttribute('aria-hidden','true');
+      const share=document.createElement('span');share.textContent=pct(g.amount);
+      value.append(amount,separator,share);
       label.append(name,value);
       const track=document.createElement('div');track.className='a16-rank-track';
       const fill=document.createElement('div');fill.className='a16-rank-fill';fill.style.width=`${Math.min(100,Math.max(0,known?100*g.amount/known:0))}%`;
