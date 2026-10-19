@@ -6,6 +6,7 @@
   const page = 500, maxPages = 200;
   let records = [], ready = false, busy = false, operational=null, operationalBusy=false;
   let operationDetailLimit=10;
+  let billed=null, billedBusy=false;
   const sizes = { cars: 10, teams: 10, details: 10 };
   const currency = n => `${(n / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} SAR`;
   const escapeHtml = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;", ">":"&gt;",'"':"&quot;", "'":"&#39;"}[c]));
@@ -17,7 +18,7 @@
   const status = txt => { if ($("a15Status")) $("a15Status").textContent = txt; };
   async function load() {
     if (busy || !permitted()) return;
-    busy = true; ready = false; records = [];
+    busy = true; ready = false; records = []; billed=null; clearBilled();
     $("a15Refresh").disabled = true;
     status(t("loading"));
     try {
@@ -33,7 +34,7 @@
           seen.add(key);
           const date = String(row.invoice_date ?? "").slice(0,10);
           if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(date+"T00:00:00Z"))) throw Error(t("invalidDate"));
-          rows.push({key, date, cents:toCents(row.amount_incl_tax), invoice:String(row.invoice_number??""), carId:String(row.car_id??""),car:String(row.car_name||row.plate_number||t("unassignedCar")),teamId:String(row.team_id??""),team:String(row.team_name||t("unassignedTeam"))});
+          rows.push({key, rowId:String(row.row_id), historical:Boolean(row.is_historical), date, cents:toCents(row.amount_incl_tax), invoice:String(row.invoice_number??""), carId:String(row.car_id??""),car:String(row.car_name||row.plate_number||t("unassignedCar")),teamId:String(row.team_id??""),team:String(row.team_name||t("unassignedTeam"))});
         }
         if (data.length < page) { complete = true; break; }
       }
@@ -143,8 +144,84 @@
     catch(e){operational=null;renderOperations();opStatus(t("operationFailed",{reason:e.message}));}
     finally{operationalBusy=false;$("a15OperationsRefresh").disabled=false;}
   }
+
+  // A15.2.9 — authenticated, read-only invoice-to-request metrics.
+  // Use RPC amounts; never infer financial amounts from raw invoice fields.
+  const billedStatus = message => { const el=$("a15BilledStatus"); if(el) el.textContent=message; };
+  function clearBilled(){
+    $("a15BilledKpis")?.replaceChildren();
+    for(const id of ["a15BilledCarsBody","a15BilledTeamsBody"]){$(id)?.replaceChildren();$(`${id}Total`)?.replaceChildren();}
+  }
+  const avgBilled=(cents,count)=>count?currency(Math.round(cents/count)):"—";
+  async function paginated(label,create){
+    const all=[]; const found=new Set();
+    for(let p=0;p<maxPages;p++){
+      const {data,error}=await create(p*page,(p+1)*page-1);
+      if(error)throw Error(`${label}: ${error.message}`);
+      if(!Array.isArray(data))throw Error(`${label}: invalid result`);
+      for(const r of data){if(!r.id||found.has(String(r.id)))throw Error(`${label}: duplicate/missing id`);found.add(String(r.id));all.push(r);}
+      if(data.length<page)return all;
+    }
+    throw Error(`${label}: incomplete pagination`);
+  }
+  function renderBilled(){
+    clearBilled();if(!billed||!ready||!permitted())return;
+    const selected=subset().filter(r=>!r.historical);
+    const selectedIds=new Set(selected.map(r=>r.rowId));
+    const linked= billed.rows.filter(x=>selectedIds.has(x.rowId));
+    const build=(field)=>{
+      const groups=new Map();
+      for(const x of linked){
+        const r=billed.rpc.get(x.rowId);
+        const id=String(field==="car"?r.carId:r.teamId), label=field==="car"?r.car:r.team;
+        const key=id||"__unassigned";
+        if(!groups.has(key))groups.set(key,{label,cents:0,requests:new Set()});
+        const g=groups.get(key);g.cents+=r.cents;g.requests.add(x.requestId);
+      }
+      return [...groups.values()].sort((a,b)=>b.cents-a.cents);
+    };
+    const draw=(body,groups,totalCents,requestCount)=>{
+      $(body).innerHTML=groups.length?groups.map(g=>td([g.label,num(g.requests.size),currency(g.cents),avgBilled(g.cents,g.requests.size)])).join(""):`<tr><td colspan="4">${escapeHtml(t("none"))}</td></tr>`;
+      footer(body,[t("total"),num(requestCount),currency(totalCents),avgBilled(totalCents,requestCount)]);
+    };
+    const requests=new Set(linked.map(x=>x.requestId));
+    const cents=linked.reduce((n,x)=>n+billed.rpc.get(x.rowId).cents,0);
+    const cars=build("car"),teams=build("team");
+    if(cars.reduce((n,g)=>n+g.cents,0)!==cents||teams.reduce((n,g)=>n+g.cents,0)!==cents){clearBilled();billedStatus(t("billedMismatch"));return;}
+    draw("a15BilledCarsBody",cars,cents,requests.size);draw("a15BilledTeamsBody",teams,cents,requests.size);
+    $("a15BilledKpis").innerHTML=[[t("billedSales"),currency(cents)],[t("billedRequests"),num(requests.size)],[t("billedAverage"),avgBilled(cents,requests.size)]].map(([name,v])=>`<div class="a15-kpi"><span>${escapeHtml(name)}</span><strong>${escapeHtml(v)}</strong></div>`).join("");
+    billedStatus(t("billedLoaded",{count:num(linked.length)}));
+  }
+  async function loadBilled(){
+    if(billedBusy||!ready||!permitted())return;
+    billedBusy=true;billed=null;clearBilled();$("a15BilledRefresh").disabled=true;billedStatus(t("billedLoading"));
+    try{
+      if(navigator.onLine===false||!window.customerSupabase?.from)throw Error(t("needOnline"));
+      const invoices=await paginated("sales_invoices",(a,b)=>window.customerSupabase.from("sales_invoices").select("id,installation_request_id,installation_execution_visit_id,reference_sales_invoice_id").order("id",{ascending:true}).range(a,b));
+      const visits=await paginated("installation_execution_visits",(a,b)=>window.customerSupabase.from("installation_execution_visits").select("id,installation_request_id").order("id",{ascending:true}).range(a,b));
+      const rpc=new Map(records.filter(r=>!r.historical).map(r=>[r.rowId,r]));
+      const byId=new Map(invoices.map(r=>[String(r.id),r])),byVisit=new Map(visits.map(r=>[String(r.id),r]));
+      if(rpc.size!==invoices.length||invoices.some(i=>!rpc.has(String(i.id))))throw Error(t("billedScopeError"));
+      const rows=[];let linkedTotal=0,unlinkedTotal=0;
+      for(const inv of invoices){
+        const row=rpc.get(String(inv.id));
+        const ref=inv.reference_sales_invoice_id?byId.get(String(inv.reference_sales_invoice_id)):null;
+        if(inv.reference_sales_invoice_id&&!ref&&!inv.installation_request_id&&!inv.installation_execution_visit_id)throw Error(t("billedScopeError"));
+        const visitId=inv.installation_execution_visit_id||ref?.installation_execution_visit_id;
+        const requestId=inv.installation_request_id||ref?.installation_request_id|| (visitId?byVisit.get(String(visitId))?.installation_request_id:null);
+        if(visitId&&!byVisit.has(String(visitId)))throw Error(t("billedScopeError"));
+        if(visitId&&requestId&&String(byVisit.get(String(visitId)).installation_request_id)!==String(requestId))throw Error(t("billedScopeError"));
+        if(!requestId){if(visitId)throw Error(t("billedScopeError"));unlinkedTotal+=row.cents;continue;}
+        linkedTotal+=row.cents;rows.push({rowId:String(inv.id),requestId:String(requestId)});
+      }
+      const currentTotal=[...rpc.values()].reduce((n,r)=>n+r.cents,0);
+      if(linkedTotal+unlinkedTotal!==currentTotal)throw Error(t("billedMismatch"));
+      billed={rows,rpc};renderBilled();
+    }catch(e){billed=null;clearBilled();console.error("A15 billed appointment report",e);billedStatus(t("billedFailed",{reason:e.message}));}
+    finally{billedBusy=false;$("a15BilledRefresh").disabled=false;}
+  }
   let bound=false;
-  function bind(){if(bound)return;bound=true;$("a15OpDetailsMore").addEventListener("click",()=>{operationDetailLimit+=10;renderOperations();});$("a15OperationsRefresh").addEventListener("click",loadOperations);window.addEventListener("petatoe-language-changed",()=>{if(ready){populate();render();}if(operational)renderOperations();else if(operationAllowed())opStatus(t("operationPending"));});$("a15Refresh").addEventListener("click",load);$("a15Apply").addEventListener("click",()=>{sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();});$("a15Reset").addEventListener("click",()=>{for(const id of ["a15Year","a15Month","a15Car","a15Team"])$(id).value="";sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();});for(const [btn,field] of [["a15CarsMore","cars"],["a15TeamsMore","teams"],["a15DetailsMore","details"]])$(btn).addEventListener("click",()=>{sizes[field]+=10;render();});}
-  async function activate(){bind();if(!permitted()){clear();status(t("noPermission"));return;}if(!ready)await load();else render();if(operationAllowed()){if(operational)renderOperations();else opStatus(t("operationPending"));}else opStatus(t("operationNoPermission"));}
+  function bind(){if(bound)return;bound=true;$("a15BilledRefresh").addEventListener("click",loadBilled);$("a15OpDetailsMore").addEventListener("click",()=>{operationDetailLimit+=10;renderOperations();});$("a15OperationsRefresh").addEventListener("click",loadOperations);window.addEventListener("petatoe-language-changed",()=>{if(ready){populate();render();}if(operational)renderOperations();else if(operationAllowed())opStatus(t("operationPending"));if(billed)renderBilled();});$("a15Refresh").addEventListener("click",load);$("a15Apply").addEventListener("click",()=>{sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();renderBilled();});$("a15Reset").addEventListener("click",()=>{for(const id of ["a15Year","a15Month","a15Car","a15Team"])$(id).value="";sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();renderBilled();});for(const [btn,field] of [["a15CarsMore","cars"],["a15TeamsMore","teams"],["a15DetailsMore","details"]])$(btn).addEventListener("click",()=>{sizes[field]+=10;render();});}
+  async function activate(){bind();if(!permitted()){clear();status(t("noPermission"));return;}if(!ready)await load();else render();if(billed)renderBilled();if(operationAllowed()){if(operational)renderOperations();else opStatus(t("operationPending"));}else opStatus(t("operationNoPermission"));}
   window.CarsTeamsReportsUI=Object.freeze({activate,render});
 })();
