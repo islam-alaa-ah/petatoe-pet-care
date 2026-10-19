@@ -39,3 +39,10 @@
 .a17-action-btn:disabled {opacity:.45;cursor:not-allowed}
 .a17-segment-page .a17-panel-title p {font-size:.85rem;color:var(--text-muted,#68747f)}
 @media(max-width:680px){.a17-segment-actions{min-width:220px}}
+
+/* A17.2.2.2 — date range details, owned by A17 screen */
+.a17-period-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.a17-period-card{display:grid;gap:7px;padding:12px 15px;border:1px solid var(--border-color,rgba(119,129,139,.22));border-radius:12px;min-width:0;background:var(--card-bg,var(--surface,#fff))}
+.a17-period-card span{font-size:.85rem;color:var(--text-muted,#68747f)}
+.a17-period-dates{font-size:.96rem;direction:ltr;unicode-bidi:isolate;text-align:start;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+@media(max-width:600px){.a17-period-grid{grid-template-columns:1fr}}
