@@ -80,9 +80,10 @@
     draw('a16MonthsBody',[...byMonth].sort(([a],[b])=>a.localeCompare(b)).map(([month,g])=>[month,money(g.known),money(g.total-g.known),money(g.total)]),4);
     draw('a16MonthsTotal',[[t('total'),money(known),money(unknown),money(total)]],4);
     renderExecution();
+    renderYearComparison();
   }
   const executionAllowed=()=>allowed()&&window.PermissionEngine?.canView?.('installationReports')===true;
-  const executionIds=['a16ExecutionServiceBody','a16ExecutionServiceTotal','a16ExecutionCarBody','a16ExecutionCarTotal','a16ExecutionTeamBody','a16ExecutionTeamTotal'];
+  const executionIds=['a16ExecutionServiceBody','a16ExecutionServiceTotal','a16ExecutionCarBody','a16ExecutionCarTotal','a16ExecutionTeamBody','a16ExecutionTeamTotal','a16ExecutionMonthlyBody','a16ExecutionMonthlyTotal'];
   const clearExecution=()=>executionIds.forEach(id=>$(id)?.replaceChildren());
   const validQuantity=n=>{const x=Number(n);if(!Number.isFinite(x)||x<0)throw Error('INVALID_EXECUTION_QUANTITY');return x;};
   async function loadExecution(){
@@ -121,7 +122,7 @@
           teamId:v.installation_team_id||'',teamName:sameTeam?op.teamName||'':'',
           carId:sameTeam?op.teamCarId||'':'',carName:sameTeam?op.teamCarName||'':''});
       }
-      executed=built;executionReady=true;renderExecution();
+      executed=built;executionReady=true;renderExecution();renderYearComparison();
       $('a16ExecutionStatus').textContent=t('executionLoaded',{count:number(built.length)});
     }catch(e){console.error('A16 execution reports',e);executionReady=false;executed=[];clearExecution();$('a16ExecutionStatus').textContent=t('executionFailed',{reason:e.message});}
     finally{executionBusy=false;$('a16ExecutionRefresh').disabled=false;}
@@ -143,10 +144,32 @@
     }
     table('service','a16ExecutionServiceBody','a16ExecutionServiceTotal');
     table('car','a16ExecutionCarBody','a16ExecutionCarTotal');
-    table('team','a16ExecutionTeamBody','a16ExecutionTeamTotal');
+    table('team','a16ExecutionTeamBody','a16ExecutionTeamTotal','a16ExecutionMonthlyBody','a16ExecutionMonthlyTotal');
+  }
+  function renderYearComparison(){
+    for(const id of ['a16YearCompareBody','a16YearCompareTotal'])$(id)?.replaceChildren();
+    if(!ready||!allowed())return;
+    const financial=subset();
+    const groups=new Map();
+    const group=year=>{let g=groups.get(year);if(!g){g={known:0,other:0,qty:0,visits:new Set()};groups.set(year,g);}return g;};
+    for(const r of financial){const g=group(r.date.slice(0,4));if(r.category==='historicalClassified')g.known+=r.amount;else g.other+=r.amount;}
+    if(executionReady&&executionAllowed()){
+      const y=$('a16Year').value,m=$('a16Month').value,service=$('a16Service').value;
+      for(const r of executed){if((y&&!r.date.startsWith(y))||(m&&r.date.slice(5,7)!==m)||(service&&r.serviceId!==service))continue;
+        const g=group(r.date.slice(0,4));g.qty+=r.qty;g.visits.add(r.visitId);
+      }
+    }
+    const list=[...groups].sort(([a],[b])=>a.localeCompare(b));
+    const isExec=executionReady&&executionAllowed();
+    draw('a16YearCompareBody',list.map(([year,g])=>[year,money(g.known),money(g.other),money(g.known+g.other),isExec?number(g.qty):t('notLoaded'),isExec?number(g.visits.size):t('notLoaded')]),6);
+    const totalSales=sum(financial),known=sum(financial.filter(r=>r.category==='historicalClassified'));
+    if(list.reduce((a,[,g])=>a+g.known+g.other,0)!==totalSales)throw Error('YEAR_RECONCILIATION_FAILED');
+    const ey=$('a16Year').value,em=$('a16Month').value,es=$('a16Service').value;
+    const ex=isExec?executed.filter(r=>(!ey||r.date.startsWith(ey))&&(!em||r.date.slice(5,7)===em)&&(!es||r.serviceId===es)):[];
+    draw('a16YearCompareTotal',[[t('total'),money(known),money(totalSales-known),money(totalSales),isExec?number(ex.reduce((a,r)=>a+r.qty,0)):t('notLoaded'),isExec?number(new Set(ex.map(r=>r.visitId)).size):t('notLoaded')]],6);
   }
   function activate(){if(!allowed()){empty();status(t('noAccess'));return;}if(!ready&&!busy)load();else render();}
-  document.addEventListener('DOMContentLoaded',()=>{$('a16Refresh')?.addEventListener('click',load);$('a16ExecutionRefresh')?.addEventListener('click',loadExecution);$('a16Apply')?.addEventListener('click',()=>{shown=10;render();renderExecution();});$('a16Reset')?.addEventListener('click',()=>{for(const id of ['a16Year','a16Month','a16Service'])$(id).value='';shown=10;render();renderExecution();});$('a16ServicesMore')?.addEventListener('click',()=>{shown+=10;render();});});
+  document.addEventListener('DOMContentLoaded',()=>{$('a16Refresh')?.addEventListener('click',load);$('a16ExecutionRefresh')?.addEventListener('click',loadExecution);$('a16Apply')?.addEventListener('click',()=>{shown=10;render();renderExecution();renderYearComparison();});$('a16Reset')?.addEventListener('click',()=>{for(const id of ['a16Year','a16Month','a16Service'])$(id).value='';shown=10;render();renderExecution();renderYearComparison();});$('a16ServicesMore')?.addEventListener('click',()=>{shown+=10;render();});});
   window.addEventListener('petatoe-language-changed',()=>{if(ready){populate();render();}else renderExecution();});
   window.ServicesReportsUI=Object.freeze({activate,render});
 })();
