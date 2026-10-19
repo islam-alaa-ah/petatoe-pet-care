@@ -99,7 +99,7 @@
       const [visits,lines,requestServices]=await Promise.all([
         all(db.from('installation_execution_visits').select('id,installation_request_id,installation_team_id,status,scheduled_date,completed_at'),'EXECUTION_VISITS'),
         all(db.from('installation_execution_visit_services').select('id,visit_id,request_service_id,executed_quantity'),'EXECUTION_LINES'),
-        all(db.from('installation_request_services').select('id,installation_request_id,service_type_id'),'REQUEST_SERVICES')
+        all(db.from('installation_request_services').select('id,installation_request_id,service_type_id,unit_price'),'REQUEST_SERVICES')
       ]);
       const visitsById=new Map(visits.map(v=>[v.id,v]));
       const servicesById=new Map(requestServices.map(r=>[r.id,r]));
@@ -117,8 +117,12 @@
         const date=String(v.scheduled_date||'').slice(0,10);
         if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw Error('INVALID_EXECUTION_DATE');
         const qty=validQuantity(line.executed_quantity||0);if(!qty)continue;
+        // This is a booked-price execution valuation, NOT invoiced revenue (VAT/discounts excluded).
+        if(rs.unit_price===null||rs.unit_price===undefined||rs.unit_price==='')throw Error('MISSING_EXECUTION_UNIT_PRICE');
+        const unitPrice=Number(rs.unit_price);if(!Number.isFinite(unitPrice)||unitPrice<0)throw Error('INVALID_EXECUTION_UNIT_PRICE');
+        const valueCents=cents(unitPrice*qty);
         const sameTeam=String(op.teamId||'')===String(v.installation_team_id||'');
-        built.push({serviceId:rs.service_type_id,visitId:v.id,date,qty,
+        built.push({serviceId:rs.service_type_id,visitId:v.id,date,qty,valueCents,
           teamId:v.installation_team_id||'',teamName:sameTeam?op.teamName||'':'',
           carId:sameTeam?op.teamCarId||'':'',carName:sameTeam?op.teamCarName||'':''});
       }
@@ -135,12 +139,14 @@
       const groups=new Map();
       for(const r of data){const id=kind==='service'?r.serviceId:kind==='car'?r.carId:r.teamId;
         const name=kind==='service'?catalogue.get(id):kind==='car'?r.carName:r.teamName;
-        const key=id||'__unassigned__';let g=groups.get(key);if(!g){g={name:name||t('unassigned'),visits:new Set(),qty:0};groups.set(key,g);}
-        g.visits.add(r.visitId);g.qty+=r.qty;
+        const key=id||'__unassigned__';let g=groups.get(key);if(!g){g={name:name||t('unassigned'),visits:new Set(),qty:0,valueCents:0};groups.set(key,g);}
+        g.visits.add(r.visitId);g.qty+=r.qty;g.valueCents+=r.valueCents;
       }
       const list=[...groups.values()].sort((a,b)=>b.qty-a.qty||a.name.localeCompare(b.name));
-      draw(body,list.map(g=>[g.name,number(g.visits.size),number(g.qty)]),3);
-      draw(total,[[t('total'),number(new Set(data.map(r=>r.visitId)).size),number(data.reduce((n,r)=>n+r.qty,0))]],3);
+      draw(body,list.map(g=>[g.name,number(g.visits.size),number(g.qty),money(g.valueCents)]),4);
+      const totalCents=data.reduce((n,r)=>n+r.valueCents,0);
+      if(list.reduce((n,g)=>n+g.valueCents,0)!==totalCents)throw Error('EXECUTION_VALUE_RECONCILIATION_FAILED');
+      draw(total,[[t('total'),number(new Set(data.map(r=>r.visitId)).size),number(data.reduce((n,r)=>n+r.qty,0)),money(totalCents)]],4);
     }
     table('service','a16ExecutionServiceBody','a16ExecutionServiceTotal');
     table('car','a16ExecutionCarBody','a16ExecutionCarTotal');

@@ -276,6 +276,7 @@
     ["servicesReports.executionByCar", "title", "كميات التنفيذ حسب السيارة", "Executed Quantities by Car"],
     ["servicesReports.executionByTeam", "title", "كميات التنفيذ حسب الفرقة", "Executed Quantities by Team"],
     ["servicesReports.visits", "label", "الزيارات الفريدة", "Unique Visits"],
+    ["servicesReports.executionValue", "label", "قيمة التنفيذ وفق سعر الطلب", "Execution Value at Booked Unit Price"],
     ["servicesReports.executedQty", "label", "الكمية المنفذة", "Executed Quantity"],
     ["servicesReports.car", "label", "السيارة", "Car"],
     ["servicesReports.team", "label", "الفرقة", "Team"],

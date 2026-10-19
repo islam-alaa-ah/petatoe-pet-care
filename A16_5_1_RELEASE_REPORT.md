@@ -1,0 +1,1 @@
+A16.5.1: Adds execution valuation to three reports using executed_quantity × request-service unit_price, rounded per line, separate from invoice sales and VAT. Fail closed for missing price. JS syntax PASS, live pending; unchanged central translation engine and financial reports.
