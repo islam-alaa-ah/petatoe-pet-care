@@ -954,7 +954,18 @@
  <button type="button" id="a17SegmentMore" data-petatoe-i18n="advancedAnalytics.showMore">عرض المزيد</button>
  <p class="a17-fineprint" data-petatoe-i18n="advancedAnalytics.contactDisclaimer">فتح واتساب لا يسجل التواصل تلقائيًا. يتم حفظ المتابعة من النموذج الأصلي وفق الصلاحيات.</p>
  </article>
- <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.teamsTitle">أداء السيارات والفرق</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
+ <article class="a17-panel" id="a17OperationsPanel">
+ <div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.teamsTitle">أداء السيارات والفرق</h4><span data-petatoe-i18n="advancedAnalytics.opsSource">مواعيد التشغيل حسب تاريخها المجدول — لا تمثل مبيعات</span></div>
+ <div class="a17-ops-toolbar"><button type="button" id="a17OpsLoad" data-petatoe-i18n="advancedAnalytics.opsLoad">تحميل مؤشرات التشغيل</button><label><span data-petatoe-i18n="advancedAnalytics.opsGroup">عرض حسب</span><select id="a17OpsGroup"><option value="car" data-petatoe-i18n="advancedAnalytics.opsCars">السيارات</option><option value="team" data-petatoe-i18n="advancedAnalytics.opsTeams">الفرق</option></select></label></div>
+ <p id="a17OpsStatus" class="a17-status" role="status" aria-live="polite"></p>
+ <div id="a17OpsPeriods" class="a17-period-grid"></div>
+ <div id="a17OpsKpis" class="a17-kpis"></div>
+ <h5 data-petatoe-i18n="advancedAnalytics.opsCurrentTitle">المواعيد الحالية حسب السيارة / الفرقة</h5><div id="a17OpsCurrentChart" class="a17-bar-chart" role="img"></div>
+ <h5 data-petatoe-i18n="advancedAnalytics.opsReferenceTitle">مواعيد الفترة المرجعية</h5><div id="a17OpsReferenceChart" class="a17-bar-chart" role="img"></div>
+ <button type="button" id="a17OpsToggle" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button>
+ <div id="a17OpsDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.opsName">السيارة / الفرقة</th><th data-petatoe-i18n="advancedAnalytics.opsTotal">المواعيد</th><th data-petatoe-i18n="advancedAnalytics.opsCompleted">المكتملة</th><th data-petatoe-i18n="advancedAnalytics.opsCancelled">الملغاة</th><th data-petatoe-i18n="advancedAnalytics.opsRate">نسبة الإنجاز</th><th data-petatoe-i18n="advancedAnalytics.opsReferenceTotal">المرجعية</th></tr></thead><tbody id="a17OpsBody"></tbody><tfoot id="a17OpsFoot"></tfoot></table></div><button id="a17OpsMore" type="button" data-petatoe-i18n="advancedAnalytics.showMore">عرض المزيد</button></div>
+ <p class="a17-fineprint" data-petatoe-i18n="advancedAnalytics.opsCaveat">الموعد محسوب مرة واحدة حسب الطلب في مصدر التشغيل A15؛ الإنجاز لا يمثل نسبة الإيرادات أو الطاقة الاستيعابية. السنوات أو الفترات الناقصة موضحة صراحة.</p>
+ </article>
  <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.servicesTitle">اتجاهات الخدمات</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
  <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.peaksTitle">أوقات الذروة — وقت الموعد المجدول</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
  <article class="a17-panel a17-coming"><h4 data-petatoe-i18n="advancedAnalytics.alertsTitle">التنبيهات التحليلية المتوازنة</h4><p data-petatoe-i18n="advancedAnalytics.alertsNote">الحدود المبدئية تحتاج اختبار كفاية العينة واكتمال الفترات قبل تفعيل التنبيهات.</p></article>
@@ -4933,6 +4944,7 @@
   <script src="assets/js/cars-teams-reports.js?v=A15_2_9"></script>
   <script src="assets/js/advanced-analytics.js?v=A17_2_2"></script>
   <script src="assets/js/advanced-analytics-customers.js?v=A17_2_2"></script>
+  <script src="assets/js/advanced-analytics-operations.js?v=A17_2_3"></script>
   <script src="assets/js/services-reports.js?v=A16_5"></script>
   <script src="assets/js/sales-reports.js?v=18.56.140"></script>
   <script src="assets/js/appointment-historical-import.js?v=18.56.140"></script>

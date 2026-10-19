@@ -46,3 +46,11 @@
 .a17-period-card span{font-size:.85rem;color:var(--text-muted,#68747f)}
 .a17-period-dates{font-size:.96rem;direction:ltr;unicode-bidi:isolate;text-align:start;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 @media(max-width:600px){.a17-period-grid{grid-template-columns:1fr}}
+
+/* A17.2.3 — canonical owner for operational comparison */
+.a17-ops-toolbar{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.a17-ops-toolbar label{display:grid;gap:5px;font-size:.86rem;font-weight:600;min-width:160px}
+.a17-ops-toolbar select{width:100%;border:1px solid var(--border-color,rgba(119,129,139,.3));background:var(--card-bg,#fff);color:inherit;border-radius:10px;padding:10px}
+.a17-ops-toolbar button{margin:0}
+.a17-ops-chart .a17-bar-row{min-width:0}
+@media(max-width:480px){.a17-ops-toolbar{display:grid;grid-template-columns:1fr}.a17-ops-toolbar label{min-width:0}}
