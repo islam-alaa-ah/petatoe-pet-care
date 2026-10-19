@@ -6,32 +6,71 @@
  const allowed=()=>['advancedAnalytics','salesReports','customerReports'].every(k=>window.PermissionEngine?.canView?.(k)===true);
  const n=x=>Number(x).toLocaleString('en-US');
  const node=(tag,cls,value)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=value;return e;};
- let snapshot=null,busy=false,seq=0;
- function reset(){snapshot=null;for(const id of ['a17CustomerMetrics','a17CustomerActivityChart','a17CustomerActivityBody','a17CustomerActivityFoot','a17RetentionChart','a17RetentionBody'])$(id)?.replaceChildren();}
+ let snapshot=null,busy=false,seq=0,selectedBand=null,visible=10,detailRows=[],followupsMap=null;
+ function reset(){snapshot=null;selectedBand=null;detailRows=[],followupsMap=null;$('a17SegmentPage')?.classList.add('hidden');$('a17CustomerPanel')?.classList.remove('hidden');for(const id of ['a17CustomerMetrics','a17CustomerActivityChart','a17CustomerActivityBody','a17CustomerActivityFoot','a17RetentionChart','a17RetentionBody'])$(id)?.replaceChildren();}
  function status(key){if($('a17CustomerStatus'))$('a17CustomerStatus').textContent=tr(key);}
  const shift=(key,months)=>{const [y,m]=key.split('-').map(Number),d=new Date(Date.UTC(y,m-1+months,1));return d.toISOString().slice(0,7);};
  const dateOk=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(Date.parse(s+'T00:00:00Z'))&&new Date(s+'T00:00:00Z').toISOString().slice(0,10)===s;
  async function sales(){const all=[],seen=new Set(),client=window.customerSupabase;if(!client?.rpc)throw Error('RPC_MISSING');for(let i=0;i<200;i++){const {data,error}=await client.rpc('sales_reports_rows_r44r38r20r35').range(i*500,i*500+499);if(error)throw error;if(!Array.isArray(data))throw Error('BAD_ROWS');for(const r of data){const id=(r.is_historical?'h:':'c:')+r.row_id;if(!r.row_id||seen.has(id))throw Error('DUPLICATE_ROW');seen.add(id);const d=String(r.invoice_date||'').slice(0,10);if(!dateOk(d))throw Error('BAD_DATE');all.push({id:String(r.customer_id||''),date:d});}if(data.length<500)return all;}throw Error('PAGINATION_LIMIT');}
  async function load(){if(busy)return;if(!allowed()){reset();status('customerDenied');return;}if(navigator.onLine===false||!window.CustomersService?.listCustomers){reset();status('customerFailed');return;}busy=true;const version=++seq;reset();status('customerLoading');$('a17CustomerLoad').disabled=true;
  try{const [customers,rows]=await Promise.all([window.CustomersService.listCustomers({force:true}),sales()]);if(!Array.isArray(customers)||!rows.length)throw Error('MISSING_DATA');const ids=new Set(),names=new Map();for(const c of customers){const id=String(c?.id||'');if(!id||ids.has(id))throw Error('BAD_CUSTOMER_ID');ids.add(id);names.set(id,String(c.name||c.customer_name||id));}
- const purchases=new Map();for(const row of rows){if(!ids.has(row.id))continue;let list=purchases.get(row.id);if(!list){list=[];purchases.set(row.id,list);}list.push(row.date);}for(const list of purchases.values())list.sort();if(version!==seq)return;snapshot={ids,purchases};render();}catch(e){console.error('A17.2.2 customer analysis:',e);reset();status('customerFailed');}finally{busy=false;$('a17CustomerLoad').disabled=false;}}
+ const customerMap=new Map(customers.map(c=>[String(c.id),c]));const purchases=new Map();for(const row of rows){if(!ids.has(row.id))continue;let list=purchases.get(row.id);if(!list){list=[];purchases.set(row.id,list);}list.push(row.date);}for(const list of purchases.values())list.sort();if(version!==seq)return;snapshot={ids,purchases,customerMap};render();}catch(e){console.error('A17.2.2 customer analysis:',e);reset();status('customerFailed');}finally{busy=false;$('a17CustomerLoad').disabled=false;}}
  function barChart(target,data){const root=$(target);if(!root)return;root.replaceChildren();const max=Math.max(1,...data.map(x=>x[1]));for(const [name,value] of data){const row=node('div','a17-bar-row'),label=node('span','',name),track=node('div','a17-bar-track'),fill=node('div','a17-bar-fill'),number=node('strong','a17-bar-number',n(value));fill.style.width=(100*value/max).toFixed(2)+'%';track.append(fill);row.append(label,track,number);root.append(row);}}
  function tableBody(target,data){const root=$(target);if(!root)return;root.replaceChildren();for(const [label,val] of data){const r=node('tr');r.append(node('td','',label),node('td','',n(val)));root.append(r);}}
  function render(){if(!snapshot)return;if(!allowed()){reset();status('customerDenied');return;}const year=$('a17Year')?.value,month=$('a17Month')?.value||'',mode=$('a17Compare')?.value||'previous';if(!/^\d{4}$/.test(year||''))return;
  const periods=month?[`${year}-${month}`]:Array.from({length:12},(_,i)=>`${year}-${String(i+1).padStart(2,'0')}`);
  const now=new Date(),today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,todayDay=new Date(now.getFullYear(),now.getMonth(),now.getDate());
  const used=periods.filter(key=>key<=today);if(!used.length){for(const id of ['a17CustomerMetrics','a17CustomerActivityChart','a17RetentionChart','a17CustomerActivityBody','a17RetentionBody'])$(id)?.replaceChildren();status('customerOutside');return;}
- const previousStep=mode==='yoy'?-12:-used.length, current=new Set(used),reference=new Set(used.map(k=>shift(k,previousStep)));const currentIds=new Set(),referenceIds=new Set(),bands=new Array(5).fill(0);
+ const previousStep=mode==='yoy'?-12:-used.length, current=new Set(used),reference=new Set(used.map(k=>shift(k,previousStep)));const currentIds=new Set(),referenceIds=new Set(),bands=new Array(5).fill(0),segmentRows=[[],[],[],[],[]];
  // Activity is measured at the end of the selected interval. Future sales never affect the classification.
  const endMonth=used.at(-1),endDate= endMonth===today?todayDay:new Date(Number(endMonth.slice(0,4)),Number(endMonth.slice(5,7)),0);const cutoff=endDate.toISOString().slice(0,10);const endUTC=Date.UTC(endDate.getFullYear(),endDate.getMonth(),endDate.getDate());
- for(const id of snapshot.ids){const dates=snapshot.purchases.get(id)||[];const activeDates=dates.filter(d=>d<=cutoff);if(!activeDates.length){bands[4]++;}else{const last=activeDates.at(-1);const [y,m,d]=last.split('-').map(Number);const days=Math.round((endUTC-Date.UTC(y,m-1,d))/86400000);bands[days<=30?0:days<=60?1:days<=90?2:3]++;}
+ for(const id of snapshot.ids){let band=4, lastSale='', gapDays=null;const dates=snapshot.purchases.get(id)||[];const activeDates=dates.filter(d=>d<=cutoff);if(!activeDates.length){bands[4]++;}else{const last=activeDates.at(-1);lastSale=last;const [y,m,d]=last.split('-').map(Number);const days=Math.round((endUTC-Date.UTC(y,m-1,d))/86400000);band=days<=30?0:days<=60?1:days<=90?2:3;gapDays=days;bands[band]++;}segmentRows[band].push({id,lastSale,gapDays,transactions:activeDates.length});
  if(dates.some(d=>current.has(d.slice(0,7))))currentIds.add(id);if(dates.some(d=>reference.has(d.slice(0,7))))referenceIds.add(id);}
  const shared=[...currentIds].filter(id=>referenceIds.has(id)).length;const partial=used.includes(today)||[...reference].includes(today),retention=!partial&&referenceIds.size?shared/referenceIds.size*100:null;
- const act=[['customerActive',bands[0]],['customerCooling',bands[1]],['customerAtRisk',bands[2]],['customerDormant',bands[3]],['customerNever',bands[4]]].map(([k,v])=>[tr(k),v]);barChart('a17CustomerActivityChart',act);tableBody('a17CustomerActivityBody',act);tableBody('a17CustomerActivityFoot',[[tr('totalRow'),snapshot.ids.size]]);
+ const act=[['customerActive',bands[0]],['customerCooling',bands[1]],['customerAtRisk',bands[2]],['customerDormant',bands[3]],['customerNever',bands[4]]].map(([k,v])=>[tr(k),v]);barChart('a17CustomerActivityChart',act);tableBody('a17CustomerActivityBody',act);const body=$('a17CustomerActivityBody');[...body?.rows||[]].forEach((r,i)=>{const td=node('td');const btn=node('button','a17-action-btn',tr('viewCustomers'));btn.type='button';btn.addEventListener('click',()=>openSegment(i,segmentRows,cutoff));td.append(btn);r.append(td);});tableBody('a17CustomerActivityFoot',[[tr('totalRow'),snapshot.ids.size]]);for(const r of $('a17CustomerActivityFoot')?.rows||[])r.append(node('td')); 
  const ret=[[tr('customerCurrent'),currentIds.size],[tr('customerReference'),referenceIds.size],[tr('customerRepeat'),shared]];barChart('a17RetentionChart',ret);tableBody('a17RetentionBody',ret);
  const metrics=[['customerEligible',n(snapshot.ids.size)],['customerCurrent',n(currentIds.size)],['customerReference',n(referenceIds.size)],['customerRetention',retention===null?tr('customerUnavailable'):retention.toFixed(1)+'%']];$('a17CustomerMetrics').replaceChildren();for(const [key,val] of metrics){const e=node('div','a17-kpi');e.append(node('span','',tr(key)),node('strong','',val));$('a17CustomerMetrics').append(e);}status(partial?'customerPartial':!referenceIds.size?'customerNoBase':'customerLoaded');}
+ function closeSegment(){$('a17SegmentPage')?.classList.add('hidden');$('a17CustomerPanel')?.classList.remove('hidden');selectedBand=null;}
+ async function openSegment(i,rows,cutoff){
+  if(!snapshot||!allowed())return;selectedBand=i;detailRows=rows[i]||[];visible=10;
+  const name=tr(['customerActive','customerCooling','customerAtRisk','customerDormant','customerNever'][i]);
+  $('a17SegmentName').textContent=name;$('a17SegmentCount').textContent=n(detailRows.length);
+  $('a17SegmentCutoff').textContent=cutoff;
+  $('a17CustomerPanel').classList.add('hidden');$('a17SegmentPage').classList.remove('hidden');
+  $('a17SegmentSearch').value='';paintSegment();
+  if(window.PermissionEngine?.canView?.('followups')===true&&window.FollowupsService?.listFollowups){
+   const guard=seq;try{const rows=await window.FollowupsService.listFollowups({force:true});if(guard!==seq||selectedBand!==i||!allowed())return;
+   if(Array.isArray(rows)){const contacts=new Map();for(const r of rows){const id=String(r.customerId||''),date=String(r.contactDate||'').slice(0,10);if(!snapshot.ids.has(id)||!dateOk(date))continue;const prior=contacts.get(id);if(!prior||date>prior.date)contacts.set(id,{date,result:String(r.result||'')});}followupsMap=contacts;paintSegment();}
+   }catch(err){console.warn('A17 customer follow-up view unavailable:',err);}
+  }
+  $('a17SegmentPage').scrollIntoView({block:'start',behavior:'smooth'});
+ }
+ function phoneValue(c){return String(c?.phone||c?.mobile||c?.phone_number||'').trim();}
+ function paintSegment(){if(selectedBand===null||!snapshot||!allowed())return;const q=String($('a17SegmentSearch').value||'').trim().toLocaleLowerCase();
+   const rows=detailRows.filter(r=>{const c=snapshot.customerMap.get(r.id)||{};return !q||[c.name,c.customer_name,c.customer_number,phoneValue(c)].some(v=>String(v||'').toLocaleLowerCase().includes(q));});
+   const body=$('a17SegmentBody');body.replaceChildren();for(const r of rows.slice(0,visible)){
+     const c=snapshot.customerMap.get(r.id)||{};const line=node('tr');const details=[String(c.name||c.customer_name||r.id),phoneValue(c)||'—',r.lastSale||tr('noRecordedSale'),r.gapDays===null?'—':n(r.gapDays),n(r.transactions),followupsMap?.get(r.id)?.date||tr('customerUnavailable')];
+     for(const value of details)line.append(node('td','',value));const td=node('td','a17-segment-actions');
+     const actions=[['whatsapp','whatsapp'],['call','call'],['addFollowup','followup'],['contacted','contacted']];
+     for(const [key,action] of actions){const btn=node('button','a17-action-btn',tr(key));btn.type='button';btn.dataset.a17Customer=r.id;btn.dataset.a17Action=action; if((action==='whatsapp'||action==='call')&&!phoneValue(c))btn.disabled=true;td.append(btn);}
+     line.append(td);body.append(line);
+   }
+   $('a17SegmentVisible').textContent=`${n(Math.min(visible,rows.length))} / ${n(rows.length)}`;
+   $('a17SegmentMore').hidden=visible>=rows.length;
+ }
  function toggle(buttonId,detailsId){const btn=$(buttonId),details=$(detailsId);if(!btn||!details)return;details.hidden=!details.hidden;btn.setAttribute('aria-expanded',String(!details.hidden));btn.textContent=tr(details.hidden?'showDetails':'hideDetails');}
- document.addEventListener('DOMContentLoaded',()=>{$('a17CustomerLoad')?.addEventListener('click',load);$('a17CustomerActivityToggle')?.addEventListener('click',()=>toggle('a17CustomerActivityToggle','a17CustomerActivityDetails'));$('a17RetentionToggle')?.addEventListener('click',()=>toggle('a17RetentionToggle','a17RetentionDetails'));$('a17Apply')?.addEventListener('click',render);$('a17Compare')?.addEventListener('change',render);});
- document.addEventListener('petatoe:language-changed',()=>{render();for(const [button,details] of [['a17CustomerActivityToggle','a17CustomerActivityDetails'],['a17RetentionToggle','a17RetentionDetails']]){const el=$(button),panel=$(details);if(el&&panel)el.textContent=tr(panel.hidden?'showDetails':'hideDetails');}});
+ document.addEventListener('DOMContentLoaded',()=>{$('a17CustomerLoad')?.addEventListener('click',load);
+ $('a17SegmentBack')?.addEventListener('click',()=>{$('a17SegmentPage').classList.add('hidden');$('a17CustomerPanel').classList.remove('hidden');selectedBand=null;});
+ $('a17SegmentMore')?.addEventListener('click',()=>{visible+=10;paintSegment();});
+ $('a17SegmentSearch')?.addEventListener('input',()=>{visible=10;paintSegment();});
+ $('a17SegmentBody')?.addEventListener('click',e=>{const btn=e.target.closest('[data-a17-action]');if(!btn||!snapshot||!allowed())return;const id=btn.dataset.a17Customer,c=snapshot.customerMap.get(id);if(!c)return;const action=btn.dataset.a17Action;
+ if(action==='followup'||action==='contacted'){window.PetatoeA17FollowupBridge?.open?.(id,action==='contacted');return;}
+ const raw=phoneValue(c);if(!raw)return;const digits=raw.replace(/\D/g,'');if(!digits)return;
+ if(action==='call'){window.location.href='tel:'+digits;return;}
+ const number=digits.startsWith('0')?'966'+digits.slice(1):digits;
+ const url=window.WhatsAppTemplateService?.directUrl?.(number)||'https://wa.me/'+number;
+ if(/^https:\/\//.test(url))window.open(url,'_blank','noopener,noreferrer');
+ });$('a17CustomerActivityToggle')?.addEventListener('click',()=>toggle('a17CustomerActivityToggle','a17CustomerActivityDetails'));$('a17RetentionToggle')?.addEventListener('click',()=>toggle('a17RetentionToggle','a17RetentionDetails'));$('a17Apply')?.addEventListener('click',()=>{closeSegment();render();});$('a17Compare')?.addEventListener('change',()=>{closeSegment();render();});});
+ document.addEventListener('petatoe:language-changed',()=>{if(selectedBand!==null){$('a17SegmentName').textContent=tr(['customerActive','customerCooling','customerAtRisk','customerDormant','customerNever'][selectedBand]);paintSegment();}else render();for(const [button,details] of [['a17CustomerActivityToggle','a17CustomerActivityDetails'],['a17RetentionToggle','a17RetentionDetails']]){const el=$(button),panel=$(details);if(el&&panel)el.textContent=tr(panel.hidden?'showDetails':'hideDetails');}});
  window.AdvancedAnalyticsCustomersUI={render};
 })();

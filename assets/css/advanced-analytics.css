@@ -29,3 +29,13 @@
 .a17-bar-number {direction:ltr;font-variant-numeric:tabular-nums;min-width:40px;text-align:end}
 .a17-fineprint {font-size:.83rem;color:var(--text-muted,#68747f);line-height:1.7;margin-top:18px}
 @media(max-width:480px){.a17-bar-row {grid-template-columns:minmax(90px,112px) minmax(0,1fr) auto;gap:6px;font-size:.78rem}}
+
+/* A17.2.2.1 — segment detail in the canonical A17 stylesheet. */
+.a17-segment-page.hidden {display:none!important}
+.a17-segment-tools {display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.a17-segment-tools input {min-width:min(100%,290px);flex:1;max-width:480px;padding:12px;border:1px solid var(--border-color,rgba(119,129,139,.3));border-radius:12px;background:var(--card-bg,#fff);color:inherit}
+.a17-segment-actions {display:flex;flex-wrap:wrap;gap:6px;min-width:275px}
+.a17-segment-actions .a17-action-btn,.a17-action-btn {margin-top:0!important;padding:6px 10px!important;white-space:nowrap;font-size:.82rem}
+.a17-action-btn:disabled {opacity:.45;cursor:not-allowed}
+.a17-segment-page .a17-panel-title p {font-size:.85rem;color:var(--text-muted,#68747f)}
+@media(max-width:680px){.a17-segment-actions{min-width:220px}}

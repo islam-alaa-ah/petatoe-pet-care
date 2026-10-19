@@ -4557,6 +4557,20 @@ async function openFollowupDialog(customerId = null, followup = null) {
   document.getElementById("followupDialog").showModal();
 }
 
+// A17.2.2.1 — reuse the canonical follow-up dialog and permission checks.
+window.PetatoeA17FollowupBridge = Object.freeze({
+  async open(customerId, contacted = false) {
+    if (!customerId || !canManageFollowups("add")) return;
+    await openFollowupDialog(customerId);
+    const dialog = document.getElementById("followupDialog");
+    if (!dialog?.open || !contacted) return;
+    const completed = document.getElementById("followupCompleted");
+    const result = document.getElementById("followupResult");
+    if (completed) completed.value = "true";
+    if (result) result.value = "تم التواصل";
+  }
+});
+
 function closeFollowupDialog() {
   pendingDailySuggestionCompletion = null;
   document.getElementById("followupDialog").close();
