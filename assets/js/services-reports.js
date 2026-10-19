@@ -47,9 +47,16 @@
     finally{busy=false;$('a16Refresh').disabled=false;}
   }
   function select(id,values,allLabel){const el=$(id),old=el.value;el.replaceChildren();for(const [value,name] of [['',allLabel],...values]){const opt=document.createElement('option');opt.value=value;opt.textContent=name;el.appendChild(opt);}if([...el.options].some(o=>o.value===old))el.value=old;}
-  function populate(){select('a16Year',[...new Set(rows.map(x=>x.date.slice(0,4)))].sort().reverse().map(v=>[v,v]),t('allYears'));
+  function populate(){
+    // The filter covers both verified historical sales and confirmed execution records.
+    // Never infer a service for unclassified historical or current invoice amounts.
+    const executionRows=executionReady&&executionAllowed()?executed:[];
+    const years=[...new Set([...rows,...executionRows].map(x=>x.date.slice(0,4)))];
+    select('a16Year',years.sort().reverse().map(v=>[v,v]),t('allYears'));
     select('a16Month',Array.from({length:12},(_,i)=>[String(i+1).padStart(2,'0'),new Intl.DateTimeFormat(window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en-US':'ar-EG',{month:'long'}).format(new Date(2026,i,1))]),t('allMonths'));
-    select('a16Service',[...new Set(rows.filter(x=>x.serviceId).map(x=>x.serviceId))].sort((a,b)=>String(catalogue.get(a)).localeCompare(String(catalogue.get(b)))).map(id=>[id,catalogue.get(id)]),t('allServices'));
+    const ids=[...new Set([...rows,...executionRows].map(x=>x.serviceId).filter(Boolean))];
+    ids.sort((a,b)=>String(catalogue.get(a)||a).localeCompare(String(catalogue.get(b)||b)));
+    select('a16Service',ids.map(id=>[id,catalogue.get(id)||id]),t('allServices'));
   }
   function subset(){const y=$('a16Year').value,m=$('a16Month').value,s=$('a16Service').value;return rows.filter(r=>(!y||r.date.startsWith(y))&&(!m||r.date.slice(5,7)===m)&&(!s||r.serviceId===s));}
   const sum=arr=>arr.reduce((n,r)=>n+r.amount,0);
@@ -133,9 +140,9 @@
           teamId:v.installation_team_id||'',teamName:sameTeam?op.teamName||'':'',
           carId:sameTeam?op.teamCarId||'':'',carName:sameTeam?op.teamCarName||'':''});
       }
-      executed=built;executionReady=true;renderExecution();renderYearComparison();renderDetails();
+      executed=built;executionReady=true;populate();render();
       $('a16ExecutionStatus').textContent=t('executionLoaded',{count:number(built.length)});
-    }catch(e){console.error('A16 execution reports',e);executionReady=false;executed=[];clearExecution();renderDetails();$('a16ExecutionStatus').textContent=t('executionFailed',{reason:e.message});}
+    }catch(e){console.error('A16 execution reports',e);executionReady=false;executed=[];clearExecution();if(ready){populate();render();}else renderDetails();$('a16ExecutionStatus').textContent=t('executionFailed',{reason:e.message});}
     finally{executionBusy=false;$('a16ExecutionRefresh').disabled=false;}
   }
   function renderExecution(){
