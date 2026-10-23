@@ -1,15 +1,15 @@
-# A17.3.8.9.5 — A15 Runtime Translation Gate (partial)
+# A17.3.9.1 — Functional regression: Peak scheduling boundary
 
-## Source
-A15 report module reconstructed through staged A17.3.8.8; localization-center.js from A17.3.8.9.4 (thus retains five previous A17 service keys). These are source-level repairs, not production-browser verification.
+## Verified issue and code repair
+`advanced-analytics-peaks.js` capped all selected periods to Riyadh **today**, even though `advanced-analytics-operations.js` scopes scheduled appointments to **end of the current month**. For October 2026, the original A17 peak range ended on October 24; this excluded valid assigned bookings scheduled later in October from peak-slot reporting. The patch brings the peak range to October 31 while maintaining a guard for wholly future periods. It does not rewrite any records or modify accounting.
 
-## Changes
-1. Replace three hardcoded English pagination validation messages with central `carsTeamsReports.*` translations. Error detection, pagination, reconciliation and identifiers remain unchanged.
-2. On live AR↔EN language change, refresh A15 loading labels while sales, operational, or billed requests are in flight. Do not refetch or reset filters; existing completed-report rerender behavior retained.
+## Static tests
+- node --check passes for patched module, and checks on eleven A13–A17 modules were recorded in STATIC_AUDIT.json.
+- Deterministic date calculation for 2026-10-24: range 2026-10-01 through 2026-10-31.
+- Five top-level report nav IDs were present in the assembled `app.js` reference: salesReports, customerReports, carsTeamsReports, servicesReports, advancedAnalytics.
 
-## Safety / acceptance
-- No SQL, RPC, permission checks, financial arithmetic, grouping, status comparisons, routes, or invoices altered.
-- JS syntax checks and ZIP CRC verified.
-- Live production browser tests (EN→AR→EN, failed pagination reason in correct language, date filters, totals, export, restricted permissions) NOT performed.
-- Earlier A17.3.8.9.3 neighborhood patch is NOT included. Merge onto the current source, do not replace newer code.
-- This is a partial runtime fix, not a certification that A13–A17 translations are complete.
+## Limitations / acceptance gates
+- **Not production verified**: need a live A17 UI check versus operationalReport() for the chosen month, plus Q5 scheduled time distribution and unknown/outside-slot buckets.
+- No claims of complete localization; direct Arabic code lines may encode business keys or user-facing literals and require per-instance review.
+- Do not overwrite any newer local edits. Only the `assets/js/advanced-analytics-peaks.js` source is modified. Static audit is supporting documentation.
+- The month-end semantics refer to scheduled appointments (bookings), not completed visits, invoiced revenue, or forecasts.

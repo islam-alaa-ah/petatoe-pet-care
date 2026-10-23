@@ -18,7 +18,12 @@ const onTime=r=>startHour(r.scheduled_time??r.scheduledTime??'');
 function range(){let y=Number($('a17Year')?.value),m=Number($('a17Month')?.value||0);if(!Number.isInteger(y)||y<2000||y>2100||!Number.isInteger(m)||m<0||m>12)return null;
  const from=`${y}-${pad(m||1)}-01`,through=m?`${y}-${pad(m)}-${pad(new Date(Date.UTC(y,m,0)).getUTCDate())}`:`${y}-12-31`;
  const now=new Date();const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Riyadh',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now).map(p=>[p.type,p.value]));const today=`${parts.year}-${parts.month}-${parts.day}`;
- if(from>today)return null;return {from,to:through<today?through:today};}
+ // Current-month scheduled appointments may be assigned for dates after today.
+ // Match A17 operations' selected-period scope (through the current month end),
+ // rather than silently dropping upcoming bookings from the peak-time denominator.
+ if(from>today)return null;
+ const currentMonthEnd=`${parts.year}-${parts.month}-${pad(new Date(Date.UTC(Number(parts.year),Number(parts.month),0)).getUTCDate())}`;
+ return {from,to:through<currentMonthEnd?through:currentMonthEnd};}
 let source=null,entries=null,loading=false;
 function reset(){for(const id of ['a17PeakHeatmap','a17PeakKpis','a17PeakPeriod','a17PeakBody','a17PeakFoot'])$(id)?.replaceChildren();}
 function status(k){if($('a17PeakStatus'))$('a17PeakStatus').textContent=t(k);}

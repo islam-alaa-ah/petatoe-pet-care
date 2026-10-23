@@ -1,0 +1,99 @@
+{
+  "phase": "A17.3.9.1",
+  "source_baseline": "a17_389_work overlay through A17.3.8.9; peaks unchanged in later overlays",
+  "compiled_js_checks": [
+    {
+      "file": "sales-reports.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 56
+    },
+    {
+      "file": "customer-reports-overview.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 27
+    },
+    {
+      "file": "cars-teams-reports.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 6
+    },
+    {
+      "file": "services-reports.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 1
+    },
+    {
+      "file": "advanced-analytics.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 5
+    },
+    {
+      "file": "advanced-analytics-customers.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 0
+    },
+    {
+      "file": "advanced-analytics-operations.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 3
+    },
+    {
+      "file": "advanced-analytics-services.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 3
+    },
+    {
+      "file": "advanced-analytics-service-finance.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 3
+    },
+    {
+      "file": "advanced-analytics-peaks.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 1
+    },
+    {
+      "file": "advanced-analytics-insights.js",
+      "js_check": "PASS",
+      "language_event_handler": true,
+      "translation_api_usage": true,
+      "direct_arabic_lines": 0
+    }
+  ],
+  "navigation_registrations": {
+    "salesReports": true,
+    "customerReports": true,
+    "carsTeamsReports": true,
+    "servicesReports": true,
+    "advancedAnalytics": true
+  },
+  "fixed_peak_sample": {
+    "from": "2026-10-01",
+    "to": "2026-10-31",
+    "today": "2026-10-24",
+    "monthEnd": "2026-10-31"
+  },
+  "live_sql_reconciliation": "NOT RUN",
+  "browser_runtime_validation": "NOT RUN",
+  "historical_source": "Q5 previously 433 dated bookings vs UI 426, gap 7; cause consistent with seven later-month assigned bookings, not independently reverified on production"
+}
