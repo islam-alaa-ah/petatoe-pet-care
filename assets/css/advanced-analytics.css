@@ -110,3 +110,12 @@
 #advancedAnalyticsView .a17-sales-rank-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#267ce8,#21b9d9)}
 #advancedAnalyticsView .a17-sales-rank-value{direction:ltr;text-align:end;font-size:.88rem;font-variant-numeric:tabular-nums}
 @media(max-width:550px){#advancedAnalyticsView .a17-sales-rank-row{grid-template-columns:65px minmax(0,1fr);gap:7px}#advancedAnalyticsView .a17-sales-rank-value{grid-column:2;font-size:.79rem}}
+
+/* A17.3.3 canonical services analytics styling — full-width cards, compact quantity charts. */
+#advancedAnalyticsView #a17ServicesPanel,#advancedAnalyticsView #a17ServiceGrowthPanel,#advancedAnalyticsView #a17ServiceSharePanel {width:100%;max-width:none;display:block;clear:both}
+#advancedAnalyticsView .a17-service-chart-row {display:grid;grid-template-columns:minmax(130px,220px) minmax(0,1fr) minmax(80px,140px);gap:12px;align-items:center;min-width:0}
+#advancedAnalyticsView .a17-service-chart-label {overflow-wrap:anywhere;font-size:.88rem}
+#advancedAnalyticsView .a17-service-chart-track {height:19px;background:rgba(42,124,218,.1);border-radius:10px;overflow:hidden}
+#advancedAnalyticsView .a17-service-chart-fill {display:block;height:100%;background:linear-gradient(90deg,#237de6,#21b5ce);border-radius:10px}
+#advancedAnalyticsView .a17-service-chart-value {text-align:end;direction:ltr;font-variant-numeric:tabular-nums}
+@media(max-width:550px){#advancedAnalyticsView .a17-service-chart-row{grid-template-columns:100px minmax(0,1fr);gap:7px}#advancedAnalyticsView .a17-service-chart-value{grid-column:2}}
