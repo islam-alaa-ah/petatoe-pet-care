@@ -31,12 +31,12 @@
   }
   const shift=(key,months)=>{const [y,m]=key.split('-').map(Number);const d=new Date(Date.UTC(y,m-1+months,1));return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0');};
   const make=(tag,attrs={},txt)=>{const el=document.createElement(tag);for(const [k,v] of Object.entries(attrs))el.setAttribute(k,String(v));if(txt!==undefined)el.textContent=txt;return el;};
-  function render(){if(!loaded||!mayView()){clear();status('blocked');return;}const year=$('a17Year')?.value;if(!year)return;const month=$('a17Month')?.value||'',mode=$('a17Compare')?.value||'previous';
+  function render(){if(!loaded||!mayView()){clear();status('blocked');return;}const year=$('a17Year')?.value;if(!year)return;const month=$('a17Month')?.value||'';
     const periods=month?[year+'-'+month]:Array.from({length:12},(_,i)=>year+'-'+String(i+1).padStart(2,'0'));
     const today=new Date();const localYear=today.getFullYear(),localMonth=today.getMonth()+1;
     // Exclude future periods; partial current calendar month/year is explicitly not a reliable growth comparison.
-    const used=periods.filter(p=>p<=`${localYear}-${String(localMonth).padStart(2,'0')}`),step=mode==='yoy'?-12:-used.length;
-    const cells=used.map((key,i)=>({key,base:shift(key,mode==='yoy'?-12:step),current:monthly.get(key)||0,reference:monthly.get(shift(key,mode==='yoy'?-12:step))||0}));
+    const used=periods.filter(p=>p<=`${localYear}-${String(localMonth).padStart(2,'0')}`);
+    const cells=used.map(key=>({key,base:shift(key,-12),current:monthly.get(key)||0,reference:monthly.get(shift(key,-12))||0}));
     const sc=cells.reduce((n,r)=>n+r.current,0),sb=cells.reduce((n,r)=>n+r.reference,0);
     const partial=cells.some(r=>r.key===`${localYear}-${String(localMonth).padStart(2,'0')}`)||cells.some(r=>r.base===`${localYear}-${String(localMonth).padStart(2,'0')}`);
     const growth=!partial&&sb>0?((sc-sb)/sb*100).toFixed(1)+'%':tr('unavailable');
