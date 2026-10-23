@@ -3,6 +3,11 @@
   "use strict";
   const $ = id => document.getElementById(id);
   const t = key => window.PetatoeLocalization?.t?.(key) || key;
+  // Canonical grouping sentinel: never localize keys used for aggregation.
+  const UNSPECIFIED_REGION = "__A14_UNSPECIFIED_REGION__";
+  const isUnspecifiedRegion = value => !String(value || "").trim() || value === UNSPECIFIED_REGION || value === "غير محدد" || value === "Unspecified";
+  const regionKey = value => isUnspecifiedRegion(value) ? UNSPECIFIED_REGION : String(value).trim();
+  const regionDisplay = key => key === UNSPECIFIED_REGION ? t("customerReports.overviewDynamic.k006") : key;
   const PAGE = 500;
   const MAX_PAGES = 100;
   const fmt = amount => Number(amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -67,7 +72,7 @@
     ["a14FilterYear","a14FilterMonth","a14FilterCustomer","a14FilterNeighborhood"].forEach((id,i)=> {if ([...$(id).options].some(o=>o.value===old[i])) $(id).value=old[i];});
   }
   function currentScope() {
-    if (!verifiedSnapshot) throw new Error("حدّث البيانات أولًا قبل استخدام الفلاتر.");
+    if (!verifiedSnapshot) throw new Error(t("customerReports.overviewDynamic.refreshFirst"));
     const year=selected("a14FilterYear"),month=selected("a14FilterMonth"),customerId=selected("a14FilterCustomer"),neighborhoodId=selected("a14FilterNeighborhood");
     const customers = verifiedSnapshot.customers.filter(c =>
       (!customerId || c.id === customerId) && (!neighborhoodId || c.neighborhoodId === neighborhoodId));
@@ -205,7 +210,7 @@
     }
     const byCustomer = new Map();
     const customerNames = new Map(customers.map(x => [x.id, String(x.name || x.customer_name || x.customerName || "").trim()]));
-    const customerContacts = new Map(customers.map(x => [x.id, {phone: String(x.phone || x.mobile || "").trim(), region: String(x.address || x.neighborhoodName || x.neighborhood_name || "").trim() || t("customerReports.overviewDynamic.k006")}]));
+    const customerContacts = new Map(customers.map(x => [x.id, {phone: String(x.phone || x.mobile || "").trim(), region: regionKey(x.address || x.neighborhoodName || x.neighborhood_name), neighborhoodId: String(x.neighborhoodId || x.neighborhood_id || "").trim()}]));
     let excludedTotal = 0;
     let customerTotalCents = 0;
     let unknownCustomerRows = 0;
@@ -420,20 +425,34 @@
       regions.get(region).customers++;
     }
     for (const r of result.ranks) {
-      const region=result.customerContacts.get(r.id)?.region || t("customerReports.overviewDynamic.k006");
+      const region=result.customerContacts.get(r.id)?.region || UNSPECIFIED_REGION;
       const entry=regions.get(region);
-      if (!entry)throw new Error("نطاق جغرافي غير متسق مع قائمة العملاء.");
+      if (!entry)throw new Error(t("customerReports.overviewDynamic.geoMismatch"));
       entry.buyers++;entry.cents+=r.cents;
     }
     const rows=[...regions.values()].sort((a,b)=>b.cents-a.cents || a.name.localeCompare(b.name,"ar"));
-    if(rows.reduce((n,r)=>n+r.customers,0)!==result.customers || rows.reduce((n,r)=>n+r.cents,0)!==Math.round(result.sales*100))throw new Error("عدم تطابق إجماليات التقرير الجغرافي.");
-    const unspecified=regions.get(t("customerReports.overviewDynamic.k006"))?.customers||0;
-    metrics.append(metric(t("customerReports.overviewDynamic.k061"),integer(rows.filter(r=>r.name!==t("customerReports.overviewDynamic.k006")).length)),metric(t("customerReports.overviewDynamic.k062"),integer(unspecified)),metric(t("customerReports.overviewDynamic.k063"),`${fmt(result.sales)} SAR`));
+    if(rows.reduce((n,r)=>n+r.customers,0)!==result.customers || rows.reduce((n,r)=>n+r.cents,0)!==Math.round(result.sales*100))throw new Error(t("customerReports.overviewDynamic.geoTotalsMismatch"));
+    const unspecified=regions.get(UNSPECIFIED_REGION)?.customers||0;
+    metrics.append(metric(t("customerReports.overviewDynamic.k061"),integer(rows.filter(r=>r.name!==UNSPECIFIED_REGION).length)),metric(t("customerReports.overviewDynamic.k062"),integer(unspecified)),metric(t("customerReports.overviewDynamic.k063"),`${fmt(result.sales)} SAR`));
     const sourceCatalog = geographyCatalog(verifiedSnapshot?.customers || [], verifiedSnapshot?.sales || []);
     const byArabicName = new Map([...sourceCatalog.values()].filter(x=>x.name).map(x=>[x.name, x]));
+    // Use neighborhood ID when a region represents a unique catalog entry.
+    // Do not infer a neighborhood from arbitrary free-text address fields.
+    const idsByRegion = new Map();
+    for (const contact of result.customerContacts.values()) {
+      const id = contact.neighborhoodId;
+      if (!id || !sourceCatalog.has(id) || contact.region === UNSPECIFIED_REGION) continue;
+      const item = sourceCatalog.get(id);
+      if (contact.region !== item.name && contact.region !== item.en) continue;
+      if (!idsByRegion.has(contact.region)) idsByRegion.set(contact.region, new Set());
+      idsByRegion.get(contact.region).add(id);
+    }
     for (const r of rows) {
       const tr=document.createElement("tr");
-      const translatedName = byArabicName.has(r.name) ? localizedNeighborhood(byArabicName.get(r.name)) : r.name;
+      const ids = idsByRegion.get(r.name);
+      const exactMatch = ids?.size === 1 ? sourceCatalog.get([...ids][0]) : byArabicName.get(r.name);
+      const translatedName = r.name === UNSPECIFIED_REGION ? regionDisplay(r.name)
+        : exactMatch ? localizedNeighborhood(exactMatch) : r.name;
       for(const v of [translatedName,integer(r.customers),integer(r.buyers),`${fmt(r.cents/100)} SAR`]){const td=document.createElement("td");td.textContent=v;tr.append(td);}table.append(tr);
     }
     $("a14GeoStatus").textContent=t("customerReports.overviewDynamic.k064");
