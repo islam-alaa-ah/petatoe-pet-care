@@ -40,7 +40,7 @@
     const sc=cells.reduce((n,r)=>n+r.current,0),sb=cells.reduce((n,r)=>n+r.reference,0);
     const partial=cells.some(r=>r.key===`${localYear}-${String(localMonth).padStart(2,'0')}`)||cells.some(r=>r.base===`${localYear}-${String(localMonth).padStart(2,'0')}`);
     const growth=!partial&&sb>0?((sc-sb)/sb*100).toFixed(1)+'%':tr('unavailable');
-    $('a17Kpis').replaceChildren();for(const [k,v] of [['total',amount(sc)],['growth',growth],['periodMonths',String(cells.length)]]){const card=make('div',{class:'a17-kpi'});card.append(make('span',{},tr(k)),make('strong',{},v));$('a17Kpis').append(card);}
+    $('a17Kpis').replaceChildren();for(const [k,v] of [['total',amount(sc)],['growth',growth],['periodMonths',String(cells.length)]]){const card=make('div',{class:'a17-kpi','data-a17-metric':k});card.append(make('span',{},tr(k)),make('strong',{},v));$('a17Kpis').append(card);}
     const root=$('a17SalesChart');root.replaceChildren();if(!cells.length){root.textContent=tr('noData');return;}
     // SVG is intentionally informational only: no external charting library or inline event handlers.
     const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 900 275');svg.setAttribute('role','img');svg.setAttribute('aria-label',tr('salesTitle'));svg.setAttribute('preserveAspectRatio','xMidYMid meet');
@@ -59,7 +59,7 @@
     if(partial)status('incomplete');else if(!sb)status('zeroBase');else status('loaded');
   }
   function activate(){if(!mayView()){clear();status('blocked');return;}if(!loaded)load();else render();}
-  document.addEventListener('DOMContentLoaded',()=>{$('a17Refresh')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',render);$('a17Compare')?.addEventListener('change',render);$('a17SalesToggle')?.addEventListener('click',()=>{const pane=$('a17SalesDetails');if(!pane)return;pane.hidden=!pane.hidden;$('a17SalesToggle').setAttribute('aria-expanded',String(!pane.hidden));$('a17SalesToggle').textContent=tr(pane.hidden?'showDetails':'hideDetails');});});
+  document.addEventListener('DOMContentLoaded',()=>{document.querySelector('[data-a17-navigation]')?.addEventListener('click',event=>{const button=event.target.closest('button[data-a17-target]');if(!button)return;const target=$(button.dataset.a17Target);if(target&&!target.closest('.hidden'))target.scrollIntoView({behavior:'smooth',block:'start'});});$('a17Refresh')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',render);$('a17Compare')?.addEventListener('change',render);$('a17SalesToggle')?.addEventListener('click',()=>{const pane=$('a17SalesDetails');if(!pane)return;pane.hidden=!pane.hidden;$('a17SalesToggle').setAttribute('aria-expanded',String(!pane.hidden));$('a17SalesToggle').textContent=tr(pane.hidden?'showDetails':'hideDetails');});});
   document.addEventListener('petatoe:language-changed',()=>{if(loaded){selectFilters();render();}});
   window.AdvancedAnalyticsUI={activate,render};
 })();
