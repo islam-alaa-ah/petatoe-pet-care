@@ -435,7 +435,25 @@
     const unspecified=regions.get(UNSPECIFIED_REGION)?.customers||0;
     metrics.append(metric(t("customerReports.overviewDynamic.k061"),integer(rows.filter(r=>r.name!==UNSPECIFIED_REGION).length)),metric(t("customerReports.overviewDynamic.k062"),integer(unspecified)),metric(t("customerReports.overviewDynamic.k063"),`${fmt(result.sales)} SAR`));
     const sourceCatalog = geographyCatalog(verifiedSnapshot?.customers || [], verifiedSnapshot?.sales || []);
-    const byArabicName = new Map([...sourceCatalog.values()].filter(x=>x.name).map(x=>[x.name, x]));
+    // Only a unique, exact catalog match is safe: duplicate names may refer to different IDs.
+    const candidatesByName = new Map();
+    for (const item of sourceCatalog.values()) {
+      for (const label of [item.name, item.en]) {
+        if (!label) continue;
+        if (!candidatesByName.has(label)) candidatesByName.set(label, new Map());
+        candidatesByName.get(label).set(item.id, item);
+      }
+    }
+    const uniqueCatalogMatch = value => {
+      const candidates = candidatesByName.get(value);
+      return candidates?.size === 1 ? [...candidates.values()][0] : null;
+    };
+    const isEnglish = (window.PetatoeLocalization?.effectiveLanguage?.() || window.PetatoeLocalization?.getLanguage?.()) === "en";
+    const displayUnknownRegion = value => {
+      // Data that cannot be resolved must never be silently attributed to an invented district.
+      // Keep raw addresses on Arabic; flag unresolved Arabic area labels on English.
+      return isEnglish && /[\u0600-\u06ff]/.test(value) ? "Translation pending" : value;
+    };
     // Use neighborhood ID when a region represents a unique catalog entry.
     // Do not infer a neighborhood from arbitrary free-text address fields.
     const idsByRegion = new Map();
@@ -450,9 +468,10 @@
     for (const r of rows) {
       const tr=document.createElement("tr");
       const ids = idsByRegion.get(r.name);
-      const exactMatch = ids?.size === 1 ? sourceCatalog.get([...ids][0]) : byArabicName.get(r.name);
+      const exactMatch = ids?.size === 1 ? sourceCatalog.get([...ids][0])
+        : ids?.size > 1 ? null : uniqueCatalogMatch(r.name);
       const translatedName = r.name === UNSPECIFIED_REGION ? regionDisplay(r.name)
-        : exactMatch ? localizedNeighborhood(exactMatch) : r.name;
+        : exactMatch ? localizedNeighborhood(exactMatch) : displayUnknownRegion(r.name);
       for(const v of [translatedName,integer(r.customers),integer(r.buyers),`${fmt(r.cents/100)} SAR`]){const td=document.createElement("td");td.textContent=v;tr.append(td);}table.append(tr);
     }
     $("a14GeoStatus").textContent=t("customerReports.overviewDynamic.k064");
