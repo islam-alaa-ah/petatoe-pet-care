@@ -43,14 +43,14 @@
  function line(root,name,val,max,suffix){const div=el('div','a17-service-chart-row'),label=el('span','a17-service-chart-label',name),track=el('div','a17-service-chart-track'),fill=el('span','a17-service-chart-fill'),v=el('strong','a17-service-chart-value',suffix);fill.style.width=(max?Math.max(0,val/max*100):0).toFixed(2)+'%';track.append(fill);div.append(label,track,v);root.append(div);}
  function table(id,vals){const trEl=el('tr');for(const v of vals)trEl.append(el('td','',v));$(id)?.append(trEl);}
  const ratio=(a,b)=>b>0?((a-b)*100/b).toFixed(1)+'%':tr('financeNoBaseline');
- const word=(ar,en)=>document.documentElement.lang?.toLowerCase().startsWith('en')?en:ar;
+
  const periodInfo=(ks,base,partial)=>{
    const a=ks.length?ks[0]+' → '+ks[ks.length-1]:'—';
    const bs=ks.map(base),b=bs.length?bs[0]+' → '+bs[bs.length-1]:'—';
-   return word('الفترة الحالية: ','Current period: ')+a+' | '+word('الفترة المرجعية: ','Reference period: ')+b+(partial?' · '+word('فترة جارية (نتيجة مؤقتة)','Open period (provisional)'):'');
+   return tr('serviceCurrentPeriodLabel')+' '+a+' | '+tr('serviceReferencePeriodLabel')+' '+b+(partial?' · '+tr('serviceOpenPeriodNotice'):'');
  };
  function annotate(id,label){const node=$(id);if(!node)return;let info=node.querySelector('.a17-service-period-info');if(!info){info=el('p','a17-service-period-info');node.querySelector('h4')?.after(info);}if(info)info.textContent=label;}
- function noBar(root,name,label){const div=el('div','a17-service-chart-row a17-no-comparison');div.append(el('span','a17-service-chart-label',name),el('span','a17-service-no-baseline',word('لا يوجد خط أساس موثق للمقارنة','No verified comparison baseline')),el('strong','a17-service-chart-value',label));root.append(div);}
+ function noBar(root,name,label){const div=el('div','a17-service-chart-row a17-no-comparison');div.append(el('span','a17-service-chart-label',name),el('span','a17-service-no-baseline',tr('serviceNoVerifiedBaseline')),el('strong','a17-service-chart-value',label));root.append(div);}
 
  function render(){clear();if(!ready||!can()){if(!can())status('financeBlocked');return;}
   const year=$('a17Year')?.value,mon=$('a17Month')?.value||'',mode=$('a17FinanceCompare')?.value||'mom';if(!/^\d{4}$/.test(year||''))return;
@@ -67,7 +67,7 @@
   const selected=ks.reduce((a,k)=>a+(totals.get(k)||0),0),unassigned=selected-currClass; if(unassigned<0) { clear();status('financeFailed');console.error('A17_SERVICE_SALES_RECONCILIATION_NEGATIVE_UNATTRIBUTED',{selected,currClass});return; }
   const kpis=$('a17FinanceKpis');for(const [label,value] of [[tr('financeClassified'),money(currClass)+' SAR'],[tr('financeUnassigned'),money(unassigned)+' SAR'],[tr('financeCoverage'),selected>0?(100*currClass/selected).toFixed(2)+'%':tr('financeNoBaseline')]]){const b=el('div','a17-kpi');b.append(el('span','',label),el('strong','',value));kpis?.append(b);}
   const trend=$('a17FinanceTrend');const max=Math.max(1,...ks.map(k=>Math.max(byMonth.get(k)||0,byMonth.get(reference(k))||0)));
-  for(const k of ks){const a=byMonth.get(k)||0,b=byMonth.get(reference(k))||0,invoiceTotal=totals.get(k)||0;const label=a===0&&invoiceTotal>0?word('غير منسوبة للخدمات','Sales not attributed'):money(a)+' SAR';line(trend,k,a,max,label);table('a17FinanceTrendBody',[k,reference(k),a===0&&invoiceTotal>0?label:money(a),money(b)]);}
+  for(const k of ks){const a=byMonth.get(k)||0,b=byMonth.get(reference(k))||0,invoiceTotal=totals.get(k)||0;const label=a===0&&invoiceTotal>0?tr('serviceSalesUnattributed'):money(a)+' SAR';line(trend,k,a,max,label);table('a17FinanceTrendBody',[k,reference(k),a===0&&invoiceTotal>0?label:money(a),money(b)]);}
   if(!ks.length)trend.textContent=tr('noData');else table('a17FinanceTrendFoot',[tr('totalRow'),'—',money(currClass),money(refClass)]);
   // For MoM/YoY the growth ranking compares one explicit pair of calendar months.
   // If the user selected a whole year, use the most recent COMPLETED month with

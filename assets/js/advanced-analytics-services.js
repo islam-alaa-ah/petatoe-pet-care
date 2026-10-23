@@ -45,9 +45,9 @@
  }
  function populate(){const select=$('a17ServiceSelect');if(!select)return;const prev=select.value;select.replaceChildren();const opt=text('option','',t('serviceAll'));opt.value='';select.append(opt);const ids=[...new Set(records.map(r=>r.service))].sort((a,b)=>(serviceLabel(types.get(a))||a).localeCompare(serviceLabel(types.get(b))||b));for(const id of ids){const o=text('option','',serviceLabel(types.get(id))||id);o.value=id;select.append(o);}if(ids.includes(prev))select.value=prev;}
  const sums=(list,sel)=>{const m=new Map();for(const r of list){const key=sel(r);m.set(key,(m.get(key)||0)+r.qty);}return m;};
- const word=(ar,en)=>document.documentElement.lang?.toLowerCase().startsWith('en')?en:ar;
+
  function annotate(id,label){const node=$(id);if(!node)return;let info=node.querySelector('.a17-service-period-info');if(!info){info=text('p','a17-service-period-info','');node.querySelector('h4')?.after(info);}if(info)info.textContent=label;}
- function noBar(root,name,label){const div=text('div','a17-service-chart-row a17-no-comparison','');div.append(text('span','a17-service-chart-label',name),text('span','a17-service-no-baseline',word('لا يوجد خط أساس موثق للمقارنة','No verified comparison baseline')),text('strong','a17-service-chart-value',label));root.append(div);}
+ function noBar(root,name,label){const div=text('div','a17-service-chart-row a17-no-comparison','');div.append(text('span','a17-service-chart-label',name),text('span','a17-service-no-baseline',t('serviceNoVerifiedBaseline')),text('strong','a17-service-chart-value',label));root.append(div);}
  const row=(body,values)=>{const r=document.createElement('tr');for(const v of values)r.append(text('td','',v));body.append(r);};
  const bar=(root,name,qty,max,label)=>{const box=text('div','a17-service-chart-row',''),title=text('span','a17-service-chart-label',name),track=text('div','a17-service-chart-track',''),fill=text('span','a17-service-chart-fill','');fill.style.width=(max>0?Math.max(0,qty/max*100):0).toFixed(2)+'%';track.append(fill);box.append(title,track,text('strong','a17-service-chart-value',label));root.append(box);};
  function render(){clear();if(!ready||!allowed()){if(!allowed())status('serviceBlocked');return;}
@@ -57,7 +57,7 @@
   const periods=(month?[year+'-'+month]:Array.from({length:12},(_,i)=>year+'-'+String(i+1).padStart(2,'0'))).filter(k=>k<=currentMonth);
   const base=k=>shift(k,mode==='yoy'?-12:-periods.length);
   const refPeriods=periods.map(base);const partial=periods.includes(currentMonth);
-  const summary=word('الفترة الحالية: ','Current period: ')+(periods.length?periods[0]+' → '+periods[periods.length-1]:'—')+' | '+word('الفترة المرجعية: ','Reference period: ')+(refPeriods.length?refPeriods[0]+' → '+refPeriods[refPeriods.length-1]:'—')+(partial?' · '+word('فترة جارية (نتيجة مؤقتة)','Open period (provisional)'):'');
+  const summary=t('serviceCurrentPeriodLabel')+' '+(periods.length?periods[0]+' → '+periods[periods.length-1]:'—')+' | '+t('serviceReferencePeriodLabel')+' '+(refPeriods.length?refPeriods[0]+' → '+refPeriods[refPeriods.length-1]:'—')+(partial?' · '+t('serviceOpenPeriodNotice'):'');
   for(const id of ['a17ServicesPanel','a17ServiceGrowthPanel','a17ServiceSharePanel'])annotate(id,summary);
   const byMonth=sums(records.filter(r=>!service||r.service===service),r=>r.month);
   const cells=periods.map(k=>({month:k,current:byMonth.get(k)||0,reference:byMonth.get(base(k))||0}));
