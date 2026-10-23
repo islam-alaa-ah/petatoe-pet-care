@@ -181,3 +181,14 @@
 #advancedAnalyticsView #a17PeakDetails table{width:100%;min-width:440px}
 #advancedAnalyticsView #a17PeakFoot tr{background:#1e559d;color:#fff;font-weight:700}
 #advancedAnalyticsView #a17PeakFoot td{color:#fff;background:transparent}
+
+/* A17.3.6: full-width balanced insights, no duplicated overlay layers. */
+#advancedAnalyticsView .a17-insights-list{display:flex;flex-direction:column;gap:12px;margin-block:14px}
+#advancedAnalyticsView .a17-insight-card{border:1px solid rgba(120,151,185,.26);border-inline-start:4px solid #d79a1e;border-radius:12px;padding:14px 18px;background:var(--card-bg,#fff);display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+#advancedAnalyticsView .a17-insight-card strong{font-size:1rem}
+#advancedAnalyticsView .a17-insight-card p{margin:4px 0 0;opacity:.78}
+#advancedAnalyticsView .a17-insight-card .a17-insight-value{font-variant-numeric:tabular-nums;font-weight:750;color:#bc3442;direction:ltr;unicode-bidi:isolate}
+#advancedAnalyticsView #a17InsightsDetails:not([hidden]){margin-top:15px}
+#advancedAnalyticsView #a17InsightsDetails table{width:100%;min-width:680px}
+#advancedAnalyticsView #a17InsightsDetails :is(th,td){text-align:center;vertical-align:middle;padding:11px 12px}
+#advancedAnalyticsView #a17InsightsDetails td{font-variant-numeric:tabular-nums}
