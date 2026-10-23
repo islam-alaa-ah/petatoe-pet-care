@@ -26,6 +26,6 @@ function render(){const list=$('a17InsightsList'),body=$('a17InsightsBody'),stat
 }
 document.addEventListener('DOMContentLoaded',()=>{$('a17Apply')?.addEventListener('click',render);$('a17Year')?.addEventListener('change',render);$('a17Month')?.addEventListener('change',render);$('a17InsightsToggle')?.addEventListener('click',()=>{const box=$('a17InsightsDetails'),button=$('a17InsightsToggle');if(!box||!button)return;box.hidden=!box.hidden;button.setAttribute('aria-expanded',String(!box.hidden));button.textContent=t(box.hidden?'showDetails':'hideDetails');});});
 document.addEventListener('petatoe:a17-sales-verified',render);
-document.addEventListener('petatoe:language-changed',()=>{render();const b=$('a17InsightsToggle'),p=$('a17InsightsDetails');if(b&&p)b.textContent=t(p.hidden?'showDetails':'hideDetails');});
+window.addEventListener('petatoe-language-changed',()=>{render();const b=$('a17InsightsToggle'),p=$('a17InsightsDetails');if(b&&p)b.textContent=t(p.hidden?'showDetails':'hideDetails');});
 window.AdvancedAnalyticsInsightsUI=Object.freeze({render});
 })();

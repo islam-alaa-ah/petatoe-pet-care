@@ -67,6 +67,6 @@
  }
  function toggle(name){const details=$('a17Service'+name+'Details'),button=$('a17Service'+name+'Toggle');if(!details||!button)return;details.hidden=!details.hidden;button.setAttribute('aria-expanded',String(!details.hidden));button.textContent=t(details.hidden?'showDetails':'hideDetails');}
  document.addEventListener('DOMContentLoaded',()=>{status('serviceNotLoaded');$('a17ServiceLoad')?.addEventListener('click',load);$('a17ServiceSelect')?.addEventListener('change',render);$('a17Apply')?.addEventListener('click',render);$('a17Compare')?.addEventListener('change',render);for(const x of ['Trend','Growth','Share'])$('a17Service'+x+'Toggle')?.addEventListener('click',()=>toggle(x));});
- document.addEventListener('petatoe:language-changed',()=>{if(ready){populate();render();}else status(allowed()?'serviceNotLoaded':'serviceBlocked');});
+ window.addEventListener('petatoe-language-changed',()=>{if(ready){populate();render();}else status(allowed()?'serviceNotLoaded':'serviceBlocked');});
  window.AdvancedAnalyticsServicesUI=Object.freeze({load,render});
 })();

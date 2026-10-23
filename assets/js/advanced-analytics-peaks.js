@@ -51,6 +51,6 @@ function render(){reset();if(!permitted()){if(entries)status('peakDenied');retur
 }
 document.addEventListener('DOMContentLoaded',()=>{$('a17PeakLoad')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',render);$('a17Year')?.addEventListener('change',render);$('a17Month')?.addEventListener('change',render);
  $('a17PeakToggle')?.addEventListener('click',()=>{const details=$('a17PeakDetails'),button=$('a17PeakToggle');details.hidden=!details.hidden;button.setAttribute('aria-expanded',String(!details.hidden));button.textContent=t(details.hidden?'showDetails':'hideDetails');});});
-document.addEventListener('petatoe:language-changed',()=>{render();const b=$('a17PeakToggle'),p=$('a17PeakDetails');if(b&&p)b.textContent=t(p.hidden?'showDetails':'hideDetails');});
+window.addEventListener('petatoe-language-changed',()=>{render();const b=$('a17PeakToggle'),p=$('a17PeakDetails');if(b&&p)b.textContent=t(p.hidden?'showDetails':'hideDetails');});
 window.AdvancedAnalyticsPeaksUI={load,render};
 })();

@@ -126,6 +126,6 @@
    if(toggle&&details)toggle.textContent=t(details.hidden?'showDetails':'hideDetails');
   }
  }
- document.addEventListener('petatoe:language-changed',()=>{render();relabelIntelligencePanels();const assigned=$('a17OpsBody')?.closest('table')?.querySelector('[data-a17-assigned]');if(assigned)assigned.textContent=t('opsAssigned');const pane=$('a17OpsDetails'),button=$('a17OpsToggle');if(button&&pane)button.textContent=t(pane.hidden?'showDetails':'hideDetails');});
+ window.addEventListener('petatoe-language-changed',()=>{render();relabelIntelligencePanels();const assigned=$('a17OpsBody')?.closest('table')?.querySelector('[data-a17-assigned]');if(assigned)assigned.textContent=t('opsAssigned');const pane=$('a17OpsDetails'),button=$('a17OpsToggle');if(button&&pane)button.textContent=t(pane.hidden?'showDetails':'hideDetails');});
  window.AdvancedAnalyticsOperationsUI={render,load};
 })();

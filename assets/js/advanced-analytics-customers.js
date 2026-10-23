@@ -138,6 +138,6 @@
  const url=window.WhatsAppTemplateService?.directUrl?.(number)||'https://wa.me/'+number;
  if(/^https:\/\//.test(url))window.open(url,'_blank','noopener,noreferrer');
  });$('a17CustomerActivityToggle')?.addEventListener('click',()=>toggle('a17CustomerActivityToggle','a17CustomerActivityDetails'));$('a17RetentionToggle')?.addEventListener('click',()=>toggle('a17RetentionToggle','a17RetentionDetails'));$('a14AnalyticsApply')?.addEventListener('click',()=>{closeSegment();render();});$('a14AnalyticsCompare')?.addEventListener('change',()=>{closeSegment();render();});});
- document.addEventListener('petatoe:language-changed',()=>{if(selectedBand!==null){$('a17SegmentName').textContent=tr(selectedTitleKey);paintSegment();}else render();for(const [button,details] of [['a17CustomerActivityToggle','a17CustomerActivityDetails'],['a17RetentionToggle','a17RetentionDetails']]){const el=$(button),panel=$(details);if(el&&panel)el.textContent=tr(panel.hidden?'showDetails':'hideDetails');}});
+ window.addEventListener('petatoe-language-changed',()=>{if(selectedBand!==null){$('a17SegmentName').textContent=tr(selectedTitleKey);paintSegment();}else render();for(const [button,details] of [['a17CustomerActivityToggle','a17CustomerActivityDetails'],['a17RetentionToggle','a17RetentionDetails']]){const el=$(button),panel=$(details);if(el&&panel)el.textContent=tr(panel.hidden?'showDetails':'hideDetails');}});
  window.AdvancedAnalyticsCustomersUI={render};
 })();

@@ -96,6 +96,6 @@
  function toggle(name){const d=$('a17Finance'+name+'Details'),btn=$('a17Finance'+name+'Toggle');if(!d||!btn)return;d.hidden=!d.hidden;btn.setAttribute('aria-expanded',String(!d.hidden));btn.textContent=tr(d.hidden?'showDetails':'hideDetails');}
  document.addEventListener('DOMContentLoaded',()=>{const mode=$('a17ServiceMetric');function sync(){const financial=mode?.value==='sales';for(const id of ['a17FinancePanel','a17FinanceGrowthPanel','a17FinanceSharePanel']){if($(id))$(id).hidden=!financial;}for(const id of ['a17ServicesPanel','a17ServiceGrowthPanel','a17ServiceSharePanel']){if($(id))$(id).classList.toggle('a17-finance-hidden',financial);}if(financial){if(ready)render();else status('financeNotLoaded');}}
  mode?.addEventListener('change',sync);$('a17FinanceLoad')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',()=>{if(ready)render();});$('a17Compare')?.addEventListener('change',()=>{if(ready)render();});$('a17FinanceCompare')?.addEventListener('change',()=>{if(ready)render();});for(const x of ['Trend','Growth','Share'])$('a17Finance'+x+'Toggle')?.addEventListener('click',()=>toggle(x));sync();});
- document.addEventListener('petatoe:language-changed',()=>{if(ready)render();else status(can()?'financeNotLoaded':'financeBlocked');});
+ window.addEventListener('petatoe-language-changed',()=>{if(ready)render();else status(can()?'financeNotLoaded':'financeBlocked');});
  window.AdvancedAnalyticsServiceFinance=Object.freeze({load,render});
 })();

@@ -151,6 +151,6 @@
   }
   function activate(){if(!mayView()){clear();status('blocked');return;}if(!loaded)load();else render();}
   document.addEventListener('DOMContentLoaded',()=>{document.querySelector('[data-a17-navigation]')?.addEventListener('click',event=>{const button=event.target.closest('button[data-a17-target]');if(!button)return;const target=$(button.dataset.a17Target);if(target&&!target.closest('.hidden'))target.scrollIntoView({behavior:'smooth',block:'start'});});$('a17Refresh')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',render);$('a17Compare')?.addEventListener('change',render);$('a17SalesRankingToggle')?.addEventListener('click',()=>{const pane=$('a17SalesRankingDetails'),btn=$('a17SalesRankingToggle');if(!pane||!btn)return;pane.hidden=!pane.hidden;btn.setAttribute('aria-expanded',String(!pane.hidden));btn.textContent=tr(pane.hidden?'showDetails':'hideDetails');});$('a17SalesToggle')?.addEventListener('click',()=>{const pane=$('a17SalesDetails');if(!pane)return;pane.hidden=!pane.hidden;$('a17SalesToggle').setAttribute('aria-expanded',String(!pane.hidden));$('a17SalesToggle').textContent=tr(pane.hidden?'showDetails':'hideDetails');});});
-  document.addEventListener('petatoe:language-changed',()=>{if(loaded){selectFilters();render();}});
+  window.addEventListener('petatoe-language-changed',()=>{if(loaded){selectFilters();render();}});
   window.AdvancedAnalyticsUI={activate,render,getVerifiedSalesMonths:()=>loaded&&mayView()?new Map(monthly):null};
 })();
