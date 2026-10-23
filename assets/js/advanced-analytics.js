@@ -42,6 +42,31 @@
     const growth=!partial&&sb>0?((sc-sb)/sb*100).toFixed(1)+'%':tr('unavailable');
     $('a17Kpis').replaceChildren();for(const [k,v] of [['total',amount(sc)],['growth',growth],['periodMonths',String(cells.length)]]){const card=make('div',{class:'a17-kpi','data-a17-metric':k});card.append(make('span',{},tr(k)),make('strong',{},v));$('a17Kpis').append(card);}
     const root=$('a17SalesChart');root.replaceChildren();if(!cells.length){root.textContent=tr('noData');return;}
+    // The displayed reference is the same calendar month in the preceding year.
+    // Derive every visible year label from the actual calculated periods.
+    const currentYear=String(year),referenceYear=String(Number(year)-1);
+    const english=window.PetatoeLocalization?.effectiveLanguage?.()==='en';
+    const currentText=english?'Current':'الحالية';
+    const referenceText=english?'Reference':'المرجعية';
+    const diffText=english?'Difference':'الفرق';
+    const titleText=english?`Monthly sales comparison: ${currentYear} vs ${referenceYear}`:`مقارنة المبيعات الشهرية: ${currentYear} مقابل ${referenceYear}`;
+    const header=$('a17SalesPanel')?.querySelector('.a17-panel-title h4');
+    if(header){header.removeAttribute('data-petatoe-i18n');header.textContent=titleText;}
+    const legend=make('div',{class:'a17-sales-year-legend','aria-label':titleText});
+    legend.style.cssText='display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:center;margin:12px 0 8px;font-weight:700';
+    for(const [label,color] of [[`${currentText} (${currentYear})`,'#16886c'],[`${referenceText} (${referenceYear})`,'#a3aab5']]){
+      const item=make('span',{class:'a17-sales-year-legend-item'});
+      item.style.cssText='display:inline-flex;align-items:center;gap:8px;direction:rtl';
+      const swatch=make('span',{'aria-hidden':'true'});swatch.style.cssText=`display:inline-block;width:23px;height:4px;border-radius:5px;background:${color}`;
+      item.append(swatch,make('span',{},label));legend.append(item);
+    }
+    root.append(legend);
+    const tableHeaders=$('a17SalesDetails')?.querySelectorAll('thead th');
+    if(tableHeaders?.length>=4){
+      // Don't let the localization engine subsequently overwrite dynamic year headings.
+      const labels=[tr('period'),`${currentText} (${currentYear})`,`${referenceText} (${referenceYear})`,`${diffText} (${currentYear} − ${referenceYear})`];
+      tableHeaders.forEach((th,i)=>{if(i<labels.length){th.removeAttribute('data-petatoe-i18n');th.textContent=labels[i];}});
+    }
     // SVG is intentionally informational only: no external charting library or inline event handlers.
     const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 900 275');svg.setAttribute('role','img');svg.setAttribute('aria-label',tr('salesTitle'));svg.setAttribute('preserveAspectRatio','xMidYMid meet');
     const create=(tag,props)=>{const el=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(props))el.setAttribute(k,String(v));return el;};
@@ -50,7 +75,13 @@
     for(const [key,color] of [['reference','#a3aab5'],['current','#16886c']]){
       const path=cells.map((r,i)=>(i?'L':'M')+x(i).toFixed(2)+','+y(r[key]).toFixed(2)).join(' ');
       svg.append(create('path',{d:path,fill:'none',stroke:color,'stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'}));
-      cells.forEach((r,i)=>svg.append(create('circle',{cx:x(i),cy:y(r[key]),r:4,fill:color})));
+      cells.forEach((r,i)=>{
+        const point=create('circle',{cx:x(i),cy:y(r[key]),r:5,fill:color});
+        const period=key==='current'?r.key:r.base;
+        const tip=create('title',{});
+        tip.textContent=`${period} — ${key==='current'?currentText:referenceText}: ${amount(r[key])}`;
+        point.append(tip);svg.append(point);
+      });
     }
     cells.forEach((r,i)=>{const tx=create('text',{x:x(i),y:252,'text-anchor':'middle','font-size':cells.length>8?12:14,fill:'currentColor'});tx.textContent=r.key.slice(5);svg.append(tx);});root.append(svg);
     const body=$('a17SalesBody'),foot=$('a17SalesFoot');body.replaceChildren();foot.replaceChildren();
