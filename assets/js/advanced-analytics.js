@@ -49,6 +49,7 @@
     const currentText=english?'Current':'الحالية';
     const referenceText=english?'Reference':'المرجعية';
     const diffText=english?'Difference':'الفرق';
+    const percentText=english?'Change (%)':'نسبة التغير (%)';
     const titleText=english?`Monthly sales comparison: ${currentYear} vs ${referenceYear}`:`مقارنة المبيعات الشهرية: ${currentYear} مقابل ${referenceYear}`;
     const header=$('a17SalesPanel')?.querySelector('.a17-panel-title h4');
     if(header){header.removeAttribute('data-petatoe-i18n');header.textContent=titleText;}
@@ -64,8 +65,10 @@
     const tableHeaders=$('a17SalesDetails')?.querySelectorAll('thead th');
     if(tableHeaders?.length>=4){
       // Don't let the localization engine subsequently overwrite dynamic year headings.
-      const labels=[tr('period'),`${currentText} (${currentYear})`,`${referenceText} (${referenceYear})`,`${diffText} (${currentYear} − ${referenceYear})`];
-      tableHeaders.forEach((th,i)=>{if(i<labels.length){th.removeAttribute('data-petatoe-i18n');th.textContent=labels[i];}});
+      const labels=[tr('period'),`${currentText} (${currentYear})`,`${referenceText} (${referenceYear})`,`${diffText} (${currentYear} − ${referenceYear})`,percentText];
+      const headRow=tableHeaders[0]?.parentElement;
+      if(headRow && tableHeaders.length===4)headRow.append(make('th',{},percentText));
+      headRow?.querySelectorAll('th').forEach((th,i)=>{if(i<labels.length){th.removeAttribute('data-petatoe-i18n');th.textContent=labels[i];}});
     }
     // SVG is intentionally informational only: no external charting library or inline event handlers.
     const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 900 275');svg.setAttribute('role','img');svg.setAttribute('aria-label',tr('salesTitle'));svg.setAttribute('preserveAspectRatio','xMidYMid meet');
@@ -85,8 +88,34 @@
     }
     cells.forEach((r,i)=>{const tx=create('text',{x:x(i),y:252,'text-anchor':'middle','font-size':cells.length>8?12:14,fill:'currentColor'});tx.textContent=r.key.slice(5);svg.append(tx);});root.append(svg);
     const body=$('a17SalesBody'),foot=$('a17SalesFoot');body.replaceChildren();foot.replaceChildren();
-    for(const r of cells){const trEl=make('tr');for(const cell of [r.key,amount(r.current),amount(r.reference),amount(r.current-r.reference)])trEl.append(make('td',{},cell));body.append(trEl);}
-    const row=make('tr');for(const cell of [tr('totalRow'),amount(sc),amount(sb),amount(sc-sb)])row.append(make('td',{},cell));foot.append(row);
+    const changePercent=(current,reference)=>reference===0?tr('unavailable'):((current-reference)/Math.abs(reference)*100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
+    const decorateChange=(td,difference)=>{
+      // Green = increase, red = decrease, neutral = unchanged. No styling of underlying monetary amounts.
+      td.style.setProperty('color',difference>0?'#13835f':difference<0?'#c53542':'inherit','important');
+      td.style.fontWeight='700';
+      td.style.direction='ltr';
+      td.style.unicodeBidi='isolate';
+    };
+    for(const r of cells){
+      const trEl=make('tr'),delta=r.current-r.reference;
+      const values=[r.key,amount(r.current),amount(r.reference),amount(delta),changePercent(r.current,r.reference)];
+      values.forEach((value,i)=>{
+        const td=make('td',{},value);
+        if(i===3||i===4)decorateChange(td,delta);
+        trEl.append(td);
+      });
+      body.append(trEl);
+    }
+    const row=make('tr'),sumDifference=sc-sb;
+    row.style.setProperty('background-color','#1e559d','important');
+    [tr('totalRow'),amount(sc),amount(sb),amount(sumDifference),changePercent(sc,sb)].forEach(value=>{
+      const td=make('td',{},value);
+      td.style.setProperty('background-color','#1e559d','important');
+      td.style.setProperty('color','#ffffff','important');
+      td.style.fontWeight='700';
+      row.append(td);
+    });
+    foot.append(row);
     renderSalesRanking(year,month);
     if(partial)status('incomplete');else if(!sb)status('zeroBase');else status('loaded');
   }

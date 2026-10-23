@@ -1,14 +1,9 @@
-# A17.3.3.6 — Sales year visibility
+# A17.3.3.7 — Sales comparison visual clarity
 
-Base: A17.3.3.5 global YoY sales report.
-
-Changed only assets/js/advanced-analytics.js.
-
-- Dynamic graph title with current/reference calendar years.
-- Legend matching green/gray line colors.
-- Each SVG data point has a native tooltip containing period YYYY-MM, year, and sales amount.
-- Dynamic table headings include both years and their difference.
-- Localization follows existing language setting; no sales computation, query, or permissions changes.
-- Year-specific labels are derived from the same year used for comparison (`shift(key,-12)`).
-
-Verification: JS syntax and ZIP integrity. Production visual test remains pending.
+- Adds a fifth column: change percentage = (current - reference) / abs(reference) × 100, using two decimals; N/A if reference is zero.
+- Colors increase green and decrease red for the difference and percentage cells; unchanged stays neutral.
+- Styles the total row dark blue with white text (same table-header visual family).
+- Total percentage is calculated from total current and total reference, never averaged from monthly percentages.
+- Labels the new heading in Arabic or English based on current localization language; preserves A17.3.3.6 year headings.
+- No changes to data sourcing, calculations of source amounts, RPC, SQL, or permissions.
+- Requires browser testing after deployment.
