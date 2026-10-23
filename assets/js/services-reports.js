@@ -209,7 +209,11 @@
     }
     return result.filter(r=>!search||[r.reference,r.service,r.car,r.team].some(v=>String(v).toLocaleLowerCase().includes(search))).sort((a,b)=>b.date.localeCompare(a.date)||a.reference.localeCompare(b.reference));
   }
-  const detailValues=r=>[r.date,r.reference,t(r.type==='sale'?'detailSales':'detailExecution'),r.service,r.car,r.team,r.qty===null?'—':number(r.qty),r.unit===null?'—':money(cents(r.unit)),money(r.amount)];
+  // Localize the display label only; keep the canonical invoice reference unchanged for search and CSV export.
+  const displayInvoiceReference = reference => String(reference??'').trim()==='بدون فاتورة'
+    ? (window.PetatoeLocalization?.t?.('appointments.common.noInvoice') || 'بدون فاتورة')
+    : reference;
+  const detailValues=r=>[r.date,r.type==='sale'?displayInvoiceReference(r.reference):r.reference,t(r.type==='sale'?'detailSales':'detailExecution'),r.service,r.car,r.team,r.qty===null?'—':number(r.qty),r.unit===null?'—':money(cents(r.unit)),money(r.amount)];
   function renderDetails(){
     detailIds.forEach(id=>$(id)?.replaceChildren());if(!$('a16DetailBody'))return;
     const available=ready&&allowed();const data=detailRows();
