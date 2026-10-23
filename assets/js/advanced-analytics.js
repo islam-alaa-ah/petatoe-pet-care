@@ -70,6 +70,16 @@
       if(headRow && tableHeaders.length===4)headRow.append(make('th',{},percentText));
       headRow?.querySelectorAll('th').forEach((th,i)=>{if(i<labels.length){th.removeAttribute('data-petatoe-i18n');th.textContent=labels[i];}});
     }
+    // Keep all five sales comparison columns aligned in the same fixed layout,
+    // independent of Arabic/English direction and global table styles.
+    const salesTable=$('a17SalesDetails')?.querySelector('table');
+    if(salesTable){
+      salesTable.classList.add('a17-sales-comparison-table');
+      let cols=salesTable.querySelector(':scope > colgroup');
+      if(!cols){cols=make('colgroup');salesTable.insertBefore(cols,salesTable.firstChild);}
+      cols.replaceChildren();
+      for(const width of ['16%','21%','21%','21%','21%'])cols.append(make('col',{style:`width:${width}`}));
+    }
     // SVG is intentionally informational only: no external charting library or inline event handlers.
     const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 900 275');svg.setAttribute('role','img');svg.setAttribute('aria-label',tr('salesTitle'));svg.setAttribute('preserveAspectRatio','xMidYMid meet');
     const create=(tag,props)=>{const el=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(props))el.setAttribute(k,String(v));return el;};

@@ -1,9 +1,9 @@
-# A17.3.3.7 — Sales comparison visual clarity
+A17.3.3.8 — Sales comparison table column alignment
 
-- Adds a fifth column: change percentage = (current - reference) / abs(reference) × 100, using two decimals; N/A if reference is zero.
-- Colors increase green and decrease red for the difference and percentage cells; unchanged stays neutral.
-- Styles the total row dark blue with white text (same table-header visual family).
-- Total percentage is calculated from total current and total reference, never averaged from monthly percentages.
-- Labels the new heading in Arabic or English based on current localization language; preserves A17.3.3.6 year headings.
-- No changes to data sourcing, calculations of source amounts, RPC, SQL, or permissions.
-- Requires browser testing after deployment.
+- Five fixed column widths (16%, 21%, 21%, 21%, 21%), using a colgroup generated once at render time.
+- Scope styling to the A17 sales comparison table only. Header, monthly body, and totals use identical center alignment.
+- Preserve green/red change formatting, blue total footer, year headings and all sales values and calculations.
+- No SQL, RPC, RLS, localization engine, or other reports modified.
+- Static checks passed; browser RTL/LTR verification remains pending.
+
+Apply over A17.3.3.7. Only the two paths included are changed.
