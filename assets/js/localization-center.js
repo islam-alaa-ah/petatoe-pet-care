@@ -340,6 +340,7 @@
     ["advancedAnalytics.opsCurrent", "kpi", "مواعيد الحالية", "Current appointments"],
     ["advancedAnalytics.opsReference", "kpi", "مواعيد المرجعية", "Reference appointments"],
     ["advancedAnalytics.opsNet", "kpi", "فرق عدد المواعيد", "Appointment difference"],
+    ["advancedAnalytics.opsUndated", "kpi", "طلبات بدون تاريخ مجدول (خارج المقارنة)", "Requests without a scheduled date (excluded from comparison)"],
     ["advancedAnalytics.opsOther", "label", "غير مسند", "Unassigned"],
     ["advancedAnalytics.opsCurrentPeriod", "label", "الفترة الحالية", "Current period"],
     ["advancedAnalytics.opsBasePeriod", "label", "الفترة المرجعية", "Reference period"],
