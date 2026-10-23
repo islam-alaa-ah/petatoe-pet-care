@@ -149,3 +149,11 @@
 #advancedAnalyticsView #a17SalesDetails .a17-sales-comparison-table tfoot td {
   background:#1e559d!important;color:#fff!important;font-weight:700;
 }
+
+/* A17.3.4: each smart operational report spans the complete content width. */
+#advancedAnalyticsView .a17-intel-panel{width:100%;max-width:none;min-width:0;box-sizing:border-box;display:block;margin-block:18px;}
+#advancedAnalyticsView .a17-intel-panel .a17-intel-chart{width:100%;min-width:0;}
+#advancedAnalyticsView .a17-intel-panel .a17-table-scroll{width:100%;overflow-x:auto;}
+#advancedAnalyticsView .a17-intel-panel .a17-table-scroll table{width:100%;min-width:560px;}
+#advancedAnalyticsView .a17-intel-total{background:#1e559d;color:#fff;font-weight:700;}
+#advancedAnalyticsView .a17-intel-total td{background:transparent;color:#fff;}
