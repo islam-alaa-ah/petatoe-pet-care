@@ -5,6 +5,9 @@
   const SCREEN_KEY='installationExecution';
   const desktopPilot=()=>window.matchMedia?.('(min-width:1024px) and (hover:hover) and (pointer:fine)')?.matches===true&&Number(window.screen?.width||0)>1024;
   const rows=[
+    ["customerReports.page.title","title","تقارير العملاء","Customer Reports"],
+    ["customerReports.page.subtitle","description","تحليل المشتريات الفعلية للعملاء وتكرار الشراء","Analysis of customers’ recorded purchases and repeat purchasing"],
+    ["customerReports.page.description","description","تحليل المبيعات الفعلية المرتبطة بالعملاء، بعيدًا عن عروض الأسعار ونشاط التواصل.","Analyze actual customer-attributed sales, excluding quotations and contact activity."],
     ["sidebar.customerReports", "label", "تقارير العملاء", "Customer Reports"],
     ["customerReports.staticReport.s001", "label", "فلاتر تقارير العملاء والتصدير", "Customer report filters and exports"],
     ["customerReports.staticReport.s002", "label", "الفلاتر تطبق على كل كروت وتقارير العملاء، من بيانات تم تحميلها بالكامل والتحقق منها. مؤشرات أول بيع وتكرار التعامل تخص الفترة المختارة.", "Filters apply to all customer report cards and reports using fully loaded, verified data. First-sale and repeat-purchase indicators relate to the selected period."],

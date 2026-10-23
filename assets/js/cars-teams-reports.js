@@ -77,7 +77,7 @@
     footer("a15TeamsBody",[t("total"),num(rows.length),currency(total)]);
     footer("a15MonthsBody",[t("total"),num(rows.length),currency(total)]);
     const detail=[...rows].sort((a,b)=>b.date.localeCompare(a.date));
-    cells("a15DetailsBody",detail,sizes.details,r=>td([r.date,r.invoice||"—",r.car,r.team,currency(r.cents)]));
+    cells("a15DetailsBody",detail,sizes.details,r=>td([r.date,(String(r.invoice||"").trim() === "بدون فاتورة" ? (window.PetatoeLocalization?.t?.("appointments.common.noInvoice") || r.invoice) : r.invoice || "—"),r.car,r.team,currency(r.cents)]));
     footer("a15DetailsBody",[t("total"),"—","—",num(rows.length),currency(total)]);
     [["a15CarsMore",cars.length,sizes.cars],["a15TeamsMore",teams.length,sizes.teams],["a15DetailsMore",detail.length,sizes.details]].forEach(([id,len,limit])=>{$(id).hidden=len<=limit;});
     status(t("statusLoaded",{all:num(records.length),shown:num(rows.length)}));
@@ -134,7 +134,7 @@
     $("a15OpMonthBody").innerHTML=monthRows.length?monthRows.map(g=>td([g.key,num(g.total),num(g.done),num(g.cancel),`${(g.total?g.done/g.total*100:0).toFixed(1)}%`,num(g.qty)])).join(""):`<tr><td colspan="6">${escapeHtml(t("none"))}</td></tr>`;
     footer("a15OpMonthBody",[t("total"),num(monthRows.reduce((n,g)=>n+g.total,0)),num(monthRows.reduce((n,g)=>n+g.done,0)),num(monthRows.reduce((n,g)=>n+g.cancel,0)),pct(monthRows.reduce((n,g)=>n+g.done,0),monthRows.reduce((n,g)=>n+g.total,0)),num(monthRows.reduce((n,g)=>n+g.qty,0))]);
     const dated=[...rows].sort((a,b)=>String(b.scheduledDate||"").localeCompare(String(a.scheduledDate||"")));
-    $("a15OpDetailsBody").innerHTML=dated.length?dated.slice(0,operationDetailLimit).map(r=>td([String(r.scheduledDate||"").slice(0,10)||"—",String(r.teamCarName||t("unassignedCar")),String(r.teamName||t("unassignedTeam")),String(r.status||t("unassigned")),num(Number(r.executedQuantity||0))])).join(""):`<tr><td colspan="5">${escapeHtml(t("none"))}</td></tr>`;
+    $("a15OpDetailsBody").innerHTML=dated.length?dated.slice(0,operationDetailLimit).map(r=>td([String(r.scheduledDate||"").slice(0,10)||"—",String(r.teamCarName||t("unassignedCar")),String(r.teamName||t("unassignedTeam")),String(window.PetatoeLocalization?.statusLabel?.(String(r.status||"")) || r.status || t("unassigned")),num(Number(r.executedQuantity||0))])).join(""):`<tr><td colspan="5">${escapeHtml(t("none"))}</td></tr>`;
     $("a15OpDetailsMore").hidden=dated.length<=operationDetailLimit;
     opStatus(t("operationLoaded",{count:num(rows.length)}));
   }

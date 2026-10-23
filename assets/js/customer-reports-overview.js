@@ -19,18 +19,45 @@
     select.replaceChildren(new Option(allLabel, ""));
     for (const [value, label] of items) select.add(new Option(label, value));
   }
+  // Presentation-only neighborhood translation. Never use the translated name as a grouping/filter key.
+  function geographyCatalog(customers, sales) {
+    const byId = new Map();
+    for (const row of sales) {
+      const id = String(row.neighborhood_id || "").trim();
+      if (!id) continue;
+      const ar = String(row.neighborhood_name_ar || "").trim();
+      const en = String(row.neighborhood_name_en || "").trim();
+      const prior = byId.get(id) || {id, name:"", en:""};
+      byId.set(id, {id, name:prior.name || ar, en:prior.en || en});
+    }
+    for (const customer of customers) {
+      const id = String(customer.neighborhoodId || customer.neighborhood_id || "").trim();
+      if (!id) continue;
+      const prior = byId.get(id) || {id, name:"", en:""};
+      byId.set(id, {
+        id,
+        name:prior.name || String(customer.neighborhood_name_ar || customer.neighborhoodName || "").trim(),
+        en:prior.en || String(customer.neighborhood_name_en || customer.neighborhoodNameEn || "").trim()
+      });
+    }
+    const catalog = [...byId.values()].filter(item=>item.name);
+    window.PetatoeLocalization?.registerEntityCatalog?.({neighborhoods:catalog});
+    return byId;
+  }
+  function localizedNeighborhood(item) {
+    const isEnglish = (window.PetatoeLocalization?.effectiveLanguage?.() || window.PetatoeLocalization?.getLanguage?.()) === "en";
+    if (!item) return t("customerReports.overviewDynamic.k006");
+    const localized = window.PetatoeLocalization?.entityText?.("neighborhood", item);
+    if (isEnglish && (!localized || /[\u0600-\u06ff]/.test(localized))) return item.en || "Translation pending";
+    return localized || (isEnglish ? item.en || "Translation pending" : item.name);
+  }
   function refreshFilterOptions(customers, sales) {
     const years = [...new Set(sales.map(x => String(x.invoice_date || "").slice(0,4)).filter(x => /^\d{4}$/.test(x)))].sort();
     const months = [...new Set(sales.map(x => String(x.invoice_date || "").slice(5,7)).filter(x => /^(0[1-9]|1[0-2])$/.test(x)))].sort();
     const names = customers.map(x => [x.id, String(x.name || x.customer_name || x.customerName || x.id).trim()]).sort((a,b) => a[1].localeCompare(b[1], "ar"));
-    const areaNames = new Map();
-    for (const row of sales) {
-      const areaId = String(row.neighborhood_id || "").trim();
-      const areaName = String(row.neighborhood_name_ar || row.neighborhood_name_en || "").trim();
-      if (areaId && areaName && !areaNames.has(areaId)) areaNames.set(areaId, areaName);
-    }
+    const areaNames = geographyCatalog(customers, sales);
     const areas = [...new Set(customers.map(c=>String(c.neighborhoodId || "").trim()).filter(Boolean))]
-      .map(id=>[id, areaNames.get(id) || t("customerReports.overviewDynamic.unnamedArea",{code:id.slice(0,8)})])
+      .map(id=>[id, areaNames.has(id) ? localizedNeighborhood(areaNames.get(id)) : t("customerReports.overviewDynamic.unnamedArea",{code:id.slice(0,8)})])
       .sort((a,b)=>a[1].localeCompare(b[1], "ar"));
     const old = [selected("a14FilterYear"),selected("a14FilterMonth"),selected("a14FilterCustomer"),selected("a14FilterNeighborhood")];
     setOptions($("a14FilterYear"),years.map(x=>[x,x]),t("customerReports.overviewDynamic.k001"));
@@ -402,7 +429,13 @@
     if(rows.reduce((n,r)=>n+r.customers,0)!==result.customers || rows.reduce((n,r)=>n+r.cents,0)!==Math.round(result.sales*100))throw new Error("عدم تطابق إجماليات التقرير الجغرافي.");
     const unspecified=regions.get(t("customerReports.overviewDynamic.k006"))?.customers||0;
     metrics.append(metric(t("customerReports.overviewDynamic.k061"),integer(rows.filter(r=>r.name!==t("customerReports.overviewDynamic.k006")).length)),metric(t("customerReports.overviewDynamic.k062"),integer(unspecified)),metric(t("customerReports.overviewDynamic.k063"),`${fmt(result.sales)} SAR`));
-    for (const r of rows) {const tr=document.createElement("tr");for(const v of [r.name,integer(r.customers),integer(r.buyers),`${fmt(r.cents/100)} SAR`]){const td=document.createElement("td");td.textContent=v;tr.append(td);}table.append(tr);}
+    const sourceCatalog = geographyCatalog(verifiedSnapshot?.customers || [], verifiedSnapshot?.sales || []);
+    const byArabicName = new Map([...sourceCatalog.values()].filter(x=>x.name).map(x=>[x.name, x]));
+    for (const r of rows) {
+      const tr=document.createElement("tr");
+      const translatedName = byArabicName.has(r.name) ? localizedNeighborhood(byArabicName.get(r.name)) : r.name;
+      for(const v of [translatedName,integer(r.customers),integer(r.buyers),`${fmt(r.cents/100)} SAR`]){const td=document.createElement("td");td.textContent=v;tr.append(td);}table.append(tr);
+    }
     $("a14GeoStatus").textContent=t("customerReports.overviewDynamic.k064");
   }
 
