@@ -3,6 +3,13 @@
  const $=id=>document.getElementById(id),t=k=>window.PetatoeLocalization?.t?.('advancedAnalytics.'+k)||k;
  const allowed=()=>['advancedAnalytics','servicesReports','salesReports','installationReports'].every(x=>window.PermissionEngine?.canView?.(x)===true);
  const page=500,maxPages=200;let busy=false,ready=false,records=[],types=new Map(),loadingError=false;
+ const serviceLabel = item => {
+  if (!item) return '';
+  const loc=window.PetatoeLocalization;
+  return typeof loc?.entityText==='function'
+    ? loc.entityText('service',item)
+    : String(item.name||item.service_code||item.id||'');
+ };
  const number=n=>Number(n).toLocaleString('en-US',{maximumFractionDigits:3});
  const text=(tag,cls,value)=>{const el=document.createElement(tag);if(cls)el.className=cls;el.textContent=String(value);return el;};
  const keyOf=x=>String(x||'').slice(0,7);
@@ -23,7 +30,8 @@
    ]);
    const op=await window.InstallationsServiceSafe?.operationalReport?.({});if(!op||!Array.isArray(op.rows))throw Error('OPERATIONAL_SCOPE_UNAVAILABLE');
    const scopes=new Set();for(const row of op.rows){if(!row.id||scopes.has(row.id))throw Error('OPERATIONAL_DUPLICATE');scopes.add(row.id);}
-   const visitById=new Map(visits.map(x=>[x.id,x])),requestById=new Map(requests.map(x=>[x.id,x]));types=new Map(catalogue.map(x=>[x.id,String(x.name||x.service_code||x.id)]));
+   const visitById=new Map(visits.map(x=>[x.id,x])),requestById=new Map(requests.map(x=>[x.id,x]));types=new Map(catalogue.map(x=>[x.id,x]));
+   window.PetatoeLocalization?.registerEntityCatalog?.({services:catalogue});
    const built=[];for(const l of lines){const v=visitById.get(l.visit_id);if(!v)throw Error('MISSING_VISIT');if(String(v.status||'').trim()!=='مؤكدة')continue;
     const rs=requestById.get(l.request_service_id);if(!rs||rs.installation_request_id!==v.installation_request_id)throw Error('MISSING_OR_MISMATCHED_SERVICE');
     if(!scopes.has(v.installation_request_id))throw Error('OUTSIDE_OPERATIONAL_SCOPE');if(!types.has(rs.service_type_id))throw Error('UNKNOWN_SERVICE');
@@ -35,7 +43,7 @@
   }catch(error){console.error('A17.3.3 services execution load',error);ready=false;records=[];types=new Map();clear();status('serviceFailed');}
   finally{busy=false;$('a17ServiceLoad').disabled=false;}
  }
- function populate(){const select=$('a17ServiceSelect');if(!select)return;const prev=select.value;select.replaceChildren();const opt=text('option','',t('serviceAll'));opt.value='';select.append(opt);const ids=[...new Set(records.map(r=>r.service))].sort((a,b)=>(types.get(a)||a).localeCompare(types.get(b)||b));for(const id of ids){const o=text('option','',types.get(id)||id);o.value=id;select.append(o);}if(ids.includes(prev))select.value=prev;}
+ function populate(){const select=$('a17ServiceSelect');if(!select)return;const prev=select.value;select.replaceChildren();const opt=text('option','',t('serviceAll'));opt.value='';select.append(opt);const ids=[...new Set(records.map(r=>r.service))].sort((a,b)=>(serviceLabel(types.get(a))||a).localeCompare(serviceLabel(types.get(b))||b));for(const id of ids){const o=text('option','',serviceLabel(types.get(id))||id);o.value=id;select.append(o);}if(ids.includes(prev))select.value=prev;}
  const sums=(list,sel)=>{const m=new Map();for(const r of list){const key=sel(r);m.set(key,(m.get(key)||0)+r.qty);}return m;};
  const word=(ar,en)=>document.documentElement.lang?.toLowerCase().startsWith('en')?en:ar;
  function annotate(id,label){const node=$(id);if(!node)return;let info=node.querySelector('.a17-service-period-info');if(!info){info=text('p','a17-service-period-info','');node.querySelector('h4')?.after(info);}if(info)info.textContent=label;}
@@ -59,7 +67,7 @@
   const selectedPeriods=new Set(periods),referencePeriods=new Set(periods.map(base));
   const currentRows=records.filter(r=>selectedPeriods.has(r.month)),referenceRows=records.filter(r=>referencePeriods.has(r.month));
   const c=sums(currentRows,r=>r.service),b=sums(referenceRows,r=>r.service),ids=[...new Set([...c.keys(),...b.keys()])];
-  const order=ids.map(id=>({id,label:types.get(id)||id,current:c.get(id)||0,reference:b.get(id)||0})).sort((x,y)=>y.current-x.current||x.label.localeCompare(y.label));
+  const order=ids.map(id=>({id,label:serviceLabel(types.get(id))||id,current:c.get(id)||0,reference:b.get(id)||0})).sort((x,y)=>y.current-x.current||x.label.localeCompare(y.label));
   const growth=$('a17ServiceGrowth'),growthBody=$('a17ServiceGrowthBody');const growthOrder=[...order].sort((x,y)=>{const score=z=>!partial&&z.reference>0?(z.current-z.reference)/z.reference:-Infinity;return score(y)-score(x)||x.label.localeCompare(y.label);});
   const maxQty=Math.max(1,...growthOrder.map(x=>x.current));for(const r of growthOrder){const pct=partial||r.reference===0?t('serviceUnavailable'):((r.current-r.reference)/r.reference*100).toFixed(1)+'%';if(!partial&&r.reference>0)bar(growth,r.label,r.current,maxQty,pct);else noBar(growth,r.label,pct);row(growthBody,[r.label,number(r.current),number(r.reference),pct]);}if(!growthOrder.length)growth.textContent=t('noData');
   const share=$('a17ServiceShare'),shareBody=$('a17ServiceShareBody');const totalQty=[...c.values()].reduce((a,v)=>a+v,0),shareMax=Math.max(1,...order.map(x=>x.current));for(const r of order.filter(x=>x.current>0)){const pct=totalQty?((r.current/totalQty)*100).toFixed(2)+'%':t('serviceUnavailable');bar(share,r.label,r.current,shareMax,pct);row(shareBody,[r.label,number(r.current),pct]);}if(!totalQty)share.textContent=t('noData');else row($('a17ServiceShareFoot'),[t('totalRow'),number(totalQty),'100.00%']);

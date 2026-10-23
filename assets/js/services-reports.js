@@ -8,6 +8,8 @@
   const cents = n => {const v=Number(n);if(!Number.isFinite(v)||!Number.isSafeInteger(Math.round(v*100)))throw Error('INVALID_MONEY');return Math.round(v*100);};
   const allowed = () => window.PermissionEngine?.canView?.('servicesReports')===true && window.PermissionEngine?.canView?.('salesReports')===true;
   const PAGE=500, MAX=200;
+  const serviceLabel=item=>{const loc=window.PetatoeLocalization;return typeof loc?.entityText==='function'?loc.entityText('service',item):String(item?.name||item?.service_code||item?.id||'');};
+  let serviceCatalog=new Map();
   let rows=[], catalogue=new Map(), ready=false, busy=false, shown=10;
   let executed=[], executionReady=false, executionBusy=false, detailShown=10;
   let detailMeta=new Map();
@@ -31,7 +33,9 @@
       const historicalRPC=rpc.filter(r=>r.is_historical);
       if(historical.length!==historicalRPC.length||historicalRPC.some(r=>!byId.has(r.row_id)))throw Error('HISTORICAL_SCOPE_MISMATCH');
       const types=await all(window.customerSupabase.from('installation_service_types').select('id,name,service_code'), 'CATALOG');
-      const map=new Map(types.map(x=>[x.id,x.name||x.service_code||x.id]));
+      serviceCatalog=new Map(types.map(x=>[x.id,x]));
+      window.PetatoeLocalization?.registerEntityCatalog?.({services:types});
+      const map=new Map(types.map(x=>[x.id,serviceLabel(x)]));
       const built=[];detailMeta.clear();
       for(const r of rpc){const id=r.row_id, historicalRecord=!!r.is_historical, source=historicalRecord?byId.get(id):null;const a=cents(r.amount_incl_tax);
         if(historicalRecord&&cents(source.sales_inclusive)!==a)throw Error('HISTORICAL_AMOUNT_MISMATCH');
@@ -245,6 +249,6 @@
   }
   function activate(){if(!allowed()){empty();status(t('noAccess'));return;}if(!ready&&!busy)load();else render();}
   document.addEventListener('DOMContentLoaded',()=>{$('a16Refresh')?.addEventListener('click',load);$('a16ExecutionRefresh')?.addEventListener('click',loadExecution);$('a16Apply')?.addEventListener('click',()=>{shown=10;detailShown=10;render();renderExecution();renderYearComparison();renderDetails();});$('a16Reset')?.addEventListener('click',()=>{for(const id of ['a16Year','a16Month','a16Service'])$(id).value='';shown=10;detailShown=10;render();renderExecution();renderYearComparison();renderDetails();});$('a16ServicesMore')?.addEventListener('click',()=>{shown+=10;render();});$('a16DetailType')?.addEventListener('change',()=>{detailShown=10;renderDetails();});$('a16DetailSearch')?.addEventListener('input',()=>{detailShown=10;renderDetails();});$('a16DetailMore')?.addEventListener('click',()=>{detailShown+=10;renderDetails();});$('a16DetailCSV')?.addEventListener('click',exportDetails);$('a16DetailPrint')?.addEventListener('click',printDetails);});
-  window.addEventListener('petatoe-language-changed',()=>{if(ready){populate();render();}renderExecution();renderYearComparison();renderDetails();});
+  window.addEventListener('petatoe-language-changed',()=>{if(ready){catalogue=new Map([...serviceCatalog].map(([id,item])=>[id,serviceLabel(item)]));populate();render();}renderExecution();renderYearComparison();renderDetails();});
   window.ServicesReportsUI=Object.freeze({activate,render});
 })();

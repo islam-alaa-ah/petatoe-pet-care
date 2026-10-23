@@ -6,6 +6,13 @@
  const can = () => ['advancedAnalytics','servicesReports','salesReports'].every(k => window.PermissionEngine?.canView?.(k)===true);
  const psize=500,cap=200;
  let busy=false,ready=false, historical=[],current=[],names=new Map();
+ const serviceLabel = item => {
+  if (!item) return '';
+  const loc=window.PetatoeLocalization;
+  return typeof loc?.entityText==='function'
+    ? loc.entityText('service',item)
+    : String(item.name||item.service_code||item.id||'');
+ };
  const cents = v => { const n=Number(v); if(!Number.isFinite(n)) throw Error('INVALID_AMOUNT');return Math.round((n+Number.EPSILON)*100);};
  const money = v => (v/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
  const el=(tag,cls,value)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=String(value);return e;};
@@ -23,7 +30,8 @@
     pages(()=>db.from('installation_service_types').select('id,name,service_code'),'CATALOG'),
     pages(()=>db.rpc('sales_reports_rows_r44r38r20r35'),'RPC')
    ]);
-   names=new Map(services.map(x=>[x.id,String(x.name||x.service_code||x.id)]));
+   names=new Map(services.map(x=>[x.id,x]));
+   window.PetatoeLocalization?.registerEntityCatalog?.({services});
    historical=h.map(r=>{const d=String(r.sales_date||'').slice(0,10);if(!validDate(d))throw Error('HIST_DATE');const v=cents(r.sales_inclusive??0);const classified=r.record_type!=='cash_aggregate'&&!!r.service_type_id&&!r.item_is_unspecified;if(classified&&!names.has(r.service_type_id))throw Error('HIST_UNKNOWN_TYPE');return {month:d.slice(0,7),value:v,service:classified?r.service_type_id:null};});
    current=rpc.filter(r=>r.is_historical===false).map(r=>{const d=String(r.invoice_date||'').slice(0,10);if(!validDate(d))throw Error('CURRENT_DATE');return {month:d.slice(0,7),value:cents(r.amount_incl_tax??0)};});
    ready=true;render();status('financeLoaded');
@@ -82,7 +90,7 @@
   const note=$('a17FinanceComparisonNote');if(note)note.textContent=comparisonText;
   annotate('a17FinanceGrowthPanel',comparisonText+' · '+tr('financeCoverageNote')+pct(cv)+' / '+pct(bv)+' · '+tr('financeIncompleteCoverage'));
   const ids=[...new Set([...growthCurrent.keys(),...growthBaseline.keys()])];
-  const rows=ids.map(id=>({id,name:names.get(id)||id,a:growthCurrent.get(id)||0,b:growthBaseline.get(id)||0}));
+  const rows=ids.map(id=>({id,name:serviceLabel(names.get(id))||id,a:growthCurrent.get(id)||0,b:growthBaseline.get(id)||0}));
   const sortable=r=>hasVerifiedPeriod&&r.b>0?(r.a-r.b)/r.b:null;
   rows.sort((a,b)=>{const av=sortable(a),bv=sortable(b);return (bv===null?-Infinity:bv)-(av===null?-Infinity:av)||b.a-a.a||a.name.localeCompare(b.name);});
   const growth=$('a17FinanceGrowth'),top=Math.max(1,...rows.map(r=>r.a));
