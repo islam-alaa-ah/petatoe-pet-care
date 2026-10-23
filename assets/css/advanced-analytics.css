@@ -119,3 +119,6 @@
 #advancedAnalyticsView .a17-service-chart-fill {display:block;height:100%;background:linear-gradient(90deg,#237de6,#21b5ce);border-radius:10px}
 #advancedAnalyticsView .a17-service-chart-value {text-align:end;direction:ltr;font-variant-numeric:tabular-nums}
 @media(max-width:550px){#advancedAnalyticsView .a17-service-chart-row{grid-template-columns:100px minmax(0,1fr);gap:7px}#advancedAnalyticsView .a17-service-chart-value{grid-column:2}}
+
+/* A17.3.3.2: Financial/operational modes, reports stay full-width and stacked */
+.a17-service-mode{display:flex;align-items:center;margin:12px 0 18px}.a17-service-mode label{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.a17-service-mode select{min-width:210px;max-width:100%}.a17-finance-hidden{display:none!important}#a17FinancePanel,#a17FinanceGrowthPanel,#a17FinanceSharePanel{width:100%;min-width:0}#a17FinancePanel[hidden],#a17FinanceGrowthPanel[hidden],#a17FinanceSharePanel[hidden]{display:none!important}
