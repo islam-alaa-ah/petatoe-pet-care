@@ -421,6 +421,7 @@
     ["advancedAnalytics.peakCount", "table", "المواعيد", "Appointments"],
     ["advancedAnalytics.peakTotal", "label", "إجمالي المواعيد الموزعة", "Appointments plotted"],
     ["advancedAnalytics.peakUnknown", "label", "مواعيد بدون ساعة بداية صالحة", "Appointments without valid start time"],
+    ["advancedAnalytics.peakOutsideSlots", "label", "مواعيد خارج أوقات الحجز المعتمدة", "Appointments outside approved booking slots"],
     ["advancedAnalytics.peakTop", "label", "أكثر ساعة ازدحامًا", "Busiest hour"],
     ["advancedAnalytics.peakNoData", "status", "لا توجد مواعيد مؤرخة في الفترة المختارة.", "No dated appointments in the selected period."],
     ["advancedAnalytics.peakLoading", "status", "جارٍ تحميل أوقات الحجز المجدولة والتحقق من اكتمالها…", "Loading and validating scheduled start times…"],

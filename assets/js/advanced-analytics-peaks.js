@@ -7,6 +7,9 @@ const text=(tag,v,cls)=>{const e=document.createElement(tag);if(cls)e.className=
 const fmt=n=>Number(n).toLocaleString('en-US');
 const dateValid=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(Date.parse(s+'T00:00:00Z'))&&new Date(s+'T00:00:00Z').toISOString().slice(0,10)===s;
 const pad=n=>String(n).padStart(2,'0');
+// Approved booking slots, matching installation-scheduling.js / installations-service.js.
+const BOOKING_HOURS=Object.freeze([12,14,16,18,20,22]);
+const BOOKING_HOURS_SET=new Set(BOOKING_HOURS);
 const days=['sun','mon','tue','wed','thu','fri','sat'];
 const weekdays={ar:['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
 const lang=()=>document.documentElement.lang?.toLowerCase().startsWith('en')?'en':'ar';
@@ -36,14 +39,14 @@ async function load(){if(loading)return;reset();if(!permitted()){entries=null;st
 function render(){reset();if(!permitted()){if(entries)status('peakDenied');return;}if(!entries)return;const period=range();if(!period){status('peakNoData');return;}
  $('a17PeakPeriod').textContent=`${t('peakSummary')}: ${period.from} → ${period.to} (Asia/Riyadh)`;
  const matched=entries.filter(r=>dateValid(r.scheduledDate)&&r.scheduledDate>=period.from&&r.scheduledDate<=period.to);
- const counts=Array.from({length:7},()=>Array(24).fill(0));let unknown=0,plotted=0;
- for(const r of matched){if(r.hour===null){unknown++;continue;}const day=new Date(r.scheduledDate+'T12:00:00Z').getUTCDay();counts[day][r.hour]++;plotted++;}
- let top=null,max=0;for(let d=0;d<7;d++)for(let h=0;h<24;h++)if(counts[d][h]>max){max=counts[d][h];top={d,h,count:max};}
+ const counts=Array.from({length:7},()=>Array(24).fill(0));let unknown=0,outside=0,plotted=0;
+ for(const r of matched){if(r.hour===null){unknown++;continue;}if(!BOOKING_HOURS_SET.has(r.hour)){outside++;continue;}const day=new Date(r.scheduledDate+'T12:00:00Z').getUTCDay();counts[day][r.hour]++;plotted++;}
+ let top=null,max=0;for(let d=0;d<7;d++)for(const h of BOOKING_HOURS)if(counts[d][h]>max){max=counts[d][h];top={d,h,count:max};}
  const topText=top?`${weekdays[lang()][top.d]} ${pad(top.h)}:00 (${fmt(top.count)})`:'—';
- for(const [k,v] of [['peakTotal',plotted],['peakUnknown',unknown],['peakTop',topText]]){const box=text('div',undefined,'a17-kpi');box.append(text('span',t(k)),text('strong',typeof v==='number'?fmt(v):v));$('a17PeakKpis').append(box);}
- const grid=$('a17PeakHeatmap');grid.append(text('span','', 'a17-peak-head'));for(let h=0;h<24;h++)grid.append(text('span',pad(h),'a17-peak-head'));
- for(let d=0;d<7;d++){grid.append(text('span',weekdays[lang()][d],'a17-peak-day'));for(let h=0;h<24;h++){const n=counts[d][h],level=n===0?0:Math.max(1,Math.ceil(n/Math.max(1,max)*5));const cell=text('div',n||'','a17-peak-cell');cell.dataset.level=String(level);cell.title=`${weekdays[lang()][d]} ${pad(h)}:00–${pad((h+1)%24)}:00 · ${fmt(n)}`;grid.append(cell);}}
- const body=$('a17PeakBody');for(let d=0;d<7;d++)for(let h=0;h<24;h++)if(counts[d][h]){const tr=text('tr');for(const val of [weekdays[lang()][d],`${pad(h)}:00 – ${pad((h+1)%24)}:00`,fmt(counts[d][h])])tr.append(text('td',val));body.append(tr);}
+ for(const [k,v] of [['peakTotal',plotted],['peakUnknown',unknown],['peakOutsideSlots',outside],['peakTop',topText]]){const box=text('div',undefined,'a17-kpi');box.append(text('span',t(k)),text('strong',typeof v==='number'?fmt(v):v));$('a17PeakKpis').append(box);}
+ const grid=$('a17PeakHeatmap');grid.append(text('span','', 'a17-peak-head'));for(const h of BOOKING_HOURS)grid.append(text('span',`${pad(h)}:00`,'a17-peak-head'));
+ for(let d=0;d<7;d++){grid.append(text('span',weekdays[lang()][d],'a17-peak-day'));for(const h of BOOKING_HOURS){const n=counts[d][h],level=n===0?0:Math.max(1,Math.ceil(n/Math.max(1,max)*5));const cell=text('div',n||'','a17-peak-cell');cell.dataset.level=String(level);cell.title=`${weekdays[lang()][d]} ${pad(h)}:00–${pad((h+1)%24)}:00 · ${fmt(n)}`;grid.append(cell);}}
+ const body=$('a17PeakBody');for(let d=0;d<7;d++)for(const h of BOOKING_HOURS)if(counts[d][h]){const tr=text('tr');for(const val of [weekdays[lang()][d],`${pad(h)}:00 – ${pad((h+1)%24)}:00`,fmt(counts[d][h])])tr.append(text('td',val));body.append(tr);}
  const foot=text('tr');for(const val of [t('peakCountTotal'),'—',fmt(plotted)])foot.append(text('td',val));$('a17PeakFoot').append(foot);status(matched.length?'peakLoaded':'peakNoData');
 }
 document.addEventListener('DOMContentLoaded',()=>{$('a17PeakLoad')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',render);$('a17Year')?.addEventListener('change',render);$('a17Month')?.addEventListener('change',render);

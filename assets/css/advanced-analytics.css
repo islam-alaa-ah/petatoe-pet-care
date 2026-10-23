@@ -161,7 +161,7 @@
 /* A17.3.5 Scheduled appointment peak heatmap; scoped, no overrides to other reports. */
 #advancedAnalyticsView #a17PeaksPanel{width:100%;min-width:0;max-width:none}
 #advancedAnalyticsView .a17-peak-scroll{width:100%;max-width:100%;overflow-x:auto;padding:10px 0}
-#advancedAnalyticsView .a17-peak-grid{display:grid;grid-template-columns:92px repeat(24,minmax(35px,1fr));gap:3px;min-width:965px;align-items:center;direction:rtl}
+#advancedAnalyticsView .a17-peak-grid{display:grid;grid-template-columns:92px repeat(6,minmax(74px,1fr));gap:3px;min-width:560px;align-items:center;direction:rtl}
 #advancedAnalyticsView .a17-peak-head,#advancedAnalyticsView .a17-peak-day{font-size:.78rem;text-align:center;color:var(--text-muted,#52657e)}
 #advancedAnalyticsView .a17-peak-cell{display:flex;align-items:center;justify-content:center;min-height:38px;border:1px solid rgba(37,103,190,.12);border-radius:6px;font-size:.76rem;font-variant-numeric:tabular-nums;color:#102e53}
 #advancedAnalyticsView .a17-peak-cell[data-level="0"]{background:#edf3fa}
