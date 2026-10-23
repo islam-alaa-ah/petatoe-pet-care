@@ -3,7 +3,7 @@
  'use strict';
  const $=id=>document.getElementById(id);
  const tr=k=>window.PetatoeLocalization?.t?.('advancedAnalytics.'+k)||k;
- const allowed=()=>['advancedAnalytics','salesReports','customerReports'].every(k=>window.PermissionEngine?.canView?.(k)===true);
+ const allowed=()=>['salesReports','customerReports'].every(k=>window.PermissionEngine?.canView?.(k)===true);
  const n=x=>Number(x).toLocaleString('en-US');
  const node=(tag,cls,value)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(value!==undefined)e.textContent=value;return e;};
  let snapshot=null,busy=false,seq=0,selectedBand=null,visible=10,detailRows=[],followupsMap=null;
@@ -39,10 +39,18 @@
  async function sales(){const all=[],seen=new Set(),client=window.customerSupabase;if(!client?.rpc)throw Error('RPC_MISSING');for(let i=0;i<200;i++){const {data,error}=await client.rpc('sales_reports_rows_r44r38r20r35').range(i*500,i*500+499);if(error)throw error;if(!Array.isArray(data))throw Error('BAD_ROWS');for(const r of data){const id=(r.is_historical?'h:':'c:')+r.row_id;if(!r.row_id||seen.has(id))throw Error('DUPLICATE_ROW');seen.add(id);const d=String(r.invoice_date||'').slice(0,10);if(!dateOk(d))throw Error('BAD_DATE');all.push({id:String(r.customer_id||''),date:d});}if(data.length<500)return all;}throw Error('PAGINATION_LIMIT');}
  async function load(){if(busy)return;if(!allowed()){reset();status('customerDenied');return;}if(navigator.onLine===false||!window.CustomersService?.listCustomers){reset();status('customerFailed');return;}busy=true;const version=++seq;reset();status('customerLoading');$('a17CustomerLoad').disabled=true;
  try{const [customers,rows]=await Promise.all([window.CustomersService.listCustomers({force:true}),sales()]);if(!Array.isArray(customers)||!rows.length)throw Error('MISSING_DATA');const ids=new Set(),names=new Map();for(const c of customers){const id=String(c?.id||'');if(!id||ids.has(id))throw Error('BAD_CUSTOMER_ID');ids.add(id);names.set(id,String(c.name||c.customer_name||id));}
- const customerMap=new Map(customers.map(c=>[String(c.id),c]));const purchases=new Map();for(const row of rows){if(!ids.has(row.id))continue;let list=purchases.get(row.id);if(!list){list=[];purchases.set(row.id,list);}list.push(row.date);}for(const list of purchases.values())list.sort();if(version!==seq)return;snapshot={ids,purchases,customerMap};render();}catch(e){console.error('A17.2.2 customer analysis:',e);reset();status('customerFailed');}finally{busy=false;$('a17CustomerLoad').disabled=false;}}
+ configurePeriods(rows); const customerMap=new Map(customers.map(c=>[String(c.id),c]));const purchases=new Map();for(const row of rows){if(!ids.has(row.id))continue;let list=purchases.get(row.id);if(!list){list=[];purchases.set(row.id,list);}list.push(row.date);}for(const list of purchases.values())list.sort();if(version!==seq)return;snapshot={ids,purchases,customerMap};render();}catch(e){console.error('A17.2.2 customer analysis:',e);reset();status('customerFailed');}finally{busy=false;$('a17CustomerLoad').disabled=false;}}
+ function configurePeriods(rows){
+  const year=$('a14AnalyticsYear'),month=$('a14AnalyticsMonth');if(!year||!month)return;
+  const old=year.value,years=new Set(rows.map(r=>Number(String(r.date).slice(0,4))));years.add(new Date().getFullYear());
+  const sorted=[...years].filter(y=>Number.isInteger(y)&&y>=2000&&y<=2100).sort((a,b)=>b-a);
+  year.replaceChildren();for(const y of sorted){const option=new Option(String(y),String(y));year.add(option);}
+  year.value=sorted.includes(Number(old))?old:String(new Date().getFullYear());
+  if(!month.options.length){month.add(new Option(tr('allMonths')==='allMonths'?'كل الشهور':tr('allMonths'),''));for(let m=1;m<=12;m++)month.add(new Option(new Intl.DateTimeFormat(document.documentElement.lang==='en'?'en-US':'ar-SA',{month:'long',timeZone:'UTC'}).format(new Date(Date.UTC(2024,m-1,1))),String(m)));}
+ }
  function barChart(target,data){const root=$(target);if(!root)return;root.replaceChildren();const max=Math.max(1,...data.map(x=>x[1]));for(const [name,value] of data){const row=node('div','a17-bar-row'),label=node('span','',name),track=node('div','a17-bar-track'),fill=node('div','a17-bar-fill'),number=node('strong','a17-bar-number',n(value));fill.style.width=(100*value/max).toFixed(2)+'%';track.append(fill);row.append(label,track,number);root.append(row);}}
  function tableBody(target,data){const root=$(target);if(!root)return;root.replaceChildren();for(const [label,val] of data){const r=node('tr');r.append(node('td','',label),node('td','',n(val)));root.append(r);}}
- function render(){if(!snapshot)return;if(!allowed()){reset();status('customerDenied');return;}const year=$('a17Year')?.value,month=$('a17Month')?.value||'',mode=$('a17Compare')?.value||'previous';if(!/^\d{4}$/.test(year||''))return;
+ function render(){if(!snapshot)return;if(!allowed()){reset();status('customerDenied');return;}const year=$('a14AnalyticsYear')?.value,month=$('a14AnalyticsMonth')?.value||'',mode=$('a14AnalyticsCompare')?.value||'previous';if(!/^\d{4}$/.test(year||''))return;
  const period=ranges(year,month,mode);showDates(period);
  if(!period){for(const id of ['a17CustomerMetrics','a17CustomerActivityChart','a17RetentionChart','a17CustomerActivityBody','a17RetentionBody'])$(id)?.replaceChildren();status('customerOutside');return;}
  const currentIds=new Set(),referenceIds=new Set(),bands=new Array(5).fill(0),segmentRows=[[],[],[],[],[]];
@@ -89,7 +97,7 @@
    $('a17SegmentMore').hidden=visible>=rows.length;
  }
  function toggle(buttonId,detailsId){const btn=$(buttonId),details=$(detailsId);if(!btn||!details)return;details.hidden=!details.hidden;btn.setAttribute('aria-expanded',String(!details.hidden));btn.textContent=tr(details.hidden?'showDetails':'hideDetails');}
- document.addEventListener('DOMContentLoaded',()=>{$('a17CustomerLoad')?.addEventListener('click',load);
+ document.addEventListener('DOMContentLoaded',()=>{$('a17CustomerLoad')?.addEventListener('click',load);configurePeriods([]);
  $('a17SegmentBack')?.addEventListener('click',()=>{$('a17SegmentPage').classList.add('hidden');$('a17CustomerPanel').classList.remove('hidden');selectedBand=null;});
  $('a17SegmentMore')?.addEventListener('click',()=>{visible+=10;paintSegment();});
  $('a17SegmentSearch')?.addEventListener('input',()=>{visible=10;paintSegment();});
@@ -100,7 +108,7 @@
  const number=digits.startsWith('0')?'966'+digits.slice(1):digits;
  const url=window.WhatsAppTemplateService?.directUrl?.(number)||'https://wa.me/'+number;
  if(/^https:\/\//.test(url))window.open(url,'_blank','noopener,noreferrer');
- });$('a17CustomerActivityToggle')?.addEventListener('click',()=>toggle('a17CustomerActivityToggle','a17CustomerActivityDetails'));$('a17RetentionToggle')?.addEventListener('click',()=>toggle('a17RetentionToggle','a17RetentionDetails'));$('a17Apply')?.addEventListener('click',()=>{closeSegment();render();});$('a17Compare')?.addEventListener('change',()=>{closeSegment();render();});});
+ });$('a17CustomerActivityToggle')?.addEventListener('click',()=>toggle('a17CustomerActivityToggle','a17CustomerActivityDetails'));$('a17RetentionToggle')?.addEventListener('click',()=>toggle('a17RetentionToggle','a17RetentionDetails'));$('a14AnalyticsApply')?.addEventListener('click',()=>{closeSegment();render();});$('a14AnalyticsCompare')?.addEventListener('change',()=>{closeSegment();render();});});
  document.addEventListener('petatoe:language-changed',()=>{if(selectedBand!==null){$('a17SegmentName').textContent=tr(['customerActive','customerCooling','customerAtRisk','customerDormant','customerNever'][selectedBand]);paintSegment();}else render();for(const [button,details] of [['a17CustomerActivityToggle','a17CustomerActivityDetails'],['a17RetentionToggle','a17RetentionDetails']]){const el=$(button),panel=$(details);if(el&&panel)el.textContent=tr(panel.hidden?'showDetails':'hideDetails');}});
  window.AdvancedAnalyticsCustomersUI={render};
 })();

@@ -31,7 +31,7 @@
   }
   const shift=(key,months)=>{const [y,m]=key.split('-').map(Number);const d=new Date(Date.UTC(y,m-1+months,1));return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0');};
   const make=(tag,attrs={},txt)=>{const el=document.createElement(tag);for(const [k,v] of Object.entries(attrs))el.setAttribute(k,String(v));if(txt!==undefined)el.textContent=txt;return el;};
-  function render(){window.AdvancedAnalyticsCustomersUI?.render?.();if(!loaded||!mayView()){clear();status('blocked');return;}const year=$('a17Year')?.value;if(!year)return;const month=$('a17Month')?.value||'',mode=$('a17Compare')?.value||'previous';
+  function render(){if(!loaded||!mayView()){clear();status('blocked');return;}const year=$('a17Year')?.value;if(!year)return;const month=$('a17Month')?.value||'',mode=$('a17Compare')?.value||'previous';
     const periods=month?[year+'-'+month]:Array.from({length:12},(_,i)=>year+'-'+String(i+1).padStart(2,'0'));
     const today=new Date();const localYear=today.getFullYear(),localMonth=today.getMonth()+1;
     // Exclude future periods; partial current calendar month/year is explicitly not a reliable growth comparison.

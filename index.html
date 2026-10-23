@@ -57,7 +57,7 @@
   <link rel="stylesheet" href="assets/css/sales-invoices.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/customer-reports-overview.css?v=A14_FIN_REC_1" />
   <link rel="stylesheet" href="assets/css/cars-teams-reports.css?v=A15_2_2" />
-  <link rel="stylesheet" href="assets/css/advanced-analytics.css?v=A17_2_2" />
+  <link rel="stylesheet" href="assets/css/advanced-analytics.css?v=A17_LAYOUT_A14MOVE" />
   <link rel="stylesheet" href="assets/css/services-reports.css?v=A16_2" />
   <link rel="stylesheet" href="assets/css/sales-reports.css?v=18.56.140" />
   <link rel="stylesheet" href="assets/css/payroll.css?v=18.56.140" />
@@ -940,20 +940,6 @@
  <div id="a17Status" role="status" aria-live="polite" class="a17-status"></div>
  <div class="a17-kpis" id="a17Kpis"></div>
  <article class="a17-panel"><div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.salesTitle">اتجاهات المبيعات والنمو</h4><span data-petatoe-i18n="advancedAnalytics.salesNote">مبيعات شاملة الضريبة — من مصدر تقارير المبيعات المعتمد</span></div><div id="a17SalesChart" class="a17-chart" role="img"></div><button id="a17SalesToggle" type="button" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17SalesDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.period">الفترة</th><th data-petatoe-i18n="advancedAnalytics.current">الحالية</th><th data-petatoe-i18n="advancedAnalytics.reference">المرجعية</th><th data-petatoe-i18n="advancedAnalytics.difference">الفرق</th></tr></thead><tbody id="a17SalesBody"></tbody><tfoot id="a17SalesFoot"></tfoot></table></div></div></article>
- <article class="a17-panel" id="a17CustomerPanel"><div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.customersTitle">نشاط العملاء والاحتفاظ بهم</h4><span data-petatoe-i18n="advancedAnalytics.customerSourceNote">عملاء مسموح بعرضهم ومبيعات مرتبطة بهم فقط</span></div>
- <button type="button" id="a17CustomerLoad" data-petatoe-i18n="advancedAnalytics.customerLoad">تحميل تحليل العملاء</button><p id="a17CustomerStatus" class="a17-status" role="status" aria-live="polite"></p>
- <div id="a17CustomerMetrics" class="a17-kpis"></div>
- <h5 data-petatoe-i18n="advancedAnalytics.customerActivityTitle">توزيع العملاء حسب آخر بيع موثق</h5><div id="a17CustomerActivityChart" class="a17-bar-chart" role="img"></div>
- <button type="button" id="a17CustomerActivityToggle" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17CustomerActivityDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.customerSegment">الشريحة</th><th data-petatoe-i18n="advancedAnalytics.customerCount">العملاء</th><th data-petatoe-i18n="advancedAnalytics.actions">الإجراءات</th></tr></thead><tbody id="a17CustomerActivityBody"></tbody><tfoot id="a17CustomerActivityFoot"></tfoot></table></div></div>
- <h5 data-petatoe-i18n="advancedAnalytics.retentionTitle">مقارنة العملاء بين الفترة الحالية والمرجعية</h5><div id="a17RetentionPeriods" class="a17-period-grid" aria-live="polite"></div><p id="a17RetentionPeriodNote" class="a17-fineprint"></p><div id="a17RetentionChart" class="a17-bar-chart" role="img"></div><button type="button" id="a17RetentionToggle" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17RetentionDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.customerSegment">المؤشر</th><th data-petatoe-i18n="advancedAnalytics.customerCount">العملاء</th></tr></thead><tbody id="a17RetentionBody"></tbody></table></div></div>
- <p class="a17-fineprint" data-petatoe-i18n="advancedAnalytics.customerMethod">تصنيف النشاط وصفي فقط ويعتمد على آخر بيع موثق. الاحتفاظ = العملاء المشتركون في الفترتين ÷ عملاء الفترة المرجعية. لا تُحسب فترة جارية غير مكتملة.</p></article>
- <article id="a17SegmentPage" class="a17-panel a17-segment-page hidden" aria-label="Customer segment details">
- <div class="a17-panel-title"><div><h4 id="a17SegmentName"></h4><p><span data-petatoe-i18n="advancedAnalytics.customerCount">العملاء</span>: <strong id="a17SegmentCount">0</strong> · <span data-petatoe-i18n="advancedAnalytics.asOf">حتى تاريخ</span>: <span id="a17SegmentCutoff"></span></p></div><button type="button" id="a17SegmentBack" data-petatoe-i18n="advancedAnalytics.backToAnalytics">العودة إلى التحليلات</button></div>
- <div class="a17-segment-tools"><input type="search" id="a17SegmentSearch" autocomplete="off" data-petatoe-i18n-placeholder="advancedAnalytics.searchCustomer" placeholder="البحث باسم العميل أو الهاتف"/><span id="a17SegmentVisible"></span></div>
- <div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.customerName">العميل</th><th data-petatoe-i18n="advancedAnalytics.phone">الهاتف</th><th data-petatoe-i18n="advancedAnalytics.lastSale">آخر بيع موثق</th><th data-petatoe-i18n="advancedAnalytics.daysSince">أيام منذ آخر بيع</th><th data-petatoe-i18n="advancedAnalytics.salesRows">سجلات البيع</th><th data-petatoe-i18n="advancedAnalytics.lastContact">آخر تواصل</th><th data-petatoe-i18n="advancedAnalytics.actions">الإجراءات</th></tr></thead><tbody id="a17SegmentBody"></tbody></table></div>
- <button type="button" id="a17SegmentMore" data-petatoe-i18n="advancedAnalytics.showMore">عرض المزيد</button>
- <p class="a17-fineprint" data-petatoe-i18n="advancedAnalytics.contactDisclaimer">فتح واتساب لا يسجل التواصل تلقائيًا. يتم حفظ المتابعة من النموذج الأصلي وفق الصلاحيات.</p>
- </article>
  <article class="a17-panel" id="a17OperationsPanel">
  <div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.teamsTitle">أداء السيارات والفرق</h4><span data-petatoe-i18n="advancedAnalytics.opsSource">مواعيد التشغيل حسب تاريخها المجدول — لا تمثل مبيعات</span></div>
  <div class="a17-ops-toolbar"><button type="button" id="a17OpsLoad" data-petatoe-i18n="advancedAnalytics.opsLoad">تحميل مؤشرات التشغيل</button><label><span data-petatoe-i18n="advancedAnalytics.opsGroup">عرض حسب</span><select id="a17OpsGroup"><option value="car" data-petatoe-i18n="advancedAnalytics.opsCars">السيارات</option><option value="team" data-petatoe-i18n="advancedAnalytics.opsTeams">الفرق</option></select></label></div>
@@ -2594,6 +2580,33 @@
           <h3>تقارير العملاء</h3>
           <p>تحليل المبيعات الفعلية المرتبطة بالعملاء، بعيدًا عن عروض الأسعار ونشاط التواصل.</p>
         </header>
+        <!-- A17 customer activity and retention moved into A14: independent time filters -->
+        <div id="a14CustomerAnalytics" class="a14-smart-analytics" aria-label="Customer activity and retention">
+          <div class="a17-panel a14-smart-filters">
+            <div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.customersTitle">نشاط العملاء والاحتفاظ بهم</h4></div>
+            <div class="a17-filters">
+              <label><span data-petatoe-i18n="advancedAnalytics.year">السنة</span><select id="a14AnalyticsYear"></select></label>
+              <label><span data-petatoe-i18n="advancedAnalytics.month">الشهر</span><select id="a14AnalyticsMonth"></select></label>
+              <label><span data-petatoe-i18n="advancedAnalytics.compare">المقارنة</span><select id="a14AnalyticsCompare"><option value="previous" data-petatoe-i18n="advancedAnalytics.previous">الفترة السابقة</option><option value="yoy" data-petatoe-i18n="advancedAnalytics.yoy">نفس الفترة العام الماضي</option></select></label>
+              <button id="a14AnalyticsApply" type="button" data-petatoe-i18n="advancedAnalytics.apply">تطبيق</button>
+            </div>
+          </div>
+ <div id="a17CustomerPanel" class="a14-analytics-report-stack"><article class="a17-panel"><div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.customersTitle">نشاط العملاء والاحتفاظ بهم</h4><span data-petatoe-i18n="advancedAnalytics.customerSourceNote">عملاء مسموح بعرضهم ومبيعات مرتبطة بهم فقط</span></div>
+ <button type="button" id="a17CustomerLoad" data-petatoe-i18n="advancedAnalytics.customerLoad">تحميل تحليل العملاء</button><p id="a17CustomerStatus" class="a17-status" role="status" aria-live="polite"></p>
+ <div id="a17CustomerMetrics" class="a17-kpis"></div>
+ <h5 data-petatoe-i18n="advancedAnalytics.customerActivityTitle">توزيع العملاء حسب آخر بيع موثق</h5><div id="a17CustomerActivityChart" class="a17-bar-chart" role="img"></div>
+ <button type="button" id="a17CustomerActivityToggle" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17CustomerActivityDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.customerSegment">الشريحة</th><th data-petatoe-i18n="advancedAnalytics.customerCount">العملاء</th><th data-petatoe-i18n="advancedAnalytics.actions">الإجراءات</th></tr></thead><tbody id="a17CustomerActivityBody"></tbody><tfoot id="a17CustomerActivityFoot"></tfoot></table></div></div>
+ </article>
+ <article class="a17-panel"><h5 data-petatoe-i18n="advancedAnalytics.retentionTitle">مقارنة العملاء بين الفترة الحالية والمرجعية</h5><div id="a17RetentionPeriods" class="a17-period-grid" aria-live="polite"></div><p id="a17RetentionPeriodNote" class="a17-fineprint"></p><div id="a17RetentionChart" class="a17-bar-chart" role="img"></div><button type="button" id="a17RetentionToggle" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17RetentionDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.customerSegment">المؤشر</th><th data-petatoe-i18n="advancedAnalytics.customerCount">العملاء</th></tr></thead><tbody id="a17RetentionBody"></tbody></table></div></div>
+ <p class="a17-fineprint" data-petatoe-i18n="advancedAnalytics.customerMethod">تصنيف النشاط وصفي فقط ويعتمد على آخر بيع موثق. الاحتفاظ = العملاء المشتركون في الفترتين ÷ عملاء الفترة المرجعية. لا تُحسب فترة جارية غير مكتملة.</p></article></div>
+ <article id="a17SegmentPage" class="a17-panel a17-segment-page hidden" aria-label="Customer segment details">
+ <div class="a17-panel-title"><div><h4 id="a17SegmentName"></h4><p><span data-petatoe-i18n="advancedAnalytics.customerCount">العملاء</span>: <strong id="a17SegmentCount">0</strong> · <span data-petatoe-i18n="advancedAnalytics.asOf">حتى تاريخ</span>: <span id="a17SegmentCutoff"></span></p></div><button type="button" id="a17SegmentBack" data-petatoe-i18n="advancedAnalytics.backToAnalytics">العودة إلى التحليلات</button></div>
+ <div class="a17-segment-tools"><input type="search" id="a17SegmentSearch" autocomplete="off" data-petatoe-i18n-placeholder="advancedAnalytics.searchCustomer" placeholder="البحث باسم العميل أو الهاتف"/><span id="a17SegmentVisible"></span></div>
+ <div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.customerName">العميل</th><th data-petatoe-i18n="advancedAnalytics.phone">الهاتف</th><th data-petatoe-i18n="advancedAnalytics.lastSale">آخر بيع موثق</th><th data-petatoe-i18n="advancedAnalytics.daysSince">أيام منذ آخر بيع</th><th data-petatoe-i18n="advancedAnalytics.salesRows">سجلات البيع</th><th data-petatoe-i18n="advancedAnalytics.lastContact">آخر تواصل</th><th data-petatoe-i18n="advancedAnalytics.actions">الإجراءات</th></tr></thead><tbody id="a17SegmentBody"></tbody></table></div>
+ <button type="button" id="a17SegmentMore" data-petatoe-i18n="advancedAnalytics.showMore">عرض المزيد</button>
+ <p class="a17-fineprint" data-petatoe-i18n="advancedAnalytics.contactDisclaimer">فتح واتساب لا يسجل التواصل تلقائيًا. يتم حفظ المتابعة من النموذج الأصلي وفق الصلاحيات.</p>
+ </article>
+        </div>
         <section class="a14-customer-overview a14-filter-panel" aria-labelledby="a14FilterTitle">
           <h4 id="a14FilterTitle">فلاتر تقارير العملاء والتصدير</h4>
           <p class="a14-analysis-description">الفلاتر تطبق على كل كروت وتقارير العملاء، من بيانات تم تحميلها بالكامل والتحقق منها. مؤشرات أول بيع وتكرار التعامل تخص الفترة المختارة.</p>
@@ -4942,8 +4955,8 @@
   <script src="assets/js/app.js?v=18.56.140"></script>
   <script src="assets/js/customer-reports-overview.js?v=A14_FIN_REC_1"></script>
   <script src="assets/js/cars-teams-reports.js?v=A15_2_9"></script>
-  <script src="assets/js/advanced-analytics.js?v=A17_2_2"></script>
-  <script src="assets/js/advanced-analytics-customers.js?v=A17_2_2"></script>
+  <script src="assets/js/advanced-analytics.js?v=A17_LAYOUT_A14MOVE"></script>
+  <script src="assets/js/advanced-analytics-customers.js?v=A17_LAYOUT_A14MOVE"></script>
   <script src="assets/js/advanced-analytics-operations.js?v=A17_2_3"></script>
   <script src="assets/js/services-reports.js?v=A16_5"></script>
   <script src="assets/js/sales-reports.js?v=18.56.140"></script>

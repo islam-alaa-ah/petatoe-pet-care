@@ -54,3 +54,18 @@
 .a17-ops-toolbar button{margin:0}
 .a17-ops-chart .a17-bar-row{min-width:0}
 @media(max-width:480px){.a17-ops-toolbar{display:grid;grid-template-columns:1fr}.a17-ops-toolbar label{min-width:0}}
+
+/* A17 visual composition: one full-width report per row; customer analytics is now owned by A14. */
+#advancedAnalyticsView,#customerReportsView{min-width:0;width:100%}
+#advancedAnalyticsView>.a17-panel,#advancedAnalyticsView>.a17-kpis,#customerReportsView .a14-smart-analytics>.a17-panel{width:100%;max-width:none;grid-column:1/-1;box-sizing:border-box}
+#advancedAnalyticsView{display:block}
+#advancedAnalyticsView.hidden{display:none}
+.a14-smart-analytics{display:block;min-width:0;width:100%;margin:18px 0 26px}
+.a14-smart-analytics>.a17-panel{display:block;margin-bottom:16px}
+.a14-smart-analytics .a17-filters button{align-self:end}
+.a14-smart-analytics .a17-bar-chart{width:100%;min-width:0}
+@media(max-width:700px){.a14-smart-analytics .a17-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.a14-smart-analytics .a17-filters{grid-template-columns:1fr}}
+
+.a14-analytics-report-stack{display:block;width:100%;min-width:0}.a14-analytics-report-stack>.a17-panel{width:100%;display:block;max-width:none;box-sizing:border-box}
+.a14-analytics-report-stack.hidden,.a14-smart-analytics .a17-segment-page.hidden{display:none!important}
