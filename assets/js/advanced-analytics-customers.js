@@ -89,7 +89,18 @@
  function openSegment(i,rows,cutoff){return openCustomerRows(['customerActive','customerCooling','customerAtRisk','customerDormant','customerNever'][i],rows[i]||[],cutoff,'activity:'+i);}
  async function openCustomerRows(titleKey,rows,cutoff,token){
   if(!snapshot||!allowed())return;
-  selectedBand=token;selectedTitleKey=titleKey;selectedToken=token;detailRows=rows;visible=10;followupsMap=null;
+  selectedBand=token;selectedTitleKey=titleKey;selectedToken=token;
+  // Sort the entire cohort before paging or searching: longest inactivity first.
+  // Unknown last-sale dates stay last; never manufacture a gap in days.
+  detailRows=[...rows].sort((a,b)=>{
+    const ad=Number.isFinite(a.gapDays)?a.gapDays:null;
+    const bd=Number.isFinite(b.gapDays)?b.gapDays:null;
+    if(ad===null&&bd!==null)return 1;
+    if(bd===null&&ad!==null)return -1;
+    if(ad!==null&&bd!==null&&ad!==bd)return bd-ad;
+    return String(a.id).localeCompare(String(b.id));
+  });
+  visible=10;followupsMap=null;
   $('a17SegmentName').textContent=tr(titleKey);$('a17SegmentCount').textContent=n(detailRows.length);
   $('a17SegmentCutoff').textContent=cutoff;
   $('a17CustomerPanel').classList.add('hidden');$('a17SegmentPage').classList.remove('hidden');
