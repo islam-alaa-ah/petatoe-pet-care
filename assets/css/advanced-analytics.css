@@ -157,3 +157,27 @@
 #advancedAnalyticsView .a17-intel-panel .a17-table-scroll table{width:100%;min-width:560px;}
 #advancedAnalyticsView .a17-intel-total{background:#1e559d;color:#fff;font-weight:700;}
 #advancedAnalyticsView .a17-intel-total td{background:transparent;color:#fff;}
+
+/* A17.3.5 Scheduled appointment peak heatmap; scoped, no overrides to other reports. */
+#advancedAnalyticsView #a17PeaksPanel{width:100%;min-width:0;max-width:none}
+#advancedAnalyticsView .a17-peak-scroll{width:100%;max-width:100%;overflow-x:auto;padding:10px 0}
+#advancedAnalyticsView .a17-peak-grid{display:grid;grid-template-columns:92px repeat(24,minmax(35px,1fr));gap:3px;min-width:965px;align-items:center;direction:rtl}
+#advancedAnalyticsView .a17-peak-head,#advancedAnalyticsView .a17-peak-day{font-size:.78rem;text-align:center;color:var(--text-muted,#52657e)}
+#advancedAnalyticsView .a17-peak-cell{display:flex;align-items:center;justify-content:center;min-height:38px;border:1px solid rgba(37,103,190,.12);border-radius:6px;font-size:.76rem;font-variant-numeric:tabular-nums;color:#102e53}
+#advancedAnalyticsView .a17-peak-cell[data-level="0"]{background:#edf3fa}
+#advancedAnalyticsView .a17-peak-cell[data-level="1"]{background:#d3e7ff}
+#advancedAnalyticsView .a17-peak-cell[data-level="2"]{background:#a6ceff}
+#advancedAnalyticsView .a17-peak-cell[data-level="3"]{background:#70abf4}
+#advancedAnalyticsView .a17-peak-cell[data-level="4"]{background:#2d7bdb;color:#fff}
+#advancedAnalyticsView .a17-peak-cell[data-level="5"]{background:#124eac;color:#fff}
+#advancedAnalyticsView .a17-peak-legend{display:flex;align-items:center;gap:9px;justify-content:center;font-size:.81rem;margin:10px 0 17px}
+#advancedAnalyticsView .a17-peak-swatches{display:flex;gap:3px}
+#advancedAnalyticsView .a17-peak-swatches i{display:block;width:23px;height:12px;border-radius:3px;background:#d3e7ff}
+#advancedAnalyticsView .a17-peak-swatches i:nth-child(2){background:#a6ceff}
+#advancedAnalyticsView .a17-peak-swatches i:nth-child(3){background:#70abf4}
+#advancedAnalyticsView .a17-peak-swatches i:nth-child(4){background:#2d7bdb}
+#advancedAnalyticsView .a17-peak-swatches i:nth-child(5){background:#124eac}
+#advancedAnalyticsView #a17PeakDetails .a17-table-scroll{overflow-x:auto;width:100%}
+#advancedAnalyticsView #a17PeakDetails table{width:100%;min-width:440px}
+#advancedAnalyticsView #a17PeakFoot tr{background:#1e559d;color:#fff;font-weight:700}
+#advancedAnalyticsView #a17PeakFoot td{color:#fff;background:transparent}

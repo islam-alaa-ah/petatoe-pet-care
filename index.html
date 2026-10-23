@@ -977,7 +977,17 @@
  </article>
  <article class="a17-panel a17-report-panel" id="a17ServiceGrowthPanel"><h4 data-petatoe-i18n="advancedAnalytics.serviceGrowth">ترتيب نمو وتراجع الخدمات</h4><div id="a17ServiceGrowth" class="a17-sales-rank" role="img"></div><button id="a17ServiceGrowthToggle" type="button" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17ServiceGrowthDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.serviceSelect">الخدمة</th><th data-petatoe-i18n="advancedAnalytics.current">الحالية</th><th data-petatoe-i18n="advancedAnalytics.reference">المرجعية</th><th data-petatoe-i18n="advancedAnalytics.serviceGrowthPct">التغير (%)</th></tr></thead><tbody id="a17ServiceGrowthBody"></tbody></table></div></div><p class="a17-fineprint" data-petatoe-i18n="advancedAnalytics.serviceGrowthNote">لا تُحتسب نسبة نمو عند صفر في الفترة المرجعية أو عند عدم اكتمال الفترة.</p></article>
  <article class="a17-panel a17-report-panel" id="a17ServiceSharePanel"><h4 data-petatoe-i18n="advancedAnalytics.serviceShare">توزيع كميات التنفيذ حسب الخدمة</h4><div id="a17ServiceShare" class="a17-sales-rank" role="img"></div><button id="a17ServiceShareToggle" type="button" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button><div id="a17ServiceShareDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.serviceSelect">الخدمة</th><th data-petatoe-i18n="advancedAnalytics.serviceQuantity">الكمية المنفذة</th><th data-petatoe-i18n="advancedAnalytics.serviceSharePct">المساهمة (%)</th></tr></thead><tbody id="a17ServiceShareBody"></tbody><tfoot id="a17ServiceShareFoot"></tfoot></table></div></div></article>
- <article class="a17-panel a17-coming a17-report-panel" id="a17PeaksPanel"><h4 data-petatoe-i18n="advancedAnalytics.peaksTitle">أوقات الذروة — وقت الموعد المجدول</h4><p data-petatoe-i18n="advancedAnalytics.coming">سيتم ربط هذا الرسم بالمصدر المعتمد في المرحلة التالية — لا توجد أرقام تقديرية.</p></article>
+ <article class="a17-panel a17-report-panel a17-peaks" id="a17PeaksPanel">
+ <div class="a17-panel-title"><h4 data-petatoe-i18n="advancedAnalytics.peaksTitle">أوقات الذروة — وقت الموعد المجدول</h4><span data-petatoe-i18n="advancedAnalytics.peakHelp">عدد طلبات التشغيل حسب يوم الأسبوع وساعة بدء الموعد المجدولة، وليس وقت التنفيذ الفعلي</span></div>
+ <div class="a17-ops-toolbar"><button type="button" id="a17PeakLoad" data-petatoe-i18n="advancedAnalytics.peakLoad">تحميل أوقات الذروة</button></div>
+ <p id="a17PeakStatus" role="status" aria-live="polite" class="a17-status"></p>
+ <div id="a17PeakPeriod" class="a17-service-period-info"></div>
+ <div class="a17-kpis" id="a17PeakKpis"></div>
+ <div class="a17-peak-scroll"><div id="a17PeakHeatmap" class="a17-peak-grid" role="img" aria-label="Peak appointment time heatmap"></div></div>
+ <div class="a17-peak-legend"><span data-petatoe-i18n="advancedAnalytics.peakLow">أقل ازدحامًا</span><div class="a17-peak-swatches" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><span data-petatoe-i18n="advancedAnalytics.peakHigh">أكثر ازدحامًا</span></div>
+ <button id="a17PeakToggle" type="button" aria-expanded="false" data-petatoe-i18n="advancedAnalytics.showDetails">عرض تفاصيل التقرير</button>
+ <div id="a17PeakDetails" hidden><div class="a17-table-scroll"><table><thead><tr><th data-petatoe-i18n="advancedAnalytics.peakDay">اليوم</th><th data-petatoe-i18n="advancedAnalytics.peakHour">الساعة</th><th data-petatoe-i18n="advancedAnalytics.peakCount">عدد المواعيد</th></tr></thead><tbody id="a17PeakBody"></tbody><tfoot id="a17PeakFoot"></tfoot></table></div></div>
+</article>
  <article class="a17-panel a17-coming a17-report-panel" id="a17InsightsPanel"><h4 data-petatoe-i18n="advancedAnalytics.alertsTitle">التنبيهات التحليلية المتوازنة</h4><p data-petatoe-i18n="advancedAnalytics.alertsNote">الحدود المبدئية تحتاج اختبار كفاية العينة واكتمال الفترات قبل تفعيل التنبيهات.</p></article>
 </section>
 <section id="servicesReportsView" class="view-section hidden a16-reports-view" aria-hidden="true">
@@ -4982,6 +4992,7 @@
   <script src="assets/js/advanced-analytics.js?v=A17_LAYOUT_A14MOVE"></script>
   <script src="assets/js/advanced-analytics-customers.js?v=A17_LAYOUT_A14MOVE"></script>
   <script src="assets/js/advanced-analytics-operations.js?v=A17_2_3"></script>
+  <script src="assets/js/advanced-analytics-peaks.js?v=A17_3_5"></script>
   <script src="assets/js/advanced-analytics-services.js?v=A17_3_3"></script>
   <script src="assets/js/advanced-analytics-service-finance.js?v=A17_3_3_2"></script>
   <script src="assets/js/services-reports.js?v=A16_5"></script>
