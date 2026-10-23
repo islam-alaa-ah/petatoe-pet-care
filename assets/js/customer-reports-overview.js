@@ -2,6 +2,7 @@
 (() => {
   "use strict";
   const $ = id => document.getElementById(id);
+  const t = key => window.PetatoeLocalization?.t?.(key) || key;
   const PAGE = 500;
   const MAX_PAGES = 100;
   const fmt = amount => Number(amount || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -29,13 +30,13 @@
       if (areaId && areaName && !areaNames.has(areaId)) areaNames.set(areaId, areaName);
     }
     const areas = [...new Set(customers.map(c=>String(c.neighborhoodId || "").trim()).filter(Boolean))]
-      .map(id=>[id, areaNames.get(id) || `حي غير مسمى (${id.slice(0,8)})`])
+      .map(id=>[id, areaNames.get(id) || t("customerReports.overviewDynamic.unnamedArea",{code:id.slice(0,8)})])
       .sort((a,b)=>a[1].localeCompare(b[1], "ar"));
     const old = [selected("a14FilterYear"),selected("a14FilterMonth"),selected("a14FilterCustomer"),selected("a14FilterNeighborhood")];
-    setOptions($("a14FilterYear"),years.map(x=>[x,x]),"كل السنوات");
-    setOptions($("a14FilterMonth"),months.map(x=>[x,x]),"كل الشهور");
-    setOptions($("a14FilterCustomer"),names,"كل العملاء");
-    setOptions($("a14FilterNeighborhood"),areas,"كل الأحياء");
+    setOptions($("a14FilterYear"),years.map(x=>[x,x]),t("customerReports.overviewDynamic.k001"));
+    setOptions($("a14FilterMonth"),months.map(x=>[x,x]),t("customerReports.overviewDynamic.k002"));
+    setOptions($("a14FilterCustomer"),names,t("customerReports.overviewDynamic.k003"));
+    setOptions($("a14FilterNeighborhood"),areas,t("customerReports.overviewDynamic.k004"));
     ["a14FilterYear","a14FilterMonth","a14FilterCustomer","a14FilterNeighborhood"].forEach((id,i)=> {if ([...$(id).options].some(o=>o.value===old[i])) $(id).value=old[i];});
   }
   function currentScope() {
@@ -68,15 +69,15 @@
       const result = calculate(scope.customers, scope.sales);
       const grid=$("a14OverviewMetrics"),note=$("a14OverviewNote"),status=$("a14OverviewStatus");
       grid.append(
-        metric("العملاء المتاحون في النطاق", integer(result.customers), "بحسب صلاحيات الجلسة وفلتر العميل"),
-        metric("عملاء لديهم فواتير في الفترة", integer(result.buyers)),
-        metric("لديهم أكثر من فاتورة", integer(result.repeat), "فاتورتان أو أكثر في نطاق الفلترة"),
-        metric("لديهم فاتورة واحدة", integer(result.once)),
-        metric("مبيعات العملاء المرتبطين", `${fmt(result.sales)} SAR`, "شامل الضريبة"),
-        metric("متوسط المبيعات لكل عميل له مبيعات", `${fmt(result.average)} SAR`),
-        metric("عدد الفواتير المرتبطة بالعملاء", integer(result.purchaseInvoices)),
-        metric("مبيعات غير منسوبة لعميل", `${fmt(result.excluded)} SAR`, `${integer(result.excludedRows)} سجلًا`),
-        metric("إجمالي المبيعات شامل الضريبة", `${fmt(result.allSales)} SAR`, "مجموع المبيعات المرتبطة وغير المنسوبة في النطاق")
+        metric(t("customerReports.overviewDynamic.k007"), integer(result.customers), t("customerReports.overviewDynamic.k008")),
+        metric(t("customerReports.overviewDynamic.k009"), integer(result.buyers)),
+        metric(t("customerReports.overviewDynamic.k010"), integer(result.repeat), t("customerReports.overviewDynamic.k011")),
+        metric(t("customerReports.overviewDynamic.k012"), integer(result.once)),
+        metric(t("customerReports.overviewDynamic.k013"), `${fmt(result.sales)} SAR`, t("customerReports.overviewDynamic.k014")),
+        metric(t("customerReports.overviewDynamic.k015"), `${fmt(result.average)} SAR`),
+        metric(t("customerReports.overviewDynamic.k016"), integer(result.purchaseInvoices)),
+        metric(t("customerReports.overviewDynamic.k017"), `${fmt(result.excluded)} SAR`, t("customerReports.overviewDynamic.extraExcludedRows",{count:integer(result.excludedRows)})),
+        metric(t("customerReports.overviewDynamic.k018"), `${fmt(result.allSales)} SAR`, t("customerReports.overviewDynamic.k019"))
       );
       renderAnalysis(result);
       renderActivity(result);
@@ -85,17 +86,22 @@
       renderTrends(result);
       detailVisible=10;
       renderCustomerDetails(result);
-      const label = `${scope.year || "كل السنوات"} / ${scope.month || "كل الشهور"} / ${scope.customerId ? "عميل محدد" : "كل العملاء"} / ${scope.neighborhoodId ? "حي محدد" : "كل الأحياء"}`;
-      note.textContent = `النطاق: ${label}. ${scope.customerId || scope.neighborhoodId ? "عند تحديد عميل أو حي لا تدخل المبيعات بلا عميل في النطاق؛ لا تُقارن بإجمالي الشركة." : "عند اختيار كل العملاء وكل الأحياء، إجمالي المبيعات يشمل السجلات غير المنسوبة."}  ${integer(result.salesRows)} صف مبيعات؛ التجميعات النقدية غير المنسوبة لا تُنشئ عملاء أو فواتير. أول بيع موثق داخل النطاق المختار فقط.`;
-      status.textContent = "تم تطبيق الفلاتر على نسخة بيانات مكتملة ومتحقق منها، دون قراءة جزئية.";
+      const label = `${scope.year || t("customerReports.overviewDynamic.k001")} / ${scope.month || t("customerReports.overviewDynamic.k002")} / ${scope.customerId ? t("customerReports.overviewDynamic.chosenCustomer") : t("customerReports.overviewDynamic.k003")} / ${scope.neighborhoodId ? t("customerReports.overviewDynamic.chosenNeighborhood") : t("customerReports.overviewDynamic.k004")}`;
+      note.textContent = t("customerReports.overviewDynamic.scopeNote", {
+        scope: label,
+        qualifier: t(scope.customerId || scope.neighborhoodId
+          ? "customerReports.overviewDynamic.filteredScope" : "customerReports.overviewDynamic.fullScope"),
+        count: integer(result.salesRows)
+      });
+      status.textContent = t("customerReports.overviewDynamic.k020");
       filteredResult = result;
       $("a14ExportCsv").disabled = false;
       $("a14PrintReport").disabled = false;
       window.A14CustomerOverviewLastResult = Object.freeze({ ...result });
     } catch(err) {
       clearRendered();
-      $("a14OverviewStatus").textContent=`تعذر حساب الفلاتر بأمان: ${err.message || err}`;
-      $("a14OverviewNote").textContent="لم تُعرض أرقام جزئية.";
+      $("a14OverviewStatus").textContent=t("customerReports.overviewDynamic.scopeError",{error:err.message || err});
+      $("a14OverviewNote").textContent=t("customerReports.overviewDynamic.k021");
       console.error("A14 scoped report error",err);
     }
   }
@@ -107,11 +113,11 @@
   function exportCsv() {
     if (!filteredResult || !verifiedSnapshot || !window.PermissionEngine?.canView?.("customerReports") || !window.PermissionEngine?.canView?.("salesReports")) return;
     const sections=[
-      ["أعلى 10 عملاء حسب المبيعات", "a14TopCustomers"],
-      ["العملاء الذين يحتاجون متابعة", "a14DormantCustomers"],
-      ["التوزيع الجغرافي", "a14GeoRows"],
-      ["المقارنة الشهرية", "a14TrendMonthlyRows"],
-      ["المقارنة السنوية", "a14TrendAnnualRows"],
+      [t("customerReports.overviewDynamic.k022"), "a14TopCustomers"],
+      [t("customerReports.overviewDynamic.k023"), "a14DormantCustomers"],
+      [t("customerReports.overviewDynamic.k024"), "a14GeoRows"],
+      [t("customerReports.overviewDynamic.k025"), "a14TrendMonthlyRows"],
+      [t("customerReports.overviewDynamic.k026"), "a14TrendAnnualRows"],
     ];
     const lines=[];
     for(const [name,id] of sections) {
@@ -126,8 +132,8 @@
     }
     // Export the entire permission-scoped, filtered result — never the 10-row UI slice.
     // A rank is one customer; invoice counts and amounts are already reconciled by calculate().
-    lines.push(csvCell("التقرير التفصيلي لمبيعات العملاء"));
-    lines.push(["العميل", "عدد الفواتير", "أول بيع موثق في النطاق", "آخر بيع موثق في النطاق", "المبيعات الشاملة"].map(csvCell).join(","));
+    lines.push(csvCell(t("customerReports.overviewDynamic.k027")));
+    lines.push([t("customerReports.overviewDynamic.k028"), t("customerReports.overviewDynamic.k029"), t("customerReports.overviewDynamic.k030"), t("customerReports.overviewDynamic.k031"), t("customerReports.overviewDynamic.k032")].map(csvCell).join(","));
     for (const row of filteredResult.ranks) {
       lines.push([row.name, integer(row.invoices), row.first || "—", row.last || "—", `${fmt(row.cents / 100)} SAR`].map(csvCell).join(","));
     }
@@ -172,7 +178,7 @@
     }
     const byCustomer = new Map();
     const customerNames = new Map(customers.map(x => [x.id, String(x.name || x.customer_name || x.customerName || "").trim()]));
-    const customerContacts = new Map(customers.map(x => [x.id, {phone: String(x.phone || x.mobile || "").trim(), region: String(x.address || x.neighborhoodName || x.neighborhood_name || "").trim() || "غير محدد"}]));
+    const customerContacts = new Map(customers.map(x => [x.id, {phone: String(x.phone || x.mobile || "").trim(), region: String(x.address || x.neighborhoodName || x.neighborhood_name || "").trim() || t("customerReports.overviewDynamic.k006")}]));
     let excludedTotal = 0;
     let customerTotalCents = 0;
     let unknownCustomerRows = 0;
@@ -231,15 +237,15 @@
     const once = purchasing.filter(x => x.invoices.size === 1).length;
     const ranks = [...byCustomer.entries()]
       .filter(([,x]) => x.invoices.size > 0)
-      .map(([id,x]) => ({ id, name: customerNames.get(id) || `عميل (${id.slice(0,8)})`,
+      .map(([id,x]) => ({ id, name: customerNames.get(id) || t("customerReports.overviewDynamic.unnamedCustomer",{code:id.slice(0,8)}),
         invoices: x.invoices.size, cents: x.cents, phone: customerContacts.get(id)?.phone || "", first: x.first, last: x.last, invoiceDates: [...x.invoiceDates.values()] }))
       .sort((a,b) => b.cents - a.cents || a.id.localeCompare(b.id));
     const frequencies = [
-      { name: "مرة واحدة", count: purchasing.filter(x => x.invoices.size === 1).length },
-      { name: "مرتان", count: purchasing.filter(x => x.invoices.size === 2).length },
-      { name: "3 إلى 5", count: purchasing.filter(x => x.invoices.size >= 3 && x.invoices.size <= 5).length },
-      { name: "6 إلى 10", count: purchasing.filter(x => x.invoices.size >= 6 && x.invoices.size <= 10).length },
-      { name: "أكثر من 10", count: purchasing.filter(x => x.invoices.size > 10).length }
+      { name: t("customerReports.overviewDynamic.k033"), count: purchasing.filter(x => x.invoices.size === 1).length },
+      { name: t("customerReports.overviewDynamic.k034"), count: purchasing.filter(x => x.invoices.size === 2).length },
+      { name: t("customerReports.overviewDynamic.k035"), count: purchasing.filter(x => x.invoices.size >= 3 && x.invoices.size <= 5).length },
+      { name: t("customerReports.overviewDynamic.k036"), count: purchasing.filter(x => x.invoices.size >= 6 && x.invoices.size <= 10).length },
+      { name: t("customerReports.overviewDynamic.k037"), count: purchasing.filter(x => x.invoices.size > 10).length }
     ];
     if (frequencies.reduce((sum,x)=>sum+x.count,0) !== purchasing.length) throw new Error("عدم تطابق شرائح تكرار المبيعات.");
     if (ranks.reduce((sum,x)=>sum+x.cents,0) !== customerTotalCents) throw new Error("عدم تطابق إجمالي ترتيب العملاء.");
@@ -259,9 +265,9 @@
       }
       tbody.append(tr);
     }
-    if(!result.ranks.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=5;td.textContent="لا توجد فواتير مرتبطة بعملاء في نطاق الفلاتر.";tr.append(td);tbody.append(tr);}
+    if(!result.ranks.length){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=5;td.textContent=t("customerReports.overviewDynamic.k038");tr.append(td);tbody.append(tr);}
     more.disabled=detailVisible>=result.ranks.length;
-    status.textContent=`عرض ${integer(Math.min(detailVisible,result.ranks.length))} من ${integer(result.ranks.length)} عميل ذي مبيعات؛ جميع القيم من البيانات المحمّلة بالكامل.`;
+    status.textContent=t("customerReports.overviewDynamic.detailCount",{shown:integer(Math.min(detailVisible,result.ranks.length)),total:integer(result.ranks.length)});
   }
 
   function metric(label, value, detail = "") {
@@ -276,9 +282,9 @@
   function renderAnalysis(result) {
     const summary = $("a14FrequencyMetrics"), bands = $("a14PurchaseFrequency"), table = $("a14TopCustomers");
     summary.replaceChildren(
-      metric("متوسط عدد الفواتير للعميل ذي المبيعات", result.buyers ? (result.purchaseInvoices/result.buyers).toFixed(2) : "0.00"),
-      metric("نسبة العملاء متكرري التعامل", result.buyers ? `${(result.repeat/result.buyers*100).toFixed(1)}%` : "0.0%"),
-      metric("العملاء أصحاب 3 فواتير أو أكثر", integer(result.ranks.filter(x=>x.invoices>=3).length))
+      metric(t("customerReports.overviewDynamic.k040"), result.buyers ? (result.purchaseInvoices/result.buyers).toFixed(2) : "0.00"),
+      metric(t("customerReports.overviewDynamic.k041"), result.buyers ? `${(result.repeat/result.buyers*100).toFixed(1)}%` : "0.0%"),
+      metric(t("customerReports.overviewDynamic.k042"), integer(result.ranks.filter(x=>x.invoices>=3).length))
     );
     bands.replaceChildren();
     for (const band of result.frequencies) {
@@ -296,9 +302,9 @@
       table.append(tr);
     }
     if (!result.ranks.length) {
-      const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;td.textContent="لا توجد مبيعات مرتبطة بعملاء في البيانات المتاحة.";tr.append(td);table.append(tr);
+      const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;td.textContent=t("customerReports.overviewDynamic.k039");tr.append(td);table.append(tr);
     }
-    $("a14PurchaseStatus").textContent=`${integer(result.buyers)} عميل له مبيعات، ${integer(result.purchaseInvoices)} فاتورة بدون تكرار. البيانات حسب صلاحيات الجلسة، ومن أول بيع موثق في المصادر المتاحة.`;
+    $("a14PurchaseStatus").textContent=window.PetatoeLocalization.t("customerReports.overviewDynamic.purchaseStatus",{buyers:integer(result.buyers),invoices:integer(result.purchaseInvoices)});
   }
 
 
@@ -308,7 +314,7 @@
     for (const id of activityIds) $(id).replaceChildren();
     const dated = result.ranks.filter(r => /^\d{4}-\d{2}-\d{2}$/.test(r.last));
     if (!dated.length) {
-      $("a14ActivityStatus").textContent = "لا توجد تواريخ بيع موثقة صالحة لتحليل النشاط.";
+      $("a14ActivityStatus").textContent = t("customerReports.overviewDynamic.k043");
       $("a14ActivityReference").textContent = "";
       $("a14RetentionDescription").textContent = "";
       return;
@@ -323,13 +329,13 @@
     if (counts.reduce((a,b)=>a+b,0) !== dated.length) throw new Error("عدم تطابق شرائح نشاط المبيعات.");
     const undated = result.buyers - dated.length;
     $("a14ActivityMetrics").append(
-      metric("آخر تاريخ بيع موثق", reference),
-      metric("نشط في المبيعات خلال 30 يومًا", integer(counts[0])),
-      metric("منقطع أكثر من 90 يومًا", integer(counts[3])),
-      metric("عملاء بلا فواتير مسجلة", integer(result.customers-result.buyers))
+      metric(t("customerReports.overviewDynamic.k044"), reference),
+      metric(t("customerReports.overviewDynamic.k045"), integer(counts[0])),
+      metric(t("customerReports.overviewDynamic.k046"), integer(counts[3])),
+      metric(t("customerReports.overviewDynamic.k047"), integer(result.customers-result.buyers))
     );
-    $("a14ActivityReference").textContent = `تاريخ القياس: ${reference}. التوزيع يشمل ${integer(dated.length)} عميلًا لديهم فاتورة بتاريخ صالح؛ ${integer(undated)} بدون تاريخ صالح.`;
-    const names = ["0–30 يومًا", "31–60 يومًا", "61–90 يومًا", "أكثر من 90 يومًا"];
+    $("a14ActivityReference").textContent = window.PetatoeLocalization.t("customerReports.overviewDynamic.activityReference",{reference,dated:integer(dated.length),undated:integer(undated)});
+    const names = [t("customerReports.overviewDynamic.k048"), t("customerReports.overviewDynamic.k049"), t("customerReports.overviewDynamic.k050"), t("customerReports.overviewDynamic.k051")];
     names.forEach((name,i) => {
       const row=document.createElement("div"), label=document.createElement("span"), count=document.createElement("strong"), track=document.createElement("div"), fill=document.createElement("span");
       row.className="a14-frequency-item";label.textContent=name;count.textContent=integer(counts[i]);track.className="a14-frequency-track";
@@ -347,35 +353,35 @@
     }
     const returning = [...previous].filter(id=>current.has(id)).length;
     const rate = previous.size ? returning/previous.size*100 : null;
-    $("a14RetentionDescription").textContent = `الشهر السابق ${prev} ← الشهر المرجعي ${month}. الاحتفاظ = عملاء الشهر السابق الذين سُجلت لهم مبيعات في الشهر المرجعي ÷ عملاء الشهر السابق. ليس معدل الاحتفاظ منذ أول بيع.`;
+    $("a14RetentionDescription").textContent = window.PetatoeLocalization.t("customerReports.overviewDynamic.retentionNote",{prev,month});
     $("a14RetentionMetrics").append(
-      metric(`عملاء ذوو مبيعات في ${prev}`,integer(previous.size)),
-      metric(`عملاء ذوو مبيعات في ${month}`,integer(current.size)),
-      metric("استمر التعامل معهم في الشهرين",integer(returning)),
-      metric("معدل الاحتفاظ الشهري",rate===null?"غير متاح":`${rate.toFixed(1)}%`)
+      metric(t("customerReports.overviewDynamic.customersInMonth",{month:prev}),integer(previous.size)),
+      metric(t("customerReports.overviewDynamic.customersInMonth",{month}),integer(current.size)),
+      metric(t("customerReports.overviewDynamic.k052"),integer(returning)),
+      metric(t("customerReports.overviewDynamic.k053"),rate===null?t("customerReports.overviewDynamic.k054"):`${rate.toFixed(1)}%`)
     );
     ranked.filter(r=>r.gap>90).sort((a,b)=>b.gap-a.gap || a.id.localeCompare(b.id)).slice(0,10).forEach(r=>{
       const tr=document.createElement("tr");
       for (const v of [r.name,integer(r.invoices),r.last,integer(r.gap),`${fmt(r.cents/100)} SAR`]) { const td=document.createElement("td");td.textContent=v;tr.append(td); }
       const actions=document.createElement("td");actions.className="a14-contact-actions";
-      const whatsapp=document.createElement("button");whatsapp.type="button";whatsapp.className="a14-contact-action a14-whatsapp";whatsapp.textContent="واتساب";
+      const whatsapp=document.createElement("button");whatsapp.type="button";whatsapp.className="a14-contact-action a14-whatsapp";whatsapp.textContent=t("customerReports.overviewDynamic.k055");
       const digits=String(r.phone || "").replace(/\D/g,"");
       let number=digits.startsWith("00966")?digits.slice(5):digits.startsWith("966")?digits.slice(3):digits;
       if (number.startsWith("0")) number=number.slice(1);
       if (/^5\d{8}$/.test(number)) number=`966${number}`; else number="";
       whatsapp.disabled=!number;
-      whatsapp.title=number?"فتح محادثة واتساب دون تسجيل متابعة تلقائيًا":"لا يوجد رقم جوال سعودي صالح";
+      whatsapp.title=number?t("customerReports.overviewDynamic.k057"):t("customerReports.overviewDynamic.k058");
       whatsapp.addEventListener("click",()=>{if(number)window.open(`https://wa.me/${number}`,"_blank","noopener,noreferrer");});
-      const contacted=document.createElement("button");contacted.type="button";contacted.className="a14-contact-action";contacted.textContent="تم التواصل";
+      const contacted=document.createElement("button");contacted.type="button";contacted.className="a14-contact-action";contacted.textContent=t("customerReports.overviewDynamic.k056");
       contacted.dataset.dailySuggestedContacted=r.id;
-      contacted.title="فتح نموذج المتابعة الرسمي؛ لا يُسجل التواصل إلا بعد الحفظ";
+      contacted.title=t("customerReports.overviewDynamic.k059");
       actions.append(whatsapp,contacted);tr.append(actions);
       $("a14DormantCustomers").append(tr);
     });
     if (!$("a14DormantCustomers").children.length) {
-      const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=6;td.textContent="لا يوجد عملاء منقطعون أكثر من 90 يومًا حسب تاريخ القياس.";tr.append(td);$("a14DormantCustomers").append(tr);
+      const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=6;td.textContent=t("customerReports.overviewDynamic.k060");tr.append(td);$("a14DormantCustomers").append(tr);
     }
-    $("a14ActivityStatus").textContent=`اكتمل تحليل النشاط وفق تاريخ مرجعي ${reference}، بدون تعديل أو إنشاء بيانات.`;
+    $("a14ActivityStatus").textContent=window.PetatoeLocalization.t("customerReports.overviewDynamic.activityComplete",{reference});
   }
 
   function renderGeography(result) {
@@ -387,17 +393,17 @@
       regions.get(region).customers++;
     }
     for (const r of result.ranks) {
-      const region=result.customerContacts.get(r.id)?.region || "غير محدد";
+      const region=result.customerContacts.get(r.id)?.region || t("customerReports.overviewDynamic.k006");
       const entry=regions.get(region);
       if (!entry)throw new Error("نطاق جغرافي غير متسق مع قائمة العملاء.");
       entry.buyers++;entry.cents+=r.cents;
     }
     const rows=[...regions.values()].sort((a,b)=>b.cents-a.cents || a.name.localeCompare(b.name,"ar"));
     if(rows.reduce((n,r)=>n+r.customers,0)!==result.customers || rows.reduce((n,r)=>n+r.cents,0)!==Math.round(result.sales*100))throw new Error("عدم تطابق إجماليات التقرير الجغرافي.");
-    const unspecified=regions.get("غير محدد")?.customers||0;
-    metrics.append(metric("مناطق مسجلة",integer(rows.filter(r=>r.name!=="غير محدد").length)),metric("عملاء دون منطقة محددة",integer(unspecified)),metric("المبيعات المرتبطة بالمناطق",`${fmt(result.sales)} SAR`));
+    const unspecified=regions.get(t("customerReports.overviewDynamic.k006"))?.customers||0;
+    metrics.append(metric(t("customerReports.overviewDynamic.k061"),integer(rows.filter(r=>r.name!==t("customerReports.overviewDynamic.k006")).length)),metric(t("customerReports.overviewDynamic.k062"),integer(unspecified)),metric(t("customerReports.overviewDynamic.k063"),`${fmt(result.sales)} SAR`));
     for (const r of rows) {const tr=document.createElement("tr");for(const v of [r.name,integer(r.customers),integer(r.buyers),`${fmt(r.cents/100)} SAR`]){const td=document.createElement("td");td.textContent=v;tr.append(td);}table.append(tr);}
-    $("a14GeoStatus").textContent="التحليل بحسب عنوان العميل المسجل؛ المناطق غير المحددة معروضة منفصلة. لا يتم توزيع المبيعات غير المنسوبة لعميل.";
+    $("a14GeoStatus").textContent=t("customerReports.overviewDynamic.k064");
   }
 
 
@@ -457,33 +463,33 @@
       throw new Error("فشل التحقق من أول بيع موثق للعملاء.");
     }
     metrics.append(
-      metric("الشهور التي سُجلت فيها مبيعات",integer(rows.length)),
-      metric("سنوات المبيعات المتاحة",integer(years.size)),
-      metric("عملاء حسب أول بيع موثق",integer(firstRecordedTotal)),
-      metric("إجمالي المبيعات شامل الضريبة",`${fmt(sumAllCents/100)} SAR`,"مبيعات العملاء + المبيعات غير المنسوبة")
+      metric(t("customerReports.overviewDynamic.k065"),integer(rows.length)),
+      metric(t("customerReports.overviewDynamic.availableYears"),integer(years.size)),
+      metric(t("customerReports.overviewDynamic.firstSaleCustomers"),integer(firstRecordedTotal)),
+      metric(t("customerReports.overviewDynamic.k018"),`${fmt(sumAllCents/100)} SAR`,t("customerReports.overviewDynamic.allSalesDetail"))
     );
-    $("a14TrendStatus").textContent=`تمت تسوية إجمالي المصدر عبر ${integer(rows.length)} شهرًا دون فروق داخل نطاق الفلاتر. «أول بيع» يعني أول فاتورة مرقمة في البيانات المتاحة فقط، وليس تاريخ اكتساب العميل. العملاء الفريدون سنويًا لا يُجمعون بين السنوات.`;
+    $("a14TrendStatus").textContent=t("customerReports.overviewDynamic.temporalStatus",{months:integer(rows.length)});
   }
 
   async function load() {
     if (busy) return;
     if (window.PermissionEngine?.canView?.("customerReports") !== true || window.PermissionEngine?.canView?.("salesReports") !== true) {
       const status = $("a14OverviewStatus");
-      if (status) status.textContent = "لا توجد صلاحية معتمدة لعرض تقارير العملاء والمبيعات.";
+      if (status) status.textContent = t("customerReports.overviewDynamic.k066");
       return;
     }
     busy = true; const run = ++version;
     const button = $("a14OverviewLoad"), status = $("a14OverviewStatus"), grid = $("a14OverviewMetrics"), note = $("a14OverviewNote");
     button.disabled = true;
-    status.textContent = "جاري تحميل كل صفحات العملاء والمبيعات والتحقق من الربط...";
+    status.textContent = t("customerReports.overviewDynamic.k067");
     verifiedSnapshot = null; clearRendered(); note.textContent = "";
     $("a14FrequencyMetrics").replaceChildren(); $("a14PurchaseFrequency").replaceChildren(); $("a14TopCustomers").replaceChildren();
-    $("a14PurchaseStatus").textContent = "جاري التحقق من بيانات المبيعات...";
+    $("a14PurchaseStatus").textContent = t("customerReports.overviewDynamic.k068");
     for (const id of ["a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers"]) $(id).replaceChildren();
     $("a14ActivityReference").textContent = ""; $("a14RetentionDescription").textContent = "";
-    $("a14ActivityStatus").textContent = "جاري تحليل تواريخ الفواتير...";
-    $("a14GeoMetrics").replaceChildren();$("a14GeoRows").replaceChildren();$("a14GeoStatus").textContent="جاري تحليل التوزيع الجغرافي...";
-    $("a14TrendMetrics").replaceChildren();$("a14TrendMonthlyRows").replaceChildren();$("a14TrendAnnualRows").replaceChildren();$("a14TrendStatus").textContent="جاري التحقق من الاتجاهات الزمنية...";
+    $("a14ActivityStatus").textContent = t("customerReports.overviewDynamic.k069");
+    $("a14GeoMetrics").replaceChildren();$("a14GeoRows").replaceChildren();$("a14GeoStatus").textContent=t("customerReports.overviewDynamic.k070");
+    $("a14TrendMetrics").replaceChildren();$("a14TrendMonthlyRows").replaceChildren();$("a14TrendAnnualRows").replaceChildren();$("a14TrendStatus").textContent=t("customerReports.overviewDynamic.k071");
     try {
       if (navigator.onLine === false) throw new Error("التحقق من البيانات يحتاج اتصالًا بالإنترنت.");
       if (!window.CustomersService?.listCustomers) throw new Error("خدمة العملاء غير متاحة.");
@@ -499,17 +505,28 @@
       renderScope();
     } catch (error) {
       console.error("A14 customer overview load failed", error);
-      status.textContent = `تعذر اعتماد نظرة العملاء: ${error.message || error}`;
-      grid.replaceChildren(); note.textContent = "لم تُعرض أرقام جزئية.";
+      status.textContent = t("customerReports.overviewDynamic.loadError",{error:error.message || error});
+      grid.replaceChildren(); note.textContent = t("customerReports.overviewDynamic.k021");
       $("a14FrequencyMetrics").replaceChildren(); $("a14PurchaseFrequency").replaceChildren(); $("a14TopCustomers").replaceChildren();
-      $("a14PurchaseStatus").textContent = "تم إيقاف التحليل لمنع عرض بيانات ناقصة.";
+      $("a14PurchaseStatus").textContent = t("customerReports.overviewDynamic.k072");
       for (const id of ["a14ActivityMetrics","a14ActivityBands","a14RetentionMetrics","a14DormantCustomers"]) $(id).replaceChildren();
       $("a14ActivityReference").textContent = ""; $("a14RetentionDescription").textContent = "";
-      $("a14ActivityStatus").textContent = "تم إيقاف تحليل النشاط لمنع عرض بيانات ناقصة.";
-      $("a14GeoMetrics").replaceChildren();$("a14GeoRows").replaceChildren();$("a14GeoStatus").textContent="تم إيقاف التحليل الجغرافي لمنع عرض بيانات ناقصة.";
-      $("a14TrendMetrics").replaceChildren();$("a14TrendMonthlyRows").replaceChildren();$("a14TrendAnnualRows").replaceChildren();$("a14TrendStatus").textContent="تم إيقاف المقارنات الزمنية لمنع عرض بيانات ناقصة.";
+      $("a14ActivityStatus").textContent = t("customerReports.overviewDynamic.k073");
+      $("a14GeoMetrics").replaceChildren();$("a14GeoRows").replaceChildren();$("a14GeoStatus").textContent=t("customerReports.overviewDynamic.k074");
+      $("a14TrendMetrics").replaceChildren();$("a14TrendMonthlyRows").replaceChildren();$("a14TrendAnnualRows").replaceChildren();$("a14TrendStatus").textContent=t("customerReports.overviewDynamic.k075");
     } finally { busy = false; button.disabled = false; }
   }
+  function refreshCurrentLanguage() {
+    if (busy || !verifiedSnapshot) return;
+    const requestedVisible = detailVisible;
+    refreshFilterOptions(verifiedSnapshot.customers, verifiedSnapshot.sales);
+    renderScope();
+    if (filteredResult && requestedVisible > 10) {
+      detailVisible = Math.min(requestedVisible, filteredResult.ranks.length);
+      renderCustomerDetails(filteredResult);
+    }
+  }
+  window.addEventListener("petatoe-language-changed", refreshCurrentLanguage);
   const initialize = () => {
     $("a14OverviewLoad")?.addEventListener("click", load);
     $("a14ApplyFilters")?.addEventListener("click", () => {if(!busy) renderScope();});
