@@ -122,3 +122,9 @@
 
 /* A17.3.3.2: Financial/operational modes, reports stay full-width and stacked */
 .a17-service-mode{display:flex;align-items:center;margin:12px 0 18px}.a17-service-mode label{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.a17-service-mode select{min-width:210px;max-width:100%}.a17-finance-hidden{display:none!important}#a17FinancePanel,#a17FinanceGrowthPanel,#a17FinanceSharePanel{width:100%;min-width:0}#a17FinancePanel[hidden],#a17FinanceGrowthPanel[hidden],#a17FinanceSharePanel[hidden]{display:none!important}
+
+/* A17.3.3.3: comparison unavailable is not a numeric bar */
+#advancedAnalyticsView .a17-service-period-info{font-size:.85rem;line-height:1.7;color:var(--text-muted,#52657e);margin:8px 0 14px;direction:inherit}
+#advancedAnalyticsView .a17-service-no-baseline{font-size:.81rem;line-height:1.5;color:var(--text-muted,#52657e);background:rgba(120,140,160,.07);border:1px dashed rgba(120,140,160,.25);padding:8px 12px;border-radius:9px;text-align:center;min-width:0}
+#advancedAnalyticsView .a17-no-comparison .a17-service-chart-value{white-space:normal;font-size:.83rem}
+@media(max-width:550px){#advancedAnalyticsView .a17-no-comparison .a17-service-no-baseline{grid-column:2}}

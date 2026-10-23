@@ -37,6 +37,9 @@
  }
  function populate(){const select=$('a17ServiceSelect');if(!select)return;const prev=select.value;select.replaceChildren();const opt=text('option','',t('serviceAll'));opt.value='';select.append(opt);const ids=[...new Set(records.map(r=>r.service))].sort((a,b)=>(types.get(a)||a).localeCompare(types.get(b)||b));for(const id of ids){const o=text('option','',types.get(id)||id);o.value=id;select.append(o);}if(ids.includes(prev))select.value=prev;}
  const sums=(list,sel)=>{const m=new Map();for(const r of list){const key=sel(r);m.set(key,(m.get(key)||0)+r.qty);}return m;};
+ const word=(ar,en)=>document.documentElement.lang?.toLowerCase().startsWith('en')?en:ar;
+ function annotate(id,label){const node=$(id);if(!node)return;let info=node.querySelector('.a17-service-period-info');if(!info){info=text('p','a17-service-period-info','');node.querySelector('h4')?.after(info);}if(info)info.textContent=label;}
+ function noBar(root,name,label){const div=text('div','a17-service-chart-row a17-no-comparison','');div.append(text('span','a17-service-chart-label',name),text('span','a17-service-no-baseline',word('لا يوجد خط أساس موثق للمقارنة','No verified comparison baseline')),text('strong','a17-service-chart-value',label));root.append(div);}
  const row=(body,values)=>{const r=document.createElement('tr');for(const v of values)r.append(text('td','',v));body.append(r);};
  const bar=(root,name,qty,max,label)=>{const box=text('div','a17-service-chart-row',''),title=text('span','a17-service-chart-label',name),track=text('div','a17-service-chart-track',''),fill=text('span','a17-service-chart-fill','');fill.style.width=(max>0?Math.max(0,qty/max*100):0).toFixed(2)+'%';track.append(fill);box.append(title,track,text('strong','a17-service-chart-value',label));root.append(box);};
  function render(){clear();if(!ready||!allowed()){if(!allowed())status('serviceBlocked');return;}
@@ -45,9 +48,12 @@
   const now=new Date(),currentMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   const periods=(month?[year+'-'+month]:Array.from({length:12},(_,i)=>year+'-'+String(i+1).padStart(2,'0'))).filter(k=>k<=currentMonth);
   const base=k=>shift(k,mode==='yoy'?-12:-periods.length);
+  const refPeriods=periods.map(base);const partial=periods.includes(currentMonth);
+  const summary=word('الفترة الحالية: ','Current period: ')+(periods.length?periods[0]+' → '+periods[periods.length-1]:'—')+' | '+word('الفترة المرجعية: ','Reference period: ')+(refPeriods.length?refPeriods[0]+' → '+refPeriods[refPeriods.length-1]:'—')+(partial?' · '+word('فترة جارية (نتيجة مؤقتة)','Open period (provisional)'):'');
+  for(const id of ['a17ServicesPanel','a17ServiceGrowthPanel','a17ServiceSharePanel'])annotate(id,summary);
   const byMonth=sums(records.filter(r=>!service||r.service===service),r=>r.month);
   const cells=periods.map(k=>({month:k,current:byMonth.get(k)||0,reference:byMonth.get(base(k))||0}));
-  const sum=key=>cells.reduce((v,r)=>v+r[key],0),total=sum('current'),reference=sum('reference'),partial=periods.includes(currentMonth);
+  const sum=key=>cells.reduce((v,r)=>v+r[key],0),total=sum('current'),reference=sum('reference');
   const kpis=$('a17ServiceKpis');for(const [label,value] of [[t('serviceQuantity'),number(total)],[t('reference'),number(reference)],[t('serviceGrowthPct'),partial||reference===0?t('serviceUnavailable'):((total-reference)/reference*100).toFixed(1)+'%']]){const el=text('div','a17-kpi','');el.append(text('span','',label),text('strong','',value));kpis.append(el);}
   const trend=$('a17ServiceTrend');if(cells.length){const max=Math.max(1,...cells.map(r=>Math.max(r.current,r.reference)));for(const r of cells){bar(trend,r.month,r.current,max,number(r.current)+' / '+number(r.reference));row($('a17ServiceTrendBody'),[r.month,number(r.current),number(r.reference),number(r.current-r.reference)]);}row($('a17ServiceTrendFoot'),[t('totalRow'),number(total),number(reference),number(total-reference)]);}else trend.textContent=t('noData');
   const selectedPeriods=new Set(periods),referencePeriods=new Set(periods.map(base));
@@ -55,7 +61,7 @@
   const c=sums(currentRows,r=>r.service),b=sums(referenceRows,r=>r.service),ids=[...new Set([...c.keys(),...b.keys()])];
   const order=ids.map(id=>({id,label:types.get(id)||id,current:c.get(id)||0,reference:b.get(id)||0})).sort((x,y)=>y.current-x.current||x.label.localeCompare(y.label));
   const growth=$('a17ServiceGrowth'),growthBody=$('a17ServiceGrowthBody');const growthOrder=[...order].sort((x,y)=>{const score=z=>!partial&&z.reference>0?(z.current-z.reference)/z.reference:-Infinity;return score(y)-score(x)||x.label.localeCompare(y.label);});
-  const maxQty=Math.max(1,...growthOrder.map(x=>x.current));for(const r of growthOrder){const pct=partial||r.reference===0?t('serviceUnavailable'):((r.current-r.reference)/r.reference*100).toFixed(1)+'%';bar(growth,r.label,r.current,maxQty,pct);row(growthBody,[r.label,number(r.current),number(r.reference),pct]);}if(!growthOrder.length)growth.textContent=t('noData');
+  const maxQty=Math.max(1,...growthOrder.map(x=>x.current));for(const r of growthOrder){const pct=partial||r.reference===0?t('serviceUnavailable'):((r.current-r.reference)/r.reference*100).toFixed(1)+'%';if(!partial&&r.reference>0)bar(growth,r.label,r.current,maxQty,pct);else noBar(growth,r.label,pct);row(growthBody,[r.label,number(r.current),number(r.reference),pct]);}if(!growthOrder.length)growth.textContent=t('noData');
   const share=$('a17ServiceShare'),shareBody=$('a17ServiceShareBody');const totalQty=[...c.values()].reduce((a,v)=>a+v,0),shareMax=Math.max(1,...order.map(x=>x.current));for(const r of order.filter(x=>x.current>0)){const pct=totalQty?((r.current/totalQty)*100).toFixed(2)+'%':t('serviceUnavailable');bar(share,r.label,r.current,shareMax,pct);row(shareBody,[r.label,number(r.current),pct]);}if(!totalQty)share.textContent=t('noData');else row($('a17ServiceShareFoot'),[t('totalRow'),number(totalQty),'100.00%']);
   if(partial)status('servicePartial');else status('serviceLoaded');
  }

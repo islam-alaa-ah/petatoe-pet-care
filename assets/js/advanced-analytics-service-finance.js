@@ -35,11 +35,21 @@
  function line(root,name,val,max,suffix){const div=el('div','a17-service-chart-row'),label=el('span','a17-service-chart-label',name),track=el('div','a17-service-chart-track'),fill=el('span','a17-service-chart-fill'),v=el('strong','a17-service-chart-value',suffix);fill.style.width=(max?Math.max(0,val/max*100):0).toFixed(2)+'%';track.append(fill);div.append(label,track,v);root.append(div);}
  function table(id,vals){const trEl=el('tr');for(const v of vals)trEl.append(el('td','',v));$(id)?.append(trEl);}
  const ratio=(a,b)=>b>0?((a-b)*100/b).toFixed(1)+'%':tr('financeNoBaseline');
+ const word=(ar,en)=>document.documentElement.lang?.toLowerCase().startsWith('en')?en:ar;
+ const periodInfo=(ks,base,partial)=>{
+   const a=ks.length?ks[0]+' → '+ks[ks.length-1]:'—';
+   const bs=ks.map(base),b=bs.length?bs[0]+' → '+bs[bs.length-1]:'—';
+   return word('الفترة الحالية: ','Current period: ')+a+' | '+word('الفترة المرجعية: ','Reference period: ')+b+(partial?' · '+word('فترة جارية (نتيجة مؤقتة)','Open period (provisional)'):'');
+ };
+ function annotate(id,label){const node=$(id);if(!node)return;let info=node.querySelector('.a17-service-period-info');if(!info){info=el('p','a17-service-period-info');node.querySelector('h4')?.after(info);}if(info)info.textContent=label;}
+ function noBar(root,name,label){const div=el('div','a17-service-chart-row a17-no-comparison');div.append(el('span','a17-service-chart-label',name),el('span','a17-service-no-baseline',word('لا يوجد خط أساس موثق للمقارنة','No verified comparison baseline')),el('strong','a17-service-chart-value',label));root.append(div);}
+
  function render(){clear();if(!ready||!can()){if(!can())status('financeBlocked');return;}
   const year=$('a17Year')?.value,mon=$('a17Month')?.value||'',mode=$('a17Compare')?.value||'previous';if(!/^\d{4}$/.test(year||''))return;
   const now=new Date(),monthNow=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   const ks=(mon?[year+'-'+mon]:Array.from({length:12},(_,i)=>year+'-'+String(i+1).padStart(2,'0'))).filter(x=>x<=monthNow);
   const reference=k=>shift(k,mode==='yoy'?-12:-ks.length),baseSet=new Set(ks.map(reference)),set=new Set(ks),partial=ks.includes(monthNow);
+  const range=periodInfo(ks,reference,partial);for(const id of ['a17FinancePanel','a17FinanceGrowthPanel','a17FinanceSharePanel'])annotate(id,range);
   // Classified historical service line amounts are exact. Current canonical invoice totals have no verified per-service allocation.
   const byMonth=buckets(historical.filter(x=>x.service));
   const totals=buckets([...historical,...current]);
@@ -49,11 +59,11 @@
   const selected=ks.reduce((a,k)=>a+(totals.get(k)||0),0),unassigned=selected-currClass; if(unassigned<0) { clear();status('financeFailed');console.error('A17_SERVICE_SALES_RECONCILIATION_NEGATIVE_UNATTRIBUTED',{selected,currClass});return; }
   const kpis=$('a17FinanceKpis');for(const [label,value] of [[tr('financeClassified'),money(currClass)+' SAR'],[tr('financeUnassigned'),money(unassigned)+' SAR'],[tr('financeCoverage'),selected>0?(100*currClass/selected).toFixed(2)+'%':tr('financeNoBaseline')]]){const b=el('div','a17-kpi');b.append(el('span','',label),el('strong','',value));kpis?.append(b);}
   const trend=$('a17FinanceTrend');const max=Math.max(1,...ks.map(k=>Math.max(byMonth.get(k)||0,byMonth.get(reference(k))||0)));
-  for(const k of ks){const a=byMonth.get(k)||0,b=byMonth.get(reference(k))||0;line(trend,k,a,max,money(a)+' SAR');table('a17FinanceTrendBody',[k,reference(k),money(a),money(b)]);}
+  for(const k of ks){const a=byMonth.get(k)||0,b=byMonth.get(reference(k))||0,invoiceTotal=totals.get(k)||0;const label=a===0&&invoiceTotal>0?word('غير منسوبة للخدمات','Sales not attributed'):money(a)+' SAR';line(trend,k,a,max,label);table('a17FinanceTrendBody',[k,reference(k),a===0&&invoiceTotal>0?label:money(a),money(b)]);}
   if(!ks.length)trend.textContent=tr('noData');else table('a17FinanceTrendFoot',[tr('totalRow'),'—',money(currClass),money(refClass)]);
   const ids=[...new Set([...cHist.keys(),...bHist.keys()])];const rows=ids.map(id=>({id,name:names.get(id)||id,a:cHist.get(id)||0,b:bHist.get(id)||0})).sort((a,b)=>b.a-a.a||a.name.localeCompare(b.name));
   const growth=$('a17FinanceGrowth'),sort=[...rows].sort((a,b)=>(b.b?((b.a-b.b)/b.b):-Infinity)-(a.b?((a.a-a.b)/a.b):-Infinity));const top=Math.max(1,...rows.map(r=>r.a));
-  for(const r of sort){const v=(partial||!r.b)?tr('financeNoBaseline'):ratio(r.a,r.b);line(growth,r.name,r.a,top,v);table('a17FinanceGrowthBody',[r.name,money(r.a),money(r.b),v]);}if(!sort.length)growth.textContent=tr('noData');
+  for(const r of sort){const comparable=!partial&&r.b>0;const v=comparable?ratio(r.a,r.b):tr('financeNoBaseline');if(comparable)line(growth,r.name,r.a,top,v);else noBar(growth,r.name,v);table('a17FinanceGrowthBody',[r.name,money(r.a),money(r.b),v]);}if(!sort.length)growth.textContent=tr('noData');
   const share=$('a17FinanceShare');for(const r of rows.filter(x=>x.a>0)){line(share,r.name,r.a,top,currClass?(100*r.a/currClass).toFixed(2)+'%':'—');table('a17FinanceShareBody',[r.name,money(r.a),currClass?(100*r.a/currClass).toFixed(2)+'%':'—']);}
   if(unassigned>0){line(share,tr('financeUnassigned'),unassigned,Math.max(top,unassigned),money(unassigned)+' SAR');table('a17FinanceShareBody',[tr('financeUnassigned'),money(unassigned),tr('financeNotAttributed')]);}
   if(!rows.length&&!unassigned)share.textContent=tr('noData');else table('a17FinanceShareFoot',[tr('totalRow'),money(selected),'—']);
