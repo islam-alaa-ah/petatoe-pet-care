@@ -385,6 +385,7 @@
     ["advancedAnalytics.opsName", "label", "السيارة / الفرقة", "Vehicle / team"],
     ["advancedAnalytics.opsTotal", "label", "المواعيد", "Appointments"],
     ["advancedAnalytics.opsCompleted", "label", "المكتملة", "Completed"],
+    ["advancedAnalytics.opsAssigned", "label", "المسندة", "Assigned"],
     ["advancedAnalytics.opsCancelled", "label", "الملغاة", "Cancelled"],
     ["advancedAnalytics.opsRate", "label", "نسبة الإنجاز", "Completion rate"],
     ["advancedAnalytics.opsReferenceTotal", "label", "مواعيد المرجعية", "Reference appointments"],

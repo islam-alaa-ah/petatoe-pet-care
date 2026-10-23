@@ -1,9 +1,11 @@
-A17.3.3.8 — Sales comparison table column alignment
+# A17.3.8.1 — Operational request status and calendar-window correction
 
-- Five fixed column widths (16%, 21%, 21%, 21%, 21%), using a colgroup generated once at render time.
-- Scope styling to the A17 sales comparison table only. Header, monthly body, and totals use identical center alignment.
-- Preserve green/red change formatting, blue total footer, year headings and all sales values and calculations.
-- No SQL, RPC, RLS, localization engine, or other reports modified.
-- Static checks passed; browser RTL/LTR verification remains pending.
-
-Apply over A17.3.3.7. Only the two paths included are changed.
+- The current month is included in full for scheduled workloads; future months remain excluded from a current-year overview. Ongoing months are still marked partial, so no final growth conclusion is presented.
+- Completed, assigned (مسند), and cancelled request counts are now separate in KPI and group/month detail tables.
+- Undated requests are still counted separately and never assigned an invented month.
+- The existing A15 operationalReport() is left intact; no DB/RPC/RLS changes.
+- Existing A17 frontend translations remain centralized; one opsAssigned key added to both locales.
+- This addresses an apparent date-cap exclusion; the seven assigned October dates must be verified live before claiming exact reconciliation.
+- Installation: overlay the two files on the latest deployed A17.3.7+ baseline.
+- Test: source Q2 = 434 records, 433 dated, October 118 (111 completed + 7 assigned) if the seven assigned requests fall on or before October 31. Also check VAN A/B and unassigned groups, each status and mobile layout.
+- Static validation is not live certification.
