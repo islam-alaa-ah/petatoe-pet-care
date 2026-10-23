@@ -45,10 +45,10 @@
  function noBar(root,name,label){const div=el('div','a17-service-chart-row a17-no-comparison');div.append(el('span','a17-service-chart-label',name),el('span','a17-service-no-baseline',word('لا يوجد خط أساس موثق للمقارنة','No verified comparison baseline')),el('strong','a17-service-chart-value',label));root.append(div);}
 
  function render(){clear();if(!ready||!can()){if(!can())status('financeBlocked');return;}
-  const year=$('a17Year')?.value,mon=$('a17Month')?.value||'',mode=$('a17Compare')?.value||'previous';if(!/^\d{4}$/.test(year||''))return;
+  const year=$('a17Year')?.value,mon=$('a17Month')?.value||'',mode=$('a17FinanceCompare')?.value||'mom';if(!/^\d{4}$/.test(year||''))return;
   const now=new Date(),monthNow=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   const ks=(mon?[year+'-'+mon]:Array.from({length:12},(_,i)=>year+'-'+String(i+1).padStart(2,'0'))).filter(x=>x<=monthNow);
-  const reference=k=>shift(k,mode==='yoy'?-12:-ks.length),baseSet=new Set(ks.map(reference)),set=new Set(ks),partial=ks.includes(monthNow);
+  const reference=k=>shift(k,mode==='yoy'?-12:mode==='mom'?-1:-ks.length),baseSet=new Set(ks.map(reference)),set=new Set(ks),partial=ks.includes(monthNow);
   const range=periodInfo(ks,reference,partial);for(const id of ['a17FinancePanel','a17FinanceGrowthPanel','a17FinanceSharePanel'])annotate(id,range);
   // Classified historical service line amounts are exact. Current canonical invoice totals have no verified per-service allocation.
   const byMonth=buckets(historical.filter(x=>x.service));
@@ -61,9 +61,33 @@
   const trend=$('a17FinanceTrend');const max=Math.max(1,...ks.map(k=>Math.max(byMonth.get(k)||0,byMonth.get(reference(k))||0)));
   for(const k of ks){const a=byMonth.get(k)||0,b=byMonth.get(reference(k))||0,invoiceTotal=totals.get(k)||0;const label=a===0&&invoiceTotal>0?word('غير منسوبة للخدمات','Sales not attributed'):money(a)+' SAR';line(trend,k,a,max,label);table('a17FinanceTrendBody',[k,reference(k),a===0&&invoiceTotal>0?label:money(a),money(b)]);}
   if(!ks.length)trend.textContent=tr('noData');else table('a17FinanceTrendFoot',[tr('totalRow'),'—',money(currClass),money(refClass)]);
-  const ids=[...new Set([...cHist.keys(),...bHist.keys()])];const rows=ids.map(id=>({id,name:names.get(id)||id,a:cHist.get(id)||0,b:bHist.get(id)||0})).sort((a,b)=>b.a-a.a||a.name.localeCompare(b.name));
-  const growth=$('a17FinanceGrowth'),sort=[...rows].sort((a,b)=>(b.b?((b.a-b.b)/b.b):-Infinity)-(a.b?((a.a-a.b)/a.b):-Infinity));const top=Math.max(1,...rows.map(r=>r.a));
-  for(const r of sort){const comparable=!partial&&r.b>0;const v=comparable?ratio(r.a,r.b):tr('financeNoBaseline');if(comparable)line(growth,r.name,r.a,top,v);else noBar(growth,r.name,v);table('a17FinanceGrowthBody',[r.name,money(r.a),money(r.b),v]);}if(!sort.length)growth.textContent=tr('noData');
+  // For MoM/YoY the growth ranking compares one explicit pair of calendar months.
+  // If the user selected a whole year, use the most recent COMPLETED month with
+  // classified sales (not an open month, and never pretend it is October).
+  const historicalMonthlyTotal=buckets(historical);
+  const lastComplete=ks.filter(k=>k<monthNow);
+  const growthMonth=mon?ks[0]:[...lastComplete].reverse().find(k=>(byMonth.get(k)||0)>0);
+  const growthRef=growthMonth?reference(growthMonth):null;
+  const growthKeys=mode==='previous'&&!mon?ks: growthMonth?[growthMonth]:[];
+  const growthBase=mode==='previous'&&!mon?ks.map(reference):growthRef?[growthRef]:[];
+  const currentGrowthSet=new Set(growthKeys),baseGrowthSet=new Set(growthBase);
+  const growthCurrent=aggregate(historical.filter(x=>x.service&&currentGrowthSet.has(x.month)),r=>r.service);
+  const growthBaseline=aggregate(historical.filter(x=>x.service&&baseGrowthSet.has(x.month)),r=>r.service);
+  const coverageFor=keys=>{const total=keys.reduce((s,k)=>s+(historicalMonthlyTotal.get(k)||0)+(buckets(current).get(k)||0),0),cls=keys.reduce((s,k)=>s+(byMonth.get(k)||0),0);return total?100*cls/total:null;};
+  const cv=coverageFor(growthKeys),bv=coverageFor(growthBase);
+  const isOpen=growthKeys.some(k=>k>=monthNow);
+  const hasVerifiedPeriod=!!growthKeys.length&&!!growthBase.length&&growthBase.every(k=>k<monthNow)&&!isOpen&&cv!==null&&bv!==null&&cv>0&&bv>0;
+  const pct=x=>x===null?'—':x.toFixed(2)+'%';
+  const comparisonText=growthKeys.length?periodInfo(growthKeys,k=>growthBase[growthKeys.indexOf(k)]||'—',isOpen):tr('financeNoComparableMonth');
+  const note=$('a17FinanceComparisonNote');if(note)note.textContent=comparisonText;
+  annotate('a17FinanceGrowthPanel',comparisonText+' · '+tr('financeCoverageNote')+pct(cv)+' / '+pct(bv)+' · '+tr('financeIncompleteCoverage'));
+  const ids=[...new Set([...growthCurrent.keys(),...growthBaseline.keys()])];
+  const rows=ids.map(id=>({id,name:names.get(id)||id,a:growthCurrent.get(id)||0,b:growthBaseline.get(id)||0}));
+  const sortable=r=>hasVerifiedPeriod&&r.b>0?(r.a-r.b)/r.b:null;
+  rows.sort((a,b)=>{const av=sortable(a),bv=sortable(b);return (bv===null?-Infinity:bv)-(av===null?-Infinity:av)||b.a-a.a||a.name.localeCompare(b.name);});
+  const growth=$('a17FinanceGrowth'),top=Math.max(1,...rows.map(r=>r.a));
+  for(const r of rows){const comparable=hasVerifiedPeriod&&r.b>0;const v=comparable?ratio(r.a,r.b):tr('financeNoBaseline');if(comparable)line(growth,r.name,r.a,top,v);else noBar(growth,r.name,v);table('a17FinanceGrowthBody',[r.name,money(r.a),money(r.b),v]);}
+  if(!rows.length)growth.textContent=tr('financeNoComparableMonth');
   const share=$('a17FinanceShare');for(const r of rows.filter(x=>x.a>0)){line(share,r.name,r.a,top,currClass?(100*r.a/currClass).toFixed(2)+'%':'—');table('a17FinanceShareBody',[r.name,money(r.a),currClass?(100*r.a/currClass).toFixed(2)+'%':'—']);}
   if(unassigned>0){line(share,tr('financeUnassigned'),unassigned,Math.max(top,unassigned),money(unassigned)+' SAR');table('a17FinanceShareBody',[tr('financeUnassigned'),money(unassigned),tr('financeNotAttributed')]);}
   if(!rows.length&&!unassigned)share.textContent=tr('noData');else table('a17FinanceShareFoot',[tr('totalRow'),money(selected),'—']);
@@ -71,7 +95,7 @@
  }
  function toggle(name){const d=$('a17Finance'+name+'Details'),btn=$('a17Finance'+name+'Toggle');if(!d||!btn)return;d.hidden=!d.hidden;btn.setAttribute('aria-expanded',String(!d.hidden));btn.textContent=tr(d.hidden?'showDetails':'hideDetails');}
  document.addEventListener('DOMContentLoaded',()=>{const mode=$('a17ServiceMetric');function sync(){const financial=mode?.value==='sales';for(const id of ['a17FinancePanel','a17FinanceGrowthPanel','a17FinanceSharePanel']){if($(id))$(id).hidden=!financial;}for(const id of ['a17ServicesPanel','a17ServiceGrowthPanel','a17ServiceSharePanel']){if($(id))$(id).classList.toggle('a17-finance-hidden',financial);}if(financial){if(ready)render();else status('financeNotLoaded');}}
- mode?.addEventListener('change',sync);$('a17FinanceLoad')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',()=>{if(ready)render();});$('a17Compare')?.addEventListener('change',()=>{if(ready)render();});for(const x of ['Trend','Growth','Share'])$('a17Finance'+x+'Toggle')?.addEventListener('click',()=>toggle(x));sync();});
+ mode?.addEventListener('change',sync);$('a17FinanceLoad')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',()=>{if(ready)render();});$('a17Compare')?.addEventListener('change',()=>{if(ready)render();});$('a17FinanceCompare')?.addEventListener('change',()=>{if(ready)render();});for(const x of ['Trend','Growth','Share'])$('a17Finance'+x+'Toggle')?.addEventListener('click',()=>toggle(x));sync();});
  document.addEventListener('petatoe:language-changed',()=>{if(ready)render();else status(can()?'financeNotLoaded':'financeBlocked');});
  window.AdvancedAnalyticsServiceFinance=Object.freeze({load,render});
 })();

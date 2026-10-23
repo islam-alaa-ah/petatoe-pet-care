@@ -128,3 +128,9 @@
 #advancedAnalyticsView .a17-service-no-baseline{font-size:.81rem;line-height:1.5;color:var(--text-muted,#52657e);background:rgba(120,140,160,.07);border:1px dashed rgba(120,140,160,.25);padding:8px 12px;border-radius:9px;text-align:center;min-width:0}
 #advancedAnalyticsView .a17-no-comparison .a17-service-chart-value{white-space:normal;font-size:.83rem}
 @media(max-width:550px){#advancedAnalyticsView .a17-no-comparison .a17-service-no-baseline{grid-column:2}}
+
+/* A17.3.3.4 — financial service comparison controls */
+#advancedAnalyticsView .a17-finance-compare{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 14px;border:1px solid rgba(38,124,232,.17);border-radius:12px;margin:12px 0;background:rgba(38,124,232,.035)}
+#advancedAnalyticsView .a17-finance-compare select{min-width:245px;max-width:100%;padding:9px 12px;border-radius:9px}
+#advancedAnalyticsView .a17-finance-compare .a17-service-period-info{flex-basis:100%;margin:0}
+@media(max-width:600px){#advancedAnalyticsView .a17-finance-compare{align-items:stretch;flex-direction:column}#advancedAnalyticsView .a17-finance-compare select{width:100%;min-width:0}}
