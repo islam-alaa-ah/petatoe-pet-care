@@ -827,6 +827,8 @@
     ['salesReports.filter.status','label','حالة الفاتورة','Invoice Status'],
     ['salesReports.filter.all','option','الكل','All'],
     ['salesReports.filter.allMonths','option','كل الشهور المتاحة','All available months'],
+    ['salesReports.filter.allYears','option','كل السنوات','All years'],
+    ['salesReports.common.withoutInvoice','label','بدون فاتورة','No invoice'],
     ['salesReports.action.apply','button','تطبيق الفلاتر','Apply Filters'],
     ['salesReports.action.reset','button','إعادة تعيين','Reset'],
     ['salesReports.action.refresh','button','تحديث البيانات','Refresh Data'],

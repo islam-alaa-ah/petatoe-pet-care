@@ -1,15 +1,15 @@
-# A17.3.9.1 — Functional regression: Peak scheduling boundary
+# A17.3.9.3 — Q5.2 A13 English runtime translation fix
 
-## Verified issue and code repair
-`advanced-analytics-peaks.js` capped all selected periods to Riyadh **today**, even though `advanced-analytics-operations.js` scopes scheduled appointments to **end of the current month**. For October 2026, the original A17 peak range ended on October 24; this excluded valid assigned bookings scheduled later in October from peak-slot reporting. The patch brings the peak range to October 31 while maintaining a guard for wholly future periods. It does not rewrite any records or modify accounting.
+Live test: A13 English visible elements 445; Arabic candidates 4: `salesReportsPeriodLabel` = `كل السنوات`, and three invoice-number cells = `بدون فاتورة`.
 
-## Static tests
-- node --check passes for patched module, and checks on eleven A13–A17 modules were recorded in STATIC_AUDIT.json.
-- Deterministic date calculation for 2026-10-24: range 2026-10-01 through 2026-10-31.
-- Five top-level report nav IDs were present in the assembled `app.js` reference: salesReports, customerReports, carsTeamsReports, servicesReports, advancedAnalytics.
+Changes:
+- Add existing missing central key `salesReports.filter.allYears` (All years).
+- Add `salesReports.common.withoutInvoice` (No invoice).
+- Translate the invoice *display* within the table only. Preserve original RPC invoice number, historical invoice identifiers, export and grouping logic.
+- The report already re-renders after `petatoe-language-changed`; no new listener or translation engine.
 
-## Limitations / acceptance gates
-- **Not production verified**: need a live A17 UI check versus operationalReport() for the chosen month, plus Q5 scheduled time distribution and unknown/outside-slot buckets.
-- No claims of complete localization; direct Arabic code lines may encode business keys or user-facing literals and require per-instance review.
-- Do not overwrite any newer local edits. Only the `assets/js/advanced-analytics-peaks.js` source is modified. Static audit is supporting documentation.
-- The month-end semantics refer to scheduled appointments (bookings), not completed visits, invoiced revenue, or forecasts.
+Modified files: `assets/js/sales-reports.js`, `assets/js/localization-center.js`.
+
+The localization-center.js is based on A17.3.8.9.5 delivery. If production has newer modifications, merge these two new rows instead of overwriting.
+
+Validation: `node --check` PASS for both modified JavaScript files; live browser retest PENDING. No financial, SQL, permission, route, or database changes.

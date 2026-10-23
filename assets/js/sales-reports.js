@@ -47,6 +47,10 @@
   const periodStart = (year, month) => `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-01`;
   const daysInMonth = (year, month) => new Date(year, month, 0).getDate();
   const periodEnd = (year, month) => `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(daysInMonth(year, month)).padStart(2, "0")}`;
+  // Translate invoice display labels only; preserve raw RPC values and grouping keys.
+  const invoiceNumberLabel = value => String(value ?? "").trim() === "بدون فاتورة"
+    ? t("salesReports.common.withoutInvoice", "بدون فاتورة")
+    : value;
   const normalizeRow = row => ({
     rowId: row?.row_id || "",
     invoiceNumber: row?.invoice_number || t("salesReports.common.undefined", "غير محدد"),
@@ -682,7 +686,7 @@
     const visible = rows.slice(0, renderedRows);
     host.innerHTML = visible.length ? visible.map(row => `<tr>
       <td>${esc(dateLabel(row.invoiceDate))}</td>
-      <td><strong>${esc(row.invoiceNumber)}</strong></td>
+      <td><strong>${esc(invoiceNumberLabel(row.invoiceNumber))}</strong></td>
       <td>${esc(row.customerName)}</td>
       <td>${esc(customerNeighborhood(row))}</td>
       <td>${esc(row.teamName || t("salesReports.common.undefined", "غير محدد"))}</td>
