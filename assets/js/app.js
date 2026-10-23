@@ -227,6 +227,7 @@ const views = {
   advancedAnalytics: document.getElementById("advancedAnalyticsView"),
   servicesReports: document.getElementById("servicesReportsView"),
   salesReports: document.getElementById("salesReportsView"),
+  carsTeamsReports: document.getElementById("carsTeamsReportsView"),
   dailyPerformanceReport: document.getElementById("dailyPerformanceReportView"),
   notificationCenter: document.getElementById("notificationCenterView"),
   translationCenter: document.getElementById("translationCenterView"),
@@ -300,6 +301,7 @@ const pageMeta = {
   advancedAnalytics: ["advancedAnalytics.title", "advancedAnalytics.subtitle"],
   servicesReports: ["servicesReports.title", "servicesReports.subtitle"],
   salesReports: ["salesReports.page.title", "salesReports.page.subtitle"],
+  carsTeamsReports: ["carsTeamsReports.title", "carsTeamsReports.subtitle"],
   dailyPerformanceReport: ["تقرير الأداء اليومي", "متابعة تنفيذ المهام والنشاط اليومي للموظفين"],
   notificationCenter: ["مركز الإشعارات", "إدارة الأحداث والمستلمين وقنوات الإشعار"],
   translationCenter: ["مركز الترجمه", "إدارة قاموس الترجمة المركزي ومراجعة تغطية الشاشات"],
@@ -319,6 +321,7 @@ const PAGE_META_I18N_KEYS = Object.freeze({
   advancedAnalytics: ["advancedAnalytics.title", "advancedAnalytics.subtitle"],
   servicesReports: ["servicesReports.title", "servicesReports.subtitle"],
   salesReports: ["salesReports.page.title", "salesReports.page.subtitle"],
+  carsTeamsReports: ["carsTeamsReports.title", "carsTeamsReports.subtitle"],
   dailyOperations: ["dailyOperations.page.title", "dailyOperations.page.subtitle"],
   dailyPerformanceReport: ["dailyPerformance.page.title", "dailyPerformance.page.subtitle"],
   dashboard: ["dashboard.page.title", "dashboard.page.subtitle"],
@@ -1609,6 +1612,9 @@ function switchView(requestedName, options = {}) {
   }
   if (name === "advancedAnalytics") window.AdvancedAnalyticsUI?.activate?.();
   if (name === "servicesReports") window.ServicesReportsUI?.activate?.();
+  if (name === "carsTeamsReports") {
+    window.CarsTeamsReportsUI?.activate?.();
+  }
   if (name === "salesReports") {
     window.SalesReportsUI?.activate?.(false);
   }
@@ -1701,6 +1707,7 @@ window.addEventListener("petatoe-language-changed", () => {
   if (current === "advancedAnalytics") window.AdvancedAnalyticsUI?.render?.();
   if (current === "servicesReports") window.ServicesReportsUI?.render?.();
   if (current === "salesReports") window.SalesReportsUI?.render?.();
+  if (current === "carsTeamsReports") window.CarsTeamsReportsUI?.render?.();
   const customer360Dialog = document.getElementById("customerDetailsDialog");
   if (customer360Dialog?.open && customer360Dialog.dataset.customerId) showCustomerDetails(customer360Dialog.dataset.customerId);
   if (document.getElementById("customerImportDialog")?.open && customerImportPreview) renderCustomerImportPreview(customerImportPreview);

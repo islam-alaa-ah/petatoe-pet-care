@@ -1,9 +1,10 @@
-# A17.3.8.7 — A14 static reports i18n fix
+# A15 Navigation Registry Repair
 
-- Converted 79 Arabic text occurrences and 67 unique phrases in the older A14 customer reports sections to `data-petatoe-i18n` keys.
-- Added Arabic/English keys directly to the existing central `assets/js/localization-center.js`.
-- Wrapped only the text inside `<label>` containing `<select>`; no localization attribute is placed on a control container.
-- No financial logic, SQL, RLS, RPC, or permission logic altered.
-- JavaScript syntax check: PASS. Static A14 coverage for this section: PASS. Live rendering and other dynamic text: PENDING.
-- index.html is a complete file from the latest locally assembled audit baseline; merge if production index has newer changes.
-- Also wired Reports & Analytics sidebar Customer Reports item to central localization.
+## Cause
+In the newer app.js baseline (A17.2.2.1), `carsTeamsReports` was absent from the `views` registry while A15's HTML nav button and view container were present. Q7 confirmed unknown_view and permission allowed.
+
+## Fix
+Restored the four native A15 integration points present in the original A15.2.1 source: views registry, pageMeta, switchView activation hook, and active-language re-render hook. Reused existing `carsTeamsReports.title/subtitle` translation keys. No permission bypass, financial or query changes.
+
+## Source and testing
+Based on the newest package in the session containing `assets/js/app.js` (A17.2.2.1). Syntax checked with `node --check`. Dynamic browser test required. Merge, do not replace, if production app.js has changed since this baseline.
