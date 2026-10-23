@@ -107,6 +107,25 @@
  document.addEventListener('DOMContentLoaded',()=>{installIntel();
   $('a17OpsLoad')?.addEventListener('click',load);$('a17OpsGroup')?.addEventListener('change',()=>{limit=10;render();});$('a17Apply')?.addEventListener('click',()=>{limit=10;render();});$('a17Compare')?.addEventListener('change',()=>{limit=10;render();});$('a17OpsMore')?.addEventListener('click',()=>{limit+=10;render();});$('a17OpsToggle')?.addEventListener('click',()=>{const panel=$('a17OpsDetails'),button=$('a17OpsToggle');panel.hidden=!panel.hidden;button.setAttribute('aria-expanded',String(!panel.hidden));button.textContent=t(panel.hidden?'showDetails':'hideDetails');});
  });
- document.addEventListener('petatoe:language-changed',()=>{render();const assigned=$('a17OpsBody')?.closest('table')?.querySelector('[data-a17-assigned]');if(assigned)assigned.textContent=t('opsAssigned');const pane=$('a17OpsDetails'),button=$('a17OpsToggle');if(button&&pane)button.textContent=t(pane.hidden?'showDetails':'hideDetails');});
+ // Re-label the already-created intelligence panels on every language switch.
+ // Their headings and table headers are created with textContent at first mount,
+ // so the central DOM dictionary scan cannot translate them automatically.
+ function relabelIntelligencePanels(){
+  const definitions=[
+   ['a17IntelCompare','intelCompareTitle','intelCompareHelp',['opsName','opsTotal','opsCompleted','opsAssigned','opsCancelled','opsRate']],
+   ['a17IntelShare','intelShareTitle','intelShareHelp',['opsName','opsTotal','intelSharePercent']],
+   ['a17IntelMonthly','intelMonthlyTitle','intelMonthlyHelp',['period','opsTotal','opsCompleted','opsAssigned','opsCancelled','opsRate']]
+  ];
+  for(const [id,title,help,headings] of definitions){
+   const panel=$(id);if(!panel)continue;
+   const h=panel.querySelector('.a17-panel-title h4'),description=panel.querySelector('.a17-panel-title span');
+   if(h)h.textContent=t(title);
+   if(description)description.textContent=t(help);
+   panel.querySelectorAll('thead th').forEach((th,index)=>{if(headings[index])th.textContent=t(headings[index]);});
+   const details=panel.querySelector('#'+id+'Details'),toggle=panel.querySelector('button');
+   if(toggle&&details)toggle.textContent=t(details.hidden?'showDetails':'hideDetails');
+  }
+ }
+ document.addEventListener('petatoe:language-changed',()=>{render();relabelIntelligencePanels();const assigned=$('a17OpsBody')?.closest('table')?.querySelector('[data-a17-assigned]');if(assigned)assigned.textContent=t('opsAssigned');const pane=$('a17OpsDetails'),button=$('a17OpsToggle');if(button&&pane)button.textContent=t(pane.hidden?'showDetails':'hideDetails');});
  window.AdvancedAnalyticsOperationsUI={render,load};
 })();
