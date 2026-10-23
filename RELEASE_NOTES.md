@@ -1,14 +1,15 @@
-# A17.3.8.9.4 — Centralize A17 service dynamic labels
+# A17.3.8.9.5 — A15 Runtime Translation Gate (partial)
 
-## Scope
-- Migrate five distinct display phrases from inline Arabic/English decisions to existing `PetatoeLocalization.t()` keys under `advancedAnalytics`.
-- Applies to A17 execution-service and service-finance analytics (current/reference period, open period, unavailable baseline, sales unattributed).
-- Re-render-on-language-change already present; retained.
-- No financial allocation, counts, filters, RPC, RLS, permissions or date computations changed.
-- 3 JS files; Node syntax and ZIP integrity checked.
-- This package is incremental and does NOT contain A17.3.8.9.3 A14 neighborhood patch. Merge with current baseline, do not roll back later changes.
+## Source
+A15 report module reconstructed through staged A17.3.8.8; localization-center.js from A17.3.8.9.4 (thus retains five previous A17 service keys). These are source-level repairs, not production-browser verification.
 
-## Acceptance still pending
-- Browser AR ↔ EN without refresh, permissions, totals and detail/export for A13–A17.
-- Geography catalog name_en completeness / ambiguity handling.
-- A15 navigation visibility and pending future dated appointments source checks.
+## Changes
+1. Replace three hardcoded English pagination validation messages with central `carsTeamsReports.*` translations. Error detection, pagination, reconciliation and identifiers remain unchanged.
+2. On live AR↔EN language change, refresh A15 loading labels while sales, operational, or billed requests are in flight. Do not refetch or reset filters; existing completed-report rerender behavior retained.
+
+## Safety / acceptance
+- No SQL, RPC, permission checks, financial arithmetic, grouping, status comparisons, routes, or invoices altered.
+- JS syntax checks and ZIP CRC verified.
+- Live production browser tests (EN→AR→EN, failed pagination reason in correct language, date filters, totals, export, restricted permissions) NOT performed.
+- Earlier A17.3.8.9.3 neighborhood patch is NOT included. Merge onto the current source, do not replace newer code.
+- This is a partial runtime fix, not a certification that A13–A17 translations are complete.

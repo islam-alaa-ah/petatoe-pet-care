@@ -158,11 +158,11 @@
     for(let p=0;p<maxPages;p++){
       const {data,error}=await create(p*page,(p+1)*page-1);
       if(error)throw Error(`${label}: ${error.message}`);
-      if(!Array.isArray(data))throw Error(`${label}: invalid result`);
-      for(const r of data){if(!r.id||found.has(String(r.id)))throw Error(`${label}: duplicate/missing id`);found.add(String(r.id));all.push(r);}
+      if(!Array.isArray(data))throw Error(`${label}: ${t("pagedInvalidResult")}`);
+      for(const r of data){if(!r.id||found.has(String(r.id)))throw Error(`${label}: ${t("pagedDuplicateId")}`);found.add(String(r.id));all.push(r);}
       if(data.length<page)return all;
     }
-    throw Error(`${label}: incomplete pagination`);
+    throw Error(`${label}: ${t("pagedIncomplete")}`);
   }
   function renderBilled(){
     clearBilled();if(!billed||!ready||!permitted())return;
@@ -221,7 +221,7 @@
     finally{billedBusy=false;$("a15BilledRefresh").disabled=false;}
   }
   let bound=false;
-  function bind(){if(bound)return;bound=true;$("a15BilledRefresh").addEventListener("click",loadBilled);$("a15OpDetailsMore").addEventListener("click",()=>{operationDetailLimit+=10;renderOperations();});$("a15OperationsRefresh").addEventListener("click",loadOperations);window.addEventListener("petatoe-language-changed",()=>{if(ready){populate();render();}if(operational)renderOperations();else if(operationAllowed())opStatus(t("operationPending"));if(billed)renderBilled();});$("a15Refresh").addEventListener("click",load);$("a15Apply").addEventListener("click",()=>{sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();renderBilled();});$("a15Reset").addEventListener("click",()=>{for(const id of ["a15Year","a15Month","a15Car","a15Team"])$(id).value="";sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();renderBilled();});for(const [btn,field] of [["a15CarsMore","cars"],["a15TeamsMore","teams"],["a15DetailsMore","details"]])$(btn).addEventListener("click",()=>{sizes[field]+=10;render();});}
+  function bind(){if(bound)return;bound=true;$("a15BilledRefresh").addEventListener("click",loadBilled);$("a15OpDetailsMore").addEventListener("click",()=>{operationDetailLimit+=10;renderOperations();});$("a15OperationsRefresh").addEventListener("click",loadOperations);window.addEventListener("petatoe-language-changed",()=>{if(ready){populate();render();}else if(busy)status(t("loading"));if(operational)renderOperations();else if(operationalBusy)opStatus(t("operationLoading"));else if(operationAllowed())opStatus(t("operationPending"));if(billed)renderBilled();else if(billedBusy)billedStatus(t("billedLoading"));});$("a15Refresh").addEventListener("click",load);$("a15Apply").addEventListener("click",()=>{sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();renderBilled();});$("a15Reset").addEventListener("click",()=>{for(const id of ["a15Year","a15Month","a15Car","a15Team"])$(id).value="";sizes.cars=sizes.teams=sizes.details=10;operationDetailLimit=10;render();renderOperations();renderBilled();});for(const [btn,field] of [["a15CarsMore","cars"],["a15TeamsMore","teams"],["a15DetailsMore","details"]])$(btn).addEventListener("click",()=>{sizes[field]+=10;render();});}
   async function activate(){bind();if(!permitted()){clear();status(t("noPermission"));return;}if(!ready)await load();else render();if(billed)renderBilled();if(operationAllowed()){if(operational)renderOperations();else opStatus(t("operationPending"));}else opStatus(t("operationNoPermission"));}
   window.CarsTeamsReportsUI=Object.freeze({activate,render});
 })();
