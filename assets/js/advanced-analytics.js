@@ -8,7 +8,7 @@
   const cents=n=>{const x=Number(n);if(!Number.isFinite(x)||!Number.isSafeInteger(Math.round(x*100)))throw Error('INVALID_AMOUNT');return Math.round(x*100);};
   const amount=n=>(n/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' SAR';
   const status=k=>{if($('a17Status'))$('a17Status').textContent=tr(k);};
-  function clear(){monthly=new Map();loaded=false;for(const id of ['a17Kpis','a17SalesChart','a17SalesBody','a17SalesFoot'])$(id)?.replaceChildren();}
+  function clear(){monthly=new Map();loaded=false;for(const id of ['a17Kpis','a17SalesChart','a17SalesBody','a17SalesFoot','a17SalesRankingChart','a17SalesRankingBody','a17SalesRankingFoot'])$(id)?.replaceChildren();}
   function makeOptions(id,pairs){const el=$(id);if(!el)return;const old=el.value;el.replaceChildren();for(const [v,label] of pairs){const opt=document.createElement('option');opt.value=v;opt.textContent=label;el.append(opt);}if(pairs.some(([v])=>v===old))el.value=old;}
   function selectFilters(){const ys=[...new Set([...monthly.keys()].map(x=>x.slice(0,4)))].sort().reverse();makeOptions('a17Year',ys.map(y=>[y,y]));makeOptions('a17Month',[['',tr('allMonths')],...Array.from({length:12},(_,i)=>[String(i+1).padStart(2,'0'),new Intl.DateTimeFormat(window.PetatoeLocalization?.effectiveLanguage?.()==='en'?'en-US':'ar-EG',{month:'long'}).format(new Date(2026,i,1))])]);}
   async function load(){if(loading)return;if(!mayView()){clear();status('blocked');return;}loading=true;clear();status('loading');if($('a17Refresh'))$('a17Refresh').disabled=true;
@@ -56,10 +56,31 @@
     const body=$('a17SalesBody'),foot=$('a17SalesFoot');body.replaceChildren();foot.replaceChildren();
     for(const r of cells){const trEl=make('tr');for(const cell of [r.key,amount(r.current),amount(r.reference),amount(r.current-r.reference)])trEl.append(make('td',{},cell));body.append(trEl);}
     const row=make('tr');for(const cell of [tr('totalRow'),amount(sc),amount(sb),amount(sc-sb)])row.append(make('td',{},cell));foot.append(row);
+    renderSalesRanking(year,month);
     if(partial)status('incomplete');else if(!sb)status('zeroBase');else status('loaded');
   }
+  function renderSalesRanking(year,month){
+    const chart=$('a17SalesRankingChart'),body=$('a17SalesRankingBody'),foot=$('a17SalesRankingFoot'),note=$('a17SalesRankingNote');
+    if(!chart||!body||!foot)return;
+    chart.replaceChildren();body.replaceChildren();foot.replaceChildren();
+    const now=new Date(),currentKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    const keys=(month?[year+'-'+month]:Array.from({length:12},(_,i)=>year+'-'+String(i+1).padStart(2,'0'))).filter(key=>key<currentKey);
+    const entries=keys.map(key=>({key,value:monthly.get(key)||0})).sort((a,b)=>b.value-a.value||a.key.localeCompare(b.key));
+    const total=entries.reduce((n,r)=>n+r.value,0),max=Math.max(1,...entries.map(x=>x.value));
+    note.textContent=tr('rankingNote');
+    if(!entries.length){chart.textContent=tr('noCompletedMonths');return;}
+    if(!total){chart.textContent=tr('noData');return;}
+    for(const r of entries){
+      const row=make('div',{class:'a17-sales-rank-row'}),label=make('span',{class:'a17-sales-rank-label'},r.key);
+      const track=make('div',{class:'a17-sales-rank-track'}),fill=make('div',{class:'a17-sales-rank-fill'});
+      fill.style.width=(r.value/max*100).toFixed(2)+'%';track.append(fill);
+      row.append(label,track,make('strong',{class:'a17-sales-rank-value'},amount(r.value)));chart.append(row);
+      const trEl=make('tr');for(const val of [r.key,amount(r.value),(r.value/total*100).toFixed(2)+'%'])trEl.append(make('td',{},val));body.append(trEl);
+    }
+    const trEl=make('tr');for(const val of [tr('totalRow'),amount(total),'100.00%'])trEl.append(make('td',{},val));foot.append(trEl);
+  }
   function activate(){if(!mayView()){clear();status('blocked');return;}if(!loaded)load();else render();}
-  document.addEventListener('DOMContentLoaded',()=>{document.querySelector('[data-a17-navigation]')?.addEventListener('click',event=>{const button=event.target.closest('button[data-a17-target]');if(!button)return;const target=$(button.dataset.a17Target);if(target&&!target.closest('.hidden'))target.scrollIntoView({behavior:'smooth',block:'start'});});$('a17Refresh')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',render);$('a17Compare')?.addEventListener('change',render);$('a17SalesToggle')?.addEventListener('click',()=>{const pane=$('a17SalesDetails');if(!pane)return;pane.hidden=!pane.hidden;$('a17SalesToggle').setAttribute('aria-expanded',String(!pane.hidden));$('a17SalesToggle').textContent=tr(pane.hidden?'showDetails':'hideDetails');});});
+  document.addEventListener('DOMContentLoaded',()=>{document.querySelector('[data-a17-navigation]')?.addEventListener('click',event=>{const button=event.target.closest('button[data-a17-target]');if(!button)return;const target=$(button.dataset.a17Target);if(target&&!target.closest('.hidden'))target.scrollIntoView({behavior:'smooth',block:'start'});});$('a17Refresh')?.addEventListener('click',load);$('a17Apply')?.addEventListener('click',render);$('a17Compare')?.addEventListener('change',render);$('a17SalesRankingToggle')?.addEventListener('click',()=>{const pane=$('a17SalesRankingDetails'),btn=$('a17SalesRankingToggle');if(!pane||!btn)return;pane.hidden=!pane.hidden;btn.setAttribute('aria-expanded',String(!pane.hidden));btn.textContent=tr(pane.hidden?'showDetails':'hideDetails');});$('a17SalesToggle')?.addEventListener('click',()=>{const pane=$('a17SalesDetails');if(!pane)return;pane.hidden=!pane.hidden;$('a17SalesToggle').setAttribute('aria-expanded',String(!pane.hidden));$('a17SalesToggle').textContent=tr(pane.hidden?'showDetails':'hideDetails');});});
   document.addEventListener('petatoe:language-changed',()=>{if(loaded){selectFilters();render();}});
   window.AdvancedAnalyticsUI={activate,render};
 })();

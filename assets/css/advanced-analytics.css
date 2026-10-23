@@ -101,3 +101,12 @@
 @media(max-width:820px){#advancedAnalyticsView>.a17-kpis {grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:520px){#advancedAnalyticsView>.a17-kpis {grid-template-columns:1fr;}#advancedAnalyticsView .a17-filter-shell {padding:13px;}#advancedAnalyticsView .a17-section-nav button {padding:10px 13px;}#advancedAnalyticsView .a17-report-panel{scroll-margin-top:115px;}}
 @media(prefers-reduced-motion:reduce){#advancedAnalyticsView .a17-section-nav button{transition:none;}}
+
+/* A17.3.2 — sales intelligence month ranking (full-width, no extra RPC). */
+#advancedAnalyticsView .a17-sales-rank{display:grid;gap:13px;margin:14px 0;min-height:0}
+#advancedAnalyticsView .a17-sales-rank-row{display:grid;grid-template-columns:90px minmax(0,1fr) minmax(125px,170px);gap:14px;align-items:center}
+#advancedAnalyticsView .a17-sales-rank-label{font-variant-numeric:tabular-nums;direction:ltr;text-align:start}
+#advancedAnalyticsView .a17-sales-rank-track{height:22px;border-radius:8px;background:rgba(45,128,208,.10);overflow:hidden}
+#advancedAnalyticsView .a17-sales-rank-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#267ce8,#21b9d9)}
+#advancedAnalyticsView .a17-sales-rank-value{direction:ltr;text-align:end;font-size:.88rem;font-variant-numeric:tabular-nums}
+@media(max-width:550px){#advancedAnalyticsView .a17-sales-rank-row{grid-template-columns:65px minmax(0,1fr);gap:7px}#advancedAnalyticsView .a17-sales-rank-value{grid-column:2;font-size:.79rem}}
