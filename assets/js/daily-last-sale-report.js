@@ -6,7 +6,7 @@
  const at=k=>t('advancedAnalytics.'+k);
  const lt=k=>t('dailyOperations.lastSale.'+k);
  const names=['customerActive','customerCooling','customerAtRisk','customerDormant','customerNever'];
- let data=null,band=-1,limit=10,busy=false,contacts=new Map();
+ let data=null,band=-1,limit=10,busy=false,contacts=new Map(),completedContacts=new Map();
  const make=(tag,txt)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;return n;};
  const number=x=>Number(x).toLocaleString('en-US');
  const phone=c=>String(c?.phone||c?.mobile||c?.phone_number||'').trim();
@@ -17,7 +17,15 @@
   });const total=$('dailyLastSaleTotal');total.replaceChildren();const tr=make('tr');tr.append(make('th',lt('total')),make('th',number(data.customerMap.size)),make('th',''));total.append(tr);paintDetails();
  }
  function paintDetails(){const wrap=$('dailyLastSaleDetails');wrap.hidden=band<0||!data;if(wrap.hidden)return;const q=$('dailyLastSaleSearch').value.trim().toLocaleLowerCase();$('dailyLastSaleBandName').textContent=at(names[band])+' · '+data.cutoff;
-  const rows=[...data.bands[band]].sort((a,b)=>(b.gapDays??-1)-(a.gapDays??-1)).filter(r=>{const c=data.customerMap.get(r.id)||{};return !q||[c.name,c.customer_name,c.customer_number,phone(c)].some(v=>String(v||'').toLocaleLowerCase().includes(q));});
+  const rows=[...data.bands[band]].sort((a,b)=>{
+   // Outstanding customers first (longest time since last sale); contacted customers
+   // remain at the bottom, ordered by oldest completed contact first.
+   const aDate=completedContacts.get(String(a.id))||'',bDate=completedContacts.get(String(b.id))||'';
+   if(Boolean(aDate)!==Boolean(bDate))return aDate?1:-1;
+   if(aDate&&bDate&&aDate!==bDate)return aDate.localeCompare(bDate);
+   const gapDiff=(b.gapDays??-1)-(a.gapDays??-1);
+   return gapDiff||String(a.id).localeCompare(String(b.id));
+  }).filter(r=>{const c=data.customerMap.get(r.id)||{};return !q||[c.name,c.customer_name,c.customer_number,phone(c)].some(v=>String(v||'').toLocaleLowerCase().includes(q));});
   const body=$('dailyLastSaleRows');body.replaceChildren();for(const r of rows.slice(0,limit)){const c=data.customerMap.get(r.id)||{},tr=make('tr');for(const v of [c.name||c.customer_name||r.id,phone(c)||'—',r.lastSale||at('noRecordedSale'),r.gapDays===null?'—':number(r.gapDays),number(r.transactions),contacts.get(r.id)||'—'])tr.append(make('td',v));
    const td=make('td'),actions=make('div');actions.className='daily-last-sale-actions';actions.setAttribute('role','group');actions.setAttribute('aria-label',at('actions')+' - '+String(c.name||c.customer_name||r.id));
    const raw=phone(c),num=waNumber(raw);
@@ -32,8 +40,11 @@
   }$('dailyLastSaleVisible').textContent=number(Math.min(rows.length,limit))+' / '+number(rows.length);$('dailyLastSaleMore').hidden=limit>=rows.length;
  }
  async function load(){if(busy||!$('dailyLastSalePanel'))return;busy=true;$('dailyLastSaleStatus').textContent=lt('loading');try{
-  data=await window.AdvancedAnalyticsCustomersUI.dailyActivitySnapshot();contacts=new Map();
-  if(window.PermissionEngine?.canView?.('followups')===true&&window.FollowupsService?.listFollowups){try{const rows=await window.FollowupsService.listFollowups({force:true});for(const r of rows||[]){const id=String(r.customerId||''),date=String(r.contactDate||'').slice(0,10);if(!id||!date)continue;if(date>(contacts.get(id)||''))contacts.set(id,date);}}catch(e){console.warn('Daily last sale followups unavailable',e);}}
+  data=await window.AdvancedAnalyticsCustomersUI.dailyActivitySnapshot();contacts=new Map();completedContacts=new Map();
+  if(window.PermissionEngine?.canView?.('followups')===true&&window.FollowupsService?.listFollowups){try{const rows=await window.FollowupsService.listFollowups({force:true});for(const r of rows||[]){const id=String(r.customerId||''),date=String(r.contactDate||'').slice(0,10);if(!id||!date)continue;if(date>(contacts.get(id)||''))contacts.set(id,date);
+    const result=String(r.result||'').trim().toLocaleLowerCase();
+    const isContacted=result==='تم التواصل'||result==='contacted'||result==='contact completed';
+    if(isContacted&&date>(completedContacts.get(id)||''))completedContacts.set(id,date);}}catch(e){console.warn('Daily last sale followups unavailable',e);}}
   $('dailyLastSaleStatus').textContent='';paint();
  }catch(e){console.warn('Daily last sale report unavailable',e);data=null;$('dailyLastSaleBands').replaceChildren();$('dailyLastSaleChart').replaceChildren();$('dailyLastSaleDetails').hidden=true;$('dailyLastSaleStatus').textContent=e.message==='PERMISSION_DENIED'?lt('denied'):lt('failed');}finally{busy=false;}}
  document.addEventListener('DOMContentLoaded',()=>{$('dailyLastSaleRefresh')?.addEventListener('click',load);$('dailyLastSaleBands')?.addEventListener('click',e=>{const n=e.target.closest('[data-daily-last-sale-band]');if(!n)return;const value=Number(n.dataset.dailyLastSaleBand);band=band===value?-1:value;limit=10;$('dailyLastSaleSearch').value='';paintDetails();});$('dailyLastSaleSearch')?.addEventListener('input',()=>{limit=10;paintDetails();});$('dailyLastSaleMore')?.addEventListener('click',()=>{limit+=10;paintDetails();});});
