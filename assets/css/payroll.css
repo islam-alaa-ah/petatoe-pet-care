@@ -92,3 +92,9 @@ html[data-theme="dark"]{
 @media(max-width:520px){
 .salary-adjustment-section{padding:11px}.salary-adjustment-section-head{align-items:stretch;flex-direction:column}.salary-adjustment-section-head>div{justify-content:space-between}.salary-adjustment-section-head button{width:100%;min-height:42px}.salary-adjustment-item-grid{grid-template-columns:1fr}.salary-adjustment-item-notes,.salary-adjustment-remove{grid-column:auto}.salary-adjustment-remove{width:100%}.payroll-table tfoot{display:block;margin-top:10px}.payroll-table tfoot tr{display:grid;grid-template-columns:1fr 1fr;gap:7px}.payroll-table tfoot th{display:flex;flex-direction:column;gap:3px;min-width:0;padding:9px 10px;border:1px solid var(--kyum-mobile-border,var(--border));border-radius:12px;background:var(--kyum-mobile-surface-alt,var(--surface-2));white-space:normal;text-align:start}.payroll-table tfoot th::before{content:attr(data-label);font-size:9px;color:var(--kyum-mobile-muted,var(--muted));font-weight:800}.payroll-table tfoot th:first-child{grid-column:1/-1}.payroll-table tfoot th:first-child::before{display:none}.payroll-table tfoot th:nth-child(2),.payroll-table tfoot th:nth-child(9),.payroll-table tfoot th:nth-child(10){display:none}.salary-commission-period-note{font-size:11px}.salary-adjustment-detail-row{font-size:11px}
 }
+
+/* Statement employee identity: visible even before a payroll/commission row is available. */
+.payroll-statement-identity{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:11px 15px;border:1px solid var(--petatoe-screen-border,var(--border));border-radius:14px;background:var(--petatoe-screen-card-bg,var(--surface-2))}
+.payroll-statement-identity span{color:var(--muted);font-size:13px}
+.payroll-statement-identity strong{font-size:16px;overflow-wrap:anywhere}
+.payroll-statement-identity.hidden{display:none}

@@ -296,6 +296,7 @@
   }
   function renderSalaryStatement(){
     const current=state.salary?.current, employee=state.salary?.employee;
+    syncStatementEmployeeIdentity('salary',employee);
     $('salaryStatementTabs')?.querySelectorAll('[data-salary-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.salaryTab===state.salaryTab));
     $('salaryStatementCurrent')?.classList.toggle('hidden',state.salaryTab!=='current');$('salaryStatementHistory')?.classList.toggle('hidden',state.salaryTab!=='history');
     if(!employee){$('salaryStatementCurrent').innerHTML=`<div class="panel payroll-empty">${esc(t('salaryStatement.unlinked','حسابك غير مربوط بسجل موظف في البيانات المرجعية.'))}</div>`;$('salaryStatementHistory').innerHTML='';return;}
@@ -370,8 +371,14 @@
     $('commissionStatementCurrent').innerHTML=`<div class="panel payroll-table-wrap"><table class="data-table payroll-history-table"><thead><tr><th>${esc(t('payroll.employee.name','الموظف'))}</th><th>${esc(t('commission.col.role','القسم'))}</th><th>${esc(t('commission.col.car','السيارة'))}</th><th>${esc(t('commission.col.sales','المبيعات قبل الضريبة'))}</th><th>${esc(t('commission.col.tier','الشريحة'))}</th><th>${esc(t('commission.col.rate','النسبة'))}</th><th>${esc(t('commission.col.amount','العمولة'))}</th></tr></thead><tbody>${currentRows}</tbody></table></div>`;
     $('commissionStatementHistory').innerHTML=`<div class="panel payroll-table-wrap"><table class="data-table payroll-history-table"><thead><tr><th>${esc(t('payroll.common.month','الشهر'))}</th><th>${esc(t('payroll.employee.name','الموظف'))}</th><th>${esc(t('commission.col.role','القسم'))}</th><th>${esc(t('commission.col.sales','المبيعات قبل الضريبة'))}</th><th>${esc(t('commission.col.amount','العمولة'))}</th></tr></thead><tbody>${historyRows}</tbody></table></div>`;
   }
+  function syncStatementEmployeeIdentity(kind,employee){
+    const identity=$(kind+'StatementEmployeeIdentity'),name=$(kind+'StatementEmployeeName');
+    const employeeName=String(employee?.name||employee?.fullName||'').trim();
+    if(name)name.textContent=employeeName;
+    identity?.classList.toggle('hidden',!employeeName);
+  }
   function renderCommissionStatement(){
-    const data=state.commissionStatement||{},employee=data.employee,current=data.current||[],history=data.history||[];$('commissionStatementTabs')?.querySelectorAll('[data-commission-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.commissionTab===state.commissionTab));$('commissionStatementCurrent')?.classList.toggle('hidden',state.commissionTab!=='current');$('commissionStatementHistory')?.classList.toggle('hidden',state.commissionTab!=='history');
+    const data=state.commissionStatement||{},employee=data.employee,current=data.current||[],history=data.history||[];syncStatementEmployeeIdentity('commission',data.mode==='admin'?null:employee);$('commissionStatementTabs')?.querySelectorAll('[data-commission-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.commissionTab===state.commissionTab));$('commissionStatementCurrent')?.classList.toggle('hidden',state.commissionTab!=='current');$('commissionStatementHistory')?.classList.toggle('hidden',state.commissionTab!=='history');
     if(data.mode==='admin'){renderCommissionAdminStatement(data);return;}
     if(!employee){$('commissionStatementCurrent').innerHTML=`<div class="panel payroll-empty">${esc(t('commissionStatement.unlinked','حسابك غير مربوط بسجل موظف في البيانات المرجعية.'))}</div>`;$('commissionStatementHistory').innerHTML='';return;}
     const totalSales=current.reduce((sum,row)=>sum+Number(row.eligibleSales||0),0),totalCommission=current.reduce((sum,row)=>sum+Number(row.commissionAmount||0),0);

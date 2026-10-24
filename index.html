@@ -264,7 +264,7 @@
       <div class="mobile-sidebar-footer">
         <div class="petatoe-sidebar-account" aria-label="حساب المستخدم" data-petatoe-i18n-aria="sidebar.account">
           <span class="petatoe-sidebar-avatar" data-petatoe-i18n="auth.common.userInitial">م</span>
-          <span class="petatoe-sidebar-account-copy"><strong id="sidebarCurrentUserName" data-petatoe-i18n="auth.common.user">مستخدم</strong><small data-petatoe-i18n="sidebar.account">حساب المستخدم</small></span>
+          <span class="petatoe-sidebar-account-copy"><strong id="sidebarCurrentUserName">مستخدم</strong><small data-petatoe-i18n="sidebar.account">حساب المستخدم</small></span>
         </div>
         <button id="mobileSidebarLogoutBtn" class="mobile-sidebar-logout" type="button">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -323,7 +323,7 @@
               aria-expanded="false"
             >
               <span class="petatoe-header-user-copy">
-                <strong id="currentUserName" data-petatoe-i18n="auth.common.user">مستخدم</strong>
+                <strong id="currentUserName">مستخدم</strong>
                 <small id="currentUserRoleLabel" class="petatoe-header-user-role" data-petatoe-i18n="shared.header.systemUser">مستخدم النظام</small>
               </span>
               <span class="avatar" data-petatoe-i18n="auth.common.userInitial">م</span>
@@ -2266,6 +2266,7 @@
       <section id="salaryStatementView" class="view-section hidden payroll-view" aria-hidden="true">
         <div class="payroll-toolbar"><div class="payroll-toolbar-title"><h3 data-petatoe-i18n="salaryStatement.title">كشف الراتب</h3><p data-petatoe-i18n="salaryStatement.subtitle">راجع راتبك الحالي واعتمده وتابع الرواتب السابقة.</p></div><button id="salaryStatementRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
         <div id="salaryStatementStatus" class="data-status hidden" aria-live="polite"></div>
+        <div id="salaryStatementEmployeeIdentity" class="payroll-statement-identity hidden" aria-live="polite"><span data-petatoe-i18n="payroll.employee.name">الموظف</span><strong id="salaryStatementEmployeeName"></strong></div>
         <div class="payroll-tabs" id="salaryStatementTabs"><button class="payroll-tab active" type="button" data-salary-tab="current" data-petatoe-i18n="salaryStatement.current">الكشف الحالي</button><button class="payroll-tab" type="button" data-salary-tab="history" data-petatoe-i18n="salaryStatement.history">الرواتب السابقة</button></div>
         <div id="salaryStatementCurrent"></div><div id="salaryStatementHistory" class="hidden"></div>
       </section>
@@ -2288,6 +2289,7 @@
       <section id="commissionStatementView" class="view-section hidden payroll-view" aria-hidden="true">
         <div class="payroll-toolbar"><div class="payroll-toolbar-title"><h3 data-petatoe-i18n="commissionStatement.title">كشف العمولة</h3><p data-petatoe-i18n="commissionStatement.subtitle">تفاصيل عمولتك الحالية وسجل العمولات السابقة.</p></div><button id="commissionStatementRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
         <div id="commissionStatementStatus" class="data-status hidden" aria-live="polite"></div>
+        <div id="commissionStatementEmployeeIdentity" class="payroll-statement-identity hidden" aria-live="polite"><span data-petatoe-i18n="payroll.employee.name">الموظف</span><strong id="commissionStatementEmployeeName"></strong></div>
         <div class="payroll-tabs" id="commissionStatementTabs"><button class="payroll-tab active" type="button" data-commission-tab="current" data-petatoe-i18n="commissionStatement.current">العمولة الحالية</button><button class="payroll-tab" type="button" data-commission-tab="history" data-petatoe-i18n="commissionStatement.history">العمولات السابقة</button></div>
         <div id="commissionStatementCurrent"></div><div id="commissionStatementHistory" class="hidden"></div>
       </section>
