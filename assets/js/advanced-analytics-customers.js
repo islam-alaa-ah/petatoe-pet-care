@@ -141,19 +141,24 @@
  window.addEventListener('petatoe-language-changed',()=>{const monthEl=$('a14AnalyticsMonth');if(monthEl){const oldValue=monthEl.value;monthEl.replaceChildren();monthEl.add(new Option(tr('allMonths'),''));for(let m=1;m<=12;m++)monthEl.add(new Option(new Intl.DateTimeFormat(window.PetatoeLocalization?.getLanguage?.()==='en'?'en-US':'ar-SA',{month:'long',timeZone:'UTC'}).format(new Date(Date.UTC(2024,m-1,1))),String(m)));monthEl.value=oldValue;}if(selectedBand!==null){$('a17SegmentName').textContent=tr(selectedTitleKey);paintSegment();}else render();for(const [button,details] of [['a17CustomerActivityToggle','a17CustomerActivityDetails'],['a17RetentionToggle','a17RetentionDetails']]){const el=$(button),panel=$(details);if(el&&panel)el.textContent=tr(panel.hidden?'showDetails':'hideDetails');}});
  // Share the exact authorized customer/sales source and 30/60/90 day segmentation with daily tasks.
  async function dailyActivitySnapshot(){
-   if(!allowed())throw Error('PERMISSION_DENIED');
-   const [customers,rows]=await Promise.all([window.CustomersService.listCustomers({force:true}),sales()]);
-   if(!Array.isArray(customers)||!Array.isArray(rows))throw Error('BAD_ROWS');
-   const customerMap=new Map(customers.map(c=>[String(c.id),c]));
-   const purchases=new Map();for(const item of rows){if(!customerMap.has(item.id))continue;const list=purchases.get(item.id)||[];list.push(item.date);purchases.set(item.id,list);}
-   const today=new Date(),cutoff=iso(utc(today.getFullYear(),today.getMonth()+1,today.getDate()));
-   const end=Date.parse(cutoff+'T00:00:00Z'),bands=[[],[],[],[],[]];
-   for(const [id] of customerMap){const dates=(purchases.get(id)||[]).filter(d=>d<=cutoff).sort();const lastSale=dates.at(-1)||'';
-     const gapDays=lastSale?Math.round((end-Date.parse(lastSale+'T00:00:00Z'))/86400000):null;
+   // Daily Operations is its own read-only permission surface; never reuse the
+   // stand-alone customer/sales report permission gate for this page.
+   if(window.PermissionEngine?.canView?.('dailyOperations')!==true)throw Error('PERMISSION_DENIED');
+   const client=window.customerSupabase;
+   if(!client?.rpc)throw Error('RPC_MISSING');
+   const {data:result,error}=await client.rpc('daily_last_sale_snapshot_r44r26');
+   if(error)throw error;
+   if(!result||!Array.isArray(result.customers))throw Error('BAD_ROWS');
+   const customerMap=new Map(), bands=[[],[],[],[],[]];
+   for(const item of result.customers){
+     const id=String(item.id||'');
+     if(!id||customerMap.has(id))throw Error('BAD_CUSTOMER_ID');
+     customerMap.set(id,{id,name:item.name||id,customer_name:item.name||id,phone:item.phone||'',customer_number:item.customer_number||''});
+     const gapDays=item.gap_days===null?null:Number(item.gap_days);
      const band=gapDays===null?4:gapDays<=30?0:gapDays<=60?1:gapDays<=90?2:3;
-     bands[band].push({id,lastSale,gapDays,transactions:dates.length});
+     bands[band].push({id,lastSale:item.last_sale||'',gapDays,transactions:Number(item.transactions||0)});
    }
-   return {customerMap,bands,cutoff};
+   return {customerMap,bands,cutoff:String(result.cutoff||'')};
  }
  window.AdvancedAnalyticsCustomersUI={render,dailyActivitySnapshot};
 })();
