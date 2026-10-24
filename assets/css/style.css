@@ -8331,6 +8331,50 @@ html[data-theme="dark"] .representative-import-dialog .dialog-actions {
   white-space: nowrap;
 }
 
+/* R44R40: Daily last-sale customer actions — canonical table cell layout. */
+#dailyLastSaleRows .daily-last-sale-actions {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  align-items: stretch;
+  justify-content: start;
+  gap: 8px;
+  min-width: max-content;
+}
+#dailyLastSaleRows .daily-last-sale-actions > a,
+#dailyLastSaleRows .daily-last-sale-actions > button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  white-space: nowrap;
+  line-height: 1.25;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+#dailyLastSaleRows .daily-last-sale-call {
+  color: var(--primary);
+  background: var(--surface, #fff);
+  border: 1px solid var(--border-color, #dbe3ef);
+}
+#dailyLastSaleRows .daily-last-sale-call:hover {
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+}
+#dailyLastSaleRows .daily-last-sale-actions > :focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+@media (max-width: 767px) {
+  #dailyLastSaleRows .daily-last-sale-actions {
+    grid-template-columns: repeat(2, max-content);
+  }
+}
+
 .daily-whatsapp-btn {
   display: inline-flex;
   align-items: center;

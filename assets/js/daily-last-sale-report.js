@@ -18,13 +18,17 @@
  }
  function paintDetails(){const wrap=$('dailyLastSaleDetails');wrap.hidden=band<0||!data;if(wrap.hidden)return;const q=$('dailyLastSaleSearch').value.trim().toLocaleLowerCase();$('dailyLastSaleBandName').textContent=at(names[band])+' · '+data.cutoff;
   const rows=[...data.bands[band]].sort((a,b)=>(b.gapDays??-1)-(a.gapDays??-1)).filter(r=>{const c=data.customerMap.get(r.id)||{};return !q||[c.name,c.customer_name,c.customer_number,phone(c)].some(v=>String(v||'').toLocaleLowerCase().includes(q));});
-  const body=$('dailyLastSaleRows');body.replaceChildren();for(const r of rows.slice(0,limit)){const c=data.customerMap.get(r.id)||{},tr=make('tr');for(const v of [c.name||c.customer_name||r.id,phone(c)||'—',r.lastSale||at('noRecordedSale'),r.gapDays===null?'—':number(r.gapDays),number(r.transactions),contacts.get(r.id)||'—'])tr.append(make('td',v));const td=make('td');const raw=phone(c),num=waNumber(raw);
-   if(num){const a=make('a',t('dailyOperations.suggested.whatsapp'));a.className='daily-whatsapp-btn';a.target='_blank';a.rel='noopener noreferrer';a.href=window.WhatsAppTemplateService?.directUrl?.(num,window.getDailyWhatsAppTemplateMessage?.()||'')||'https://wa.me/'+num;td.append(a);
-     const share=make('button',t('dailyOperations.suggested.imageMessage'));share.type='button';share.className='daily-whatsapp-share-btn';share.dataset.dailyWhatsappShare=num;td.append(share);
-     const call=make('a',at('call'));call.href='tel:'+num;td.append(call);
+  const body=$('dailyLastSaleRows');body.replaceChildren();for(const r of rows.slice(0,limit)){const c=data.customerMap.get(r.id)||{},tr=make('tr');for(const v of [c.name||c.customer_name||r.id,phone(c)||'—',r.lastSale||at('noRecordedSale'),r.gapDays===null?'—':number(r.gapDays),number(r.transactions),contacts.get(r.id)||'—'])tr.append(make('td',v));
+   const td=make('td'),actions=make('div');actions.className='daily-last-sale-actions';actions.setAttribute('role','group');actions.setAttribute('aria-label',at('actions')+' - '+String(c.name||c.customer_name||r.id));
+   const raw=phone(c),num=waNumber(raw);
+   if(num){
+     const a=make('a',t('dailyOperations.suggested.whatsapp'));a.className='daily-whatsapp-btn';a.target='_blank';a.rel='noopener noreferrer';a.href=window.WhatsAppTemplateService?.directUrl?.(num,window.getDailyWhatsAppTemplateMessage?.()||'')||'https://wa.me/'+num;actions.append(a);
+     const share=make('button',t('dailyOperations.suggested.imageMessage'));share.type='button';share.className='daily-whatsapp-share-btn';share.dataset.dailyWhatsappShare=num;actions.append(share);
+     const call=make('a',at('call'));call.className='daily-last-sale-call';call.href='tel:'+raw.replace(/[^+\d]/g,'');actions.append(call);
    }
-   if(window.PermissionEngine?.canView?.('followups')===true){for(const [action,label] of [['followup','addFollowup'],['contacted','contacted']]){const btn=make('button',at(label));btn.type='button';btn.className='secondary-btn compact-btn';btn.addEventListener('click',()=>window.PetatoeA17FollowupBridge?.open?.(r.id,action==='contacted'));td.append(btn);}}
-   tr.append(td);body.append(tr);
+   if(window.PermissionEngine?.canView?.('followups')===true){for(const [action,label] of [['followup','addFollowup'],['contacted','contacted']]){const btn=make('button',at(label));btn.type='button';btn.className='secondary-btn compact-btn daily-last-sale-followup';btn.addEventListener('click',()=>window.PetatoeA17FollowupBridge?.open?.(r.id,action==='contacted'));actions.append(btn);}}
+   if(!actions.childElementCount)actions.append(make('span','—'));
+   td.append(actions);tr.append(td);body.append(tr);
   }$('dailyLastSaleVisible').textContent=number(Math.min(rows.length,limit))+' / '+number(rows.length);$('dailyLastSaleMore').hidden=limit>=rows.length;
  }
  async function load(){if(busy||!$('dailyLastSalePanel'))return;busy=true;$('dailyLastSaleStatus').textContent=lt('loading');try{
