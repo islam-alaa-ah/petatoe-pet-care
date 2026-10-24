@@ -94,6 +94,10 @@
     const selected=select.value;
     select.innerHTML=`<option value="">${esc(t("invoices.manual.teamChoose","اختر الفرقة"))}</option>`+(manualCatalog.teams||[]).map(x=>`<option value="${esc(x.id)}">${esc(x.name||"")}</option>`).join("");
     select.value=(manualCatalog.teams||[]).some(x=>String(x.id)===selected)?selected:"";
+    const unavailable=!Array.isArray(manualCatalog.teams)||manualCatalog.teams.length===0;
+    select.disabled=unavailable;
+    select.title=unavailable?t("invoices.manual.teamEmpty","لا توجد فرق نشطة متاحة. راجع صلاحية إضافة الفاتورة أو بيانات الفرق."):"";
+    if(unavailable)manualStatus(t("invoices.manual.teamEmpty","لا توجد فرق نشطة متاحة. راجع صلاحية إضافة الفاتورة أو بيانات الفرق."),"error");
   }
   function manualServiceOptions(selected=""){return `<option value="">${esc(t("appointmentNew.services.select","اختر نوع الخدمة"))}</option>`+manualCatalog.services.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(selected)?"selected":""}>${esc(serviceLabel(s))}</option>`).join("")}
   function addManualServiceRow(initial={}){const body=$("manualSalesInvoiceServicesBody");if(!body)return;const tr=document.createElement("tr");tr.innerHTML=`<td><select class="manual-invoice-service-type">${manualServiceOptions(initial.serviceTypeId||"")}</select></td><td><input class="manual-invoice-service-quantity" type="number" min="1" step="1" value="${esc(initial.quantity||1)}"></td><td><input class="manual-invoice-service-price" type="text" inputmode="decimal" value="${esc(Number(initial.unitPrice||0).toFixed(2))}"></td><td><strong class="manual-invoice-service-total">${esc(money(0))}</strong></td><td><button type="button" class="danger-btn manual-invoice-service-remove">${esc(t("appointmentNew.services.remove","حذف"))}</button></td>`;body.appendChild(tr);const select=tr.querySelector(".manual-invoice-service-type");if(initial.serviceTypeId)select.value=initial.serviceTypeId;syncManualServicePrice(tr,Boolean(initial.keepPrice));calculateManualTotals()}
