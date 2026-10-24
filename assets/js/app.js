@@ -6474,6 +6474,7 @@ function renderDailyTargets(actuals) {
     l1T("dailyOperations.targets.target",{count:targets.quotationsTarget});
 }
 
+window.getDailyWhatsAppTemplateMessage = () => String(dailyWhatsAppTemplate?.message_text || "").trim();
 function dailyWhatsAppTemplateMessage() {
   return String(dailyWhatsAppTemplate?.message_text || "").trim();
 }
@@ -6777,6 +6778,7 @@ async function loadDailyOperations(force = false) {
 
     renderDailyOperations();
     await loadDailyWhatsAppTemplate();
+    window.DailyLastSaleReport?.load?.();
     await renderCurrentDailySession();
     showDataStatus("dailyOperationsStatus", "");
   } catch (error) {
