@@ -264,7 +264,7 @@
       <div class="mobile-sidebar-footer">
         <div class="petatoe-sidebar-account" aria-label="حساب المستخدم" data-petatoe-i18n-aria="sidebar.account">
           <span class="petatoe-sidebar-avatar" data-petatoe-i18n="auth.common.userInitial">م</span>
-          <span class="petatoe-sidebar-account-copy"><strong id="sidebarCurrentUserName" data-petatoe-i18n="auth.common.user">مستخدم</strong><small data-petatoe-i18n="sidebar.account">حساب المستخدم</small></span>
+          <span class="petatoe-sidebar-account-copy"><strong id="sidebarCurrentUserName">مستخدم</strong><small data-petatoe-i18n="sidebar.account">حساب المستخدم</small></span>
         </div>
         <button id="mobileSidebarLogoutBtn" class="mobile-sidebar-logout" type="button">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -323,7 +323,7 @@
               aria-expanded="false"
             >
               <span class="petatoe-header-user-copy">
-                <strong id="currentUserName" data-petatoe-i18n="auth.common.user">مستخدم</strong>
+                <strong id="currentUserName">مستخدم</strong>
                 <small id="currentUserRoleLabel" class="petatoe-header-user-role" data-petatoe-i18n="shared.header.systemUser">مستخدم النظام</small>
               </span>
               <span class="avatar" data-petatoe-i18n="auth.common.userInitial">م</span>
@@ -2280,6 +2280,7 @@
       <section id="salaryStatementView" class="view-section hidden payroll-view" aria-hidden="true">
         <div class="payroll-toolbar"><div class="payroll-toolbar-title"><h3 data-petatoe-i18n="salaryStatement.title">كشف الراتب</h3><p data-petatoe-i18n="salaryStatement.subtitle">راجع راتبك الحالي واعتمده وتابع الرواتب السابقة.</p></div><button id="salaryStatementRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
         <div id="salaryStatementStatus" class="data-status hidden" aria-live="polite"></div>
+        <div id="salaryStatementEmployeeIdentity" class="payroll-statement-identity hidden" aria-live="polite"><span data-petatoe-i18n="payroll.employee.name">الموظف</span><strong id="salaryStatementEmployeeName"></strong></div>
         <div class="payroll-tabs" id="salaryStatementTabs"><button class="payroll-tab active" type="button" data-salary-tab="current" data-petatoe-i18n="salaryStatement.current">الكشف الحالي</button><button class="payroll-tab" type="button" data-salary-tab="history" data-petatoe-i18n="salaryStatement.history">الرواتب السابقة</button></div>
         <div id="salaryStatementCurrent"></div><div id="salaryStatementHistory" class="hidden"></div>
       </section>
@@ -2302,6 +2303,7 @@
       <section id="commissionStatementView" class="view-section hidden payroll-view" aria-hidden="true">
         <div class="payroll-toolbar"><div class="payroll-toolbar-title"><h3 data-petatoe-i18n="commissionStatement.title">كشف العمولة</h3><p data-petatoe-i18n="commissionStatement.subtitle">تفاصيل عمولتك الحالية وسجل العمولات السابقة.</p></div><button id="commissionStatementRefresh" class="secondary-btn" type="button" data-petatoe-i18n="payroll.common.refresh">تحديث</button></div>
         <div id="commissionStatementStatus" class="data-status hidden" aria-live="polite"></div>
+        <div id="commissionStatementEmployeeIdentity" class="payroll-statement-identity hidden" aria-live="polite"><span data-petatoe-i18n="payroll.employee.name">الموظف</span><strong id="commissionStatementEmployeeName"></strong></div>
         <div class="payroll-tabs" id="commissionStatementTabs"><button class="payroll-tab active" type="button" data-commission-tab="current" data-petatoe-i18n="commissionStatement.current">العمولة الحالية</button><button class="payroll-tab" type="button" data-commission-tab="history" data-petatoe-i18n="commissionStatement.history">العمولات السابقة</button></div>
         <div id="commissionStatementCurrent"></div><div id="commissionStatementHistory" class="hidden"></div>
       </section>
@@ -4595,6 +4597,7 @@
             <label><span data-petatoe-i18n="invoices.col.date">تاريخ الفاتورة</span> <span class="required-mark">*</span><input id="manualSalesInvoiceDate" type="date"></label>
             <label><span data-petatoe-i18n="appointmentNew.collection.payment">طريقة الدفع</span> <span class="required-mark">*</span><select id="manualSalesInvoicePaymentMethod"><option value="" data-petatoe-i18n="appointmentNew.collection.paymentChoose">اختر طريقة الدفع</option><option value="نقدي" data-petatoe-i18n="appointmentNew.collection.cash">نقدي</option><option value="بطاقة / شبكة" data-petatoe-i18n="appointmentNew.collection.card">بطاقة / شبكة</option><option value="تحويل بنكي" data-petatoe-i18n="appointmentNew.collection.bank">تحويل بنكي</option><option value="الدفع عن طريق الموقع" data-petatoe-i18n="appointmentNew.collection.website">الدفع عن طريق الموقع</option></select></label>
             <label><span data-petatoe-i18n="invoices.manual.reference">مرجع الفاتورة</span><select id="manualSalesInvoiceReference"><option value="" data-petatoe-i18n="invoices.manual.referenceNone">بدون مرجع</option></select><small id="manualSalesInvoiceReferenceHint" class="field-hint" data-petatoe-i18n="invoices.manual.referenceHint">يعرض فقط مواعيد نفس العميل المحولة إلى فاتورة داخل نفس شهر تاريخ الفاتورة اليدوية.</small></label>
+            <label id="manualSalesInvoiceTeamField" class="hidden"><span data-petatoe-i18n="invoices.manual.team">الفرقة</span> <span class="required-mark">*</span><select id="manualSalesInvoiceTeam" disabled required><option value="" data-petatoe-i18n="invoices.manual.teamChoose">اختر الفرقة</option></select></label>
             <label class="full-span"><span data-petatoe-i18n="invoices.manual.notes">ملاحظات</span><textarea id="manualSalesInvoiceNotes" rows="3" maxlength="2000"></textarea></label>
           </div>
         </section>
