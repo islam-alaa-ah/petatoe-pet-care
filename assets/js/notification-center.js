@@ -10,6 +10,8 @@ function moduleLabel(value){return String(value||'')==='التركيبات'?shar
 function notificationTitle(n){return eventLabel(n?.event_key,n?.title||'')}
 function notificationBody(n){const body=String(n?.body||'');if(n?.event_key==='installation.request_updated'&&body.startsWith('تم التعديل على الطلب رقم '))return `${sharedT('shared.notifications.body.requestUpdated','Request updated: ')}${body.slice('تم التعديل على الطلب رقم '.length)}`;return body}
 let config=null,notifications=[],unsub=null,selectedRoleKey='';
+let notificationReadInFlight=null, notificationFailureCount=0, notificationRetryAfter=0;
+function notificationUnavailable(error){return /PGRST002|schema cache|\b503\b|service unavailable/i.test(String(error?.message||error||'')) || Number(error?.status||error?.code)===503}
 function roleLabel(r){return window.CustomerPermissions?.roleLabels?.[r]||r}
 function availableRoles(){
   const canonical=Array.isArray(window.CustomerPermissions?.roleOptions)?window.CustomerPermissions.roleOptions:[];
@@ -73,7 +75,19 @@ async function loadConfig(force=false){if(config&&!force){renderConfig();renderP
 async function save(){const status=$('notificationCenterStatus');try{status.textContent=sharedT('shared.notifications.center.saving','Saving...');status.classList.remove('hidden');config=await window.NotificationCenterService.saveConfig(collect());renderConfig();status.textContent=sharedT('shared.notifications.center.savedForRole','Notification matrix for role {role} was saved successfully.').replace('{role}',roleLabel(selectedRoleKey));status.dataset.type='success';setTimeout(()=>status.classList.add('hidden'),2500)}catch(e){status.textContent=uiMessage(e.message,sharedT('shared.notifications.center.error.generic','Unable to complete the operation.'));status.dataset.type='error'}}
 function relative(ts){const d=Math.max(0,Date.now()-new Date(ts).getTime()),m=Math.floor(d/60000),lang=window.PetatoeLocalization?.getLanguage?.()==='en'?'en':'ar';if(m<1)return sharedT('shared.notifications.now','الآن');if(m<60)return sharedFormat('shared.notifications.minutesAgo',m,`منذ {count} دقيقة`);const h=Math.floor(m/60);if(h<24)return sharedFormat('shared.notifications.hoursAgo',h,`منذ {count} ساعة`);return new Date(ts).toLocaleDateString(lang==='en'?'en-GB-u-ca-gregory-nu-latn':'ar-SA-u-ca-gregory-nu-latn')}
 function renderBell(){const list=$('notificationDropdownList'),badge=$('notificationUnreadBadge');const unread=notifications.filter(n=>!n.is_read).length;if(badge){badge.textContent=unread>99?'99+':String(unread);badge.classList.toggle('hidden',!unread)}if(list)list.innerHTML=notifications.length?notifications.slice(0,20).map(n=>`<button class="notification-item ${n.is_read?'':'unread'}" type="button" data-notification-id="${n.id}" data-target-view="${esc(n.target_view||'')}"><strong>${esc(notificationTitle(n))}</strong><span>${esc(notificationBody(n))}</span><small>${relative(n.created_at)}</small></button>`).join(''):`<div class="notification-empty">${sharedT('shared.notifications.empty','لا توجد إشعارات.')}</div>`}
-async function refresh(){try{notifications=await window.NotificationCenterService.listMine(50);renderBell()}catch(e){console.warn(e)}}
+async function refresh(options={}){
+ if(navigator.onLine===false || !window.CustomerAuth?.getState?.().profile)return;
+ if(notificationReadInFlight)return notificationReadInFlight;
+ if(!options.force && Date.now()<notificationRetryAfter)return;
+ notificationReadInFlight=(async()=>{
+  try{notifications=await window.NotificationCenterService.listMine(50);notificationFailureCount=0;notificationRetryAfter=0;renderBell()}
+  catch(e){
+   if(notificationUnavailable(e)){notificationFailureCount=Math.min(6,notificationFailureCount+1);notificationRetryAfter=Date.now()+Math.min(300000,5000*Math.pow(2,notificationFailureCount-1))*(0.8+Math.random()*0.4)}
+   else console.warn('[Notifications] refresh failed',e?.message||e);
+  }
+ })();
+ try{return await notificationReadInFlight}finally{notificationReadInFlight=null}
+}
 function navigateTarget(target){if(target)document.querySelector(`.nav-item[data-view="${CSS.escape(target)}"]`)?.click()}
 async function openNotification(btn){try{await window.NotificationCenterService.markRead(btn.dataset.notificationId)}catch(e){console.warn('[Notifications] mark-read deferred',e?.message||e)}navigateTarget(btn.dataset.targetView);$('notificationDropdown')?.classList.add('hidden');if(navigator.onLine!==false)refresh()}
 function applyPushDeepLink(){const params=new URLSearchParams(location.search),target=params.get('notificationView');if(target){setTimeout(()=>navigateTarget(target),300);params.delete('notificationView');params.delete('notificationId');params.delete('requestId');params.delete('visitId');const q=params.toString();history.replaceState(null,'',location.pathname+(q?'?'+q:'')+location.hash)}}
@@ -140,7 +154,9 @@ function init(){
  window.addEventListener('customer-auth-ready',startRealtime);window.addEventListener('kyum-auth-state-changed',startRealtime);
  navigator.serviceWorker?.addEventListener?.('message',e=>{if(e.data?.type==='OPEN_NOTIFICATION_TARGET')navigateTarget(e.data.targetView)});
  window.addEventListener('petatoe-language-changed',()=>{window.PetatoeLocalization?.applyStatic?.(document);renderConfig();renderPushStatus();renderBell()});
-setInterval(()=>{if(window.CustomerAuth?.getState?.().profile)refresh()},60000);setTimeout(()=>{startRealtime();applyPushDeepLink()},0);
+window.addEventListener('online',()=>{notificationRetryAfter=0;notificationFailureCount=0;if(document.visibilityState==='visible')refresh()});
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
+ setInterval(()=>{if(document.visibilityState==='visible'&&window.CustomerAuth?.getState?.().profile)refresh()},60000);setTimeout(()=>{startRealtime();applyPushDeepLink()},0);
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 window.NotificationCenterUI=Object.freeze({loadConfig,refresh,renderPushStatus});

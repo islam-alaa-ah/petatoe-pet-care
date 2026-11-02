@@ -10,6 +10,8 @@
   const inFlight = new Map();
   const retryTimers = new Map();
   const lastForegroundRunAt = new Map();
+  const retryFailures = new Map();
+  const MAX_AUTOMATIC_RETRIES = 4;
   let lifecycleInstalled = false;
 
   function stateKey(namespace, entity, scopeKey) {
@@ -129,6 +131,10 @@
     return () => {
       tasks.delete(entity);
       lastForegroundRunAt.delete(entity);
+      retryFailures.delete(entity);
+      const timer = retryTimers.get(entity);
+      if (timer) clearTimeout(timer);
+      retryTimers.delete(entity);
     };
   }
 
@@ -143,13 +149,25 @@
       if (lastRunAt > 0 && now - lastRunAt < FOREGROUND_MIN_INTERVAL_MS) return;
       lastForegroundRunAt.set(entity, now);
     }
+    if (reason === "retry" && navigator.onLine === false) return;
+    if (reason !== "retry") {
+      retryFailures.delete(entity);
+      const pending = retryTimers.get(entity);
+      if (pending) clearTimeout(pending);
+      retryTimers.delete(entity);
+    }
     try {
       await entry.task({ reason });
+      retryFailures.delete(entity);
       const timer = retryTimers.get(entity);
       if (timer) clearTimeout(timer);
       retryTimers.delete(entity);
     } catch (error) {
-      const delay = Math.min(5 * 60 * 1000, 5000 * Math.pow(2, Math.min(5, Number(error?.syncFailures || 0))));
+      const attempts = Number(retryFailures.get(entity) || 0) + 1;
+      retryFailures.set(entity, attempts);
+      if (attempts > MAX_AUTOMATIC_RETRIES || navigator.onLine === false) return;
+      const baseDelay = Math.min(5 * 60 * 1000, 5000 * Math.pow(2, attempts - 1));
+      const delay = Math.round(baseDelay * (0.8 + Math.random() * 0.4));
       if (!retryTimers.has(entity)) {
         retryTimers.set(entity, setTimeout(() => {
           retryTimers.delete(entity);
