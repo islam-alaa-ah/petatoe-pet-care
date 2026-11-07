@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const CURRENT_VERSION = "18.56.140";
+  const CURRENT_VERSION = "18.56.141";
   const VERSION_ENDPOINT = "./version.json";
   const UPDATE_CHECK_INTERVAL_MS = 15 * 60 * 1000;
   const isNative = Boolean(window.Capacitor?.isNativePlatform?.());
@@ -20,10 +20,12 @@
   const t = (key, vars = {}) => window.PetatoeLocalization?.t?.(key, vars) || key;
 
   function localizedReleaseTitle(release) {
+    if (window.PetatoeLocalization?.getLanguage?.() === "en" && release?.titleEn) return release.titleEn;
     return release?.titleI18nKey ? t(release.titleI18nKey) : (release?.title || t("pwa.update.title"));
   }
 
   function localizedReleaseNotes(release) {
+    if (window.PetatoeLocalization?.getLanguage?.() === "en" && Array.isArray(release?.notesEn)) return release.notesEn;
     const keys = Array.isArray(release?.notesI18nKeys) ? release.notesI18nKeys.filter(Boolean) : [];
     if (keys.length) return keys.map(key => t(key));
     return Array.isArray(release?.notes) ? release.notes : [];

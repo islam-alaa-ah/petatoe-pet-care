@@ -257,13 +257,15 @@
     if(services.some(x=>!x.service_type_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_price)||x.unit_price<0))throw new Error('راجع نوع الخدمة والعدد والسعر في جميع الخدمات.');
     const animals=(payload.animals||[]).map(x=>({pet_name:x.petName||'',pet_type:x.petType||'',breed:x.breed||'',pet_size:x.petSize||'',quantity:Number(x.quantity||1)}));
     const collection={amount_collected:Number(payload.collection?.amountCollected||0),collection_status:payload.collection?.collectionStatus||'غير محصل',payment_method:payload.collection?.paymentMethod||'',appointment_status:payload.collection?.appointmentStatus||'بانتظار المراجعة'};
+    const notificationKey=window.NotificationCenterService?.occurrenceKeyFor?.('appointment-edit',payload)||'updated:'+new Date().toISOString();
     const {data,error}=await db().rpc('update_petatoe_appointment',{p_request_id:payload.id,p_customer_id:payload.customerId,p_contract_id:payload.quotationId||null,p_representative_id:payload.representativeId||null,p_neighborhood_id:geo.neighborhood.id,p_customer_map_url:normalizeGoogleMapsUrl(payload.customerMapUrl)||null,p_notes:payload.notes||null,p_services:services,p_discount_amount:Number(payload.discountAmount||0),p_discount_type:payload.discountType||'amount',p_discount_value:Number(payload.discountValue??payload.discountAmount??0),p_animals:animals,p_collection:collection});
     if(error)throw new Error('تعذر حفظ تعديلات الموعد: '+error.message);
     let customerDefaultsError=null;try{await saveCustomerLocationDefaults(payload.customerId,geo.neighborhood.id,normalizeGoogleMapsUrl(payload.customerMapUrl)||'',payload.locationNotes)}catch(error){customerDefaultsError=error;}
     if(customerDefaultsError)console.warn('[Appointments] Customer location defaults were not persisted:',customerDefaultsError.message);
     const updated=Array.isArray(data)?data[0]:data;
     const requestNumber=updated?.request_number||payload.requestNumber||'';
-    void notifyEvent('installation.request_updated',payload.id,null,{source:'appointment_edit',requestNumber},'updated:'+new Date().toISOString());
+    window.NotificationCenterService?.releaseOccurrenceKey?.(payload,notificationKey);
+    void notifyEvent('installation.request_updated',payload.id,null,{source:'appointment_edit',requestNumber},notificationKey);
     return updated;
   }
 
@@ -1007,9 +1009,11 @@
     const amount=Number(payload.collection?.amountCollected||0),discount=Number(payload.discountAmount||0);
     if(!Number.isFinite(amount)||amount<0)throw new Error('المبلغ المحصل غير صحيح.');
     if(!Number.isFinite(discount)||discount<0)throw new Error('قيمة الخصم غير صحيحة.');
+    const notificationKey=window.NotificationCenterService?.occurrenceKeyFor?.('completion-edit',payload)||'completion-edit:'+new Date().toISOString();
     const {data,error}=await db().rpc('update_installation_completion_workspace',{p_request_id:payload.id,p_visit_id:payload.visitId||null,p_services:services,p_discount_amount:discount,p_collection:{amount_collected:amount,payment_method:String(payload.collection?.paymentMethod||'').trim(),invoice_number:String(payload.collection?.invoiceNumber||'').trim(),collection_notes:String(payload.collection?.notes||'').trim()}});
     if(error){const mapped=completionWorkspaceError(error.message);if(mapped)throw new Error(mapped);throw new Error('تعذر حفظ تحديثات الخدمات والتحصيل: '+error.message);}
-    void notifyEvent('installation.request_updated',payload.id,payload.visitId||null,{source:'completion_confirmation',services:services.length},'completion-edit:'+new Date().toISOString());
+    window.NotificationCenterService?.releaseOccurrenceKey?.(payload,notificationKey);
+    void notifyEvent('installation.request_updated',payload.id,payload.visitId||null,{source:'completion_confirmation',services:services.length},notificationKey);
     return Array.isArray(data)?data[0]:data;
   }
   async function completionCollectionRecoveryState(requestId,visitId){

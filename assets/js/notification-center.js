@@ -1,5 +1,6 @@
 (function(){
 'use strict';
+if(window.NotificationCenterUI?.runtimeVersion==='P3')return;
 const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function sharedT(key,fallback=''){const value=window.PetatoeLocalization?.t?.(key);return value&&value!==key?value:fallback}
 function sharedFormat(key,count,fallback=''){return sharedT(key,fallback).replace('{count}',String(count))}
@@ -10,8 +11,26 @@ function moduleLabel(value){return String(value||'')==='التركيبات'?shar
 function notificationTitle(n){return eventLabel(n?.event_key,n?.title||'')}
 function notificationBody(n){const body=String(n?.body||'');if(n?.event_key==='installation.request_updated'&&body.startsWith('تم التعديل على الطلب رقم '))return `${sharedT('shared.notifications.body.requestUpdated','Request updated: ')}${body.slice('تم التعديل على الطلب رقم '.length)}`;return body}
 let config=null,notifications=[],unsub=null,selectedRoleKey='';
-let notificationReadInFlight=null, notificationFailureCount=0, notificationRetryAfter=0;
-function notificationUnavailable(error){return /PGRST002|schema cache|\b503\b|service unavailable/i.test(String(error?.message||error||'')) || Number(error?.status||error?.code)===503}
+let activeUserId='',sessionGeneration=0,notificationReadInFlight=null,readTimer=null,bootstrapTimer=null;
+const service=()=>window.NotificationCenterService;
+function userId(){const state=window.CustomerAuth?.getState?.();return state?.profile?.id&&(!state.user?.id||state.user.id===state.profile.id)?String(state.profile.id):''}
+function scheduleRead(){
+ clearTimeout(readTimer);readTimer=null;
+ if(!activeUserId||activeUserId!==userId()||navigator.onLine===false||document.visibilityState==='hidden')return;
+ const status=service().getReadStatus(),now=Date.now();
+ const due=status.needsReconcile?now:status.lastSuccessAt+(status.connected?status.reconcileIntervalMs:60000);
+ const wait=Math.max(250,Math.max(due,status.nextReadAt,status.retryAfter)-now);
+ readTimer=setTimeout(()=>{readTimer=null;void refresh()},wait);
+}
+function resetSession(){
+ sessionGeneration+=1;activeUserId='';clearTimeout(readTimer);clearTimeout(bootstrapTimer);
+ readTimer=null;bootstrapTimer=null;unsub?.();unsub=null;notificationReadInFlight=null;
+ service()?.resetSession?.();notifications=[];config=null;selectedRoleKey='';
+ if($('notificationMatrixRows'))$('notificationMatrixRows').innerHTML='';
+ if($('notificationRoleSelect'))$('notificationRoleSelect').innerHTML='';
+ $('notificationDropdown')?.classList.add('hidden');$('notificationBellBtn')?.setAttribute('aria-expanded','false');
+ renderBell();
+}
 function roleLabel(r){return window.CustomerPermissions?.roleLabels?.[r]||r}
 function availableRoles(){
   const canonical=Array.isArray(window.CustomerPermissions?.roleOptions)?window.CustomerPermissions.roleOptions:[];
@@ -76,22 +95,38 @@ async function save(){const status=$('notificationCenterStatus');try{status.text
 function relative(ts){const d=Math.max(0,Date.now()-new Date(ts).getTime()),m=Math.floor(d/60000),lang=window.PetatoeLocalization?.getLanguage?.()==='en'?'en':'ar';if(m<1)return sharedT('shared.notifications.now','الآن');if(m<60)return sharedFormat('shared.notifications.minutesAgo',m,`منذ {count} دقيقة`);const h=Math.floor(m/60);if(h<24)return sharedFormat('shared.notifications.hoursAgo',h,`منذ {count} ساعة`);return new Date(ts).toLocaleDateString(lang==='en'?'en-GB-u-ca-gregory-nu-latn':'ar-SA-u-ca-gregory-nu-latn')}
 function renderBell(){const list=$('notificationDropdownList'),badge=$('notificationUnreadBadge');const unread=notifications.filter(n=>!n.is_read).length;if(badge){badge.textContent=unread>99?'99+':String(unread);badge.classList.toggle('hidden',!unread)}if(list)list.innerHTML=notifications.length?notifications.slice(0,20).map(n=>`<button class="notification-item ${n.is_read?'':'unread'}" type="button" data-notification-id="${n.id}" data-target-view="${esc(n.target_view||'')}"><strong>${esc(notificationTitle(n))}</strong><span>${esc(notificationBody(n))}</span><small>${relative(n.created_at)}</small></button>`).join(''):`<div class="notification-empty">${sharedT('shared.notifications.empty','لا توجد إشعارات.')}</div>`}
 async function refresh(options={}){
- if(navigator.onLine===false || !window.CustomerAuth?.getState?.().profile)return;
+ if(!activeUserId||activeUserId!==userId())return;
  if(notificationReadInFlight)return notificationReadInFlight;
- if(!options.force && Date.now()<notificationRetryAfter)return;
- notificationReadInFlight=(async()=>{
-  try{notifications=await window.NotificationCenterService.listMine(50);notificationFailureCount=0;notificationRetryAfter=0;renderBell()}
-  catch(e){
-   if(notificationUnavailable(e)){notificationFailureCount=Math.min(6,notificationFailureCount+1);notificationRetryAfter=Date.now()+Math.min(300000,5000*Math.pow(2,notificationFailureCount-1))*(0.8+Math.random()*0.4)}
-   else console.warn('[Notifications] refresh failed',e?.message||e);
+ const generation=sessionGeneration,uid=activeUserId;
+ const job=Promise.resolve().then(async()=>{
+  try{
+   const rows=await service().listMine(50,options);
+   if(generation===sessionGeneration&&uid===userId()){notifications=rows;renderBell()}
+  }catch(e){if(generation===sessionGeneration)console.warn('[Notifications] refresh deferred',e?.message||e)}
+  finally{
+   if(notificationReadInFlight===job){notificationReadInFlight=null;if(!options.cacheOnly||service().getReadStatus().connected)scheduleRead()}
   }
- })();
- try{return await notificationReadInFlight}finally{notificationReadInFlight=null}
+ });
+ notificationReadInFlight=job;return job;
 }
 function navigateTarget(target){if(target)document.querySelector(`.nav-item[data-view="${CSS.escape(target)}"]`)?.click()}
 async function openNotification(btn){try{await window.NotificationCenterService.markRead(btn.dataset.notificationId)}catch(e){console.warn('[Notifications] mark-read deferred',e?.message||e)}navigateTarget(btn.dataset.targetView);$('notificationDropdown')?.classList.add('hidden');if(navigator.onLine!==false)refresh()}
 function applyPushDeepLink(){const params=new URLSearchParams(location.search),target=params.get('notificationView');if(target){setTimeout(()=>navigateTarget(target),300);params.delete('notificationView');params.delete('notificationId');params.delete('requestId');params.delete('visitId');const q=params.toString();history.replaceState(null,'',location.pathname+(q?'?'+q:'')+location.hash)}}
-function startRealtime(){if(!window.CustomerAuth?.getState?.().profile)return;unsub?.();unsub=window.NotificationCenterService.subscribe(n=>{notifications.unshift(n);renderBell()});refresh();window.NotificationCenterService.dispatchPending?.()}
+function startRealtime(){
+ const uid=userId();
+ if(!uid){if(activeUserId)resetSession();return}
+ if(activeUserId===uid&&unsub){scheduleRead();return}
+ resetSession();activeUserId=uid;
+ // Subscribe before the snapshot; INSERT/UPDATE events received during the read
+ // are merged by the service rather than appended again by the bell.
+ unsub=service().subscribe(null,()=>{
+  if(activeUserId===uid)void refresh();
+ });
+ void refresh({cacheOnly:true});
+ // REST remains available when Realtime is unavailable or not enabled.
+ bootstrapTimer=setTimeout(()=>{bootstrapTimer=null;void refresh()},2000);
+ void service().dispatchPending?.();
+}
 async function enablePush(){const status=$('notificationCenterStatus');try{status.textContent=sharedT('shared.notifications.center.pushEnabling','Enabling Push for this device...');status.classList.remove('hidden');await window.NotificationCenterService.enablePush();status.textContent=sharedT('shared.notifications.center.pushEnabled','Push notifications were enabled for this device.');status.dataset.type='success';await renderPushStatus()}catch(e){status.textContent=uiMessage(e.message,sharedT('shared.notifications.center.error.generic','Unable to complete the operation.'));status.dataset.type='error'}}
 async function disablePush(){const status=$('notificationCenterStatus');try{await window.NotificationCenterService.disablePush();status.textContent=sharedT('shared.notifications.center.pushDisabled','Push was disabled on this device.');status.dataset.type='success';status.classList.remove('hidden');await renderPushStatus()}catch(e){status.textContent=uiMessage(e.message,sharedT('shared.notifications.center.error.generic','Unable to complete the operation.'));status.dataset.type='error'}}
 function init(){
@@ -141,7 +176,7 @@ function init(){
  });
  dropdown?.addEventListener('click',e=>e.stopPropagation());
  document.addEventListener('click',e=>{if(isBellTarget(e.target))return;if(dropdown&&!dropdown.classList.contains('hidden')){dropdown.classList.add('hidden');bell?.setAttribute('aria-expanded','false')}});
- $('notificationMarkAllRead')?.addEventListener('click',async()=>{await window.NotificationCenterService.markAllRead();refresh()});
+ $('notificationMarkAllRead')?.addEventListener('click',async()=>{try{await window.NotificationCenterService.markAllRead();refresh()}catch(e){console.warn('[Notifications] mark-all-read deferred',e?.message||e)}});
  $('notificationDropdownList')?.addEventListener('click',e=>{const b=e.target.closest('[data-notification-id]');if(b)openNotification(b)});
  $('notificationRoleSelect')?.addEventListener('change',e=>{syncCurrentRoleDraft();selectedRoleKey=e.target.value;renderConfig()});
  document.querySelector('.notification-matrix')?.addEventListener('change',e=>{
@@ -152,12 +187,27 @@ function init(){
  $('saveNotificationCenterBtn')?.addEventListener('click',save);$('notificationEnablePushBtn')?.addEventListener('click',enablePush);$('notificationDisablePushBtn')?.addEventListener('click',disablePush);
  window.addEventListener('kyum-view-changed',e=>{if(e.detail?.view==='notificationCenter')loadConfig(true)});
  window.addEventListener('customer-auth-ready',startRealtime);window.addEventListener('kyum-auth-state-changed',startRealtime);
+ window.addEventListener('kyum-notification-cache-updated',e=>{
+  if(activeUserId&&e.detail?.userId===activeUserId&&activeUserId===userId()){
+   notifications=service().getSnapshot(50);renderBell();
+  }
+ });
+ // This also covers sign-out in another tab. Channel cleanup is queued by the
+ // service, so the auth callback never awaits a Supabase call.
+ window.customerSupabase?.auth?.onAuthStateChange?.((event,session)=>{
+  if(event==='SIGNED_OUT'||(activeUserId&&session?.user?.id&&String(session.user.id)!==activeUserId))resetSession();
+ });
+ $('logoutBtn')?.addEventListener('click',resetSession);
  navigator.serviceWorker?.addEventListener?.('message',e=>{if(e.data?.type==='OPEN_NOTIFICATION_TARGET')navigateTarget(e.data.targetView)});
  window.addEventListener('petatoe-language-changed',()=>{window.PetatoeLocalization?.applyStatic?.(document);renderConfig();renderPushStatus();renderBell()});
-window.addEventListener('online',()=>{notificationRetryAfter=0;notificationFailureCount=0;if(document.visibilityState==='visible')refresh()});
- document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
- setInterval(()=>{if(document.visibilityState==='visible'&&window.CustomerAuth?.getState?.().profile)refresh()},60000);setTimeout(()=>{startRealtime();applyPushDeepLink()},0);
+ window.addEventListener('online',()=>{service().resumeRealtime();service().requestReconcile();if(document.visibilityState!=='hidden')refresh()});
+ window.addEventListener('offline',()=>{clearTimeout(readTimer);readTimer=null});
+ document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden'){clearTimeout(readTimer);readTimer=null;return}
+  service().resumeRealtime();service().requestReconcile();refresh();
+ });
+ setTimeout(()=>{startRealtime();applyPushDeepLink()},0);
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
-window.NotificationCenterUI=Object.freeze({loadConfig,refresh,renderPushStatus});
+window.NotificationCenterUI=Object.freeze({loadConfig,refresh,renderPushStatus,runtimeVersion:'P3'});
 })();
