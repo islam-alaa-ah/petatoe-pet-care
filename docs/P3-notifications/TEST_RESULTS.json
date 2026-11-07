@@ -1,0 +1,194 @@
+{
+  "phase": "P3-NOTIFICATIONS",
+  "status": "LOCAL_RUNTIME_PASS_LIVE_AND_VISUAL_PENDING",
+  "mode": "local mocks; no Supabase requests; not production",
+  "runtime": {
+    "passed": 17,
+    "failed": 0,
+    "output": "✔ INSERT identity, UPDATE read state and user filtering share one bounded snapshot (74.982287ms)\n✔ a missing or mismatched activated profile does not start notification access (2.962279ms)\n✔ a snapshot cannot overwrite INSERT/UPDATE events delivered during its read (2.127334ms)\n✔ a notification hidden during cache hydration is not restored from old cache (1.042174ms)\n✔ local mark-read survives a concurrent stale snapshot; unknown IDs add no blank row (2.337908ms)\n✔ mark-all-read preserves a new unread notification arriving during the update (1.844992ms)\n✔ single flight respects each reader limit and optional cache failures allow network reads (1.039701ms)\n✔ cached data cannot bypass the central REST backoff, including sync and force calls (1.633737ms)\n✔ slow cache persistence does not hold network reads or acknowledged mark-read actions (1.167202ms)\n✔ release metadata and cache versions agree, with Arabic and English release notes (1.971771ms)\n✔ healthy WebSocket replaces minute polling and keeps a 15-minute reconciliation (3.064892ms)\n✔ Realtime failure retains REST fallback, bounded retries, and hidden/offline silence (1.680467ms)\n✔ initial REST load works even if the Realtime channel never subscribes (1.02564ms)\n✔ reconnection during an in-flight snapshot still requires a later reconciliation (1.167642ms)\n✔ account switching discards old reads/events and waits for the old channel to close (2.637505ms)\n✔ offline logout clears the notification panel and duplicate script inclusion is harmless (0.858982ms)\n✔ repeat emits share the same occurrence; failures can retry; distinct actions remain distinct (1.068565ms)\nℹ tests 17\nℹ suites 0\nℹ pass 17\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 188.199783\n"
+  },
+  "javascriptSyntax": [
+    {
+      "file": "assets/js/notification-center-service.js",
+      "status": "PASS"
+    },
+    {
+      "file": "assets/js/notification-center.js",
+      "status": "PASS"
+    },
+    {
+      "file": "assets/js/installations-service.js",
+      "status": "PASS"
+    },
+    {
+      "file": "assets/js/pwa.js",
+      "status": "PASS"
+    },
+    {
+      "file": "service-worker.js",
+      "status": "PASS"
+    },
+    {
+      "file": "scripts/p3-notifications-runtime.test.mjs",
+      "status": "PASS"
+    },
+    {
+      "file": "scripts/p3-notifications-browser-check.mjs",
+      "status": "PASS"
+    },
+    {
+      "file": "scripts/p3-preflight-check.mjs",
+      "status": "PASS"
+    }
+  ],
+  "sourceAudit": {
+    "baselineFiles": 1155,
+    "modified": [
+      "assets/js/installations-service.js",
+      "assets/js/notification-center-service.js",
+      "assets/js/notification-center.js",
+      "assets/js/pwa.js",
+      "index.html",
+      "package.json",
+      "service-worker.js",
+      "version.json"
+    ],
+    "addedBeforeDocumentation": [
+      "scripts/p3-notifications-browser-check.mjs",
+      "scripts/p3-notifications-runtime.test.mjs"
+    ],
+    "unchangedFiles": 1147,
+    "unchangedCssFiles": 31,
+    "unchangedSqlFiles": 421,
+    "appointmentBusinessCodeUnchangedAfterNotificationIdentityExclusion": true,
+    "unchangedNamedFunctions": {
+      "loadConfig": true,
+      "saveConfig": true,
+      "getPushConfig": true,
+      "dispatchPending": true,
+      "pushSupported": true,
+      "getPushStatus": true,
+      "enablePush": true,
+      "disablePush": true,
+      "availableRoles": true,
+      "selectedSet": true,
+      "ownerEnabled": true,
+      "matrixRows": true,
+      "syncColumnHeader": true,
+      "syncAllColumnHeaders": true,
+      "setColumnChecked": true,
+      "syncCurrentRoleDraft": true,
+      "renderRoleSelect": true,
+      "renderConfig": true,
+      "collect": true,
+      "renderPushStatus": true,
+      "save": true,
+      "relative": true,
+      "renderBell": true,
+      "navigateTarget": true,
+      "openNotification": true,
+      "applyPushDeepLink": true
+    },
+    "mobileTouchHandlersUnchanged": true,
+    "indexChangesVersionStringsOnly": true,
+    "serviceWorkerChangesCacheTokenOnly": true,
+    "historicalChecks": [
+      {
+        "script": "phase-m15-12-2-4-notification-matrix-save-select-all-check.mjs",
+        "baseline": {
+          "exitCode": 1,
+          "failures": [
+            "FAIL version 18.53.25"
+          ]
+        },
+        "p3": {
+          "exitCode": 1,
+          "failures": [
+            "FAIL version 18.53.25"
+          ]
+        }
+      },
+      {
+        "script": "phase-m15-13-4-mobile-notifications-crm-cards-recovery-check.mjs",
+        "baseline": {
+          "exitCode": 1,
+          "failures": [
+            "FAIL pointerup bell handler",
+            "FAIL bell click duplicate guard",
+            "FAIL version"
+          ]
+        },
+        "p3": {
+          "exitCode": 1,
+          "failures": [
+            "FAIL pointerup bell handler",
+            "FAIL bell click duplicate guard",
+            "FAIL version"
+          ]
+        }
+      },
+      {
+        "script": "phase-r44r38r20r35a1-sales-reports-accuracy-check.mjs",
+        "baseline": {
+          "exitCode": 1,
+          "failures": [
+            "FAIL  Localization cache-buster upgraded",
+            "FAIL  Invoice-status report exists"
+          ]
+        },
+        "p3": {
+          "exitCode": 1,
+          "failures": [
+            "FAIL  Version 18.56.140",
+            "FAIL  Build 185740",
+            "FAIL  Package aligned",
+            "FAIL  PWA aligned",
+            "FAIL  Service worker cache aligned",
+            "FAIL  Sales report CSS loaded",
+            "FAIL  Sales report JS loaded",
+            "FAIL  App cache-buster upgraded",
+            "FAIL  Localization cache-buster upgraded",
+            "FAIL  Invoice-status report exists"
+          ]
+        }
+      }
+    ]
+  },
+  "browser": {
+    "status": "BLOCKED_NOT_PASSED",
+    "plannedCases": 12,
+    "completedCases": 0,
+    "reason": "Chromium launch rejected: socket() failed: Operation not permitted (1). Desktop/tablet/mobile AR/EN light/dark visual checks remain pending."
+  },
+  "production": {
+    "deployed": false,
+    "sqlExecuted": false,
+    "realAccountsTested": false,
+    "webPushTested": false,
+    "realtimePublicationVerified": false,
+    "databaseDedupeVerified": false
+  },
+  "preflightVerification": [
+    {
+      "mode": "baseline",
+      "target": "baseline",
+      "expectedExitCode": 0,
+      "actualExitCode": 0,
+      "status": "PASS"
+    },
+    {
+      "mode": "installed",
+      "target": "p3",
+      "expectedExitCode": 0,
+      "actualExitCode": 0,
+      "status": "PASS"
+    },
+    {
+      "mode": "baseline",
+      "target": "p3",
+      "expectedExitCode": 1,
+      "actualExitCode": 1,
+      "status": "PASS"
+    }
+  ]
+}
