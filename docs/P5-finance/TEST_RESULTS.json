@@ -1,0 +1,71 @@
+{
+  "phase": "P5-VISIBLE-FINANCE-READS",
+  "status": "LOCAL_PASS_PRODUCTION_CHECKS_PENDING",
+  "version": "18.56.143",
+  "build": 185743,
+  "capturedAt": "2026-11-08T11:26:20.936429+00:00",
+  "runtime": "v24.22.1",
+  "suites": [
+    {
+      "command": "node --test scripts/p5-visible-finance-reads.test.mjs",
+      "passed": 39,
+      "failed": 0,
+      "scope": "Actual service and SyncEngine source with mocked SDK/storage; existing vehicle UI source is exercised in selected tests."
+    },
+    {
+      "command": "node --test scripts/p4-execution-lifecycle.test.mjs",
+      "passed": 27,
+      "failed": 0,
+      "scope": "Unchanged P4 lifecycle and execution service behavior."
+    },
+    {
+      "command": "node --test --test-skip-pattern='release metadata and cache versions agree' scripts/p3-notifications-runtime.test.mjs",
+      "passed": 16,
+      "failed": 0,
+      "excludedByName": [
+        "release metadata and cache versions agree"
+      ],
+      "scope": "P3 behavior only; the historical 18.56.141 metadata assertion is intentionally excluded. P5 checks current metadata separately."
+    }
+  ],
+  "totalFunctionalTestsPassed": 82,
+  "totalFunctionalTestsFailed": 0,
+  "sourceComparison": {
+    "status": "PASS",
+    "unchangedBaselineFiles": 1161,
+    "baselineFiles": 1169,
+    "modifiedRuntimeFiles": 8,
+    "unchangedNamedServiceFunctions": 74,
+    "unchangedSqlFiles": 422,
+    "unchangedCssFiles": 31,
+    "removedFiles": 0
+  },
+  "preflightCommands": [
+    "node scripts/p5-finance-preflight-check.mjs baseline /absolute/path/to/current-app",
+    "node scripts/p5-finance-preflight-check.mjs installed /absolute/path/to/updated-app"
+  ],
+  "passiveConsoleCaptureTested": true,
+  "liveApiTestsPerformed": false,
+  "productionAppliedByAssistant": false,
+  "sqlExecuted": false,
+  "realFinancialRecordsChanged": false,
+  "advisorScanPerformed": false,
+  "visualBrowserVerification": {
+    "performed": false,
+    "reason": "Chromium is unavailable in this environment: AF_UNIX socket denied (EPERM), observed during P4. No new browser launch attempted."
+  },
+  "productionChecksPending": [
+    "Current deployment and runtime versions",
+    "Before/after dashboard lifecycle captures plus a bounded Network observation",
+    "Every authorized finance screen with its current month/range/filters",
+    "Real permitted save and queue replay during normal work",
+    "Administrator, limited employee, representative, denied account and signed-out state",
+    "Arabic/English; Desktop/Tablet/Mobile; Light/Dark",
+    "P3 notification and P4 execution behavior after deployment"
+  ],
+  "limits": [
+    "Mock writes affect only in-memory test objects.",
+    "No measured Production savings or historical Logs root cause is established.",
+    "Runtime counters count automatic refresh invocations, not HTTP requests or authorization success."
+  ]
+}

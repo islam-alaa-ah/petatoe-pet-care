@@ -1,0 +1,659 @@
+{
+  "phase": "P5-VISIBLE-FINANCE-READS",
+  "status": "LOCAL_SOURCE_COMPARISON_PASS_NOT_A_LIVE_SECURITY_PASS",
+  "baselineVersion": "18.56.142",
+  "version": "18.56.143",
+  "baselineFileCount": 1169,
+  "unchangedBaselineFiles": 1161,
+  "modifiedFiles": [
+    "assets/js/vehicle-treasury-service.js",
+    "assets/js/payroll-service.js",
+    "assets/js/sea-vibe-payroll-service.js",
+    "assets/js/pwa.js",
+    "index.html",
+    "package.json",
+    "service-worker.js",
+    "version.json"
+  ],
+  "addedFiles": [
+    "README_P5_AR.md",
+    "docs/P5-finance/IMPACT_AND_ROLLBACK_AR.md",
+    "docs/P5-finance/TEST_RESULTS.json",
+    "docs/P5-finance/SOURCE_INTEGRITY.json",
+    "docs/P5-finance/manifest.json",
+    "scripts/p5-visible-finance-reads.test.mjs",
+    "scripts/p5-visible-finance-live-readonly.js",
+    "scripts/p5-finance-preflight-check.mjs"
+  ],
+  "removedFiles": [],
+  "cssFiles": 31,
+  "allCssByteIdentical": true,
+  "sqlFiles": 422,
+  "allSqlByteIdentical": true,
+  "protectedFiles": [
+    "assets/js/vehicle-treasury.js",
+    "assets/js/payroll.js",
+    "assets/js/sea-vibe-payroll.js",
+    "assets/js/sync-engine.js",
+    "assets/js/offline-queue.js",
+    "assets/js/offline-read-cache.js",
+    "assets/js/installation-execution.js",
+    "assets/js/installations-service.js",
+    "assets/js/notification-center-service.js",
+    "assets/js/notification-center.js",
+    "assets/js/customers-service.js",
+    "assets/js/quotations-service.js"
+  ],
+  "unchangedNamedServiceFunctionCount": 74,
+  "unchangedNamedServiceFunctions": [
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "namespace",
+      "sha256": "bae3fc149576fc7da68d171bc5ced17346a3c90be8f2015d2213ed0cf89ee2d0"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "scopeHash",
+      "sha256": "0980e7516a61eea0a72e0354e941429ccc97fa8b82f2575efd242a3f208ab10d"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "filterToken",
+      "sha256": "111d3d339fa333eae98dccc96825ee464557a184a4b5d0875f0a605699547379"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "workspaceKey",
+      "sha256": "6512dfa2b3ac7fe6117f390caeb74ea49c637c1d49671babd6814031b438e242"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "readScope",
+      "sha256": "7e005c786ed85c9e21d4829e674e36906973a53e6183f61d771b81c63c210133"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "reconcileScope",
+      "sha256": "1f5b3862a719358e71923b01ec122e832400a8e80140e013a8ec5c46ae494d87"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "persistCache",
+      "sha256": "27059016f583e8db4f66c051ce46d8af42c74deb1e7037cc416bd5b32791b8bf"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "loadCache",
+      "sha256": "9979c6e22498a3c3905002fe7606d52caeaaf6c2dda3842352a10e0e043ac5b0"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "invalidateCache",
+      "sha256": "72f966cfb8dd6c2896ca47c3124e62b51927418a92817d4739eb78c8ee4c2d01"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "attachExpenseVersions",
+      "sha256": "a68331e9310e2d07466caa8d26a1777c3c1aac69c000e29a1aa76b4d21d3556d"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "snapshotFilters",
+      "sha256": "5968557c89d46893f38b4b539e5296f09bb8712dd171833cb8e4c07e6ed7cb3b"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "movementMatchesFilters",
+      "sha256": "7a8b71b31523a4d74cd8a19f98120bfcfb5e43d526170d45f2982046b50bccb8"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "recalcSummary",
+      "sha256": "b62d41866bff2de51f698ee88d7751caf057198c9c2637a0628202dda705fb70"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "assignmentForDate",
+      "sha256": "a10020079a71418ebad1cf82bfbf90f108968fbf220d0c3bf149a183a6d2c5ed"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "applyOptimisticExpense",
+      "sha256": "4b9b7b1d28c4226b31b1449bd8047e8166bcf23c2d3879d63e38c101ae3966e1"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "makeLocalToken",
+      "sha256": "a37af680e8818f716c48fc1fdf2ad1557488bf4c9af5724874b04464520990e4"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "clientOperationKey",
+      "sha256": "1a92c9c8a6e31d423169a429c367f50758624296afb7449b0056ce2b55359fab"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "addExpenseOnline",
+      "sha256": "bb45a52413cc2dbaa8a6661162943513a9a59990e86bf75606b71a5279d202e7"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "updateExpenseOnline",
+      "sha256": "1b1f1b50ab5ee0c53220a333b45316f3e17ff2377c44ff8857db62ecd7dd49c0"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "findVehicleCreateOperation",
+      "sha256": "6fab349278988af801a20cb7ed6c1767f878d7207806f6baa9e20e2f5b5f630b"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "queueExpense",
+      "sha256": "8e75c3207468b385f2c1cc5c333174594e171e7dd843e37f4265522464be688a"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "saveExpense",
+      "sha256": "96d94e97e1380accd2b97d988d35db832ee22c3a9e8b84f63fa5474df304956a"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "function": "deleteExpense",
+      "sha256": "b0d06ee1a0221573c8300b7e583246d6039cb5bdd116e38977a29ec520bbf093"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "permissionErrorKey",
+      "sha256": "94248f3a5ae2ce2c8444dd9eb99b81a2295c00522cfbbf23e010fac2aa32e10e"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "requireView",
+      "sha256": "e791ac0bfcbcbbe98004a7ba70908f5b5e1697721b2893b6c7bf6a520a6f2d7a"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "namespace",
+      "sha256": "e754903e15d8a8c3131f9a23a12047c772b2608b0313a586197276c06d4ec0ba"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "normalizedPermissionRows",
+      "sha256": "2215a927f09fb0d618606d57862e00a85f151608566be281a7a7e3ef0fe32894"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "permissionFingerprint",
+      "sha256": "e494341a79d93055adca538e11198bdaaeacb51c35a893b9eb5c25faa5b164fb"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "token",
+      "sha256": "bbf72401c427f746509fdfa21393dc7cff4c70435b30185059e9f18e2b462578"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "makeContext",
+      "sha256": "4b464561dc6c9ef9213cd78d598411497f94f94e5f57aa8d1cb016c0695bfc83"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "setMemory",
+      "sha256": "dd6a7c6348ef13bcf8343f97ec4a9d6206d9ec825d7cd79bd322ebc8f93a9aef"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "setReadStatus",
+      "sha256": "5d1fb78df8ae078a646715efe91e3f4f3df9bab28920c04d41428f6c43773486"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "emitUpdate",
+      "sha256": "61e5ea53ca41dff1f55f6e17f5a7cc2b95f1f0d09bfb2b8bd54e65cd8d24cc25"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "persist",
+      "sha256": "6879ca31735df6fe76e5b035b7c586e3b47f37388d6c2bc6eb8d2c7eacdf0234"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "readCached",
+      "sha256": "a8bd6b5d2c0d8db103f70a9e3baa718aa0d1bf15b84fe9473d4951cebfde23a9"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "rpcOnline",
+      "sha256": "ad867ae61dd0e01932438b7b008d69ecc1437c1f3ff199d8e1420134ebb83e50"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "fetchAndPersist",
+      "sha256": "4072d7540bec69124af71fc3f557b8efc2f6861a545b874520c4f4b8171867bb"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "invalidatePayrollCache",
+      "sha256": "c1e645a658dea13f5c324373da5cc564818ba75c977a25395e0a0c97125ca1d6"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "loadManagement",
+      "sha256": "9118666e8e666cbfe7f334b0652f42ca5be091d1b2844fbd0fd39a2770595078"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "prepareMonth",
+      "sha256": "049e923aa28d8cc2f706d06cbbabf3c24b94421f9deb19255889d41961c6cd26"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "loadAdjustmentCatalog",
+      "sha256": "9417cb8873b2a29f8ba587cede6331f1b848c8284672907507e44ac056702983"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "saveAdjustmentItems",
+      "sha256": "e4f45be799e006246e7b7416e300719a2deb32ac3e9e4d62eb9dc1d62d3ecd98"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "saveAdjustments",
+      "sha256": "d02b27dae5c0eb92eb0030816ae291aa751f2dc1933c17f259838e631b0b8f64"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "transition",
+      "sha256": "76822934d01ec618ed9ce13e339634e3214783d3199f925a8a4b6963cb6d79c2"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "loadSalaryStatement",
+      "sha256": "1385635d34f7d4d508682f8cfdb3d85754e239dc6e4801330cc40cb05662f17e"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "loadCommissions",
+      "sha256": "4b0254a09ef2465b4902ca3e4b706fdc996077d1a706c77cb6b442e03a818a1c"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "loadCommissionsRange",
+      "sha256": "9ef616c264f6f422fe41b01cf9d1147b91ff1174450fc38e8e93c8f28e779288"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "refreshCommissions",
+      "sha256": "692bfe207a65938fc523aafab1c03f5814d192f4d2585645250c8feb49b486d3"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "loadCommissionStatement",
+      "sha256": "cdb0b95734c9fccaa2b3066e866310b1d11cf7c687c2d0dd5e768689d30a01b2"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "loadReference",
+      "sha256": "34a04a4b3579cbb7a3fbe6e460b75a28f61471a5a1e528ecd969d77232c7314f"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "saveEmployee",
+      "sha256": "11703284df1a977aaa234964bc2522b63132e9ba8b25881422ffba14802428cb"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "function": "saveTier",
+      "sha256": "2b649de89607eb8aa6be3f4106c9c862602c152ec5688ac6c467854d74aee65e"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "translateMessage",
+      "sha256": "630304dce87118eae277c5dee2ddd8298f0a130a4485c392277ed34c00786587"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "requirePermission",
+      "sha256": "46f2de18227334ee5d09f91fe57a2fccc5fe95fb401822a68b4f62cd842b95cb"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "monthStart",
+      "sha256": "f8355f34a601e608fc607446a429ca2962c215ab647b41d3e7cc46029d681ac7"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "isoDate",
+      "sha256": "ff4d0e2d6d5a835cd7b45b153c74f6c819f3c5b02faaadf8cfb685e63497bb21"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "namespace",
+      "sha256": "986f7e6108f6cb8da74c33f40553ef0fbd904bfd763d857f83a10cacc4ff54bf"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "cacheGet",
+      "sha256": "249bc8762c5149d9adf467ed8655be46d219a4bb20e354ef5201080437aeb6e9"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "cacheSet",
+      "sha256": "704fce42bd5cd235f7af4015b8722ed1fcd594172a5c08a38d4e50150ef742ec"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "setMemory",
+      "sha256": "b993725c67d144c55c78a540acadd6b25ee09fc6437d7557aa7f0591aa1e01f3"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "setReadStatus",
+      "sha256": "100936c90a541a33ca22321eb339274e22849af03b14b4b1aa18aa0a88b403c6"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "emitUpdate",
+      "sha256": "2651c7ee0509b468ddd5a1d7b956ba63d85fee2c720178e8d67ecc82de44953a"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "rpcOnline",
+      "sha256": "b5f900b0b5711428e424c6cdc8f9692d4d4721df4f547fa31f507759a0650e0e"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "fetchAndPersist",
+      "sha256": "5ebe9d74404364b5cc23e8892d5fd9e634f1dedabaf12e5274bc820bdefc4e05"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "invalidate",
+      "sha256": "33085131fa591aee23745dac3b8472c420e1c52fa435d072d7ac5437356507fe"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "loadReference",
+      "sha256": "7447549d53e69b0111e92c114f21fec72c8aa2d1377b3867156cabe077ed4a9d"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "saveEmployee",
+      "sha256": "42e6d9708fcd5fddab9f89ad512302fe37f96c7b2f40f2b2909650a6ff9eba5c"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "loadManagement",
+      "sha256": "9c6a9db14ee128dd90c6dbea8e51ce11e26829ab4423cc7413c4bfd46998ddb5"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "prepareMonth",
+      "sha256": "7ff569a3f0ec659e418df7d06c041ba47b7d08b545cb6acdfe131c85ecded432"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "saveAdjustmentItems",
+      "sha256": "ea83e1d3ed0a571ff18a0cdb473445552ccd002e8d350784a1e439ed4878cb47"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "transition",
+      "sha256": "575ef398227bb8ebe8b40943be1a0618c77bf4bf019d78267d1ceb70fd624152"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "loadSalaryStatement",
+      "sha256": "58603ed2d80396f08178a3a8df4f0083c44e1c6cd6312ecbb70916d7cf1446a3"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "loadCommissionsRange",
+      "sha256": "ce42a1f4f78b207c9e697dea60c617aaa428ef3a66410842d85ffc907d25f2db"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "function": "loadCommissionStatement",
+      "sha256": "1301ae4e4199b104847d51b42d2655b0f01cadb80afd3cb2c8d6ba52c463ae21"
+    }
+  ],
+  "directReadChanges": [
+    "Vehicle load adds local workspace owner tracking; public load wrapper tracks pending promises without changing RPC arguments.",
+    "Payroll loadWorkspace retires the old in-memory context before asynchronous namespace resolution.",
+    "SEA VIBE context adds a local owner ID; loadWorkspace retains its existing fetcher for lifecycle use."
+  ],
+  "getterSourceReview": {
+    "scope": "Repository function bodies only; live definitions, migration order and nested helper behavior are not certified. No SQL was executed.",
+    "targetReadRoutineNames": [
+      "get_vehicle_treasury_workspace_v2",
+      "get_payroll_management_workspace",
+      "get_salary_statement_workspace",
+      "get_commission_statement_workspace",
+      "get_payroll_reference_workspace",
+      "get_payroll_adjustment_catalog",
+      "get_commission_management_workspace_range",
+      "get_commission_management_workspace",
+      "get_sea_vibe_payroll_reference_workspace_r44r8",
+      "get_sea_vibe_payroll_management_workspace_r44r9",
+      "get_sea_vibe_salary_statement_workspace_r44r9",
+      "get_sea_vibe_commission_management_workspace_r44r15",
+      "get_sea_vibe_commission_statement_workspace_r44r15"
+    ],
+    "definitions": [
+      {
+        "function": "get_commission_statement_workspace",
+        "path": "supabase/migrations/R44R25_live_commission_statement_cutoff.sql",
+        "line": 6,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "current_user_role",
+          "has_screen_permission",
+          "payroll_live_commission_rows_range",
+          "payroll_month_start"
+        ]
+      },
+      {
+        "function": "get_payroll_management_workspace",
+        "path": "supabase/migrations/phase_p5_13_8_71_payroll_commissions.sql",
+        "line": 521,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission",
+          "payroll_month_start"
+        ]
+      },
+      {
+        "function": "get_salary_statement_workspace",
+        "path": "supabase/migrations/phase_p5_13_8_71_payroll_commissions.sql",
+        "line": 556,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission"
+        ]
+      },
+      {
+        "function": "get_commission_management_workspace",
+        "path": "supabase/migrations/phase_p5_13_8_71_payroll_commissions.sql",
+        "line": 592,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission",
+          "payroll_live_commission_rows",
+          "payroll_month_start"
+        ]
+      },
+      {
+        "function": "get_commission_statement_workspace",
+        "path": "supabase/migrations/phase_p5_13_8_71_payroll_commissions.sql",
+        "line": 621,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission",
+          "payroll_month_start"
+        ]
+      },
+      {
+        "function": "get_payroll_reference_workspace",
+        "path": "supabase/migrations/phase_p5_13_8_71_payroll_commissions.sql",
+        "line": 654,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission"
+        ]
+      },
+      {
+        "function": "get_commission_statement_workspace",
+        "path": "supabase/migrations/phase_p5_13_8_71_r1_commission_statement_admin_fix.sql",
+        "line": 8,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "current_user_role",
+          "has_screen_permission",
+          "payroll_month_start"
+        ]
+      },
+      {
+        "function": "get_commission_management_workspace_range",
+        "path": "supabase/migrations/phase_p5_13_8_71_r8_commission_date_range.sql",
+        "line": 137,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission",
+          "payroll_live_commission_rows_range",
+          "payroll_month_start"
+        ]
+      },
+      {
+        "function": "get_payroll_management_workspace",
+        "path": "supabase/migrations/phase_p5_13_8_71_r9_salary_commission_period_adjustments.sql",
+        "line": 344,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission",
+          "payroll_month_start"
+        ]
+      },
+      {
+        "function": "get_salary_statement_workspace",
+        "path": "supabase/migrations/phase_p5_13_8_71_r9_salary_commission_period_adjustments.sql",
+        "line": 407,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission"
+        ]
+      },
+      {
+        "function": "get_payroll_adjustment_catalog",
+        "path": "supabase/migrations/phase_p5_13_8_72_r13_payroll_adjustment_catalog.sql",
+        "line": 115,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission"
+        ]
+      },
+      {
+        "function": "get_payroll_management_workspace",
+        "path": "supabase/migrations/phase_p5_13_8_72_r22_unlinked_employee_payroll_approval_skip.sql",
+        "line": 234,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission",
+          "payroll_month_start"
+        ]
+      },
+      {
+        "function": "get_sea_vibe_commission_management_workspace_r44r15",
+        "path": "supabase/migrations/phase_p5_13_8_72_r44r15_sea_vibe_commissions_customer_delete.sql",
+        "line": 168,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission"
+        ]
+      },
+      {
+        "function": "get_sea_vibe_commission_statement_workspace_r44r15",
+        "path": "supabase/migrations/phase_p5_13_8_72_r44r15_sea_vibe_commissions_customer_delete.sql",
+        "line": 283,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "current_user_role",
+          "has_screen_permission"
+        ]
+      },
+      {
+        "function": "get_commission_management_workspace_range",
+        "path": "supabase/migrations/phase_p5_13_8_72_r44r21_team_assignment_history.sql",
+        "line": 565,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission",
+          "payroll_live_commission_rows_range",
+          "payroll_month_start"
+        ]
+      },
+      {
+        "function": "get_vehicle_treasury_workspace_v2",
+        "path": "supabase/migrations/phase_p5_13_8_72_r44r21_team_assignment_history.sql",
+        "line": 718,
+        "stableDeclared": false,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "can_access_installation_team",
+          "has_screen_permission",
+          "installation_team_assignment_at"
+        ]
+      },
+      {
+        "function": "get_sea_vibe_payroll_reference_workspace_r44r8",
+        "path": "supabase/migrations/phase_p5_13_8_72_r44r8_sea_vibe_payroll_foundation.sql",
+        "line": 90,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission"
+        ]
+      },
+      {
+        "function": "get_sea_vibe_payroll_management_workspace_r44r9",
+        "path": "supabase/migrations/phase_p5_13_8_72_r44r9_sea_vibe_payroll_core.sql",
+        "line": 599,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission",
+          "sea_vibe_payroll_month_start_r44r9"
+        ]
+      },
+      {
+        "function": "get_sea_vibe_salary_statement_workspace_r44r9",
+        "path": "supabase/migrations/phase_p5_13_8_72_r44r9_sea_vibe_payroll_core.sql",
+        "line": 665,
+        "stableDeclared": true,
+        "directWriteCandidateLines": [],
+        "publicFunctionCalls": [
+          "has_screen_permission"
+        ]
+      }
+    ]
+  },
+  "limits": [
+    "Source equality does not prove production behavior or correct financial values.",
+    "The source GET review does not certify production definitions, migration order or every nested helper.",
+    "No Production database, network, accounts or visual browser tests were used."
+  ]
+}

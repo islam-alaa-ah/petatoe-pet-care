@@ -1,0 +1,137 @@
+{
+  "phase": "P5-VISIBLE-FINANCE-READS",
+  "baselineVersion": "18.56.142",
+  "baselineBuild": 185742,
+  "version": "18.56.143",
+  "build": 185743,
+  "dateCairo": "2026-11-08",
+  "modifiedFiles": [
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "beforeSha256": "9f00b2fe7527501a33d490e064a0f25b86d55298dc9cf0cba598927f07bc32e7",
+      "afterSha256": "8854a304f6a74c9ca1af3654511661fe46a206c12c580583f5d798a4a910b43d"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "beforeSha256": "9cec5332ba14066b54dce5b0647042cf3e668dd583b41e4e8ab0dde974bfc6e6",
+      "afterSha256": "27fcec08db4ff877ae05e25bc0f773fae1e314c8bd84c74147cd1e00ce49475b"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "beforeSha256": "9d12f4df1a6f40e0c495ac760cef181ea1e5df904927c0f71963e2ea3864f574",
+      "afterSha256": "bca60ace20e9ad331e110a14713fa19b4a3f7c352bf86596f6963f6d67c8820e"
+    },
+    {
+      "path": "assets/js/pwa.js",
+      "beforeSha256": "5f5e774f9f3c9f01ab7df5930ccfb98f0a398ef754574ef3c7334b1ebab0f1dd",
+      "afterSha256": "340e3fd02d94a0e3980868f68ed17b735350c8fdf56dd6c7c309341b461b787d"
+    },
+    {
+      "path": "index.html",
+      "beforeSha256": "0aae17f9dba565dea25e71ab145260aea4cdcba9d698075172472b3f6ed077b5",
+      "afterSha256": "f0818af84ddda3fa2e55dec976b3f040c9e115b627df045558926195a8ee2803"
+    },
+    {
+      "path": "package.json",
+      "beforeSha256": "1a653877226cd44dea189be0b11d42e985081909a79834b84b886dc38473a335",
+      "afterSha256": "016c5f19fc20904fce9cfe8ab353fee40f82ca82c55a427e1edca18dfc9eb383"
+    },
+    {
+      "path": "service-worker.js",
+      "beforeSha256": "ffa79ea992da8f98f7e0c88cbc4f345418b7d11b0f43fe8bf6d2862d63b8db7a",
+      "afterSha256": "e728e70f642b7d626944390f97e3edd6da1762c005a179b72dc86ed25f5574a1"
+    },
+    {
+      "path": "version.json",
+      "beforeSha256": "547e9084167df3418fbc8d8b9456bfd5879e6b8d13dd4e6c58feb4226e2b5087",
+      "afterSha256": "a3e5bc69c4a098ba82d8a423a2d4067151544cddaa9577db4e3e3ebb1e3ee5a1"
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "assets/js/vehicle-treasury.js",
+      "sha256": "85a9179bfd4c9a910057d224789ef5b5ff4204c9be5ac90af7ea3389a3b03e10"
+    },
+    {
+      "path": "assets/js/payroll.js",
+      "sha256": "668e50146aa90164d8d2aeddddb1725b41d41f4fed2c7deec9d6133b0729a2e1"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll.js",
+      "sha256": "1ba9ad9b56ef7c6e66bff675891b73a7b2de070e65f898705c4e40d81a50b67d"
+    },
+    {
+      "path": "assets/js/sync-engine.js",
+      "sha256": "e558e99357c39cb362b6de8f91a1d09f2b424d581c67942b518a57e3d8feede3"
+    },
+    {
+      "path": "assets/js/offline-queue.js",
+      "sha256": "5d67b6107d46feef61710d61eef7a8d9bd73aa4cd531cabd6a43a9c6a80401c7"
+    },
+    {
+      "path": "assets/js/offline-read-cache.js",
+      "sha256": "51a4461e8a6ab5e9cd1582418cd5b360916e87567aeaa901697765c30f979394"
+    },
+    {
+      "path": "assets/js/installation-execution.js",
+      "sha256": "1cf6e26181045be0c8e7b35fa7c4fc1b4a12c856c6e1eae287b442baeeb62f59"
+    },
+    {
+      "path": "assets/js/installations-service.js",
+      "sha256": "1ce7423ffd0cc8a849d1c2b1e241e11daa2ca97ce43cbc40143250bb9651e629"
+    },
+    {
+      "path": "assets/js/notification-center-service.js",
+      "sha256": "274fbfecd28bf7318b817f6adbbea04ae94d01526e842d6ddb259f7a7941de2d"
+    },
+    {
+      "path": "assets/js/notification-center.js",
+      "sha256": "f4b7468e207b0b134633cccac719dd84e9136e4195e7e5828e9ffbe01803d8d3"
+    },
+    {
+      "path": "assets/js/customers-service.js",
+      "sha256": "cd0c84bf7afa97249e51912ac15b6af8b7969d06a83ff722752fcd4db186d2bc"
+    },
+    {
+      "path": "assets/js/quotations-service.js",
+      "sha256": "33298f482a2da7a09db814b4fd73b2ffc42c0553dd4175a8924ced7774752d5b"
+    }
+  ],
+  "addedFiles": [
+    {
+      "path": "README_P5_AR.md",
+      "sha256": "ccfd0be6eadfdf664c17df70990aefbdd57695f9b3fca7c2d80a26d140285c32"
+    },
+    {
+      "path": "docs/P5-finance/IMPACT_AND_ROLLBACK_AR.md",
+      "sha256": "7717a625f341d343872d03a0984fc558256e9cccceac8b70d4615616d84b5c80"
+    },
+    {
+      "path": "docs/P5-finance/TEST_RESULTS.json",
+      "sha256": "0e04f42eefc043f458a87906d7fb2a8df5ddabbf2a285009b8cf08b7d97b1e0d"
+    },
+    {
+      "path": "docs/P5-finance/SOURCE_INTEGRITY.json",
+      "sha256": "1d13f354babe8cfdc3599a9dc25a885324aa6dbc771f6aaa0c42a7d13eb66b92"
+    },
+    {
+      "path": "scripts/p5-visible-finance-reads.test.mjs",
+      "sha256": "9bbcb3092da0016d1d3d751d7773f16bc4f081a1e7b5f5cfad88271f69b62900"
+    },
+    {
+      "path": "scripts/p5-visible-finance-live-readonly.js",
+      "sha256": "aa798c54c8335ac4800f34537bcc5d03a09ef57c3b3cd45a625109f32734600c"
+    },
+    {
+      "path": "scripts/p5-finance-preflight-check.mjs",
+      "sha256": "1c54fcc4844ba735c712f2c838374be1759432bd3aa9d24890715bff77220d0c"
+    }
+  ],
+  "manifestSelfExcludedFromHashing": true,
+  "modifiedFileCount": 8,
+  "addedFileCountIncludingManifest": 8,
+  "scope": "Automatic lifecycle reads for visible vehicle treasury/payroll/SEA VIBE payroll screens, local context tracking and release metadata.",
+  "sqlRequired": false,
+  "databaseRollbackRequired": false,
+  "productionAppliedByAssistant": false
+}
