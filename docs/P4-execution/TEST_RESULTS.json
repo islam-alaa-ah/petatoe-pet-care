@@ -1,0 +1,42 @@
+{
+  "phase": "P4-EXECUTION-REALTIME",
+  "status": "LOCAL_CHECKS_PASS_PRODUCTION_REGRESSION_PENDING",
+  "modifiedRuntimeFiles": [
+    "assets/js/installation-execution.js",
+    "assets/js/installations-service.js",
+    "assets/js/pwa.js",
+    "index.html",
+    "package.json",
+    "service-worker.js",
+    "version.json"
+  ],
+  "baselineFilesCompared": 1162,
+  "unchangedBaselineFiles": 1155,
+  "sqlFilesUnchanged": 422,
+  "cssFilesUnchanged": 31,
+  "notificationP3FilesUnchanged": true,
+  "serviceEditBoundary": "six exact reviewed substitutions; all other bytes identical to P3 source",
+  "executionBusinessAndFinancialFunctionsUnchanged": true,
+  "indexChange": "only three modified JavaScript cache tags",
+  "releaseMetadata": "PASS_18.56.142_BUILD_185742",
+  "bilingualReleaseNotes": true,
+  "javascriptSyntaxChecks": 7,
+  "executionLifecycleTests": {
+    "passed": 27,
+    "failed": 0,
+    "mode": "Node VM with mocks; no network"
+  },
+  "notificationP3Regression": {
+    "passed": 16,
+    "failed": 0,
+    "mode": "existing functional mock tests",
+    "excludedHistoricalTest": "P3 release metadata pin to 18.56.141; P4 metadata independently checked for 18.56.142"
+  },
+  "browserTests": {
+    "status": "NOT_EXECUTED_ENVIRONMENT_BLOCKED",
+    "reason": "Chromium socket creation was denied (EPERM); no escalation attempted."
+  },
+  "productionAccountTests": "PENDING",
+  "productionHttpOrSqlPerformedByAssistant": false,
+  "securityAdvisorScanPerformed": false
+}

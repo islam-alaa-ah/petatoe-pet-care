@@ -1,0 +1,47 @@
+{
+  "phase": "P4-EXECUTION-REALTIME",
+  "baselineVersion": "18.56.141",
+  "version": "18.56.142",
+  "build": 185742,
+  "dateCairo": "2026-11-08",
+  "modifiedFiles": [
+    {
+      "path": "assets/js/installation-execution.js",
+      "beforeSha256": "fccf11de9e11108756de4669891348941a0aca8bab8c34fd5f4da547d5754fa7",
+      "afterSha256": "1cf6e26181045be0c8e7b35fa7c4fc1b4a12c856c6e1eae287b442baeeb62f59"
+    },
+    {
+      "path": "assets/js/installations-service.js",
+      "beforeSha256": "181b6c717b83312cac128bf6ace4ae28c1b53d9d7912f2878ce027fb5e17b5fe",
+      "afterSha256": "1ce7423ffd0cc8a849d1c2b1e241e11daa2ca97ce43cbc40143250bb9651e629"
+    },
+    {
+      "path": "assets/js/pwa.js",
+      "beforeSha256": "a3402fada5e24c36ef9893016bf425c50da9259d1a732a543e8acbf38d1fde48",
+      "afterSha256": "5f5e774f9f3c9f01ab7df5930ccfb98f0a398ef754574ef3c7334b1ebab0f1dd"
+    },
+    {
+      "path": "index.html",
+      "beforeSha256": "989de7e43871ea91a8979ae139d9526208ef05fa5a4e29c6c5758e34cb64146b",
+      "afterSha256": "0aae17f9dba565dea25e71ab145260aea4cdcba9d698075172472b3f6ed077b5"
+    },
+    {
+      "path": "package.json",
+      "beforeSha256": "89f38482e0b06222441f3d8d1ebe4380c73e2a0fddcfd868ff8c95037d6f684d",
+      "afterSha256": "1a653877226cd44dea189be0b11d42e985081909a79834b84b886dc38473a335"
+    },
+    {
+      "path": "service-worker.js",
+      "beforeSha256": "25f8b1893f40d7812364b8e4297467ab43ae6df374772bfde9721377dfae743a",
+      "afterSha256": "ffa79ea992da8f98f7e0c88cbc4f345418b7d11b0f43fe8bf6d2862d63b8db7a"
+    },
+    {
+      "path": "version.json",
+      "beforeSha256": "8e9798b02dd11a3c45f804e995c7318f4cdb469cd2836593950a3d1cae1870eb",
+      "afterSha256": "547e9084167df3418fbc8d8b9456bfd5879e6b8d13dd4e6c58feb4226e2b5087"
+    }
+  ],
+  "scope": "Execution screen stream lifecycle and its explicit fresh read option; release metadata only elsewhere.",
+  "sqlRequired": false,
+  "productionAppliedByAssistant": false
+}
