@@ -1,5 +1,6 @@
 (()=>{
 'use strict';
+if(window.ExecutionRealtimeLifecycle?.runtimeVersion==='P4')return;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const L=()=>window.PetatoeLocalization;
@@ -19,7 +20,10 @@ const desktopIconPaths={
  arrow:'<path d="m14 6-6 6 6 6"/>'
 };
 function executionIcon(name,fallback='',extraClass=''){const paths=desktopIconPaths[name]||desktopIconPaths.check;return `<span class="petatoe-desktop-icon execution-vector-icon ${extraClass}" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false">${paths}</svg></span>`}
-let rows=[],current=null,activeTab='today',selectedFiles=[],executionIdentity=null,selectedCurrentId='',requestRealtimeUnsubscribe=null,requestRealtimeTimer=0;
+let rows=[],current=null,activeTab='today',selectedFiles=[],executionIdentity=null,selectedCurrentId='';
+// P4: the execution screen owns its stream, pending refresh and read results.
+let executionSession=null,executionCloseQueue=Promise.resolve(),executionLastUserId='';
+let executionPageSuspended=false,executionAuthSuspended=false;
 function setStatus(el,msg,type=''){if(!el)return;const output=trMessage(msg);el.textContent=output||'';el.className=`data-status${output?'':' hidden'}${type?` ${type}`:''}`}
 function fmtTime(v){if(!v)return t('execution.common.undefined');try{const lang=L()?.effectiveLanguage?.()||'ar';const locale=lang==='en'?'en-US-u-ca-gregory-nu-latn':'ar-SA-u-ca-gregory-nu-latn';return new Date(`2000-01-01T${v}`).toLocaleTimeString(locale,{hour:'numeric',minute:'2-digit'})}catch{return v}}
 function money(v){return `SAR ${Number(v||0).toFixed(2)}`}
@@ -48,7 +52,84 @@ function normalizeStatus(v){return String(v||'مسند').trim()}
 function hasExecutionProgress(r){return Boolean(r.onRouteAt||r.mapOpenedAt||r.arrivedAt||r.startedAt||r.collectionAt||r.completedAt)||['في الطريق','وصل إلى العميل','قيد التنفيذ','مكتمل'].includes(normalizeStatus(r.status))}
 function isActive(r){return Boolean(r.selectedForExecutionAt)&&!r.completedAt&&!['مكتمل','ملغي','بانتظار التأكيد'].includes(normalizeStatus(r.status))}
 function stepIndex(r){if(r.completedAt)return 6;if(r.collectionAt)return 5;if(r.startedAt)return 4;if(r.arrivedAt)return 3;if(r.mapOpenedAt)return 2;if(r.onRouteAt)return 1;return 0}
-function startRequestRealtime(){if(requestRealtimeUnsubscribe||!window.InstallationsServiceSafe?.subscribeExecutionWorkspace)return;const refresh=()=>{clearTimeout(requestRealtimeTimer);requestRealtimeTimer=setTimeout(()=>load().catch?.(()=>{}),250)};requestRealtimeUnsubscribe=window.InstallationsServiceSafe.subscribeExecutionWorkspace(refresh)}
+function executionContext(){
+ const auth=window.CustomerAuth?.getState?.()||{},userId=auth.user?.id;
+ if(executionAuthSuspended||executionPageSuspended||!userId||auth.profile?.id!==userId||auth.profile?.is_active===false)return null;
+ const allowed=window.PermissionEngine?.canView?.('installationExecution')??window.CustomerPermissions?.canScreen?.('installationExecution','view');
+ if(allowed!==true||window.KYUMNavigation?.current?.()!=='installationExecution'||document.visibilityState==='hidden')return null;
+ if($('installationExecutionView')?.classList.contains('hidden'))return null;
+ return {userId,online:navigator.onLine!==false,key:JSON.stringify([userId,auth.profile.role||'',auth.profile.representative_id||'',navigator.onLine!==false])};
+}
+function executionSessionCurrent(entry){return !!entry&&executionSession===entry&&!entry.stopped&&executionContext()?.key===entry.key}
+function clearExecutionData(){
+ rows=[];current=null;executionIdentity=null;selectedCurrentId='';selectedFiles=[];
+ renderSelectedPhotos();fillFilters();renderToday();renderCurrent();
+ setStatus($('installationExecutionStatus'),'');
+}
+function stopExecutionSession({clearData=false}={}){
+ const entry=executionSession;executionSession=null;
+ if(entry){
+  entry.stopped=true;clearTimeout(entry.timer);entry.timer=null;entry.refreshQueued=false;
+  // opening includes the async service Proxy; a late subscription is closed too.
+  executionCloseQueue=entry.opening.then(async()=>{
+   const close=entry.cleanup;entry.cleanup=null;if(typeof close==='function')await close();
+  }).catch(error=>console.warn('[Execution realtime] cleanup deferred',error?.message||error));
+ }
+ if(clearData){executionLastUserId='';clearExecutionData()}
+}
+function scheduleExecutionRefresh(entry){
+ if(!executionSessionCurrent(entry)||!entry.online)return;
+ if(entry.readFlight){entry.refreshQueued=true;return}
+ clearTimeout(entry.timer);
+ entry.timer=setTimeout(()=>{entry.timer=null;if(executionSessionCurrent(entry))void load()},250);
+}
+function startRequestRealtime(entry){
+ entry.opening=executionCloseQueue.then(async()=>{
+  if(!executionSessionCurrent(entry)||!entry.online)return;
+  const close=await window.InstallationsServiceSafe?.subscribeExecutionWorkspace?.(()=>scheduleExecutionRefresh(entry));
+  if(typeof close!=='function')return;
+  if(!executionSessionCurrent(entry)){await close();return}
+  entry.cleanup=close;
+ }).catch(error=>{if(executionSessionCurrent(entry))console.warn('[Execution realtime] subscribe deferred',error?.message||error)});
+}
+function reconcileExecution({resetDate=false,restart=false}={}){
+ const context=executionContext();
+ if(!context){
+  const auth=window.CustomerAuth?.getState?.()||{};
+  const allowed=window.PermissionEngine?.canView?.('installationExecution')??window.CustomerPermissions?.canScreen?.('installationExecution','view');
+  stopExecutionSession({clearData:!auth.user?.id||auth.profile?.id!==auth.user.id||allowed!==true||auth.profile?.is_active===false});return;
+ }
+ if(executionSession&&(restart||executionSession.key!==context.key))stopExecutionSession({clearData:executionSession.userId!==context.userId});
+ if(executionSession)return;
+ if(executionLastUserId&&executionLastUserId!==context.userId)clearExecutionData();
+ executionLastUserId=context.userId;
+ const entry={...context,stopped:false,cleanup:null,opening:Promise.resolve(),timer:null,readFlight:null,trailingRead:null,refreshQueued:false,resetDate};
+ executionSession=entry;startRequestRealtime(entry);void load({resetDate});
+}
+function bindExecutionLifecycle(){
+ window.addEventListener('kyum-view-changed',e=>{if(e.detail?.view!=='installationExecution')stopExecutionSession();else reconcileExecution({resetDate:true})});
+ document.addEventListener('visibilitychange',()=>reconcileExecution());
+ window.addEventListener('offline',()=>reconcileExecution());
+ window.addEventListener('online',()=>reconcileExecution());
+ window.addEventListener('pagehide',()=>{executionPageSuspended=true;stopExecutionSession()});
+ window.addEventListener('pageshow',()=>{executionPageSuspended=false;reconcileExecution()});
+ window.addEventListener('customer-auth-ready',()=>{executionAuthSuspended=false;reconcileExecution()});
+ window.addEventListener('kyum-permissions-refreshed',()=>reconcileExecution({restart:true}));
+ window.addEventListener('kyum-permission-engine-ready',()=>reconcileExecution());
+ $('logoutBtn')?.addEventListener('click',()=>{executionAuthSuspended=true;stopExecutionSession({clearData:true})});
+ // Keep the auth callback synchronous; channel work is queued outside it.
+ window.customerSupabase?.auth?.onAuthStateChange?.((event,session)=>{
+  if(event==='SIGNED_OUT'||(executionLastUserId&&session?.user?.id&&executionLastUserId!==session.user.id)){
+   executionAuthSuspended=true;stopExecutionSession({clearData:true});
+  }
+ });
+ reconcileExecution();
+}
+window.ExecutionRealtimeLifecycle=Object.freeze({runtimeVersion:'P4',getStatus:()=>({
+ active:executionSessionCurrent(executionSession),online:executionSession?.online===true,
+ channelAttached:typeof executionSession?.cleanup==='function',readInFlight:!!executionSession?.readFlight,
+ refreshPending:!!(executionSession?.timer||executionSession?.refreshQueued)
+})});
 function switchTab(tab){activeTab=tab;const todayTab=$('installationExecutionTodayTab'),currentTab=$('installationExecutionCurrentTab');todayTab?.classList.toggle('active',tab==='today');currentTab?.classList.toggle('active',tab==='current');todayTab?.setAttribute('aria-selected',String(tab==='today'));currentTab?.setAttribute('aria-selected',String(tab==='current'));$('installationExecutionTodayPanel')?.classList.toggle('hidden',tab!=='today');$('installationExecutionCurrentPanel')?.classList.toggle('hidden',tab!=='current');if(tab==='current')renderCurrent()}
 function executionRowsForSelectedDate(){const date=$('installationExecutionDateFilter')?.value||today();return rows.filter(r=>r.scheduledDate===date&&!['مكتمل','ملغي'].includes(normalizeStatus(r.status)))}
 function syncTechnicianFilter(){const tech=$('installationExecutionTechnicianFilter');if(!tech)return;const teamValue=$('installationExecutionTeamFilter')?.value||'',lockIdentity=executionIdentity?.lockIdentity===true,availableRows=executionRowsForSelectedDate().filter(r=>!teamValue||r.teamId===teamValue),vals=[...new Set(availableRows.map(r=>r.groomerName||r.technicianName).filter(Boolean))].sort((a,b)=>a.localeCompare(b,L()?.effectiveLanguage?.()==='en'?'en':'ar')),previous=tech.value||'';if(lockIdentity){const ownName=executionIdentity.technicianName||'',hasOwnRequests=Boolean(ownName)&&vals.includes(ownName);tech.innerHTML=hasOwnRequests?`<option value="${esc(ownName)}">${esc(ownName)}</option>`:`<option value="">${esc(t('execution.filter.noGroomerRequests'))}</option>`;tech.value=hasOwnRequests?ownName:'';tech.disabled=true;tech.setAttribute('aria-readonly','true');tech.title=hasOwnRequests?t('execution.filter.groomerLocked'):t('execution.filter.noAssignedGroomerRequests');return}tech.disabled=false;tech.removeAttribute('aria-readonly');tech.removeAttribute('title');tech.innerHTML=`<option value="">${esc(t('execution.filter.allGroomers'))}</option>`+vals.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');tech.value=vals.includes(previous)?previous:''}
@@ -72,10 +153,34 @@ function renderCurrent(){const box=$('installationExecutionCurrentContent');if(!
 function bindCollectionStage(){const confirm=$('installationExecutionCollectionConfirm'),submit=$('installationExecutionCollectionSubmit');if(!confirm||!submit)return;const sync=()=>{submit.disabled=!confirm.checked};confirm.addEventListener('change',sync);sync();submit.addEventListener('click',async()=>{if(!current)return;const amount=Number($('installationExecutionCollectionAmount')?.value||0),amountCents=moneyCents(amount),ctx=collectionMoneyContext(current),remainingCents=ctx.remainingCents,remaining=fromMoneyCents(remainingCents),paymentMethod=String($('installationExecutionCollectionMethod')?.value||'').trim();if(!Number.isFinite(amount)||amount<0){setStatus($('installationExecutionCollectionStatus'),t('execution.validation.invalidAmount'),'error');return}if(amountCents>remainingCents){setStatus($('installationExecutionCollectionStatus'),t('execution.validation.amountExceedsRemaining'),'error');return}if(remaining>0&&amount<=0){setStatus($('installationExecutionCollectionStatus'),t('execution.validation.collectionRequired'),'error');return}if(amount>0&&!paymentMethod){setStatus($('installationExecutionCollectionStatus'),t('execution.validation.methodRequired'),'error');return}submit.disabled=true;try{await window.InstallationsServiceSafe.completeCollectionStage({id:current.id,visitId:current.visitId||null,amountCollected:amount,paymentMethod,reference:$('installationExecutionCollectionReference')?.value||'',notes:$('installationExecutionCollectionNotes')?.value||'',attachment:$('installationExecutionCollectionAttachment')?.files?.[0]||null});await load();switchTab('current')}catch(e){setStatus($('installationExecutionCollectionStatus'),e.message,'error');submit.disabled=false}})}
 function renderSelectedPhotos(){const list=$('installationExecutionPhotoList');if(!list)return;list.querySelectorAll('img[src^="blob:"]').forEach(img=>{try{URL.revokeObjectURL(img.src)}catch{}});list.innerHTML=selectedFiles.length?selectedFiles.map((f,index)=>{const previewUrl=URL.createObjectURL(f);return `<span class="execution-photo-chip" data-photo-index="${index}"><img src="${previewUrl}" alt=""><span>${esc(f.name)}</span><button type="button" class="execution-photo-remove" data-photo-remove="${index}" aria-label="${esc(t('execution.photo.remove'))}">×</button></span>`}).join(''):`<span class="execution-photo-empty">${esc(t('execution.photo.none'))}</span>`}
 function bindPhotoInput(){const input=$('installationExecutionPhotos'),list=$('installationExecutionPhotoList');if(!input||!list)return;input.addEventListener('change',()=>{const incoming=[...input.files],keys=new Set(selectedFiles.map(f=>`${f.name}:${f.size}:${f.lastModified}`));incoming.forEach(f=>{const key=`${f.name}:${f.size}:${f.lastModified}`;if(!keys.has(key)){selectedFiles.push(f);keys.add(key)}});input.value='';renderSelectedPhotos()});list.addEventListener('click',e=>{const btn=e.target.closest('[data-photo-remove]');if(!btn)return;e.preventDefault();e.stopPropagation();const index=Number(btn.dataset.photoRemove);if(Number.isInteger(index)&&index>=0&&index<selectedFiles.length){selectedFiles.splice(index,1);renderSelectedPhotos()}});renderSelectedPhotos()}
-async function load({resetDate=false}={}){setStatus($('installationExecutionStatus'),t('execution.loading'));try{[rows,executionIdentity]=await Promise.all([window.InstallationsServiceSafe.executionWorkspace(),window.InstallationsServiceSafe.executionIdentity?.()||Promise.resolve(null)]);const dateFilter=$('installationExecutionDateFilter');if(dateFilter&&(resetDate||!dateFilter.value))dateFilter.value=today();fillFilters();renderToday();renderCurrent();const cachedMessage=window.InstallationsService?.getReadStatusMessage?.('execution')||'';setStatus($('installationExecutionStatus'),cachedMessage)}catch(e){setStatus($('installationExecutionStatus'),e.message,'error')}}
+async function load({resetDate=false}={}){
+ const entry=executionSession;if(!executionSessionCurrent(entry))return;
+ entry.resetDate=entry.resetDate||resetDate;
+ if(entry.readFlight){
+  // Explicit refresh/mutation callers must get a read after the running one.
+  // Realtime bursts use refreshQueued instead, so they share one trailing read.
+  if(!entry.trailingRead)entry.trailingRead=entry.readFlight.then(()=>{
+   entry.trailingRead=null;entry.refreshQueued=false;if(executionSessionCurrent(entry))return load();
+  });
+  return entry.trailingRead;
+ }
+ clearTimeout(entry.timer);entry.timer=null;
+ const job=Promise.resolve().then(async()=>{
+  if(!executionSessionCurrent(entry))return;
+  setStatus($('installationExecutionStatus'),t('execution.loading'));
+  const [nextRows,nextIdentity]=await Promise.all([window.InstallationsServiceSafe.executionWorkspace({force:true}),window.InstallationsServiceSafe.executionIdentity?.({force:true})||Promise.resolve(null)]);
+  if(!executionSessionCurrent(entry))return;
+  rows=nextRows;executionIdentity=nextIdentity;
+  const dateFilter=$('installationExecutionDateFilter');if(dateFilter&&(entry.resetDate||!dateFilter.value))dateFilter.value=today();entry.resetDate=false;
+  fillFilters();renderToday();renderCurrent();
+  const cachedMessage=window.InstallationsService?.getReadStatusMessage?.('execution')||'';setStatus($('installationExecutionStatus'),cachedMessage);
+ }).catch(e=>{if(executionSessionCurrent(entry))setStatus($('installationExecutionStatus'),e.message,'error')})
+ .finally(()=>{if(entry.readFlight===job)entry.readFlight=null;if(entry.refreshQueued&&executionSessionCurrent(entry)){entry.refreshQueued=false;scheduleExecutionRefresh(entry)}});
+ entry.readFlight=job;return job;
+}
 async function startRequest(entryId){const r=rows.find(x=>(x.scheduleEntryId||x.id)===entryId);if(!r)return;try{await window.InstallationsServiceSafe.selectExecutionRequest(r.id,r.visitId||null);await load();switchTab('current')}catch(e){setStatus($('installationExecutionStatus'),e.message,'error')}}
 async function advance(nextStatus){if(!current)return;const btn=document.querySelector('[data-execution-next]');if(btn)btn.disabled=true;try{const notes=$('installationExecutionNotes')?.value.trim()||'';await window.InstallationsServiceSafe.advanceExecution({id:current.id,visitId:current.visitId||null,nextStatus,notes,photos:nextStatus==='مكتمل'?selectedFiles:[]});selectedFiles=[];await load();if(nextStatus==='مكتمل'){window.KYUMNavigation?.open?.('installationCompletion',{trustedNavigation:true});document.querySelector('[data-view="installationCompletion"]')?.click()}else switchTab('current')}catch(e){setStatus($('installationExecutionCurrentStatus'),e.message,'error')}finally{if(btn)btn.disabled=false}}
 async function returnExecutionToSchedule(requestId){if(!requestId||executionIdentity?.canReturnToSchedule!==true)return;const reason=String(window.prompt(t('execution.return.prompt'),'')||'').trim();if(!reason)return;const ok=window.confirm(t('execution.return.confirm'));if(!ok)return;const btn=document.querySelector('[data-return-to-schedule]');if(btn)btn.disabled=true;try{await window.InstallationsServiceSafe.returnExecutionToSchedule(requestId,reason);selectedFiles=[];selectedCurrentId='';current=null;await load();switchTab('today');window.KYUMNavigation?.open?.('installationSchedule',{trustedNavigation:true})}catch(e){setStatus($('installationExecutionCurrentStatus'),e.message,'error')}finally{if(btn)btn.disabled=false}}
 function rerenderLocalized(){L()?.applyStatic?.(document);fillFilters();renderToday();renderCurrent()}
-document.addEventListener('DOMContentLoaded',()=>{startRequestRealtime();L()?.applyStatic?.(document);window.addEventListener('kyum-view-changed',e=>{if(e.detail?.view==='installationExecution')load({resetDate:true})});window.addEventListener('petatoe-language-changed',e=>{if(e.detail?.screenKey==='installationExecution')rerenderLocalized()});window.addEventListener('petatoe-localization-updated',e=>{if(e.detail?.screenKey==='installationExecution')rerenderLocalized()});document.querySelectorAll('[data-execution-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.executionTab)));$('refreshInstallationExecutionBtn')?.addEventListener('click',load);$('installationExecutionTechnicianFilter')?.addEventListener('change',renderToday);$('installationExecutionTeamFilter')?.addEventListener('change',()=>{syncTechnicianFilter();renderToday()});$('installationExecutionDateFilter')?.addEventListener('change',()=>{syncTechnicianFilter();renderToday()});$('installationExecutionTodayCards')?.addEventListener('click',e=>{const start=e.target.closest('[data-execution-start]');if(start)startRequest(start.dataset.executionStart)});$('installationExecutionCurrentContent')?.addEventListener('click',e=>{const choose=e.target.closest('[data-current-request]');if(choose){selectedCurrentId=choose.dataset.currentRequest;renderCurrent();return}const map=e.target.closest('[data-execution-map]');if(map){const row=rows.find(x=>(x.scheduleEntryId||x.id)===map.dataset.executionMap);window.InstallationsServiceSafe.recordMapOpened(row?.id||current?.id,row?.visitId||current?.visitId||null).then(load).catch(err=>setStatus($('installationExecutionCurrentStatus'),err.message,'error'))}const ret=e.target.closest('[data-return-to-schedule]');if(ret){returnExecutionToSchedule(ret.dataset.returnToSchedule);return}const b=e.target.closest('[data-execution-next]');if(b)advance(b.dataset.executionNext)})});
+document.addEventListener('DOMContentLoaded',()=>{bindExecutionLifecycle();L()?.applyStatic?.(document);window.addEventListener('petatoe-language-changed',e=>{if(e.detail?.screenKey==='installationExecution')rerenderLocalized()});window.addEventListener('petatoe-localization-updated',e=>{if(e.detail?.screenKey==='installationExecution')rerenderLocalized()});document.querySelectorAll('[data-execution-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.executionTab)));$('refreshInstallationExecutionBtn')?.addEventListener('click',load);$('installationExecutionTechnicianFilter')?.addEventListener('change',renderToday);$('installationExecutionTeamFilter')?.addEventListener('change',()=>{syncTechnicianFilter();renderToday()});$('installationExecutionDateFilter')?.addEventListener('change',()=>{syncTechnicianFilter();renderToday()});$('installationExecutionTodayCards')?.addEventListener('click',e=>{const start=e.target.closest('[data-execution-start]');if(start)startRequest(start.dataset.executionStart)});$('installationExecutionCurrentContent')?.addEventListener('click',e=>{const choose=e.target.closest('[data-current-request]');if(choose){selectedCurrentId=choose.dataset.currentRequest;renderCurrent();return}const map=e.target.closest('[data-execution-map]');if(map){const row=rows.find(x=>(x.scheduleEntryId||x.id)===map.dataset.executionMap);window.InstallationsServiceSafe.recordMapOpened(row?.id||current?.id,row?.visitId||current?.visitId||null).then(load).catch(err=>setStatus($('installationExecutionCurrentStatus'),err.message,'error'))}const ret=e.target.closest('[data-return-to-schedule]');if(ret){returnExecutionToSchedule(ret.dataset.returnToSchedule);return}const b=e.target.closest('[data-execution-next]');if(b)advance(b.dataset.executionNext)})});
 })();

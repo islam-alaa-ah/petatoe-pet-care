@@ -135,11 +135,11 @@
     const operation=(async()=>{const data=await fetcher();const meta=await persistAppointmentWorkspace(context,data,'supabase');setAppointmentReadStatus(kind,'network',{updatedAt:meta?.updatedAt||Date.now(),recordCount:meta?.recordCount??null},false);if(emit)emitAppointmentUpdate(kind,context,data,'network-background');return data;})();
     appointmentRefreshes.set(context.key,operation);try{return await operation;}finally{appointmentRefreshes.delete(context.key);}
   }
-  async function appointmentCachedRead({kind,actions,parts=[],fetcher}){
+  async function appointmentCachedRead({kind,actions,parts=[],fetcher,force=false}){
     const context=await appointmentContext(kind,actions,parts),cached=await readAppointmentWorkspace(context);appointmentActiveContexts.set(context.key,{kind,actions,parts,context,fetcher});
-    if(cached){setAppointmentReadStatus(kind,'cache',cached.metadata||null,Boolean(cached.stale));if(navigator.onLine!==false)fetchAndPersistAppointment(kind,context,fetcher,{emit:true}).catch(error=>console.warn(`[Appointments] ${kind} background refresh skipped:`,error));return cached.data;}
+    if(cached&&(!force||navigator.onLine===false)){setAppointmentReadStatus(kind,'cache',cached.metadata||null,Boolean(cached.stale));if(navigator.onLine!==false)fetchAndPersistAppointment(kind,context,fetcher,{emit:true}).catch(error=>console.warn(`[Appointments] ${kind} background refresh skipped:`,error));return cached.data;}
     if(navigator.onLine===false)throw new Error('لا توجد بيانات محفوظة لهذه الشاشة. افتحها مرة واحدة أثناء الاتصال بالإنترنت.');
-    return fetchAndPersistAppointment(kind,context,fetcher,{emit:false});
+    try{return await fetchAndPersistAppointment(kind,context,fetcher,{emit:false})}catch(error){if(force&&cached){setAppointmentReadStatus(kind,'cache',cached.metadata||null,true);return cached.data}throw error}
   }
   async function invalidateAppointmentCache(){
     const namespace=await appointmentNamespace().catch(()=>null);if(namespace&&window.KYUMSmartCache)await window.KYUMSmartCache.removePrefix(APPOINTMENTS_CACHE_PREFIX,{namespace});
@@ -1495,7 +1495,7 @@
       .on('postgres_changes',{event:'*',schema:'public',table:'installation_execution_visits'},handler)
       .on('postgres_changes',{event:'*',schema:'public',table:'installation_execution_visit_services'},handler)
       .subscribe();
-    return ()=>{try{db().removeChannel(channel)}catch(_){ }};
+    return ()=>{try{return db().removeChannel(channel)}catch(_){return Promise.resolve()}};
   }
 
   async function getSettings(){requireAction('view','installationSettings');const {data,error}=await db().from('installation_settings').select('*').eq('id',1).maybeSingle();if(error)throw new Error('تعذر تحميل إعدادات المواعيد: '+error.message);const r=data||{};return {morningLabel:r.morning_label||'صباحية',eveningLabel:r.evening_label||'مسائية',slaDays:Number(r.sla_days??1),defaultPriority:r.default_priority||'عادية',requireCompletionReport:r.require_completion_report!==false}}
@@ -1511,8 +1511,8 @@
   const readScheduleList=()=>appointmentCachedRead({kind:'schedule',actions:[['installationSchedule','view']],parts:['global'],fetcher:()=>scheduleList()});
   const readSchedulePlan=requestId=>appointmentCachedRead({kind:'schedulePlan',actions:[['installationSchedule','view']],parts:['request',requestId],fetcher:()=>schedulePlan(requestId)});
   const readScheduleDayLocks=(dateFrom,dateTo)=>appointmentCachedRead({kind:'scheduleDayLocks',actions:[['installationSchedule','view']],parts:['range',dateFrom||'',dateTo||''],fetcher:()=>scheduleDayLocks(dateFrom,dateTo)});
-  const readExecutionWorkspace=async()=>{const data=await appointmentCachedRead({kind:'execution',actions:[['installationExecution','view']],parts:['workspace'],fetcher:()=>executionWorkspace()});const namespace=await appointmentNamespace();return applyPendingExecutionOperations(data,await executionQueueOperations(namespace,{includeBlocking:false}));};
-  const readExecutionIdentity=async()=>{const data=await appointmentCachedRead({kind:'executionIdentity',actions:[['installationExecution','view']],parts:['identity'],fetcher:()=>executionIdentity()});return navigator.onLine===false?{...(data||{}),canEdit:false,canReturnToSchedule:false,canQueueSafeTransitions:Boolean(data?.canEdit&&window.KYUMOfflineQueue?.enqueue)}:{...(data||{}),canQueueSafeTransitions:false};};
+  const readExecutionWorkspace=async(options={})=>{const data=await appointmentCachedRead({kind:'execution',actions:[['installationExecution','view']],parts:['workspace'],fetcher:()=>executionWorkspace(),force:Boolean(options?.force)});const namespace=await appointmentNamespace();return applyPendingExecutionOperations(data,await executionQueueOperations(namespace,{includeBlocking:false}));};
+  const readExecutionIdentity=async(options={})=>{const data=await appointmentCachedRead({kind:'executionIdentity',actions:[['installationExecution','view']],parts:['identity'],fetcher:()=>executionIdentity(),force:Boolean(options?.force)});return navigator.onLine===false?{...(data||{}),canEdit:false,canReturnToSchedule:false,canQueueSafeTransitions:Boolean(data?.canEdit&&window.KYUMOfflineQueue?.enqueue)}:{...(data||{}),canQueueSafeTransitions:false};};
   const readCompletionList=()=>appointmentCachedRead({kind:'completion',actions:[['installationCompletion','view']],parts:['workspace'],fetcher:()=>completionList()});
   const readExceptionList=()=>appointmentCachedRead({kind:'exceptions',actions:[['installationExceptions','view']],parts:['workspace'],fetcher:()=>exceptionList()});
   const readOperationalReport=(filters={})=>appointmentCachedRead({kind:'operationalReport',actions:[['installationReports','view']],parts:['filters',JSON.stringify(filters||{})],fetcher:()=>operationalReport(filters)});
