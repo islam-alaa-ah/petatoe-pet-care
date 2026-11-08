@@ -1,17 +1,17 @@
 {
-  "version": "18.56.141",
-  "build": 185741,
+  "version": "18.56.142",
+  "build": 185742,
   "forceUpdate": false,
-  "releaseDate": "2026-11-07",
-  "title": "استقرار الإشعارات ومنع التكرار — P3",
-  "titleEn": "Notification Reliability and Deduplication — P3",
+  "releaseDate": "2026-11-08",
+  "title": "ضبط اتصال شاشة تنفيذ المواعيد — P4",
+  "titleEn": "Execution Screen Connection Lifecycle — P4",
   "notes": [
-    "توحيد استقبال الإشعارات وتحديث حالة القراءة دون تكرار الرسالة نفسها.",
-    "تقليل القراءة الدورية أثناء اتصال Realtime مع قراءة احتياطية عند انقطاعه وتأخير المحاولات عند الأخطاء."
+    "تشغيل اتصال تحديث تنفيذ المواعيد أثناء فتح الشاشة وإغلاقه عند المغادرة.",
+    "حماية التحديث عند التنقل السريع وتبديل الحساب والعودة من الخلفية."
   ],
   "notesEn": [
-    "Unifies notification delivery and read-state updates without displaying the same notification twice.",
-    "Reduces periodic reads while Realtime is connected, with REST fallback and retry backoff when unavailable."
+    "Keeps the execution update connection active while its screen is open and closes it on exit.",
+    "Guards refreshes during rapid navigation, account changes and foreground recovery."
   ],
-  "cacheToken": "petatoe-pwa-18-56-141-notifications-p3"
+  "cacheToken": "petatoe-pwa-18-56-142-execution-p4"
 }

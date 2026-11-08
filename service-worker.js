@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-141-notifications-p3";
+const CACHE_VERSION = "petatoe-pwa-18-56-142-execution-p4";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
