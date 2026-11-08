@@ -1,17 +1,17 @@
 {
-  "version": "18.56.142",
-  "build": 185742,
+  "version": "18.56.143",
+  "build": 185743,
   "forceUpdate": false,
   "releaseDate": "2026-11-08",
-  "title": "ضبط اتصال شاشة تنفيذ المواعيد — P4",
-  "titleEn": "Execution Screen Connection Lifecycle — P4",
+  "title": "ضبط التحديث التلقائي لشاشات الخزينة والرواتب — P5",
+  "titleEn": "Visible Treasury and Payroll Refreshes — P5",
   "notes": [
-    "تشغيل اتصال تحديث تنفيذ المواعيد أثناء فتح الشاشة وإغلاقه عند المغادرة.",
-    "حماية التحديث عند التنقل السريع وتبديل الحساب والعودة من الخلفية."
+    "قصر التحديث التلقائي لخزينة السيارة والرواتب والعمولات على الشاشة الظاهرة للمستخدم الحالي.",
+    "استمرار التحميل عند فتح الشاشة والتحديث بعد الحفظ والمزامنة."
   ],
   "notesEn": [
-    "Keeps the execution update connection active while its screen is open and closes it on exit.",
-    "Guards refreshes during rapid navigation, account changes and foreground recovery."
+    "Refreshes vehicle treasury, payroll and commissions automatically only for the current user’s visible screen.",
+    "Preserves screen opening loads and refreshes after saving and synchronization."
   ],
-  "cacheToken": "petatoe-pwa-18-56-142-execution-p4"
+  "cacheToken": "petatoe-pwa-18-56-143-visible-finance-p5"
 }
