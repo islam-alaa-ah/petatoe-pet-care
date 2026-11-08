@@ -1,0 +1,92 @@
+{
+  "phase": "SC1-SMARTCACHE-RECOVERY",
+  "status": "LOCAL_SOURCE_COMPARISON_PASS_NOT_A_PRODUCTION_PASS",
+  "baselineVersion": "18.56.143",
+  "version": "18.56.144",
+  "baselineFiles": 1177,
+  "unchangedBaselineFiles": 1171,
+  "modifiedFiles": [
+    "assets/js/smart-cache.js",
+    "assets/js/pwa.js",
+    "index.html",
+    "package.json",
+    "service-worker.js",
+    "version.json"
+  ],
+  "addedFiles": [
+    "README_SC1_AR.md",
+    "docs/SC1-cache/IMPACT_AND_ROLLBACK_AR.md",
+    "docs/SC1-cache/TEST_RESULTS.json",
+    "docs/SC1-cache/SOURCE_INTEGRITY.json",
+    "docs/SC1-cache/manifest.json",
+    "scripts/sc1-smart-cache-recovery.test.mjs",
+    "scripts/sc1-live-readonly.js",
+    "scripts/sc1-preflight-check.mjs"
+  ],
+  "removedFiles": [],
+  "protectedFiles": [
+    "assets/js/auth-session.js",
+    "assets/js/supabase-client.js",
+    "assets/js/supabase-config.js",
+    "assets/js/offline-queue.js",
+    "assets/js/sync-engine.js",
+    "assets/js/offline-read-cache.js",
+    "assets/js/cache-dependency-engine.js",
+    "assets/js/daily-operations-service.js",
+    "assets/js/customers-service.js",
+    "assets/js/followups-service.js",
+    "assets/js/quotations-service.js",
+    "assets/js/notification-center-service.js",
+    "assets/js/notification-center.js",
+    "assets/js/installation-execution.js",
+    "assets/js/installations-service.js",
+    "assets/js/installations-service-contract.js",
+    "assets/js/vehicle-treasury-service.js",
+    "assets/js/payroll-service.js",
+    "assets/js/sea-vibe-payroll-service.js",
+    "assets/js/vehicle-treasury.js",
+    "assets/js/payroll.js",
+    "assets/js/sea-vibe-payroll.js"
+  ],
+  "unchangedCssFiles": 31,
+  "unchangedSqlFiles": 422,
+  "unchangedSmartCacheFunctions": [
+    {
+      "function": "now",
+      "sha256": "2b53910873d95d7ee0898e13298fd3856af9e0b6340dd516a3ed7724ddd29628"
+    },
+    {
+      "function": "stableStringify",
+      "sha256": "baff67402a3d48e8bf3f4ee429612b48bcc02cd5fe9f820e6931c83dba7724d1"
+    },
+    {
+      "function": "hashValue",
+      "sha256": "e4fc4787614f6d43e235e5100e0a8cea18bd1c708db91ad2e78e99c52bbc9a2d"
+    },
+    {
+      "function": "normalizeNamespace",
+      "sha256": "2229bcba57f94ee17816dda2f34b1ae0a94f923ac126a739733aecd5690afd88"
+    },
+    {
+      "function": "entryId",
+      "sha256": "f60fa56d8ebcb2fdd71a85cf168d34002c2a434313b6131bfc1f773b68ee8390"
+    },
+    {
+      "function": "set",
+      "sha256": "91c3c1e346cea524b8f84f7576eacad68fc3c64e38b57c7dbd25b20977323891"
+    },
+    {
+      "function": "remove",
+      "sha256": "d3de2491573e77531c1d0afda66b4b81fa474926c46e3890e7fec5de00197d15"
+    }
+  ],
+  "expiryAndReadMetadataSuffixByteIdentical": true,
+  "statsResultShapeByteIdentical": true,
+  "databaseNameAndVersionUnchanged": true,
+  "objectStoreAndIndexesUnchanged": true,
+  "namespaceAndHashUnchanged": true,
+  "automaticDatabaseDeletionAbsent": true,
+  "existingExplicitPrefixPredicatePreserved": true,
+  "deployedSixTargetsMatched143BeforeEdits": true,
+  "scopeLimit": "The deployed comparison covers the six replaced files, not all repository files or browser caches. The local full-tree comparison covers the verified 143 working baseline."
+}

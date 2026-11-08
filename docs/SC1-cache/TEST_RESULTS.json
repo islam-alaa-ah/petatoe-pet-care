@@ -1,0 +1,81 @@
+{
+  "phase": "SC1-SMARTCACHE-RECOVERY",
+  "status": "LOCAL_PASS_PRODUCTION_RECOVERY_AND_REGRESSION_PENDING",
+  "baselineVersion": "18.56.143",
+  "version": "18.56.144",
+  "build": 185744,
+  "capturedAt": "2026-11-08T13:43:25.966896+00:00",
+  "node": "v24.22.1",
+  "indexedDbTestImplementation": "fake-indexeddb@6.2.7",
+  "productionDependencyAdded": false,
+  "suites": [
+    {
+      "name": "SC1",
+      "command": "PETATOE_SC1_TEST_MODULE=/absolute/path/to/fake-indexeddb node --test scripts/sc1-smart-cache-recovery.test.mjs",
+      "passed": 35,
+      "failed": 0
+    },
+    {
+      "name": "P5 functional regression",
+      "command": "node --test --test-skip-pattern='release version, cache token and the four changed script URLs agree' scripts/p5-visible-finance-reads.test.mjs",
+      "passed": 38,
+      "failed": 0,
+      "historicalVersionAssertionExcluded": "release version, cache token and the four changed script URLs agree"
+    },
+    {
+      "name": "P4",
+      "command": "node --test scripts/p4-execution-lifecycle.test.mjs",
+      "passed": 27,
+      "failed": 0
+    },
+    {
+      "name": "P3 functional regression",
+      "command": "node --test --test-skip-pattern='release metadata and cache versions agree' scripts/p3-notifications-runtime.test.mjs",
+      "passed": 16,
+      "failed": 0,
+      "historicalVersionAssertionExcluded": "release metadata and cache versions agree"
+    }
+  ],
+  "totalTestsPassed": 116,
+  "totalTestsFailed": 0,
+  "realBrowserStorageUsedByTests": false,
+  "productionDataUsedByTests": false,
+  "networkUsedByTests": false,
+  "sqlExecuted": false,
+  "productionFilesChangedByAssistant": false,
+  "currentVersionMetadataCheckedInSC1": true,
+  "sourceComparison": {
+    "unchangedBaselineFiles": 1171,
+    "modifiedFiles": 6,
+    "addedFiles": 8,
+    "removedFiles": 0,
+    "unchangedSqlFiles": 422,
+    "unchangedCssFiles": 31,
+    "smartCachePreservedFunctionBodies": 7
+  },
+  "coverage": [
+    "Cold persisted reads and normal cache API",
+    "Silent and forced connection closure for read/write/remove/prefix/stats",
+    "Single-flight opening and concurrent write ordering",
+    "Stale close events and bounded transaction-creation retry",
+    "Synchronous/asynchronous open failure and five-second retry gate",
+    "Versionchange, blocked opening and late results",
+    "No replay after transaction start or operation error",
+    "Abort and quota failure",
+    "Namespace isolation, expiry, hash and a separate queue database",
+    "Passive diagnostics and release metadata"
+  ],
+  "productionChecksPending": [
+    "Actual browser rendering and IndexedDB behavior",
+    "Users and permitted screens with known data",
+    "Offline and reconnect behavior without clearing site data",
+    "Arabic/English, Desktop/Tablet/Mobile and Light/Dark",
+    "P3/P4 and P5 live transitions"
+  ],
+  "limits": [
+    "In-memory IndexedDB testing is not native Chrome/Safari verification.",
+    "Chromium was unavailable due to socket EPERM in earlier work; it was not relaunched.",
+    "The initial browser closure and earlier missing-bootstrap trigger remain unproven.",
+    "P5 payroll counter increase while dashboard was reported remains open."
+  ]
+}

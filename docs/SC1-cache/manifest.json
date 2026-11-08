@@ -1,0 +1,168 @@
+{
+  "phase": "SC1-SMARTCACHE-RECOVERY",
+  "baselineVersion": "18.56.143",
+  "baselineBuild": 185743,
+  "version": "18.56.144",
+  "build": 185744,
+  "dateCairo": "2026-11-08",
+  "modifiedFiles": [
+    {
+      "path": "assets/js/smart-cache.js",
+      "beforeSha256": "b44d40476304ca595ea6902d3baa3fbbc76fe75a0cfe31fd1906ec9b931d6b0d",
+      "afterSha256": "380eaaee3475531ce5df7e940c010df8728e754c6c5b2db6a3530f24f6ba5aed"
+    },
+    {
+      "path": "assets/js/pwa.js",
+      "beforeSha256": "340e3fd02d94a0e3980868f68ed17b735350c8fdf56dd6c7c309341b461b787d",
+      "afterSha256": "a3968c5d311f3b7b10aa91dc88f5c8f521855d18b7dcf16e1cdd4c3640e4cc91"
+    },
+    {
+      "path": "index.html",
+      "beforeSha256": "f0818af84ddda3fa2e55dec976b3f040c9e115b627df045558926195a8ee2803",
+      "afterSha256": "3e15e855fe2496c7e4ebf02da7f6f6536febb63d9c57276230e0b4d3ca51199a"
+    },
+    {
+      "path": "package.json",
+      "beforeSha256": "016c5f19fc20904fce9cfe8ab353fee40f82ca82c55a427e1edca18dfc9eb383",
+      "afterSha256": "0c4c935cf8ac247033dfd6cdbe54556297a78fdc363014302e931c45c4a7a0fa"
+    },
+    {
+      "path": "service-worker.js",
+      "beforeSha256": "e728e70f642b7d626944390f97e3edd6da1762c005a179b72dc86ed25f5574a1",
+      "afterSha256": "661f152b0979ccdc1dd2abda90e853b15fc1769fda31538a0614522d11895943"
+    },
+    {
+      "path": "version.json",
+      "beforeSha256": "a3e5bc69c4a098ba82d8a423a2d4067151544cddaa9577db4e3e3ebb1e3ee5a1",
+      "afterSha256": "5a4a874ecfbc1e724b24912a17f9e2041e6d447131cbf7ac2cf47fbb23508974"
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "assets/js/auth-session.js",
+      "sha256": "0b296376fa1ecfceb7bdf22faaf2ade153ddba6444be80881b18e5aa9e393ce6"
+    },
+    {
+      "path": "assets/js/supabase-client.js",
+      "sha256": "34cc429b1c11af202dbd80f5c932f0c977c24d72f673ece4d0e1451d13cd3539"
+    },
+    {
+      "path": "assets/js/supabase-config.js",
+      "sha256": "51aa593b799e16a572f1ea822214d800ac8dbbe8af266dbac05027eddeff3071"
+    },
+    {
+      "path": "assets/js/offline-queue.js",
+      "sha256": "5d67b6107d46feef61710d61eef7a8d9bd73aa4cd531cabd6a43a9c6a80401c7"
+    },
+    {
+      "path": "assets/js/sync-engine.js",
+      "sha256": "e558e99357c39cb362b6de8f91a1d09f2b424d581c67942b518a57e3d8feede3"
+    },
+    {
+      "path": "assets/js/offline-read-cache.js",
+      "sha256": "51a4461e8a6ab5e9cd1582418cd5b360916e87567aeaa901697765c30f979394"
+    },
+    {
+      "path": "assets/js/cache-dependency-engine.js",
+      "sha256": "b0d01040bbeb323b8986988424b00ad874d242debdedb2e5ff21c9d00b1a4529"
+    },
+    {
+      "path": "assets/js/daily-operations-service.js",
+      "sha256": "e40a43345d1a0711dab58c829443735239a14093b676baba1ee5f1abcf05937d"
+    },
+    {
+      "path": "assets/js/customers-service.js",
+      "sha256": "cd0c84bf7afa97249e51912ac15b6af8b7969d06a83ff722752fcd4db186d2bc"
+    },
+    {
+      "path": "assets/js/followups-service.js",
+      "sha256": "8bfe4f02273802b1dd6721428240e1e46ba0dd03dd4984020dc02c7bd148bf16"
+    },
+    {
+      "path": "assets/js/quotations-service.js",
+      "sha256": "33298f482a2da7a09db814b4fd73b2ffc42c0553dd4175a8924ced7774752d5b"
+    },
+    {
+      "path": "assets/js/notification-center-service.js",
+      "sha256": "274fbfecd28bf7318b817f6adbbea04ae94d01526e842d6ddb259f7a7941de2d"
+    },
+    {
+      "path": "assets/js/notification-center.js",
+      "sha256": "f4b7468e207b0b134633cccac719dd84e9136e4195e7e5828e9ffbe01803d8d3"
+    },
+    {
+      "path": "assets/js/installation-execution.js",
+      "sha256": "1cf6e26181045be0c8e7b35fa7c4fc1b4a12c856c6e1eae287b442baeeb62f59"
+    },
+    {
+      "path": "assets/js/installations-service.js",
+      "sha256": "1ce7423ffd0cc8a849d1c2b1e241e11daa2ca97ce43cbc40143250bb9651e629"
+    },
+    {
+      "path": "assets/js/installations-service-contract.js",
+      "sha256": "f084a4011a4f00d5590dc274e05338540fc29fe035a073ed5369176a190be25f"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "sha256": "8854a304f6a74c9ca1af3654511661fe46a206c12c580583f5d798a4a910b43d"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "sha256": "27fcec08db4ff877ae05e25bc0f773fae1e314c8bd84c74147cd1e00ce49475b"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "sha256": "bca60ace20e9ad331e110a14713fa19b4a3f7c352bf86596f6963f6d67c8820e"
+    },
+    {
+      "path": "assets/js/vehicle-treasury.js",
+      "sha256": "85a9179bfd4c9a910057d224789ef5b5ff4204c9be5ac90af7ea3389a3b03e10"
+    },
+    {
+      "path": "assets/js/payroll.js",
+      "sha256": "668e50146aa90164d8d2aeddddb1725b41d41f4fed2c7deec9d6133b0729a2e1"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll.js",
+      "sha256": "1ba9ad9b56ef7c6e66bff675891b73a7b2de070e65f898705c4e40d81a50b67d"
+    }
+  ],
+  "addedFiles": [
+    {
+      "path": "README_SC1_AR.md",
+      "sha256": "2132e1fccdf811ec6f4da04d556e4cf863a7355939fce966d7573f0ba3e2cd1f"
+    },
+    {
+      "path": "docs/SC1-cache/IMPACT_AND_ROLLBACK_AR.md",
+      "sha256": "4e3b00f2f811d0516e369e11124d1a87019e1a604ce0de13c7fdcaaa4cd92662"
+    },
+    {
+      "path": "docs/SC1-cache/TEST_RESULTS.json",
+      "sha256": "35b934c51516d70d0a4f61708fe2c40e5e00dacbe7c7b662e7695ce2c9b546e5"
+    },
+    {
+      "path": "docs/SC1-cache/SOURCE_INTEGRITY.json",
+      "sha256": "2b51e3eccddb06ee7e0648619e71c5169f863377b74745835b6820c86cab8db9"
+    },
+    {
+      "path": "scripts/sc1-smart-cache-recovery.test.mjs",
+      "sha256": "ebb3e77095b8975b24fbd7650b214110758762c5ce95606f76e755d9c813f22f"
+    },
+    {
+      "path": "scripts/sc1-live-readonly.js",
+      "sha256": "1a8277d74dc2e87cd55971be02509354e4b8389c44222615b941d79607118e6f"
+    },
+    {
+      "path": "scripts/sc1-preflight-check.mjs",
+      "sha256": "020a95f8de4ed73cf0781b9e3cd82eac9402dea2d62fc82443e8ba1fa62c27a9"
+    }
+  ],
+  "manifestSelfExcludedFromHashing": true,
+  "modifiedFileCount": 6,
+  "addedFileCountIncludingManifest": 8,
+  "sqlRequired": false,
+  "databaseRollbackRequired": false,
+  "localIndexedDbSchemaVersion": 1,
+  "productionAppliedByAssistant": false,
+  "scope": "SmartCache local connection recovery; release metadata elsewhere. No financial, authorization, queue or SQL changes."
+}
