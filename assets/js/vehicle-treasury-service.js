@@ -10,6 +10,62 @@
 
   let snapshot = { cars: [], teams: [], teamAssignments: [], movements: [], summary: null, selectedCarId: '', from: '', to: '', search: '' };
   let readStatus = 'idle';
+  let workspaceUserId = '';
+  let lifecycleReadPending = false;
+  let lastWorkspaceRead = null;
+  const workspaceReads = new Set();
+  const lifecycleReads = { invocations: 0, refreshCalls: 0 };
+
+  // P5: lifecycle events refresh only a workspace opened by this signed-in user.
+  function lifecycleUserId() {
+    const auth = window.CustomerAuth?.getState?.() || {};
+    const id = auth.user?.id;
+    return id && auth.profile?.id === id && auth.profile?.is_active !== false ? id : '';
+  }
+
+  function canRefreshVisibleWorkspace() {
+    if (navigator.onLine === false || document.visibilityState !== 'visible') return false;
+    if (window.KYUMNavigation?.current?.() !== 'vehicleTreasury') return false;
+    const view = document.getElementById('vehicleTreasuryView');
+    if (!view || view.classList.contains('hidden')) return false;
+    const userId = lifecycleUserId();
+    if (!userId || workspaceUserId !== userId) return false;
+    return (window.PermissionEngine?.can?.('vehicleTreasury', 'view')
+      ?? window.CustomerPermissions?.canScreen?.('vehicleTreasury', 'view')) === true;
+  }
+
+  async function refreshVisibleWorkspace() {
+    lifecycleReads.invocations++;
+    if (lifecycleReadPending || !canRefreshVisibleWorkspace()) return;
+    lifecycleReadPending = true;
+    try {
+      // Reconcile after an opening/filter read, including a queue replay during it.
+      while (workspaceReads.size) {
+        await Promise.allSettled([...workspaceReads]);
+        if (!canRefreshVisibleWorkspace()) return;
+      }
+      if (!canRefreshVisibleWorkspace()) return;
+      lifecycleReads.refreshCalls++;
+      // Reuse the screen's current filters, rendering and existing loading guard.
+      if (typeof window.VehicleTreasuryUI?.load === 'function') {
+        const previousRead = lastWorkspaceRead;
+        await window.VehicleTreasuryUI.load(false);
+        // The UI displays failures; still forward them to the existing SyncEngine retry.
+        if (lastWorkspaceRead !== previousRead && lastWorkspaceRead?.error) throw lastWorkspaceRead.error;
+      }
+      else await readWorkspace(snapshotFilters());
+    } finally { lifecycleReadPending = false; }
+  }
+
+  async function readWorkspace(filters = {}) {
+    const outcome = { error: null };
+    lastWorkspaceRead = outcome;
+    const operation = load(filters);
+    workspaceReads.add(operation);
+    try { return await operation; }
+    catch (error) { outcome.error = error; throw error; }
+    finally { workspaceReads.delete(operation); }
+  }
 
   // The old cache was global across users. Never migrate it into a user namespace because
   // its owner cannot be proven safely. Remove it once this service is loaded.
@@ -273,6 +329,7 @@
 
   async function load(filters = {}) {
     requireAction('view');
+    workspaceUserId = lifecycleUserId();
     const f = normalizeFilters(filters);
 
     const useCached = async () => {
@@ -480,7 +537,7 @@
     return true;
   }
 
-  window.KYUMSyncEngine?.register?.('vehicle_treasury', () => load(snapshotFilters()));
+  window.KYUMSyncEngine?.register?.('vehicle_treasury', refreshVisibleWorkspace);
   window.KYUMOfflineQueue?.register?.('vehicle_treasury', async (operation, helpers = {}) => {
     const p = operation.payload || {};
     if (['create', 'expense_create'].includes(operation.action)) {
@@ -517,11 +574,13 @@
   });
 
   window.VehicleTreasuryService = Object.freeze({
-    load,
+    runtimeVersion: 'P5',
+    load: readWorkspace,
     saveExpense,
     deleteExpense,
     getSnapshot: () => snapshot,
     getReadStatus: () => readStatus,
+    getLifecycleReadStatus: () => ({ ...lifecycleReads, pending: lifecycleReadPending || workspaceReads.size > 0, eligible: canRefreshVisibleWorkspace() }),
     invalidateCache
   });
 })();

@@ -10,6 +10,21 @@
   const readStatus={};
   const activeContexts=new Map();
   const refreshes=new Map();
+  const lifecycleReads={invocations:0,refreshCalls:0};
+
+  // P5: retained filters do not authorize reads for a hidden screen or another user.
+  function canRefreshVisibleContext(context){
+    if(navigator.onLine===false||document.visibilityState!=='visible')return false;
+    if(window.KYUMNavigation?.current?.()!==context.screen)return false;
+    const view=document.getElementById(`${context.screen}View`);
+    if(!view||view.classList.contains('hidden'))return false;
+    const auth=window.CustomerAuth?.getState?.()||{},id=auth.user?.id;
+    if(!id||auth.profile?.id!==id||auth.profile?.is_active===false||context.namespace!==`user:${id}`)return false;
+    if(activeContexts.get(context.kind)!==context)return false;
+    if(context.kind==='adjustmentCatalog'&&document.getElementById('payrollAdjustmentDialog')?.open!==true)return false;
+    return (window.PermissionEngine?.can?.(context.screen,'view')
+      ??window.CustomerPermissions?.canScreen?.(context.screen,'view'))===true;
+  }
 
   const t=(key,fallback)=>{const value=window.PetatoeLocalization?.t?.(key);return value&&!/^\[.+\]$/.test(value)?value:fallback;};
   const translateMessage=message=>window.PetatoeLocalization?.translateMessage?.(message)||String(message||'');
@@ -153,6 +168,8 @@
   }
 
   async function loadWorkspace({kind,screen,parts=[],fetcher,force=false}){
+    // Retire the previous period before async namespace resolution can yield.
+    activeContexts.delete(kind);
     const context=await makeContext(kind,screen,parts);
     activeContexts.set(kind,context);
     const cached=await readCached(context);
@@ -284,12 +301,13 @@
   }
 
   async function refreshActiveContexts(){
-    if(navigator.onLine===false)return;
+    lifecycleReads.invocations++;
     const contexts=[...activeContexts.entries()];
     for(const [kind,context] of contexts){
+      if(!canRefreshVisibleContext(context))continue;
       try{
         const current=await makeContext(kind,context.screen,context.contextToken.split('|').map(value=>decodeURIComponent(value==='*'?'':value)));
-        if(current.key!==context.key)continue;
+        if(current.key!==context.key||current.namespace!==context.namespace||!canRefreshVisibleContext(context))continue;
         let fetcher=null;
         const values=context.contextToken.split('|').map(value=>decodeURIComponent(value==='*'?'':value));
         if(kind==='management')fetcher=()=>rpcOnline('get_payroll_management_workspace',{p_month:values[1]},'payroll.error.loadManagement','تعذر تحميل إدارة الرواتب');
@@ -299,7 +317,7 @@
         else if(kind==='adjustmentCatalog')fetcher=()=>rpcOnline('get_payroll_adjustment_catalog',{},'payroll.error.loadAdjustmentCatalog','تعذر تحميل بنود الإضافات والخصومات المحفوظة');
         else if(kind==='commissions'&&values[0]==='range')fetcher=()=>rpcOnline('get_commission_management_workspace_range',{p_from:values[1],p_to:values[2]},'payroll.error.loadCommissionManagement','تعذر تحميل إدارة العمولات');
         else if(kind==='commissions'&&values[0]==='month')fetcher=()=>rpcOnline('get_commission_management_workspace',{p_month:values[1]},'payroll.error.loadCommissionManagement','تعذر تحميل إدارة العمولات');
-        if(fetcher)await fetchAndPersist(kind,context,fetcher,{emit:true});
+        if(fetcher){lifecycleReads.refreshCalls++;await fetchAndPersist(kind,context,fetcher,{emit:true});}
       }catch(error){console.warn(`Payroll ${kind} lifecycle refresh skipped:`,error);}
     }
   }
@@ -307,9 +325,11 @@
   window.KYUMSyncEngine?.register?.('payroll',async()=>refreshActiveContexts());
 
   window.PayrollService=Object.freeze({
+    runtimeVersion:'P5',
     monthStart,loadManagement,prepareMonth,loadAdjustmentCatalog,saveAdjustmentItems,saveAdjustments,transition,
     loadSalaryStatement,loadCommissions,loadCommissionsRange,refreshCommissions,loadCommissionStatement,
     loadReference,saveEmployee,saveTier,invalidateCache:invalidatePayrollCache,
-    getCache:()=>cache,getReadStatus:kind=>kind?readStatus[kind]||null:{...readStatus}
+    getCache:()=>cache,getReadStatus:kind=>kind?readStatus[kind]||null:{...readStatus},
+    getLifecycleReadStatus:()=>({...lifecycleReads,pending:refreshes.size>0,retainedContexts:activeContexts.size,eligible:[...activeContexts.values()].some(canRefreshVisibleContext)})
   });
 })();

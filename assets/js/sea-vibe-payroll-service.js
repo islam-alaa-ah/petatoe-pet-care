@@ -8,6 +8,21 @@
   const readStatus={};
   const activeContexts=new Map();
   const refreshes=new Map();
+  const lifecycleReads={invocations:0,refreshCalls:0};
+
+  function lifecycleUserId(){
+    const auth=window.CustomerAuth?.getState?.()||{},id=auth.user?.id;
+    return id&&auth.profile?.id===id&&auth.profile?.is_active!==false?id:'';
+  }
+
+  function canRefreshVisibleContext(ctx){
+    if(navigator.onLine===false||document.visibilityState!=='visible')return false;
+    if(window.KYUMNavigation?.current?.()!==ctx.screen)return false;
+    const view=document.getElementById(`${ctx.screen}View`);
+    if(!view||view.classList.contains('hidden'))return false;
+    const id=lifecycleUserId();
+    return !!id&&ctx.ownerUserId===id&&activeContexts.get(ctx.kind)===ctx&&can(ctx.screen,'view')===true;
+  }
 
   const t=(key,fallback)=>{const value=window.PetatoeLocalization?.t?.(key);return value&&!/^\[.+\]$/.test(value)?value:fallback;};
   const db=()=>{if(!window.customerSupabase)throw new Error(t('seaVibePayroll.error.databaseNotReady','خدمة قاعدة البيانات غير جاهزة.'));return window.customerSupabase;};
@@ -77,7 +92,7 @@
 
   function context(kind,screen,parts=[]){
     const token=parts.map(v=>encodeURIComponent(v??'')).join('|');
-    return {kind,screen,parts,key:`${CACHE_PREFIX}${kind}${token?`:${token}`:''}`};
+    return {kind,screen,parts,ownerUserId:lifecycleUserId(),key:`${CACHE_PREFIX}${kind}${token?`:${token}`:''}`};
   }
 
   async function cacheGet(ctx){
@@ -132,6 +147,8 @@
   async function loadWorkspace({kind,screen,parts=[],fetcher,force=false}){
     requirePermission(screen,'view');
     const ctx=context(kind,screen,parts);
+    // Reuse this exact read and its normalized arguments for visible lifecycle refreshes.
+    ctx.lifecycleFetcher=fetcher;
     activeContexts.set(kind,ctx);
     const cached=await cacheGet(ctx).catch(()=>null);
     if(cached&&!force){
@@ -230,23 +247,21 @@
   }
 
   async function refreshActiveContexts(){
-    if(navigator.onLine===false)return;
-    const management=activeContexts.get('management');
-    const salary=activeContexts.get('salary');
-    const commissions=activeContexts.get('commissions');
-    const commissionStatement=activeContexts.get('commissionStatement');
-    const reference=activeContexts.get('reference');
-    if(management?.parts?.[1])await loadManagement(management.parts[1],{force:true}).catch(error=>console.warn('SEA VIBE payroll management refresh skipped:',error));
-    if(salary)await loadSalaryStatement({force:true}).catch(error=>console.warn('SEA VIBE salary statement refresh skipped:',error));
-    if(commissions?.parts?.[1]&&commissions?.parts?.[2])await loadCommissionsRange(commissions.parts[1],commissions.parts[2],{force:true}).catch(error=>console.warn('SEA VIBE commission management refresh skipped:',error));
-    if(commissionStatement)await loadCommissionStatement({force:true}).catch(error=>console.warn('SEA VIBE commission statement refresh skipped:',error));
-    if(reference)await loadReference({force:true}).catch(error=>console.warn('SEA VIBE payroll reference refresh skipped:',error));
+    lifecycleReads.invocations++;
+    for(const ctx of [...activeContexts.values()]){
+      if(!canRefreshVisibleContext(ctx)||typeof ctx.lifecycleFetcher!=='function')continue;
+      lifecycleReads.refreshCalls++;
+      await fetchAndPersist(ctx.kind,ctx,ctx.lifecycleFetcher,{emit:true})
+        .catch(error=>console.warn(`SEA VIBE payroll ${ctx.kind} lifecycle refresh skipped:`,error));
+    }
   }
 
   window.KYUMSyncEngine?.register?.('sea-vibe-payroll',refreshActiveContexts);
 
   window.SeaVibePayrollService=Object.freeze({
+    runtimeVersion:'P5',
     monthStart,loadReference,saveEmployee,loadManagement,prepareMonth,saveAdjustmentItems,transition,loadSalaryStatement,loadCommissionsRange,loadCommissionStatement,
-    invalidate,getCache:()=>({...memory}),getReadStatus:kind=>kind?readStatus[kind]||null:{...readStatus}
+    invalidate,getCache:()=>({...memory}),getReadStatus:kind=>kind?readStatus[kind]||null:{...readStatus},
+    getLifecycleReadStatus:()=>({...lifecycleReads,pending:refreshes.size>0,retainedContexts:activeContexts.size,eligible:[...activeContexts.values()].some(canRefreshVisibleContext)})
   });
 })();
