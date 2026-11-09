@@ -1,17 +1,19 @@
 {
-  "version": "18.56.144",
-  "build": 185744,
+  "version": "18.56.145",
+  "build": 185745,
   "forceUpdate": false,
-  "releaseDate": "2026-11-08",
-  "title": "استعادة اتصال الكاش المحلي — SC1",
-  "titleEn": "Local Cache Connection Recovery — SC1",
+  "releaseDate": "2026-11-09",
+  "title": "إدارة المرفقات والأرشيف الشهري — AM1R1",
+  "titleEn": "Attachment Management and Monthly Archives — AM1R1",
   "notes": [
-    "استعادة اتصال الكاش المحلي عند إغلاقه مع الحفاظ على البيانات المحفوظة وعزل الحسابات.",
-    "تنظيم محاولة إعادة الفتح دون تكرار معاملات الكاش التي بدأت بالفعل."
+    "شاشة إدارة المرفقات تحت الإعدادات والخصوصية مع عرض الصور وبيانات رفعها.",
+    "أرشيف PDF شهري يضم صفحات الصور والأصول المرفقة، والتحقق من النسخة المحفوظة قبل إتاحة المسح.",
+    "يتطلب تثبيت AM1R1 وخدمة attachment-admin وفق دليل التشغيل؛ المسح مغلق مبدئيًا."
   ],
   "notesEn": [
-    "Recovers closed local cache connections while preserving stored entries and user namespaces.",
-    "Coordinates reopening without replaying cache transactions that already started."
+    "Attachment Management under Settings and Privacy, with image upload details.",
+    "Monthly PDF with image pages and embedded originals; saved-file verification precedes deletion.",
+    "Requires AM1R1 and attachment-admin deployment as documented; deletion initially disabled."
   ],
-  "cacheToken": "petatoe-pwa-18-56-144-smartcache-sc1"
+  "cacheToken": "petatoe-pwa-18-56-145-attachments-am1r1"
 }

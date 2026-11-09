@@ -66,6 +66,7 @@
   <link rel="stylesheet" href="assets/css/global-typography-certification.css?v=18.56.141" />
   <link rel="stylesheet" href="assets/css/notification-center.css?v=18.56.141" />
   <link rel="stylesheet" href="assets/css/translation-center.css?v=18.56.141" />
+  <link rel="stylesheet" href="assets/css/attachment-management.css?v=18.56.145-AM1R1" />
   <link rel="stylesheet" href="assets/css/petatoe-navigation-shell.css?v=18.56.141" />
 </head>
 <body>
@@ -256,6 +257,7 @@
             <button class="nav-item privacy-nav-item" data-view="notificationCenter" data-petatoe-i18n="sidebar.notifications">مركز الإشعارات</button>
             <button class="nav-item privacy-nav-item translation-center-nav-item" data-view="translationCenter" data-petatoe-i18n="sidebar.translationCenter">مركز الترجمه</button>
             <button class="nav-item privacy-nav-item" data-view="systemSettings" data-petatoe-i18n="sidebar.systemSettings">إعدادات النظام</button>
+            <button class="nav-item privacy-nav-item" data-view="attachmentManagement" data-petatoe-i18n="attachments.page.title">إدارة المرفقات</button>
             <button class="nav-item privacy-nav-item" data-view="aboutApp" data-petatoe-i18n="sidebar.about">حول التطبيق</button>
           </div>
         </section>
@@ -3657,6 +3659,47 @@
         </form>
       </section>
 
+      <section id="attachmentManagementView" class="view-section hidden" aria-hidden="true">
+        <div class="am1-heading">
+          <div><h2 data-petatoe-i18n="attachments.page.title">إدارة المرفقات</h2><p data-petatoe-i18n="attachments.page.note">صور التخزين وأرشيفها الشهري — إدارة النظام</p></div>
+          <div class="am1-archive-actions"><button id="am1Export" type="button" class="primary-btn" disabled data-petatoe-i18n="attachments.export">تنزيل PDF الشهر</button><button id="am1Cancel" type="button" class="secondary-btn" hidden data-petatoe-i18n="attachments.cancel">إيقاف العملية</button></div>
+        </div>
+        <p class="am1-note" data-petatoe-i18n="attachments.intro">كل صور Storage تظهر هنا. الأرشيف الشهري يضم صفحة لكل صورة وبياناتها، ومعها أصل الصورة كمرفق داخل PDF. اختر شهرًا انتهى لتنزيل أرشيفه.</p>
+        <div class="am1-toolbar">
+          <label><span data-petatoe-i18n="attachments.month">شهر الرفع أو آخر تحديث — توقيت السعودية</span><input id="am1Month" type="month" aria-label="شهر الرفع" data-petatoe-i18n-aria-label="attachments.month"></label>
+          <button id="am1All" type="button" class="secondary-btn" data-petatoe-i18n="attachments.all">كل الشهور</button>
+          <button id="am1Refresh" type="button" class="secondary-btn" data-petatoe-i18n="attachments.refresh">تحديث القائمة</button>
+          <span id="am1MonthHint" class="am1-note" data-petatoe-i18n="attachments.monthHint">اختر شهرًا انتهى للأرشفة. الشهر الحالي متاح للعرض.</span>
+        </div>
+        <div id="am1Status" class="am1-status" role="status" aria-live="polite"></div>
+        <div class="am1-table-wrap"><table class="am1-table">
+          <thead><tr><th data-petatoe-i18n="attachments.file">الصورة</th><th data-petatoe-i18n="attachments.uploadedAt">وقت الرفع / آخر تحديث</th><th data-petatoe-i18n="attachments.uploader">رفع بواسطة</th><th data-petatoe-i18n="attachments.customer">العميل</th><th data-petatoe-i18n="attachments.reference">المرجع</th><th data-petatoe-i18n="attachments.retention">حالة الاحتفاظ</th><th data-petatoe-i18n="attachments.details">الصورة والبيانات</th></tr></thead>
+          <tbody id="am1Rows"></tbody>
+        </table></div>
+        <div class="am1-pagination"><button id="am1Previous" class="secondary-btn" type="button" disabled data-petatoe-i18n="attachments.previous">السابق</button><span id="am1Page"></span><button id="am1Next" class="secondary-btn" type="button" hidden data-petatoe-i18n="attachments.next">التالي</button></div>
+        <section class="am1-archive-panel">
+          <h3 data-petatoe-i18n="attachments.archives">أرشيفات الشهر المحفوظة</h3>
+          <label for="am1Archive" data-petatoe-i18n="attachments.chooseArchive">اختر أرشيفًا</label><br><select id="am1Archive"></select>
+          <p id="am1ArchiveInfo"></p>
+          <p data-petatoe-i18n="attachments.verifyHint">بعد التنزيل، اختر نسخة PDF المحفوظة على جهازك للتحقق من بصمتها. المسح لا يتاح قبل نجاح التحقق.</p>
+          <div class="am1-archive-actions"><button id="am1Verify" type="button" class="secondary-btn" disabled data-petatoe-i18n="attachments.verify">التحقق من الملف المحفوظ</button><button id="am1Delete" type="button" class="secondary-btn am1-danger" hidden data-petatoe-i18n="attachments.delete">مسح صور الشهر المؤرشفة</button></div>
+          <input id="am1PdfFile" type="file" accept="application/pdf,.pdf" hidden>
+          <p class="am1-note" data-petatoe-i18n="attachments.deleteNote">المسح اختياري ونهائي من Storage، ويشمل الصور المؤرشفة المطابقة فقط. سجلات العمليات تبقى كما هي، وروابط الصور المحذوفة لن تفتح الأصل من التخزين. احتفظ بملف PDF ونسخة أخرى منه؛ أصول الصور بداخله تسمح بالاسترجاع اليدوي.</p>
+        </section>
+        <dialog id="am1DetailsDialog" class="am1-dialog" aria-labelledby="am1DetailsTitle">
+          <h3 id="am1DetailsTitle" data-petatoe-i18n="attachments.details">الصورة والبيانات</h3>
+          <img id="am1Preview" alt="" referrerpolicy="no-referrer" style="max-width:100%;max-height:55vh;object-fit:contain">
+          <pre id="am1Details" dir="ltr"></pre><button type="button" class="secondary-btn" data-am1-close data-petatoe-i18n="attachments.close">إغلاق</button>
+        </dialog>
+        <dialog id="am1DeleteDialog" class="am1-dialog" aria-labelledby="am1DeleteTitle">
+          <h3 id="am1DeleteTitle" data-petatoe-i18n="attachments.delete">مسح صور الشهر المؤرشفة</h3>
+          <p data-petatoe-i18n="attachments.deleteNote">المسح نهائي من Storage. احتفظ بالأرشيف ونسخة أخرى منه.</p>
+          <p><span data-petatoe-i18n="attachments.typeMonth">للتأكيد اكتب الشهر:</span> <strong id="am1DeleteMonth" dir="ltr"></strong></p>
+          <input id="am1DeleteConfirm" type="text" dir="ltr" autocomplete="off" placeholder="YYYY-MM" aria-label="YYYY-MM">
+          <label><input id="am1DeleteAccepted" type="checkbox"> <span data-petatoe-i18n="attachments.acceptDelete">حفظت الأرشيف ونسخة أخرى منه، وأوافق على مسح أصول الصور المؤرشفة من التخزين.</span></label>
+          <div class="am1-archive-actions"><button id="am1DeleteExecute" type="button" class="primary-btn am1-danger" data-petatoe-i18n="attachments.confirmDelete">تأكيد المسح</button><button type="button" class="secondary-btn" data-am1-close data-petatoe-i18n="attachments.close">إغلاق</button></div>
+        </dialog>
+      </section>
       <section id="aboutAppView" class="view-section hidden" aria-hidden="true">
         <div class="actions-row about-app-heading">
           <div>
@@ -4956,7 +4999,7 @@
   <script src="assets/js/permissions.js?v=18.56.141"></script>
   <script src="assets/js/permission-engine.js?v=18.56.141"></script>
   <script src="assets/js/localization-center-service.js?v=18.56.141"></script>
-  <script src="assets/js/localization-center.js?v=18.56.141-A15_2_9"></script>
+  <script src="assets/js/localization-center.js?v=18.56.145-AM1R1"></script>
   <script src="assets/js/translation-center.js?v=18.56.141"></script>
   <script src="assets/js/data-access-scope.js?v=18.56.141"></script>
   <script src="assets/js/smart-cache.js?v=18.56.144"></script>
@@ -5002,7 +5045,8 @@
   <script src="assets/js/daily-alerts-service.js?v=18.56.141"></script>
   <script src="assets/js/daily-activity-service.js?v=18.56.141"></script>
   <script src="assets/js/notification-center-service.js?v=18.56.141"></script>
-  <script src="assets/js/app.js?v=18.56.141"></script>
+  <script src="assets/js/attachment-management.js?v=18.56.145-AM1R1"></script>
+  <script src="assets/js/app.js?v=18.56.145-AM1R1"></script>
   <script src="assets/js/customer-reports-overview.js?v=A14_FIN_REC_1"></script>
   <script src="assets/js/cars-teams-reports.js?v=A15_2_9"></script>
   <script src="assets/js/advanced-analytics.js?v=A17_3_6"></script>
@@ -5032,7 +5076,7 @@
   <script src="assets/js/installation-dashboard-settings.js?v=18.56.141"></script>
   <script src="assets/js/installation-settings-management.js?v=18.56.141"></script>
   <script src="assets/js/mobile.js?v=18.56.141"></script>
-  <script src="assets/js/pwa.js?v=18.56.144"></script>
+  <script src="assets/js/pwa.js?v=18.56.145-AM1R1"></script>
   <script src="assets/js/native.js?v=18.56.141"></script>
 </body>
 </html>

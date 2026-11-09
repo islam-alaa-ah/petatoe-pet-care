@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-144-smartcache-sc1";
+const CACHE_VERSION = "petatoe-pwa-18-56-145-attachments-am1r1";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -49,6 +49,14 @@ const CORE_APP_SHELL = [
   "./assets/js/translation-center.js",
   "./assets/js/data-access-scope.js",
   "./assets/js/smart-cache.js",
+  "./assets/css/attachment-management.css",
+  "./assets/js/attachment-management.js",
+  "./assets/js/attachment-pdf.mjs",
+  "./assets/fonts/am1/DejaVuSans.ttf",
+  "./assets/vendor/noble-hashes-2.0.1/sha2.js",
+  "./assets/vendor/noble-hashes-2.0.1/_md.js",
+  "./assets/vendor/noble-hashes-2.0.1/_u64.js",
+  "./assets/vendor/noble-hashes-2.0.1/utils.js",
   "./assets/js/offline-read-cache.js",
   "./assets/js/cache-dependency-engine.js",
   "./assets/js/sync-engine.js",
