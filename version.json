@@ -1,19 +1,17 @@
 {
-  "version": "18.56.145",
-  "build": 185745,
+  "version": "18.56.146",
+  "build": 185746,
   "forceUpdate": false,
   "releaseDate": "2026-11-09",
-  "title": "إدارة المرفقات والأرشيف الشهري — AM1R1",
-  "titleEn": "Attachment Management and Monthly Archives — AM1R1",
+  "title": "إصلاح تنزيل PDF المرفقات — AM1R2",
+  "titleEn": "Attachment PDF Download Fix — AM1R2",
   "notes": [
-    "شاشة إدارة المرفقات تحت الإعدادات والخصوصية مع عرض الصور وبيانات رفعها.",
-    "أرشيف PDF شهري يضم صفحات الصور والأصول المرفقة، والتحقق من النسخة المحفوظة قبل إتاحة المسح.",
-    "يتطلب تثبيت AM1R1 وخدمة attachment-admin وفق دليل التشغيل؛ المسح مغلق مبدئيًا."
+    "إصلاح تحميل ملفات مكتبة أرشيف PDF الشهري في النسخة المنشورة.",
+    "تحديث ملفات التطبيق المحفوظة لضمان تحميل الإصلاح."
   ],
   "notesEn": [
-    "Attachment Management under Settings and Privacy, with image upload details.",
-    "Monthly PDF with image pages and embedded originals; saved-file verification precedes deletion.",
-    "Requires AM1R1 and attachment-admin deployment as documented; deletion initially disabled."
+    "Fix monthly PDF archive library loading in the published application.",
+    "Refresh cached application files to load the correction."
   ],
-  "cacheToken": "petatoe-pwa-18-56-145-attachments-am1r1"
+  "cacheToken": "petatoe-pwa-18-56-146-am1r2-pdf-assets"
 }
