@@ -1,0 +1,146 @@
+{
+  "phase": "AM1R2",
+  "version": "18.56.146",
+  "baselineVersion": "18.56.145",
+  "status": "LOCAL_CHECKS_PASS_PRODUCTION_PDF_PENDING",
+  "completedAt": "2026-11-09T10:37:58.359238+00:00",
+  "suites": [
+    {
+      "suite": "AM1R2",
+      "tests": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "suite": "AM1R1",
+      "tests": 46,
+      "passed": 46,
+      "failed": 0
+    },
+    {
+      "suite": "SC1",
+      "tests": 34,
+      "passed": 34,
+      "failed": 0
+    },
+    {
+      "suite": "P5",
+      "tests": 38,
+      "passed": 38,
+      "failed": 0
+    },
+    {
+      "suite": "P4",
+      "tests": 27,
+      "passed": 27,
+      "failed": 0
+    },
+    {
+      "suite": "P3",
+      "tests": 16,
+      "passed": 16,
+      "failed": 0
+    }
+  ],
+  "totalPassed": 166,
+  "totalFailed": 0,
+  "historicalReleaseAssertionsExcluded": [
+    {
+      "suite": "AM1R1",
+      "name": "release metadata, menu, HTML hooks, translation keys and cached imports agree"
+    },
+    {
+      "suite": "SC1",
+      "name": "release metadata is coherent and only the two required asset URLs advance"
+    },
+    {
+      "suite": "P5",
+      "name": "release version, cache token and the four changed script URLs agree"
+    },
+    {
+      "suite": "P3",
+      "name": "release metadata and cache versions agree"
+    }
+  ],
+  "exclusionReason": "Only assertions pinned to historical release numbers are excluded by exact name; the AM1R2 suite checks the new release and unchanged AM1R1 protocol.",
+  "sourceIntegrity": {
+    "modifiedFiles": 6,
+    "addedFiles": 9,
+    "deletedFiles": 0,
+    "unchangedBaselineFiles": 1213,
+    "sqlFilesPreserved": 430,
+    "cssFilesPreserved": 32,
+    "supabaseFilesPreserved": 422,
+    "databaseOrEdgeChanges": false,
+    "sha2ImplementationPreserved": true,
+    "serviceWorkerFunctionBodiesPreserved": true,
+    "newAliasesByteIdenticalToOriginals": true
+  },
+  "httpModuleTests": {
+    "legacy404Reproduced": true,
+    "newDependencyGraphLoaded": true,
+    "sha256ComparedWithNodeCrypto": true,
+    "coreShellAssetsReachable": true,
+    "model": "Node VM SourceTextModule with local HTTP and a filename-exclusion filter, not a full Jekyll build or native browser."
+  },
+  "syntheticPDFs": [
+    {
+      "language": "ar",
+      "pages": 2,
+      "sha256": "5c1a4e830acb4f03497f6bd134a637025664a8902c5dcf89b88daefdd35b6117",
+      "byteIdenticalToAM1R1Fixture": true,
+      "extraction": {
+        "archiveId": "11111111-1111-4111-8111-111111111111",
+        "originals": 2,
+        "verified": true,
+        "networkWrites": 0
+      },
+      "renderedPages": [
+        "ar-1.png",
+        "ar-2.png"
+      ]
+    },
+    {
+      "language": "en",
+      "pages": 2,
+      "sha256": "2bdd4baee428cc653d06a547716f1c95d4e82dcaee5e9c15abc0516c4d16f7d1",
+      "byteIdenticalToAM1R1Fixture": true,
+      "extraction": {
+        "archiveId": "11111111-1111-4111-8111-111111111111",
+        "originals": 2,
+        "verified": true,
+        "networkWrites": 0
+      },
+      "renderedPages": [
+        "en-1.png",
+        "en-2.png"
+      ]
+    }
+  ],
+  "visualReview": {
+    "renderedPagesInspected": 4,
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "clippingOrMissingImageObserved": false,
+    "customerImagesUsed": false
+  },
+  "productionActions": {
+    "databaseQueries": 0,
+    "databaseWrites": 0,
+    "storageImageDownloads": 0,
+    "storageDeletes": 0,
+    "deploymentPerformed": false,
+    "publicStaticAssetReadsOnly": true
+  },
+  "notProven": [
+    "Native browser save picker and PWA update after deployment",
+    "Actual monthly Production PDF completion, saved-file verification and restored originals",
+    "Live account/anonymous access matrix",
+    "Tablet/Mobile and actual Production language/theme regression",
+    "Storage exact-version API compatibility with every real image",
+    "Any deletion flow"
+  ],
+  "requiredNext": "Deploy GitHub-only files, verify 18.56.146 and HTTP 200 for md.js/u64.js, preview an image, export a closed month, review saved PDF and verify originals. Keep deletion disabled."
+}

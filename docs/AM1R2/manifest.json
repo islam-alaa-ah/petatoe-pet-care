@@ -1,0 +1,158 @@
+{
+  "phase": "AM1R2",
+  "version": "18.56.146",
+  "build": 185746,
+  "baselineVersion": "18.56.145",
+  "baselineBuild": 185745,
+  "delivery": "MODIFIED_FILES_ONLY",
+  "modifiedFiles": [
+    {
+      "path": "assets/js/pwa.js",
+      "beforeSha256": "7f9fc2d8e3d64c1c16f3db783ff58d100db433d6e957e8b63c6edc8bb38335dc",
+      "afterSha256": "f2196e980e7fb236bed7a4be85e308caddde0591c91de783399a01c51a0b851f"
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/sha2.js",
+      "beforeSha256": "3ddc587c588283cbceed4dd9929cefcce06a0c231b54d4c6f0f99c478c686c00",
+      "afterSha256": "5eaedaeffde75ee0b2414714d73187602bc906f38b8451183672e9e678b8ba4c"
+    },
+    {
+      "path": "index.html",
+      "beforeSha256": "3804e6363d88bb515a6ede9ac3810d6fad1dcc04d527cada145514cbd170fe47",
+      "afterSha256": "bde4dbf7f09bfa859dbb0633f78a306564d152b9beaf688c6cdaa54603091bb1"
+    },
+    {
+      "path": "package.json",
+      "beforeSha256": "8215d517720c728ed30e438894578eee4e2731196c74edca4f343fdd3c775fb0",
+      "afterSha256": "aab5c6b24f6c9abe135095ea8f2f58d92a8b345acca6fb7c93289a345a3b3bd1"
+    },
+    {
+      "path": "service-worker.js",
+      "beforeSha256": "cc6f143781b7f63f60cc8005c5f1334f7541c09074ee2639f8879e2d77cad92e",
+      "afterSha256": "73c58dd95cccaa39b534560e5a71d7976d36214b3c2b0dc276034f27263bdcda"
+    },
+    {
+      "path": "version.json",
+      "beforeSha256": "24846f9986cb20acf7a070be64bc27a5839314eb74a13b6da9d389103d0bf7e3",
+      "afterSha256": "9e7043cdf315700c10f0f98444ccef992ac5f916d6f7a507162d20e48a10ffe4"
+    }
+  ],
+  "addedFiles": [
+    {
+      "path": "README_AM1R2_AR.md",
+      "sha256": "de3ebf0b52553f8cc4bc30c7c59ac89aad1ffdcdd29eae7872e62f60525097bc"
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/md.js",
+      "sha256": "a112f0fe1b15db00f2638618c436a17be1c5e13baf19d02fcc29016ae1db2233"
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/u64.js",
+      "sha256": "e48c0cfc10810439a4807b46db136ce603a3fa09b62584f513ef2f3ca496af54"
+    },
+    {
+      "path": "docs/AM1R2/DEPLOYMENT_AUDIT.json",
+      "sha256": "d19a7704e2cd607c4f2964c08a37f1acedf029f4618358816ed4a9540c8d37ff"
+    },
+    {
+      "path": "docs/AM1R2/IMPACT_AND_ROLLBACK_AR.md",
+      "sha256": "3cda59eca47d872b21ebe2c9f24ec4814c5d0d305480af9ef8fe2e760414141d"
+    },
+    {
+      "path": "docs/AM1R2/TEST_RESULTS.json",
+      "sha256": "2afe3c8c3cfd926e4dc395951aaa7032544898e96b625d007a846cef0a7a2c6c"
+    },
+    {
+      "path": "scripts/am1r2-pdf-assets.test.mjs",
+      "sha256": "41cf8e40a094709d200fbb27f6fa0c0a47d1c709db2f402006ada133900078a5"
+    },
+    {
+      "path": "scripts/am1r2-pdf-readonly.js",
+      "sha256": "4e515bada7cd12cce4fa9cb8c4c2e2c8a913599339ef8242732ba6e3bd0bbaf2"
+    }
+  ],
+  "archiveFileCount": 15,
+  "manifestSelfExcludedFromHashList": true,
+  "deletedFiles": [],
+  "unchangedBaseline": {
+    "fileCount": 1213,
+    "sha256SortedPathTabHashNewline": "26e293ef60d1c06985bf4b6f4fdabff746ba8ce97023c14e5973cfa26e6b0cce",
+    "allSQLFiles": {
+      "count": 430,
+      "aggregateSha256": "30055de06838fe0ade870adef83354e0ebebe36df3abb224c62475e232cb15b0"
+    },
+    "allCSSFiles": {
+      "count": 32,
+      "aggregateSha256": "002eaa421d7fa3f03a221a614138656fd5751184a037b37a0b263ce2a7543a79"
+    },
+    "allSupabaseFiles": {
+      "count": 422,
+      "aggregateSha256": "ff9924c750d2ada5fdcf84cac32f1533acfa860771d90841b97e2cbc799d31af"
+    }
+  },
+  "protectedBusinessFiles": [
+    {
+      "path": "assets/js/app.js",
+      "sha256": "b4a0f86a25625cb775b636fde0505f22b90e27fd22febeb09eb6ff6a65ae6828",
+      "unchanged": true
+    },
+    {
+      "path": "assets/js/smart-cache.js",
+      "sha256": "380eaaee3475531ce5df7e940c010df8728e754c6c5b2db6a3530f24f6ba5aed",
+      "unchanged": true
+    },
+    {
+      "path": "assets/js/attachment-management.js",
+      "sha256": "2d32f8b0136e8309a3db5d1b69002821b93b6628754d97cb7b5ca7df78e3ec7f",
+      "unchanged": true
+    },
+    {
+      "path": "assets/js/attachment-pdf.mjs",
+      "sha256": "d155655d65d72488235222f7f7a01f097e6408a4eea869d939a76769ee3e63ad",
+      "unchanged": true
+    },
+    {
+      "path": "assets/js/notification-center.js",
+      "sha256": "f4b7468e207b0b134633cccac719dd84e9136e4195e7e5828e9ffbe01803d8d3",
+      "unchanged": true
+    },
+    {
+      "path": "assets/js/notification-center-service.js",
+      "sha256": "274fbfecd28bf7318b817f6adbbea04ae94d01526e842d6ddb259f7a7941de2d",
+      "unchanged": true
+    },
+    {
+      "path": "assets/js/installation-execution.js",
+      "sha256": "1cf6e26181045be0c8e7b35fa7c4fc1b4a12c856c6e1eae287b442baeeb62f59",
+      "unchanged": true
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "sha256": "27fcec08db4ff877ae05e25bc0f773fae1e314c8bd84c74147cd1e00ce49475b",
+      "unchanged": true
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "sha256": "bca60ace20e9ad331e110a14713fa19b4a3f7c352bf86596f6963f6d67c8820e",
+      "unchanged": true
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "sha256": "8854a304f6a74c9ca1af3654511661fe46a206c12c580583f5d798a4a910b43d",
+      "unchanged": true
+    },
+    {
+      "path": "supabase/functions/attachment-admin/core.mjs",
+      "sha256": "d4fc7118102efe84c2aa5e8c2ff35318366bfe9db5adc42de8b862bda491fa3f",
+      "unchanged": true
+    },
+    {
+      "path": "supabase/functions/attachment-admin/index.ts",
+      "sha256": "305fe67f606a6ccc132af590ab769ee986b1385b53814ed8e7c449487e726f93",
+      "unchanged": true
+    }
+  ],
+  "noSQLOrEdgeDeploymentRequired": true,
+  "databaseAndRPCRevisionUnchanged": "AM1R1",
+  "deletionMustRemainDisabled": true
+}

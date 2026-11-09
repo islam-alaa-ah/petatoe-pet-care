@@ -1,0 +1,107 @@
+{
+  "phase": "AM1R2",
+  "baselineVersion": "18.56.145",
+  "httpReadsOnly": true,
+  "productionDatabaseTouched": false,
+  "customerImagesRequested": false,
+  "publicAssets": [
+    {
+      "path": "version.json",
+      "httpStatus": 200,
+      "contentType": "application/json; charset=utf-8",
+      "matchesDelivered": true,
+      "version": "18.56.145"
+    },
+    {
+      "path": "assets/js/attachment-pdf.mjs",
+      "httpStatus": 200,
+      "contentType": "text/javascript; charset=utf-8",
+      "matchesDelivered": true
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/sha2.js",
+      "httpStatus": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "matchesDelivered": true
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/_md.js",
+      "httpStatus": 404
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/_u64.js",
+      "httpStatus": 404
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/utils.js",
+      "httpStatus": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "matchesDelivered": true
+    },
+    {
+      "path": "assets/fonts/am1/DejaVuSans.ttf",
+      "httpStatus": 200,
+      "contentType": "font/ttf",
+      "matchesDelivered": true
+    }
+  ],
+  "baselineAndRepository": [
+    {
+      "source": "pages",
+      "path": "index.html",
+      "httpStatus": 200,
+      "matches145": true
+    },
+    {
+      "source": "pages",
+      "path": "assets/js/pwa.js",
+      "httpStatus": 200,
+      "matches145": true
+    },
+    {
+      "source": "pages",
+      "path": "service-worker.js",
+      "httpStatus": 200,
+      "matches145": true
+    },
+    {
+      "source": "pages",
+      "path": "package.json",
+      "httpStatus": 200,
+      "matches145": true
+    },
+    {
+      "source": "pages",
+      "path": "version.json",
+      "httpStatus": 200,
+      "matches145": true
+    },
+    {
+      "source": "repository",
+      "path": "assets/vendor/noble-hashes-2.0.1/_md.js",
+      "httpStatus": 200,
+      "matches145": true
+    },
+    {
+      "source": "repository",
+      "path": "assets/vendor/noble-hashes-2.0.1/_u64.js",
+      "httpStatus": 200,
+      "matches145": true
+    },
+    {
+      "source": "repository",
+      "path": ".nojekyll",
+      "httpStatus": 404
+    }
+  ],
+  "confirmedFailure": "sha2.js imports two modules that exist in main but return HTTP 404 on Pages",
+  "serverSideCausesNotProven": [
+    "Storage quota",
+    "RLS",
+    "JWT failure"
+  ],
+  "originalBusinessLogicModified": false,
+  "preparedAt": "2026-11-09T10:32:50.828419+00:00",
+  "observationDate": "2026-11-09",
+  "timestampMeaning": "preparedAt is report preparation time; observations were collected that date, without per-request timestamps."
+}
