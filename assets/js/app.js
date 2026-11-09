@@ -232,6 +232,7 @@ const views = {
   notificationCenter: document.getElementById("notificationCenterView"),
   translationCenter: document.getElementById("translationCenterView"),
   systemSettings: document.getElementById("systemSettingsView"),
+  attachmentManagement: document.getElementById("attachmentManagementView"),
   aboutApp: document.getElementById("aboutAppView")
 };
 
@@ -306,6 +307,7 @@ const pageMeta = {
   notificationCenter: ["مركز الإشعارات", "إدارة الأحداث والمستلمين وقنوات الإشعار"],
   translationCenter: ["مركز الترجمه", "إدارة قاموس الترجمة المركزي ومراجعة تغطية الشاشات"],
   systemSettings: ["systemSettings.page.title", "systemSettings.page.note"],
+  attachmentManagement: ["attachments.page.title", "attachments.page.note"],
   aboutApp: ["حول التطبيق", "معلومات الإصدار وحالة التحديثات"]
 };
 
@@ -316,6 +318,7 @@ const PAGE_META_I18N_KEYS = Object.freeze({
   backups: pageMeta.backups,
   systemHealth: pageMeta.systemHealth,
   systemSettings: pageMeta.systemSettings,
+  attachmentManagement: pageMeta.attachmentManagement,
   aboutApp: ["aboutApp.page.title", "aboutApp.page.note"],
   reportsOverview: ["reportsOverview.page.title", "reportsOverview.page.subtitle"],
   advancedAnalytics: ["advancedAnalytics.title", "advancedAnalytics.subtitle"],
@@ -2475,9 +2478,10 @@ function renderPermissionsMatrix(role) {
       <div class="permission-row permission-header"><strong>${escapeHtml(l1T("permissions.column.screen"))}</strong><span>${escapeHtml(l1T("permissions.action.view"))}</span><span>${escapeHtml(l1T("permissions.action.add"))}</span><span>${escapeHtml(l1T("permissions.action.edit"))}</span><span>${escapeHtml(l1T("permissions.action.delete"))}</span><span>${escapeHtml(l1T("permissions.action.export"))}</span></div>
       ${permissionScreens.filter(screen => screen.group_name === group).map(screen => {
         const row = map.get(screen.screen_key) || {};
-        return `<div class="permission-row" data-screen-key="${screen.screen_key}"><strong>${escapeHtml(screen.screen_name)}</strong>${
+        const am1AdminOnly = screen.screen_key === "attachmentManagement";
+        return `<div class="permission-row" data-screen-key="${screen.screen_key}"><strong>${escapeHtml(am1AdminOnly ? l1T("attachments.page.title") : screen.screen_name)}${am1AdminOnly ? `<small>${escapeHtml(l1T("attachments.adminOnly"))}</small>` : ""}</strong>${
           ["can_view","can_add","can_edit","can_delete","can_export"].map(key =>
-            `<input type="checkbox" data-permission="${key}" ${(role === "super_admin" || row[key]) ? "checked" : ""} ${role === "super_admin" ? "disabled" : ""}>`
+            `<input type="checkbox" data-permission="${key}" ${(role === "super_admin" || (!am1AdminOnly && row[key])) ? "checked" : ""} ${(role === "super_admin" || am1AdminOnly) ? "disabled" : ""}>`
           ).join("")
         }</div>`;
       }).join("")}
