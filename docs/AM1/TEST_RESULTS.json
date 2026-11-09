@@ -1,0 +1,111 @@
+{
+  "phase": "AM1R1",
+  "version": "18.56.145",
+  "executedAt": "2026-11-09T08:11:08.975671+00:00",
+  "localOnly": true,
+  "totalUniquePassingTests": 162,
+  "suites": [
+    {
+      "suite": "AM1R1",
+      "exitCode": 0,
+      "tests": 47,
+      "pass": 47,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "SC1",
+      "exitCode": 0,
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "P5",
+      "exitCode": 0,
+      "tests": 38,
+      "pass": 38,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "P4",
+      "exitCode": 0,
+      "tests": 27,
+      "pass": 27,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "P3",
+      "exitCode": 0,
+      "tests": 16,
+      "pass": 16,
+      "fail": 0,
+      "skipped": 0
+    }
+  ],
+  "historicalReleaseAssertionsExcluded": [
+    "SC1: release metadata is coherent and only the two required asset URLs advance",
+    "P5: release version, cache token and the four changed script URLs agree",
+    "P3: release metadata and cache versions agree"
+  ],
+  "currentReleaseCoveredByAM1R1": true,
+  "pdfQA": {
+    "syntheticOnly": true,
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "pdfs": 2,
+    "pagesPerPDF": 2,
+    "allFourPagesVisuallyInspected": true,
+    "arabicFontBundledAndRendered": true,
+    "embeddedOriginalExtraction": [
+      {
+        "archiveId": "11111111-1111-4111-8111-111111111111",
+        "originals": 2,
+        "verified": true,
+        "networkWrites": 0,
+        "language": "ar"
+      },
+      {
+        "archiveId": "11111111-1111-4111-8111-111111111111",
+        "originals": 2,
+        "verified": true,
+        "networkWrites": 0,
+        "language": "en"
+      }
+    ],
+    "originalsPreserveExactBytes": true,
+    "imagePagePreviewRasterized": true
+  },
+  "validation": {
+    "javascriptSyntax": true,
+    "edgeAdapterStrictTypeScriptAgainstSupabaseJS": "2.119.0",
+    "postgresql": "PGlite 0.3.14, isolated roles/data with managed Storage trigger behaviors and current/version indexes",
+    "storageRLSFixtureIsNotProductionPolicies": true,
+    "edgeActualSDKSerializedVersionRequests": true,
+    "edgeIgnoresVersionResponseRejected": true,
+    "edgeHTTPTransportMocked": true,
+    "managedBookkeepingDoesNotInvalidateExport": true,
+    "directDeleteProtectionPreserved": true,
+    "sourceAmbiguityAndMissingMappingProtected": true,
+    "oldVersionReplacementNotAuthorized": true,
+    "emergencyResumeReactivationCovered": true,
+    "dom": "Linkedom 0.18.12; simulated dialogs and file input",
+    "sha256": "vendored @noble/hashes 2.0.1 compared to Node crypto",
+    "nativeBrowserVisualUI": false,
+    "productionSQLExecutedByAssistant": false,
+    "productionStorageDeletion": false,
+    "productionRoleOrDeviceRegression": false,
+    "realStorageConcurrencyProven": false,
+    "deployedStorageVersionAPISupportProven": false,
+    "userProvidedReadOnlyAuditsReviewed": true
+  },
+  "requiredNextStep": "Backup, install only the new AM1R1 migration disabled, then 01_VERIFY_INSTALL_READONLY.sql; review before deployment/activation",
+  "initialDeletionEnabled": false,
+  "priorP5LiveTimingIssueClosed": false,
+  "priorSecurityAdvisorIssuesClosedByAM1R1": false
+}

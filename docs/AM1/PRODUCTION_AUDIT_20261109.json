@@ -1,0 +1,68 @@
+{
+  "phase": "AM1R1",
+  "evidence": "USER_PROVIDED_READ_ONLY_CATALOG_RESULTS",
+  "precheckCapturedAt": "2026-11-09T06:44:18.834937+00:00",
+  "semanticsCapturedAt": "2026-11-09T07:22:23.084043+00:00",
+  "images": 425,
+  "recordedBytes": 1107194388,
+  "notBillingMeasurement": true,
+  "allBucketsPrivate": true,
+  "allBucketTypes": "STANDARD",
+  "allVersioningStatus": "DISABLED",
+  "archivedRows": 0,
+  "deleteMarkers": 0,
+  "versionedRows": 0,
+  "duplicateCurrentPathGroups": 0,
+  "imagesWithoutPhysicalVersion": 0,
+  "imagesWithProviderLastModified": 425,
+  "sourceCoverage": {
+    "installationEvidence": {
+      "images": 423,
+      "exactlyOneSource": 390,
+      "withoutSource": 33,
+      "protectedWithoutSource": 33
+    },
+    "seaVibeExpenses": {
+      "images": 1,
+      "exactlyOneSource": 1,
+      "storageOwnerFallback": 1
+    },
+    "whatsappTemplates": {
+      "images": 1,
+      "protected": 1
+    }
+  },
+  "initialEligibleCount": 391,
+  "initialProtectedCount": 34,
+  "rowTimestampMonths": [
+    {
+      "month": "2026-08",
+      "images": 71,
+      "bytes": 189912856
+    },
+    {
+      "month": "2026-09",
+      "images": 162,
+      "bytes": 420719236
+    },
+    {
+      "month": "2026-10",
+      "images": 146,
+      "bytes": 375218324
+    },
+    {
+      "month": "2026-11",
+      "images": 46,
+      "bytes": 121343972
+    }
+  ],
+  "monthCountsAreNotProviderContentTimeGroupingProof": true,
+  "managedObjectsTriggers": [
+    "protect_objects_delete",
+    "update_objects_updated_at"
+  ],
+  "apiCalled": false,
+  "productionChanged": false,
+  "attachmentSchemaExists": false,
+  "attachmentRPCExists": false
+}

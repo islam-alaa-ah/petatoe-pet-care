@@ -1,0 +1,108 @@
+{
+  "phase": "AUDIT-BACKEND-01",
+  "kind": "OFFLINE_SOURCE_BEHAVIOUR_REPLAY",
+  "tests_completed": 8,
+  "production_requests_performed": 0,
+  "database_calls_performed": 0,
+  "runtime_files_modified": 0,
+  "browser_or_account_regression_performed": false,
+  "tests": [
+    {
+      "name": "execution_subscription_starts_on_DOMContentLoaded_without_opening_execution",
+      "status": "OBSERVED_IN_LOCAL_MOCK_REPLAY",
+      "evidence": {
+        "execution_screen_opened": false,
+        "document_visibility": "hidden",
+        "subscriptions": 1,
+        "workspace_loader_calls_after_mock_update": 1,
+        "identity_loader_calls": 1,
+        "limit": "DOM rendering is not under test; service methods are mocked, not real HTTP requests."
+      }
+    },
+    {
+      "name": "service_contract_subscription_returns_a_promise_of_cleanup",
+      "status": "OBSERVED_IN_LOCAL_MOCK_REPLAY",
+      "evidence": {
+        "immediate_return": "Promise",
+        "resolved_value": "function",
+        "implication": "A future lifecycle fix must await and safely retain the cleanup function."
+      }
+    },
+    {
+      "name": "shared_read_cache_refreshes_for_two_sequential_fresh_cache_reads",
+      "status": "OBSERVED_IN_LOCAL_MOCK_REPLAY",
+      "evidence": {
+        "cache_hit": true,
+        "cache_stale": false,
+        "read_calls": 2,
+        "loader_calls": 2
+      }
+    },
+    {
+      "name": "shared_read_cache_does_not_coalesce_concurrent_same_key_loaders",
+      "status": "OBSERVED_IN_LOCAL_MOCK_REPLAY",
+      "evidence": {
+        "same_user_and_key": true,
+        "concurrent_read_calls": 2,
+        "loader_calls_before_first_finished": 2
+      }
+    },
+    {
+      "name": "customer_cache_refresh_performs_exact_count_even_with_fresh_cache",
+      "status": "OBSERVED_IN_LOCAL_MOCK_REPLAY",
+      "evidence": {
+        "cache_stale": false,
+        "sequential_list_calls": 2,
+        "exact_head_count_calls": 2,
+        "sync_calls": 2,
+        "limit": "Mock count matches cached rows; no forced full reload was simulated."
+      }
+    },
+    {
+      "name": "scope_resolver_repeats_same_user_lookup_for_concurrent_domains",
+      "status": "OBSERVED_IN_LOCAL_MOCK_REPLAY",
+      "evidence": {
+        "role_in_mock": "admin",
+        "concurrent_domain_resolutions": 3,
+        "same_user_profile_lookup_calls": 3,
+        "note": "Selected mode may add representative-list reads; super_admin takes a local fast path."
+      }
+    },
+    {
+      "name": "vehicle_treasury_registered_task_can_load_before_screen_is_opened",
+      "status": "OBSERVED_IN_LOCAL_MOCK_REPLAY",
+      "evidence": {
+        "screen_opened": false,
+        "permission_granted_in_mock": true,
+        "workspace_loader_calls": 1,
+        "all_filter_arguments_null": true
+      }
+    },
+    {
+      "name": "appointment_registered_refresh_reads_scope_before_any_workspace_is_opened",
+      "status": "OBSERVED_IN_LOCAL_MOCK_REPLAY",
+      "evidence": {
+        "workspace_opened": false,
+        "role_in_mock": "admin",
+        "scope_select_calls": 6,
+        "tables": [
+          "installation_data_access_profiles",
+          "installation_data_access_representatives",
+          "installation_team_access",
+          "installation_user_technician_bindings",
+          "user_data_access_profiles",
+          "user_data_access_representatives"
+        ]
+      }
+    }
+  ],
+  "source_hashes": {
+    "assets/js/installation-execution.js": "fccf11de9e11108756de4669891348941a0aca8bab8c34fd5f4da547d5754fa7",
+    "assets/js/installations-service-contract.js": "f084a4011a4f00d5590dc274e05338540fc29fe035a073ed5369176a190be25f",
+    "assets/js/offline-read-cache.js": "51a4461e8a6ab5e9cd1582418cd5b360916e87567aeaa901697765c30f979394",
+    "assets/js/customers-service.js": "cd0c84bf7afa97249e51912ac15b6af8b7969d06a83ff722752fcd4db186d2bc",
+    "assets/js/data-access-scope.js": "7243438e8c5614ea3b3464920af0e18956914c48fcf54e3155de27f57eaf7956",
+    "assets/js/vehicle-treasury-service.js": "9f00b2fe7527501a33d490e064a0f25b86d55298dc9cf0cba598927f07bc32e7",
+    "assets/js/installations-service.js": "181b6c717b83312cac128bf6ace4ae28c1b53d9d7912f2878ce027fb5e17b5fe"
+  }
+}

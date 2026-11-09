@@ -1,0 +1,29 @@
+{
+  "phase": "AM1-AUDIT-02-LOCAL",
+  "noNetworkCalls": true,
+  "noProductionAccess": true,
+  "verifiedCounterexamples": {
+    "lastAccessUpdateChangesUpdatedAt": true,
+    "bookkeepingOnlyCanInvalidateArchive": true,
+    "currentCandidateIncludesArchivedImageRows": true
+  },
+  "conditionalOnReadAPIWritingLastAccess": true,
+  "storageReadAPIMutationNotTested": true,
+  "beforeMonth": "2026-10",
+  "afterMonth": "2026-11",
+  "completeError": "AM1_OBJECT_CHANGED",
+  "directSQLDeletionRejected": "42501",
+  "auditSQLExecutedLocally": true,
+  "auditSQLLiveSourceMappingChecked": true,
+  "auditSQLRuns": 2,
+  "auditSQLTransactionReadOnly": true,
+  "auditSQLLeftObjectRowsUnchanged": true,
+  "auditSQLDistinguishesCurrentAndArchivedImages": true,
+  "conclusion": "HOLD_AM1_INSTALLATION_UNTIL_STORAGE_SEMANTICS_AUDIT_AND_COMPATIBILITY_FIX",
+  "verifiedAt": "2026-11-09T07:10:22.946056+00:00",
+  "candidateApplicationFilesModified": false,
+  "original148TestsCoverFullProductionStorageSemantics": false,
+  "candidateVersion": "18.56.145",
+  "publishedVersionChecked": "18.56.144",
+  "candidateZipSha256": "9c9dda53fae48ad607a765115f3513a55ad297b5a9cda98afcd85c957c5861a5"
+}

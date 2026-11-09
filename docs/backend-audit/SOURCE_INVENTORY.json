@@ -1,0 +1,4134 @@
+{
+  "phase": "AUDIT-BACKEND-01",
+  "audit_date_cairo": "2026-11-08",
+  "scope": "Read-only source analysis; literal matches are not runtime calls or proof of non-use.",
+  "version": {
+    "version": "18.56.141",
+    "build": 185741,
+    "forceUpdate": false,
+    "releaseDate": "2026-11-07",
+    "title": "استقرار الإشعارات ومنع التكرار — P3",
+    "titleEn": "Notification Reliability and Deduplication — P3",
+    "notes": [
+      "توحيد استقبال الإشعارات وتحديث حالة القراءة دون تكرار الرسالة نفسها.",
+      "تقليل القراءة الدورية أثناء اتصال Realtime مع قراءة احتياطية عند انقطاعه وتأخير المحاولات عند الأخطاء."
+    ],
+    "notesEn": [
+      "Unifies notification delivery and read-state updates without displaying the same notification twice.",
+      "Reduces periodic reads while Realtime is connected, with REST fallback and retry backoff when unavailable."
+    ],
+    "cacheToken": "petatoe-pwa-18-56-141-notifications-p3"
+  },
+  "baseline_zip_sha256": "86e0a009a4f80706086ee8022f3441fbb33817d78eb801b2645506acbc80de82",
+  "p3_zip_sha256": "cf7d96e3da7530b2e861ba94801f327ac68e8a02dcc3b1cdbecf28e1312916d2",
+  "counts": {
+    "all_source_files": 1162,
+    "asset_js_files": 93,
+    "index_local_scripts": 86,
+    "index_external_scripts": 4,
+    "unique_sidebar_routes": 61,
+    "sql_files": 422,
+    "edge_functions": 4
+  },
+  "scripts": [
+    {
+      "src": "assets/js/performance-monitor.js",
+      "line": 4307
+    },
+    {
+      "src": "assets/js/health-alerts-engine.js",
+      "line": 4308
+    },
+    {
+      "src": "assets/js/diagnostics-service.js",
+      "line": 4309
+    },
+    {
+      "src": "assets/js/diagnostics-engine.js",
+      "line": 4310
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2",
+      "line": 4311
+    },
+    {
+      "src": "assets/js/supabase-config.js",
+      "line": 4952
+    },
+    {
+      "src": "assets/js/offline-session-store.js",
+      "line": 4953
+    },
+    {
+      "src": "assets/js/supabase-client.js",
+      "line": 4954
+    },
+    {
+      "src": "assets/js/geographic-address.js",
+      "line": 4955
+    },
+    {
+      "src": "assets/js/permissions.js",
+      "line": 4956
+    },
+    {
+      "src": "assets/js/permission-engine.js",
+      "line": 4957
+    },
+    {
+      "src": "assets/js/localization-center-service.js",
+      "line": 4958
+    },
+    {
+      "src": "assets/js/localization-center.js",
+      "line": 4959
+    },
+    {
+      "src": "assets/js/translation-center.js",
+      "line": 4960
+    },
+    {
+      "src": "assets/js/data-access-scope.js",
+      "line": 4961
+    },
+    {
+      "src": "assets/js/smart-cache.js",
+      "line": 4962
+    },
+    {
+      "src": "assets/js/sync-engine.js",
+      "line": 4963
+    },
+    {
+      "src": "assets/js/sync-retention.js",
+      "line": 4964
+    },
+    {
+      "src": "assets/js/offline-queue.js",
+      "line": 4965
+    },
+    {
+      "src": "assets/js/permissions-service.js",
+      "line": 4966
+    },
+    {
+      "src": "assets/js/auth-session.js",
+      "line": 4967
+    },
+    {
+      "src": "assets/js/reference-data-service.js",
+      "line": 4968
+    },
+    {
+      "src": "assets/js/customers-service.js",
+      "line": 4969
+    },
+    {
+      "src": "assets/js/followups-service.js",
+      "line": 4970
+    },
+    {
+      "src": "assets/js/quotations-service.js",
+      "line": 4971
+    },
+    {
+      "src": "assets/js/sales-invoices-service.js",
+      "line": 4972
+    },
+    {
+      "src": "assets/js/vehicle-treasury-service.js",
+      "line": 4973
+    },
+    {
+      "src": "assets/js/payroll-service.js",
+      "line": 4974
+    },
+    {
+      "src": "assets/js/sea-vibe-payroll-service.js",
+      "line": 4975
+    },
+    {
+      "src": "assets/js/sea-vibe-service.js",
+      "line": 4976
+    },
+    {
+      "src": "assets/js/users-service.js",
+      "line": 4977
+    },
+    {
+      "src": "assets/js/activity-service.js",
+      "line": 4978
+    },
+    {
+      "src": "assets/js/backup-service.js",
+      "line": 4979
+    },
+    {
+      "src": "assets/js/system-settings-service.js",
+      "line": 4980
+    },
+    {
+      "src": "assets/js/system-health-service.js",
+      "line": 4981
+    },
+    {
+      "src": "assets/js/offline-read-cache.js",
+      "line": 4982
+    },
+    {
+      "src": "assets/js/cache-dependency-engine.js",
+      "line": 4983
+    },
+    {
+      "src": "assets/js/daily-operations-service.js",
+      "line": 4984
+    },
+    {
+      "src": "assets/js/appointment-contact-data-service.js",
+      "line": 4985
+    },
+    {
+      "src": "assets/js/appointment-historical-import-service.js",
+      "line": 4986
+    },
+    {
+      "src": "assets/js/installations-service.js",
+      "line": 4987
+    },
+    {
+      "src": "assets/js/installations-service-contract.js",
+      "line": 4988
+    },
+    {
+      "src": "assets/js/employee-report-settings-service.js",
+      "line": 4989
+    },
+    {
+      "src": "assets/js/whatsapp-template-service.js",
+      "line": 4990
+    },
+    {
+      "src": "assets/js/daily-suggestions-service.js",
+      "line": 4991
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js",
+      "line": 4992
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js",
+      "line": 4993
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js",
+      "line": 4994
+    },
+    {
+      "src": "assets/js/reports-engine.js",
+      "line": 4995
+    },
+    {
+      "src": "assets/js/export-center.js",
+      "line": 4996
+    },
+    {
+      "src": "assets/js/customer360-engine.js",
+      "line": 4997
+    },
+    {
+      "src": "assets/js/customer360-export.js",
+      "line": 4998
+    },
+    {
+      "src": "assets/js/representative-excel-center.js",
+      "line": 4999
+    },
+    {
+      "src": "assets/js/customer-excel-center.js",
+      "line": 5000
+    },
+    {
+      "src": "assets/js/daily-performance-service.js",
+      "line": 5001
+    },
+    {
+      "src": "assets/js/daily-alerts-service.js",
+      "line": 5002
+    },
+    {
+      "src": "assets/js/daily-activity-service.js",
+      "line": 5003
+    },
+    {
+      "src": "assets/js/notification-center-service.js",
+      "line": 5004
+    },
+    {
+      "src": "assets/js/app.js",
+      "line": 5005
+    },
+    {
+      "src": "assets/js/customer-reports-overview.js",
+      "line": 5006
+    },
+    {
+      "src": "assets/js/cars-teams-reports.js",
+      "line": 5007
+    },
+    {
+      "src": "assets/js/advanced-analytics.js",
+      "line": 5008
+    },
+    {
+      "src": "assets/js/advanced-analytics-customers.js",
+      "line": 5009
+    },
+    {
+      "src": "assets/js/daily-last-sale-report.js",
+      "line": 5010
+    },
+    {
+      "src": "assets/js/advanced-analytics-operations.js",
+      "line": 5011
+    },
+    {
+      "src": "assets/js/advanced-analytics-peaks.js",
+      "line": 5012
+    },
+    {
+      "src": "assets/js/advanced-analytics-insights.js",
+      "line": 5013
+    },
+    {
+      "src": "assets/js/advanced-analytics-services.js",
+      "line": 5014
+    },
+    {
+      "src": "assets/js/advanced-analytics-service-finance.js",
+      "line": 5015
+    },
+    {
+      "src": "assets/js/services-reports.js",
+      "line": 5016
+    },
+    {
+      "src": "assets/js/sales-reports.js",
+      "line": 5017
+    },
+    {
+      "src": "assets/js/appointment-historical-import.js",
+      "line": 5018
+    },
+    {
+      "src": "assets/js/appointment-contact-data.js",
+      "line": 5019
+    },
+    {
+      "src": "assets/js/customer-excel-actions-hotfix.js",
+      "line": 5020
+    },
+    {
+      "src": "assets/js/notification-center.js",
+      "line": 5021
+    },
+    {
+      "src": "assets/js/sales-invoices.js",
+      "line": 5022
+    },
+    {
+      "src": "assets/js/vehicle-treasury.js",
+      "line": 5023
+    },
+    {
+      "src": "assets/js/payroll.js",
+      "line": 5024
+    },
+    {
+      "src": "assets/js/sea-vibe-payroll.js",
+      "line": 5025
+    },
+    {
+      "src": "assets/js/sea-vibe.js",
+      "line": 5026
+    },
+    {
+      "src": "assets/js/installations-module.js",
+      "line": 5027
+    },
+    {
+      "src": "assets/js/installation-scheduling.js",
+      "line": 5028
+    },
+    {
+      "src": "assets/js/installation-execution.js",
+      "line": 5029
+    },
+    {
+      "src": "assets/js/installation-completion.js",
+      "line": 5030
+    },
+    {
+      "src": "assets/js/installation-operations-reports.js",
+      "line": 5031
+    },
+    {
+      "src": "assets/js/installation-dashboard-settings.js",
+      "line": 5032
+    },
+    {
+      "src": "assets/js/installation-settings-management.js",
+      "line": 5033
+    },
+    {
+      "src": "assets/js/mobile.js",
+      "line": 5034
+    },
+    {
+      "src": "assets/js/pwa.js",
+      "line": 5035
+    },
+    {
+      "src": "assets/js/native.js",
+      "line": 5036
+    }
+  ],
+  "sidebar_routes": [
+    {
+      "key": "dashboard",
+      "line": 126
+    },
+    {
+      "key": "dailyOperations",
+      "line": 127
+    },
+    {
+      "key": "customers",
+      "line": 139
+    },
+    {
+      "key": "followups",
+      "line": 140
+    },
+    {
+      "key": "quotations",
+      "line": 141
+    },
+    {
+      "key": "salesInvoices",
+      "line": 142
+    },
+    {
+      "key": "representatives",
+      "line": 143
+    },
+    {
+      "key": "settings",
+      "line": 144
+    },
+    {
+      "key": "installationsOverview",
+      "line": 157
+    },
+    {
+      "key": "installationContactData",
+      "line": 158
+    },
+    {
+      "key": "installationRequestNew",
+      "line": 159
+    },
+    {
+      "key": "installationRequests",
+      "line": 160
+    },
+    {
+      "key": "installationSchedule",
+      "line": 161
+    },
+    {
+      "key": "installationExecution",
+      "line": 162
+    },
+    {
+      "key": "installationCompletion",
+      "line": 163
+    },
+    {
+      "key": "installationExceptions",
+      "line": 164
+    },
+    {
+      "key": "installationReports",
+      "line": 165
+    },
+    {
+      "key": "appointmentDataImport",
+      "line": 166
+    },
+    {
+      "key": "vehicleTreasury",
+      "line": 167
+    },
+    {
+      "key": "installationSettings",
+      "line": 168
+    },
+    {
+      "key": "payrollManagement",
+      "line": 179
+    },
+    {
+      "key": "salaryStatement",
+      "line": 180
+    },
+    {
+      "key": "commissionManagement",
+      "line": 181
+    },
+    {
+      "key": "commissionStatement",
+      "line": 182
+    },
+    {
+      "key": "payrollReference",
+      "line": 183
+    },
+    {
+      "key": "seaVibeTrips",
+      "line": 194
+    },
+    {
+      "key": "seaVibeCustomers",
+      "line": 195
+    },
+    {
+      "key": "seaVibeExpenseNew",
+      "line": 196
+    },
+    {
+      "key": "seaVibeGeneralExpenses",
+      "line": 197
+    },
+    {
+      "key": "seaVibeAssets",
+      "line": 198
+    },
+    {
+      "key": "seaVibeTreasury",
+      "line": 199
+    },
+    {
+      "key": "seaVibeJournals",
+      "line": 200
+    },
+    {
+      "key": "seaVibeZawel",
+      "line": 201
+    },
+    {
+      "key": "seaVibeFuel",
+      "line": 202
+    },
+    {
+      "key": "seaVibePayrollManagement",
+      "line": 209
+    },
+    {
+      "key": "seaVibeSalaryStatement",
+      "line": 210
+    },
+    {
+      "key": "seaVibeCommissionManagement",
+      "line": 211
+    },
+    {
+      "key": "seaVibeCommissionStatement",
+      "line": 212
+    },
+    {
+      "key": "seaVibePayrollReference",
+      "line": 213
+    },
+    {
+      "key": "seaVibeReference",
+      "line": 216
+    },
+    {
+      "key": "seaVibeAccountStatement",
+      "line": 217
+    },
+    {
+      "key": "seaVibeTrialBalance",
+      "line": 218
+    },
+    {
+      "key": "seaVibeIncomeStatement",
+      "line": 219
+    },
+    {
+      "key": "seaVibeBalanceSheet",
+      "line": 220
+    },
+    {
+      "key": "seaVibeReports",
+      "line": 221
+    },
+    {
+      "key": "reportsOverview",
+      "line": 233
+    },
+    {
+      "key": "customerReports",
+      "line": 234
+    },
+    {
+      "key": "advancedAnalytics",
+      "line": 235
+    },
+    {
+      "key": "servicesReports",
+      "line": 236
+    },
+    {
+      "key": "carsTeamsReports",
+      "line": 237
+    },
+    {
+      "key": "salesReports",
+      "line": 238
+    },
+    {
+      "key": "dailyPerformanceReport",
+      "line": 239
+    },
+    {
+      "key": "users",
+      "line": 251
+    },
+    {
+      "key": "permissions",
+      "line": 252
+    },
+    {
+      "key": "activityLog",
+      "line": 253
+    },
+    {
+      "key": "backups",
+      "line": 254
+    },
+    {
+      "key": "systemHealth",
+      "line": 255
+    },
+    {
+      "key": "notificationCenter",
+      "line": 256
+    },
+    {
+      "key": "translationCenter",
+      "line": 257
+    },
+    {
+      "key": "systemSettings",
+      "line": 258
+    },
+    {
+      "key": "aboutApp",
+      "line": 259
+    }
+  ],
+  "asset_inventory": [
+    {
+      "path": "assets/css/app.js",
+      "sha256": "99bb983a64b289486858d456eb99475c211f8a6e06a03db5f4c95c38027436df",
+      "lines": 1300,
+      "bytes": 51267,
+      "index_script": false,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/css/localization-center-service.js",
+      "sha256": "b5db15cdd19b044fa6a7f6573b443cbffc1c391e8bca3f28e46da5415e552579",
+      "lines": 10,
+      "bytes": 2871,
+      "index_script": false,
+      "literal_from_calls": [
+        {
+          "name": "app_translations",
+          "line": 4
+        },
+        {
+          "name": "app_translations",
+          "line": 5
+        },
+        {
+          "name": "installation_service_types",
+          "line": 6
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 6
+        },
+        {
+          "name": "app_translations",
+          "line": 7
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/css/localization-center.js",
+      "sha256": "0f70feb08db30675098c4a9d539d9332196bb070f3f244ea393ab65f9f05697a",
+      "lines": 252,
+      "bytes": 31401,
+      "index_script": false,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 251
+        }
+      ]
+    },
+    {
+      "path": "assets/css/pwa.js",
+      "sha256": "b6cd9d52a55da5c1b02c91ece22ea32d1f32bbfb782854b731971b724f331f7f",
+      "lines": 337,
+      "bytes": 14260,
+      "index_script": false,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [
+        {
+          "line": 102,
+          "expression_start": "const timer = window.setInterval(() => {"
+        },
+        {
+          "line": 334,
+          "expression_start": "window.setInterval(() => checkForUpdate({ silent: true }), UPDATE_CHECK_INTERVAL_MS);"
+        }
+      ],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "online",
+          "line": 319
+        },
+        {
+          "name": "offline",
+          "line": 323
+        },
+        {
+          "name": "visibilitychange",
+          "line": 324
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 328
+        }
+      ]
+    },
+    {
+      "path": "assets/css/supabase-client.js",
+      "sha256": "f045739c14b22887d98c335c46bbcfd2eaf28cb4d9cfc8a2cb6ac847087124e1",
+      "lines": 50,
+      "bytes": 1346,
+      "index_script": false,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/css/supabase-config.js",
+      "sha256": "54441c03e4de34d6d0ff442c8994d8528820fe7c493ee619f4314c471ca5f2ca",
+      "lines": 10,
+      "bytes": 489,
+      "index_script": false,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/activity-service.js",
+      "sha256": "7a4b352fb9d093194cc1b632e52c8ca88712e1e748ad693541d053d2cc66e6ce",
+      "lines": 13,
+      "bytes": 683,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "audit_logs",
+          "line": 5
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/advanced-analytics-customers.js",
+      "sha256": "536569f25246fa809c64dfb1815909b423d81ff9d96540d156e55732a1089a4b",
+      "lines": 164,
+      "bytes": 18580,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [
+        {
+          "name": "sales_reports_rows_r44r38r20r35",
+          "line": 39
+        },
+        {
+          "name": "daily_last_sale_snapshot_r44r26",
+          "line": 149
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 129
+        }
+      ]
+    },
+    {
+      "path": "assets/js/advanced-analytics-insights.js",
+      "sha256": "a1e828944f5c20220a7281c4cef07ddfffbee2043a3a43f15f55707dafc55ac5",
+      "lines": 31,
+      "bytes": 3810,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 27
+        }
+      ]
+    },
+    {
+      "path": "assets/js/advanced-analytics-operations.js",
+      "sha256": "a7eb8ea2afdf758d37fb110d687503b95d634e06593514422ba0b3c26b26b1c6",
+      "lines": 131,
+      "bytes": 16209,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 107
+        }
+      ]
+    },
+    {
+      "path": "assets/js/advanced-analytics-peaks.js",
+      "sha256": "e6f91a58487f8c7c4bd5a7a5de87c0116c711a1d69786d8bf4eae3b4277b904a",
+      "lines": 61,
+      "bytes": 7495,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "installation_requests",
+          "line": 35
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 57
+        }
+      ]
+    },
+    {
+      "path": "assets/js/advanced-analytics-service-finance.js",
+      "sha256": "fd75d57f6ea62e65b40c51e3a9a1217cdc2cadc58d5daadb8dfb325c83ff32bf",
+      "lines": 109,
+      "bytes": 12640,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "appointment_historical_sales_reporting",
+          "line": 29
+        },
+        {
+          "name": "installation_service_types",
+          "line": 30
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "sales_reports_rows_r44r38r20r35",
+          "line": 31
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 105
+        }
+      ]
+    },
+    {
+      "path": "assets/js/advanced-analytics-services.js",
+      "sha256": "fa92b9b6312a1ad87438ef2984a2b809771c04fd404a10b1ae1fc0db710458c8",
+      "lines": 80,
+      "bytes": 10995,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "installation_execution_visits",
+          "line": 26
+        },
+        {
+          "name": "installation_execution_visit_services",
+          "line": 27
+        },
+        {
+          "name": "installation_request_services",
+          "line": 28
+        },
+        {
+          "name": "installation_service_types",
+          "line": 29
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 77
+        }
+      ]
+    },
+    {
+      "path": "assets/js/advanced-analytics.js",
+      "sha256": "e9af41e4776bd0e4e21d3f86de5f61dacfaa60efa0d7a9d26c90a7cec4661cb1",
+      "lines": 156,
+      "bytes": 14320,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [
+        {
+          "name": "sales_reports_rows_r44r38r20r35",
+          "line": 19
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 153
+        }
+      ]
+    },
+    {
+      "path": "assets/js/app.js",
+      "sha256": "0721ad93d7917b494991da0adb7d36073416f91f3bda0d461ebe71bb59a3a31b",
+      "lines": 9583,
+      "bytes": 489924,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [
+        {
+          "name": "finalize_admin_import_override",
+          "line": 8361
+        },
+        {
+          "name": "begin_admin_import_override",
+          "line": 8605
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [
+        {
+          "line": 4019,
+          "expression_start": "systemHealthTimer = window.setInterval(() => {"
+        }
+      ],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "customer-auth-ready",
+          "line": 7638
+        },
+        {
+          "name": "customer-auth-ready",
+          "line": 8734
+        }
+      ]
+    },
+    {
+      "path": "assets/js/appointment-contact-data-service.js",
+      "sha256": "833028b9dc896321e7d0d3818ce1df6f44adb00d99c296509ad7a8891a17e51a",
+      "lines": 77,
+      "bytes": 5637,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [
+        {
+          "name": "appointment_contact_summary_report",
+          "line": 34
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/appointment-contact-data.js",
+      "sha256": "7e1ece2377f39dcf0f33e478f30bcfc3665f337849ad1603a364bc634ba4b178",
+      "lines": 86,
+      "bytes": 8668,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 79
+        },
+        {
+          "name": "online",
+          "line": 81
+        },
+        {
+          "name": "offline",
+          "line": 82
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 85
+        }
+      ]
+    },
+    {
+      "path": "assets/js/appointment-historical-import-service.js",
+      "sha256": "99cae986fabb5d0abe2fa08461ba9a6489eb8c6f3b85b06d1491a1819c361d3e",
+      "lines": 85,
+      "bytes": 4167,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/appointment-historical-import.js",
+      "sha256": "22db351c4b0c9c83aad6e03930d5d02b8bb2d6d11ba524f02b8dbf5916c9fa0f",
+      "lines": 576,
+      "bytes": 35833,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 563
+        },
+        {
+          "name": "online",
+          "line": 570
+        },
+        {
+          "name": "offline",
+          "line": 571
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 575
+        }
+      ]
+    },
+    {
+      "path": "assets/js/auth-session.js",
+      "sha256": "0b296376fa1ecfceb7bdf22faaf2ade153ddba6444be80881b18e5aa9e393ce6",
+      "lines": 153,
+      "bytes": 9287,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "user_profiles",
+          "line": 23
+        },
+        {
+          "name": "user_profiles",
+          "line": 30
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 136
+        }
+      ]
+    },
+    {
+      "path": "assets/js/backup-service.js",
+      "sha256": "f77462df6dcab909f5bff2ae89f4886642ec15e823c4afc0047f26d0babab470",
+      "lines": 70,
+      "bytes": 2043,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "backup_operations",
+          "line": 42
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [
+        {
+          "name": "backup-admin",
+          "line": 15
+        }
+      ],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/cache-dependency-engine.js",
+      "sha256": "b0d01040bbeb323b8986988424b00ad874d242debdedb2e5ff21c9d00b1a4529",
+      "lines": 53,
+      "bytes": 2332,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/cars-teams-reports.js",
+      "sha256": "4131c8eceeccb7161609e8dae94af0573f3924f185c1cabbe401eb8f09a9e95a",
+      "lines": 227,
+      "bytes": 22969,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "sales_invoices",
+          "line": 200
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 201
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "sales_reports_rows_r44r38r20r35",
+          "line": 28
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/customer-excel-actions-hotfix.js",
+      "sha256": "c0dbde2f7719e194aa564bedafd538c56be431af1269c2a4c303871a8e3d0878",
+      "lines": 160,
+      "bytes": 6168,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/customer-excel-center.js",
+      "sha256": "73e27055393326270f55bf7e5707330b49586237dd8aa2254436cf41f4f60ffe",
+      "lines": 60,
+      "bytes": 7062,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/customer-reports-overview.js",
+      "sha256": "c9b3cf6bcf7c9467fd1ee4dfd6884a0bbf8fae22390736bd3df14b7351fa1146",
+      "lines": 618,
+      "bytes": 41512,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [
+        {
+          "name": "sales_reports_rows_r44r38r20r35",
+          "line": 191
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 616
+        }
+      ]
+    },
+    {
+      "path": "assets/js/customer360-engine.js",
+      "sha256": "cae7d84f48a4298fd6cac2d81df10a04ceb6e4dda83b0640dccc74fd9952872d",
+      "lines": 348,
+      "bytes": 12559,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/customer360-export.js",
+      "sha256": "3328ad62d1a3c7ead199378697b171f205b55f592c76a37e31ab666edf045edd",
+      "lines": 127,
+      "bytes": 14166,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/customers-service.js",
+      "sha256": "cd0c84bf7afa97249e51912ac15b6af8b7969d06a83ff722752fcd4db186d2bc",
+      "lines": 738,
+      "bytes": 28089,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "customers",
+          "line": 174
+        },
+        {
+          "name": "customers",
+          "line": 186
+        },
+        {
+          "name": "customers",
+          "line": 266
+        },
+        {
+          "name": "customers",
+          "line": 344
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 400
+        },
+        {
+          "name": "customers",
+          "line": 417
+        },
+        {
+          "name": "customers",
+          "line": 422
+        },
+        {
+          "name": "customers",
+          "line": 443
+        },
+        {
+          "name": "customers",
+          "line": 517
+        },
+        {
+          "name": "audit_logs",
+          "line": 564
+        },
+        {
+          "name": "customer_requests",
+          "line": 613
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "list_crm_sync_tombstones",
+          "line": 115
+        },
+        {
+          "name": "check_customer_phone_ownership",
+          "line": 357
+        },
+        {
+          "name": "delete_crm_entity_safe",
+          "line": 496
+        },
+        {
+          "name": "import_customers_batch",
+          "line": 659
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [
+        {
+          "name": "customers",
+          "line": 704
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/daily-activity-service.js",
+      "sha256": "d307c61d8985ea1d0071870221101f534ccfa752a24ffb5b1b0add28c3a625e9",
+      "lines": 412,
+      "bytes": 16116,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "daily_employee_sessions",
+          "line": 101
+        },
+        {
+          "name": "daily_employee_sessions",
+          "line": 113
+        },
+        {
+          "name": "audit_logs",
+          "line": 131
+        },
+        {
+          "name": "daily_task_completions",
+          "line": 147
+        },
+        {
+          "name": "daily_alert_actions",
+          "line": 162
+        },
+        {
+          "name": "business_activity_events",
+          "line": 184
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "touch_daily_employee_session",
+          "line": 47
+        },
+        {
+          "name": "end_daily_employee_session",
+          "line": 87
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [
+        {
+          "line": 74,
+          "expression_start": "heartbeatTimer = window.setInterval(() => {"
+        }
+      ],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/daily-alerts-service.js",
+      "sha256": "2735367f51737a99235324dd29117e11974993628bc7f15af28bfcead4f24642",
+      "lines": 139,
+      "bytes": 4170,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "daily_alerts",
+          "line": 21
+        },
+        {
+          "name": "daily_alerts",
+          "line": 108
+        },
+        {
+          "name": "daily_alert_actions",
+          "line": 117
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "sync_daily_operational_alerts",
+          "line": 55
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/daily-last-sale-report.js",
+      "sha256": "25502dcfd93570d4741ef5d50f680c95ea7f6885a09199355c6e77f83c1743d9",
+      "lines": 53,
+      "bytes": 6859,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 50
+        }
+      ]
+    },
+    {
+      "path": "assets/js/daily-operations-service.js",
+      "sha256": "e40a43345d1a0711dab58c829443735239a14093b676baba1ee5f1abcf05937d",
+      "lines": 679,
+      "bytes": 28675,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "daily_task_definitions",
+          "line": 177
+        },
+        {
+          "name": "daily_task_completions",
+          "line": 234
+        },
+        {
+          "name": "daily_task_completions",
+          "line": 314
+        },
+        {
+          "name": "audit_logs",
+          "line": 319
+        },
+        {
+          "name": "daily_operation_targets",
+          "line": 427
+        },
+        {
+          "name": "daily_operation_targets",
+          "line": 461
+        },
+        {
+          "name": "daily_manager_notes",
+          "line": 496
+        },
+        {
+          "name": "daily_manager_notes",
+          "line": 531
+        },
+        {
+          "name": "daily_task_completions",
+          "line": 586
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "get_daily_permission_owned_crm_snapshot",
+          "line": 137
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [
+        {
+          "name": "daily-operations",
+          "line": 657
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/daily-performance-service.js",
+      "sha256": "f82c2b3d29047ad8ddc941b20cf9188a05c6c6cea68b8863c7d36b8e55845f19",
+      "lines": 391,
+      "bytes": 14624,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "daily_task_definitions",
+          "line": 21
+        },
+        {
+          "name": "daily_task_completions",
+          "line": 32
+        },
+        {
+          "name": "daily_operation_targets",
+          "line": 47
+        },
+        {
+          "name": "daily_manager_notes",
+          "line": 65
+        },
+        {
+          "name": "sales_representatives",
+          "line": 76
+        },
+        {
+          "name": "user_profiles",
+          "line": 86
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/daily-suggestions-service.js",
+      "sha256": "d40fc915c22d085decbf84f92ae5462040a97c6fb36963ea74ee59baa73ec174",
+      "lines": 152,
+      "bytes": 5772,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "daily_customer_suggestions",
+          "line": 53
+        },
+        {
+          "name": "daily_customer_suggestions",
+          "line": 136
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "get_daily_customer_suggestions",
+          "line": 46
+        },
+        {
+          "name": "get_daily_customer_suggestions_team_summary",
+          "line": 85
+        },
+        {
+          "name": "complete_daily_customer_suggestion",
+          "line": 112
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/data-access-scope.js",
+      "sha256": "7243438e8c5614ea3b3464920af0e18956914c48fcf54e3155de27f57eaf7956",
+      "lines": 101,
+      "bytes": 4521,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "user_data_access_profiles",
+          "line": 55
+        },
+        {
+          "name": "user_data_access_representatives",
+          "line": 66
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/diagnostics-engine.js",
+      "sha256": "f1a5ceaff2f154e6805b5c1ac44b7f42d7c49ef968e176ac049f544f07b98d73",
+      "lines": 93,
+      "bytes": 9803,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/diagnostics-service.js",
+      "sha256": "f8f35c90dc52abd23ad3b0ed1183b0af2929e132dc19f6b14ff5c052e009f515",
+      "lines": 207,
+      "bytes": 5870,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "app_screens",
+          "line": 69
+        },
+        {
+          "name": "role_screen_permissions",
+          "line": 73
+        },
+        {
+          "name": "backup_operations",
+          "line": 92
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/employee-report-settings-service.js",
+      "sha256": "6c8f5b6e0701e0440e315e1a16cff6c46e00035d2389f89e34f814431347c23c",
+      "lines": 97,
+      "bytes": 4562,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "user_profiles",
+          "line": 43
+        },
+        {
+          "name": "daily_employee_report_settings",
+          "line": 47
+        },
+        {
+          "name": "daily_employee_report_settings",
+          "line": 82
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/export-center.js",
+      "sha256": "869c19e39556a5c2dcbb2cea7ab9938ec59e146161bbd90f21ab6257817c7d96",
+      "lines": 118,
+      "bytes": 13372,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/followups-service.js",
+      "sha256": "8bfe4f02273802b1dd6721428240e1e46ba0dd03dd4984020dc02c7bd148bf16",
+      "lines": 546,
+      "bytes": 22440,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "customer_followups",
+          "line": 142
+        },
+        {
+          "name": "customer_followups",
+          "line": 259
+        },
+        {
+          "name": "customer_followups",
+          "line": 261
+        },
+        {
+          "name": "customer_followups",
+          "line": 362
+        },
+        {
+          "name": "customer_followups",
+          "line": 372
+        },
+        {
+          "name": "customer_followups",
+          "line": 401
+        },
+        {
+          "name": "customer_followups",
+          "line": 465
+        },
+        {
+          "name": "audit_logs",
+          "line": 499
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "list_crm_sync_tombstones",
+          "line": 72
+        },
+        {
+          "name": "delete_crm_entity_safe",
+          "line": 451
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [
+        {
+          "name": "followups",
+          "line": 515
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/geographic-address.js",
+      "sha256": "a6ef745838a6d1bdeb6372f217f824f338911874e9f75edaf6867e21e9ddd39d",
+      "lines": 669,
+      "bytes": 30567,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/health-alerts-engine.js",
+      "sha256": "0c4177b2d9b0a913a67c2114ed13adf5e2e3bc5da8f0d786b1b442ec3eb629c2",
+      "lines": 208,
+      "bytes": 9295,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/installation-completion.js",
+      "sha256": "f812447631ad4c3be3cf5477de03ecea615e86aad3752a4ffe77989255c3c12c",
+      "lines": 372,
+      "bytes": 55228,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 235
+        },
+        {
+          "name": "kyum-view-changed",
+          "line": 236
+        }
+      ]
+    },
+    {
+      "path": "assets/js/installation-dashboard-settings.js",
+      "sha256": "0dfb79bbfbcd8d634a008fb78140b0121cf804215257daa2050c59361b201a09",
+      "lines": 1,
+      "bytes": 4243,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 1
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "assets/js/installation-execution.js",
+      "sha256": "fccf11de9e11108756de4669891348941a0aca8bab8c34fd5f4da547d5754fa7",
+      "lines": 81,
+      "bytes": 35492,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 80
+        },
+        {
+          "name": "kyum-view-changed",
+          "line": 80
+        }
+      ]
+    },
+    {
+      "path": "assets/js/installation-operations-reports.js",
+      "sha256": "2f2114bc53920a91f0ca6d1105783b3d512dcbc70604d773e153e24aeb5fe8cc",
+      "lines": 982,
+      "bytes": 158865,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [
+        {
+          "line": 373,
+          "expression_start": "const timer=setInterval(()=>{"
+        }
+      ],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 981
+        }
+      ]
+    },
+    {
+      "path": "assets/js/installation-scheduling.js",
+      "sha256": "f2b1c45f5a93aa8b6aa0775069f6d8459e61dc252d2d8c049b40b756df90c7d5",
+      "lines": 321,
+      "bytes": 60703,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 240
+        },
+        {
+          "name": "kyum-view-changed",
+          "line": 241
+        }
+      ]
+    },
+    {
+      "path": "assets/js/installation-settings-management.js",
+      "sha256": "51090cc23258b5b121c3c1c862c885586a4306ee42ca512924ea182170c937c4",
+      "lines": 225,
+      "bytes": 38367,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "appointment_employees",
+          "line": 60
+        },
+        {
+          "name": "appointment_cars",
+          "line": 61
+        },
+        {
+          "name": "appointment_pet_breeds",
+          "line": 62
+        },
+        {
+          "name": "installation_team_assignment_history",
+          "line": 63
+        },
+        {
+          "name": "appointment_employees",
+          "line": 122
+        },
+        {
+          "name": "appointment_employees",
+          "line": 122
+        },
+        {
+          "name": "appointment_cars",
+          "line": 128
+        },
+        {
+          "name": "appointment_cars",
+          "line": 128
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "save_installation_team_assignment_v1",
+          "line": 115
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 220
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 224
+        }
+      ]
+    },
+    {
+      "path": "assets/js/installations-module.js",
+      "sha256": "9c2be707b71b067a6f3009c54470375dcdc2f5e609109171071a5ca62ba11b4a",
+      "lines": 1286,
+      "bytes": 101784,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "quotations",
+          "line": 205
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 1005
+        },
+        {
+          "name": "kyum-view-changed",
+          "line": 1029
+        }
+      ]
+    },
+    {
+      "path": "assets/js/installations-service-contract.js",
+      "sha256": "f084a4011a4f00d5590dc274e05338540fc29fe035a073ed5369176a190be25f",
+      "lines": 66,
+      "bytes": 3123,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/installations-service.js",
+      "sha256": "181b6c717b83312cac128bf6ace4ae28c1b53d9d7912f2878ce027fb5e17b5fe",
+      "lines": 1649,
+      "bytes": 204874,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "installation_execution_visits",
+          "line": 5
+        },
+        {
+          "name": "installation_data_access_profiles",
+          "line": 80
+        },
+        {
+          "name": "installation_data_access_representatives",
+          "line": 81
+        },
+        {
+          "name": "installation_team_access",
+          "line": 82
+        },
+        {
+          "name": "installation_user_technician_bindings",
+          "line": 83
+        },
+        {
+          "name": "user_data_access_profiles",
+          "line": 84
+        },
+        {
+          "name": "user_data_access_representatives",
+          "line": 85
+        },
+        {
+          "name": "installation_requests",
+          "line": 164
+        },
+        {
+          "name": "installation_request_services",
+          "line": 164
+        },
+        {
+          "name": "customers",
+          "line": 169
+        },
+        {
+          "name": "quotations",
+          "line": 203
+        },
+        {
+          "name": "installation_regions",
+          "line": 204
+        },
+        {
+          "name": "installation_cities",
+          "line": 205
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 206
+        },
+        {
+          "name": "installation_service_types",
+          "line": 207
+        },
+        {
+          "name": "appointment_pet_breeds",
+          "line": 208
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 222
+        },
+        {
+          "name": "quotations",
+          "line": 231
+        },
+        {
+          "name": "installation_requests",
+          "line": 280
+        },
+        {
+          "name": "installation_requests",
+          "line": 296
+        },
+        {
+          "name": "installation_request_services",
+          "line": 297
+        },
+        {
+          "name": "installation_request_animals",
+          "line": 298
+        },
+        {
+          "name": "installation_request_collection",
+          "line": 299
+        },
+        {
+          "name": "installation_regions",
+          "line": 310
+        },
+        {
+          "name": "installation_cities",
+          "line": 311
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 312
+        },
+        {
+          "name": "installation_service_types",
+          "line": 313
+        },
+        {
+          "name": "quotations",
+          "line": 314
+        },
+        {
+          "name": "installation_requests",
+          "line": 330
+        },
+        {
+          "name": "quotations",
+          "line": 334
+        },
+        {
+          "name": "installation_requests",
+          "line": 355
+        },
+        {
+          "name": "installation_technicians",
+          "line": 356
+        },
+        {
+          "name": "installation_teams",
+          "line": 357
+        },
+        {
+          "name": "installation_technician_name_suggestions",
+          "line": 358
+        },
+        {
+          "name": "installation_requests",
+          "line": 362
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 367
+        },
+        {
+          "name": "quotations",
+          "line": 368
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 389
+        },
+        {
+          "name": "installation_execution_visit_services",
+          "line": 390
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 427
+        },
+        {
+          "name": "installation_request_services",
+          "line": 428
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 429
+        },
+        {
+          "name": "installation_execution_visit_services",
+          "line": 435
+        },
+        {
+          "name": "installation_execution_visit_services",
+          "line": 436
+        },
+        {
+          "name": "installation_technician_name_suggestions",
+          "line": 496
+        },
+        {
+          "name": "installation_technicians",
+          "line": 510
+        },
+        {
+          "name": "installation_technicians",
+          "line": 510
+        },
+        {
+          "name": "installation_technicians",
+          "line": 511
+        },
+        {
+          "name": "installation_requests",
+          "line": 516
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 517
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 518
+        },
+        {
+          "name": "installation_execution_visit_services",
+          "line": 519
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 529
+        },
+        {
+          "name": "installation_user_technician_bindings",
+          "line": 650
+        },
+        {
+          "name": "installation_data_access_profiles",
+          "line": 651
+        },
+        {
+          "name": "installation_execution_files",
+          "line": 913
+        },
+        {
+          "name": "installation-evidence",
+          "line": 920
+        },
+        {
+          "name": "installation_execution_files",
+          "line": 925
+        },
+        {
+          "name": "installation_execution_files",
+          "line": 928
+        },
+        {
+          "name": "installation_execution_files",
+          "line": 941
+        },
+        {
+          "name": "installation-evidence",
+          "line": 942
+        },
+        {
+          "name": "installation_request_services",
+          "line": 989
+        },
+        {
+          "name": "installation_requests",
+          "line": 1093
+        },
+        {
+          "name": "installation_completion_reports",
+          "line": 1094
+        },
+        {
+          "name": "installation_completion_files",
+          "line": 1094
+        },
+        {
+          "name": "installation_request_services",
+          "line": 1094
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 1095
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 1096
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 1097
+        },
+        {
+          "name": "installation_execution_visit_services",
+          "line": 1098
+        },
+        {
+          "name": "installation_request_collection",
+          "line": 1099
+        },
+        {
+          "name": "installation_requests",
+          "line": 1109
+        },
+        {
+          "name": "installation_completion_files",
+          "line": 1143
+        },
+        {
+          "name": "installation-evidence",
+          "line": 1149
+        },
+        {
+          "name": "installation_completion_files",
+          "line": 1153
+        },
+        {
+          "name": "installation_completion_files",
+          "line": 1155
+        },
+        {
+          "name": "installation-evidence",
+          "line": 1185
+        },
+        {
+          "name": "installation_completion_files",
+          "line": 1186
+        },
+        {
+          "name": "installation-evidence",
+          "line": 1191
+        },
+        {
+          "name": "installation_requests",
+          "line": 1192
+        },
+        {
+          "name": "installation_revisits",
+          "line": 1192
+        },
+        {
+          "name": "installation_team_assignment_history",
+          "line": 1200
+        },
+        {
+          "name": "installation_requests",
+          "line": 1221
+        },
+        {
+          "name": "installation_revisits",
+          "line": 1232
+        },
+        {
+          "name": "installation_technicians",
+          "line": 1233
+        },
+        {
+          "name": "installation_teams",
+          "line": 1234
+        },
+        {
+          "name": "sales_representatives",
+          "line": 1235
+        },
+        {
+          "name": "sales_invoices",
+          "line": 1236
+        },
+        {
+          "name": "installation_request_services",
+          "line": 1237
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 1254
+        },
+        {
+          "name": "installation_teams",
+          "line": 1323
+        },
+        {
+          "name": "sales_representatives",
+          "line": 1324
+        },
+        {
+          "name": "installation_reschedule_events",
+          "line": 1325
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 1354
+        },
+        {
+          "name": "installation_execution_visit_services",
+          "line": 1363
+        },
+        {
+          "name": "installation_request_services",
+          "line": 1364
+        },
+        {
+          "name": "installation_request_collection",
+          "line": 1365
+        },
+        {
+          "name": "sales_invoices",
+          "line": 1368
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 1384
+        },
+        {
+          "name": "installation_service_types",
+          "line": 1468
+        },
+        {
+          "name": "installation_teams",
+          "line": 1468
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 1468
+        },
+        {
+          "name": "installation_regions",
+          "line": 1468
+        },
+        {
+          "name": "installation_cities",
+          "line": 1468
+        },
+        {
+          "name": "appointment_pet_breeds",
+          "line": 1468
+        },
+        {
+          "name": "installation_regions",
+          "line": 1475
+        },
+        {
+          "name": "installation_cities",
+          "line": 1476
+        },
+        {
+          "name": "installation_settings",
+          "line": 1501
+        },
+        {
+          "name": "installation_settings",
+          "line": 1502
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "save_customer_appointment_location_defaults",
+          "line": 177
+        },
+        {
+          "name": "save_customer_appointment_location_notes",
+          "line": 184
+        },
+        {
+          "name": "get_customer_appointment_defaults",
+          "line": 195
+        },
+        {
+          "name": "create_petatoe_appointment",
+          "line": 243
+        },
+        {
+          "name": "update_petatoe_appointment",
+          "line": 261
+        },
+        {
+          "name": "update_installation_request_with_services",
+          "line": 282
+        },
+        {
+          "name": "update_installation_request_with_services",
+          "line": 340
+        },
+        {
+          "name": "get_installation_schedule_global",
+          "line": 388
+        },
+        {
+          "name": "installation_team_assignment_at",
+          "line": 451
+        },
+        {
+          "name": "schedule_installation_request_multi_day",
+          "line": 475
+        },
+        {
+          "name": "get_installation_schedule_day_locks",
+          "line": 481
+        },
+        {
+          "name": "set_installation_schedule_day_lock",
+          "line": 482
+        },
+        {
+          "name": "get_installation_technician_booked_times",
+          "line": 483
+        },
+        {
+          "name": "get_installation_team_booked_times",
+          "line": 483
+        },
+        {
+          "name": "cancel_installation_request_schedule",
+          "line": 484
+        },
+        {
+          "name": "is_installation_schedule_day_locked",
+          "line": 499
+        },
+        {
+          "name": "get_installation_technician_booked_times",
+          "line": 500
+        },
+        {
+          "name": "schedule_installation_request_visit",
+          "line": 506
+        },
+        {
+          "name": "sync_installation_execution_transition_v2",
+          "line": 781
+        },
+        {
+          "name": "return_installation_execution_to_schedule",
+          "line": 859
+        },
+        {
+          "name": "complete_installation_collection_stage_safe_v1",
+          "line": 953
+        },
+        {
+          "name": "get_installation_execution_visit_quantity_summary",
+          "line": 984
+        },
+        {
+          "name": "get_installation_execution_group_invoice_financials",
+          "line": 996
+        },
+        {
+          "name": "update_installation_completion_workspace",
+          "line": 1013
+        },
+        {
+          "name": "get_installation_completion_collection_recovery_state",
+          "line": 1022
+        },
+        {
+          "name": "recover_installation_completion_collection_stage_safe_v1",
+          "line": 1035
+        },
+        {
+          "name": "confirm_installation_actual_quantities_safe_v1",
+          "line": 1054
+        },
+        {
+          "name": "confirm_installation_execution_and_create_invoice_safe_v1",
+          "line": 1073
+        },
+        {
+          "name": "cancel_installation_execution_visit_confirmation_safe_v1",
+          "line": 1086
+        },
+        {
+          "name": "get_installation_completion_execution_files",
+          "line": 1094
+        },
+        {
+          "name": "get_installation_completion_invoice_markers",
+          "line": 1094
+        },
+        {
+          "name": "get_installation_execution_visit_quantity_summary",
+          "line": 1114
+        },
+        {
+          "name": "get_installation_execution_visit_quantity_summary",
+          "line": 1115
+        },
+        {
+          "name": "save_installation_completion_and_invoice_safe_v1",
+          "line": 1180
+        },
+        {
+          "name": "save_installation_revisit_schedule_v2",
+          "line": 1193
+        },
+        {
+          "name": "appointment_historical_monthly_payment_summary_r44r38r20",
+          "line": 1523
+        },
+        {
+          "name": "appointment_historical_invoice_report_r44r38r20",
+          "line": 1541
+        },
+        {
+          "name": "appointment_historical_service_sales_analysis_r44r38r20",
+          "line": 1593
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [
+        {
+          "name": "petatoe-execution-workspace-updates",
+          "line": 1493
+        }
+      ],
+      "sync_registrations": [
+        {
+          "name": "appointments_read",
+          "line": 1646
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/localization-center-service.js",
+      "sha256": "9c901c296c27fa3e724c5de47270cab91ef0e296afe23d782034548867cca1b3",
+      "lines": 12,
+      "bytes": 2854,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "app_translations",
+          "line": 6
+        },
+        {
+          "name": "app_translations",
+          "line": 7
+        },
+        {
+          "name": "installation_service_types",
+          "line": 8
+        },
+        {
+          "name": "installation_neighborhoods",
+          "line": 8
+        },
+        {
+          "name": "app_translations",
+          "line": 9
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/localization-center.js",
+      "sha256": "04cfe785b4ece854ca8d13e591a71ef051def3c39163cf92ec0bda8132254f4f",
+      "lines": 6682,
+      "bytes": 886462,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 6681
+        }
+      ]
+    },
+    {
+      "path": "assets/js/mobile.js",
+      "sha256": "d2a801aa0311aa3aced7edbf4434be4608bef4483849ab695388edfdce291b40",
+      "lines": 1939,
+      "bytes": 91848,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "visibilitychange",
+          "line": 26
+        },
+        {
+          "name": "customer-auth-ready",
+          "line": 337
+        },
+        {
+          "name": "customer-auth-ready",
+          "line": 777
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 1619
+        },
+        {
+          "name": "customer-auth-ready",
+          "line": 1876
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 1878
+        },
+        {
+          "name": "visibilitychange",
+          "line": 1933
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 1937
+        }
+      ]
+    },
+    {
+      "path": "assets/js/native.js",
+      "sha256": "317c94a074d54c723cbeead6a2bb7987e9f0b3a256b43a0a87710fdb2d8800cb",
+      "lines": 78,
+      "bytes": 2462,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 73
+        }
+      ]
+    },
+    {
+      "path": "assets/js/notification-center-service.js",
+      "sha256": "274fbfecd28bf7318b817f6adbbea04ae94d01526e842d6ddb259f7a7941de2d",
+      "lines": 345,
+      "bytes": 23274,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "notifications",
+          "line": 127
+        },
+        {
+          "name": "notifications",
+          "line": 156
+        },
+        {
+          "name": "notifications",
+          "line": 168
+        },
+        {
+          "name": "notification_system_settings",
+          "line": 274
+        },
+        {
+          "name": "notification_event_settings",
+          "line": 275
+        },
+        {
+          "name": "notification_event_recipient_rules",
+          "line": 276
+        },
+        {
+          "name": "user_profiles",
+          "line": 277
+        },
+        {
+          "name": "notification_system_settings",
+          "line": 285
+        },
+        {
+          "name": "notification_event_settings",
+          "line": 298
+        },
+        {
+          "name": "notification_event_recipient_rules",
+          "line": 299
+        },
+        {
+          "name": "notification_event_recipient_rules",
+          "line": 301
+        },
+        {
+          "name": "notification_push_subscriptions",
+          "line": 338
+        },
+        {
+          "name": "notification_push_subscriptions",
+          "line": 341
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "emit_notification_event",
+          "line": 260
+        }
+      ],
+      "edge_function_calls": [
+        {
+          "name": "notification-push-dispatch",
+          "line": 309
+        },
+        {
+          "name": "notification-push-dispatch",
+          "line": 319
+        }
+      ],
+      "intervals": [],
+      "channels": [
+        {
+          "name": "kyum-notifications-",
+          "line": 206
+        }
+      ],
+      "sync_registrations": [
+        {
+          "name": "notification-center-mine",
+          "line": 343
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/notification-center.js",
+      "sha256": "f4b7468e207b0b134633cccac719dd84e9136e4195e7e5828e9ffbe01803d8d3",
+      "lines": 213,
+      "bytes": 21064,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 188
+        },
+        {
+          "name": "customer-auth-ready",
+          "line": 189
+        },
+        {
+          "name": "kyum-auth-state-changed",
+          "line": 189
+        },
+        {
+          "name": "online",
+          "line": 203
+        },
+        {
+          "name": "offline",
+          "line": 204
+        },
+        {
+          "name": "visibilitychange",
+          "line": 205
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 211
+        }
+      ]
+    },
+    {
+      "path": "assets/js/offline-queue.js",
+      "sha256": "5d67b6107d46feef61710d61eef7a8d9bd73aa4cd531cabd6a43a9c6a80401c7",
+      "lines": 578,
+      "bytes": 26923,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "online",
+          "line": 563
+        },
+        {
+          "name": "kyum-auth-state-changed",
+          "line": 564
+        },
+        {
+          "name": "visibilitychange",
+          "line": 565
+        }
+      ]
+    },
+    {
+      "path": "assets/js/offline-read-cache.js",
+      "sha256": "51a4461e8a6ab5e9cd1582418cd5b360916e87567aeaa901697765c30f979394",
+      "lines": 75,
+      "bytes": 2301,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/offline-session-store.js",
+      "sha256": "36fb9de76943857309d0061595bbc3460cbe09f349ee728e3b704db87fd0a2e4",
+      "lines": 80,
+      "bytes": 2625,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "sha256": "9cec5332ba14066b54dce5b0647042cf3e668dd583b41e4e8ab0dde974bfc6e6",
+      "lines": 315,
+      "bytes": 16192,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [
+        {
+          "name": "payroll",
+          "line": 307
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/payroll.js",
+      "sha256": "668e50146aa90164d8d2aeddddb1725b41d41f4fed2c7deec9d6133b0729a2e1",
+      "lines": 439,
+      "bytes": 76379,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 432
+        }
+      ]
+    },
+    {
+      "path": "assets/js/performance-monitor.js",
+      "sha256": "0cb4db5431a73bf641d3d1bb7ae6d4e35c54ff7ec17ad9cf6ea42115c04370eb",
+      "lines": 147,
+      "bytes": 4279,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/permission-engine.js",
+      "sha256": "581d921650554a483b8774c6f9fb13f2d764833427bd36f7d009ed2a0df0c8b6",
+      "lines": 319,
+      "bytes": 15828,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 315
+        }
+      ]
+    },
+    {
+      "path": "assets/js/permissions-service.js",
+      "sha256": "e214a971a0740da9cae7b82ed2956a7998ea0095e9575e59def664b47926372a",
+      "lines": 75,
+      "bytes": 3099,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "app_screens",
+          "line": 8
+        },
+        {
+          "name": "role_screen_permissions",
+          "line": 16
+        },
+        {
+          "name": "role_screen_permissions",
+          "line": 45
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/permissions.js",
+      "sha256": "433c463180df94420c706fe55a5a13b3b8d69c6d1c92b59c0ad4674946e91f34",
+      "lines": 172,
+      "bytes": 6964,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/pwa.js",
+      "sha256": "a3402fada5e24c36ef9893016bf425c50da9259d1a732a543e8acbf38d1fde48",
+      "lines": 402,
+      "bytes": 17485,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [
+        {
+          "line": 166,
+          "expression_start": "const timer = window.setInterval(() => {"
+        },
+        {
+          "line": 399,
+          "expression_start": "window.setInterval(() => checkForUpdate({ silent: true, showDialog: false }), UPDATE_CHECK_INTERVAL_MS);"
+        }
+      ],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "online",
+          "line": 377
+        },
+        {
+          "name": "offline",
+          "line": 381
+        },
+        {
+          "name": "visibilitychange",
+          "line": 383
+        },
+        {
+          "name": "kyum-view-changed",
+          "line": 387
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 393
+        }
+      ]
+    },
+    {
+      "path": "assets/js/quotations-service.js",
+      "sha256": "33298f482a2da7a09db814b4fd73b2ffc42c0553dd4175a8924ced7774752d5b",
+      "lines": 589,
+      "bytes": 24153,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "quotations",
+          "line": 161
+        },
+        {
+          "name": "quotations",
+          "line": 273
+        },
+        {
+          "name": "quotations",
+          "line": 353
+        },
+        {
+          "name": "quotations",
+          "line": 398
+        },
+        {
+          "name": "quotations",
+          "line": 408
+        },
+        {
+          "name": "quotations",
+          "line": 441
+        },
+        {
+          "name": "quotations",
+          "line": 505
+        },
+        {
+          "name": "audit_logs",
+          "line": 540
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "list_crm_sync_tombstones",
+          "line": 71
+        },
+        {
+          "name": "delete_crm_entity_safe",
+          "line": 491
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [
+        {
+          "name": "quotations",
+          "line": 556
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/reference-data-service.js",
+      "sha256": "3670638b29a30b7790d750705537eb2f91899b3369d37a71e1981e3be7410a19",
+      "lines": 290,
+      "bytes": 10239,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "sales_representatives",
+          "line": 145
+        },
+        {
+          "name": "sales_representatives",
+          "line": 166
+        },
+        {
+          "name": "sales_representatives",
+          "line": 175
+        },
+        {
+          "name": "sales_representatives",
+          "line": 186
+        },
+        {
+          "name": "sales_representatives",
+          "line": 201
+        },
+        {
+          "name": "audit_logs",
+          "line": 262
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/reports-engine.js",
+      "sha256": "d1470edc0fdfd2983665227e865788637a103213fd4670e52f6702f4f974e9df",
+      "lines": 597,
+      "bytes": 24158,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/representative-excel-center.js",
+      "sha256": "de72d490a8394310d3aaaecd4e4e55fdff528281b0c2f0282080118a53c83418",
+      "lines": 250,
+      "bytes": 10622,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/sales-invoices-service.js",
+      "sha256": "e15d117ad4f783d9df4e9224f1958e69986a0377a3e3cab7df82885e51e79d90",
+      "lines": 336,
+      "bytes": 26122,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "sales_invoices",
+          "line": 155
+        },
+        {
+          "name": "sales_invoices",
+          "line": 163
+        },
+        {
+          "name": "installation_execution_files",
+          "line": 171
+        },
+        {
+          "name": "installation_request_collection",
+          "line": 172
+        },
+        {
+          "name": "installation-evidence",
+          "line": 268
+        },
+        {
+          "name": "installation_execution_files",
+          "line": 271
+        },
+        {
+          "name": "installation_execution_files",
+          "line": 279
+        },
+        {
+          "name": "installation-evidence",
+          "line": 280
+        },
+        {
+          "name": "installation-evidence",
+          "line": 296
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "sales_invoices_historical_registry_r44r38r20",
+          "line": 156
+        },
+        {
+          "name": "get_manual_sales_invoice_catalog",
+          "line": 198
+        },
+        {
+          "name": "create_manual_sales_invoice",
+          "line": 220
+        },
+        {
+          "name": "create_sales_invoice_from_quotation",
+          "line": 230
+        },
+        {
+          "name": "create_sales_invoice_from_installation_visit_safe_v1",
+          "line": 242
+        },
+        {
+          "name": "get_sales_invoice_edit_workspace",
+          "line": 250
+        },
+        {
+          "name": "update_sales_invoice_full_v1",
+          "line": 293
+        },
+        {
+          "name": "update_sales_invoice_registry_v2",
+          "line": 306
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [
+        {
+          "name": "sales_invoices_read",
+          "line": 328
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/sales-invoices.js",
+      "sha256": "90c89592974a170598244c3ae9c9598e4e811f68f9c6aba76d0310bea25d74a6",
+      "lines": 152,
+      "bytes": 40863,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 111
+        },
+        {
+          "name": "kyum-view-changed",
+          "line": 112
+        }
+      ]
+    },
+    {
+      "path": "assets/js/sales-reports.js",
+      "sha256": "c20990c1d88a851c873f1c7afb49c37077a91313641af07608b44e08647c57c5",
+      "lines": 849,
+      "bytes": 47740,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [
+        {
+          "name": "sales_reports_rows_r44r38r20r35",
+          "line": 752
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 843
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 846
+        }
+      ]
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "sha256": "9d12f4df1a6f40e0c495ac760cef181ea1e5df904927c0f71963e2ea3864f574",
+      "lines": 252,
+      "bytes": 14730,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [
+        {
+          "name": "sea-vibe-payroll",
+          "line": 246
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll.js",
+      "sha256": "1ba9ad9b56ef7c6e66bff675891b73a7b2de070e65f898705c4e40d81a50b67d",
+      "lines": 501,
+      "bytes": 57616,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 437
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 499
+        }
+      ]
+    },
+    {
+      "path": "assets/js/sea-vibe-service.js",
+      "sha256": "0c9f1e355a62dda0bbb4e6ff0bce80d888710108a2c4ff6cd3be4eade23c3877",
+      "lines": 704,
+      "bytes": 106768,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "sea_vibe_trip_financials",
+          "line": 140
+        },
+        {
+          "name": "sea_vibe_expenses",
+          "line": 142
+        },
+        {
+          "name": "sea_vibe_assets_with_value",
+          "line": 143
+        },
+        {
+          "name": "sea_vibe_trip_types",
+          "line": 144
+        },
+        {
+          "name": "sea_vibe_payment_methods",
+          "line": 145
+        },
+        {
+          "name": "sea_vibe_expense_catalog",
+          "line": 146
+        },
+        {
+          "name": "sea_vibe_chart_accounts_view",
+          "line": 147
+        },
+        {
+          "name": "sea_vibe_sailing_permit_fees",
+          "line": 148
+        },
+        {
+          "name": "sea_vibe_commission_rules_view",
+          "line": 149
+        },
+        {
+          "name": "sea_vibe_expense_attachments",
+          "line": 151
+        },
+        {
+          "name": "sea_vibe_zawel_transactions",
+          "line": 152
+        },
+        {
+          "name": "sea_vibe_zawel_balance",
+          "line": 153
+        },
+        {
+          "name": "sea_vibe_fuel_transactions",
+          "line": 154
+        },
+        {
+          "name": "sea_vibe_fuel_balance",
+          "line": 155
+        },
+        {
+          "name": "sea_vibe_fuel_settlement_config",
+          "line": 156
+        },
+        {
+          "name": "sea_vibe_fuel_settlements",
+          "line": 157
+        },
+        {
+          "name": "sea_vibe_treasury_movements",
+          "line": 158
+        },
+        {
+          "name": "audit_logs",
+          "line": 260
+        },
+        {
+          "name": "sea-vibe-expenses",
+          "line": 369
+        },
+        {
+          "name": "sea_vibe_expense_attachments",
+          "line": 372
+        },
+        {
+          "name": "sea_vibe_expense_attachments",
+          "line": 372
+        },
+        {
+          "name": "sea_vibe_expenses",
+          "line": 401
+        },
+        {
+          "name": "sea_vibe_expenses",
+          "line": 404
+        },
+        {
+          "name": "sea-vibe-treasury-vouchers",
+          "line": 552
+        },
+        {
+          "name": "sea_vibe_treasury_voucher_attachments",
+          "line": 556
+        },
+        {
+          "name": "sea_vibe_treasury_vouchers",
+          "line": 561
+        },
+        {
+          "name": "sea_vibe_treasury_voucher_attachments",
+          "line": 562
+        },
+        {
+          "name": "sea-vibe-treasury-vouchers",
+          "line": 579
+        },
+        {
+          "name": "sea-vibe-journal-entries",
+          "line": 627
+        },
+        {
+          "name": "sea_vibe_journal_entry_attachments",
+          "line": 630
+        },
+        {
+          "name": "sea-vibe-expenses",
+          "line": 646
+        },
+        {
+          "name": "sea_vibe_trip_types",
+          "line": 661
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "get_sea_vibe_customers_r44r15",
+          "line": 141
+        },
+        {
+          "name": "sea_vibe_commission_employee_options_r44r7",
+          "line": 150
+        },
+        {
+          "name": "sync_sea_vibe_mutation_v2",
+          "line": 285
+        },
+        {
+          "name": "sea_vibe_delete_expense_batch",
+          "line": 403
+        },
+        {
+          "name": "sea_vibe_set_trip_commission_exclusion_r44r38r20r32",
+          "line": 412
+        },
+        {
+          "name": "sea_vibe_set_expense_catalog_account_r44r11",
+          "line": 438
+        },
+        {
+          "name": "sea_vibe_save_chart_account_r44r11",
+          "line": 468
+        },
+        {
+          "name": "save_sea_vibe_customer_r44r13",
+          "line": 479
+        },
+        {
+          "name": "delete_sea_vibe_customer_r44r15",
+          "line": 489
+        },
+        {
+          "name": "ensure_sea_vibe_trip_customer_r44r14",
+          "line": 507
+        },
+        {
+          "name": "preview_sea_vibe_trip_serial_r44r13",
+          "line": 516
+        },
+        {
+          "name": "sea_vibe_save_commission_rule_r44r7",
+          "line": 519
+        },
+        {
+          "name": "sea_vibe_delete_commission_rule_r44r10",
+          "line": 520
+        },
+        {
+          "name": "preview_sea_vibe_commission_rule_backfill_r44r11",
+          "line": 521
+        },
+        {
+          "name": "sea_vibe_backfill_commission_rule_r44r11",
+          "line": 522
+        },
+        {
+          "name": "sea_vibe_zawel_topup_update",
+          "line": 534
+        },
+        {
+          "name": "sea_vibe_zawel_topup_delete",
+          "line": 535
+        },
+        {
+          "name": "sea_vibe_fuel_topup_update",
+          "line": 539
+        },
+        {
+          "name": "sea_vibe_fuel_topup_delete",
+          "line": 540
+        },
+        {
+          "name": "sea_vibe_fuel_settlement_preview_r44r4",
+          "line": 542
+        },
+        {
+          "name": "sea_vibe_apply_fuel_settlement_r44r4",
+          "line": 543
+        },
+        {
+          "name": "sea_vibe_update_fuel_settlement_config_r44r4",
+          "line": 544
+        },
+        {
+          "name": "sea_vibe_save_treasury_voucher_r44r13",
+          "line": 572
+        },
+        {
+          "name": "sea_vibe_account_statement_accounts_r44r38r15",
+          "line": 584
+        },
+        {
+          "name": "sea_vibe_account_statement_r44r38r15",
+          "line": 593
+        },
+        {
+          "name": "sea_vibe_trial_balance_r44r38r19",
+          "line": 600
+        },
+        {
+          "name": "sea_vibe_income_statement_r44r38r19",
+          "line": 607
+        },
+        {
+          "name": "sea_vibe_balance_sheet_r44r38r19",
+          "line": 613
+        },
+        {
+          "name": "sea_vibe_journal_chart_accounts_r44r14r1",
+          "line": 618
+        },
+        {
+          "name": "sea_vibe_save_manual_journal_r44r14",
+          "line": 638
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [
+        {
+          "name": "sea_vibe",
+          "line": 688
+        }
+      ],
+      "lifecycle_listeners": [
+        {
+          "name": "online",
+          "line": 257
+        },
+        {
+          "name": "visibilitychange",
+          "line": 258
+        }
+      ]
+    },
+    {
+      "path": "assets/js/sea-vibe.js",
+      "sha256": "06201e3a62fc473191d61fae78a939630b14788d29fa93f290f55a048c95bd5c",
+      "lines": 634,
+      "bytes": 185487,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 623
+        },
+        {
+          "name": "DOMContentLoaded",
+          "line": 632
+        }
+      ]
+    },
+    {
+      "path": "assets/js/services-reports.js",
+      "sha256": "5f4e06371aafb713fca8e468b2def6eea97bfd4ac202bce67eeaf50a064dc50c",
+      "lines": 258,
+      "bytes": 25452,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "appointment_historical_sales_reporting",
+          "line": 31
+        },
+        {
+          "name": "installation_service_types",
+          "line": 35
+        },
+        {
+          "name": "installation_execution_visits",
+          "line": 118
+        },
+        {
+          "name": "installation_execution_visit_services",
+          "line": 119
+        },
+        {
+          "name": "installation_request_services",
+          "line": 120
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "sales_reports_rows_r44r38r20r35",
+          "line": 24
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 255
+        }
+      ]
+    },
+    {
+      "path": "assets/js/smart-cache.js",
+      "sha256": "b44d40476304ca595ea6902d3baa3fbbc76fe75a0cfe31fd1906ec9b931d6b0d",
+      "lines": 254,
+      "bytes": 9340,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/supabase-client.js",
+      "sha256": "34cc429b1c11af202dbd80f5c932f0c977c24d72f673ece4d0e1451d13cd3539",
+      "lines": 28,
+      "bytes": 1301,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/supabase-config.js",
+      "sha256": "51aa593b799e16a572f1ea822214d800ac8dbbe8af266dbac05027eddeff3071",
+      "lines": 11,
+      "bytes": 467,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/sync-engine.js",
+      "sha256": "e558e99357c39cb362b6de8f91a1d09f2b424d581c67942b518a57e3d8feede3",
+      "lines": 207,
+      "bytes": 7653,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "online",
+          "line": 187
+        },
+        {
+          "name": "visibilitychange",
+          "line": 188
+        }
+      ]
+    },
+    {
+      "path": "assets/js/sync-recovery-center.js",
+      "sha256": "b2934cd4afc33f519115f0effa79d86181de27f93e7098bd485622e67da37bae",
+      "lines": 148,
+      "bytes": 8540,
+      "index_script": false,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 145
+        }
+      ]
+    },
+    {
+      "path": "assets/js/sync-retention.js",
+      "sha256": "1a2b338c6a9f5b636ae762c8b9bfa96c3f6c290ac044a072019b22e210f42bf4",
+      "lines": 276,
+      "bytes": 11229,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [
+        {
+          "name": "prune_crm_sync_tombstones_safe",
+          "line": 88
+        },
+        {
+          "name": "prune_sync_queue_watermark_metadata_safe",
+          "line": 90
+        },
+        {
+          "name": "ack_sync_client_watermark",
+          "line": 113
+        },
+        {
+          "name": "ack_sync_queue_watermark_v2",
+          "line": 213
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "visibilitychange",
+          "line": 261
+        }
+      ]
+    },
+    {
+      "path": "assets/js/system-health-service.js",
+      "sha256": "eb0cbc6db2b530886190393e81f1404dc6181f57f587d008156b09c1dd62cff3",
+      "lines": 23,
+      "bytes": 1018,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [
+        {
+          "name": "get_system_health_snapshot",
+          "line": 10
+        },
+        {
+          "name": "get_sync_retention_observability_snapshot",
+          "line": 17
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/system-settings-service.js",
+      "sha256": "e3032c2c016ad9fc569dda9c875cd145e8d0917e05510ba39e9584c51568bc4d",
+      "lines": 60,
+      "bytes": 1881,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "system_settings",
+          "line": 10
+        },
+        {
+          "name": "system_settings",
+          "line": 39
+        },
+        {
+          "name": "audit_logs",
+          "line": 46
+        }
+      ],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/translation-center.js",
+      "sha256": "c21e5ee490b8c9201c0d5744f9ac062711c4691875f050fa00b4fe3ee5046305",
+      "lines": 65,
+      "bytes": 10003,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "DOMContentLoaded",
+          "line": 50
+        },
+        {
+          "name": "kyum-view-changed",
+          "line": 60
+        }
+      ]
+    },
+    {
+      "path": "assets/js/users-service.js",
+      "sha256": "c5d03971d7ee4db1c053529bdf3b490441532130a6dbef77e94dd57984702720",
+      "lines": 249,
+      "bytes": 13462,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "user_profiles",
+          "line": 16
+        },
+        {
+          "name": "user_data_access_profiles",
+          "line": 26
+        },
+        {
+          "name": "user_data_access_representatives",
+          "line": 29
+        },
+        {
+          "name": "installation_data_access_profiles",
+          "line": 32
+        },
+        {
+          "name": "installation_data_access_representatives",
+          "line": 33
+        },
+        {
+          "name": "installation_user_technician_bindings",
+          "line": 34
+        },
+        {
+          "name": "user_profiles",
+          "line": 133
+        },
+        {
+          "name": "user_profiles",
+          "line": 143
+        },
+        {
+          "name": "installation_teams",
+          "line": 194
+        },
+        {
+          "name": "installation_user_technician_bindings",
+          "line": 203
+        },
+        {
+          "name": "installation_user_technician_bindings",
+          "line": 209
+        },
+        {
+          "name": "installation_team_access",
+          "line": 217
+        },
+        {
+          "name": "installation_team_access",
+          "line": 219
+        },
+        {
+          "name": "audit_logs",
+          "line": 226
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "save_user_data_access_scope",
+          "line": 167
+        },
+        {
+          "name": "save_installation_data_access_scope",
+          "line": 179
+        }
+      ],
+      "edge_function_calls": [
+        {
+          "name": "manage-user",
+          "line": 88
+        }
+      ],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "sha256": "9f00b2fe7527501a33d490e064a0f25b86d55298dc9cf0cba598927f07bc32e7",
+      "lines": 527,
+      "bytes": 22646,
+      "index_script": true,
+      "literal_from_calls": [
+        {
+          "name": "vehicle_treasury_expenses",
+          "line": 167
+        }
+      ],
+      "literal_rpc_calls": [
+        {
+          "name": "get_vehicle_treasury_workspace_v2",
+          "line": 293
+        },
+        {
+          "name": "add_vehicle_treasury_expense_idempotent",
+          "line": 319
+        },
+        {
+          "name": "delete_vehicle_treasury_expense",
+          "line": 477
+        }
+      ],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [
+        {
+          "name": "vehicle_treasury",
+          "line": 483
+        }
+      ],
+      "lifecycle_listeners": []
+    },
+    {
+      "path": "assets/js/vehicle-treasury.js",
+      "sha256": "85a9179bfd4c9a910057d224789ef5b5ff4204c9be5ac90af7ea3389a3b03e10",
+      "lines": 135,
+      "bytes": 12180,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": [
+        {
+          "name": "kyum-view-changed",
+          "line": 133
+        }
+      ]
+    },
+    {
+      "path": "assets/js/whatsapp-template-service.js",
+      "sha256": "b3818328ffe6ed9aade0ff0abfe757eef2cfc9992778ac16019ef4b9d82f6292",
+      "lines": 147,
+      "bytes": 5088,
+      "index_script": true,
+      "literal_from_calls": [],
+      "literal_rpc_calls": [],
+      "edge_function_calls": [],
+      "intervals": [],
+      "channels": [],
+      "sync_registrations": [],
+      "lifecycle_listeners": []
+    }
+  ],
+  "target_view_literal_consumers": {
+    "customer_followup_summary": [],
+    "quotation_summary": [],
+    "representative_performance_report": [],
+    "customer_interest_report": [],
+    "quotation_status_report": [],
+    "no_sale_reason_report": [],
+    "daily_activity_report": [],
+    "sea_vibe_trip_financials": [
+      {
+        "path": "assets/js/sea-vibe-service.js",
+        "line": 140
+      }
+    ]
+  },
+  "not_directly_loaded_as_index_script": [
+    "assets/css/app.js",
+    "assets/css/localization-center-service.js",
+    "assets/css/localization-center.js",
+    "assets/css/pwa.js",
+    "assets/css/supabase-client.js",
+    "assets/css/supabase-config.js",
+    "assets/js/sync-recovery-center.js"
+  ],
+  "limits": [
+    "Dynamic names, external consumers and live traffic are not covered by literal reference matching.",
+    "A script being present or cached does not mean it executes Supabase requests.",
+    "Missing index script reference is not proof of unreachability; dynamic loading needs manual review.",
+    "SQL definitions in migrations do not establish actual Production migration order or active function bodies."
+  ]
+}

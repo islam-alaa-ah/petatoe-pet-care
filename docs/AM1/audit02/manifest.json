@@ -1,0 +1,34 @@
+{
+  "phase": "AM1-AUDIT-02",
+  "delivery": "ADDED_FILES_ONLY_READ_ONLY_AUDIT",
+  "productionVersionChecked": "18.56.144",
+  "candidateVersionOnHold": "18.56.145",
+  "candidateZipSha256": "9c9dda53fae48ad607a765115f3513a55ad297b5a9cda98afcd85c957c5861a5",
+  "productionSchemaModified": false,
+  "applicationFilesModified": false,
+  "firstAction": "docs/AM1/sql/00B_STORAGE_STATE_READONLY.sql",
+  "installOrDeleteApproved": false,
+  "files": [
+    {
+      "path": "README_AM1_AUDIT02_AR.md",
+      "sha256": "5ced9cf78daa38010b55bf2f85e4b5a631942bdd1fcdbf95c663b5e0e2d7930b"
+    },
+    {
+      "path": "docs/AM1/audit02/LOCAL_VERIFICATION.json",
+      "sha256": "36c779d41dc349d703e550ec87e174553fe5c60ed485452a4d015d75263eb2eb"
+    },
+    {
+      "path": "docs/AM1/audit02/REVIEW_AR.md",
+      "sha256": "eca5b5998f1c58e338fe2732d06ee28bb98f71f13541f8a9fa9129570d0200c4"
+    },
+    {
+      "path": "docs/AM1/sql/00B_STORAGE_STATE_READONLY.sql",
+      "sha256": "f036fe21d2aeaac57f629bc84edbe92101e56b03f046d6fb0fcc34c9069944dc"
+    },
+    {
+      "path": "scripts/am1-reproduce-managed-triggers.mjs",
+      "sha256": "c34505ecbf3d718a138da0d6970d4c3752c2723010ce90a24f5fca88ab0505a6"
+    }
+  ],
+  "manifestSelfExcludedFromHashes": true
+}

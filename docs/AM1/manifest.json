@@ -1,0 +1,272 @@
+{
+  "phase": "AM1R1",
+  "version": "18.56.145",
+  "baselineVersion": "18.56.144",
+  "delivery": "MODIFIED_FILES_ONLY",
+  "supersedesUninstalledCandidate": "AM1 18.56.145 (do not combine bundles)",
+  "modifiedFiles": [
+    {
+      "path": "assets/js/app.js",
+      "beforeSha256": "0721ad93d7917b494991da0adb7d36073416f91f3bda0d461ebe71bb59a3a31b",
+      "afterSha256": "b4a0f86a25625cb775b636fde0505f22b90e27fd22febeb09eb6ff6a65ae6828"
+    },
+    {
+      "path": "assets/js/localization-center.js",
+      "beforeSha256": "04cfe785b4ece854ca8d13e591a71ef051def3c39163cf92ec0bda8132254f4f",
+      "afterSha256": "e60e3cea116a8404a18e6b487766cceb85fb3604e8775be8e2c9d949a6ec7ed0"
+    },
+    {
+      "path": "assets/js/pwa.js",
+      "beforeSha256": "a3968c5d311f3b7b10aa91dc88f5c8f521855d18b7dcf16e1cdd4c3640e4cc91",
+      "afterSha256": "7f9fc2d8e3d64c1c16f3db783ff58d100db433d6e957e8b63c6edc8bb38335dc"
+    },
+    {
+      "path": "index.html",
+      "beforeSha256": "3e15e855fe2496c7e4ebf02da7f6f6536febb63d9c57276230e0b4d3ca51199a",
+      "afterSha256": "3804e6363d88bb515a6ede9ac3810d6fad1dcc04d527cada145514cbd170fe47"
+    },
+    {
+      "path": "package.json",
+      "beforeSha256": "0c4c935cf8ac247033dfd6cdbe54556297a78fdc363014302e931c45c4a7a0fa",
+      "afterSha256": "8215d517720c728ed30e438894578eee4e2731196c74edca4f343fdd3c775fb0"
+    },
+    {
+      "path": "service-worker.js",
+      "beforeSha256": "661f152b0979ccdc1dd2abda90e853b15fc1769fda31538a0614522d11895943",
+      "afterSha256": "cc6f143781b7f63f60cc8005c5f1334f7541c09074ee2639f8879e2d77cad92e"
+    },
+    {
+      "path": "version.json",
+      "beforeSha256": "5a4a874ecfbc1e724b24912a17f9e2041e6d447131cbf7ac2cf47fbb23508974",
+      "afterSha256": "24846f9986cb20acf7a070be64bc27a5839314eb74a13b6da9d389103d0bf7e3"
+    }
+  ],
+  "addedFiles": [
+    {
+      "path": "README_AM1_AR.md",
+      "sha256": "d4675fe45e90106ab88305760c1d095ec35829cc0672533e60d84715bf0839b3"
+    },
+    {
+      "path": "assets/css/attachment-management.css",
+      "sha256": "b805f0716b51efe60115ce32ab381e961722192813fe52f5b06db27248a85d36"
+    },
+    {
+      "path": "assets/fonts/am1/DejaVuSans.ttf",
+      "sha256": "57f73e11f51999432bf7ab22ce55b6f945d5eca1bf824404cfa9ec2e3718c84e"
+    },
+    {
+      "path": "assets/fonts/am1/LICENSE.txt",
+      "sha256": "c17b4071b70b6cd33f3e97f701d07329e860720e953e2455923f3e24d056bbc8"
+    },
+    {
+      "path": "assets/js/attachment-management.js",
+      "sha256": "2d32f8b0136e8309a3db5d1b69002821b93b6628754d97cb7b5ca7df78e3ec7f"
+    },
+    {
+      "path": "assets/js/attachment-pdf.mjs",
+      "sha256": "d155655d65d72488235222f7f7a01f097e6408a4eea869d939a76769ee3e63ad"
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/LICENSE",
+      "sha256": "4f221aee6e072336700c408c68ab3b96a3fc09f6aebe6f48f1bd99e5ef13faec"
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/_md.js",
+      "sha256": "a112f0fe1b15db00f2638618c436a17be1c5e13baf19d02fcc29016ae1db2233"
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/_u64.js",
+      "sha256": "e48c0cfc10810439a4807b46db136ce603a3fa09b62584f513ef2f3ca496af54"
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/package.json",
+      "sha256": "202d3b01ceba55ec4cbe7a5920db5fe09e56c3dd841861a7eac319a794e92f06"
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/sha2.js",
+      "sha256": "3ddc587c588283cbceed4dd9929cefcce06a0c231b54d4c6f0f99c478c686c00"
+    },
+    {
+      "path": "assets/vendor/noble-hashes-2.0.1/utils.js",
+      "sha256": "11319ec0a8132a0c2ced8c98af33ae9274c001d6baf4f4709c4a6115e031a3c5"
+    },
+    {
+      "path": "docs/AM1/IMPACT_AND_ROLLBACK_AR.md",
+      "sha256": "8937bb0bbb86ccfdac74fe215fa5be8f9f5659f0907d32f53b55440fbf5706f7"
+    },
+    {
+      "path": "docs/AM1/PRODUCTION_AUDIT_20261109.json",
+      "sha256": "cfb4cca033f462c7abd2164c8f3e3ecd41ccf01ea386c476ee41885275b81f9a"
+    },
+    {
+      "path": "docs/AM1/SOURCE_INTEGRITY.json",
+      "sha256": "255242584b9db9a4a7ae4da9c0d7debe7c9491cc090201ca2135dae481d71179"
+    },
+    {
+      "path": "docs/AM1/TESTING.md",
+      "sha256": "0e2bb55789aecafc9fe2f863a94c8016e4a3ed4bb289f1436e8211524209633d"
+    },
+    {
+      "path": "docs/AM1/TEST_RESULTS.json",
+      "sha256": "5215c8ce56504478da1a9f977ed92e5bd17612e7d71f2477bdb57ea268a0cec8"
+    },
+    {
+      "path": "docs/AM1/sql/00_PRECHECK_READONLY.sql",
+      "sha256": "47c2a192a129d49b5ef3a8df2daf0f19277cff98aecae30667dc137ccb095693"
+    },
+    {
+      "path": "docs/AM1/sql/01_VERIFY_INSTALL_READONLY.sql",
+      "sha256": "8e70486f2ed6453e69e94703c4b291e4bbf55c64b23a1d451c46e1b596da59a3"
+    },
+    {
+      "path": "docs/AM1/sql/02_ENABLE_READ_EXPORT.sql",
+      "sha256": "7788b7ac294e901c826dce9f3099f87806f698f325a09fa7573739edf99bef69"
+    },
+    {
+      "path": "docs/AM1/sql/03_VERIFY_ARCHIVES_READONLY.sql",
+      "sha256": "765f24897a4a40bb47c5003f7a0180c045faf0ccac6bfa25a26a963239276fcf"
+    },
+    {
+      "path": "docs/AM1/sql/04_ENABLE_DELETE_AFTER_REVIEW.sql",
+      "sha256": "59b1943a6d60d531dcfd1487031c980df0f51c36553977b4f290977a1af7db7a"
+    },
+    {
+      "path": "docs/AM1/sql/05_ROLLBACK_DISABLE.sql",
+      "sha256": "f77745128725501215ff9d49988ebaab468cd25f4f14c0e8dd72f05f7a8ef09c"
+    },
+    {
+      "path": "docs/AM1/sql/06_EMERGENCY_STOP_KEEP_LOCKS.sql",
+      "sha256": "bda9218d4c44dc6b0809db7ba196beee875391f6994b86277ff0c5278106697f"
+    },
+    {
+      "path": "scripts/am1-attachment-management.test.mjs",
+      "sha256": "5b67941ce648b23ccad46451b5a34a4772446e1cf0eaab6e01d8c97c88e6ca24"
+    },
+    {
+      "path": "scripts/am1-extract-archive.py",
+      "sha256": "4aff6be6295d392c3da2d3b003dd7e239858fbbd1ec5f1822579958cbe36259a"
+    },
+    {
+      "path": "scripts/am1-live-readonly.js",
+      "sha256": "97e38b87543bade505c3706b1379d3f69a6c8ea7e9b74cdadc8271fbdd074f32"
+    },
+    {
+      "path": "scripts/am1-pdf-fixture.mjs",
+      "sha256": "3b6737f345466abac93a4b7bf6fdb4960321330c12da3eb70a791ba3b16b3f17"
+    },
+    {
+      "path": "scripts/am1-preflight-check.mjs",
+      "sha256": "b99328cd168a9d7976c34a286ffa407db01dd5bd22c60f46e3add9b975986a14"
+    },
+    {
+      "path": "scripts/am1-ui.test.mjs",
+      "sha256": "64fbac6cd69d4b9f91da13060e8578e3121e8894f9a02c0bddf4d8bdf60b7269"
+    },
+    {
+      "path": "supabase/functions/attachment-admin/core.mjs",
+      "sha256": "d4fc7118102efe84c2aa5e8c2ff35318366bfe9db5adc42de8b862bda491fa3f"
+    },
+    {
+      "path": "supabase/functions/attachment-admin/index.ts",
+      "sha256": "305fe67f606a6ccc132af590ab769ee986b1385b53814ed8e7c449487e726f93"
+    },
+    {
+      "path": "supabase/migrations/20261109090000_am1r1_attachment_management.sql",
+      "sha256": "ee50b34653b01eb9f63591d4dc7630e7d03ffae04f8ce6efab57888b9f3afef6"
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "assets/js/smart-cache.js",
+      "sha256": "380eaaee3475531ce5df7e940c010df8728e754c6c5b2db6a3530f24f6ba5aed"
+    },
+    {
+      "path": "assets/js/offline-queue.js",
+      "sha256": "5d67b6107d46feef61710d61eef7a8d9bd73aa4cd531cabd6a43a9c6a80401c7"
+    },
+    {
+      "path": "assets/js/offline-read-cache.js",
+      "sha256": "51a4461e8a6ab5e9cd1582418cd5b360916e87567aeaa901697765c30f979394"
+    },
+    {
+      "path": "assets/js/sync-engine.js",
+      "sha256": "e558e99357c39cb362b6de8f91a1d09f2b424d581c67942b518a57e3d8feede3"
+    },
+    {
+      "path": "assets/js/notification-center-service.js",
+      "sha256": "274fbfecd28bf7318b817f6adbbea04ae94d01526e842d6ddb259f7a7941de2d"
+    },
+    {
+      "path": "assets/js/notification-center.js",
+      "sha256": "f4b7468e207b0b134633cccac719dd84e9136e4195e7e5828e9ffbe01803d8d3"
+    },
+    {
+      "path": "assets/js/installations-service.js",
+      "sha256": "1ce7423ffd0cc8a849d1c2b1e241e11daa2ca97ce43cbc40143250bb9651e629"
+    },
+    {
+      "path": "assets/js/installations-service-contract.js",
+      "sha256": "f084a4011a4f00d5590dc274e05338540fc29fe035a073ed5369176a190be25f"
+    },
+    {
+      "path": "assets/js/daily-operations-service.js",
+      "sha256": "e40a43345d1a0711dab58c829443735239a14093b676baba1ee5f1abcf05937d"
+    },
+    {
+      "path": "assets/js/vehicle-treasury-service.js",
+      "sha256": "8854a304f6a74c9ca1af3654511661fe46a206c12c580583f5d798a4a910b43d"
+    },
+    {
+      "path": "assets/js/payroll-service.js",
+      "sha256": "27fcec08db4ff877ae05e25bc0f773fae1e314c8bd84c74147cd1e00ce49475b"
+    },
+    {
+      "path": "assets/js/sea-vibe-payroll-service.js",
+      "sha256": "bca60ace20e9ad331e110a14713fa19b4a3f7c352bf86596f6963f6d67c8820e"
+    },
+    {
+      "path": "assets/js/sea-vibe-service.js",
+      "sha256": "0c9f1e355a62dda0bbb4e6ff0bce80d888710108a2c4ff6cd3be4eade23c3877"
+    },
+    {
+      "path": "assets/js/sales-invoices-service.js",
+      "sha256": "e15d117ad4f783d9df4e9224f1958e69986a0377a3e3cab7df82885e51e79d90"
+    },
+    {
+      "path": "assets/js/permissions.js",
+      "sha256": "433c463180df94420c706fe55a5a13b3b8d69c6d1c92b59c0ad4674946e91f34"
+    },
+    {
+      "path": "assets/js/permission-engine.js",
+      "sha256": "581d921650554a483b8774c6f9fb13f2d764833427bd36f7d009ed2a0df0c8b6"
+    },
+    {
+      "path": "assets/js/permissions-service.js",
+      "sha256": "e214a971a0740da9cae7b82ed2956a7998ea0095e9575e59def664b47926372a"
+    },
+    {
+      "path": "assets/js/supabase-client.js",
+      "sha256": "34cc429b1c11af202dbd80f5c932f0c977c24d72f673ece4d0e1451d13cd3539"
+    },
+    {
+      "path": "assets/js/supabase-config.js",
+      "sha256": "51aa593b799e16a572f1ea822214d800ac8dbbe8af266dbac05027eddeff3071"
+    },
+    {
+      "path": "assets/js/auth-session.js",
+      "sha256": "0b296376fa1ecfceb7bdf22faaf2ade153ddba6444be80881b18e5aa9e393ce6"
+    },
+    {
+      "path": "assets/js/sync-retention.js",
+      "sha256": "1a2b338c6a9f5b636ae762c8b9bfa96c3f6c290ac044a072019b22e210f42bf4"
+    },
+    {
+      "path": "assets/js/cache-dependency-engine.js",
+      "sha256": "b0d01040bbeb323b8986988424b00ad874d242debdedb2e5ff21c9d00b1a4529"
+    }
+  ],
+  "manifestSelfExcludedFromHashList": true,
+  "firstProductionAction": "Backup, then supabase/migrations/20261109090000_am1r1_attachment_management.sql (installed disabled), followed by docs/AM1/sql/01_VERIFY_INSTALL_READONLY.sql",
+  "productionMutationsExecutedByAssistant": false,
+  "initialDeletionEnabled": false
+}
