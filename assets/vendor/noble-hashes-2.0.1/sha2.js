@@ -5,8 +5,8 @@
  * [FIPS 180-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf).
  * @module
  */
-import { Chi, HashMD, Maj, SHA224_IV, SHA256_IV, SHA384_IV, SHA512_IV } from "./_md.js";
-import * as u64 from "./_u64.js";
+import { Chi, HashMD, Maj, SHA224_IV, SHA256_IV, SHA384_IV, SHA512_IV } from "./md.js";
+import * as u64 from "./u64.js";
 import { clean, createHasher, oidNist, rotr } from "./utils.js";
 /**
  * Round constants:
