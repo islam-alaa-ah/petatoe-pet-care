@@ -152,11 +152,11 @@ test('release/cache metadata advance coherently while AM1R1 server compatibility
   const pwa = await fs.readFile(path.join(app, 'assets/js/pwa.js'), 'utf8');
   const html = await fs.readFile(path.join(app, 'index.html'), 'utf8');
   const worker = workerMetadata(await fs.readFile(path.join(app, 'service-worker.js'), 'utf8'));
-  assert.equal(version.version, '18.56.146'); assert.equal(version.build, 185746);
+  assert.equal(version.version, '18.56.147'); assert.equal(version.build, 185747);
   assert.equal(pkg.version, version.version); assert.equal(version.forceUpdate, false);
-  assert.ok(pwa.includes('const CURRENT_VERSION = "18.56.146";'));
+  assert.ok(pwa.includes('const CURRENT_VERSION = "18.56.147";'));
   assert.equal(worker.token, version.cacheToken);
-  assert.ok(html.includes('assets/js/pwa.js?v=18.56.146-AM1R2'));
+  assert.ok(html.includes('assets/js/pwa.js?v=18.56.147-AM2'));
   const ui = await fs.readFile(path.join(app, 'assets/js/attachment-management.js'), 'utf8');
   const edge = await fs.readFile(path.join(app, 'supabase/functions/attachment-admin/core.mjs'), 'utf8');
   assert.ok(ui.includes("runtime:'AM1R1'")); assert.ok(edge.includes("REVISION = 'AM1R1'"));

@@ -273,7 +273,7 @@ test('module initialization on dashboard makes no requests, timers or subscripti
  assert.ok(events.includes('kyum-view-changed'));
 });
 test('release metadata, menu, HTML hooks, translation keys and cached imports agree',async()=>{
- const version=JSON.parse(await readFile(new URL('version.json',root),'utf8'));assert.equal(version.version,'18.56.145');assert.equal(version.forceUpdate,false);
+ const version=JSON.parse(await readFile(new URL('version.json',root),'utf8'));assert.equal(version.version,'18.56.147');assert.equal(version.forceUpdate,false);
  const html=await readFile(new URL('index.html',root),'utf8');const app=await readFile(new URL('assets/js/app.js',root),'utf8');const sw=await readFile(new URL('service-worker.js',root),'utf8');const locale=await readFile(new URL('assets/js/localization-center.js',root),'utf8');
  assert.match(html,/data-view="attachmentManagement"/);assert.match(app,/attachmentManagement: document.getElementById\("attachmentManagementView"\)/);assert.ok(sw.includes(version.cacheToken));assert.match(sw,/attachment-pdf.mjs/);
  for(const key of html.matchAll(/data-petatoe-i18n="(attachments\.[^"]+)"/g))assert.ok(locale.includes('"'+key[1]+'"'),key[1]);

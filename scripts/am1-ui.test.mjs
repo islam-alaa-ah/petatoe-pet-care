@@ -76,6 +76,14 @@ test('untrusted file names and customer metadata are escaped in the actual list'
  const h=mount({responseOverride:async body=>body.action==='list'?{data:{items:[{objectId:'id',fileName:'<img src=x onerror=alert(1)>',bucket:'test',bytes:1,uploader:{name:'<script>bad</script>'},customer:{name:'<iframe></iframe>'},source:'<svg onload=alert(1)>',protected:false}],hasMore:false}}:null});
  await h.navigate('attachmentManagement');const rows=h.document.getElementById('am1Rows');assert.equal(rows.querySelectorAll('script,img,iframe,svg').length,0);assert.ok(rows.textContent.includes('<img src=x onerror=alert(1)>'));
 });
+test('AM2 shows missing-link warnings without inventing a customer or bypassing saved-PDF confirmation',async()=>{
+ const h=mount({responseOverride:async body=>body.action==='list'?{data:{items:[{objectId:'id',fileName:'evidence.jpg',bucket:'installation-evidence',bytes:100,uploader:{name:'Uploader'},customer:null,reference:null,source:'unmapped',sourceMatches:0,protected:false,mappingWarning:'UNMAPPED_BACKUP_REQUIRED'}],hasMore:false}}:null});
+ await h.navigate('attachmentManagement');const rows=h.document.getElementById('am1Rows');
+ assert.ok(rows.textContent.includes('attachments.warning.UNMAPPED_BACKUP_REQUIRED'));
+ assert.ok(rows.textContent.includes('attachments.notLinked'));assert.ok(rows.textContent.includes('attachments.unknown'));
+ assert.equal(h.document.getElementById('am1Delete').hidden,true);
+ assert.ok(!h.requests.some(x=>x.body.action==='purge'||x.body.action==='confirm'));
+});
 test('leaving while snapshot preparation is pending cancels the late export and releases its locks',async()=>{
  let release;const pending=new Promise(resolve=>{release=resolve;});
  const h=mount({responseOverride:async body=>body.action==='begin'?await pending:null});

@@ -171,10 +171,11 @@ test('slow cache persistence does not hold network reads or acknowledged mark-re
 test('release metadata and cache versions agree, with Arabic and English release notes',()=>{
   const read=name=>fs.readFileSync(new URL('../'+name,import.meta.url),'utf8');
   const release=JSON.parse(read('version.json')),pkg=JSON.parse(read('package.json')),pwa=read('assets/js/pwa.js'),sw=read('service-worker.js'),html=read('index.html');
-  assert.equal(release.version,pkg.version);assert.equal(release.version,'18.56.141');
+  assert.equal(release.version,pkg.version);assert.match(release.version,/^18\.56\.\d+$/);
   assert.ok(pwa.includes('const CURRENT_VERSION = "'+release.version+'"'));
   assert.ok(sw.includes('const CACHE_VERSION = "'+release.cacheToken+'"'));
-  for(const script of ['notification-center-service','notification-center','installations-service','pwa'])assert.ok(html.includes('assets/js/'+script+'.js?v='+release.version));
+  for(const script of ['notification-center-service','notification-center','installations-service','pwa'])assert.equal((html.match(new RegExp('src="assets/js/'+script+'\\.js\\?v=[^"]+"','g'))||[]).length,1);
+  assert.ok(html.includes('assets/js/pwa.js?v='+release.version));
   assert.ok(release.title&&release.titleEn&&release.notes.length&&release.notesEn.length);
 });
 

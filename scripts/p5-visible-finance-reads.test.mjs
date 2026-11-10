@@ -282,8 +282,9 @@ test('the delivered console capture reads local state without requests, storage 
 });
 test('release version, cache token and the four changed script URLs agree',()=>{
   const release=JSON.parse(read('version.json')),pkg=JSON.parse(read('package.json')),index=read('index.html');
-  assert.equal(release.version,'18.56.143');assert.equal(pkg.version,release.version);assert.equal(release.build,185743);assert.equal(release.forceUpdate,false);
+  assert.match(release.version,/^18\.56\.\d+$/);assert.equal(pkg.version,release.version);assert.ok(Number.isInteger(release.build)&&release.build>=185743);assert.equal(release.forceUpdate,false);
   assert.ok(read('assets/js/pwa.js').includes(`const CURRENT_VERSION = "${release.version}"`));assert.ok(read('service-worker.js').includes(`const CACHE_VERSION = "${release.cacheToken}"`));
-  for(const asset of ['vehicle-treasury-service','payroll-service','sea-vibe-payroll-service','pwa'])assert.ok(index.includes(`assets/js/${asset}.js?v=${release.version}`));
-  assert.ok(index.includes('assets/js/installations-service.js?v=18.56.142'));assert.ok(index.includes('assets/js/installation-execution.js?v=18.56.142'));
+  for(const asset of ['vehicle-treasury-service','payroll-service','sea-vibe-payroll-service'])assert.ok(index.includes(`assets/js/${asset}.js?v=18.56.143`));
+  assert.ok(index.includes(`assets/js/pwa.js?v=${release.version}`));
+  assert.equal((index.match(/src="assets\/js\/installations-service\.js\?v=[^"]+"/g)||[]).length,1);assert.ok(index.includes('assets/js/installation-execution.js?v=18.56.142'));
 });

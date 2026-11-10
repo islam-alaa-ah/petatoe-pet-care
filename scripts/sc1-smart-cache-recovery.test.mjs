@@ -203,12 +203,12 @@ test('the delivered live capture prints a result without opening databases, netw
   vm.runInNewContext(script,{window:win,document:{visibilityState:'visible'},navigator:{onLine:true},console:{log:value=>{output=value}},indexedDB:{open:deny,deleteDatabase:deny},fetch:deny,setTimeout:deny});
   const result=JSON.parse(output.slice('SC1_RESULT\n'.length));assert.equal(mutations,0);assert.equal(result.cacheRuntime,'SC1');assert.equal(result.configured,true);assert.equal(result.authOffline,false);assert.deepEqual(result.channels,{notification:1,execution:0,other:0});
 });
-test('release metadata is coherent and only the two required asset URLs advance',()=>{
+test('release metadata is coherent and unchanged SC1/runtime assets retain their versioned URLs',()=>{
   const read=rel=>fs.readFileSync(new URL(rel,root),'utf8');
   const release=JSON.parse(read('version.json')),pkg=JSON.parse(read('package.json')),index=read('index.html');
-  assert.equal(release.version,'18.56.144');assert.equal(release.build,185744);assert.equal(release.forceUpdate,false);assert.equal(pkg.version,release.version);
+  assert.match(release.version,/^18\.56\.\d+$/);assert.ok(Number.isInteger(release.build)&&release.build>=185744);assert.equal(release.forceUpdate,false);assert.equal(pkg.version,release.version);
   assert.ok(read('assets/js/pwa.js').includes(`const CURRENT_VERSION = "${release.version}"`));assert.ok(read('service-worker.js').includes(`const CACHE_VERSION = "${release.cacheToken}"`));
-  for(const file of ['smart-cache','pwa'])assert.ok(index.includes(`assets/js/${file}.js?v=${release.version}`));
+  assert.ok(index.includes('assets/js/smart-cache.js?v=18.56.144'));assert.ok(index.includes(`assets/js/pwa.js?v=${release.version}`));
   for(const file of ['vehicle-treasury-service','payroll-service','sea-vibe-payroll-service'])assert.ok(index.includes(`assets/js/${file}.js?v=18.56.143`));
   assert.ok(index.includes('assets/js/installation-execution.js?v=18.56.142'));assert.ok(index.includes('assets/js/notification-center-service.js?v=18.56.141'));
   assert.equal('fake-indexeddb' in (pkg.dependencies||{}),false);assert.equal('fake-indexeddb' in (pkg.devDependencies||{}),false);
