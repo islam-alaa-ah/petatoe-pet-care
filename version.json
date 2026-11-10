@@ -1,17 +1,17 @@
 {
-  "version": "18.56.146",
-  "build": 185746,
+  "version": "18.56.147",
+  "build": 185747,
   "forceUpdate": false,
-  "releaseDate": "2026-11-09",
-  "title": "إصلاح تنزيل PDF المرفقات — AM1R2",
-  "titleEn": "Attachment PDF Download Fix — AM1R2",
+  "releaseDate": "2026-11-10",
+  "title": "إصلاح حفظ وربط المرفقات — AM2",
+  "titleEn": "Attachment Registration and Retry Fix — AM2",
   "notes": [
-    "إصلاح تحميل ملفات مكتبة أرشيف PDF الشهري في النسخة المنشورة.",
-    "تحديث ملفات التطبيق المحفوظة لضمان تحميل الإصلاح."
+    "حفظ محاولة الرفع واستكمالها دون تكرار الصور.",
+    "تصحيح قراءة صور التنفيذ وإظهار نقص بيانات الربط بوضوح."
   ],
   "notesEn": [
-    "Fix monthly PDF archive library loading in the published application.",
-    "Refresh cached application files to load the correction."
+    "Save and resume upload attempts without duplicate images.",
+    "Correct execution image reads and clearly display missing source details."
   ],
-  "cacheToken": "petatoe-pwa-18-56-146-am1r2-pdf-assets"
+  "cacheToken": "petatoe-pwa-18-56-147-am2-attachment-lifecycle"
 }

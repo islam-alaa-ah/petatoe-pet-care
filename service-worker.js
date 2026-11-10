@@ -1,4 +1,4 @@
-const CACHE_VERSION = "petatoe-pwa-18-56-146-am1r2-pdf-assets";
+const CACHE_VERSION = "petatoe-pwa-18-56-147-am2-attachment-lifecycle";
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const VENDOR_CACHE = `${CACHE_VERSION}-vendor`;
@@ -78,6 +78,7 @@ const CORE_APP_SHELL = [
   "./assets/js/payroll.js",
   "./assets/js/sea-vibe-payroll.js",
   "./assets/js/sea-vibe.js",
+  "./assets/js/attachment-upload.js",
   "./assets/js/sales-invoices-service.js",
   "./assets/js/vehicle-treasury-service.js",
   "./assets/js/payroll-service.js",
