@@ -907,40 +907,10 @@
   }
   async function uploadExecutionFile(requestId,file,fileKind='execution',visitId=null,evidenceKey=null){
     if(!file)return null;
-    if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('صيغة الصورة غير مدعومة.');
-    if(file.size<1||file.size>10485760)throw new Error('حجم الصورة يجب أن يكون بين 1 بايت و10 ميجابايت.');
-    if(evidenceKey){
-      const {data:existing,error:existingError}=await db().from('installation_execution_files').select('id,storage_path').eq('client_evidence_key',evidenceKey).maybeSingle();
-      if(existingError)throw new Error('تعذر التحقق من مرفق التنفيذ السابق: '+existingError.message);
-      if(existing)return {id:existing.id||null,path:existing.storage_path,reused:true};
-    }
-    const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
-    const safeEvidenceToken=evidenceKey?String(evidenceKey).replace(/[^a-zA-Z0-9_-]/g,'-'):'';
-    const path=evidenceKey?`${requestId}/execution/financial/${safeEvidenceToken}.${ext}`:`${requestId}/execution/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const bucket=db().storage.from('installation-evidence');
-    const {error:up}=await bucket.upload(path,file,{contentType:file.type,upsert:false});
-    if(up&&!(evidenceKey&&/(already|exists|duplicate|409)/i.test(String(up.message||up.statusCode||up))))throw new Error('تعذر رفع صورة التنفيذ: '+up.message);
-    const row={installation_request_id:requestId,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size,file_kind:fileKind,execution_visit_id:visitId||null};
-    if(evidenceKey)row.client_evidence_key=evidenceKey;
-    const {data:record,error}=await db().from('installation_execution_files').insert(row).select('id,storage_path').single();
-    if(error){
-      if(evidenceKey){
-        const {data:existing}=await db().from('installation_execution_files').select('id,storage_path').eq('client_evidence_key',evidenceKey).maybeSingle().catch(()=>({data:null}));
-        if(existing)return {id:existing.id||null,path:existing.storage_path,reused:true};
-        if(isRetryableFinancialError(error))throw new Error('تعذر تأكيد تسجيل صورة التنفيذ بسبب الاتصال. أعد المحاولة بنفس البيانات.');
-      }
-      if(!up)await bucket.remove([path]);
-      throw new Error('تعذر تسجيل صورة التنفيذ: '+error.message);
-    }
-    return {id:record?.id||null,path:record?.storage_path||path,reused:false};
+    if(!window.PetatoeAttachmentUpload)throw new Error('يلزم تحديث التطبيق لتسجيل المرفقات بأمان.');
+    return window.PetatoeAttachmentUpload.upload({requestId,visitId,target:'execution',fileKind,evidenceKey,file});
   }
-  async function rollbackExecutionFiles(files){
-    const saved=(files||[]).filter(Boolean);
-    if(!saved.length)return;
-    const ids=saved.map(x=>x.id).filter(Boolean),paths=saved.map(x=>x.path).filter(Boolean);
-    if(ids.length)await db().from('installation_execution_files').delete().in('id',ids);
-    if(paths.length)await db().storage.from('installation-evidence').remove(paths);
-  }
+  function retainedAttachmentError(error,files){return window.PetatoeAttachmentUpload?.retainedFailure?.(error,files)||error;}
   async function completeCollectionStage(payload){
     requireAction('edit','installationExecution');
     const amount=Number(payload.amountCollected||0);if(!Number.isFinite(amount)||amount<0)throw new Error('المبلغ المستلم غير صحيح.');
@@ -954,7 +924,7 @@
       if(error)throw new Error('تعذر تأكيد مرحلة التحصيل: '+error.message);
       void notifyEvent('installation.collection_completed',payload.id,payload.visitId||null,{amountCollected:amount,paymentMethod,hasAttachment:Boolean(uploaded),idempotentReplay:Boolean(data?.idempotentReplay)},'collection:'+operationKey);
       return data||{};
-    }catch(error){if(uploaded&&!isRetryableFinancialError(error))await rollbackExecutionFiles([uploaded]).catch(()=>{});throw error}
+    }catch(error){throw retainedAttachmentError(error,[uploaded])}
   }
   async function advanceExecution(payload){
     requireAction('edit','installationExecution');
@@ -971,10 +941,7 @@
       if(error)throw new Error('تعذر تحديث مرحلة التنفيذ: '+error.message);
       void notifyEvent('installation.completed',payload.id,payload.visitId||null,{status:'مكتمل'},'مكتمل:'+String(payload.visitId||payload.id));
       await invalidateAppointmentCache();
-    }catch(error){
-      if(uploaded.length)await rollbackExecutionFiles(uploaded).catch(()=>{});
-      throw error;
-    }
+    }catch(error){throw retainedAttachmentError(error,uploaded)}
   }
   async function rawCompletionQuantitySummary(requestId,visitId,groupVisitIds=[]){
     requireAction('view','installationCompletion');
@@ -1041,7 +1008,7 @@
     if(items.length>6)throw new Error('الحد الأقصى 6 مرفقات في عملية التأكيد الواحدة.');
     const uploaded=[];
     try{for(const file of items){const evidenceKey=operationKey?await financialEvidenceKey(operationKey,file,'quantity_confirmation'):null;uploaded.push(await uploadExecutionFile(requestId,file,'collection',visitId||null,evidenceKey));}return uploaded}
-    catch(error){if(uploaded.length&&!isRetryableFinancialError(error))await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
+    catch(error){throw retainedAttachmentError(error,uploaded)}
   }
   async function confirmActualQuantities(payload){
     requireAction('edit','installationCompletion');
@@ -1057,7 +1024,7 @@
       if(payload.remainingAction==='append_to_next_visit')void notifyEvent('installation.remaining_added_to_next',payload.id,payload.visitId||null,{},'remaining-next:'+operationKey);
       if(payload.remainingAction==='return_to_schedule')void notifyEvent('installation.remaining_to_schedule',payload.id,payload.visitId||null,{},'remaining-schedule:'+operationKey);
       return data;
-    }catch(error){if(uploaded.length&&!isRetryableFinancialError(error))await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
+    }catch(error){throw retainedAttachmentError(error,uploaded)}
   }
   async function confirmActualQuantitiesAndInvoice(payload){
     requireAction('edit','installationCompletion');
@@ -1075,7 +1042,7 @@
       void notifyEvent('installation.quantities_confirmed',payload.id,payload.visitId,{remainingAction:payload.remainingAction,directInvoice:true,grouped,attachments:uploaded.length,idempotentReplay:Boolean(data?.idempotentReplay)},'confirm-invoice:'+operationKey);
       void notifyEvent('sales_invoice.created',payload.id,payload.visitId,{sourceType:'installation',directConfirmation:true,grouped,idempotentReplay:Boolean(data?.idempotentReplay)},'invoice:'+operationKey);
       return data;
-    }catch(error){if(uploaded.length&&!isRetryableFinancialError(error))await rollbackExecutionFiles(uploaded).catch(()=>{});throw error}
+    }catch(error){throw retainedAttachmentError(error,uploaded)}
   }
   async function cancelConfirmedQuantity(payload){
     if(window.CustomerPermissions?.currentRole?.()!=='super_admin')throw new Error('إلغاء الكمية المنفذة متاح لمدير النظام فقط.');
@@ -1136,27 +1103,9 @@
   }
   async function uploadCompletionFile(requestId,fileKind,file,evidenceKey=null){
     if(!file)return null;
-    if(!['before','after','delivery_authorization'].includes(fileKind))throw new Error('نوع مرفق محضر الموعد غير مدعوم.');
-    if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('صيغة الصورة غير مدعومة. استخدم JPG أو PNG أو WEBP.');
-    if(file.size<1||file.size>10485760)throw new Error('حجم الصورة يجب أن يكون بين 1 بايت و10 ميجابايت.');
-    if(evidenceKey){
-      const {data:existing,error:existingError}=await db().from('installation_completion_files').select('id,storage_path').eq('client_evidence_key',evidenceKey).maybeSingle();
-      if(existingError)throw new Error('تعذر التحقق من مرفق محضر الموعد السابق: '+existingError.message);
-      if(existing)return existing.storage_path;
-    }
-    const ext=(file.name.split('.').pop()||'jpg').toLowerCase(),safeEvidenceToken=evidenceKey?String(evidenceKey).replace(/[^a-zA-Z0-9_-]/g,'-'):'';
-    const path=evidenceKey?`${requestId}/completion/${fileKind}/financial/${safeEvidenceToken}.${ext}`:`${requestId}/completion/${fileKind}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const bucket=db().storage.from('installation-evidence');
-    const {error:uploadError}=await bucket.upload(path,file,{contentType:file.type,upsert:false});
-    if(uploadError&&!(evidenceKey&&/(already|exists|duplicate|409)/i.test(String(uploadError.message||uploadError.statusCode||uploadError))))throw new Error('تعذر رفع مرفق محضر الموعد: '+uploadError.message);
-    const row={installation_request_id:requestId,file_kind:fileKind,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size};if(evidenceKey)row.client_evidence_key=evidenceKey;
-    const {error:recordError}=await db().from('installation_completion_files').insert(row);
-    if(recordError){
-      if(evidenceKey){const {data:existing}=await db().from('installation_completion_files').select('storage_path').eq('client_evidence_key',evidenceKey).maybeSingle().catch(()=>({data:null}));if(existing?.storage_path)return existing.storage_path;if(isRetryableFinancialError(recordError))throw new Error('تعذر تأكيد تسجيل مرفق محضر الموعد بسبب الاتصال. أعد المحاولة بنفس البيانات.');}
-      if(!uploadError)await bucket.remove([path]);
-      throw new Error('تعذر تسجيل مرفق محضر الموعد: '+recordError.message);
-    }
-    return path;
+    if(!window.PetatoeAttachmentUpload)throw new Error('يلزم تحديث التطبيق لتسجيل المرفقات بأمان.');
+    const result=await window.PetatoeAttachmentUpload.upload({requestId,target:'completion',fileKind,evidenceKey,file});
+    return result.path;
   }
   async function saveCompletion(payload){
     requireAction('edit','installationCompletion');
@@ -1180,13 +1129,7 @@
       const {data,error}=await db().rpc('save_installation_completion_and_invoice_safe_v1',{p_request_id:payload.id,p_work_summary:workSummary,p_recipient_name:recipientName,p_invoice_number:invoiceNumber,p_invoice_date:invoiceDate,p_operation_key:operationKey});
       if(error)throw new Error('تعذر حفظ محضر إكمال الموعد وإنشاء الفاتورة: '+error.message);
       return data||true;
-    }catch(error){
-      if(uploaded.length&&!isRetryableFinancialError(error)){
-        const paths=uploaded.filter(Boolean);if(paths.length)await db().storage.from('installation-evidence').remove(paths).catch(()=>{});
-        if(paths.length)await db().from('installation_completion_files').delete().eq('installation_request_id',payload.id).in('storage_path',paths).catch(()=>{});
-      }
-      throw error;
-    }
+    }catch(error){throw retainedAttachmentError(error,uploaded)}
   }
   async function signedFileUrl(path,expiresIn=900){const {data,error}=await db().storage.from('installation-evidence').createSignedUrl(path,expiresIn);if(error)throw new Error('تعذر فتح المرفق: '+error.message);return data?.signedUrl||''}
   async function exceptionList(){requireAction('view','installationExceptions');const [{data:requests,error:re},{data:revisits,error:ve}]=await Promise.all([db().from('installation_requests').select('*,customer:customers(id,customer_name,phone),technician:installation_technicians(id,full_name)').in('status',['مؤجل','متعذر']).order('last_status_changed_at',{ascending:false,nullsFirst:false}),db().from('installation_revisits').select('*').order('created_at',{ascending:false})]);if(re)throw new Error('تعذر تحميل استثناءات المواعيد: '+re.message);if(ve)throw new Error('تعذر تحميل إعادة الزيارات: '+ve.message);const map=new Map();(revisits||[]).forEach(v=>{if(!map.has(v.installation_request_id)||v.status==='مجدولة')map.set(v.installation_request_id,v)});return (requests||[]).map(r=>({id:r.id,requestNumber:r.request_number,customerName:r.customer?.customer_name||'',customerPhone:r.customer?.phone||'',technicianId:r.technician_id||'',technicianName:r.assigned_technician_name||r.technician?.full_name||'',scheduledDate:r.scheduled_date||'',status:r.status||'',failureReason:r.execution_failure_reason||'',executionNotes:r.execution_notes||'',activeRevisit:(()=>{const v=map.get(r.id);return v?{id:v.id,scheduledDate:v.scheduled_date||'',timeSlot:v.time_slot||'',technicianId:v.technician_id||'',actionType:v.action_type||'إعادة زيارة',notes:v.notes||'',status:v.status||'مجدولة'}:null})()}))}

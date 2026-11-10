@@ -261,25 +261,9 @@
 
   async function uploadCollectionAttachment(requestId,visitId,file){
     if(!file)return null;ensureOnline();
-    if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw new Error("صيغة الصورة غير مدعومة.");
-    if(file.size<1||file.size>10485760)throw new Error("حجم الصورة يجب أن يكون بين 1 بايت و10 ميجابايت.");
-    const ext=(file.name.split(".").pop()||"jpg").toLowerCase();
-    const path=`${requestId}/execution/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const bucket=db().storage.from("installation-evidence");
-    const {error:up}=await bucket.upload(path,file,{contentType:file.type,upsert:false});
-    if(up)throw new Error("تعذر رفع مرفق التحصيل: "+up.message);
-    const {data:record,error}=await db().from("installation_execution_files").insert({installation_request_id:requestId,storage_path:path,original_name:file.name,mime_type:file.type,file_size:file.size,file_kind:"collection",execution_visit_id:visitId||null}).select("id,storage_path").single();
-    if(error){await bucket.remove([path]).catch(()=>{});throw new Error("تعذر تسجيل مرفق التحصيل: "+error.message)}
-    return {id:record?.id||null,path};
+    if(!window.PetatoeAttachmentUpload)throw new Error('يلزم تحديث التطبيق لتسجيل المرفقات بأمان.');
+    return window.PetatoeAttachmentUpload.upload({requestId,visitId,target:'execution',fileKind:'collection',file});
   }
-
-  async function rollbackUploadedAttachments(files){
-    const list=(files||[]).filter(Boolean);if(!list.length)return;
-    const ids=list.map(x=>x.id).filter(Boolean),paths=list.map(x=>x.path).filter(Boolean);
-    if(ids.length)await db().from("installation_execution_files").delete().in("id",ids).catch(()=>{});
-    if(paths.length)await db().storage.from("installation-evidence").remove(paths).catch(()=>{});
-  }
-
   async function updateFullInvoice(payload){
     requireAction("edit");ensureOnline();
     if(!payload?.id)throw new Error("معرّف الفاتورة مطلوب.");
@@ -293,10 +277,14 @@
       const {data,error}=await db().rpc("update_sales_invoice_full_v1",{p_invoice_id:payload.id,p_invoice_number:withoutInvoice?null:invoiceNumber,p_invoice_date:invoiceDate,p_without_invoice:withoutInvoice,p_payment_method:paymentMethod,p_services:services,p_discount_type:discountType,p_discount_value:discountValue,p_collection_notes:String(payload.collectionNotes||"").trim()||null,p_removed_attachment_ids:Array.isArray(payload.removedAttachmentIds)?payload.removedAttachmentIds:[]});
       if(error)throw new Error("تعذر حفظ تعديل الفاتورة: "+error.message);
       const removedPaths=Array.isArray(data?.removedStoragePaths)?data.removedStoragePaths:[];
-      if(removedPaths.length)await db().storage.from("installation-evidence").remove(removedPaths).catch(()=>{});
+      let attachmentCleanupPending=false;
+      if(removedPaths.length){
+        try{const removal=await db().storage.from("installation-evidence").remove(removedPaths);attachmentCleanupPending=Boolean(removal.error)||!Array.isArray(removal.data)||removal.data.length!==removedPaths.length;}
+        catch(_){attachmentCleanupPending=true;}
+      }
       await invalidateCache();
-      return data||{};
-    }catch(error){if(uploaded.length)await rollbackUploadedAttachments(uploaded);throw error}
+      return {...(data||{}),attachmentCleanupPending};
+    }catch(error){throw window.PetatoeAttachmentUpload?.retainedFailure?.(error,uploaded)||error}
   }
 
   async function updateInvoice(payload){

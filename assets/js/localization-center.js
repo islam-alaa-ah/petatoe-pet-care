@@ -5,6 +5,18 @@
   const SCREEN_KEY='installationExecution';
   const desktopPilot=()=>window.matchMedia?.('(min-width:1024px) and (hover:hover) and (pointer:fine)')?.matches===true&&Number(window.screen?.width||0)>1024;
   const rows=[
+    ["attachments.warning.UNMAPPED_BACKUP_REQUIRED", "label", "بيانات الربط غير مكتملة؛ المسح متاح بعد أرشفة الأصل والتحقق من PDF فقط.", "Source details are incomplete; deletion requires an original-image archive and verified PDF."],
+    ["attachments.upload.onlineRequired", "label", "يلزم حساب نشط واتصال مباشر لرفع المرفقات.", "An active account and online connection are required to upload attachments."],
+    ["attachments.upload.identityChanged", "label", "تغير الحساب أثناء الرفع؛ أعد المحاولة من الحساب الصحيح.", "The account changed during upload. Retry using the correct account."],
+    ["attachments.upload.secureBrowserRequired", "label", "افتح التطبيق عبر اتصال آمن لحفظ بصمة الصورة.", "Open the application over a secure connection to hash the image."],
+    ["attachments.upload.forbidden", "label", "لا توجد صلاحية لرفع المرفق لهذا الطلب أو الزيارة.", "You do not have permission to attach files to this request or visit."],
+    ["attachments.upload.conflict", "label", "بيانات محاولة الرفع لا تطابق الملف المسجل؛ حدّث الصفحة وراجع الصورة المختارة.", "The upload attempt does not match the recorded file. Refresh and check the selected image."],
+    ["attachments.upload.updateRequired", "label", "خدمة تسجيل المرفقات تحتاج تحديث AM2؛ راجع خطوات النشر.", "The attachment registration service requires the AM2 update. Check deployment steps."],
+    ["attachments.upload.retry", "label", "لم يتأكد حفظ المرفق. أعد المحاولة بنفس الصورة؛ محاولة الرفع محفوظة دون تكرار الملف.", "Attachment saving was not confirmed. Retry with the same image; its saved upload attempt avoids duplicate files."],
+    ["attachments.upload.invalidImage", "label", "اختر صورة JPG أو PNG أو WEBP بحجم من 1 بايت إلى 10 ميجابايت.", "Choose a JPG, PNG or WEBP image between 1 byte and 10 MB."],
+    ["attachments.upload.retained", "label", "المرفقات المسجلة محفوظة على الطلب؛ إعادة المحاولة بنفس الصور ستستخدمها.", "Registered attachments are retained on the request and reused when you retry with the same images."],
+    ["attachments.upload.archiving", "label", "الصورة قيد الأرشفة أو المسح حاليًا؛ انتظر انتهاء العملية ثم أعد المحاولة.", "This image is being archived or deleted. Wait for the operation to finish, then retry."],
+    ["invoices.attachmentCleanupPending", "label", "تم حفظ الفاتورة. بعض الصور التي أزلت ربطها ما زالت في التخزين؛ تظهر في إدارة المرفقات للأرشفة والمسح.", "Invoice saved. Some unlinked images remain in storage and appear in Attachment Management for archiving and deletion."],
     ["attachments.adminOnly","label","مخصصة لمدير النظام فقط","System administrator only"],
     ["attachments.storageOwnerOnly","label","مالك الملف في Storage؛ رافع الصورة غير موثق","Storage owner; uploader not recorded"],
     ["attachments.error.AM1_REVISION_MISMATCH","error","إصدار خدمة المرفقات لا يطابق الشاشة. راجع نشر AM1R1 قبل المتابعة.","Attachment service and screen versions differ. Check the AM1R1 deployment."],
